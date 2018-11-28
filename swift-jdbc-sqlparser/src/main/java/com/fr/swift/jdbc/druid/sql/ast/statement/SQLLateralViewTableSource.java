@@ -15,20 +15,20 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLLateralViewTableSource extends SQLTableSourceImpl {
 
-    private SQLTableSource      tableSource;
+    private SQLTableSource tableSource;
 
     private SQLMethodInvokeExpr method;
 
-    private List<SQLName>       columns = new ArrayList<SQLName>(2);
+    private List<SQLName> columns = new ArrayList<SQLName>(2);
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

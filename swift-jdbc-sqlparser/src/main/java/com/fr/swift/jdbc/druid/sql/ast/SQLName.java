@@ -16,8 +16,11 @@
 package com.fr.swift.jdbc.druid.sql.ast;
 
 public interface SQLName extends SQLExpr {
-    String  getSimpleName();
+    String getSimpleName();
+
     SQLName clone();
-    long    nameHashCode64();
-    long    hashCode64();
+
+    long nameHashCode64();
+
+    long hashCode64();
 }

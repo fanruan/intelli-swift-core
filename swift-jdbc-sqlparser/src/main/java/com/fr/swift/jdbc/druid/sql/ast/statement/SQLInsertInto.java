@@ -15,23 +15,23 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 
-public abstract class SQLInsertInto extends SQLObjectImpl {
-    protected SQLExprTableSource        tableSource;
-    protected final List<SQLExpr>       columns = new ArrayList<SQLExpr>();
-    protected transient String          columnsString;
-    protected transient long            columnsStringHash;
-    protected SQLSelect                 query;
-    protected final List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
+import java.util.ArrayList;
+import java.util.List;
 
-    public SQLInsertInto(){
+public abstract class SQLInsertInto extends SQLObjectImpl {
+    protected SQLExprTableSource tableSource;
+    protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
+    protected transient String columnsString;
+    protected transient long columnsStringHash;
+    protected SQLSelect query;
+    protected final List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
+
+    public SQLInsertInto() {
 
     }
 
@@ -105,7 +105,7 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     public List<SQLExpr> getColumns() {
         return columns;
     }
-    
+
     public void addColumn(SQLExpr column) {
         if (column != null) {
             column.setParent(this);
@@ -127,7 +127,7 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
             valuesList.set(0, values);
         }
     }
-    
+
     public List<ValuesClause> getValuesList() {
         return valuesList;
     }

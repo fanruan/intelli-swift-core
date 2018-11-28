@@ -22,11 +22,11 @@ import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 public class SQLNCharExpr extends SQLTextLiteralExpr {
     private static SQLDataType defaultDataType = new SQLCharacterDataType("nvarchar");
 
-    public SQLNCharExpr(){
+    public SQLNCharExpr() {
 
     }
 
-    public SQLNCharExpr(String text){
+    public SQLNCharExpr(String text) {
         super(text);
     }
 

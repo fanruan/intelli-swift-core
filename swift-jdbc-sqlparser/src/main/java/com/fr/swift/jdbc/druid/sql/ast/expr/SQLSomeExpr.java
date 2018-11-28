@@ -23,7 +23,6 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,11 +30,11 @@ public final class SQLSomeExpr extends SQLExprImpl {
 
     public SQLSelect subQuery;
 
-    public SQLSomeExpr(){
+    public SQLSomeExpr() {
 
     }
 
-    public SQLSomeExpr(SQLSelect select){
+    public SQLSomeExpr(SQLSelect select) {
         this.setSubQuery(select);
     }
 
@@ -92,13 +91,8 @@ public final class SQLSomeExpr extends SQLExprImpl {
         }
         SQLSomeExpr other = (SQLSomeExpr) obj;
         if (subQuery == null) {
-            if (other.subQuery != null) {
-                return false;
-            }
-        } else if (!subQuery.equals(other.subQuery)) {
-            return false;
-        }
-        return true;
+            return other.subQuery == null;
+        } else return subQuery.equals(other.subQuery);
     }
 
     public SQLDataType computeDataType() {

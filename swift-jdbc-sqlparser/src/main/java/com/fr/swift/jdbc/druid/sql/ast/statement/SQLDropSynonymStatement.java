@@ -36,7 +36,7 @@ public class SQLDropSynonymStatement extends SQLStatementImpl implements SQLDrop
     }
 
     public SQLDropSynonymStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

@@ -23,9 +23,9 @@ public class SQLParserUtils {
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType) {
         SQLParserFeature[] features;
         if (JdbcConstants.ODPS.equals(dbType) || JdbcConstants.MYSQL.equals(dbType)) {
-            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
+            features = new SQLParserFeature[]{SQLParserFeature.KeepComments};
         } else {
-            features = new SQLParserFeature[] {};
+            features = new SQLParserFeature[]{};
         }
         return createSQLStatementParser(sql, dbType, features);
     }
@@ -33,9 +33,9 @@ public class SQLParserUtils {
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType, boolean keepComments) {
         SQLParserFeature[] features;
         if (keepComments) {
-            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
+            features = new SQLParserFeature[]{SQLParserFeature.KeepComments};
         } else {
-            features = new SQLParserFeature[] {};
+            features = new SQLParserFeature[]{};
         }
 
         return createSQLStatementParser(sql, dbType, features);
@@ -55,5 +55,5 @@ public class SQLParserUtils {
 
     public static SQLSelectQueryBlock createSelectQueryBlock(String dbType) {
         return new SQLSelectQueryBlock();
-     }
+    }
 }

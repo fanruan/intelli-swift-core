@@ -25,7 +25,7 @@ import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL
 
 public final class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
 
-    public SQLNullExpr(){
+    public SQLNullExpr() {
 
     }
 

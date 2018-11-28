@@ -17,13 +17,16 @@ package com.fr.swift.jdbc.druid.util;
 
 /**
  * Java: 无回路有向图(Directed Acyclic Graph)的拓扑排序
- *       该DAG图是通过邻接表实现的。
+ * 该DAG图是通过邻接表实现的。
  *
  * @author skywang
  * @date 2014/04/22
  */
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class ListDG {
     public static class Edge {
@@ -46,7 +49,7 @@ public class ListDG {
     private class VNode {
         Object data;          // 顶点信息
         ENode firstEdge;    // 指向第一条依附该顶点的弧
-    };
+    }
 
     private List<VNode> mVexs;  // 顶点数组
 
@@ -87,7 +90,7 @@ public class ListDG {
             ENode node1 = new ENode();
             node1.ivex = p2;
             // 将node1链接到"p1所在链表的末尾"
-            if(mVexs.get(p1).firstEdge == null)
+            if (mVexs.get(p1).firstEdge == null)
                 mVexs.get(p1).firstEdge = node1;
             else
                 linkLast(mVexs.get(p1).firstEdge, node1);
@@ -100,7 +103,7 @@ public class ListDG {
     private void linkLast(ENode list, ENode node) {
         ENode p = list;
 
-        while(p.nextEdge!=null)
+        while (p.nextEdge != null)
             p = p.nextEdge;
         p.nextEdge = node;
     }
@@ -109,8 +112,8 @@ public class ListDG {
      * 返回ch位置
      */
     private int getPosition(Object ch) {
-        for(int i=0; i<mVexs.size(); i++)
-            if(mVexs.get(i).data == ch)
+        for (int i = 0; i < mVexs.size(); i++)
+            if (mVexs.get(i).data == ch)
                 return i;
         return -1;
     }
@@ -170,8 +173,7 @@ public class ListDG {
                 ENode node = mVexs.get(j).firstEdge;
                 while (node != null) {
                     int k = node.ivex;
-                    if (!visited[k])
-                    {
+                    if (!visited[k]) {
                         visited[k] = true;
                         System.out.printf("%c ", mVexs.get(k).data);
                         queue[rear++] = k;
@@ -215,12 +217,12 @@ public class ListDG {
         //Object[] tops;             // 拓扑排序结果数组，记录每个节点的排序后的序号。
         Queue<Integer> queue;    // 辅组队列
 
-        ins   = new int[num];
+        ins = new int[num];
         //tops  = new Object[num];
         queue = new LinkedList<Integer>();
 
         // 统计每个顶点的入度数
-        for(int i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
 
             ENode node = mVexs.get(i).firstEdge;
             while (node != null) {
@@ -230,8 +232,8 @@ public class ListDG {
         }
 
         // 将所有入度为0的顶点入队列
-        for(int i = 0; i < num; i ++)
-            if(ins[i] == 0)
+        for (int i = 0; i < num; i++)
+            if (ins[i] == 0)
                 queue.offer(i);                 // 入队列
 
         while (!queue.isEmpty()) {              // 队列非空
@@ -241,22 +243,18 @@ public class ListDG {
 
             // 将与"node"关联的节点的入度减1；
             // 若减1之后，该节点的入度为0；则将该节点添加到队列中。
-            while(node != null) {
+            while (node != null) {
                 // 将节点(序号为node.ivex)的入度减1。
                 ins[node.ivex]--;
                 // 若节点的入度为0，则将其"入队列"
-                if( ins[node.ivex] == 0)
+                if (ins[node.ivex] == 0)
                     queue.offer(node.ivex);    // 入队列
 
                 node = node.nextEdge;
             }
         }
 
-        if(index != num) {
-            return false;
-        }
-
-        return true;
+        return index == num;
     }
 
 //    public static void main(String[] args) {

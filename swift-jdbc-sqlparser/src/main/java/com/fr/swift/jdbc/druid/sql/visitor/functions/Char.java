@@ -15,13 +15,13 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor.functions;
 
-import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
-import java.math.BigDecimal;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor;
+
+import java.math.BigDecimal;
+
+import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Char implements Function {
 

@@ -25,7 +25,7 @@ public enum SQLUnionOperator {
     public final String name;
     public final String name_lcase;
 
-    private SQLUnionOperator(String name){
+    SQLUnionOperator(String name) {
         this.name = name;
         this.name_lcase = name.toLowerCase();
     }

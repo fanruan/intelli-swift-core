@@ -19,22 +19,22 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
 
 public class SQLParser {
     protected final Lexer lexer;
-    protected String      dbType;
+    protected String dbType;
 
-    public SQLParser(String sql, String dbType){
+    public SQLParser(String sql, String dbType) {
         this(new Lexer(sql, null, dbType), dbType);
         this.lexer.nextToken();
     }
 
-    public SQLParser(String sql){
+    public SQLParser(String sql) {
         this(sql, null);
     }
 
-    public SQLParser(Lexer lexer){
+    public SQLParser(Lexer lexer) {
         this(lexer, null);
     }
 
-    public SQLParser(Lexer lexer, String dbType){
+    public SQLParser(Lexer lexer, String dbType) {
         this.lexer = lexer;
         this.dbType = dbType;
     }
@@ -280,7 +280,7 @@ public class SQLParser {
         // + token + ", actual " + lexer.token + " "
         // + lexer.stringVal() + ", pos " + this.lexer.pos());
         throw new ParserException("syntax error, error in :'" + arround + "', expect " + token + ", actual "
-                                  + lexer.token + " " + lexer.info());
+                + lexer.token + " " + lexer.info());
     }
 
     public void accept(Token token) {
@@ -294,7 +294,7 @@ public class SQLParser {
 
     public int acceptInteger() {
         if (lexer.token == Token.LITERAL_INT) {
-            int intVal = ((Integer) lexer.integerValue()).intValue();
+            int intVal = lexer.integerValue().intValue();
             lexer.nextToken();
             return intVal;
         } else {
@@ -306,7 +306,7 @@ public class SQLParser {
     public void match(Token token) {
         if (lexer.token != token) {
             throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token + " "
-                                      + lexer.info());
+                    + lexer.info());
         }
     }
 

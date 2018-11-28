@@ -48,7 +48,7 @@ public class SQLCommitStatement extends SQLStatementImpl {
         x.chain = chain;
         x.release = release;
 
-        if(transactionName != null) {
+        if (transactionName != null) {
             x.setTransactionName(transactionName.clone());
         }
         if (delayedDurability != null) {

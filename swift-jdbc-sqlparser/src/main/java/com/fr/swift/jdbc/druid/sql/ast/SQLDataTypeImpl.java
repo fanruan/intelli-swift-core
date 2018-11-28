@@ -25,21 +25,21 @@ import java.util.List;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
-    private         String        name;
-    private         long          nameHashCode64;
+    private String name;
+    private long nameHashCode64;
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
-    private         Boolean       withTimeZone;
-    private         boolean       withLocalTimeZone = false;
-    private         String        dbType;
+    private Boolean withTimeZone;
+    private boolean withLocalTimeZone = false;
+    private String dbType;
 
-    private         boolean       unsigned;
-    private         boolean       zerofill;
+    private boolean unsigned;
+    private boolean zerofill;
 
-    public SQLDataTypeImpl(){
+    public SQLDataTypeImpl() {
 
     }
 
-    public SQLDataTypeImpl(String name){
+    public SQLDataTypeImpl(String name) {
         this.name = name;
     }
 
@@ -87,7 +87,7 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     public List<SQLExpr> getArguments() {
         return this.arguments;
     }
-    
+
     public void addArgument(SQLExpr argument) {
         if (argument != null) {
             argument.setParent(this);
@@ -110,7 +110,7 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     @Override
     public int hashCode() {
         long value = nameHashCode64();
-        return (int)(value ^ (value >>> 32));
+        return (int) (value ^ (value >>> 32));
     }
 
     @Override

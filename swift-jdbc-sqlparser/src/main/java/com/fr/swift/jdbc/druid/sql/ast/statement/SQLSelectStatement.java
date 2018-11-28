@@ -28,19 +28,19 @@ public class SQLSelectStatement extends SQLStatementImpl {
 
     protected SQLSelect select;
 
-    public SQLSelectStatement(){
+    public SQLSelectStatement() {
 
     }
 
-    public SQLSelectStatement(String dbType){
-        super (dbType);
+    public SQLSelectStatement(String dbType) {
+        super(dbType);
     }
 
-    public SQLSelectStatement(SQLSelect select){
+    public SQLSelectStatement(SQLSelect select) {
         this.setSelect(select);
     }
 
-    public SQLSelectStatement(SQLSelect select, String dbType){
+    public SQLSelectStatement(SQLSelect select, String dbType) {
         this(dbType);
         this.setSelect(select);
     }

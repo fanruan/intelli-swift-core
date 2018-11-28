@@ -15,15 +15,15 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     protected SQLWithSubqueryClause with;
@@ -34,7 +34,7 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     private boolean afterSemi;
 
-    public SQLInsertStatement(){
+    public SQLInsertStatement() {
 
     }
 
@@ -91,11 +91,11 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     public static class ValuesClause extends SQLObjectImpl {
 
-        private final     List<SQLExpr> values;
-        private transient String        originalString;
-        private transient int           replaceCount;
+        private final List<SQLExpr> values;
+        private transient String originalString;
+        private transient int replaceCount;
 
-        public ValuesClause(){
+        public ValuesClause() {
             this(new ArrayList<SQLExpr>());
         }
 
@@ -107,7 +107,7 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
             return x;
         }
 
-        public ValuesClause(List<SQLExpr> values){
+        public ValuesClause(List<SQLExpr> values) {
             this.values = values;
             for (int i = 0; i < values.size(); ++i) {
                 values.get(i).setParent(this);
@@ -164,7 +164,7 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     public String getDbType() {
         return dbType;
     }
-    
+
     public void setDbType(String dbType) {
         this.dbType = dbType;
     }

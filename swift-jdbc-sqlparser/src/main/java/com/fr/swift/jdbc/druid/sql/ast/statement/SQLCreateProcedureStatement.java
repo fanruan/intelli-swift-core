@@ -15,38 +15,38 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLParameter;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQLCreateStatement {
 
-    private SQLName            definer;
+    private SQLName definer;
 
-    private boolean            create     = true;
-    private boolean            orReplace;
-    private SQLName            name;
-    private SQLStatement       block;
+    private boolean create = true;
+    private boolean orReplace;
+    private SQLName name;
+    private SQLStatement block;
     private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     // for oracle
-    private String             javaCallSpec;
+    private String javaCallSpec;
 
-    private SQLName            authid;
+    private SQLName authid;
 
     // for mysql
-    private boolean            deterministic;
-    private boolean            containsSql;
-    private boolean            noSql;
-    private boolean            readSqlData;
-    private boolean            modifiesSqlData;
+    private boolean deterministic;
+    private boolean containsSql;
+    private boolean noSql;
+    private boolean readSqlData;
+    private boolean modifiesSqlData;
 
-    private String             wrappedSource;
+    private String wrappedSource;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -108,7 +108,7 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
     public SQLName getDefiner() {
         return definer;
     }
-    
+
     public void setDefiner(SQLName definer) {
         this.definer = definer;
     }

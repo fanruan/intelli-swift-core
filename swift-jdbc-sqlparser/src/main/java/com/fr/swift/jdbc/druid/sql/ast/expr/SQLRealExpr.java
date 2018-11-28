@@ -25,11 +25,11 @@ public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExp
 
     private Float value;
 
-    public SQLRealExpr(){
+    public SQLRealExpr() {
 
     }
 
-    public SQLRealExpr(Float value){
+    public SQLRealExpr(Float value) {
         super();
         this.value = value;
     }
@@ -61,6 +61,7 @@ public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExp
 
         visitor.endVisit(this);
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -82,13 +83,8 @@ public class SQLRealExpr extends SQLNumericLiteralExpr implements SQLValuableExp
         }
         SQLRealExpr other = (SQLRealExpr) obj;
         if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+            return other.value == null;
+        } else return value.equals(other.value);
     }
 
     @Override

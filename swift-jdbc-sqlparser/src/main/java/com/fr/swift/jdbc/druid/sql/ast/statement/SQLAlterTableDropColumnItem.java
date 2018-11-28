@@ -15,20 +15,20 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlterTableItem {
 
     private List<SQLName> columns = new ArrayList<SQLName>();
 
-    private boolean       cascade = false;
+    private boolean cascade = false;
 
-    public SQLAlterTableDropColumnItem(){
+    public SQLAlterTableDropColumnItem() {
 
     }
 
@@ -43,7 +43,7 @@ public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlt
     public List<SQLName> getColumns() {
         return columns;
     }
-    
+
     public void addColumn(SQLName column) {
         if (column != null) {
             column.setParent(this);

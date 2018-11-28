@@ -15,15 +15,71 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.expr.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLArgument;
+import com.fr.swift.jdbc.druid.sql.ast.SQLArrayDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLCommentHint;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDeclareItem;
+import com.fr.swift.jdbc.druid.sql.ast.SQLKeep;
+import com.fr.swift.jdbc.druid.sql.ast.SQLLimit;
+import com.fr.swift.jdbc.druid.sql.ast.SQLMapDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOver;
+import com.fr.swift.jdbc.druid.sql.ast.SQLParameter;
+import com.fr.swift.jdbc.druid.sql.ast.SQLPartitionValue;
+import com.fr.swift.jdbc.druid.sql.ast.SQLRecordDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStructDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLSubPartition;
+import com.fr.swift.jdbc.druid.sql.ast.SQLSubPartitionByHash;
+import com.fr.swift.jdbc.druid.sql.ast.SQLSubPartitionByList;
+import com.fr.swift.jdbc.druid.sql.ast.SQLWindow;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAnyExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLArrayExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBetweenExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExprGroup;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBooleanExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCaseExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCaseStatement;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCastExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCharExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLContainsExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLDateExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLDefaultExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLExistsExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLFlashbackExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLGroupingSetExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLHexExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLInListExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLInSubQueryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntegerExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntervalExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLListExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNCharExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNotExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNullExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNumberExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLQueryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLRealExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLSequenceExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLSomeExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLTimestampExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLUnaryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLValuesExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.*;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLWhileStatement;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeclareStatement;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCommitStatement;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
     protected int features;
@@ -632,11 +688,11 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public boolean visit(SQLOver x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLKeep x) {
     }
-    
+
     @Override
     public boolean visit(SQLKeep x) {
         return true;
@@ -1461,15 +1517,15 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLAlterTableRepairPartition x) {
 
     }
-    
+
     @Override
     public boolean visit(SQLSequenceExpr x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLSequenceExpr x) {
-        
+
     }
 
     @Override
@@ -1479,7 +1535,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLMergeStatement x) {
-        
+
     }
 
     @Override
@@ -1489,7 +1545,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(MergeUpdateClause x) {
-        
+
     }
 
     @Override
@@ -1499,7 +1555,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(MergeInsertClause x) {
-        
+
     }
 
     @Override
@@ -1514,7 +1570,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLNullConstraint x) {
-	return true;
+        return true;
     }
 
     @Override

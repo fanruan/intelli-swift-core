@@ -15,12 +15,12 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor.functions;
 
-import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitorUtils;
+
+import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Left implements Function {
 
@@ -44,7 +44,7 @@ public class Left implements Function {
 
         String strValue = param0Value.toString();
         int intValue = SQLEvalVisitorUtils.castToInteger(param1Value);
-        
+
         if (intValue > strValue.length()) {
             return SQLEvalVisitor.EVAL_ERROR;
         }

@@ -15,12 +15,12 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLAlterTableDiscardPartition extends SQLObjectImpl implements SQLAlterTableItem {
 
@@ -30,7 +30,7 @@ public class SQLAlterTableDiscardPartition extends SQLObjectImpl implements SQLA
     public List<SQLName> getPartitions() {
         return partitions;
     }
-    
+
     public void addPartition(SQLName partition) {
         if (partition != null) {
             partition.setParent(this);

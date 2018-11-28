@@ -33,7 +33,7 @@ public class SQLDropLogFileGroupStatement extends SQLStatementImpl implements SQ
     }
 
     public SQLDropLogFileGroupStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

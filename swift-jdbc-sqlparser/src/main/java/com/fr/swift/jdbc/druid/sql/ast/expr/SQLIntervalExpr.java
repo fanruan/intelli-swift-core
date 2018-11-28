@@ -24,13 +24,13 @@ import java.util.List;
 
 public class SQLIntervalExpr extends SQLExprImpl {
 
-    private SQLExpr           value;
-    private SQLIntervalUnit   unit;
+    private SQLExpr value;
+    private SQLIntervalUnit unit;
 
-    public SQLIntervalExpr(){
+    public SQLIntervalExpr() {
     }
 
-    public SQLIntervalExpr(SQLExpr value, SQLIntervalUnit unit){
+    public SQLIntervalExpr(SQLExpr value, SQLIntervalUnit unit) {
         setValue(value);
         this.unit = unit;
     }
@@ -107,13 +107,8 @@ public class SQLIntervalExpr extends SQLExprImpl {
             return false;
         }
         if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+            return other.value == null;
+        } else return value.equals(other.value);
     }
 
 }

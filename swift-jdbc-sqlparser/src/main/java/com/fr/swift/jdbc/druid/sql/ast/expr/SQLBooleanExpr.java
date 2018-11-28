@@ -19,7 +19,6 @@ import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLDataTypeImpl;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCharacterDataType;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;
@@ -30,11 +29,11 @@ public final class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLit
 
     private boolean value;
 
-    public SQLBooleanExpr(){
+    public SQLBooleanExpr() {
 
     }
 
-    public SQLBooleanExpr(boolean value){
+    public SQLBooleanExpr(boolean value) {
         this.value = value;
     }
 
@@ -82,10 +81,7 @@ public final class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLit
             return false;
         }
         SQLBooleanExpr other = (SQLBooleanExpr) obj;
-        if (value != other.value) {
-            return false;
-        }
-        return true;
+        return value == other.value;
     }
 
     public SQLDataType computeDataType() {
@@ -101,7 +97,7 @@ public final class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLit
         return Collections.emptyList();
     }
 
-    public static enum Type {
+    public enum Type {
         ON_OFF
     }
 }

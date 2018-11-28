@@ -23,11 +23,11 @@ public class SQLExprStatement extends SQLStatementImpl {
 
     private SQLExpr expr;
 
-    public SQLExprStatement(){
+    public SQLExprStatement() {
 
     }
 
-    public SQLExprStatement(SQLExpr expr){
+    public SQLExprStatement(SQLExpr expr) {
         this.expr = expr;
     }
 

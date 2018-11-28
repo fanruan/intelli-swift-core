@@ -15,26 +15,26 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+
 public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private SQLExpr           expr;
-    private SQLUnaryOperator  operator;
+    private SQLExpr expr;
+    private SQLUnaryOperator operator;
 
-    public SQLUnaryExpr(){
+    public SQLUnaryExpr() {
 
     }
 
-    public SQLUnaryExpr(SQLUnaryOperator operator, SQLExpr expr){
+    public SQLUnaryExpr(SQLUnaryOperator operator, SQLExpr expr) {
         this.operator = operator;
         this.setExpr(expr);
     }
@@ -108,9 +108,6 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
         } else if (!expr.equals(other.expr)) {
             return false;
         }
-        if (operator != other.operator) {
-            return false;
-        }
-        return true;
+        return operator == other.operator;
     }
 }

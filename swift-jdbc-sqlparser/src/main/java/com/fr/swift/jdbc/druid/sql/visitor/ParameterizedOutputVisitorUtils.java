@@ -15,13 +15,17 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor;
 
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.parser.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
+import com.fr.swift.jdbc.druid.sql.parser.SQLParserFeature;
+import com.fr.swift.jdbc.druid.sql.parser.SQLParserUtils;
+import com.fr.swift.jdbc.druid.sql.parser.SQLSelectListCache;
+import com.fr.swift.jdbc.druid.sql.parser.SQLStatementParser;
 import com.fr.swift.jdbc.druid.util.FnvHash;
+
+import java.util.List;
 
 public class ParameterizedOutputVisitorUtils {
     private final static SQLParserFeature[] defaultFeatures = {
@@ -54,8 +58,8 @@ public class ParameterizedOutputVisitorUtils {
     }
 
 
-    private static void configVisitorFeatures(ParameterizedVisitor visitor, VisitorFeature ...features) {
-        if(features != null) {
+    private static void configVisitorFeatures(ParameterizedVisitor visitor, VisitorFeature... features) {
+        if (features != null) {
             for (int i = 0; i < features.length; i++) {
                 visitor.config(features[i], true);
             }
@@ -64,13 +68,13 @@ public class ParameterizedOutputVisitorUtils {
 
     public static String parameterize(String sql
             , String dbType
-            , List<Object> outParameters, VisitorFeature ...features) {
+            , List<Object> outParameters, VisitorFeature... features) {
         return parameterize(sql, dbType, null, outParameters, features);
     }
 
     public static String parameterize(String sql
             , String dbType
-            , SQLSelectListCache selectListCache, List<Object> outParameters, VisitorFeature ...visitorFeatures) {
+            , SQLSelectListCache selectListCache, List<Object> outParameters, VisitorFeature... visitorFeatures) {
 
         final SQLParserFeature[] features = outParameters == null
                 ? defaultFeatures2
@@ -147,7 +151,7 @@ public class ParameterizedOutputVisitorUtils {
     public static long parameterizeHash(String sql
             , String dbType
             , SQLSelectListCache selectListCache
-            , List<Object> outParameters, VisitorFeature ...visitorFeatures) {
+            , List<Object> outParameters, VisitorFeature... visitorFeatures) {
 
         final SQLParserFeature[] features = outParameters == null
                 ? defaultFeatures2

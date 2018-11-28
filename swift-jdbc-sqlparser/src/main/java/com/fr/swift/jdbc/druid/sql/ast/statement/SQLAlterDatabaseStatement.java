@@ -30,11 +30,11 @@ public class SQLAlterDatabaseStatement extends SQLStatementImpl implements SQLAl
     private boolean upgradeDataDirectoryName;
 
     private SQLAlterCharacter character;
-    
+
     public SQLAlterDatabaseStatement() {
-        
+
     }
-    
+
     public SQLAlterDatabaseStatement(String dbType) {
         this.setDbType(dbType);
     }

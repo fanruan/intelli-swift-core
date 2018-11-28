@@ -30,11 +30,11 @@ public class SQLAnyExpr extends SQLExprImpl {
 
     public SQLSelect subQuery;
 
-    public SQLAnyExpr(){
+    public SQLAnyExpr() {
 
     }
 
-    public SQLAnyExpr(SQLSelect select){
+    public SQLAnyExpr(SQLSelect select) {
         setSubQuery(select);
     }
 
@@ -95,13 +95,8 @@ public class SQLAnyExpr extends SQLExprImpl {
         }
         SQLAnyExpr other = (SQLAnyExpr) obj;
         if (subQuery == null) {
-            if (other.subQuery != null) {
-                return false;
-            }
-        } else if (!subQuery.equals(other.subQuery)) {
-            return false;
-        }
-        return true;
+            return other.subQuery == null;
+        } else return subQuery.equals(other.subQuery);
     }
 
     public SQLDataType computeDataType() {

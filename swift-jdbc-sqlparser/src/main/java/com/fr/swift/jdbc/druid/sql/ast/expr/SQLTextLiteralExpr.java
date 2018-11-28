@@ -24,11 +24,11 @@ public abstract class SQLTextLiteralExpr extends SQLExprImpl implements SQLLiter
 
     protected String text;
 
-    public SQLTextLiteralExpr(){
+    public SQLTextLiteralExpr() {
 
     }
 
-    public SQLTextLiteralExpr(String text){
+    public SQLTextLiteralExpr(String text) {
 
         this.text = text;
     }
@@ -62,13 +62,8 @@ public abstract class SQLTextLiteralExpr extends SQLExprImpl implements SQLLiter
         }
         SQLTextLiteralExpr other = (SQLTextLiteralExpr) obj;
         if (text == null) {
-            if (other.text != null) {
-                return false;
-            }
-        } else if (!text.equals(other.text)) {
-            return false;
-        }
-        return true;
+            return other.text == null;
+        } else return text.equals(other.text);
     }
 
     public abstract SQLTextLiteralExpr clone();

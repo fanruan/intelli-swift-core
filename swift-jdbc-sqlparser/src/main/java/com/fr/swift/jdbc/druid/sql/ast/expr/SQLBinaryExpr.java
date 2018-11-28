@@ -30,11 +30,11 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr, SQLVal
 
     private transient Number val;
 
-    public SQLBinaryExpr(){
+    public SQLBinaryExpr() {
 
     }
 
-    public SQLBinaryExpr(String value){
+    public SQLBinaryExpr(String value) {
         super();
         this.text = value;
     }
@@ -120,13 +120,8 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr, SQLVal
         }
         SQLBinaryExpr other = (SQLBinaryExpr) obj;
         if (text == null) {
-            if (other.text != null) {
-                return false;
-            }
-        } else if (!text.equals(other.text)) {
-            return false;
-        }
-        return true;
+            return other.text == null;
+        } else return text.equals(other.text);
     }
 
 }

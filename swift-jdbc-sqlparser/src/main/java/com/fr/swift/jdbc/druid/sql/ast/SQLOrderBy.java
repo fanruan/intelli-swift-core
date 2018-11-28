@@ -24,15 +24,15 @@ import java.util.List;
 public final class SQLOrderBy extends SQLObjectImpl {
 
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
-    
-    // for postgres
-    private boolean                            sibings;
 
-    public SQLOrderBy(){
+    // for postgres
+    private boolean sibings;
+
+    public SQLOrderBy() {
 
     }
 
-    public SQLOrderBy(SQLExpr expr){
+    public SQLOrderBy(SQLExpr expr) {
         SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr);
         addItem(item);
     }
@@ -47,7 +47,7 @@ public final class SQLOrderBy extends SQLObjectImpl {
     public List<SQLSelectOrderByItem> getItems() {
         return this.items;
     }
-    
+
     public boolean isSibings() {
         return this.sibings;
     }
@@ -82,8 +82,7 @@ public final class SQLOrderBy extends SQLObjectImpl {
         if (items == null) {
             if (other.items != null) return false;
         } else if (!items.equals(other.items)) return false;
-        if (sibings != other.sibings) return false;
-        return true;
+        return sibings == other.sibings;
     }
 
     public void addItem(SQLExpr expr, SQLOrderingSpecification type) {

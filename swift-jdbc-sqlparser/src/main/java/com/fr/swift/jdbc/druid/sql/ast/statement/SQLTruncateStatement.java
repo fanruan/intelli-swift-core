@@ -15,37 +15,36 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
-import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLTruncateStatement extends SQLStatementImpl {
 
-    protected List<SQLExprTableSource> tableSources               = new ArrayList<SQLExprTableSource>(2);
+    protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>(2);
 
-    private boolean                    purgeSnapshotLog           = false;
+    private boolean purgeSnapshotLog = false;
 
-    private boolean                    only;
-    private Boolean                    restartIdentity;
-    private Boolean                    cascade;
+    private boolean only;
+    private Boolean restartIdentity;
+    private Boolean cascade;
 
     // db2
-    private boolean                    dropStorage                = false;
-    private boolean                    reuseStorage               = false;
-    private boolean                    immediate                  = false;
-    private boolean                    ignoreDeleteTriggers       = false;
-    private boolean                    restrictWhenDeleteTriggers = false;
-    private boolean                    continueIdentity           = false;
+    private boolean dropStorage = false;
+    private boolean reuseStorage = false;
+    private boolean immediate = false;
+    private boolean ignoreDeleteTriggers = false;
+    private boolean restrictWhenDeleteTriggers = false;
+    private boolean continueIdentity = false;
 
-    public SQLTruncateStatement(){
+    public SQLTruncateStatement() {
 
     }
 
-    public SQLTruncateStatement(String dbType){
+    public SQLTruncateStatement(String dbType) {
         super(dbType);
     }
 

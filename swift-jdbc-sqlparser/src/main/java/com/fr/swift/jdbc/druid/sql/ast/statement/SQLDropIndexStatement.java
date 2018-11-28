@@ -26,18 +26,18 @@ import java.util.List;
 
 public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDropStatement {
 
-    private SQLName            indexName;
+    private SQLName indexName;
     private SQLExprTableSource tableName;
 
-    private SQLExpr            algorithm;
-    private SQLExpr            lockOption;
-    
+    private SQLExpr algorithm;
+    private SQLExpr lockOption;
+
     public SQLDropIndexStatement() {
-        
+
     }
-    
+
     public SQLDropIndexStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLName getIndexName() {

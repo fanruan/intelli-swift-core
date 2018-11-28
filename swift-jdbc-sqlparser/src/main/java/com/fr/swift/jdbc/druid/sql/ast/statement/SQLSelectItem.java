@@ -16,32 +16,34 @@
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLReplaceable;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.util.FnvHash;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
 public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr expr;
-    protected String  alias;
+    protected String alias;
 
     protected boolean connectByRoot = false;
 
     protected transient long aliasHashCode64;
 
-    public SQLSelectItem(){
+    public SQLSelectItem() {
 
     }
 
-    public SQLSelectItem(SQLExpr expr){
+    public SQLSelectItem(SQLExpr expr) {
         this(expr, null);
     }
 
-    public SQLSelectItem(SQLExpr expr, String alias){
+    public SQLSelectItem(SQLExpr expr, String alias) {
         this.expr = expr;
         this.alias = alias;
 
@@ -50,7 +52,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
     }
 
-    public SQLSelectItem(SQLExpr expr, String alias, boolean connectByRoot){
+    public SQLSelectItem(SQLExpr expr, String alias, boolean connectByRoot) {
         this.connectByRoot = connectByRoot;
         this.expr = expr;
         this.alias = alias;
@@ -101,7 +103,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
     }
 
     public void output(StringBuffer buf) {
-        if(this.connectByRoot) {
+        if (this.connectByRoot) {
             buf.append(" CONNECT_BY_ROOT ");
         }
         this.expr.output(buf);
@@ -137,9 +139,8 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             if (other.alias != null) return false;
         } else if (!alias.equals(other.alias)) return false;
         if (expr == null) {
-            if (other.expr != null) return false;
-        } else if (!expr.equals(other.expr)) return false;
-        return true;
+            return other.expr == null;
+        } else return expr.equals(other.expr);
     }
 
     public boolean isConnectByRoot() {
@@ -195,11 +196,8 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
         if (expr instanceof SQLAllColumnExpr) {
             SQLTableSource resolvedTableSource = ((SQLAllColumnExpr) expr).getResolvedTableSource();
-            if (resolvedTableSource != null
-                    && resolvedTableSource.findColumn(alias_hash) != null) {
-                return true;
-            }
-            return false;
+            return resolvedTableSource != null
+                    && resolvedTableSource.findColumn(alias_hash) != null;
         }
 
         if (expr instanceof SQLIdentifierExpr) {
@@ -210,11 +208,8 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             String ident = ((SQLPropertyExpr) expr).getName();
             if ("*".equals(ident)) {
                 SQLTableSource resolvedTableSource = ((SQLPropertyExpr) expr).getResolvedTableSource();
-                if (resolvedTableSource != null
-                        && resolvedTableSource.findColumn(alias_hash) != null) {
-                    return true;
-                }
-                return false;
+                return resolvedTableSource != null
+                        && resolvedTableSource.findColumn(alias_hash) != null;
             }
 
             return ((SQLPropertyExpr) expr).nameHashCode64() == alias_hash;

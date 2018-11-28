@@ -26,13 +26,13 @@ import java.util.List;
 public class SQLSavePointStatement extends SQLStatementImpl {
 
     private SQLExpr name;
-    
+
     public SQLSavePointStatement() {
-        
+
     }
-    
+
     public SQLSavePointStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLExpr getName() {

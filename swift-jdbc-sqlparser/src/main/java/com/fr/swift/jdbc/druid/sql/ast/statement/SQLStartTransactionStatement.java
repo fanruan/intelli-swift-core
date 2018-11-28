@@ -15,19 +15,22 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
+import com.fr.swift.jdbc.druid.sql.ast.SQLCommentHint;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
+import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.Collections;
 import java.util.List;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
-
 public class SQLStartTransactionStatement extends SQLStatementImpl {
 
-    private boolean              consistentSnapshot = false;
+    private boolean consistentSnapshot = false;
 
-    private boolean              begin              = false;
-    private boolean              work               = false;
-    private SQLExpr              name;
+    private boolean begin = false;
+    private boolean work = false;
+    private SQLExpr name;
 
     private List<SQLCommentHint> hints;
 

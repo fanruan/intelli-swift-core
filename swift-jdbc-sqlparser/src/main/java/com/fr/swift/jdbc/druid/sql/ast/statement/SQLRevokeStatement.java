@@ -15,28 +15,28 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLRevokeStatement extends SQLStatementImpl {
 
     private final List<SQLExpr> privileges = new ArrayList<SQLExpr>();
 
-    private SQLObject           on;
-    private SQLExpr             from;
+    private SQLObject on;
+    private SQLExpr from;
     // mysql
-    private SQLObjectType       objectType;
+    private SQLObjectType objectType;
 
-    public SQLRevokeStatement(){
+    public SQLRevokeStatement() {
 
     }
 
-    public SQLRevokeStatement(String dbType){
+    public SQLRevokeStatement(String dbType) {
         super(dbType);
     }
 

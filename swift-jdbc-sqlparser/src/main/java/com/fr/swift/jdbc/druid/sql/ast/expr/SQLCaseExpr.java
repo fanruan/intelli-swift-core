@@ -15,24 +15,28 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLReplaceable;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTOutputVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final List<Item>  items            = new ArrayList<Item>();
-    private SQLExpr           valueExpr;
-    private SQLExpr           elseExpr;
+    private final List<Item> items = new ArrayList<Item>();
+    private SQLExpr valueExpr;
+    private SQLExpr elseExpr;
 
-    public SQLCaseExpr(){
+    public SQLCaseExpr() {
 
     }
 
@@ -109,14 +113,14 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
     public static class Item extends SQLObjectImpl implements SQLReplaceable, Serializable {
 
         private static final long serialVersionUID = 1L;
-        private SQLExpr           conditionExpr;
-        private SQLExpr           valueExpr;
+        private SQLExpr conditionExpr;
+        private SQLExpr valueExpr;
 
-        public Item(){
+        public Item() {
 
         }
 
-        public Item(SQLExpr conditionExpr, SQLExpr valueExpr){
+        public Item(SQLExpr conditionExpr, SQLExpr valueExpr) {
 
             setConditionExpr(conditionExpr);
             setValueExpr(valueExpr);
@@ -171,9 +175,8 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
                 if (other.conditionExpr != null) return false;
             } else if (!conditionExpr.equals(other.conditionExpr)) return false;
             if (valueExpr == null) {
-                if (other.valueExpr != null) return false;
-            } else if (!valueExpr.equals(other.valueExpr)) return false;
-            return true;
+                return other.valueExpr == null;
+            } else return valueExpr.equals(other.valueExpr);
         }
 
 
@@ -245,13 +248,8 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
             return false;
         }
         if (valueExpr == null) {
-            if (other.valueExpr != null) {
-                return false;
-            }
-        } else if (!valueExpr.equals(other.valueExpr)) {
-            return false;
-        }
-        return true;
+            return other.valueExpr == null;
+        } else return valueExpr.equals(other.valueExpr);
     }
 
 
@@ -284,7 +282,7 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
             }
         }
 
-        if(elseExpr != null) {
+        if (elseExpr != null) {
             return elseExpr.computeDataType();
         }
 

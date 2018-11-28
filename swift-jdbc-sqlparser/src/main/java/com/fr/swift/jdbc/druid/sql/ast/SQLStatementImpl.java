@@ -21,18 +21,18 @@ import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import java.util.List;
 
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
-    protected String               dbType;
-    protected boolean              afterSemi;
+    protected String dbType;
+    protected boolean afterSemi;
     protected List<SQLCommentHint> headHints;
 
-    public SQLStatementImpl(){
+    public SQLStatementImpl() {
 
     }
-    
-    public SQLStatementImpl(String dbType){
+
+    public SQLStatementImpl(String dbType) {
         this.dbType = dbType;
     }
-    
+
     public String getDbType() {
         return dbType;
     }

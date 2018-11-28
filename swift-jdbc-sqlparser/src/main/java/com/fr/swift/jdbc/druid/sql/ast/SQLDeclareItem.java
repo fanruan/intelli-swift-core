@@ -15,25 +15,25 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableElement;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLDeclareItem extends SQLObjectImpl implements SQLObjectWithDataType {
 
-    protected Type                  type;
+    protected Type type;
 
-    protected SQLName               name;
+    protected SQLName name;
 
-    protected SQLDataType           dataType;
+    protected SQLDataType dataType;
 
-    protected SQLExpr               value;
+    protected SQLExpr value;
 
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
-    protected transient SQLObject             resolvedObject;
+    protected transient SQLObject resolvedObject;
 
     public SQLDeclareItem() {
 
@@ -103,7 +103,7 @@ public class SQLDeclareItem extends SQLObjectImpl implements SQLObjectWithDataTy
     }
 
     public enum Type {
-        TABLE, LOCAL, CURSOR;
+        TABLE, LOCAL, CURSOR
     }
 
     public Type getType() {

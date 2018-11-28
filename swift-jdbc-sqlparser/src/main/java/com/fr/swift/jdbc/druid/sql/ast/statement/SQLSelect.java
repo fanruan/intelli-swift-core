@@ -15,34 +15,38 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLHint;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTOutputVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLSelect extends SQLObjectImpl {
 
     protected SQLWithSubqueryClause withSubQuery;
-    protected SQLSelectQuery        query;
-    protected SQLOrderBy            orderBy;
+    protected SQLSelectQuery query;
+    protected SQLOrderBy orderBy;
 
-    protected List<SQLHint>         hints;
+    protected List<SQLHint> hints;
 
-    protected SQLObject             restriction;
+    protected SQLObject restriction;
 
-    protected boolean               forBrowse;
-    protected List<String>          forXmlOptions = null;
-    protected SQLExpr               xmlPath;
+    protected boolean forBrowse;
+    protected List<String> forXmlOptions = null;
+    protected SQLExpr xmlPath;
 
-    protected SQLExpr                rowCount;
-    protected SQLExpr                offset;
+    protected SQLExpr rowCount;
+    protected SQLExpr offset;
 
-    public SQLSelect(){
+    public SQLSelect() {
 
     }
 
@@ -52,7 +56,7 @@ public class SQLSelect extends SQLObjectImpl {
         }
         return hints;
     }
-    
+
     public int getHintsSize() {
         if (hints == null) {
             return 0;
@@ -60,7 +64,7 @@ public class SQLSelect extends SQLObjectImpl {
         return hints.size();
     }
 
-    public SQLSelect(SQLSelectQuery query){
+    public SQLSelect(SQLSelectQuery query) {
         this.setQuery(query);
     }
 
@@ -139,9 +143,8 @@ public class SQLSelect extends SQLObjectImpl {
             if (other.query != null) return false;
         } else if (!query.equals(other.query)) return false;
         if (withSubQuery == null) {
-            if (other.withSubQuery != null) return false;
-        } else if (!withSubQuery.equals(other.withSubQuery)) return false;
-        return true;
+            return other.withSubQuery == null;
+        } else return withSubQuery.equals(other.withSubQuery);
     }
 
     public void output(StringBuffer buf) {
@@ -164,7 +167,7 @@ public class SQLSelect extends SQLObjectImpl {
         SQLObject parent = this.getParent();
         if (parent instanceof SQLStatement) {
             String dbType = ((SQLStatement) parent).getDbType();
-            
+
             if (dbType != null) {
                 return SQLUtils.toSQLString(this, dbType);
             }
@@ -177,7 +180,7 @@ public class SQLSelect extends SQLObjectImpl {
                 return SQLUtils.toSQLString(this, dbType);
             }
         }
-        
+
         return super.toString();
     }
 

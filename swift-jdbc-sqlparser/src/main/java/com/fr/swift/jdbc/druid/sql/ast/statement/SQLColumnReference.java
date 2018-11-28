@@ -15,15 +15,15 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnConstraint {
 
-    private SQLName       table;
+    private SQLName table;
     private List<SQLName> columns = new ArrayList<SQLName>();
 
     private SQLForeignKeyImpl.Match referenceMatch;

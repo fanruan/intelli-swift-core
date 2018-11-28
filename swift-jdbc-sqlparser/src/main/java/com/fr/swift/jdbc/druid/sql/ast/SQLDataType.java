@@ -28,14 +28,17 @@ public interface SQLDataType extends SQLObject {
     List<SQLExpr> getArguments();
 
     Boolean getWithTimeZone();
-    void  setWithTimeZone(Boolean value);
+
+    void setWithTimeZone(Boolean value);
 
     boolean isWithLocalTimeZone();
+
     void setWithLocalTimeZone(boolean value);
 
     SQLDataType clone();
 
     void setDbType(String dbType);
+
     String getDbType();
 
     interface Constants {

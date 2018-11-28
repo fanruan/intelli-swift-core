@@ -15,7 +15,10 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 

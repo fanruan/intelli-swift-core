@@ -15,15 +15,12 @@
  */
 package com.fr.swift.jdbc.druid.sql.builder.impl;
 
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOperator;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntegerExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectGroupByClause;
@@ -33,19 +30,19 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQuery;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
 import com.fr.swift.jdbc.druid.sql.builder.SQLSelectBuilder;
-import com.fr.swift.jdbc.druid.sql.ast.SQLLimit;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class SQLSelectBuilderImpl implements SQLSelectBuilder {
 
     private SQLSelectStatement stmt;
-    private String             dbType;
+    private String dbType;
 
-    public SQLSelectBuilderImpl(String dbType){
+    public SQLSelectBuilderImpl(String dbType) {
         this(new SQLSelectStatement(), dbType);
     }
-    
-    public SQLSelectBuilderImpl(String sql, String dbType){
+
+    public SQLSelectBuilderImpl(String sql, String dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() == 0) {
@@ -61,7 +58,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         this.dbType = dbType;
     }
 
-    public SQLSelectBuilderImpl(SQLSelectStatement stmt, String dbType){
+    public SQLSelectBuilderImpl(SQLSelectStatement stmt, String dbType) {
         this.stmt = stmt;
         this.dbType = dbType;
     }
@@ -198,7 +195,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
 
         SQLExpr exprObj = SQLUtils.toSQLExpr(expr, dbType);
         SQLExpr newCondition = SQLUtils.buildCondition(SQLBinaryOperator.BooleanOr, exprObj, false,
-                                                       queryBlock.getWhere());
+                queryBlock.getWhere());
         queryBlock.setWhere(newCondition);
 
         return this;

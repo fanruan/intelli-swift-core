@@ -23,18 +23,18 @@ import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
 
-    protected SQLExpr                  expr;
-    protected String                   collate;
+    protected SQLExpr expr;
+    protected String collate;
     protected SQLOrderingSpecification type;
-    protected NullsOrderType           nullsOrderType;
+    protected NullsOrderType nullsOrderType;
 
-    protected transient SQLSelectItem  resolvedSelectItem;
+    protected transient SQLSelectItem resolvedSelectItem;
 
-    public SQLSelectOrderByItem(){
+    public SQLSelectOrderByItem() {
 
     }
 
-    public SQLSelectOrderByItem(SQLExpr expr){
+    public SQLSelectOrderByItem(SQLExpr expr) {
         this.setExpr(expr);
     }
 
@@ -64,7 +64,7 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
     public void setType(SQLOrderingSpecification type) {
         this.type = type;
     }
-    
+
     public NullsOrderType getNullsOrderType() {
         return this.nullsOrderType;
     }
@@ -103,8 +103,7 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
         if (expr == null) {
             if (other.expr != null) return false;
         } else if (!expr.equals(other.expr)) return false;
-        if (type != other.type) return false;
-        return true;
+        return type == other.type;
     }
 
     @Override
@@ -116,7 +115,7 @@ public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLRepl
         return false;
     }
 
-    public static enum NullsOrderType {
+    public enum NullsOrderType {
         NullsFirst, NullsLast;
 
         public String toFormalString() {

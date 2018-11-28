@@ -19,7 +19,7 @@ import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public final class SQLKeep extends SQLObjectImpl {
 
-    protected DenseRank  denseRank;
+    protected DenseRank denseRank;
 
     protected SQLOrderBy orderBy;
 
@@ -63,8 +63,8 @@ public final class SQLKeep extends SQLObjectImpl {
         return x;
     }
 
-    public static enum DenseRank {
-                                  FIRST, //
-                                  LAST
+    public enum DenseRank {
+        FIRST, //
+        LAST
     }
 }

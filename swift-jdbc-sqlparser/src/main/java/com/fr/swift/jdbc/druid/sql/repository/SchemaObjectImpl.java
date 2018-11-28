@@ -27,7 +27,7 @@ import com.fr.swift.jdbc.druid.util.FnvHash;
  */
 public class SchemaObjectImpl implements SchemaObject {
     private final String name;
-    private final long   hashCode64;
+    private final long hashCode64;
 
     private final SchemaObjectType type;
     private SQLStatement statement;
@@ -50,7 +50,7 @@ public class SchemaObjectImpl implements SchemaObject {
         return hashCode64;
     }
 
-    public static enum Type {
+    public enum Type {
         Sequence, Table, View, Index, Function
     }
 

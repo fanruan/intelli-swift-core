@@ -24,7 +24,7 @@ public class StringUtils {
 
     /**
      * Example: subString("12345","1","4")=23
-     * 
+     *
      * @param src
      * @param start
      * @param to
@@ -36,10 +36,10 @@ public class StringUtils {
 
     /**
      * Example: subString("abcd","a","c")="b"
-     * 
+     *
      * @param src
      * @param start null while start from index=0
-     * @param to null while to index=src.length
+     * @param to    null while to index=src.length
      * @return
      */
     public static String subString(String src, String start, String to) {
@@ -59,15 +59,15 @@ public class StringUtils {
 
     /**
      * Example: subString("abcdc","a","c",true)="bcd"
-     * 
+     *
      * @param src
-     * @param start null while start from index=0
-     * @param to null while to index=src.length
+     * @param start  null while start from index=0
+     * @param to     null while to index=src.length
      * @param toLast true while to index=src.lastIndexOf(to)
      * @return
      */
     public static String subString(String src, String start, String to, boolean toLast) {
-        if(!toLast) {
+        if (!toLast) {
             return subString(src, start, to);
         }
         int indexFrom = start == null ? 0 : src.indexOf(start);
@@ -96,7 +96,7 @@ public class StringUtils {
         if (in.length() == 0) {
             return null;
         }
-        
+
         try {
             return Integer.parseInt(in);
         } catch (NumberFormatException e) {
@@ -111,7 +111,7 @@ public class StringUtils {
         }
         return a.equals(b);
     }
-    
+
     public static boolean equalsIgnoreCase(String a, String b) {
         if (a == null) {
             return b == null;
@@ -124,13 +124,10 @@ public class StringUtils {
     }
 
     public static boolean isEmpty(CharSequence value) {
-        if (value == null || value.length() == 0) {
-            return true;
-        }
+        return value == null || value.length() == 0;
 
-        return false;
     }
-    
+
     public static int lowerHashCode(String text) {
         if (text == null) {
             return 0;

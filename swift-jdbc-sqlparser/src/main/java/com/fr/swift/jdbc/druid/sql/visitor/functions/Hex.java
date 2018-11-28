@@ -15,13 +15,13 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor.functions;
 
-import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.fr.swift.jdbc.druid.sql.parser.ParserException;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor;
 import com.fr.swift.jdbc.druid.util.HexBin;
+
+import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 public class Hex implements Function {
 

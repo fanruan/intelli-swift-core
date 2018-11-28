@@ -22,7 +22,7 @@ public class SQLSubPartitionByHash extends SQLSubPartitionBy {
     protected SQLExpr expr;
 
     // for aliyun ads
-    private boolean   key;
+    private boolean key;
 
     public SQLExpr getExpr() {
         return expr;

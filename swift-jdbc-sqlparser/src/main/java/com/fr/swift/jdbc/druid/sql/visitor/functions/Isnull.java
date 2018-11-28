@@ -15,15 +15,15 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor.functions;
 
-import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
-import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
-
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor;
+
+import java.util.List;
+
+import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
+import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class Isnull implements Function {
 

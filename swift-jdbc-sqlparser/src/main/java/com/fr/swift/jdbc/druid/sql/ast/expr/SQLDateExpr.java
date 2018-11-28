@@ -30,7 +30,7 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
 
     private SQLExpr literal;
 
-    public SQLDateExpr(){
+    public SQLDateExpr() {
 
     }
 
@@ -87,13 +87,8 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
         }
         SQLDateExpr other = (SQLDateExpr) obj;
         if (literal == null) {
-            if (other.literal != null) {
-                return false;
-            }
-        } else if (!literal.equals(other.literal)) {
-            return false;
-        }
-        return true;
+            return other.literal == null;
+        } else return literal.equals(other.literal);
     }
 
     public SQLDateExpr clone() {

@@ -15,10 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
@@ -27,16 +23,20 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+
 public class SQLQueryExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public SQLSelect          subQuery;
+    public SQLSelect subQuery;
 
-    public SQLQueryExpr(){
+    public SQLQueryExpr() {
 
     }
 
-    public SQLQueryExpr(SQLSelect select){
+    public SQLQueryExpr(SQLSelect select) {
         setSubQuery(select);
     }
 
@@ -89,13 +89,8 @@ public class SQLQueryExpr extends SQLExprImpl implements Serializable {
         }
         SQLQueryExpr other = (SQLQueryExpr) obj;
         if (subQuery == null) {
-            if (other.subQuery != null) {
-                return false;
-            }
-        } else if (!subQuery.equals(other.subQuery)) {
-            return false;
-        }
-        return true;
+            return other.subQuery == null;
+        } else return subQuery.equals(other.subQuery);
     }
 
     public SQLQueryExpr clone() {

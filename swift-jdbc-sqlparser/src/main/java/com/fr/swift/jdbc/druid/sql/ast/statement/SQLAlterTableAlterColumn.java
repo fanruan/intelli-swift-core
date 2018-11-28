@@ -23,13 +23,13 @@ import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterTableItem {
-    private SQLName             originColumn;
+    private SQLName originColumn;
     private SQLColumnDefinition column;
-    private boolean             setNotNull;
-    private boolean             dropNotNull;
-    private SQLExpr             setDefault;
-    private boolean             dropDefault;
-    private SQLDataType         dataType;
+    private boolean setNotNull;
+    private boolean dropNotNull;
+    private SQLExpr setDefault;
+    private boolean dropDefault;
+    private SQLDataType dataType;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

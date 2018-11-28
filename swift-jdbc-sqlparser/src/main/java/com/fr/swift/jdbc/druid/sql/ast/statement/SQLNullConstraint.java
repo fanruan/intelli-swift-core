@@ -19,7 +19,7 @@ import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLNullConstraint extends SQLConstraintImpl implements SQLColumnConstraint {
 
-    public SQLNullConstraint(){
+    public SQLNullConstraint() {
     }
 
     @Override

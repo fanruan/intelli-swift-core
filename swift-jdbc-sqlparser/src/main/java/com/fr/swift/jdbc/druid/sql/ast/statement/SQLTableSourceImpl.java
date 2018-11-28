@@ -15,26 +15,26 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLHint;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 
-public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
-    protected String        alias;
-    protected List<SQLHint> hints;
-    protected SQLExpr       flashback;
-    protected long          aliasHashCod64;
+import java.util.ArrayList;
+import java.util.List;
 
-    public SQLTableSourceImpl(){
+public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
+    protected String alias;
+    protected List<SQLHint> hints;
+    protected SQLExpr flashback;
+    protected long aliasHashCod64;
+
+    public SQLTableSourceImpl() {
 
     }
 
-    public SQLTableSourceImpl(String alias){
+    public SQLTableSourceImpl(String alias) {
         this.alias = alias;
     }
 
@@ -86,11 +86,8 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     }
 
     public boolean containsAlias(String alias) {
-        if (SQLUtils.nameEquals(this.alias, alias)) {
-            return true;
-        }
+        return SQLUtils.nameEquals(this.alias, alias);
 
-        return false;
     }
 
     public long aliasHashCode64() {

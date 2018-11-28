@@ -15,21 +15,21 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLSelectGroupByClause extends SQLObjectImpl {
 
     private final List<SQLExpr> items = new ArrayList<SQLExpr>();
-    private SQLExpr             having;
-    private boolean             withRollUp = false;
-    private boolean             withCube = false;
+    private SQLExpr having;
+    private boolean withRollUp = false;
+    private boolean withCube = false;
 
-    public SQLSelectGroupByClause(){
+    public SQLSelectGroupByClause() {
 
     }
 
@@ -41,7 +41,7 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
 
         visitor.endVisit(this);
     }
-    
+
     public boolean isWithRollUp() {
         return withRollUp;
     }
@@ -49,8 +49,8 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
     public void setWithRollUp(boolean withRollUp) {
         this.withRollUp = withRollUp;
     }
-    
-    
+
+
     public boolean isWithCube() {
         return withCube;
     }
@@ -67,7 +67,7 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
         if (having != null) {
             having.setParent(this);
         }
-        
+
         this.having = having;
     }
 

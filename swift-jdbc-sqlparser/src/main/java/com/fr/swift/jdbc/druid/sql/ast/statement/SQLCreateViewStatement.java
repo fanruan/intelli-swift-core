@@ -15,28 +15,32 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCharExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLLiteralExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreateStatement {
 
-    private boolean     orReplace   = false;
-    private boolean     force       = false;
+    private boolean orReplace = false;
+    private boolean force = false;
     // protected SQLName   name;
     protected SQLSelect subQuery;
-    protected boolean   ifNotExists = false;
+    protected boolean ifNotExists = false;
 
-    protected String    algorithm;
-    protected SQLName   definer;
-    protected String    sqlSecurity;
+    protected String algorithm;
+    protected SQLName definer;
+    protected String sqlSecurity;
 
     protected SQLExprTableSource tableSource;
 
@@ -49,11 +53,11 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
 
     private SQLLiteralExpr comment;
 
-    public SQLCreateViewStatement(){
+    public SQLCreateViewStatement() {
 
     }
 
-    public SQLCreateViewStatement(String dbType){
+    public SQLCreateViewStatement(String dbType) {
         super(dbType);
     }
 
@@ -165,7 +169,7 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
     public List<SQLTableElement> getColumns() {
         return columns;
     }
-    
+
     public void addColumn(SQLTableElement column) {
         if (column != null) {
             column.setParent(this);
@@ -253,13 +257,13 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
         return children;
     }
 
-    public static enum Level {
-                              CASCADED, LOCAL
+    public enum Level {
+        CASCADED, LOCAL
     }
 
     public static class Column extends SQLObjectImpl {
 
-        private SQLExpr     expr;
+        private SQLExpr expr;
         private SQLCharExpr comment;
 
         public SQLExpr getExpr() {

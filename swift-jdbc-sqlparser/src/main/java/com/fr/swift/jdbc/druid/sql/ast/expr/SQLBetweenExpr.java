@@ -15,23 +15,26 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLReplaceable;
+import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLBetweenExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
     private static final long serialVersionUID = 1L;
-    public SQLExpr            testExpr;
-    private boolean           not;
-    public SQLExpr            beginExpr;
-    public SQLExpr            endExpr;
+    public SQLExpr testExpr;
+    private boolean not;
+    public SQLExpr beginExpr;
+    public SQLExpr endExpr;
 
-    public SQLBetweenExpr(){
+    public SQLBetweenExpr() {
 
     }
 
@@ -50,13 +53,13 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable, SQLRepl
         return x;
     }
 
-    public SQLBetweenExpr(SQLExpr testExpr, SQLExpr beginExpr, SQLExpr endExpr){
+    public SQLBetweenExpr(SQLExpr testExpr, SQLExpr beginExpr, SQLExpr endExpr) {
         setTestExpr(testExpr);
         setBeginExpr(beginExpr);
         setEndExpr(endExpr);
     }
 
-    public SQLBetweenExpr(SQLExpr testExpr, boolean not, SQLExpr beginExpr, SQLExpr endExpr){
+    public SQLBetweenExpr(SQLExpr testExpr, boolean not, SQLExpr beginExpr, SQLExpr endExpr) {
         this(testExpr, beginExpr, endExpr);
         this.not = not;
     }
@@ -156,13 +159,8 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable, SQLRepl
             return false;
         }
         if (testExpr == null) {
-            if (other.testExpr != null) {
-                return false;
-            }
-        } else if (!testExpr.equals(other.testExpr)) {
-            return false;
-        }
-        return true;
+            return other.testExpr == null;
+        } else return testExpr.equals(other.testExpr);
     }
 
     public SQLDataType computeDataType() {

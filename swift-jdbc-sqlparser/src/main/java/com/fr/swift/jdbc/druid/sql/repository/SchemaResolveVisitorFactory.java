@@ -16,9 +16,57 @@
 package com.fr.swift.jdbc.druid.sql.repository;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.expr.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDeclareItem;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOver;
+import com.fr.swift.jdbc.druid.sql.ast.SQLParameter;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExprGroup;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCharExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntegerExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLListExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLQueryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLAlterTableAddConstraint;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLAlterTableItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLBlockStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLColumnDefinition;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateFunctionStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateProcedureStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeleteStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLFetchStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLForeignKeyConstraint;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLIfStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLInsertStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLJoinTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLLateralViewTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLMergeStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLReplaceStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQuery;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableElement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUniqueConstraint;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUpdateStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 
@@ -447,8 +495,7 @@ class SchemaResolveVisitorFactory {
         } else {
             for (SchemaResolveVisitor.Context parentCtx = ctx;
                  parentCtx != null;
-                 parentCtx = parentCtx.parent)
-            {
+                 parentCtx = parentCtx.parent) {
                 SQLDeclareItem declareItem = parentCtx.findDeclare(hash);
                 if (declareItem != null) {
                     x.setResolvedDeclareItem(declareItem);
@@ -494,7 +541,7 @@ class SchemaResolveVisitorFactory {
         }
 
         if (tableSource instanceof SQLExprTableSource) {
-                    SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
+            SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 long identHash = identExpr.nameHashCode64();
@@ -528,8 +575,7 @@ class SchemaResolveVisitorFactory {
                 && x.getResolvedTableSource() == null) {
             for (SchemaResolveVisitor.Context parentCtx = ctx;
                  parentCtx != null;
-                 parentCtx = parentCtx.parent)
-            {
+                 parentCtx = parentCtx.parent) {
                 SQLDeclareItem declareItem = parentCtx.findDeclare(hash);
                 if (declareItem != null) {
                     x.setResolvedDeclareItem(declareItem);
@@ -1067,7 +1113,7 @@ class SchemaResolveVisitorFactory {
             on.accept(visitor);
         }
 
-        SQLMergeStatement.MergeUpdateClause updateClause  = x.getUpdateClause();
+        SQLMergeStatement.MergeUpdateClause updateClause = x.getUpdateClause();
         if (updateClause != null) {
             for (SQLUpdateSetItem item : updateClause.getItems()) {
                 SQLExpr column = item.getColumn();
@@ -1145,6 +1191,7 @@ class SchemaResolveVisitorFactory {
 
         visitor.popContext();
     }
+
     static void resolve(SchemaResolveVisitor visitor, SQLCreateProcedureStatement x) {
         SchemaResolveVisitor.Context ctx = visitor.createContext(x);
 

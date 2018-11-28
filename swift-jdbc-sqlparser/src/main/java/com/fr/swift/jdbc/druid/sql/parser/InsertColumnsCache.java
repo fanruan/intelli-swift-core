@@ -31,10 +31,10 @@ public class InsertColumnsCache {
 
     public ConcurrentMap<Long, Entry> cache = new ConcurrentHashMap<Long, Entry>();
 
-    private final Entry[]   buckets;
-    private final int       indexMask;
+    private final Entry[] buckets;
+    private final int indexMask;
 
-    public InsertColumnsCache(int tableSize){
+    public InsertColumnsCache(int tableSize) {
         this.indexMask = tableSize - 1;
         this.buckets = new Entry[tableSize];
     }

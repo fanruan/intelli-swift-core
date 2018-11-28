@@ -21,24 +21,24 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
     protected SQLSelect select;
 
-    public SQLSubqueryTableSource(){
+    public SQLSubqueryTableSource() {
 
     }
 
-    public SQLSubqueryTableSource(String alias){
+    public SQLSubqueryTableSource(String alias) {
         super(alias);
     }
 
-    public SQLSubqueryTableSource(SQLSelect select, String alias){
+    public SQLSubqueryTableSource(SQLSelect select, String alias) {
         super(alias);
         this.setSelect(select);
     }
 
-    public SQLSubqueryTableSource(SQLSelect select){
+    public SQLSubqueryTableSource(SQLSelect select) {
         this.setSelect(select);
     }
 
-    public SQLSubqueryTableSource(SQLSelectQuery query){
+    public SQLSubqueryTableSource(SQLSelectQuery query) {
         this(new SQLSelect(query));
     }
 

@@ -15,38 +15,44 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLHint;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
+import com.fr.swift.jdbc.druid.sql.ast.SQLReplaceable;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExprGroup;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOperator;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTOutputVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceable {
     protected SQLWithSubqueryClause with; // for pg
 
     protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
-    protected SQLExpr                      where;
-    protected SQLTableSource               from;
+    protected SQLExpr where;
+    protected SQLTableSource from;
 
-    protected SQLTableSource               tableSource;
-    protected List<SQLExpr>                returning;
+    protected SQLTableSource tableSource;
+    protected List<SQLExpr> returning;
 
-    protected List<SQLHint>                hints;
+    protected List<SQLHint> hints;
 
     // for mysql
     protected SQLOrderBy orderBy;
 
-    public SQLUpdateStatement(){
+    public SQLUpdateStatement() {
 
     }
 
-    public SQLUpdateStatement(String dbType){
-        super (dbType);
+    public SQLUpdateStatement(String dbType) {
+        super(dbType);
     }
 
     public SQLTableSource getTableSource() {

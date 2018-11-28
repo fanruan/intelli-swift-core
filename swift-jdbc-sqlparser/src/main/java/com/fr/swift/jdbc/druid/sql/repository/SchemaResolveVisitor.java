@@ -30,11 +30,11 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
 
     boolean isEnabled(Option option);
 
-    public static enum Option {
+    enum Option {
         ResolveAllColumn,
-        ResolveIdentifierAlias
-        ;
-        private Option() {
+        ResolveIdentifierAlias;
+
+        Option() {
             mask = (1 << ordinal());
         }
 
@@ -58,10 +58,12 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
     SchemaRepository getRepository();
 
     Context getContext();
+
     Context createContext(SQLObject object);
+
     void popContext();
 
-    static class Context {
+    class Context {
         public final Context parent;
         public final SQLObject object;
 

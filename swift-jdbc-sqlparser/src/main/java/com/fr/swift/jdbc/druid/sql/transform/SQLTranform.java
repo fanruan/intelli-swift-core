@@ -17,5 +17,6 @@ package com.fr.swift.jdbc.druid.sql.transform;
 
 public interface SQLTranform {
     String getSourceDbType();
+
     String getTargetDbType();
 }

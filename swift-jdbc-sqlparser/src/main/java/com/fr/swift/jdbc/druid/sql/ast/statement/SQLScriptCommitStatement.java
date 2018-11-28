@@ -20,7 +20,7 @@ import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLScriptCommitStatement extends SQLStatementImpl {
 
-    public SQLScriptCommitStatement(){
+    public SQLScriptCommitStatement() {
 
     }
 

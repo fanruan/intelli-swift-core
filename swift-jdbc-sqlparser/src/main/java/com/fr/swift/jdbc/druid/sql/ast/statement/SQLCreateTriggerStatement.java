@@ -15,39 +15,43 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
+import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
-
 public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCreateStatement {
 
-    private SQLName                  name;
-    private boolean                  orReplace      = false;
-    private TriggerType              triggerType;
+    private SQLName name;
+    private boolean orReplace = false;
+    private TriggerType triggerType;
 
-    private SQLName                  definer;
+    private SQLName definer;
 
-    private boolean                  update;
-    private boolean                  delete;
-    private boolean                  insert;
+    private boolean update;
+    private boolean delete;
+    private boolean insert;
 
-    private SQLExprTableSource       on;
+    private SQLExprTableSource on;
 
-    private boolean                  forEachRow     = false;
+    private boolean forEachRow = false;
 
-    private List<SQLName>            updateOfColumns = new ArrayList<SQLName>();
+    private List<SQLName> updateOfColumns = new ArrayList<SQLName>();
 
-    private SQLExpr                  when;
-    private SQLStatement             body;
-    
+    private SQLExpr when;
+    private SQLStatement body;
+
     public SQLCreateTriggerStatement() {
-        
+
     }
-    
+
     public SQLCreateTriggerStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -195,11 +199,11 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
         this.definer = x;
     }
 
-    public static enum TriggerType {
+    public enum TriggerType {
         BEFORE, AFTER, INSTEAD_OF
     }
 
-    public static enum TriggerEvent {
+    public enum TriggerEvent {
         INSERT, UPDATE, DELETE
     }
 }

@@ -15,15 +15,12 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
-import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExplainStatement;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLGroupingSetExpr extends SQLExprImpl {
 
@@ -42,7 +39,7 @@ public class SQLGroupingSetExpr extends SQLExprImpl {
     public List<SQLExpr> getParameters() {
         return parameters;
     }
-    
+
     public void addParameter(SQLExpr parameter) {
         if (parameter != null) {
             parameter.setParent(this);
@@ -84,13 +81,8 @@ public class SQLGroupingSetExpr extends SQLExprImpl {
         }
         SQLGroupingSetExpr other = (SQLGroupingSetExpr) obj;
         if (parameters == null) {
-            if (other.parameters != null) {
-                return false;
-            }
-        } else if (!parameters.equals(other.parameters)) {
-            return false;
-        }
-        return true;
+            return other.parameters == null;
+        } else return parameters.equals(other.parameters);
     }
 
 }

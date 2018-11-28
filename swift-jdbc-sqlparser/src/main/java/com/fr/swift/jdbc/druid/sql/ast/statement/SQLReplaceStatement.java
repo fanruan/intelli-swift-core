@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLReplaceStatement extends SQLStatementImpl {
-    protected boolean             lowPriority = false;
-    protected boolean             delayed     = false;
+    protected boolean lowPriority = false;
+    protected boolean delayed = false;
 
-    protected SQLExprTableSource  tableSource;
-    protected final List<SQLExpr> columns     = new ArrayList<SQLExpr>();
-    protected List<SQLInsertStatement.ValuesClause>  valuesList  = new ArrayList<SQLInsertStatement.ValuesClause>();
+    protected SQLExprTableSource tableSource;
+    protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
+    protected List<SQLInsertStatement.ValuesClause> valuesList = new ArrayList<SQLInsertStatement.ValuesClause>();
     protected SQLQueryExpr query;
 
 

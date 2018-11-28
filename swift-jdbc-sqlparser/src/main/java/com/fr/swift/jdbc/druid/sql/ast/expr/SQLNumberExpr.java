@@ -20,7 +20,6 @@ import com.fr.swift.jdbc.druid.sql.ast.SQLDataTypeImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.util.Utils;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
@@ -30,15 +29,15 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
 
     private char[] chars;
 
-    public SQLNumberExpr(){
+    public SQLNumberExpr() {
 
     }
 
-    public SQLNumberExpr(Number number){
+    public SQLNumberExpr(Number number) {
         this.number = number;
     }
 
-    public SQLNumberExpr(char[] chars){
+    public SQLNumberExpr(char[] chars) {
         this.chars = chars;
     }
 

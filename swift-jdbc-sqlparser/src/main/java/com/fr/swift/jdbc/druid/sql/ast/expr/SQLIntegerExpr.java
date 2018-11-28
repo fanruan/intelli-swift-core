@@ -19,20 +19,17 @@ import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLDataTypeImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.Collections;
-import java.util.List;
-
-public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuableExpr{
+public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLDataTypeImpl("bigint");
 
     private Number number;
 
-    public SQLIntegerExpr(Number number){
+    public SQLIntegerExpr(Number number) {
 
         this.number = number;
     }
 
-    public SQLIntegerExpr(){
+    public SQLIntegerExpr() {
 
     }
 
@@ -75,13 +72,8 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuable
         }
         SQLIntegerExpr other = (SQLIntegerExpr) obj;
         if (number == null) {
-            if (other.number != null) {
-                return false;
-            }
-        } else if (!number.equals(other.number)) {
-            return false;
-        }
-        return true;
+            return other.number == null;
+        } else return number.equals(other.number);
     }
 
     @Override

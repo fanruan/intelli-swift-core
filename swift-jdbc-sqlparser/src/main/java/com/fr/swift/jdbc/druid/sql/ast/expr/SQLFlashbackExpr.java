@@ -98,7 +98,7 @@ public class SQLFlashbackExpr extends SQLExprImpl {
         return result;
     }
 
-    public static enum Type {
+    public enum Type {
         SCN, TIMESTAMP
     }
 }

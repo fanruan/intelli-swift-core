@@ -17,7 +17,6 @@ package com.fr.swift.jdbc.druid.sql.ast.statement;
 
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
-import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
@@ -27,13 +26,13 @@ import java.util.List;
 public class SQLUseStatement extends SQLStatementImpl {
 
     private SQLName database;
-    
+
     public SQLUseStatement() {
-        
+
     }
-    
+
     public SQLUseStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLName getDatabase() {

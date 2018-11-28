@@ -16,8 +16,19 @@
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDeclareItem;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLParameter;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLColumnDefinition;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableSource;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 
@@ -25,21 +36,21 @@ import java.util.Collections;
 import java.util.List;
 
 public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
-    protected String    name;
-    private   long      hashCode64;
+    protected String name;
+    private long hashCode64;
 
-    private   SQLObject resolvedColumn;
-    private   SQLObject resolvedOwnerObject;
+    private SQLObject resolvedColumn;
+    private SQLObject resolvedOwnerObject;
 
-    public SQLIdentifierExpr(){
+    public SQLIdentifierExpr() {
 
     }
 
-    public SQLIdentifierExpr(String name){
+    public SQLIdentifierExpr(String name) {
         this.name = name;
     }
 
-    public SQLIdentifierExpr(String name, long hash_lower){
+    public SQLIdentifierExpr(String name, long hash_lower) {
         this.name = name;
         this.hashCode64 = hash_lower;
     }
@@ -96,7 +107,7 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     @Override
     public int hashCode() {
         long value = hashCode64();
-        return (int)(value ^ (value >>> 32));
+        return (int) (value ^ (value >>> 32));
     }
 
     @Override
@@ -123,7 +134,7 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     public SQLIdentifierExpr simplify() {
         String normalized = SQLUtils.normalize(name);
         if (normalized != name) {
-           return new SQLIdentifierExpr(normalized, hashCode64);
+            return new SQLIdentifierExpr(normalized, hashCode64);
         }
         return this;
     }

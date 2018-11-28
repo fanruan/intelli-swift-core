@@ -28,7 +28,7 @@ public class SQLUpdateSetItem extends SQLObjectImpl implements SQLReplaceable {
     private SQLExpr column;
     private SQLExpr value;
 
-    public SQLUpdateSetItem(){
+    public SQLUpdateSetItem() {
 
     }
 

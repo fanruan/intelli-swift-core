@@ -15,11 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
@@ -29,15 +24,19 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTOutputVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+
 public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private boolean           not              = false;
-    private SQLExpr           expr;
+    private boolean not = false;
+    private SQLExpr expr;
 
-    public SQLSelect          subQuery;
+    public SQLSelect subQuery;
 
-    public SQLInSubQueryExpr(){
+    public SQLInSubQueryExpr() {
 
     }
 
@@ -72,7 +71,7 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
         this.expr = expr;
     }
 
-    public SQLInSubQueryExpr(SQLSelect select){
+    public SQLInSubQueryExpr(SQLSelect select) {
 
         this.subQuery = select;
     }
@@ -96,7 +95,7 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor,this.expr);
+            acceptChild(visitor, this.expr);
             acceptChild(visitor, this.subQuery);
         }
 
@@ -104,7 +103,7 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
     }
 
     public List<SQLObject> getChildren() {
-        return Arrays.<SQLObject>asList(this.expr, this.subQuery);
+        return Arrays.asList(this.expr, this.subQuery);
     }
 
     @Override
@@ -140,13 +139,8 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         if (subQuery == null) {
-            if (other.subQuery != null) {
-                return false;
-            }
-        } else if (!subQuery.equals(other.subQuery)) {
-            return false;
-        }
-        return true;
+            return other.subQuery == null;
+        } else return subQuery.equals(other.subQuery);
     }
 
     public SQLDataType computeDataType() {

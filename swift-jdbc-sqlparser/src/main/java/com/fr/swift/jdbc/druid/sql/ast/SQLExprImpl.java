@@ -15,11 +15,9 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast;
 
-import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
-
 public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
 
-    public SQLExprImpl(){
+    public SQLExprImpl() {
 
     }
 

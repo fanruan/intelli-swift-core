@@ -15,25 +15,45 @@
  */
 package com.fr.swift.jdbc.druid.sql.repository;
 
-import com.fr.swift.jdbc.druid.DruidRuntimeException;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLAlterViewStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLColumnDefinition;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateFunctionStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateSequenceStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateViewStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDropSequenceStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDropTableStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLShowTablesStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableSource;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wenshao on 03/06/2017.
  */
 public class SchemaRepository {
-//    private static Log LOG = LogFactory.getLog(SchemaRepository.class);
+    //    private static Log LOG = LogFactory.getLog(SchemaRepository.class);
     private Schema defaultSchema;
     protected String dbType;
     protected SQLASTVisitor consoleVisitor;
@@ -248,8 +268,8 @@ public class SchemaRepository {
     public String resolve(String input) {
         SchemaResolveVisitor visitor
                 = createResolveVisitor(
-                    SchemaResolveVisitor.Option.ResolveAllColumn,
-                    SchemaResolveVisitor.Option.ResolveIdentifierAlias);
+                SchemaResolveVisitor.Option.ResolveAllColumn,
+                SchemaResolveVisitor.Option.ResolveIdentifierAlias);
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType);
 

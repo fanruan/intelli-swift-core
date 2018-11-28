@@ -25,7 +25,7 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import java.util.List;
 
 public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLConstraint {
-    protected String  dbType;
+    protected String dbType;
     protected SQLName name;
     protected Boolean enable;
     protected Boolean validate;
@@ -34,7 +34,7 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
 
     public List<SQLCommentHint> hints;
 
-    public SQLConstraintImpl(){
+    public SQLConstraintImpl() {
 
     }
 

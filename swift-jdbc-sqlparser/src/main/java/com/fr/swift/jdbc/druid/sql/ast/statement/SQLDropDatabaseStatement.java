@@ -27,13 +27,13 @@ public class SQLDropDatabaseStatement extends SQLStatementImpl implements SQLDro
 
     private SQLExpr database;
     private boolean ifExists;
-    
+
     public SQLDropDatabaseStatement() {
-        
+
     }
-    
+
     public SQLDropDatabaseStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

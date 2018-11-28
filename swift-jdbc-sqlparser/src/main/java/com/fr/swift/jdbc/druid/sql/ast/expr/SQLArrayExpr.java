@@ -15,17 +15,17 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLArrayExpr extends SQLExprImpl {
 
-    private SQLExpr       expr;
+    private SQLExpr expr;
 
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
@@ -93,11 +93,9 @@ public class SQLArrayExpr extends SQLExprImpl {
             if (other.expr != null) return false;
         } else if (!expr.equals(other.expr)) return false;
         if (values == null) {
-            if (other.values != null) return false;
-        } else if (!values.equals(other.values)) return false;
-        return true;
+            return other.values == null;
+        } else return values.equals(other.values);
     }
-
 
 
 }

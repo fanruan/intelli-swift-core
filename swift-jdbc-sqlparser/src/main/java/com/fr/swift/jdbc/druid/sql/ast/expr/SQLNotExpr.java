@@ -15,25 +15,25 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+
 public final class SQLNotExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public SQLExpr            expr;
+    public SQLExpr expr;
 
-    public SQLNotExpr(){
+    public SQLNotExpr() {
 
     }
 
-    public SQLNotExpr(SQLExpr expr){
+    public SQLNotExpr(SQLExpr expr) {
 
         this.expr = expr;
     }
@@ -86,13 +86,8 @@ public final class SQLNotExpr extends SQLExprImpl implements Serializable {
         }
         SQLNotExpr other = (SQLNotExpr) obj;
         if (expr == null) {
-            if (other.expr != null) {
-                return false;
-            }
-        } else if (!expr.equals(other.expr)) {
-            return false;
-        }
-        return true;
+            return other.expr == null;
+        } else return expr.equals(other.expr);
     }
 
     public SQLNotExpr clone() {

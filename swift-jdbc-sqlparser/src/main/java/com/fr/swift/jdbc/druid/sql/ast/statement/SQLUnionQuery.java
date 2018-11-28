@@ -24,15 +24,15 @@ import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
-    private boolean          bracket  = false;
+    private boolean bracket = false;
 
-    private SQLSelectQuery   left;
-    private SQLSelectQuery   right;
+    private SQLSelectQuery left;
+    private SQLSelectQuery right;
     private SQLUnionOperator operator = SQLUnionOperator.UNION;
-    private SQLOrderBy       orderBy;
+    private SQLOrderBy orderBy;
 
-    private SQLLimit         limit;
-    private String           dbType;
+    private SQLLimit limit;
+    private String dbType;
 
     public SQLUnionOperator getOperator() {
         return operator;
@@ -42,11 +42,11 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
         this.operator = operator;
     }
 
-    public SQLUnionQuery(){
+    public SQLUnionQuery() {
 
     }
 
-    public SQLUnionQuery(SQLSelectQuery left, SQLUnionOperator operator, SQLSelectQuery right){
+    public SQLUnionQuery(SQLSelectQuery left, SQLUnionOperator operator, SQLSelectQuery right) {
         this.setLeft(left);
         this.operator = operator;
         this.setRight(right);

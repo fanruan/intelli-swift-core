@@ -15,16 +15,20 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDeclareItem;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
+import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDeclareStatement extends SQLStatementImpl {
 
     protected List<SQLDeclareItem> items = new ArrayList<SQLDeclareItem>();
-    
+
     public SQLDeclareStatement() {
 
     }

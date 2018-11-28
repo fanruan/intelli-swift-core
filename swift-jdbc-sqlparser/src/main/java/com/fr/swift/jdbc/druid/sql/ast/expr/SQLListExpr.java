@@ -15,14 +15,12 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
-import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLListExpr extends SQLExprImpl {
 
@@ -31,7 +29,7 @@ public class SQLListExpr extends SQLExprImpl {
     public List<SQLExpr> getItems() {
         return items;
     }
-    
+
     public void addItem(SQLExpr item) {
         if (item != null) {
             item.setParent(this);
@@ -68,13 +66,8 @@ public class SQLListExpr extends SQLExprImpl {
         }
         SQLListExpr other = (SQLListExpr) obj;
         if (items == null) {
-            if (other.items != null) {
-                return false;
-            }
-        } else if (!items.equals(other.items)) {
-            return false;
-        }
-        return true;
+            return other.items == null;
+        } else return items.equals(other.items);
     }
 
     public SQLListExpr clone() {

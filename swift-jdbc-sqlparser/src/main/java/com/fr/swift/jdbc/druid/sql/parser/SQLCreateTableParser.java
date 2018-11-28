@@ -15,13 +15,18 @@
  */
 package com.fr.swift.jdbc.druid.sql.parser;
 
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLColumnDefinition;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLConstraint;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableElement;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class SQLCreateTableParser extends SQLDDLParser {
 
@@ -111,7 +116,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                     constraint.setParent(createTable);
                     createTable.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO "  + lexer.info());
+                    throw new ParserException("TODO " + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
@@ -150,7 +155,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             lexer.nextToken();
             accept(Token.LPAREN);
 
-            for (;;) {
+            for (; ; ) {
                 String name = lexer.stringVal();
                 lexer.nextToken();
                 accept(Token.EQ);

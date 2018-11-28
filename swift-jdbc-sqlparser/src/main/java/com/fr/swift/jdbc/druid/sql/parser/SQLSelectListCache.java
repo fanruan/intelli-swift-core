@@ -18,14 +18,13 @@ package com.fr.swift.jdbc.druid.sql.parser;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SQLSelectListCache {
-//    private final static Log                LOG             = LogFactory.getLog(SQLSelectListCache.class);
-    private final String                    dbType;
-    private final List<Entry>               entries         = new CopyOnWriteArrayList<Entry>();
+    //    private final static Log                LOG             = LogFactory.getLog(SQLSelectListCache.class);
+    private final String dbType;
+    private final List<Entry> entries = new CopyOnWriteArrayList<Entry>();
 
     public SQLSelectListCache(String dbType) {
         this.dbType = dbType;
@@ -37,7 +36,7 @@ public class SQLSelectListCache {
         }
 
         SQLSelectParser selectParser = SQLParserUtils.createSQLStatementParser(select, dbType)
-                                                     .createSQLSelectParser();
+                .createSQLSelectParser();
         SQLSelectQueryBlock queryBlock = SQLParserUtils.createSelectQueryBlock(dbType);
         selectParser.accept(Token.SELECT);
 
@@ -93,10 +92,10 @@ public class SQLSelectListCache {
     }
 
     private static class Entry {
-        public final String              sql;
+        public final String sql;
         public final SQLSelectQueryBlock queryBlock;
-        public final String              printSql;
-        public final long                printSqlHash;
+        public final String printSql;
+        public final long printSqlHash;
 
         public Entry(String sql, SQLSelectQueryBlock queryBlock, String printSql, long printSqlHash) {
             this.sql = sql;

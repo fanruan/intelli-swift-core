@@ -22,18 +22,17 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCharacterDataType;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTOutputVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
+public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr {
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("varchar");
 
-    public SQLCharExpr(){
+    public SQLCharExpr() {
 
     }
 
-    public SQLCharExpr(String text){
+    public SQLCharExpr(String text) {
         super(text);
     }
 
@@ -55,7 +54,7 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
     public Object getValue() {
         return this.text;
     }
-    
+
     public String toString() {
         return SQLUtils.toSQLString(this);
     }

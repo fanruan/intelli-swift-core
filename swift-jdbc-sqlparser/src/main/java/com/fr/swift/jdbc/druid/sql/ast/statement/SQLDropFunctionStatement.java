@@ -23,13 +23,13 @@ public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDro
 
     private SQLName name;
     private boolean ifExists;
-    
+
     public SQLDropFunctionStatement() {
-        
+
     }
-    
+
     public SQLDropFunctionStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

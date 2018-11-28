@@ -15,19 +15,19 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLAlterTableReOrganizePartition extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private final List<SQLName>   names       = new ArrayList<SQLName>();
+    private final List<SQLName> names = new ArrayList<SQLName>();
 
-    private final List<SQLObject> partitions  = new ArrayList<SQLObject>(4);
+    private final List<SQLObject> partitions = new ArrayList<SQLObject>(4);
 
     public List<SQLObject> getPartitions() {
         return partitions;

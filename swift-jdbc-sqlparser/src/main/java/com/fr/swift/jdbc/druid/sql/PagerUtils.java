@@ -15,15 +15,25 @@
  */
 package com.fr.swift.jdbc.druid.sql;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.fr.swift.jdbc.druid.DruidRuntimeException;
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.expr.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
+import com.fr.swift.jdbc.druid.sql.ast.SQLLimit;
+import com.fr.swift.jdbc.druid.sql.ast.SQLSetQuantifier;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateOption;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntegerExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQuery;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUnionQuery;
+
+import java.util.List;
 
 public class PagerUtils {
 
@@ -133,7 +143,7 @@ public class PagerUtils {
                     && queryBlock.getGroupBy().getItems().size() > 0) {
                 return createCountUseSubQuery(select, dbType);
             }
-            
+
             int option = queryBlock.getDistionOption();
             if (option == SQLSetQuantifier.DISTINCT
                     && selectList.size() >= 1) {
@@ -203,9 +213,8 @@ public class PagerUtils {
             clearOrderBy(union.getRight());
         }
     }
-    
+
     /**
-     * 
      * @param sql
      * @param dbType
      * @return if not exists limit, return -1;
@@ -226,7 +235,7 @@ public class PagerUtils {
                 return -1;
             }
         }
-        
+
         return -1;
     }
 

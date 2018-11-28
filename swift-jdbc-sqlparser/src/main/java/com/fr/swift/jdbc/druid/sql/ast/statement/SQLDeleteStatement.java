@@ -16,7 +16,12 @@
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLCommentHint;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLReplaceable;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExprGroup;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOperator;
@@ -27,21 +32,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceable {
-    protected SQLWithSubqueryClause  with;
+    protected SQLWithSubqueryClause with;
 
     protected SQLTableSource tableSource;
-    protected SQLExpr        where;
+    protected SQLExpr where;
     protected SQLTableSource from;
     protected SQLTableSource using;
 
-    protected boolean        only      = false;
+    protected boolean only = false;
 
-    public SQLDeleteStatement(){
+    public SQLDeleteStatement() {
 
     }
-    
-    public SQLDeleteStatement(String dbType){
-        super (dbType);
+
+    public SQLDeleteStatement(String dbType) {
+        super(dbType);
     }
 
     protected void cloneTo(SQLDeleteStatement x) {

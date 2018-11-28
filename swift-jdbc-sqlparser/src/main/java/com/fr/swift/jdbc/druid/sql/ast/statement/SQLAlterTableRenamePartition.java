@@ -15,18 +15,18 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLAlterTableRenamePartition extends SQLObjectImpl implements SQLAlterTableItem {
 
     private boolean ifNotExists = false;
 
     private final List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>(4);
-    private final List<SQLAssignItem> to        = new ArrayList<SQLAssignItem>(4);
+    private final List<SQLAssignItem> to = new ArrayList<SQLAssignItem>(4);
 
     public List<SQLAssignItem> getPartition() {
         return partition;

@@ -27,11 +27,11 @@ public final class SQLAllExpr extends SQLExprImpl {
 
     public SQLSelect subQuery;
 
-    public SQLAllExpr(){
+    public SQLAllExpr() {
 
     }
 
-    public SQLAllExpr(SQLSelect select){
+    public SQLAllExpr(SQLSelect select) {
         setSubQuery(select);
     }
 
@@ -92,13 +92,8 @@ public final class SQLAllExpr extends SQLExprImpl {
         }
         SQLAllExpr other = (SQLAllExpr) obj;
         if (subQuery == null) {
-            if (other.subQuery != null) {
-                return false;
-            }
-        } else if (!subQuery.equals(other.subQuery)) {
-            return false;
-        }
-        return true;
+            return other.subQuery == null;
+        } else return subQuery.equals(other.subQuery);
     }
 
 }

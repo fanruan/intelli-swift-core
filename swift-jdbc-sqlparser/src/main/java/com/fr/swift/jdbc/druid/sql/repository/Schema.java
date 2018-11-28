@@ -16,22 +16,26 @@
 package com.fr.swift.jdbc.druid.sql.repository;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
-import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLColumnDefinition;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLJoinTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableSource;
 import com.fr.swift.jdbc.druid.util.FnvHash;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * Created by wenshao on 21/07/2017.
@@ -41,7 +45,7 @@ public class Schema {
 
     protected final Map<Long, SchemaObject> objects = new ConcurrentHashMap<Long, SchemaObject>();
 
-    protected final Map<Long, SchemaObject> functions  = new ConcurrentHashMap<Long, SchemaObject>();
+    protected final Map<Long, SchemaObject> functions = new ConcurrentHashMap<Long, SchemaObject>();
 
     private SchemaRepository repository;
 
@@ -118,7 +122,7 @@ public class Schema {
                 SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
 
                 SchemaObject tableObject = exprTableSource.getSchemaObject();
-                if (tableObject !=  null) {
+                if (tableObject != null) {
                     return tableObject;
                 }
 

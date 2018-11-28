@@ -15,10 +15,10 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast;
 
+import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSubPartitionByRange extends SQLSubPartitionBy {
     private List<SQLName> columns = new ArrayList<SQLName>();
@@ -29,7 +29,7 @@ public class SQLSubPartitionByRange extends SQLSubPartitionBy {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        
+
     }
 
     public SQLSubPartitionByRange clone() {

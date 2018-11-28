@@ -17,8 +17,6 @@ package com.fr.swift.jdbc.druid.sql.ast.statement;
 
 import java.util.List;
 
-import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
-
 public interface SQLUniqueConstraint extends SQLConstraint {
 
     List<SQLSelectOrderByItem> getColumns();

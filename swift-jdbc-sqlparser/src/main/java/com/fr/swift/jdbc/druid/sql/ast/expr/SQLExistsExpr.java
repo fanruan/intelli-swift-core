@@ -15,29 +15,29 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+
 public final class SQLExistsExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public boolean            not              = false;
-    public SQLSelect          subQuery;
+    public boolean not = false;
+    public SQLSelect subQuery;
 
-    public SQLExistsExpr(){
+    public SQLExistsExpr() {
 
     }
 
-    public SQLExistsExpr(SQLSelect subQuery){
+    public SQLExistsExpr(SQLSelect subQuery) {
         this.setSubQuery(subQuery);
     }
 
-    public SQLExistsExpr(SQLSelect subQuery, boolean not){
+    public SQLExistsExpr(SQLSelect subQuery, boolean not) {
         this.setSubQuery(subQuery);
         this.not = not;
     }
@@ -99,16 +99,11 @@ public final class SQLExistsExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         if (subQuery == null) {
-            if (other.subQuery != null) {
-                return false;
-            }
-        } else if (!subQuery.equals(other.subQuery)) {
-            return false;
-        }
-        return true;
+            return other.subQuery == null;
+        } else return subQuery.equals(other.subQuery);
     }
 
-    public SQLExistsExpr clone () {
+    public SQLExistsExpr clone() {
         SQLExistsExpr x = new SQLExistsExpr();
 
         x.not = not;

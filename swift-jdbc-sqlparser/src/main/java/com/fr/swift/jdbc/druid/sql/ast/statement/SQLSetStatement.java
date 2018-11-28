@@ -15,35 +15,38 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLCommentHint;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOperator;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntegerExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLSetStatement extends SQLStatementImpl {
     private Option option;
 
     private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
-    
+
     private List<SQLCommentHint> hints;
 
-    public SQLSetStatement(){
+    public SQLSetStatement() {
     }
-    
-    public SQLSetStatement(String dbType){
-        super (dbType);
+
+    public SQLSetStatement(String dbType) {
+        super(dbType);
     }
-    
-    public SQLSetStatement(SQLExpr target, SQLExpr value){
+
+    public SQLSetStatement(SQLExpr target, SQLExpr value) {
         this(target, value, null);
     }
 
-    public SQLSetStatement(SQLExpr target, SQLExpr value, String dbType){
-        super (dbType);
+    public SQLSetStatement(SQLExpr target, SQLExpr value, String dbType) {
+        super(dbType);
         SQLAssignItem item = new SQLAssignItem(target, value);
         item.setParent(this);
         this.items.add(item);
@@ -127,7 +130,7 @@ public class SQLSetStatement extends SQLStatementImpl {
         return this.items;
     }
 
-    public static enum Option {
+    public enum Option {
         IDENTITY_INSERT,
         PASSWORD, // mysql
         GLOBAL,

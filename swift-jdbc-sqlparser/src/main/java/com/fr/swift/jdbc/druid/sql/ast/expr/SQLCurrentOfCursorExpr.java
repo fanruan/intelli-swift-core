@@ -27,11 +27,11 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl {
 
     private SQLName cursorName;
 
-    public SQLCurrentOfCursorExpr(){
+    public SQLCurrentOfCursorExpr() {
 
     }
 
-    public SQLCurrentOfCursorExpr(SQLName cursorName){
+    public SQLCurrentOfCursorExpr(SQLName cursorName) {
         this.cursorName = cursorName;
     }
 
@@ -94,13 +94,8 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl {
         }
         SQLCurrentOfCursorExpr other = (SQLCurrentOfCursorExpr) obj;
         if (cursorName == null) {
-            if (other.cursorName != null) {
-                return false;
-            }
-        } else if (!cursorName.equals(other.cursorName)) {
-            return false;
-        }
-        return true;
+            return other.cursorName == null;
+        } else return cursorName.equals(other.cursorName);
     }
 
 }

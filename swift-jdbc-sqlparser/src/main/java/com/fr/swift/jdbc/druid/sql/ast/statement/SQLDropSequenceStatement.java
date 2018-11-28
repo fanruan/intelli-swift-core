@@ -28,13 +28,13 @@ public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDro
 
     private SQLName name;
     private boolean ifExists;
-    
+
     public SQLDropSequenceStatement() {
-        
+
     }
-    
+
     public SQLDropSequenceStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

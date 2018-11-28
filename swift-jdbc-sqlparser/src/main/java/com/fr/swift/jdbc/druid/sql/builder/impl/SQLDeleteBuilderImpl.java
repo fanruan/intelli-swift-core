@@ -15,8 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.builder.impl;
 
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
@@ -25,18 +23,19 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeleteStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.builder.SQLDeleteBuilder;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
 
     private SQLDeleteStatement stmt;
-    private String             dbType;
+    private String dbType;
 
-    public SQLDeleteBuilderImpl(String dbType){
+    public SQLDeleteBuilderImpl(String dbType) {
         this.dbType = dbType;
     }
-    
-    public SQLDeleteBuilderImpl(String sql, String dbType){
+
+    public SQLDeleteBuilderImpl(String sql, String dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() == 0) {
@@ -52,7 +51,7 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
         this.dbType = dbType;
     }
 
-    public SQLDeleteBuilderImpl(SQLDeleteStatement stmt, String dbType){
+    public SQLDeleteBuilderImpl(SQLDeleteStatement stmt, String dbType) {
         this.stmt = stmt;
         this.dbType = dbType;
     }

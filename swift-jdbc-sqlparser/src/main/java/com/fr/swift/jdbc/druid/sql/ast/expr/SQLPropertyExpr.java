@@ -16,8 +16,18 @@
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLColumnDefinition;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateProcedureStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableSource;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 
@@ -25,31 +35,31 @@ import java.util.Collections;
 import java.util.List;
 
 public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
-    private   SQLExpr             owner;
-    private   String              name;
+    private SQLExpr owner;
+    private String name;
 
-    protected long                nameHashCod64;
-    protected long                hashCode64;
+    protected long nameHashCod64;
+    protected long hashCode64;
 
     protected SQLColumnDefinition resolvedColumn;
-    protected SQLObject           resolvedOwnerObject;
+    protected SQLObject resolvedOwnerObject;
 
-    public SQLPropertyExpr(String owner, String name){
+    public SQLPropertyExpr(String owner, String name) {
         this(new SQLIdentifierExpr(owner), name);
     }
 
-    public SQLPropertyExpr(SQLExpr owner, String name){
+    public SQLPropertyExpr(SQLExpr owner, String name) {
         setOwner(owner);
         this.name = name;
     }
 
-    public SQLPropertyExpr(SQLExpr owner, String name, long nameHashCod64){
+    public SQLPropertyExpr(SQLExpr owner, String name, long nameHashCod64) {
         setOwner(owner);
         this.name = name;
         this.nameHashCod64 = nameHashCod64;
     }
 
-    public SQLPropertyExpr(){
+    public SQLPropertyExpr() {
 
     }
 
@@ -63,7 +73,7 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     public String getOwnernName() {
         if (owner instanceof SQLName) {
-            return ((SQLName) owner).toString();
+            return owner.toString();
         }
 
         return null;
@@ -90,7 +100,7 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
             hash ^= '.';
             hash *= FnvHash.PRIME;
-        } else if (owner == null){
+        } else if (owner == null) {
             hash = FnvHash.BASIC;
         } else {
             hash = FnvHash.fnv1a_64_lower(owner.toString());
@@ -143,7 +153,7 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     @Override
     public int hashCode() {
         long hash = hashCode64();
-        return (int)(hash ^ (hash >>> 32));
+        return (int) (hash ^ (hash >>> 32));
     }
 
     public long hashCode64() {
@@ -174,13 +184,8 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             return false;
         }
         if (owner == null) {
-            if (other.owner != null) {
-                return false;
-            }
-        } else if (!owner.equals(other.owner)) {
-            return false;
-        }
-        return true;
+            return other.owner == null;
+        } else return owner.equals(other.owner);
     }
 
     public SQLPropertyExpr clone() {

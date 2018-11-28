@@ -15,9 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.builder.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
@@ -27,18 +24,20 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUpdateStatement;
 import com.fr.swift.jdbc.druid.sql.builder.SQLUpdateBuilder;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
+
+import java.util.List;
+import java.util.Map;
 
 public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBuilder {
 
     private SQLUpdateStatement stmt;
-    private String             dbType;
+    private String dbType;
 
-    public SQLUpdateBuilderImpl(String dbType){
+    public SQLUpdateBuilderImpl(String dbType) {
         this.dbType = dbType;
     }
-    
-    public SQLUpdateBuilderImpl(String sql, String dbType){
+
+    public SQLUpdateBuilderImpl(String sql, String dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() == 0) {
@@ -54,7 +53,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
         this.dbType = dbType;
     }
 
-    public SQLUpdateBuilderImpl(SQLUpdateStatement stmt, String dbType){
+    public SQLUpdateBuilderImpl(SQLUpdateStatement stmt, String dbType) {
         this.stmt = stmt;
         this.dbType = dbType;
     }
@@ -120,29 +119,29 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
             SQLUpdateSetItem updateSetItem = SQLUtils.toUpdateSetItem(item, dbType);
             update.addItem(updateSetItem);
         }
-        
+
         return this;
     }
-    
+
     public SQLUpdateBuilderImpl setValue(Map<String, Object> values) {
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             setValue(entry.getKey(), entry.getValue());
         }
-        
+
         return this;
     }
-    
+
     public SQLUpdateBuilderImpl setValue(String column, Object value) {
         SQLUpdateStatement update = getSQLUpdateStatement();
-        
+
         SQLExpr columnExpr = SQLUtils.toSQLExpr(column, dbType);
         SQLExpr valueExpr = toSQLExpr(value, dbType);
-        
+
         SQLUpdateSetItem item = new SQLUpdateSetItem();
         item.setColumn(columnExpr);
         item.setValue(valueExpr);
         update.addItem(item);
-        
+
         return this;
     }
 
@@ -156,7 +155,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
     public SQLUpdateStatement createSQLUpdateStatement() {
         return new SQLUpdateStatement();
     }
-    
+
     public String toString() {
         return SQLUtils.toSQLString(stmt, dbType);
     }

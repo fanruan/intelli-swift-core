@@ -25,14 +25,14 @@ import java.util.List;
 
 public class SQLSequenceExpr extends SQLExprImpl {
 
-    private SQLName  sequence;
+    private SQLName sequence;
     private Function function;
 
-    public SQLSequenceExpr(){
+    public SQLSequenceExpr() {
 
     }
 
-    public SQLSequenceExpr(SQLName sequence, Function function){
+    public SQLSequenceExpr(SQLName sequence, Function function) {
         this.sequence = sequence;
         this.function = function;
     }
@@ -54,13 +54,13 @@ public class SQLSequenceExpr extends SQLExprImpl {
         visitor.endVisit(this);
     }
 
-    public static enum Function {
-                                 NextVal("NEXTVAL"), CurrVal("CURRVAL"), PrevVal("PREVVAL");
+    public enum Function {
+        NextVal("NEXTVAL"), CurrVal("CURRVAL"), PrevVal("PREVVAL");
 
         public final String name;
         public final String name_lcase;
 
-        private Function(String name){
+        Function(String name) {
             this.name = name;
             this.name_lcase = name.toLowerCase();
         }
@@ -103,9 +103,8 @@ public class SQLSequenceExpr extends SQLExprImpl {
         SQLSequenceExpr other = (SQLSequenceExpr) obj;
         if (function != other.function) return false;
         if (sequence == null) {
-            if (other.sequence != null) return false;
-        } else if (!sequence.equals(other.sequence)) return false;
-        return true;
+            return other.sequence == null;
+        } else return sequence.equals(other.sequence);
     }
 
 }

@@ -16,7 +16,10 @@
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLLiteralExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
@@ -27,14 +30,14 @@ import java.util.List;
 
 public class SQLAlterViewStatement extends SQLStatementImpl implements SQLCreateStatement {
 
-    private boolean     force       = false;
+    private boolean force = false;
     // protected SQLName   name;
     protected SQLSelect subQuery;
-    protected boolean   ifNotExists = false;
+    protected boolean ifNotExists = false;
 
-    protected String    algorithm;
-    protected SQLName   definer;
-    protected String    sqlSecurity;
+    protected String algorithm;
+    protected SQLName definer;
+    protected String sqlSecurity;
 
     protected SQLExprTableSource tableSource;
 
@@ -47,11 +50,11 @@ public class SQLAlterViewStatement extends SQLStatementImpl implements SQLCreate
 
     private SQLLiteralExpr comment;
 
-    public SQLAlterViewStatement(){
+    public SQLAlterViewStatement() {
 
     }
 
-    public SQLAlterViewStatement(String dbType){
+    public SQLAlterViewStatement(String dbType) {
         super(dbType);
     }
 
@@ -155,7 +158,7 @@ public class SQLAlterViewStatement extends SQLStatementImpl implements SQLCreate
     public List<SQLTableElement> getColumns() {
         return columns;
     }
-    
+
     public void addColumn(SQLTableElement column) {
         if (column != null) {
             column.setParent(this);

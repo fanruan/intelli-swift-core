@@ -15,32 +15,32 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 public final class SQLInListExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private boolean           not              = false;
-    private SQLExpr           expr;
-    private List<SQLExpr>     targetList       = new ArrayList<SQLExpr>();
+    private boolean not = false;
+    private SQLExpr expr;
+    private List<SQLExpr> targetList = new ArrayList<SQLExpr>();
 
-    public SQLInListExpr(){
+    public SQLInListExpr() {
 
     }
 
-    public SQLInListExpr(SQLExpr expr){
+    public SQLInListExpr(SQLExpr expr) {
         this.setExpr(expr);
     }
 
-    public SQLInListExpr(SQLExpr expr, boolean not){
+    public SQLInListExpr(SQLExpr expr, boolean not) {
         this.setExpr(expr);
         this.not = not;
     }
@@ -75,7 +75,7 @@ public final class SQLInListExpr extends SQLExprImpl implements Serializable {
         if (expr != null) {
             expr.setParent(this);
         }
-        
+
         this.expr = expr;
     }
 
@@ -138,13 +138,8 @@ public final class SQLInListExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         if (targetList == null) {
-            if (other.targetList != null) {
-                return false;
-            }
-        } else if (!targetList.equals(other.targetList)) {
-            return false;
-        }
-        return true;
+            return other.targetList == null;
+        } else return targetList.equals(other.targetList);
     }
 
     public SQLDataType computeDataType() {

@@ -23,30 +23,30 @@ import java.util.List;
 public class SQLOver extends SQLObjectImpl {
 
     protected final List<SQLExpr> partitionBy = new ArrayList<SQLExpr>();
-    protected SQLOrderBy          orderBy;
+    protected SQLOrderBy orderBy;
 
     // for db2
-    protected SQLName             of;
+    protected SQLName of;
 
-    protected SQLExpr             windowing;
-    protected WindowingType       windowingType = WindowingType.ROWS;
+    protected SQLExpr windowing;
+    protected WindowingType windowingType = WindowingType.ROWS;
 
-    protected boolean             windowingPreceding;
-    protected boolean             windowingFollowing;
+    protected boolean windowingPreceding;
+    protected boolean windowingFollowing;
 
-    protected SQLExpr             windowingBetweenBegin;
-    protected boolean             windowingBetweenBeginPreceding;
-    protected boolean             windowingBetweenBeginFollowing;
+    protected SQLExpr windowingBetweenBegin;
+    protected boolean windowingBetweenBeginPreceding;
+    protected boolean windowingBetweenBeginFollowing;
 
-    protected SQLExpr             windowingBetweenEnd;
-    protected boolean             windowingBetweenEndPreceding;
-    protected boolean             windowingBetweenEndFollowing;
+    protected SQLExpr windowingBetweenEnd;
+    protected boolean windowingBetweenEndPreceding;
+    protected boolean windowingBetweenEndFollowing;
 
-    public SQLOver(){
+    public SQLOver() {
 
     }
 
-    public SQLOver(SQLOrderBy orderBy){
+    public SQLOver(SQLOrderBy orderBy) {
         this.setOrderBy(orderBy);
     }
 
@@ -249,7 +249,7 @@ public class SQLOver extends SQLObjectImpl {
         return x;
     }
 
-    public static enum WindowingType {
+    public enum WindowingType {
         ROWS, RANGE
     }
 }

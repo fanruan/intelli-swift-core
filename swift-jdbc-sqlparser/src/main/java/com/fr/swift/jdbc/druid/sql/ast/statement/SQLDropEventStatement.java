@@ -33,7 +33,7 @@ public class SQLDropEventStatement extends SQLStatementImpl implements SQLDropSt
     }
 
     public SQLDropEventStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

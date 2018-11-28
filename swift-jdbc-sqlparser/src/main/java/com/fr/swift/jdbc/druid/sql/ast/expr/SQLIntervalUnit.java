@@ -29,10 +29,10 @@ public enum SQLIntervalUnit {
     SECOND, SECOND_MICROSECOND,
 
     MICROSECOND;
-    
+
     public final String name_lcase;
-    
-    private SQLIntervalUnit() {
+
+    SQLIntervalUnit() {
         this.name_lcase = name().toLowerCase();
     }
 }

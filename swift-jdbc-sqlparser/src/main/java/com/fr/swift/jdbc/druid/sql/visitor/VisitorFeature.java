@@ -15,7 +15,7 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor;
 
-public enum  VisitorFeature {
+public enum VisitorFeature {
     OutputUCase,
     OutputPrettyFormat,
     OutputParameterized,
@@ -29,10 +29,9 @@ public enum  VisitorFeature {
     /**
      * @deprecated
      */
-    OutputKeepParenthesisWhenNotExpr
-    ;
+    OutputKeepParenthesisWhenNotExpr;
 
-    private VisitorFeature(){
+    VisitorFeature() {
         mask = (1 << ordinal());
     }
 
@@ -60,7 +59,7 @@ public enum  VisitorFeature {
 
         int value = 0;
 
-        for (VisitorFeature feature: features) {
+        for (VisitorFeature feature : features) {
             value |= feature.mask;
         }
 

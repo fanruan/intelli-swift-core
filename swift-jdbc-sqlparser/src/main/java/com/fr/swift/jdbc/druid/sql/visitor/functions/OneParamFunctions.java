@@ -15,17 +15,17 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor.functions;
 
-import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.fr.swift.jdbc.druid.util.Utils;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.fr.swift.jdbc.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class OneParamFunctions implements Function {
 
@@ -61,18 +61,18 @@ public class OneParamFunctions implements Function {
 
             if (paramValue instanceof BigDecimal) {
                 BigDecimal decimal = (BigDecimal) paramValue;
-                BigInteger bigInt = decimal.setScale(0,  BigDecimal.ROUND_HALF_UP).toBigInteger();
+                BigInteger bigInt = decimal.setScale(0, BigDecimal.ROUND_HALF_UP).toBigInteger();
                 return bigInt.bitCount();
             }
             Long val = SQLEvalVisitorUtils.castToLong(paramValue);
             return Long.bitCount(val);
         }
-        
+
         if ("soundex".equalsIgnoreCase(method)) {
             String text = paramValue.toString();
             return soundex(text);
         }
-        
+
         if ("space".equalsIgnoreCase(method)) {
             int intVal = SQLEvalVisitorUtils.castToInteger(paramValue);
             char[] chars = new char[intVal];
@@ -93,7 +93,7 @@ public class OneParamFunctions implements Function {
         if (str.length() == 0) {
             return str;
         }
-        char out[] = {'0', '0', '0', '0'};
+        char[] out = {'0', '0', '0', '0'};
         char last, mapped;
         int incount = 1, count = 1;
         out[0] = str.charAt(0);
@@ -110,7 +110,7 @@ public class OneParamFunctions implements Function {
         }
         return new String(out);
     }
-    
+
     static String clean(String str) {
         if (str == null || str.length() == 0) {
             return str;
@@ -128,7 +128,7 @@ public class OneParamFunctions implements Function {
         }
         return new String(chars, 0, count).toUpperCase(java.util.Locale.ENGLISH);
     }
-    
+
     private static char getMappingCode(String str, int index) {
         // map() throws IllegalArgumentException
         char mappedChar = map(str.charAt(index));
@@ -145,7 +145,7 @@ public class OneParamFunctions implements Function {
         }
         return mappedChar;
     }
-    
+
     private static char map(char ch) {
         String soundexMapping = "01230120022455012623010202";
         int index = ch - 'A';
@@ -154,6 +154,6 @@ public class OneParamFunctions implements Function {
         }
         return soundexMapping.charAt(index);
     }
-    
-    
+
+
 }

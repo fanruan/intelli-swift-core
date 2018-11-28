@@ -15,31 +15,60 @@
  */
 package com.fr.swift.jdbc.druid.sql.parser;
 
-import java.util.List;
-
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.expr.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLLimit;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOver;
+import com.fr.swift.jdbc.druid.sql.ast.SQLSetQuantifier;
+import com.fr.swift.jdbc.druid.sql.ast.SQLWindow;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOperator;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLDateExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLListExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLRealExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLTimestampExpr;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprHint;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLJoinTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLLateralViewTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQuery;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUnionOperator;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUnionQuery;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUnionQueryTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLValuesTableSource;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
+import java.util.List;
+
 public class SQLSelectParser extends SQLParser {
-    protected SQLExprParser      exprParser;
+    protected SQLExprParser exprParser;
     protected SQLSelectListCache selectListCache;
 
-    public SQLSelectParser(String sql){
+    public SQLSelectParser(String sql) {
         super(sql);
     }
 
-    public SQLSelectParser(Lexer lexer){
+    public SQLSelectParser(Lexer lexer) {
         super(lexer);
     }
 
-    public SQLSelectParser(SQLExprParser exprParser){
+    public SQLSelectParser(SQLExprParser exprParser) {
         this(exprParser, null);
     }
 
-    public SQLSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+    public SQLSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache) {
         super(exprParser.getLexer(), exprParser.getDbType());
         this.exprParser = exprParser;
         this.selectListCache = selectListCache;
@@ -305,7 +334,7 @@ public class SQLSelectParser extends SQLParser {
                 withQueryClause.setRecursive(true);
             }
 
-            for (;;) {
+            for (; ; ) {
                 SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
                 entry.setParent(withQueryClause);
 
@@ -348,7 +377,7 @@ public class SQLSelectParser extends SQLParser {
             withQueryClause.setRecursive(true);
         }
 
-        for (;;) {
+        for (; ; ) {
             SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
             entry.setParent(withQueryClause);
 
@@ -480,7 +509,7 @@ public class SQLSelectParser extends SQLParser {
 
             if (lexer.hasComment() && lexer.isKeepComments() //
                     && lexer.token != Token.INSERT // odps multi-insert
-                    ) {
+            ) {
                 where.addAfterComment(lexer.readAndResetComments());
             }
 
@@ -495,7 +524,7 @@ public class SQLSelectParser extends SQLParser {
 
         lexer.nextToken();
 
-        for (;;) {
+        for (; ; ) {
             SQLName name = this.exprParser.name();
             accept(Token.AS);
             SQLOver over = new SQLOver();
@@ -510,7 +539,7 @@ public class SQLSelectParser extends SQLParser {
             break;
         }
     }
-    
+
     protected void parseGroupBy(SQLSelectQueryBlock queryBlock) {
         if (lexer.token == (Token.GROUP)) {
             lexer.nextTokenBy();
@@ -528,9 +557,9 @@ public class SQLSelectParser extends SQLParser {
                 groupBy.setWithCube(true);
             }
 
-            for (;;) {
+            for (; ; ) {
                 SQLExpr item = parseGroupByItem();
-                
+
                 item.setParent(groupBy);
                 groupBy.addItem(item);
 
@@ -550,21 +579,21 @@ public class SQLSelectParser extends SQLParser {
                 SQLExpr having = this.exprParser.expr();
                 groupBy.setHaving(having);
             }
-            
+
             if (lexer.token == Token.WITH) {
                 lexer.nextToken();
-                
+
                 if (lexer.identifierEquals(FnvHash.Constants.CUBE)) {
                     lexer.nextToken();
                     groupBy.setWithCube(true);
-                } else if(lexer.identifierEquals(FnvHash.Constants.ROLLUP)) {
+                } else if (lexer.identifierEquals(FnvHash.Constants.ROLLUP)) {
                     lexer.nextToken();
                     groupBy.setWithRollUp(true);
                 } else {
                     throw new ParserException("TODO " + lexer.info());
                 }
             }
-            
+
             queryBlock.setGroupBy(groupBy);
         } else if (lexer.token == (Token.HAVING)) {
             lexer.nextToken();
@@ -576,9 +605,9 @@ public class SQLSelectParser extends SQLParser {
                 lexer.nextToken();
                 accept(Token.BY);
 
-                for (;;) {
+                for (; ; ) {
                     SQLExpr item = parseGroupByItem();
-                    
+
                     item.setParent(groupBy);
                     groupBy.addItem(item);
 
@@ -589,15 +618,15 @@ public class SQLSelectParser extends SQLParser {
                     lexer.nextToken();
                 }
             }
-            
+
             if (lexer.token == Token.WITH) {
                 lexer.nextToken();
                 acceptIdentifier("ROLLUP");
 
                 groupBy.setWithRollUp(true);
             }
-            
-            if(JdbcConstants.MYSQL.equals(getDbType())
+
+            if (JdbcConstants.MYSQL.equals(getDbType())
                     && lexer.token == Token.DESC) {
                 lexer.nextToken(); // skip
             }
@@ -613,7 +642,7 @@ public class SQLSelectParser extends SQLParser {
 
     protected void parseSelectList(SQLSelectQueryBlock queryBlock) {
         final List<SQLSelectItem> selectList = queryBlock.getSelectList();
-        for (;;) {
+        for (; ; ) {
             final SQLSelectItem selectItem = this.exprParser.parseSelectItem();
             selectList.add(selectItem);
             selectItem.setParent(queryBlock);
@@ -630,9 +659,9 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token != Token.FROM) {
             return;
         }
-        
+
         lexer.nextToken();
-        
+
         queryBlock.setFrom(
                 parseTableSource());
     }
@@ -661,8 +690,7 @@ public class SQLSelectParser extends SQLParser {
 
             if (lexer.token == Token.AS
                     && tableSource instanceof SQLValuesTableSource
-                    && ((SQLValuesTableSource) tableSource).getColumns().size() == 0)
-            {
+                    && ((SQLValuesTableSource) tableSource).getColumns().size() == 0) {
                 lexer.nextToken();
 
                 String alias = this.tableAlias();
@@ -681,7 +709,7 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
             SQLValuesTableSource tableSource = new SQLValuesTableSource();
 
-            for (;;) {
+            for (; ; ) {
                 accept(Token.LPAREN);
                 SQLListExpr listExpr = new SQLListExpr();
                 this.exprParser.exprList(listExpr.getItems(), listExpr);
@@ -733,7 +761,7 @@ public class SQLSelectParser extends SQLParser {
 
     protected void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) {
         if (lexer.token == Token.LITERAL_ALIAS || lexer.token == Token.IDENTIFIED
-            || lexer.token == Token.LITERAL_CHARS) {
+                || lexer.token == Token.LITERAL_CHARS) {
             tableReference.setExpr(this.exprParser.name());
             return;
         }
@@ -754,9 +782,8 @@ public class SQLSelectParser extends SQLParser {
                     && token != Token.FULL
                     && token != Token.OUTER
                     && !(token == Token.IDENTIFIER
-                        && ((hash = lexer.hash_lower()) == FnvHash.Constants.STRAIGHT_JOIN
-                            || hash == FnvHash.Constants.CROSS)))
-            {
+                    && ((hash = lexer.hash_lower()) == FnvHash.Constants.STRAIGHT_JOIN
+                    || hash == FnvHash.Constants.CROSS))) {
                 String alias = tableAlias();
                 if (alias != null) {
                     tableSource.setAlias(alias);
@@ -851,7 +878,7 @@ public class SQLSelectParser extends SQLParser {
                 if (lexer.token == Token.SELECT) {
                     SQLSelect select = this.select();
                     rightTableSource = new SQLSubqueryTableSource(select);
-                } else  {
+                } else {
                     rightTableSource = this.parseTableSource();
                 }
                 accept(Token.RPAREN);
@@ -862,8 +889,7 @@ public class SQLSelectParser extends SQLParser {
             }
 
             if (lexer.token == Token.USING
-                ||lexer.identifierEquals(FnvHash.Constants.USING))
-            {
+                    || lexer.identifierEquals(FnvHash.Constants.USING)) {
                 Lexer.SavePoint savePoint = lexer.mark();
                 lexer.nextToken();
 
@@ -889,7 +915,7 @@ public class SQLSelectParser extends SQLParser {
                 lexer.nextToken();
                 accept(Token.LPAREN);
 
-                for (;;) {
+                for (; ; ) {
                     SQLExpr hintExpr = this.expr();
                     SQLExprHint hint = new SQLExprHint(hintExpr);
                     hint.setParent(tableSource);

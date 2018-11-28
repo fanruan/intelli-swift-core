@@ -29,7 +29,7 @@ public enum SQLParserFeature {
     PipesAsConcat, // for mysql
     ;
 
-    private SQLParserFeature(){
+    SQLParserFeature() {
         mask = (1 << ordinal());
     }
 
@@ -57,7 +57,7 @@ public enum SQLParserFeature {
 
         int value = 0;
 
-        for (SQLParserFeature feature: features) {
+        for (SQLParserFeature feature : features) {
             value |= feature.mask;
         }
 

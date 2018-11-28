@@ -15,16 +15,44 @@
  */
 package com.fr.swift.jdbc.druid.sql;
 
-import java.util.List;
-import java.util.Map;
-
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.expr.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.parser.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLReplaceable;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOperator;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLInListExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLLiteralExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLUnaryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLUnaryOperator;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeleteStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQuery;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSetStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUpdateStatement;
+import com.fr.swift.jdbc.druid.sql.parser.Lexer;
+import com.fr.swift.jdbc.druid.sql.parser.ParserException;
+import com.fr.swift.jdbc.druid.sql.parser.SQLExprParser;
+import com.fr.swift.jdbc.druid.sql.parser.SQLParserFeature;
+import com.fr.swift.jdbc.druid.sql.parser.SQLParserUtils;
+import com.fr.swift.jdbc.druid.sql.parser.SQLStatementParser;
+import com.fr.swift.jdbc.druid.sql.parser.Token;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTOutputVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.VisitorFeature;
-import com.fr.swift.jdbc.druid.util.*;
+import com.fr.swift.jdbc.druid.util.FnvHash;
+import com.fr.swift.jdbc.druid.util.JdbcConstants;
+import com.fr.swift.jdbc.druid.util.StringUtils;
+import com.fr.swift.jdbc.druid.util.Utils;
+
+import java.util.List;
+import java.util.Map;
 
 public class SQLUtils {
     private final static SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
@@ -296,7 +324,7 @@ public class SQLUtils {
                 }
 
                 List<String> comments = preStmt.getAfterCommentsDirect();
-                if (comments != null){
+                if (comments != null) {
                     for (int j = 0; j < comments.size(); ++j) {
                         String comment = comments.get(j);
                         if (j != 0) {
@@ -316,8 +344,8 @@ public class SQLUtils {
             }
             {
                 List<String> comments = stmt.getBeforeCommentsDirect();
-                if (comments != null){
-                    for(String comment : comments) {
+                if (comments != null) {
+                    for (String comment : comments) {
                         visitor.printComment(comment);
                         visitor.println();
                     }
@@ -327,7 +355,7 @@ public class SQLUtils {
 
             if (i == size - 1) {
                 List<String> comments = stmt.getAfterCommentsDirect();
-                if (comments != null){
+                if (comments != null) {
                     for (int j = 0; j < comments.size(); ++j) {
                         String comment = comments.get(j);
                         if (j != 0) {
@@ -371,12 +399,12 @@ public class SQLUtils {
     }
 
     /**
-     * @author owenludong.lud
      * @param columnName
      * @param tableAlias
-     * @param pattern if pattern is null,it will be set {%Y-%m-%d %H:%i:%s} as mysql default value and set {yyyy-mm-dd
-     * hh24:mi:ss} as oracle default value
-     * @param dbType {@link JdbcConstants} if dbType is null ,it will be set the mysql as a default value
+     * @param pattern    if pattern is null,it will be set {%Y-%m-%d %H:%i:%s} as mysql default value and set {yyyy-mm-dd
+     *                   hh24:mi:ss} as oracle default value
+     * @param dbType     {@link JdbcConstants} if dbType is null ,it will be set the mysql as a default value
+     * @author owenludong.lud
      */
     public static String buildToDate(String columnName, String tableAlias, String pattern, String dbType) {
         StringBuilder sql = new StringBuilder();
@@ -624,7 +652,7 @@ public class SQLUtils {
 
         StringBuilder buf = new StringBuilder(sql.length());
 
-        for (;;) {
+        for (; ; ) {
             lexer.nextToken();
 
             Token token = lexer.token();
@@ -651,7 +679,7 @@ public class SQLUtils {
 
             SQLBinaryOperator notOp = null;
 
-            switch (op){
+            switch (op) {
                 case Equality:
                     notOp = SQLBinaryOperator.LessThanOrGreater;
                     break;
@@ -802,6 +830,7 @@ public class SQLUtils {
 
     /**
      * 重新排序建表语句，解决建表语句的依赖关系
+     *
      * @param sql
      * @param dbType
      * @return

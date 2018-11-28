@@ -15,25 +15,34 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor;
 
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBetweenExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBooleanExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCharExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLDateExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLHexExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLListExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLLiteralExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLTimestampExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLVariantRefExpr;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
-import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
-import com.fr.swift.jdbc.druid.sql.ast.expr.*;
-
 public final class ExportParameterVisitorUtils {
-    
+
     //private for util class not need new instance
     private ExportParameterVisitorUtils() {
         super();
     }
 
-    public static ExportParameterVisitor createExportParameterVisitor(final  Appendable out ,final String dbType) {
-       return new ExportParameterizedOutputVisitor(out);
+    public static ExportParameterVisitor createExportParameterVisitor(final Appendable out, final String dbType) {
+        return new ExportParameterizedOutputVisitor(out);
     }
 
-    
 
     public static boolean exportParamterAndAccept(final List<Object> parameters, List<SQLExpr> list) {
         for (int i = 0, size = list.size(); i < size; ++i) {

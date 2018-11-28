@@ -24,7 +24,7 @@ public class SQLShowTablesStatement extends SQLStatementImpl {
 
     protected SQLName database;
     protected SQLExpr like;
-    
+
     // for mysql
     protected boolean full;
     protected SQLExpr where;
@@ -52,7 +52,7 @@ public class SQLShowTablesStatement extends SQLStatementImpl {
 
         this.like = like;
     }
-    
+
     public boolean isFull() {
         return full;
     }
@@ -68,7 +68,7 @@ public class SQLShowTablesStatement extends SQLStatementImpl {
     public void setWhere(SQLExpr where) {
         this.where = where;
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

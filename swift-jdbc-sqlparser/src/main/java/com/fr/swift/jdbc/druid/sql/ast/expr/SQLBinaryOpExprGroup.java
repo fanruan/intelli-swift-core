@@ -18,7 +18,6 @@ package com.fr.swift.jdbc.druid.sql.ast.expr;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
-import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;

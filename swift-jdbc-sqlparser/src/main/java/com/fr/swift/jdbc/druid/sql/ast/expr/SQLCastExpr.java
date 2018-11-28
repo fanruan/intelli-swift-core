@@ -15,19 +15,22 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObjectWithDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLReplaceable;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, SQLReplaceable {
 
-    protected SQLExpr     expr;
+    protected SQLExpr expr;
     protected SQLDataType dataType;
 
-    public SQLCastExpr(){
+    public SQLCastExpr() {
 
     }
 
@@ -105,13 +108,8 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
             return false;
         }
         if (expr == null) {
-            if (other.expr != null) {
-                return false;
-            }
-        } else if (!expr.equals(other.expr)) {
-            return false;
-        }
-        return true;
+            return other.expr == null;
+        } else return expr.equals(other.expr);
     }
 
     public SQLDataType computeDataType() {

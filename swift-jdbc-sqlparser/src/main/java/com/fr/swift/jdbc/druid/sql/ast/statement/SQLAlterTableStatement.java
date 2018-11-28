@@ -15,11 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
@@ -28,29 +23,34 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLAlterStatement {
 
-    private SQLExprTableSource      tableSource;
-    private List<SQLAlterTableItem> items                   = new ArrayList<SQLAlterTableItem>();
+    private SQLExprTableSource tableSource;
+    private List<SQLAlterTableItem> items = new ArrayList<SQLAlterTableItem>();
 
     // for mysql
-    private boolean                 ignore                  = false;
+    private boolean ignore = false;
 
-    private boolean                 updateGlobalIndexes     = false;
-    private boolean                 invalidateGlobalIndexes = false;
+    private boolean updateGlobalIndexes = false;
+    private boolean invalidateGlobalIndexes = false;
 
-    private boolean                 removePatiting          = false;
-    private boolean                 upgradePatiting         = false;
-    private Map<String, SQLObject>  tableOptions            = new LinkedHashMap<String, SQLObject>();
+    private boolean removePatiting = false;
+    private boolean upgradePatiting = false;
+    private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
     // odps
-    private boolean                 mergeSmallFiles         = false;
+    private boolean mergeSmallFiles = false;
 
-    public SQLAlterTableStatement(){
+    public SQLAlterTableStatement() {
 
     }
 
-    public SQLAlterTableStatement(String dbType){
+    public SQLAlterTableStatement(String dbType) {
         super(dbType);
     }
 
@@ -170,7 +170,7 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         if (tableSource == null) {
             return null;
         }
-        SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
+        SQLExpr expr = tableSource.getExpr();
         if (expr instanceof SQLIdentifierExpr) {
             return ((SQLIdentifierExpr) expr).getName();
         } else if (expr instanceof SQLPropertyExpr) {

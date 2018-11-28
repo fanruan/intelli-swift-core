@@ -32,13 +32,13 @@ public class SQLRollbackStatement extends SQLStatementImpl {
     private Boolean chain;
     private Boolean release;
     private SQLExpr force;
-    
+
     public SQLRollbackStatement() {
-        
+
     }
-    
+
     public SQLRollbackStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     @Override

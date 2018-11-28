@@ -15,7 +15,11 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 import java.io.Serializable;
@@ -23,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
-    private final List<Item>    items            = new ArrayList<Item>();
-    private SQLExpr             valueExpr;
-    private List<SQLStatement>  elseStatements = new ArrayList<SQLStatement>();
+    private final List<Item> items = new ArrayList<Item>();
+    private SQLExpr valueExpr;
+    private List<SQLStatement> elseStatements = new ArrayList<SQLStatement>();
 
-    public SQLCaseStatement(){
+    public SQLCaseStatement() {
 
     }
 
@@ -80,14 +84,14 @@ public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
     public static class Item extends SQLObjectImpl implements Serializable {
 
         private static final long serialVersionUID = 1L;
-        private SQLExpr           conditionExpr;
-        private SQLStatement      statement;
+        private SQLExpr conditionExpr;
+        private SQLStatement statement;
 
-        public Item(){
+        public Item() {
 
         }
 
-        public Item(SQLExpr conditionExpr, SQLStatement statement){
+        public Item(SQLExpr conditionExpr, SQLStatement statement) {
 
             setConditionExpr(conditionExpr);
             setStatement(statement);
@@ -142,9 +146,8 @@ public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
                 if (other.conditionExpr != null) return false;
             } else if (!conditionExpr.equals(other.conditionExpr)) return false;
             if (statement == null) {
-                if (other.statement != null) return false;
-            } else if (!statement.equals(other.statement)) return false;
-            return true;
+                return other.statement == null;
+            } else return statement.equals(other.statement);
         }
 
     }

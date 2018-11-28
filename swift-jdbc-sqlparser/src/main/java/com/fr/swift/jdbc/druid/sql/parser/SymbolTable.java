@@ -15,8 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.parser;
 
-import com.fr.swift.jdbc.druid.util.Utils;
-
 import java.nio.charset.Charset;
 
 /**
@@ -39,9 +37,9 @@ public class SymbolTable {
     public static SymbolTable global = new SymbolTable(32768);
 
     private final Entry[] entries;
-    private final int      indexMask;
+    private final int indexMask;
 
-    public SymbolTable(int tableSize){
+    public SymbolTable(int tableSize) {
         this.indexMask = tableSize - 1;
         this.entries = new Entry[tableSize];
     }

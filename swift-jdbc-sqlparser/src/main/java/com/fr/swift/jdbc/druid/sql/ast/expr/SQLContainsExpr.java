@@ -15,7 +15,11 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.expr;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLReplaceable;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 import java.io.Serializable;
@@ -135,13 +139,8 @@ public final class SQLContainsExpr extends SQLExprImpl implements SQLReplaceable
             return false;
         }
         if (targetList == null) {
-            if (other.targetList != null) {
-                return false;
-            }
-        } else if (!targetList.equals(other.targetList)) {
-            return false;
-        }
-        return true;
+            return other.targetList == null;
+        } else return targetList.equals(other.targetList);
     }
 
     public SQLDataType computeDataType() {

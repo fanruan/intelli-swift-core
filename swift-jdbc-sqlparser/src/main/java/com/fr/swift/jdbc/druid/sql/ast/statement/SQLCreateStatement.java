@@ -15,7 +15,5 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
-
 public interface SQLCreateStatement extends SQLDDLStatement {
 }

@@ -15,9 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
@@ -26,27 +23,30 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCreateStatement {
 
-    private SQLName                    name;
+    private SQLName name;
 
-    private SQLTableSource             table;
+    private SQLTableSource table;
 
     private List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
 
-    private String                     type;
-    
+    private String type;
+
     // for mysql
-    private String                     using;
+    private String using;
 
-    private SQLExpr                    comment;
+    private SQLExpr comment;
 
-    public SQLCreateIndexStatement(){
+    public SQLCreateIndexStatement() {
 
     }
-    
-    public SQLCreateIndexStatement(String dbType){
-        super (dbType);
+
+    public SQLCreateIndexStatement(String dbType) {
+        super(dbType);
     }
 
     public SQLTableSource getTable() {
@@ -100,7 +100,7 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     public void setType(String type) {
         this.type = type;
     }
-    
+
     public String getUsing() {
         return using;
     }

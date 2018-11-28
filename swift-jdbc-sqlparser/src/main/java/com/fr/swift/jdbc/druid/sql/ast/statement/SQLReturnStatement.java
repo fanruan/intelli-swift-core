@@ -32,7 +32,7 @@ public class SQLReturnStatement extends SQLStatementImpl {
     }
 
     public SQLReturnStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLExpr getExpr() {

@@ -22,11 +22,11 @@ public class SQLCheck extends SQLConstraintImpl implements SQLTableElement, SQLT
 
     private SQLExpr expr;
 
-    public SQLCheck(){
+    public SQLCheck() {
 
     }
 
-    public SQLCheck(SQLExpr expr){
+    public SQLCheck(SQLExpr expr) {
         this.setExpr(expr);
     }
 

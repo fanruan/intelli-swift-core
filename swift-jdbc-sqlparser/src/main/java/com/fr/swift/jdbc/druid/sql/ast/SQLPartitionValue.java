@@ -15,17 +15,17 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast;
 
+import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
-
 public class SQLPartitionValue extends SQLObjectImpl {
 
-    protected Operator            operator;
+    protected Operator operator;
     protected final List<SQLExpr> items = new ArrayList<SQLExpr>();
 
-    public SQLPartitionValue(Operator operator){
+    public SQLPartitionValue(Operator operator) {
         super();
         this.operator = operator;
     }
@@ -33,7 +33,7 @@ public class SQLPartitionValue extends SQLObjectImpl {
     public List<SQLExpr> getItems() {
         return items;
     }
-    
+
     public void addItem(SQLExpr item) {
         if (item != null) {
             item.setParent(this);
@@ -45,10 +45,10 @@ public class SQLPartitionValue extends SQLObjectImpl {
         return operator;
     }
 
-    public static enum Operator {
-                                 LessThan, //
-                                 In, //
-                                 List
+    public enum Operator {
+        LessThan, //
+        In, //
+        List
     }
 
     @Override

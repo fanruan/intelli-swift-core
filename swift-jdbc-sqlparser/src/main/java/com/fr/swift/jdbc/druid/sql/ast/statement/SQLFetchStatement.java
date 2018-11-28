@@ -15,19 +15,19 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLFetchStatement extends SQLStatementImpl {
 
-    private SQLName       cursorName;
+    private SQLName cursorName;
 
-    private boolean       bulkCollect;
+    private boolean bulkCollect;
 
     private List<SQLExpr> into = new ArrayList<SQLExpr>();
 

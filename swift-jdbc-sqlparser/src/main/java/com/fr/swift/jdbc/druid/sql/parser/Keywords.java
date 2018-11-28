@@ -15,7 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.parser;
 
-import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.util.Utils;
 
 import java.util.Arrays;
@@ -32,9 +31,9 @@ public class Keywords {
     private long[] hashArray;
     private Token[] tokens;
 
-    public final static Keywords     DEFAULT_KEYWORDS;
+    public final static Keywords DEFAULT_KEYWORDS;
 
-    public final static Keywords     SQLITE_KEYWORDS;
+    public final static Keywords SQLITE_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -143,7 +142,7 @@ public class Keywords {
         map.put("WITH", Token.WITH);
         map.put("GRANT", Token.GRANT);
         map.put("REVOKE", Token.REVOKE);
-        
+
         // MySql procedure: add by zz
         map.put("WHILE", Token.WHILE);
         map.put("DO", Token.DO);
@@ -175,7 +174,7 @@ public class Keywords {
         return this.keywords.containsValue(token);
     }
 
-    public Keywords(Map<String, Token> keywords){
+    public Keywords(Map<String, Token> keywords) {
         this.keywords = keywords;
 
         this.hashArray = new long[keywords.size()];
@@ -193,13 +192,13 @@ public class Keywords {
         }
     }
 
-public Token getKeyword(long hash) {
-    int index = Arrays.binarySearch(hashArray, hash);
-    if (index < 0) {
-        return null;
+    public Token getKeyword(long hash) {
+        int index = Arrays.binarySearch(hashArray, hash);
+        if (index < 0) {
+            return null;
+        }
+        return tokens[index];
     }
-    return tokens[index];
-}
 
     public Token getKeyword(String key) {
         long k = Utils.fnv_64_lower(key);

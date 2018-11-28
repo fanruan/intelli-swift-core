@@ -15,12 +15,12 @@
  */
 package com.fr.swift.jdbc.druid.sql;
 
-import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
-import com.fr.swift.jdbc.druid.sql.ast.SQLDataTypeImpl;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
-import com.fr.swift.jdbc.druid.sql.ast.expr.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.util.FnvHash;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOperator;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCaseExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNullExpr;
 
 import java.util.List;
 

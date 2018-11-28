@@ -15,21 +15,21 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLAlterTableAddPartition extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private boolean               ifNotExists = false;
+    private boolean ifNotExists = false;
 
-    private final List<SQLObject> partitions  = new ArrayList<SQLObject>(4);
+    private final List<SQLObject> partitions = new ArrayList<SQLObject>(4);
 
-    private SQLExpr               partitionCount;
+    private SQLExpr partitionCount;
 
     public List<SQLObject> getPartitions() {
         return partitions;

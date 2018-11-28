@@ -18,7 +18,7 @@ package com.fr.swift.jdbc.druid.sql.ast.statement;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey {
-    protected boolean clustered         = false; // sql server
+    protected boolean clustered = false; // sql server
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

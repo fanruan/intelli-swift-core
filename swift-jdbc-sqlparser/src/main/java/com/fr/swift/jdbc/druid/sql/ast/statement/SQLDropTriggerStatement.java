@@ -15,6 +15,7 @@ package com.fr.swift.jdbc.druid.sql.ast.statement;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
@@ -29,11 +30,11 @@ public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDrop
     private boolean ifExists;
 
     public SQLDropTriggerStatement() {
-        
+
     }
-    
+
     public SQLDropTriggerStatement(String dbType) {
-        super (dbType);
+        super(dbType);
     }
 
     public SQLName getName() {

@@ -15,30 +15,43 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast;
 
+import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.List;
 import java.util.Map;
 
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
-
 public interface SQLObject {
-    void                accept(SQLASTVisitor visitor);
-    SQLObject           clone();
+    void accept(SQLASTVisitor visitor);
 
-    SQLObject           getParent();
-    void                setParent(SQLObject parent);
+    SQLObject clone();
+
+    SQLObject getParent();
+
+    void setParent(SQLObject parent);
 
     Map<String, Object> getAttributes();
-    Object              getAttribute(String name);
-    void                putAttribute(String name, Object value);
-    Map<String, Object> getAttributesDirect();
-    void                output(StringBuffer buf);
 
-    void                addBeforeComment(String comment);
-    void                addBeforeComment(List<String> comments);
-    List<String>        getBeforeCommentsDirect();
-    void                addAfterComment(String comment);
-    void                addAfterComment(List<String> comments);
-    List<String>        getAfterCommentsDirect();
-    boolean             hasBeforeComment();
-    boolean             hasAfterComment();
+    Object getAttribute(String name);
+
+    void putAttribute(String name, Object value);
+
+    Map<String, Object> getAttributesDirect();
+
+    void output(StringBuffer buf);
+
+    void addBeforeComment(String comment);
+
+    void addBeforeComment(List<String> comments);
+
+    List<String> getBeforeCommentsDirect();
+
+    void addAfterComment(String comment);
+
+    void addAfterComment(List<String> comments);
+
+    List<String> getAfterCommentsDirect();
+
+    boolean hasBeforeComment();
+
+    boolean hasAfterComment();
 }

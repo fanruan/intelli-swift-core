@@ -15,7 +15,12 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast.statement;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLName;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObjectWithDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLParameter;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
@@ -28,29 +33,29 @@ import java.util.List;
 public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLCreateStatement, SQLObjectWithDataType {
     private SQLName definer;
 
-    private boolean            create     = true;
-    private boolean            orReplace;
-    private SQLName            name;
+    private boolean create = true;
+    private boolean orReplace;
+    private SQLName name;
     private SQLStatement block;
     private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     // for oracle
-    private String             javaCallSpec;
+    private String javaCallSpec;
 
-    private SQLName            authid;
+    private SQLName authid;
 
-    SQLDataType                returnDataType;
+    SQLDataType returnDataType;
 
     // for mysql
 
-    private String             comment;
-    private boolean            deterministic  = false;
-    private boolean            parallelEnable;
-    private boolean            aggregate;
-    private SQLName            using;
-    private boolean            pipelined;
-    private boolean            resultCache;
-    private String             wrappedSource;
+    private String comment;
+    private boolean deterministic = false;
+    private boolean parallelEnable;
+    private boolean aggregate;
+    private SQLName using;
+    private boolean pipelined;
+    private boolean resultCache;
+    private String wrappedSource;
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();

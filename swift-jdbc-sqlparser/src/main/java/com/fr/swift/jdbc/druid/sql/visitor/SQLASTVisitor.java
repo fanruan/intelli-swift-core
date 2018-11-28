@@ -15,12 +15,68 @@
  */
 package com.fr.swift.jdbc.druid.sql.visitor;
 
-import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.ast.expr.*;
+import com.fr.swift.jdbc.druid.sql.ast.SQLArgument;
+import com.fr.swift.jdbc.druid.sql.ast.SQLArrayDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLCommentHint;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLDeclareItem;
+import com.fr.swift.jdbc.druid.sql.ast.SQLKeep;
+import com.fr.swift.jdbc.druid.sql.ast.SQLLimit;
+import com.fr.swift.jdbc.druid.sql.ast.SQLMapDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOver;
+import com.fr.swift.jdbc.druid.sql.ast.SQLParameter;
+import com.fr.swift.jdbc.druid.sql.ast.SQLPartitionValue;
+import com.fr.swift.jdbc.druid.sql.ast.SQLRecordDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStructDataType;
+import com.fr.swift.jdbc.druid.sql.ast.SQLSubPartition;
+import com.fr.swift.jdbc.druid.sql.ast.SQLSubPartitionByHash;
+import com.fr.swift.jdbc.druid.sql.ast.SQLSubPartitionByList;
+import com.fr.swift.jdbc.druid.sql.ast.SQLWindow;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAnyExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLArrayExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBetweenExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBinaryOpExprGroup;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLBooleanExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCaseExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCaseStatement;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCastExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCharExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLContainsExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLDateExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLDefaultExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLExistsExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLFlashbackExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLGroupingSetExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLHexExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLInListExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLInSubQueryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntegerExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntervalExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLListExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNCharExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNotExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNullExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNumberExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLQueryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLRealExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLSequenceExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLSomeExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLTimestampExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLUnaryExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLValuesExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLWhileStatement;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeclareStatement;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCommitStatement;
 
 public interface SQLASTVisitor {
 
@@ -163,9 +219,9 @@ public interface SQLASTVisitor {
     boolean visit(SQLColumnDefinition x);
 
     void endVisit(SQLColumnDefinition x);
-    
+
     boolean visit(SQLColumnDefinition.Identity x);
-    
+
     void endVisit(SQLColumnDefinition.Identity x);
 
     boolean visit(SQLDataType x);
@@ -203,9 +259,9 @@ public interface SQLASTVisitor {
     boolean visit(SQLCreateViewStatement x);
 
     void endVisit(SQLCreateViewStatement x);
-    
+
     boolean visit(SQLCreateViewStatement.Column x);
-    
+
     void endVisit(SQLCreateViewStatement.Column x);
 
     boolean visit(SQLNotNullConstraint x);
@@ -319,9 +375,9 @@ public interface SQLASTVisitor {
     void endVisit(SQLOver x);
 
     boolean visit(SQLOver x);
-    
+
     void endVisit(SQLKeep x);
-    
+
     boolean visit(SQLKeep x);
 
     void endVisit(SQLColumnPrimaryKey x);
@@ -447,209 +503,209 @@ public interface SQLASTVisitor {
     void endVisit(SQLCreateTriggerStatement x);
 
     boolean visit(SQLCreateTriggerStatement x);
-    
+
     void endVisit(SQLDropFunctionStatement x);
-    
+
     boolean visit(SQLDropFunctionStatement x);
-    
+
     void endVisit(SQLDropTableSpaceStatement x);
-    
+
     boolean visit(SQLDropTableSpaceStatement x);
-    
+
     void endVisit(SQLDropProcedureStatement x);
-    
+
     boolean visit(SQLDropProcedureStatement x);
-    
+
     void endVisit(SQLBooleanExpr x);
-    
+
     boolean visit(SQLBooleanExpr x);
-    
+
     void endVisit(SQLUnionQueryTableSource x);
 
     boolean visit(SQLUnionQueryTableSource x);
-    
+
     void endVisit(SQLTimestampExpr x);
-    
+
     boolean visit(SQLTimestampExpr x);
-    
+
     void endVisit(SQLRevokeStatement x);
-    
+
     boolean visit(SQLRevokeStatement x);
-    
+
     void endVisit(SQLBinaryExpr x);
-    
+
     boolean visit(SQLBinaryExpr x);
-    
+
     void endVisit(SQLAlterTableRename x);
-    
+
     boolean visit(SQLAlterTableRename x);
-    
+
     void endVisit(SQLAlterViewRenameStatement x);
-    
+
     boolean visit(SQLAlterViewRenameStatement x);
-    
+
     void endVisit(SQLShowTablesStatement x);
-    
+
     boolean visit(SQLShowTablesStatement x);
-    
+
     void endVisit(SQLAlterTableAddPartition x);
-    
+
     boolean visit(SQLAlterTableAddPartition x);
-    
+
     void endVisit(SQLAlterTableDropPartition x);
-    
+
     boolean visit(SQLAlterTableDropPartition x);
-    
+
     void endVisit(SQLAlterTableRenamePartition x);
-    
+
     boolean visit(SQLAlterTableRenamePartition x);
-    
+
     void endVisit(SQLAlterTableSetComment x);
-    
+
     boolean visit(SQLAlterTableSetComment x);
-    
+
     void endVisit(SQLAlterTableSetLifecycle x);
-    
+
     boolean visit(SQLAlterTableSetLifecycle x);
-    
+
     void endVisit(SQLAlterTableEnableLifecycle x);
-    
+
     boolean visit(SQLAlterTableEnableLifecycle x);
-    
+
     void endVisit(SQLAlterTableDisableLifecycle x);
-    
+
     boolean visit(SQLAlterTableDisableLifecycle x);
-    
+
     void endVisit(SQLAlterTableTouch x);
-    
+
     boolean visit(SQLAlterTableTouch x);
-    
+
     void endVisit(SQLArrayExpr x);
-    
+
     boolean visit(SQLArrayExpr x);
-    
+
     void endVisit(SQLOpenStatement x);
-    
+
     boolean visit(SQLOpenStatement x);
-    
+
     void endVisit(SQLFetchStatement x);
-    
+
     boolean visit(SQLFetchStatement x);
-    
+
     void endVisit(SQLCloseStatement x);
-    
+
     boolean visit(SQLCloseStatement x);
 
     boolean visit(SQLGroupingSetExpr x);
 
     void endVisit(SQLGroupingSetExpr x);
-    
+
     boolean visit(SQLIfStatement x);
-    
+
     void endVisit(SQLIfStatement x);
-    
+
     boolean visit(SQLIfStatement.ElseIf x);
-    
+
     void endVisit(SQLIfStatement.ElseIf x);
-    
+
     boolean visit(SQLIfStatement.Else x);
-    
+
     void endVisit(SQLIfStatement.Else x);
-    
+
     boolean visit(SQLLoopStatement x);
 
     void endVisit(SQLLoopStatement x);
-    
+
     boolean visit(SQLParameter x);
-    
+
     void endVisit(SQLParameter x);
-    
+
     boolean visit(SQLCreateProcedureStatement x);
-    
+
     void endVisit(SQLCreateProcedureStatement x);
 
     boolean visit(SQLCreateFunctionStatement x);
 
     void endVisit(SQLCreateFunctionStatement x);
-    
+
     boolean visit(SQLBlockStatement x);
-    
+
     void endVisit(SQLBlockStatement x);
-    
+
     boolean visit(SQLAlterTableDropKey x);
-    
+
     void endVisit(SQLAlterTableDropKey x);
-    
+
     boolean visit(SQLDeclareItem x);
-    
+
     void endVisit(SQLDeclareItem x);
-    
+
     boolean visit(SQLPartitionValue x);
-    
+
     void endVisit(SQLPartitionValue x);
-    
+
     boolean visit(SQLSubPartition x);
-    
+
     void endVisit(SQLSubPartition x);
-    
+
     boolean visit(SQLSubPartitionByHash x);
-    
+
     void endVisit(SQLSubPartitionByHash x);
-    
+
     boolean visit(SQLSubPartitionByList x);
-    
+
     void endVisit(SQLSubPartitionByList x);
-    
+
     boolean visit(SQLAlterDatabaseStatement x);
-    
+
     void endVisit(SQLAlterDatabaseStatement x);
-    
+
     boolean visit(SQLAlterTableConvertCharSet x);
-    
+
     void endVisit(SQLAlterTableConvertCharSet x);
-    
+
     boolean visit(SQLAlterTableReOrganizePartition x);
-    
+
     void endVisit(SQLAlterTableReOrganizePartition x);
-    
+
     boolean visit(SQLAlterTableCoalescePartition x);
-    
+
     void endVisit(SQLAlterTableCoalescePartition x);
-    
+
     boolean visit(SQLAlterTableTruncatePartition x);
-    
+
     void endVisit(SQLAlterTableTruncatePartition x);
-    
+
     boolean visit(SQLAlterTableDiscardPartition x);
-    
+
     void endVisit(SQLAlterTableDiscardPartition x);
-    
+
     boolean visit(SQLAlterTableImportPartition x);
-    
+
     void endVisit(SQLAlterTableImportPartition x);
-    
+
     boolean visit(SQLAlterTableAnalyzePartition x);
-    
+
     void endVisit(SQLAlterTableAnalyzePartition x);
-    
+
     boolean visit(SQLAlterTableCheckPartition x);
-    
+
     void endVisit(SQLAlterTableCheckPartition x);
-    
+
     boolean visit(SQLAlterTableOptimizePartition x);
-    
+
     void endVisit(SQLAlterTableOptimizePartition x);
-    
+
     boolean visit(SQLAlterTableRebuildPartition x);
-    
+
     void endVisit(SQLAlterTableRebuildPartition x);
-    
+
     boolean visit(SQLAlterTableRepairPartition x);
-    
+
     void endVisit(SQLAlterTableRepairPartition x);
-    
+
     boolean visit(SQLSequenceExpr x);
-    
+
     void endVisit(SQLSequenceExpr x);
 
     boolean visit(SQLMergeStatement x);
@@ -663,7 +719,7 @@ public interface SQLASTVisitor {
     boolean visit(SQLMergeStatement.MergeInsertClause x);
 
     void endVisit(SQLMergeStatement.MergeInsertClause x);
-    
+
     boolean visit(SQLErrorLoggingClause x);
 
     void endVisit(SQLErrorLoggingClause x);
@@ -677,15 +733,19 @@ public interface SQLASTVisitor {
     void endVisit(SQLCreateSequenceStatement x);
 
     boolean visit(SQLDateExpr x);
+
     void endVisit(SQLDateExpr x);
 
     boolean visit(SQLLimit x);
+
     void endVisit(SQLLimit x);
 
     void endVisit(SQLStartTransactionStatement x);
+
     boolean visit(SQLStartTransactionStatement x);
 
     void endVisit(SQLDescribeStatement x);
+
     boolean visit(SQLDescribeStatement x);
 
     /**
@@ -752,78 +812,103 @@ public interface SQLASTVisitor {
     void endVisit(SQLLateralViewTableSource x);
 
     boolean visit(SQLShowErrorsStatement x);
+
     void endVisit(SQLShowErrorsStatement x);
 
     boolean visit(SQLAlterCharacter x);
+
     void endVisit(SQLAlterCharacter x);
 
     boolean visit(SQLExprStatement x);
+
     void endVisit(SQLExprStatement x);
 
     boolean visit(SQLAlterProcedureStatement x);
+
     void endVisit(SQLAlterProcedureStatement x);
 
     boolean visit(SQLAlterViewStatement x);
+
     void endVisit(SQLAlterViewStatement x);
 
     boolean visit(SQLDropEventStatement x);
+
     void endVisit(SQLDropEventStatement x);
 
     boolean visit(SQLDropLogFileGroupStatement x);
+
     void endVisit(SQLDropLogFileGroupStatement x);
 
     boolean visit(SQLDropServerStatement x);
+
     void endVisit(SQLDropServerStatement x);
 
     boolean visit(SQLDropSynonymStatement x);
+
     void endVisit(SQLDropSynonymStatement x);
 
     boolean visit(SQLRecordDataType x);
+
     void endVisit(SQLRecordDataType x);
 
     boolean visit(SQLDropTypeStatement x);
+
     void endVisit(SQLDropTypeStatement x);
 
     boolean visit(SQLExternalRecordFormat x);
+
     void endVisit(SQLExternalRecordFormat x);
 
     boolean visit(SQLArrayDataType x);
+
     void endVisit(SQLArrayDataType x);
 
     boolean visit(SQLMapDataType x);
+
     void endVisit(SQLMapDataType x);
 
     boolean visit(SQLStructDataType x);
+
     void endVisit(SQLStructDataType x);
 
     boolean visit(SQLStructDataType.Field x);
+
     void endVisit(SQLStructDataType.Field x);
 
     boolean visit(SQLDropMaterializedViewStatement x);
+
     void endVisit(SQLDropMaterializedViewStatement x);
 
     boolean visit(SQLAlterTableRenameIndex x);
+
     void endVisit(SQLAlterTableRenameIndex x);
 
     boolean visit(SQLAlterSequenceStatement x);
+
     void endVisit(SQLAlterSequenceStatement x);
 
     boolean visit(SQLAlterTableExchangePartition x);
+
     void endVisit(SQLAlterTableExchangePartition x);
 
     boolean visit(SQLValuesExpr x);
+
     void endVisit(SQLValuesExpr x);
 
     boolean visit(SQLValuesTableSource x);
+
     void endVisit(SQLValuesTableSource x);
 
     boolean visit(SQLContainsExpr x);
+
     void endVisit(SQLContainsExpr x);
 
     boolean visit(SQLRealExpr x);
+
     void endVisit(SQLRealExpr x);
 
     boolean visit(SQLWindow x);
+
     void endVisit(SQLWindow x);
 
 }

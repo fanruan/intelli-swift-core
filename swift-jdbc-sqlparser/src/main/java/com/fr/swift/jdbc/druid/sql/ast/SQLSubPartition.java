@@ -18,9 +18,9 @@ package com.fr.swift.jdbc.druid.sql.ast;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSubPartition extends SQLObjectImpl {
-    protected SQLName           name;
+    protected SQLName name;
     protected SQLPartitionValue values;
-    protected SQLName           tableSpace;
+    protected SQLName tableSpace;
 
     public SQLName getName() {
         return name;
@@ -32,7 +32,7 @@ public class SQLSubPartition extends SQLObjectImpl {
         }
         this.name = name;
     }
-    
+
     public SQLPartitionValue getValues() {
         return values;
     }

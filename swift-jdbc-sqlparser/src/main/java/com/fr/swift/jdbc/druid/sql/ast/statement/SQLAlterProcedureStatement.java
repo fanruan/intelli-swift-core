@@ -23,7 +23,7 @@ public class SQLAlterProcedureStatement extends SQLStatementImpl implements SQLA
 
     private SQLExpr name;
 
-    private boolean compile       = false;
+    private boolean compile = false;
     private boolean reuseSettings = false;
 
     private SQLExpr comment;

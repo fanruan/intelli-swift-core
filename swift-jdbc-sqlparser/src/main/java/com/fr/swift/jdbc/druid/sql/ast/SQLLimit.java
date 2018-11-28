@@ -15,7 +15,6 @@
  */
 package com.fr.swift.jdbc.druid.sql.ast;
 
-import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIntegerExpr;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
