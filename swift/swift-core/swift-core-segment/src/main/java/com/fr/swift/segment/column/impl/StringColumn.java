@@ -18,7 +18,7 @@ public class StringColumn extends BaseColumn<String> {
 
     @Override
     public DictionaryEncodedColumn<String> getDictionaryEncodedColumn() {
-        return dictColumn != null ? dictColumn : (dictColumn = new StringDictColumn(location, Comparators.PINYIN_ASC));
+        return dictColumn != null ? dictColumn : (dictColumn = new StringDictColumn(location, Comparators.STRING_ASC));
     }
 
     @Override

@@ -11,9 +11,6 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.swift.task.service.ServiceTaskType;
-import com.fr.swift.task.service.SwiftServiceCallable;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -30,8 +27,6 @@ public class RemoveHistoryListener extends Listener<SegmentKey> {
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
-    private static final ServiceTaskExecutor SVC_EXEC = SwiftContext.get().getBean(ServiceTaskExecutor.class);
-
     @Override
     public void on(Event event, final SegmentKey segKey) {
         if (ClusterSelector.getInstance().getFactory().isCluster()) {
@@ -40,27 +35,13 @@ public class RemoveHistoryListener extends Listener<SegmentKey> {
                 REPO.currentRepo().delete(remote);
 
                 SEG_SVC.removeSegments(Collections.singletonList(segKey));
-                clearSeg(segKey);
+                SegmentUtils.clearSegment(segKey);
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error("unload segment {} failed", segKey, e);
             }
         } else {
             SEG_SVC.removeSegments(Collections.singletonList(segKey));
-            clearSeg(segKey);
-        }
-    }
-
-    private void clearSeg(final SegmentKey segKey) {
-        try {
-            SVC_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.CLEAR_LOCAL, new Callable<Void>() {
-                @Override
-                public Void call() {
-                    SegmentUtils.clearSegment(segKey);
-                    return null;
-                }
-            }));
-        } catch (InterruptedException e) {
-            SwiftLoggers.getLogger().error(e);
+            SegmentUtils.clearSegment(segKey);
         }
     }
 

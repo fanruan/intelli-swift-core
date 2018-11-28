@@ -16,6 +16,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.FineIOLoggerImpl;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.service.MaskHistoryListener;
 import com.fr.swift.service.RemoveHistoryListener;
 import com.fr.swift.service.TransferRealtimeListener;
@@ -68,7 +69,15 @@ public class SwiftEngineActivator extends Activator implements Prepare {
 
     @Override
     public void stop() {
-        SwiftLoggers.getLogger().info("swift engine stopped");
+        try {
+            SwiftContext.get().getBean("localManager", ServiceManager.class).shutDown();
+            for (SegmentContainer container : SegmentContainer.values()) {
+                container.clear();
+            }
+            SwiftLoggers.getLogger().info("swift engine stopped");
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("swift engine stop failed", e);
+        }
     }
 
     @Override

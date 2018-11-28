@@ -1,6 +1,5 @@
 package com.fr.swift.generate.history.transport;
 
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.generate.Transporter;
 import com.fr.swift.log.SwiftLogger;
@@ -57,8 +56,6 @@ public class TableTransporter extends BaseWorker implements Transporter {
         } finally {
             resultSet.close();
         }
-
-        ResourceDiscovery.getInstance().setLastUpdateTime(dataSource.getSourceKey(), System.currentTimeMillis());
     }
 
     @Override

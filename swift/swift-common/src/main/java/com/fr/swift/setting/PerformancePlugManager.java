@@ -5,9 +5,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean isDirectGenerating;
     private int retryMaxTimes = 3;
     private long retryMaxSleepTime = 100L;
-    private int reIndexRowCount = 10000;
+    private int reIndexRowCount = 10000000;
 
-    private boolean diskSort = false;
+    private boolean diskSort = true;
     private long diskSortDumpThreshold = 1 << 15;
 
     private boolean useNumberType;

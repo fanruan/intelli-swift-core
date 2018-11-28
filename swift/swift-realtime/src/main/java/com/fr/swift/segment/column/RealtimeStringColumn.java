@@ -22,6 +22,6 @@ public class RealtimeStringColumn extends BaseRealtimeColumn<String> {
 
     @Override
     protected Comparator<String> getComparator() {
-        return Comparators.PINYIN_ASC;
+        return Comparators.STRING_ASC;
     }
 }

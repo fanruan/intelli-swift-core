@@ -5,6 +5,7 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
@@ -14,7 +15,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.Util;
-import com.fr.swift.util.function.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +41,7 @@ public class DropColumnAction extends BaseAlterTableAction {
             final String columnId = relatedColumnMeta.getColumnId();
             if (segKey.getStoreType().isTransient()) {
                 // 删内存
-                ResourceDiscovery.getInstance().removeIf(new Predicate<String>() {
-                    @Override
-                    public boolean test(String s) {
-                        return s.contains(CubeUtil.getColumnPath(segKey, columnId));
-                    }
-                });
+                ResourceDiscovery.getInstance().release(new ResourceLocation(CubeUtil.getColumnPath(segKey, columnId), StoreType.MEMORY));
                 // 删备份
                 FileUtil.delete(CubeUtil.getAbsoluteColumnPath(segKey, columnId).replace(segKey.getSwiftSchema().getDir(), segKey.getSwiftSchema().getBackupDir()));
                 continue;

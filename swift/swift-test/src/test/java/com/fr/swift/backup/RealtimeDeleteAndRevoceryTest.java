@@ -3,6 +3,8 @@ package com.fr.swift.backup;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.creater.FilterCreater;
 import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.generate.BaseTest;
@@ -71,7 +73,7 @@ public class RealtimeDeleteAndRevoceryTest extends BaseTest {
             }
         }
         //清空内存数据，并恢复数据和allshowindex
-        ResourceDiscovery.getInstance().removeIf(s -> s.contains("cubes/" + dataSource.getSourceKey().getId()));
+        ResourceDiscovery.getInstance().release(new ResourceLocation("cubes/" + dataSource.getSourceKey().getId(), StoreType.MEMORY));
         FileSegmentRecovery recovery = new FileSegmentRecovery();
         List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
         recovery.recover(segKeys);

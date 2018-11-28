@@ -74,7 +74,7 @@ public abstract class ImmutableNullColumn<T> implements Column<T> {
                 return new BaseNullDictColumn() {
                     @Override
                     public Comparator<String> getComparator() {
-                        return Comparators.PINYIN_ASC;
+                        return Comparators.STRING_ASC;
                     }
 
                     @Override

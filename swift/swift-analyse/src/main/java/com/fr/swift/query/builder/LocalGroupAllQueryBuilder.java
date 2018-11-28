@@ -163,7 +163,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             case INTEGER:
                 return isAsc ? Comparators.<Integer>asc() : Comparators.<Integer>desc();
             default:
-                return isAsc ? Comparators.PINYIN_ASC : Comparators.PINYIN_DESC;
+                return isAsc ? Comparators.STRING_ASC : Comparators.reverse(Comparators.STRING_ASC);
         }
     }
 
