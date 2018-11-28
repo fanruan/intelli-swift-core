@@ -152,7 +152,7 @@ public class LogQueryUtils {
             bean.setFilter(createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()));
             metrics.add(bean);
         }
-        queryInfoBean.setMetricBeans(metrics);
+        queryInfoBean.setAggregations(metrics);
 
         List<SortBean> sortBeans = new ArrayList<SortBean>();
         for (MetricBean metricBean : metricBeans) {
@@ -174,7 +174,7 @@ public class LogQueryUtils {
         RowSortQueryInfoBean sortQueryInfoBean = new RowSortQueryInfoBean();
         sortQueryInfoBean.setSortBeans(sortBeans);
         postQueryInfoBeans.add(sortQueryInfoBean);
-        queryInfoBean.setPostQueryInfoBeans(postQueryInfoBeans);
+        queryInfoBean.setPostAggregations(postQueryInfoBeans);
 
         return queryInfoBean;
     }

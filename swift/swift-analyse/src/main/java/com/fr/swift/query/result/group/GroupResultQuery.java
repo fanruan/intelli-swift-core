@@ -5,8 +5,8 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.result.node.resultset.ChainedNodeMergeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -2,6 +2,7 @@ package com.fr.swift.query.result.serialize;
 
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -14,9 +15,9 @@ import java.util.List;
  */
 public class SwiftResultSetUtils {
 
-    public static SwiftResultSet convert2Serializable(String jsonString, QueryType queryType,
+    public static QueryResultSet convert2Serializable(String jsonString, QueryType queryType,
                                                       SwiftResultSet resultSet) throws SQLException {
-        SwiftResultSet result = null;
+        QueryResultSet result = null;
 //        switch (queryType) {
 //            case LOCAL_GROUP_ALL: {
 //                NodeResultSet<SwiftNode> nodeResultSet = (NodeResultSet<SwiftNode>) resultSet;

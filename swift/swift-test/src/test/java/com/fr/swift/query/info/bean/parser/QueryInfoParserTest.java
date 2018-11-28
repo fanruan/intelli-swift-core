@@ -74,7 +74,7 @@ public class QueryInfoParserTest {
         assertEquals(1, dimensionBeans.size());
         assertEquals("合同类型", dimensionBeans.get(0).getColumn());
         assertEquals("合同类型-转义", dimensionBeans.get(0).getAlias());
-        List<MetricBean> metricBeans = queryBean.getMetricBeans();
+        List<MetricBean> metricBeans = queryBean.getAggregations();
         assertEquals(1, metricBeans.size());
         assertEquals("购买数量", metricBeans.get(0).getColumn());
         assertEquals("购买数量-转义", metricBeans.get(0).getAlias());

@@ -12,6 +12,11 @@ public enum QueryType {
     DETAIL,
 
     /**
+     * 明细查询排序
+     */
+    DETAIL_SORT,
+
+    /**
      * 分组聚合
      */
     GROUP

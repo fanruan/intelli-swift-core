@@ -14,28 +14,27 @@ import java.util.List;
 public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean {
 
     @JsonProperty
-    private List<MetricBean> metricBeans = new ArrayList<MetricBean>(0);
+    private List<MetricBean> aggregations = new ArrayList<MetricBean>(0);
     @JsonProperty
-    private List<PostQueryInfoBean> postQueryInfoBeans = new ArrayList<PostQueryInfoBean>(0);
+    private List<PostQueryInfoBean> postAggregations = new ArrayList<PostQueryInfoBean>(0);
 
     {
         queryType = QueryType.GROUP;
     }
 
-    public List<MetricBean> getMetricBeans() {
-        return metricBeans;
+    public List<MetricBean> getAggregations() {
+        return aggregations;
     }
 
-    public void setMetricBeans(List<MetricBean> metricBeans) {
-        this.metricBeans = metricBeans;
+    public void setAggregations(List<MetricBean> aggregations) {
+        this.aggregations = aggregations;
     }
 
-    public List<PostQueryInfoBean> getPostQueryInfoBeans() {
-        return postQueryInfoBeans;
+    public List<PostQueryInfoBean> getPostAggregations() {
+        return postAggregations;
     }
 
-    public void setPostQueryInfoBeans(List<PostQueryInfoBean> postQueryInfoBeans) {
-        this.postQueryInfoBeans = postQueryInfoBeans;
+    public void setPostAggregations(List<PostQueryInfoBean> postAggregations) {
+        this.postAggregations = postAggregations;
     }
-
 }

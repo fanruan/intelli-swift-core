@@ -5,7 +5,7 @@ import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.Iterator;
 

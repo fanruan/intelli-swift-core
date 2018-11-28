@@ -1,7 +1,7 @@
 package com.fr.swift.query.result;
 
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.List;
 

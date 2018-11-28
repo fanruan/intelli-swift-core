@@ -9,7 +9,7 @@ import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.post.PostQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.result.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;

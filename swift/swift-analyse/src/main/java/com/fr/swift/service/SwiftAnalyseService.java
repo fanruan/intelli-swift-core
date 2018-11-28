@@ -12,6 +12,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.factory.SessionFactory;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -21,9 +22,7 @@ import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.listener.RemoteSender;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +42,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     private transient SessionFactory sessionFactory;
     private transient boolean loadable = true;
-    @Autowired(required = false)
-    private transient QueryBeanFactory queryBeanFactory;
 
     public SwiftAnalyseService() {
     }
@@ -53,7 +50,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
         this.sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
-        this.queryBeanFactory = SwiftContext.get().getBean("queryBeanFactory", QueryBeanFactory.class);
         cacheSegments();
         return start;
     }
@@ -135,9 +131,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    public SwiftResultSet getQueryResult(String queryJson) throws Exception {
+    public QueryResultSet getQueryResult(String queryJson) throws Exception {
         SwiftLoggers.getLogger().debug(queryJson);
-        QueryBean info = queryBeanFactory.create(queryJson);
+        QueryBean info = QueryBeanFactory.create(queryJson);
         return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
     }
 

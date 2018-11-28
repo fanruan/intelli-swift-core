@@ -1,7 +1,7 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 /**
  * Created by Lyon on 2018/4/26.

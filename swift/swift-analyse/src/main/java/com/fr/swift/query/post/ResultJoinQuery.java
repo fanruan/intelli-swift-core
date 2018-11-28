@@ -4,7 +4,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.post.utils.ResultJoinUtils;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

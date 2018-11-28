@@ -5,12 +5,12 @@ import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
-import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.node.resultset.ChainedNodeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;

@@ -4,7 +4,7 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 /**
  * Created by pony on 2017/12/14.

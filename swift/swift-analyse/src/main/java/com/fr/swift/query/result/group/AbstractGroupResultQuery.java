@@ -4,7 +4,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.AbstractResultQuery;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.Comparator;
 import java.util.List;

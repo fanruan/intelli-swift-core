@@ -11,9 +11,10 @@ import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.result.QueryRSMergerFactory;
-import com.fr.swift.result.QueryResultSet;
-import com.fr.swift.result.QueryResultSetMerger;
+import com.fr.swift.result.qrs.DSType;
+import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.result.qrs.QueryResultSetUtils;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
@@ -68,12 +69,18 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                         final QueryResultSet rs = (QueryResultSet) result;
                         resultSets.add(new QueryResultSet() {
                             private String queryJson = query;
+                            private DSType type = rs.type();
                             private int fetchSize = rs.getFetchSize();
                             private QueryResultSet resultSet = rs;
 
                             @Override
                             public int getFetchSize() {
                                 return fetchSize;
+                            }
+
+                            @Override
+                            public DSType type() {
+                                return type;
                             }
 
                             @Override
@@ -110,7 +117,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                 }
             });
         }
-        QueryResultSetMerger merger = QueryRSMergerFactory.createMerger(queryBean.getQueryType());
+        QueryResultSetMerger merger = QueryResultSetUtils.createMerger(queryBean.getQueryType());
         // TODO: 2018/11/27 postAggregation
         return merger.merge(resultSets);
     }

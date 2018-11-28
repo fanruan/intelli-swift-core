@@ -117,7 +117,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         try {
             final QueryInfoBean bean = QueryBeanFactory.create(queryDescription);
             SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
-            return sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
+            // TODO: 2018/11/28  
+            return (SwiftResultSet) sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (Exception e) {
             throw new SQLException(e);
         }

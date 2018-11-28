@@ -3,8 +3,8 @@ package com.fr.swift.query.post;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;

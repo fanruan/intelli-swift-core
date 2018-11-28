@@ -106,11 +106,11 @@ class PostQueryInfoParser {
         Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();
         for (QueryInfoBean queryBean : queryBeans) {
             // TODO: 2018/6/8 这边都是假定groupQuery
-            List<MetricBean> metricBeans = ((GroupQueryInfoBean) queryBean).getMetricBeans();
+            List<MetricBean> metricBeans = ((GroupQueryInfoBean) queryBean).getAggregations();
             for (MetricBean metricBean : metricBeans) {
                 fieldIndexMap.put(metricBean.getColumn(), fieldIndexMap.size());
             }
-            List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryInfoBean) queryBean).getPostQueryInfoBeans();
+            List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryInfoBean) queryBean).getPostAggregations();
             for (PostQueryInfoBean queryInfoBean : queryInfoBeans) {
                 if (queryInfoBean.getType() != PostQueryType.CAL_FIELD) {
                     continue;

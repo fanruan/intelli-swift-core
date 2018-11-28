@@ -271,7 +271,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         try {
             final QueryInfoBean bean = QueryBeanFactory.create(queryDescription);
             SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
-            return factory.openSession(bean.getQueryId()).executeQuery(bean);
+            // TODO: 2018/11/28
+            return (SwiftResultSet) factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
             throw new SQLException(e);
         }

@@ -1,6 +1,7 @@
 package com.fr.swift.result;
 
 import com.fr.swift.query.query.Query;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;

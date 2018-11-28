@@ -35,7 +35,8 @@ public class TestQueryController {
         int count = 200;
         long start = System.currentTimeMillis();
         AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-        SwiftResultSet resultSet = service.getQueryResult(jsonString);
+        // TODO: 2018/11/28
+        SwiftResultSet resultSet = (SwiftResultSet) service.getQueryResult(jsonString);
         if (resultSet != null) {
             while (resultSet.hasNext() && count-- > 0) {
                 rows.add(resultSet.getNextRow());
@@ -64,7 +65,8 @@ public class TestQueryController {
         long start = System.currentTimeMillis();
         QueryBean queryBean = bean.toQueryBean();
         AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-        SwiftResultSet resultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+        // TODO: 2018/11/28
+        SwiftResultSet resultSet = (SwiftResultSet) service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
         if (resultSet != null) {
             while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());
@@ -82,7 +84,7 @@ public class TestQueryController {
         // swift-test模块的resources目录下有json示例
         long start = System.currentTimeMillis();
         AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-        SwiftResultSet resultSet = service.getQueryResult(jsonString);
+        SwiftResultSet resultSet = (SwiftResultSet) service.getQueryResult(jsonString);
         if (resultSet != null) {
             while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());

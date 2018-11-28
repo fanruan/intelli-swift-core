@@ -3,8 +3,8 @@ package com.fr.swift.query.result.detail;
 import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.QueryResultSet;
 import com.fr.swift.result.SortMultiSegmentDetailResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;

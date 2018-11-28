@@ -3,7 +3,7 @@ package com.fr.swift.query.result.detail;
 import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.AbstractResultQuery;
-import com.fr.swift.result.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.List;
 

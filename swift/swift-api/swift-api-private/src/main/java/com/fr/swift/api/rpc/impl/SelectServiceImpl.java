@@ -44,11 +44,13 @@ public class SelectServiceImpl implements SelectService {
                 AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
                 SwiftResultSet resultSet = null;
                 if (null != metaData && metaData.getSwiftDatabase() == database) {
-                    resultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+                    // TODO: 2018/11/28  
+                    resultSet = (SwiftResultSet) service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
                 } else {
                     metaData = tableService.detectiveMetaData(database, tableName);
                     ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
-                    resultSet = service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+                    // TODO: 2018/11/28  
+                    resultSet = (SwiftResultSet) service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
                 }
                 return getPageResultSet(queryJson, resultSet);
             }

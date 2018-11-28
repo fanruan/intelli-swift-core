@@ -1,6 +1,6 @@
 //package com.fr.swift.query.post;
 //
-//import com.fr.swift.query.post.utils.SwiftMetaDataUtils;
+//import com.fr.swift.query.post.meta.SwiftMetaDataUtils;
 //import com.fr.swift.query.query.Query;
 //import com.fr.swift.query.query.QueryBean;
 //import com.fr.swift.query.query.QueryType;

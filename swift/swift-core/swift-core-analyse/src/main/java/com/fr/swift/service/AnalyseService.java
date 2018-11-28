@@ -4,8 +4,8 @@ import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +24,7 @@ public interface AnalyseService extends SwiftService, Serializable {
      * @throws Exception
      */
     @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
-    SwiftResultSet getQueryResult(String queryJson) throws Exception;
+    QueryResultSet getQueryResult(String queryJson) throws Exception;
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
