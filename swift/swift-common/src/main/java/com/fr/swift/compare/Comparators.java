@@ -12,11 +12,9 @@ import java.util.Comparator;
 public class Comparators {
 
     /**
-     * 专治中文String
+     * todo fr还是用pinyin，开源版本开放spi，由用户自定义排序方式
      */
-    public static final Comparator<String> PINYIN_ASC = new ChinesePinyinComparator();
-
-    public static final Comparator<String> PINYIN_DESC = reverse(PINYIN_ASC);
+    public static final Comparator<String> STRING_ASC = Comparators.asc();
 
     /**
      * 升序
@@ -37,12 +35,6 @@ public class Comparators {
             public int compare(T o1, T o2) {
                 if (o1 == o2) {
                     return 0;
-                }
-                if (o1 == Comparators.MIN_INFINITY || o2 == Comparators.MAX_INFINITY) {
-                    return -1;
-                }
-                if (o1 == Comparators.MAX_INFINITY || o2 == Comparators.MIN_INFINITY) {
-                    return 1;
                 }
                 if (o1 == null) {
                     return -1;
@@ -75,12 +67,6 @@ public class Comparators {
                 if (a == b) {
                     return 0;
                 }
-                if (a == Comparators.MIN_INFINITY || b == Comparators.MAX_INFINITY) {
-                    return -1;
-                }
-                if (a == Comparators.MAX_INFINITY || b == Comparators.MIN_INFINITY) {
-                    return 1;
-                }
                 if (a == null) {
                     return -1;
                 }
@@ -92,7 +78,7 @@ public class Comparators {
                     return Double.compare(a.doubleValue(), b.doubleValue());
                 }
                 if (a instanceof Long || b instanceof Long) {
-                    return (((Long) a.longValue())).compareTo(b.longValue());
+                    return ((Long) a.longValue()).compareTo(b.longValue());
                 }
                 if (a instanceof Integer || b instanceof Integer) {
                     return ((Integer) a.intValue()).compareTo(b.intValue());
@@ -108,21 +94,7 @@ public class Comparators {
         };
     }
 
-    public static <T extends Number> Comparator<T> numberDesc() {
-        return reverse(Comparators.<T>numberAsc());
+    private Comparators() {
+        throw new InstantiationError();
     }
-
-    public static final Comparable<?> MIN_INFINITY = new Comparable<Object>() {
-        @Override
-        public int compareTo(Object o) {
-            return -1;
-        }
-    };
-
-    public static final Comparable<?> MAX_INFINITY = new Comparable<Object>() {
-        @Override
-        public int compareTo(Object o) {
-            return 1;
-        }
-    };
 }

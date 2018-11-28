@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
  * @date 2018/4/13
  */
 public class ComparatorsTest {
+
     @Test
     public void numberAsc() {
         double d1 = Double.MAX_VALUE, d2 = Double.MIN_VALUE;

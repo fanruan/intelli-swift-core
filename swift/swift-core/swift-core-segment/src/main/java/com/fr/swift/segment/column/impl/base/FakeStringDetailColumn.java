@@ -30,7 +30,7 @@ public class FakeStringDetailColumn implements DetailColumn<String> {
 
     public FakeStringDetailColumn(Column<String> hostColumn) {
         this.hostColumn = hostColumn;
-        map = newIntListExternalMap(Comparators.PINYIN_ASC);
+        map = newIntListExternalMap(Comparators.STRING_ASC);
     }
 
     @Override
