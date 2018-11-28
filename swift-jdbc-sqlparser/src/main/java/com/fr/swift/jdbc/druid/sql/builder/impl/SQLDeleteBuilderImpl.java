@@ -25,9 +25,6 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeleteStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.builder.SQLDeleteBuilder;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
 public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
@@ -123,18 +120,6 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
     }
 
     public SQLDeleteStatement createSQLDeleteStatement() {
-        if (JdbcConstants.ORACLE.equals(dbType)) {
-            return new OracleDeleteStatement();    
-        }
-        
-        if (JdbcConstants.MYSQL.equals(dbType)) {
-            return new MySqlDeleteStatement();    
-        }
-        
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            return new PGDeleteStatement();    
-        }
-        
         return new SQLDeleteStatement();
     }
 

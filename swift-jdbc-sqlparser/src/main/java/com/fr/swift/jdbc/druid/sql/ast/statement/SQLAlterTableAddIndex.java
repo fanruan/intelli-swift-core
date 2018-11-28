@@ -21,9 +21,6 @@ import java.util.List;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.MySqlKey;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.MySqlUnique;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTableItem {
@@ -100,30 +97,6 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
 
     public void setKey(boolean key) {
         this.key = key;
-    }
-
-    public void cloneTo(MySqlTableIndex x) {
-        if (name != null) {
-            x.setName(name.clone());
-        }
-        for (SQLSelectOrderByItem item : items) {
-            SQLSelectOrderByItem item2 = item.clone();
-            item2.setParent(x);
-            x.getColumns().add(item);
-        }
-        x.setIndexType(type);
-    }
-
-    public void cloneTo(MySqlKey x) {
-        if (name != null) {
-            x.setName(name.clone());
-        }
-        for (SQLSelectOrderByItem item : items) {
-            SQLSelectOrderByItem item2 = item.clone();
-            item2.setParent(x);
-            x.getColumns().add(item);
-        }
-        x.setIndexType(type);
     }
 
     public SQLExpr getComment() {

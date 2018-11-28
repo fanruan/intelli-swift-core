@@ -41,11 +41,6 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelect;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.fr.swift.jdbc.druid.sql.dialect.db2.visitor.DB2EvalVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.functions.Ascii;
 import com.fr.swift.jdbc.druid.sql.visitor.functions.Bin;
 import com.fr.swift.jdbc.druid.sql.visitor.functions.BitLength;
@@ -76,10 +71,7 @@ import com.fr.swift.jdbc.druid.sql.visitor.functions.Ucase;
 import com.fr.swift.jdbc.druid.sql.visitor.functions.Unhex;
 import com.fr.swift.jdbc.druid.util.HexBin;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
-import com.fr.swift.jdbc.druid.util.JdbcUtils;
 import com.fr.swift.jdbc.druid.util.Utils;
-import com.fr.swift.jdbc.druid.wall.spi.WallVisitorUtils;
-import com.fr.swift.jdbc.druid.wall.spi.WallVisitorUtils.WallConditionContext;
 
 public class SQLEvalVisitorUtils {
 
@@ -144,35 +136,6 @@ public class SQLEvalVisitorUtils {
     }
 
     public static SQLEvalVisitor createEvalVisitor(String dbType) {
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlEvalVisitorImpl();
-        }
-
-        if (JdbcUtils.MARIADB.equals(dbType)) {
-            return new MySqlEvalVisitorImpl();
-        }
-
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlEvalVisitorImpl();
-        }
-
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
-            return new OracleEvalVisitor();
-        }
-
-        if (JdbcConstants.POSTGRESQL.equals(dbType)
-                || JdbcConstants.ENTERPRISEDB.equals(dbType)) {
-            return new PGEvalVisitor();
-        }
-
-        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
-            return new SQLServerEvalVisitor();
-        }
-
-        if (JdbcUtils.DB2.equals(dbType)) {
-            return new DB2EvalVisitor();
-        }
-        
         return new SQLEvalVisitorImpl();
     }
 
@@ -750,11 +713,6 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLQueryExpr x) {
-        if (WallVisitorUtils.isSimpleCountTableSource(null, ((SQLQueryExpr) x).getSubQuery())) {
-            x.putAttribute(EVAL_VALUE, 1);
-            return false;
-        }
-
         if (x.getSubQuery().getQuery() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getSubQuery().getQuery();
 
@@ -794,11 +752,6 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLUnaryExpr x) {
-        final WallConditionContext wallConditionContext = WallVisitorUtils.getWallConditionContext();
-        if (x.getOperator() == SQLUnaryOperator.Compl && wallConditionContext != null) {
-            wallConditionContext.setBitwise(true);
-        }
-
         x.getExpr().accept(visitor);
 
         Object val = x.getExpr().getAttribute(EVAL_VALUE);
@@ -850,38 +803,11 @@ public class SQLEvalVisitorUtils {
         left.accept(visitor);
         right.accept(visitor);
 
-        final WallConditionContext wallConditionContext = WallVisitorUtils.getWallConditionContext();
-        if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            if (wallConditionContext != null) {
-                if (left.getAttribute(EVAL_VALUE) == Boolean.TRUE || right.getAttribute(EVAL_VALUE) == Boolean.TRUE) {
-                    wallConditionContext.setPartAlwayTrue(true);
-                }
-            }
-        } else if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
-            if (wallConditionContext != null) {
-                if (left.getAttribute(EVAL_VALUE) == Boolean.FALSE || right.getAttribute(EVAL_VALUE) == Boolean.FALSE) {
-                    wallConditionContext.setPartAlwayFalse(true);
-                }
-            }
-        } else if (x.getOperator() == SQLBinaryOperator.BooleanXor) {
-            if (wallConditionContext != null) {
-                wallConditionContext.setXor(true);
-            }
-        } else if (x.getOperator() == SQLBinaryOperator.BitwiseAnd //
-                   || x.getOperator() == SQLBinaryOperator.BitwiseNot //
-                   || x.getOperator() == SQLBinaryOperator.BitwiseOr //
-                   || x.getOperator() == SQLBinaryOperator.BitwiseXor) {
-            if (wallConditionContext != null) {
-                wallConditionContext.setBitwise(true);
-            }
-        }
-
         Object leftValue = left.getAttribute(EVAL_VALUE);
         Object rightValue = right.getAttributes().get(EVAL_VALUE);
 
         if (x.getOperator() == SQLBinaryOperator.Like) {
             if (isAlwayTrueLikePattern(x.getRight())) {
-                x.putAttribute(WallVisitorUtils.HAS_TRUE_LIKE, Boolean.TRUE);
                 x.putAttribute(EVAL_VALUE, Boolean.TRUE);
                 return false;
             }
@@ -929,10 +855,6 @@ public class SQLEvalVisitorUtils {
 
         if (!rightHasValue) {
             return false;
-        }
-
-        if (wallConditionContext != null) {
-            wallConditionContext.setConstArithmetic(true);
         }
 
         leftValue = processValue(leftValue);

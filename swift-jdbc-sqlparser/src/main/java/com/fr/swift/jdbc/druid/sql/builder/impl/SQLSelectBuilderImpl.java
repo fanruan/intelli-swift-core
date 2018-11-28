@@ -33,14 +33,7 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQuery;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
 import com.fr.swift.jdbc.druid.sql.builder.SQLSelectBuilder;
-import com.fr.swift.jdbc.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.fr.swift.jdbc.druid.sql.ast.SQLLimit;
-import com.fr.swift.jdbc.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
 public class SQLSelectBuilderImpl implements SQLSelectBuilder {
@@ -244,22 +237,6 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
     }
 
     protected SQLSelectQuery createSelectQueryBlock() {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
-            return new MySqlSelectQueryBlock();
-        }
-
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            return new PGSelectQueryBlock();
-        }
-
-        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
-            return new SQLServerSelectQueryBlock();
-        }
-
-        if (JdbcConstants.ORACLE.equals(dbType)) {
-            return new OracleSelectQueryBlock();
-        }
-
         return new SQLSelectQueryBlock();
     }
 

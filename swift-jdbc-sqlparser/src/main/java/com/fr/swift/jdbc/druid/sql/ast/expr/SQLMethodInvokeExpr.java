@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 
@@ -165,18 +164,6 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         children.add(owner);
         children.addAll(this.parameters);
         return children;
-    }
-
-    protected void accept0(OracleASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.owner);
-            acceptChild(visitor, this.parameters);
-            acceptChild(visitor, this.from);
-            acceptChild(visitor, this.using);
-            acceptChild(visitor, this._for);
-        }
-
-        visitor.endVisit(this);
     }
 
     @Override

@@ -22,10 +22,6 @@ import com.fr.swift.jdbc.druid.sql.ast.*;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.MySqlKey;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.MySqlUnique;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.stmt.OracleCreateSynonymStatement;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
@@ -53,7 +49,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected Boolean                          logging;
 
     protected SQLName                          tablespace;
-    protected SQLPartitionBy                   partitioning;
     protected SQLName                          storedAs;
 
     protected boolean                          onCommitPreserveRows;
@@ -222,18 +217,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.tablespace = tablespace;
     }
 
-    public SQLPartitionBy getPartitioning() {
-        return partitioning;
-    }
-
-    public void setPartitioning(SQLPartitionBy partitioning) {
-        if (partitioning != null) {
-            partitioning.setParent(this);
-        }
-
-        this.partitioning = partitioning;
-    }
-
     public Map<String, SQLObject> getTableOptions() {
         return tableOptions;
     }
@@ -341,77 +324,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return pk.containsColumn(columnName);
     }
 
-    /**
-     * only for show columns
-     */
-    public boolean isMUL(String columnName) {
-        for (SQLTableElement element : this.tableElementList) {
-            if (element instanceof MySqlUnique) {
-                MySqlUnique unique = (MySqlUnique) element;
-
-                SQLExpr column = unique.getColumns().get(0).getExpr();
-                if (column instanceof SQLIdentifierExpr
-                        && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
-                    return unique.columns.size() > 1;
-                } else if (column instanceof SQLMethodInvokeExpr
-                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
-                    return true;
-                }
-            } else if (element instanceof MySqlKey) {
-                MySqlKey unique = (MySqlKey) element;
-
-                SQLExpr column = unique.getColumns().get(0).getExpr();
-                if (column instanceof SQLIdentifierExpr
-                        && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
-                    return true;
-                } else if (column instanceof SQLMethodInvokeExpr
-                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * only for show columns
-     */
-    public boolean isUNI(String columnName) {
-        for (SQLTableElement element : this.tableElementList) {
-            if (element instanceof MySqlUnique) {
-                MySqlUnique unique = (MySqlUnique) element;
-
-                if (unique.getColumns().size() == 0) {
-                    continue;
-                }
-
-                SQLExpr column = unique.getColumns().get(0).getExpr();
-                if (column instanceof SQLIdentifierExpr
-                        && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
-                    return unique.columns.size() == 1;
-                } else if (column instanceof SQLMethodInvokeExpr
-                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public MySqlUnique findUnique(String columnName) {
-        for (SQLTableElement element : this.tableElementList) {
-            if (element instanceof MySqlUnique) {
-                MySqlUnique unique = (MySqlUnique) element;
-
-                if (unique.containsColumn(columnName)) {
-                    return unique;
-                }
-            }
-        }
-
-        return null;
-    }
-
     public SQLTableElement findIndex(String columnName) {
         for (SQLTableElement element : tableElementList) {
             if (element instanceof SQLUniqueConstraint) {
@@ -427,18 +339,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                     }
                 }
 
-            } else if (element instanceof MySqlTableIndex) {
-                List<SQLSelectOrderByItem> indexColumns = ((MySqlTableIndex) element).getColumns();
-                for (SQLSelectOrderByItem orderByItem : indexColumns) {
-                    SQLExpr columnExpr = orderByItem.getExpr();
-                    if (columnExpr instanceof SQLIdentifierExpr) {
-                        String keyColumName = ((SQLIdentifierExpr) columnExpr).getName();
-                        keyColumName = SQLUtils.normalize(keyColumName);
-                        if (keyColumName.equalsIgnoreCase(columnName)) {
-                            return element;
-                        }
-                    }
-                }
             }
 
         }
@@ -576,18 +476,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             }
         }
 
-        for (SQLStatement stmt : stmtList) {
-            if (stmt instanceof OracleCreateSynonymStatement) {
-                OracleCreateSynonymStatement createSynonym = (OracleCreateSynonymStatement) stmt;
-                SQLName object = createSynonym.getObject();
-                String refTableName = object.getSimpleName();
-                SQLCreateTableStatement refTable = tables.get(refTableName);
-                if (refTable != null) {
-                    edges.add(new ListDG.Edge(stmt, refTable));
-                }
-            }
-        }
-
         ListDG dg = new ListDG(stmtList, edges);
 
         SQLStatement[] tops = new SQLStatement[stmtList.size()];
@@ -702,12 +590,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                     return true;
                 }
 
-            } else if (e instanceof MySqlTableIndex) {
-                MySqlTableIndex tableIndex = (MySqlTableIndex) e;
-                if (SQLUtils.nameEquals(tableIndex.getName(), x.getIndexName())) {
-                    tableElementList.remove(i);
-                    return true;
-                }
             }
         }
         return false;
@@ -894,12 +776,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                     return true;
                 }
 
-            } else if (e instanceof MySqlTableIndex) {
-                MySqlTableIndex tableIndex = (MySqlTableIndex) e;
-                if (SQLUtils.nameEquals(tableIndex.getName(), item.getIndexName())) {
-                    tableElementList.remove(i);
-                    return true;
-                }
             }
         }
         return false;
@@ -939,12 +815,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                     SQLUnique unique = (SQLUnique) e;
                     unique.applyDropColumn(column);
                     if (unique.getColumns().size() == 0) {
-                        tableElementList.remove(i);
-                    }
-                } else if (e instanceof MySqlTableIndex) {
-                    MySqlTableIndex index = (MySqlTableIndex) e;
-                    index.applyDropColumn(column);
-                    if (index.getColumns().size() == 0) {
                         tableElementList.remove(i);
                     }
                 }

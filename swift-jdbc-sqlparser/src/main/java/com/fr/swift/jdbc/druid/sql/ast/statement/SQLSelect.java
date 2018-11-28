@@ -21,7 +21,6 @@ import java.util.List;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.*;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTOutputVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
@@ -153,10 +152,6 @@ public class SQLSelect extends SQLObjectImpl {
             dbType = ((SQLStatement) parent).getDbType();
         }
 
-        if (dbType == null && parent instanceof OracleSQLObject) {
-            dbType = JdbcConstants.ORACLE;
-        }
-
         if (dbType == null && query instanceof SQLSelectQueryBlock) {
             dbType = ((SQLSelectQueryBlock) query).dbType;
         }
@@ -173,10 +168,6 @@ public class SQLSelect extends SQLObjectImpl {
             if (dbType != null) {
                 return SQLUtils.toSQLString(this, dbType);
             }
-        }
-
-        if (parent instanceof OracleSQLObject) {
-            return SQLUtils.toSQLString(this, JdbcConstants.ORACLE);
         }
 
         if (query instanceof SQLSelectQueryBlock) {

@@ -21,12 +21,6 @@ import java.util.List;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.expr.*;
-import com.fr.swift.jdbc.druid.sql.dialect.db2.visitor.DB2ExportParameterVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
-import com.fr.swift.jdbc.druid.util.JdbcUtils;
 
 public final class ExportParameterVisitorUtils {
     
@@ -36,33 +30,6 @@ public final class ExportParameterVisitorUtils {
     }
 
     public static ExportParameterVisitor createExportParameterVisitor(final  Appendable out ,final String dbType) {
-        
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlExportParameterVisitor(out);
-        }
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
-            return new OracleExportParameterVisitor(out);
-        }
-        if (JdbcUtils.DB2.equals(dbType)) {
-            return new DB2ExportParameterVisitor(out);
-        }
-        
-        if (JdbcUtils.MARIADB.equals(dbType)) {
-            return new MySqlExportParameterVisitor(out);
-        }
-        
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlExportParameterVisitor(out);
-        }
-
-        if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
-            return new PGExportParameterVisitor(out);
-        }
-
-        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
-            return new MSSQLServerExportParameterVisitor(out);
-        }
        return new ExportParameterizedOutputVisitor(out);
     }
 

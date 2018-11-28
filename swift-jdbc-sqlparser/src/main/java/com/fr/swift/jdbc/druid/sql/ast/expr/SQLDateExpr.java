@@ -20,8 +20,6 @@ import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExprImpl;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCharacterDataType;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.expr.OracleExpr;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.Collections;

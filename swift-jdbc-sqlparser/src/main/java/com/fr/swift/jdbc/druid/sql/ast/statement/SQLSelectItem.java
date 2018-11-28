@@ -20,7 +20,6 @@ import com.fr.swift.jdbc.druid.sql.ast.*;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
@@ -50,12 +49,12 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             expr.setParent(this);
         }
     }
-    
+
     public SQLSelectItem(SQLExpr expr, String alias, boolean connectByRoot){
         this.connectByRoot = connectByRoot;
         this.expr = expr;
         this.alias = alias;
-        
+
         if (expr != null) {
             expr.setParent(this);
         }
@@ -226,9 +225,6 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     public String toString() {
         String dbType = null;
-        if (parent instanceof OracleSQLObject) {
-            dbType = JdbcConstants.ORACLE;
-        }
         return SQLUtils.toSQLString(this, dbType);
     }
 }

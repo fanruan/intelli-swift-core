@@ -588,22 +588,6 @@ public interface SQLASTVisitor {
     
     void endVisit(SQLPartitionValue x);
     
-    boolean visit(SQLPartition x);
-    
-    void endVisit(SQLPartition x);
-    
-    boolean visit(SQLPartitionByRange x);
-    
-    void endVisit(SQLPartitionByRange x);
-    
-    boolean visit(SQLPartitionByHash x);
-    
-    void endVisit(SQLPartitionByHash x);
-    
-    boolean visit(SQLPartitionByList x);
-    
-    void endVisit(SQLPartitionByList x);
-    
     boolean visit(SQLSubPartition x);
     
     void endVisit(SQLSubPartition x);

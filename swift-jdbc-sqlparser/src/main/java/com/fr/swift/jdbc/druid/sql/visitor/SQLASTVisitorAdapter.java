@@ -1313,46 +1313,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
-    public boolean visit(SQLPartition x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLPartition x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLPartitionByRange x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLPartitionByRange x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLPartitionByHash x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLPartitionByHash x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLPartitionByList x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLPartitionByList x) {
-
-    }
-
-    @Override
     public boolean visit(SQLSubPartition x) {
         return true;
     }

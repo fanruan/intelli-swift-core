@@ -21,29 +21,9 @@ import java.util.Map;
 import com.fr.swift.jdbc.druid.sql.ast.*;
 import com.fr.swift.jdbc.druid.sql.ast.expr.*;
 import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.h2.visitor.H2OutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.fr.swift.jdbc.druid.sql.parser.*;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.visitor.SchemaStatVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.VisitorFeature;
-import com.fr.swift.jdbc.druid.support.logging.Log;
-import com.fr.swift.jdbc.druid.support.logging.LogFactory;
 import com.fr.swift.jdbc.druid.util.*;
 
 public class SQLUtils {
@@ -56,7 +36,7 @@ public class SQLUtils {
     public static FormatOption DEFAULT_LCASE_FORMAT_OPTION
             = new FormatOption(false, true);
 
-    private final static Log LOG = LogFactory.getLog(SQLUtils.class);
+//    private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
     public static String toSQLString(SQLObject sqlObject, String dbType) {
         return toSQLString(sqlObject, dbType, null);
@@ -255,10 +235,10 @@ public class SQLUtils {
             List<SQLStatement> statementList = parser.parseStatementList();
             return toSQLString(statementList, dbType, parameters, option);
         } catch (ClassCastException ex) {
-            LOG.warn("format error, dbType : " + dbType, ex);
+//            LOG.warn("format error, dbType : " + dbType, ex);
             return sql;
         } catch (ParserException ex) {
-            LOG.warn("format error", ex);
+//            LOG.warn("format error", ex);
             return sql;
         }
     }
@@ -369,94 +349,7 @@ public class SQLUtils {
     public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out, //
                                                                 List<SQLStatement> statementList, //
                                                                 String dbType) {
-        if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.ALI_ORACLE.equals(dbType)) {
-            if (statementList == null || statementList.size() == 1) {
-                return new OracleOutputVisitor(out, false);
-            } else {
-                return new OracleOutputVisitor(out, true);
-            }
-        }
-
-        if (JdbcConstants.MYSQL.equals(dbType) //
-                || JdbcConstants.MARIADB.equals(dbType)) {
-            return new MySqlOutputVisitor(out);
-        }
-
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            return new PGOutputVisitor(out);
-        }
-
-        if (JdbcConstants.SQL_SERVER.equals(dbType) || JdbcConstants.JTDS.equals(dbType)) {
-            return new SQLServerOutputVisitor(out);
-        }
-
-        if (JdbcConstants.DB2.equals(dbType)) {
-            return new DB2OutputVisitor(out);
-        }
-
-        if (JdbcConstants.ODPS.equals(dbType)) {
-            return new OdpsOutputVisitor(out);
-        }
-
-        if (JdbcConstants.H2.equals(dbType)) {
-            return new H2OutputVisitor(out);
-        }
-
-        if (JdbcConstants.HIVE.equals(dbType)) {
-            return new HiveOutputVisitor(out);
-        }
-
-        if (JdbcConstants.ELASTIC_SEARCH.equals(dbType)) {
-            return new MySqlOutputVisitor(out);
-        }
-
         return new SQLASTOutputVisitor(out, dbType);
-    }
-
-    @Deprecated
-    public static SchemaStatVisitor createSchemaStatVisitor(List<SQLStatement> statementList, String dbType) {
-        return createSchemaStatVisitor(dbType);
-    }
-
-    public static SchemaStatVisitor createSchemaStatVisitor(String dbType) {
-        if (JdbcConstants.ORACLE.equals(dbType) || JdbcConstants.ALI_ORACLE.equals(dbType)) {
-            return new OracleSchemaStatVisitor();
-        }
-
-        if (JdbcConstants.MYSQL.equals(dbType) || //
-                JdbcConstants.MARIADB.equals(dbType)) {
-            return new MySqlSchemaStatVisitor();
-        }
-
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            return new PGSchemaStatVisitor();
-        }
-
-        if (JdbcConstants.SQL_SERVER.equals(dbType) || JdbcConstants.JTDS.equals(dbType)) {
-            return new SQLServerSchemaStatVisitor();
-        }
-
-        if (JdbcConstants.DB2.equals(dbType)) {
-            return new DB2SchemaStatVisitor();
-        }
-
-        if (JdbcConstants.ODPS.equals(dbType)) {
-            return new OdpsSchemaStatVisitor();
-        }
-
-        if (JdbcConstants.H2.equals(dbType)) {
-            return new H2SchemaStatVisitor();
-        }
-
-        if (JdbcConstants.HIVE.equals(dbType)) {
-            return new HiveSchemaStatVisitor();
-        }
-
-        if (JdbcConstants.ELASTIC_SEARCH.equals(dbType)) {
-            return new MySqlSchemaStatVisitor();
-        }
-
-        return new SchemaStatVisitor();
     }
 
     public static List<SQLStatement> parseStatements(String sql, String dbType) {
@@ -511,20 +404,6 @@ public class SQLUtils {
 
     public static List<SQLExpr> split(SQLBinaryOpExpr x) {
         return SQLBinaryOpExpr.split(x);
-    }
-
-    public static String translateOracleToMySql(String sql) {
-        List<SQLStatement> stmtList = toStatementList(sql, JdbcConstants.ORACLE);
-
-        StringBuilder out = new StringBuilder();
-        OracleToMySqlOutputVisitor visitor = new OracleToMySqlOutputVisitor(out, false);
-        for (int i = 0; i < stmtList.size(); ++i) {
-            stmtList.get(i).accept(visitor);
-        }
-
-        String mysqlSql = out.toString();
-        return mysqlSql;
-
     }
 
     public static String addCondition(String sql, String condition, String dbType) {
@@ -836,22 +715,6 @@ public class SQLUtils {
                 if (c0 == '`') {
                     normalizeName = normalizeName.replaceAll("`\\.`", ".");
                 }
-
-                if (JdbcConstants.ORACLE.equals(dbType)) {
-                    if (OracleUtils.isKeyword(normalizeName)) {
-                        return name;
-                    }
-                } else if (JdbcConstants.MYSQL.equals(dbType)) {
-                    if (MySqlUtils.isKeyword(normalizeName)) {
-                        return name;
-                    }
-                } else if (JdbcConstants.POSTGRESQL.equals(dbType)
-                        || JdbcConstants.ENTERPRISEDB.equals(dbType)) {
-                    if (PGUtils.isKeyword(normalizeName)) {
-                        return name;
-                    }
-                }
-
                 return normalizeName;
             }
         }

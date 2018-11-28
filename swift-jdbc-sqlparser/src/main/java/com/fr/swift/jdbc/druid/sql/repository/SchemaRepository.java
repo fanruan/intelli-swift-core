@@ -22,14 +22,8 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
-import com.fr.swift.jdbc.druid.support.logging.Log;
-import com.fr.swift.jdbc.druid.support.logging.LogFactory;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
 import java.io.IOException;
@@ -39,7 +33,7 @@ import java.util.*;
  * Created by wenshao on 03/06/2017.
  */
 public class SchemaRepository {
-    private static Log LOG = LogFactory.getLog(SchemaRepository.class);
+//    private static Log LOG = LogFactory.getLog(SchemaRepository.class);
     private Schema defaultSchema;
     protected String dbType;
     protected SQLASTVisitor consoleVisitor;
@@ -50,14 +44,7 @@ public class SchemaRepository {
 
     public SchemaRepository(String dbType) {
         this.dbType = dbType;
-
-        if (JdbcConstants.MYSQL.equals(dbType)) {
-            consoleVisitor = new MySqlConsoleSchemaVisitor();
-        } else if (JdbcConstants.ORACLE.equals(dbType)) {
-            consoleVisitor = new OracleConsoleSchemaVisitor();
-        } else {
-            consoleVisitor = new DefaultConsoleSchemaVisitor();
-        }
+        consoleVisitor = new DefaultConsoleSchemaVisitor();
     }
 
     private Map<String, Schema> schemas = new LinkedHashMap<String, Schema>();
@@ -254,24 +241,7 @@ public class SchemaRepository {
         int optionsValue = SchemaResolveVisitor.Option.of(options);
 
         SchemaResolveVisitor resolveVisitor;
-        if (JdbcConstants.MYSQL.equals(dbType)
-                || JdbcConstants.SQLITE.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.ORACLE.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.OracleResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.DB2.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.DB2ResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.ODPS.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.OdpsResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.HIVE.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.HiveResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
-        } else if (JdbcConstants.SQL_SERVER.equals(dbType)) {
-            resolveVisitor = new SchemaResolveVisitorFactory.SQLServerResolveVisitor(this, optionsValue);
-        } else {
-            resolveVisitor = new SchemaResolveVisitorFactory.SQLResolveVisitor(this, optionsValue);
-        }
+        resolveVisitor = new SchemaResolveVisitorFactory.SQLResolveVisitor(this, optionsValue);
         return resolveVisitor;
     }
 
@@ -291,79 +261,37 @@ public class SchemaRepository {
     }
 
     public String console(String input) {
-        try {
-            StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer();
 
-            List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType);
 
-            for (SQLStatement stmt : stmtList) {
-                if (stmt instanceof MySqlShowColumnsStatement) {
-                    MySqlShowColumnsStatement showColumns = ((MySqlShowColumnsStatement) stmt);
-                    SQLName db = showColumns.getDatabase();
-                    Schema schema;
-                    if (db == null) {
-                        schema = getDefaultSchema();
-                    } else {
-                        schema = findSchema(db.getSimpleName());
-                    }
+        for (SQLStatement stmt : stmtList) {
+            if (stmt instanceof SQLShowTablesStatement) {
+                SQLShowTablesStatement showTables = (SQLShowTablesStatement) stmt;
+                SQLName database = showTables.getDatabase();
 
-                    SQLName table = null;
-                    SchemaObject schemaObject = null;
-                    if (schema != null) {
-                        table = showColumns.getTable();
-                        schemaObject = schema.findTable(table.nameHashCode64());
-                    }
-
-                    if (schemaObject == null) {
-                        buf.append("ERROR 1146 (42S02): Table '" + table + "' doesn't exist\n");
-                    } else {
-                        MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
-                        createTableStmt.showCoumns(buf);
-                    }
-                } else if (stmt instanceof MySqlShowCreateTableStatement) {
-                    MySqlShowCreateTableStatement showCreateTableStmt = (MySqlShowCreateTableStatement) stmt;
-                    SQLName table = showCreateTableStmt.getName();
-                    SchemaObject schemaObject = findTable(table);
-                    if (schemaObject == null) {
-                        buf.append("ERROR 1146 (42S02): Table '" + table + "' doesn't exist\n");
-                    } else {
-                        MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
-                        createTableStmt.output(buf);
-                    }
-                } else if (stmt instanceof MySqlRenameTableStatement) {
-                    MySqlRenameTableStatement renameStmt = (MySqlRenameTableStatement) stmt;
-                    for (MySqlRenameTableStatement.Item item : renameStmt.getItems()) {
-                        renameTable(item.getName(), item.getTo());
-                    }
-                } else if (stmt instanceof SQLShowTablesStatement) {
-                    SQLShowTablesStatement showTables = (SQLShowTablesStatement) stmt;
-                    SQLName database = showTables.getDatabase();
-
-                    Schema schema;
-                    if (database == null) {
-                        schema = getDefaultSchema();
-                    } else {
-                        schema = findSchema(database.getSimpleName());
-                    }
-                    if (schema != null) {
-                        for (String table : schema.showTables()) {
-                            buf.append(table);
-                            buf.append('\n');
-                        }
-                    }
+                Schema schema;
+                if (database == null) {
+                    schema = getDefaultSchema();
                 } else {
-                    stmt.accept(consoleVisitor);
+                    schema = findSchema(database.getSimpleName());
                 }
+                if (schema != null) {
+                    for (String table : schema.showTables()) {
+                        buf.append(table);
+                        buf.append('\n');
+                    }
+                }
+            } else {
+                stmt.accept(consoleVisitor);
             }
-
-            if (buf.length() == 0) {
-                return "\n";
-            }
-
-            return buf.toString();
-        } catch (IOException ex) {
-            throw new DruidRuntimeException("exeucte command error.", ex);
         }
+
+        if (buf.length() == 0) {
+            return "\n";
+        }
+
+        return buf.toString();
     }
 
     public SchemaObject findTable(SQLName name) {
@@ -403,11 +331,6 @@ public class SchemaRepository {
         long nameHashCode64 = name.nameHashCode64();
         SchemaObject schemaObject = schema.findTable(nameHashCode64);
         if (schemaObject != null) {
-            MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
-            if (createTableStmt != null) {
-                createTableStmt.setName(to.clone());
-            }
-
             schema.objects.put(to.hashCode64(), schemaObject);
             schema.objects.remove(nameHashCode64);
         }
@@ -426,132 +349,6 @@ public class SchemaRepository {
         }
 
         return null;
-    }
-
-    public class MySqlConsoleSchemaVisitor extends MySqlASTVisitorAdapter {
-        public boolean visit(SQLDropSequenceStatement x) {
-            acceptDropSequence(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateSequenceStatement x) {
-            acceptCreateSequence(x);
-            return false;
-        }
-
-        public boolean visit(MySqlCreateTableStatement x) {
-            acceptCreateTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            acceptCreateTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLDropTableStatement x) {
-            acceptDropTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateViewStatement x) {
-            acceptView(x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterViewStatement x) {
-            acceptView(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateIndexStatement x) {
-            acceptCreateIndex(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateFunctionStatement x) {
-            acceptCreateFunction(x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            acceptAlterTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLUseStatement x) {
-            String schema = x.getDatabase().getSimpleName();
-            setDefaultSchema(schema);
-            return false;
-        }
-
-        public boolean visit(SQLDropIndexStatement x) {
-            acceptDropIndex(x);
-            return false;
-        }
-    }
-
-    public class OracleConsoleSchemaVisitor extends OracleASTVisitorAdapter {
-        public boolean visit(SQLDropSequenceStatement x) {
-            acceptDropSequence(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateSequenceStatement x) {
-            acceptCreateSequence(x);
-            return false;
-        }
-
-        public boolean visit(OracleCreateTableStatement x) {
-            visit((SQLCreateTableStatement) x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            acceptCreateTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLDropTableStatement x) {
-            acceptDropTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateViewStatement x) {
-            acceptView(x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterViewStatement x) {
-            acceptView(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateIndexStatement x) {
-            acceptCreateIndex(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateFunctionStatement x) {
-            acceptCreateFunction(x);
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            acceptAlterTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLUseStatement x) {
-            String schema = x.getDatabase().getSimpleName();
-            setDefaultSchema(schema);
-            return false;
-        }
-
-        public boolean visit(SQLDropIndexStatement x) {
-            acceptDropIndex(x);
-            return false;
-        }
     }
 
     public class DefaultConsoleSchemaVisitor extends SQLASTVisitorAdapter {
@@ -604,22 +401,6 @@ public class SchemaRepository {
             acceptDropIndex(x);
             return false;
         }
-    }
-
-    boolean acceptCreateTable(MySqlCreateTableStatement x) {
-        SQLExprTableSource like = x.getLike();
-        if (like != null) {
-            SchemaObject table = findTable((SQLName) like.getExpr());
-            if (table != null) {
-                MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) table.getStatement();
-                MySqlCreateTableStatement stmtCloned = stmt.clone();
-                stmtCloned.setName(x.getName().clone());
-                acceptCreateTable((SQLCreateTableStatement) stmtCloned);
-                return false;
-            }
-        }
-
-        return acceptCreateTable((SQLCreateTableStatement) x);
     }
 
     boolean acceptCreateTable(SQLCreateTableStatement x) {
@@ -686,7 +467,7 @@ public class SchemaRepository {
         String name = x1.computeName();
         SchemaObject table = schema.findTableOrView(name);
         if (table != null) {
-            LOG.info("replaced table '" + name + "'");
+//            LOG.info("replaced table '" + name + "'");
         }
 
         table = new SchemaObjectImpl(name, SchemaObjectType.Table, x1);

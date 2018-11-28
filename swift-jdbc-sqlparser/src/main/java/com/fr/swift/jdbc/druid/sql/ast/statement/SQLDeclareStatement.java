@@ -19,9 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDeclareStatement extends SQLStatementImpl {

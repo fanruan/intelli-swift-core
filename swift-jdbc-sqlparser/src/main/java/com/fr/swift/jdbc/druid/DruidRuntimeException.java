@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fr.swift.jdbc.druid.sql.ast.statement;
+package com.fr.swift.jdbc.druid;
 
-import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
+public class DruidRuntimeException extends RuntimeException {
 
-public class SQLScriptCommitStatement extends SQLStatementImpl {
+    private static final long serialVersionUID = 1L;
 
-    public SQLScriptCommitStatement(){
-
+    public DruidRuntimeException(){
+        super();
     }
 
-    public void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
-        visitor.endVisit(this);
+    public DruidRuntimeException(String message, Throwable cause){
+        super(message, cause);
     }
+
+    public DruidRuntimeException(String message){
+        super(message);
+    }
+
+    public DruidRuntimeException(Throwable cause){
+        super(cause);
+    }
+
 }

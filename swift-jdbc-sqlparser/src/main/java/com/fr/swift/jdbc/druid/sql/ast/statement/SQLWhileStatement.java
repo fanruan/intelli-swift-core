@@ -22,8 +22,6 @@ import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 /**

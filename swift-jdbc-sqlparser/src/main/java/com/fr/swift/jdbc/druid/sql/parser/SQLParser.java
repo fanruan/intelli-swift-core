@@ -16,7 +16,6 @@
 package com.fr.swift.jdbc.druid.sql.parser;
 
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.hive.stmt.HiveCreateTableStatement;
 
 public class SQLParser {
     protected final Lexer lexer;

@@ -20,9 +20,6 @@ import java.util.List;
 import com.fr.swift.jdbc.druid.sql.ast.*;
 import com.fr.swift.jdbc.druid.sql.ast.expr.*;
 import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
@@ -563,22 +560,6 @@ public class SQLSelectParser extends SQLParser {
                 } else if(lexer.identifierEquals(FnvHash.Constants.ROLLUP)) {
                     lexer.nextToken();
                     groupBy.setWithRollUp(true);
-                } else if (lexer.identifierEquals(FnvHash.Constants.RS)
-                        && JdbcConstants.DB2.equals(dbType)) {
-                    lexer.nextToken();
-                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.RS);
-                } else if (lexer.identifierEquals(FnvHash.Constants.RR)
-                        && JdbcConstants.DB2.equals(dbType)) {
-                    lexer.nextToken();
-                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.RR);
-                } else if (lexer.identifierEquals(FnvHash.Constants.CS)
-                        && JdbcConstants.DB2.equals(dbType)) {
-                    lexer.nextToken();
-                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.CS);
-                } else if (lexer.identifierEquals(FnvHash.Constants.UR)
-                        && JdbcConstants.DB2.equals(dbType)) {
-                    lexer.nextToken();
-                    ((DB2SelectQueryBlock) queryBlock).setIsolation(DB2SelectQueryBlock.Isolation.UR);
                 } else {
                     throw new ParserException("TODO " + lexer.info());
                 }
@@ -627,16 +608,6 @@ public class SQLSelectParser extends SQLParser {
 
     protected SQLExpr parseGroupByItem() {
         SQLExpr item = this.exprParser.expr();
-        
-        if(JdbcConstants.MYSQL.equals(getDbType())) {
-            if (lexer.token == Token.DESC) {
-                lexer.nextToken(); // skip
-                item =new MySqlOrderingExpr(item, SQLOrderingSpecification.DESC);
-            } else if (lexer.token == Token.ASC) {
-                lexer.nextToken(); // skip
-                item =new MySqlOrderingExpr(item, SQLOrderingSpecification.ASC);
-            }
-        }
         return item;
     }
 

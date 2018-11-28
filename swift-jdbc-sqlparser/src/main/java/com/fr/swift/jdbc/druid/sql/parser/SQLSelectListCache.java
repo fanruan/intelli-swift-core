@@ -16,8 +16,6 @@
 package com.fr.swift.jdbc.druid.sql.parser;
 
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.fr.swift.jdbc.druid.support.logging.Log;
-import com.fr.swift.jdbc.druid.support.logging.LogFactory;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 
 import java.util.ArrayList;
@@ -25,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SQLSelectListCache {
-    private final static Log                LOG             = LogFactory.getLog(SQLSelectListCache.class);
+//    private final static Log                LOG             = LogFactory.getLog(SQLSelectListCache.class);
     private final String                    dbType;
     private final List<Entry>               entries         = new CopyOnWriteArrayList<Entry>();
 
@@ -58,7 +56,7 @@ public class SQLSelectListCache {
         );
 
         if (entries.size() > 5) {
-            LOG.warn("SelectListCache is too large.");
+//            LOG.warning("SelectListCache is too large.");
         }
     }
 

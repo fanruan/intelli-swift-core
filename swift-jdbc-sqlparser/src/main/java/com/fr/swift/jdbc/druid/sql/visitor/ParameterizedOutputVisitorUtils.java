@@ -20,17 +20,8 @@ import java.util.List;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.*;
 import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.phoenix.visitor.PhoenixOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.fr.swift.jdbc.druid.sql.parser.*;
 import com.fr.swift.jdbc.druid.util.FnvHash;
-import com.fr.swift.jdbc.druid.util.JdbcUtils;
 
 public class ParameterizedOutputVisitorUtils {
     private final static SQLParserFeature[] defaultFeatures = {
@@ -201,16 +192,6 @@ public class ParameterizedOutputVisitorUtils {
                 }
 
                 visitor.visit(selectStmt);
-            } else if (stmt.getClass() == MySqlInsertStatement.class) {
-                MySqlInsertStatement insertStmt = (MySqlInsertStatement) stmt;
-                String columnsString = insertStmt.getColumnsString();
-                if (columnsString != null) {
-                    long columnsStringHash = insertStmt.getColumnsStringHash();
-                    visitor.config(VisitorFeature.OutputSkipInsertColumnsString, true);
-
-                    ((MySqlASTVisitor) visitor).visit(insertStmt);
-                    return FnvHash.fnv1a_64_lower(columnsStringHash, out);
-                }
             } else {
                 stmt.accept(visitor);
             }
@@ -261,37 +242,6 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static ParameterizedVisitor createParameterizedOutputVisitor(Appendable out, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
-            return new OracleParameterizedOutputVisitor(out);
-        }
-
-        if (JdbcUtils.MYSQL.equals(dbType)
-            || JdbcUtils.MARIADB.equals(dbType)
-            || JdbcUtils.H2.equals(dbType)) {
-            return new MySqlOutputVisitor(out, true);
-        }
-
-        if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
-            return new PGOutputVisitor(out, true);
-        }
-
-        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
-            return new SQLServerOutputVisitor(out, true);
-        }
-
-        if (JdbcUtils.DB2.equals(dbType)) {
-            return new DB2OutputVisitor(out, true);
-        }
-
-        if (JdbcUtils.PHOENIX.equals(dbType)) {
-            return new PhoenixOutputVisitor(out, true);
-        }
-
-        if (JdbcUtils.ELASTIC_SEARCH.equals(dbType)) {
-            return new MySqlOutputVisitor(out, true);
-        }
-
         return new SQLASTOutputVisitor(out, true);
     }
 

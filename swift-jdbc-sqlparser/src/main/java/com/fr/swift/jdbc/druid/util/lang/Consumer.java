@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fr.swift.jdbc.druid.sql.ast.statement;
+package com.fr.swift.jdbc.druid.util.lang;
 
-import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
-
-public class SQLScriptCommitStatement extends SQLStatementImpl {
-
-    public SQLScriptCommitStatement(){
-
-    }
-
-    public void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
-        visitor.endVisit(this);
-    }
+/**
+ * Created by wenshao on 20/06/2017.
+ */
+public interface Consumer<T> {
+    void accept(T t);
 }

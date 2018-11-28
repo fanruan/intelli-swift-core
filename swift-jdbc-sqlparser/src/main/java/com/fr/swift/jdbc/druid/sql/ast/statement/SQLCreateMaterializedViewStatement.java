@@ -17,9 +17,7 @@ package com.fr.swift.jdbc.druid.sql.ast.statement;
 
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
-import com.fr.swift.jdbc.druid.sql.ast.SQLPartitionBy;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -28,7 +26,7 @@ import java.util.List;
 /**
  * Created by wenshao on 30/06/2017.
  */
-public class SQLCreateMaterializedViewStatement extends SQLStatementImpl implements OracleSegmentAttributes, SQLCreateStatement {
+public class SQLCreateMaterializedViewStatement extends SQLStatementImpl implements SQLCreateStatement {
     private SQLName name;
     private List<SQLName> columns = new ArrayList<SQLName>();
 
@@ -66,8 +64,6 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
     private Integer parallelValue;
 
     private Boolean enableQueryRewrite;
-
-    private SQLPartitionBy partitionBy;
 
     private boolean withRowId;
 
@@ -299,17 +295,6 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
         this.cache = cache;
     }
 
-    public SQLPartitionBy getPartitionBy() {
-        return partitionBy;
-    }
-
-    public void setPartitionBy(SQLPartitionBy x) {
-        if (x != null) {
-            x.setParent(this);
-        }
-        this.partitionBy = x;
-    }
-
     public boolean isWithRowId() {
         return withRowId;
     }
@@ -323,7 +308,6 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, columns);
-            acceptChild(visitor, partitionBy);
             acceptChild(visitor, query);
         }
         visitor.endVisit(this);

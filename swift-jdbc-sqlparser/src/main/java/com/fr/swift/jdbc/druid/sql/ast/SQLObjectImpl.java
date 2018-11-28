@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLObjectImpl implements SQLObject {

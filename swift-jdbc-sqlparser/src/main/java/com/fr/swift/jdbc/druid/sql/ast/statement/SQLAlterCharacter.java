@@ -18,8 +18,6 @@ package com.fr.swift.jdbc.druid.sql.ast.statement;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObjectImpl;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLAlterTableItem;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterCharacter extends SQLObjectImpl implements SQLAlterTableItem {

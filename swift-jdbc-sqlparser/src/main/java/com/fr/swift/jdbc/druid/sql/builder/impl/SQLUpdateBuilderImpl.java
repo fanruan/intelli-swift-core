@@ -27,10 +27,6 @@ import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLUpdateStatement;
 import com.fr.swift.jdbc.druid.sql.builder.SQLUpdateBuilder;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
 public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBuilder {
@@ -158,22 +154,6 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
     }
 
     public SQLUpdateStatement createSQLUpdateStatement() {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
-            return new MySqlUpdateStatement();    
-        }
-        
-        if (JdbcConstants.ORACLE.equals(dbType)) {
-            return new OracleUpdateStatement();    
-        }
-        
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            return new PGUpdateStatement();    
-        }
-        
-        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
-            return new SQLServerUpdateStatement();    
-        }
-        
         return new SQLUpdateStatement();
     }
     

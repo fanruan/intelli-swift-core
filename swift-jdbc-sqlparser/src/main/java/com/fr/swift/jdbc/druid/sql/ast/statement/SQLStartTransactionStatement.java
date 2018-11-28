@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fr.swift.jdbc.druid.sql.ast.*;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLStartTransactionStatement extends SQLStatementImpl {

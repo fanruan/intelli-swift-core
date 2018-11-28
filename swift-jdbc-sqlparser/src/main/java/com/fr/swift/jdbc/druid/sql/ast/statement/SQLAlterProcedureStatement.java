@@ -17,9 +17,6 @@ package com.fr.swift.jdbc.druid.sql.ast.statement;
 
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatementImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.stmt.OracleAlterStatement;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.stmt.OracleStatementImpl;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterProcedureStatement extends SQLStatementImpl implements SQLAlterStatement {

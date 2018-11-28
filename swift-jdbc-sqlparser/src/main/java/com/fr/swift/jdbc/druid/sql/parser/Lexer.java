@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLNumberExpr;
-import com.fr.swift.jdbc.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 import com.fr.swift.jdbc.druid.util.StringUtils;
@@ -1721,7 +1720,7 @@ public class Lexer {
                 hash *= 0x100000001b3L;
             }
 
-            stringVal = MySqlLexer.quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash);
+//            stringVal = MySqlLexer.quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash);
             //stringVal = text.substring(mark, pos);
             pos = quoteIndex + 1;
             this.ch = charAt(pos);

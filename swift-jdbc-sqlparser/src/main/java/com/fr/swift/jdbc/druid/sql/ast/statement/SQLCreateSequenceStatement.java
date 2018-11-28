@@ -17,7 +17,6 @@ package com.fr.swift.jdbc.druid.sql.ast.statement;
 
 import com.fr.swift.jdbc.druid.sql.ast.*;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;

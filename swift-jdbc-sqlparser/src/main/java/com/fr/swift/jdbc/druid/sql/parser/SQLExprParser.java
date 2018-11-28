@@ -26,8 +26,6 @@ import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.*;
 import com.fr.swift.jdbc.druid.sql.ast.expr.*;
 import com.fr.swift.jdbc.druid.sql.ast.statement.*;
-import com.fr.swift.jdbc.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
-import com.fr.swift.jdbc.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
@@ -1019,19 +1017,6 @@ public class SQLExprParser extends SQLParser {
             } else if (hash_lower == FnvHash.Constants.POSITION
                     && JdbcConstants.MYSQL.equals(dbType)) {
                 return parsePosition();
-            } else if (hash_lower == FnvHash.Constants.INT4 && JdbcConstants.POSTGRESQL.equals(dbType)) {
-                PGTypeCastExpr castExpr = new PGTypeCastExpr();
-                castExpr.setExpr(this.expr());
-                castExpr.setDataType(new SQLDataTypeImpl(methodName));
-                accept(Token.RPAREN);
-                return castExpr;
-            } else if (hash_lower == FnvHash.Constants.VARBIT && JdbcConstants.POSTGRESQL.equals(dbType)) {
-                PGTypeCastExpr castExpr = new PGTypeCastExpr();
-                SQLExpr len = this.primary();
-                castExpr.setDataType(new SQLDataTypeImpl(methodName, len));
-                accept(Token.RPAREN);
-                castExpr.setExpr(this.expr());
-                return castExpr;
             }
             aggMethodName = getAggreateFunction(hash_lower);
         } else if (expr instanceof SQLPropertyExpr) {
@@ -2093,13 +2078,6 @@ public class SQLExprParser extends SQLParser {
                 }
                 rightExp = primary();
                 expr = new SQLBinaryOpExpr(expr, op, rightExp, dbType);
-            }
-            break;
-            case EQGT: {
-                lexer.nextToken();
-                rightExp = expr();
-                String argumentName = ((SQLIdentifierExpr) expr).getName();
-                expr = new OracleArgumentExpr(argumentName, rightExp);
             }
             break;
             case BANGEQ:
@@ -3291,14 +3269,6 @@ public class SQLExprParser extends SQLParser {
         accept(Token.RPAREN);
 
         return expr;
-    }
-
-    protected SQLPartition parsePartition() {
-        throw new ParserException("TODO");
-    }
-
-    protected SQLPartitionBy parsePartitionBy() {
-        throw new ParserException("TODO");
     }
     
     public SQLPartitionValue parsePartitionValues() {

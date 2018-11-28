@@ -16,7 +16,6 @@
 package com.fr.swift.jdbc.druid.sql.parser;
 
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
-import com.fr.swift.jdbc.druid.util.JdbcUtils;
 import com.fr.swift.jdbc.druid.util.Utils;
 
 import java.util.Arrays;
