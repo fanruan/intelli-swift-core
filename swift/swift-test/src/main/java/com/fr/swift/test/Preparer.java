@@ -6,8 +6,9 @@ import com.fr.config.dao.impl.LocalEntityDao;
 import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.invoke.Reflect;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
+import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
+import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -15,7 +16,6 @@ import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.util.FileUtil;
-import com.fr.third.org.hibernate.Session;
 import com.fr.workspace.WorkContext;
 import com.fr.workspace.simple.SimpleWork;
 
@@ -65,9 +65,9 @@ public class Preparer {
 
     public static void clearConfTable() {
         try {
-            SwiftContext.get().getBean(HibernateTransactionManager.class).doTransactionIfNeed(new AbstractTransactionWorker<Void>() {
+            SwiftContext.get().getBean(HibernateTransactionManager.class).doTransactionIfNeed(new BaseTransactionWorker<Void>() {
                 @Override
-                public Void work(Session session) {
+                public Void work(ConfigSession session) {
                     for (Class<?> entity : SwiftConfigConstants.ENTITIES) {
                         session.createQuery(String.format("delete from %s", entity.getName())).executeUpdate();
                     }

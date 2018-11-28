@@ -3,24 +3,22 @@ package com.fr.swift.config.service.impl;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
-import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.FindList;
+import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.third.org.hibernate.Session;
-import com.fr.third.org.hibernate.criterion.Criterion;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,15 +33,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author yee
  * @date 2018/6/6
  */
-@Service("swiftMetaDataService")
 public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
-    @Autowired
-    private HibernateTransactionManager transactionManager;
-    @Autowired
+    private TransactionManager transactionManager;
     private SwiftMetaDataDao swiftMetaDataDao;
-    @Autowired(required = false)
-    private RpcServer server;
+    private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
     private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
@@ -52,9 +46,9 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         try {
             final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
             bean.setId(sourceKey);
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) throws SQLException {
+                public Boolean work(ConfigSession session) throws SQLException {
                     swiftMetaDataDao.addOrUpdateSwiftMetaData(session, bean);
                     metaDataCache.put(sourceKey, bean);
                     return true;
@@ -71,9 +65,9 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean addMetaDatas(final Map<String, SwiftMetaData> metaDatas) {
         try {
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) throws SQLException {
+                public Boolean work(ConfigSession session) throws SQLException {
                     Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
                     while (iterator.hasNext()) {
                         Map.Entry<String, SwiftMetaData> entry = iterator.next();
@@ -96,10 +90,10 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean removeMetaDatas(final String... sourceKeys) {
         try {
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
 
                 @Override
-                public Boolean work(Session session) throws SQLException {
+                public Boolean work(ConfigSession session) throws SQLException {
                     for (String sourceKey : sourceKeys) {
                         swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey);
                         metaDataCache.remove(sourceKey);
@@ -111,18 +105,6 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                         ProxyFactory factory = ProxySelector.getInstance().getFactory();
                         SwiftServiceListenerHandler handler = factory.getProxy(RemoteSender.class);
                         handler.trigger(new CleanMetaDataCacheEvent(sourceKeys));
-//                        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-//                        Result result = invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));
-//                        RpcFuture future = (RpcFuture) result.getValue();
-//                        future.addCallback(new AsyncRpcCallback() {
-//                            @Override
-//                            public void success(Object result) {
-//                            }
-//
-//                            @Override
-//                            public void fail(Exception e) {
-//                            }
-//                        });
                     }
                     return true;
                 }
@@ -144,16 +126,27 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public Map<String, SwiftMetaData> getAllMetaData() {
         try {
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, SwiftMetaData>>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
                 @Override
-                public Map<String, SwiftMetaData> work(Session session) {
-                    List<SwiftMetaDataBean> beans = swiftMetaDataDao.findAll(session);
-                    Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                    for (SwiftMetaDataBean bean : beans) {
-                        result.put(bean.getId(), bean);
+                public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
+                    try {
+                        final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
+                        swiftMetaDataDao.findAll(session).forEach(new FindList.Each<SwiftMetaDataBean>() {
+                            @Override
+                            public void each(int idx, SwiftMetaDataBean bean) throws Exception {
+                                result.put(bean.getId(), bean);
+                            }
+                        });
+                        metaDataCache.putAll(result);
+                        return result;
+                    } catch (Exception e) {
+                        if (e instanceof SQLException) {
+                            throw (SQLException) e;
+                        }
+                        throw new SQLException(e);
                     }
-                    metaDataCache.putAll(result);
-                    return result;
+
+
                 }
 
                 @Override
@@ -173,17 +166,12 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         SwiftMetaData metaData = metaDataCache.get(sourceKey);
         if (null == metaData) {
             try {
-                return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<SwiftMetaData>() {
+                return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SwiftMetaData>(false) {
                     @Override
-                    public SwiftMetaData work(Session session) throws SQLException {
+                    public SwiftMetaData work(ConfigSession session) throws SQLException {
                         SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey);
                         metaDataCache.put(sourceKey, metaData);
                         return metaData;
-                    }
-
-                    @Override
-                    public boolean needTransaction() {
-                        return false;
                     }
                 });
 
@@ -200,9 +188,9 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     public boolean containsMeta(final SourceKey sourceKey) {
         try {
             if (!metaDataCache.containsKey(sourceKey.getId())) {
-                return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+                return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                     @Override
-                    public Boolean work(Session session) throws SQLException {
+                    public Boolean work(ConfigSession session) throws SQLException {
                         SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey.getId());
                         if (null != metaData) {
                             metaDataCache.put(sourceKey.getId(), metaData);
@@ -230,24 +218,12 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     }
 
     @Override
-    public List<SwiftMetaData> find(final Criterion... criterion) {
+    public List<SwiftMetaData> find(final Object... criterion) {
         try {
-            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<List<SwiftMetaData>>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
                 @Override
-                public List<SwiftMetaData> work(Session session) {
-                    List<SwiftMetaDataEntity> list = swiftMetaDataDao.find(session, criterion);
-                    List<SwiftMetaData> result = new ArrayList<SwiftMetaData>();
-                    if (null != list) {
-                        for (SwiftMetaDataEntity entity : list) {
-                            result.add(entity.convert());
-                        }
-                    }
-                    return result;
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
+                public List<SwiftMetaData> work(ConfigSession session) {
+                    return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion).list());
                 }
             });
         } catch (SQLException e) {

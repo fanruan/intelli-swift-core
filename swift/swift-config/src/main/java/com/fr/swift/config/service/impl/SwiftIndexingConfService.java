@@ -1,22 +1,22 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
+import com.fr.swift.config.bean.ObjectConverter;
+import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
+import com.fr.swift.config.bean.SwiftTableIdxConfBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.config.entity.SwiftColumnIndexingConf;
-import com.fr.swift.config.entity.SwiftTableIndexingConf;
-import com.fr.swift.config.entity.key.ColumnId;
-import com.fr.swift.config.entity.key.TableId;
 import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.config.indexing.TableIndexingConf;
+import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.FindList;
+import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.third.org.hibernate.Session;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 
@@ -24,28 +24,24 @@ import java.sql.SQLException;
  * @author anchore
  * @date 2018/7/2
  */
-@Service
 public class SwiftIndexingConfService implements IndexingConfService {
-    @Autowired
-    private HibernateTransactionManager tx;
+    private TransactionManager tx;
 
-    private SwiftConfigDao<SwiftTableIndexingConf> tableConf = new BasicDao<SwiftTableIndexingConf>(SwiftTableIndexingConf.class);
+    private BasicDao<SwiftTableIdxConfBean> tableConf = new BasicDao<SwiftTableIdxConfBean>(SwiftTableIdxConfBean.TYPE, RestrictionFactoryImpl.INSTANCE);
 
-    private SwiftConfigDao<SwiftColumnIndexingConf> columnConf = new BasicDao<SwiftColumnIndexingConf>(SwiftColumnIndexingConf.class);
+    private BasicDao<SwiftColumnIdxConfBean> columnConf = new BasicDao<SwiftColumnIdxConfBean>(SwiftColumnIdxConfBean.TYPE, RestrictionFactoryImpl.INSTANCE);
+
+    private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
     @Override
     public TableIndexingConf getTableConf(final SourceKey table) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<TableIndexingConf>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<TableIndexingConf>(false) {
                 @Override
-                public TableIndexingConf work(Session session) throws SQLException {
-                    SwiftTableIndexingConf conf = tableConf.select(session, new TableId(table));
-                    return conf != null ? conf : new SwiftTableIndexingConf(table, new LineAllotRule());
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
+                public TableIndexingConf work(ConfigSession session) throws SQLException {
+                    FindList<SwiftTableIdxConfBean> list = tableConf.find(session, factory.eq("tableId.tableKey", table.getId()));
+                    SwiftTableIdxConfBean bean = !list.isEmpty() ? list.get(0) : new SwiftTableIdxConfBean(table.getId(), new LineAllotRule());
+                    return (TableIndexingConf) bean.convert();
                 }
             });
         } catch (SQLException e) {
@@ -57,17 +53,14 @@ public class SwiftIndexingConfService implements IndexingConfService {
     @Override
     public ColumnIndexingConf getColumnConf(final SourceKey table, final String columnName) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<ColumnIndexingConf>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<ColumnIndexingConf>(false) {
                 @Override
-                public ColumnIndexingConf work(Session session) throws SQLException {
-                    SwiftColumnIndexingConf conf = columnConf.select(session, new ColumnId(table, columnName));
-                    return conf != null ? conf : new SwiftColumnIndexingConf(table, columnName, true, false);
+                public ColumnIndexingConf work(ConfigSession session) throws SQLException {
+                    FindList<SwiftColumnIdxConfBean> conf = columnConf.find(session, factory.eq("columnId.tableKey", table.getId()), factory.eq("columnId.columnName", columnName));
+                    SwiftColumnIdxConfBean bean = !conf.isEmpty() ? conf.get(0) : new SwiftColumnIdxConfBean(table.getId(), columnName, true, false);
+                    return (ColumnIndexingConf) bean.convert();
                 }
 
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
             });
         } catch (SQLException e) {
             SwiftLoggers.getLogger().warn(e);
@@ -77,26 +70,20 @@ public class SwiftIndexingConfService implements IndexingConfService {
 
     @Override
     public void setTableConf(final TableIndexingConf conf) {
-        try {
-            tx.doTransactionIfNeed(new AbstractTransactionWorker() {
-                @Override
-                public Object work(Session session) throws SQLException {
-                    tableConf.saveOrUpdate(session, (SwiftTableIndexingConf) conf);
-                    return null;
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn(e);
-        }
+        setConfig(tableConf, conf);
     }
 
     @Override
     public void setColumnConf(final ColumnIndexingConf conf) {
+        setConfig(columnConf, conf);
+    }
+
+    private <T extends ObjectConverter> void setConfig(final SwiftConfigDao<T> dao, final Object conf) {
         try {
-            tx.doTransactionIfNeed(new AbstractTransactionWorker() {
+            tx.doTransactionIfNeed(new BaseTransactionWorker() {
                 @Override
-                public Object work(Session session) throws SQLException {
-                    columnConf.saveOrUpdate(session, (SwiftColumnIndexingConf) conf);
+                public Object work(ConfigSession session) throws SQLException {
+                    dao.saveOrUpdate(session, (T) ((ObjectConverter) conf).convert());
                     return null;
                 }
             });

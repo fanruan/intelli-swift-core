@@ -5,11 +5,11 @@ import com.fr.config.dao.impl.LocalClassHelperDao;
 import com.fr.config.dao.impl.LocalEntityDao;
 import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
+import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
+import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.util.FileUtil;
-import com.fr.third.org.hibernate.Session;
 import com.fr.workspace.WorkContext;
 import org.junit.rules.ExternalResource;
 
@@ -38,9 +38,9 @@ public class ConfDbResource extends ExternalResource {
 
     private static void clearConfTable() {
         try {
-            SwiftContext.get().getBean(HibernateTransactionManager.class).doTransactionIfNeed(new AbstractTransactionWorker<Void>() {
+            SwiftContext.get().getBean(HibernateTransactionManager.class).doTransactionIfNeed(new BaseTransactionWorker<Void>() {
                 @Override
-                public Void work(Session session) {
+                public Void work(ConfigSession session) {
                     for (Class<?> entity : SwiftConfigConstants.ENTITIES) {
                         session.createQuery(String.format("delete from %s", entity.getName())).executeUpdate();
                     }
