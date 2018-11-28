@@ -1,6 +1,8 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.config.TestConfDb;
+import com.fr.swift.config.entity.SwiftColumnIndexingConf;
+import com.fr.swift.config.entity.SwiftTableIndexingConf;
 import com.fr.swift.config.indexing.TableIndexingConf;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.context.SwiftContext;
