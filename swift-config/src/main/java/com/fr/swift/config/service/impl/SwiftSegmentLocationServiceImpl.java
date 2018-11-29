@@ -98,6 +98,21 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
+    public boolean updateClusterId(final String segmentKey, final String oldClusterId, final String newClusterId) {
+        try {
+            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+                @Override
+                public Boolean work(Session session) throws SQLException {
+                    return segmentLocationDao.updateClusterId(session, segmentKey, oldClusterId, newClusterId);
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().warn(e);
+            return false;
+        }
+    }
+
+    @Override
     public List<SwiftSegmentLocationEntity> find(final Criterion... criterion) {
         try {
             return tx.doTransactionIfNeed(new AbstractTransactionWorker<List<SwiftSegmentLocationEntity>>() {
