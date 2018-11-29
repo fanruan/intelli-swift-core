@@ -3,7 +3,6 @@ package com.fr.swift.config.service.impl;
 import com.fr.swift.config.bean.SegmentDestSelectRule;
 import com.fr.swift.config.convert.SegDestSelectRuleConvert;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
-import com.fr.swift.config.service.base.BasicRuleService;
 import com.fr.third.springframework.stereotype.Service;
 
 /**

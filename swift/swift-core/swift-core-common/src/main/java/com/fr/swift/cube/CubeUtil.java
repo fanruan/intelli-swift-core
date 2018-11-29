@@ -1,6 +1,6 @@
 package com.fr.swift.cube;
 
-import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
@@ -70,7 +70,7 @@ public class CubeUtil {
 
     public static int getCurrentDir(SourceKey tableKey) {
         SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
-        SwiftTablePathEntity entity = tablePathService.get(tableKey.getId());
+        SwiftTablePathBean entity = tablePathService.get(tableKey.getId());
         if (entity == null || entity.getTablePath() == null) {
             return 0;
         }

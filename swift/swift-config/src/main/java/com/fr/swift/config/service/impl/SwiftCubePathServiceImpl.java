@@ -1,12 +1,10 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.general.ComparatorUtils;
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractSimpleConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.entity.key.SwiftTablePathKey;
+import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.ContextUtil;
@@ -15,7 +13,7 @@ import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.third.org.hibernate.Session;
+import com.fr.swift.util.Strings;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -30,25 +28,11 @@ import java.util.List;
 @Service("swiftPathService")
 public class SwiftCubePathServiceImpl implements SwiftCubePathService {
     private List<PathChangeListener> listeners = new ArrayList<PathChangeListener>();
-    private String clusterId = SwiftTablePathKey.LOCALHOST;
-
-    public SwiftCubePathServiceImpl() {
-        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
-            @Override
-            public void handleEvent(ClusterEvent clusterEvent) {
-                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    clusterId = SwiftTablePathKey.LOCALHOST;
-                }
-            }
-        });
-    }
-
+    private String clusterId = SwiftConfigConstants.LOCALHOST;
     private final SwiftConfigService.ConfigConvert<String> CONVERT = new AbstractSimpleConfigConvert<String>(String.class) {
 
         @Override
-        public String toBean(SwiftConfigDao<SwiftConfigEntity> dao, Session session, Object... args) throws SQLException {
+        public String toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
             try {
                 String path = super.toBean(dao, session, args);
                 if (isValidPath(path)) {
@@ -57,7 +41,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
             } catch (Exception ignore) {
             }
             String path = ContextUtil.getContextPath();
-            for (SwiftConfigEntity swiftConfigEntity : toEntity(path)) {
+            for (SwiftConfigBean swiftConfigEntity : toEntity(path)) {
                 dao.saveOrUpdate(session, swiftConfigEntity);
             }
             return path;
@@ -69,11 +53,24 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
         }
     };
 
+    public SwiftCubePathServiceImpl() {
+        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
+            @Override
+            public void handleEvent(ClusterEvent clusterEvent) {
+                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+                    clusterId = SwiftConfigConstants.LOCALHOST;
+                }
+            }
+        });
+    }
+
     @Autowired
     private SwiftConfigService configService;
 
     private static boolean isValidPath(String path) {
-        return path != null && !StringUtils.isBlank(path) && !ComparatorUtils.equals(path, "__EMPTY__");
+        return path != null && !Strings.isEmpty(path) && !path.equals("__EMPTY__");
     }
 
     @Override
@@ -86,7 +83,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
         if (isValidPath(path)) {
             try {
                 String oldPath = getSwiftPath();
-                if (ComparatorUtils.equals(oldPath, path)) {
+                if (oldPath.equals(path)) {
                     return false;
                 }
                 configService.updateConfigBean(CONVERT, path);

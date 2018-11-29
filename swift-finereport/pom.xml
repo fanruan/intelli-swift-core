@@ -17,6 +17,7 @@
         <module>swift-decision</module>
         <module>swift-log-adaptor</module>
         <module>swift-rpc-fr</module>
+        <module>swift-config-fr</module>
     </modules>
     <properties>
         <fr.version>10.0-FEATURE-SNAPSHOT</fr.version>
