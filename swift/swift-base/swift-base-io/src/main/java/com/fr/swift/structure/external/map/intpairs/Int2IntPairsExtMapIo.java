@@ -1,34 +1,34 @@
-package com.fr.swift.external.map.intpairs;
+package com.fr.swift.structure.external.map.intpairs;
 
 import com.fr.swift.cube.io.IOConstant;
-import com.fr.swift.cube.nio.read.LongNIOReader;
-import com.fr.swift.cube.nio.write.LongNIOWriter;
+import com.fr.swift.cube.nio.read.IntNIOReader;
+import com.fr.swift.cube.nio.write.IntNIOWriter;
 
 /**
  * @author anchore
  * @date 2018/1/5
  */
-class Long2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Long> {
-    Long2IntPairsExtMapIo(String id) {
+class Int2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Integer> {
+    Int2IntPairsExtMapIo(String id) {
         super(id);
     }
 
     @Override
-    protected Long getEndFlag() {
-        return IOConstant.NULL_LONG;
+    protected Integer getEndFlag() {
+        return IOConstant.NULL_INT;
     }
 
     @Override
-    protected void initKeyWriter() {
+    public void initKeyWriter() {
         if (keyWriter == null) {
-            keyWriter = new LongNIOWriter(keyFile);
+            keyWriter = new IntNIOWriter(keyFile);
         }
     }
 
     @Override
-    protected void initKeyReader() {
+    public void initKeyReader() {
         if (keyReader == null) {
-            keyReader = new LongNIOReader(keyFile);
+            keyReader = new IntNIOReader(keyFile);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.fr.swift.external.map.intlist;
+package com.fr.swift.structure.external.map.intlist;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.cube.nio.read.LongNIOReader;

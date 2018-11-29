@@ -1,8 +1,7 @@
-package com.fr.swift.external.map;
+package com.fr.swift.structure.external.map;
 
 import com.fr.swift.cube.nio.NIOReader;
 import com.fr.swift.cube.nio.NIOWriter;
-import com.fr.swift.structure.external.map.ExternalMapIO;
 
 import java.io.File;
 
