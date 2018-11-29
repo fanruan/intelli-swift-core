@@ -1,7 +1,6 @@
 package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -9,6 +8,7 @@ import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
+import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.util.Crasher;
 
 import java.util.Comparator;

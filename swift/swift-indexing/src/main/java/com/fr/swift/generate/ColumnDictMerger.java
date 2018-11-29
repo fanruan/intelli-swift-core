@@ -1,9 +1,7 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.external.map.intpairs.IntPairsExtMaps;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentUtils;
@@ -18,6 +16,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMap;
+import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
 import com.fr.swift.task.TaskResult.Type;
 import com.fr.swift.task.impl.BaseWorker;
 import com.fr.swift.task.impl.TaskResultImpl;

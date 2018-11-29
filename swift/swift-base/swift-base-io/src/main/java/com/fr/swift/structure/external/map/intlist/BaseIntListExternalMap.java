@@ -1,5 +1,4 @@
-package com.fr.swift.external.map.intlist;
-
+package com.fr.swift.structure.external.map.intlist;
 
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;

@@ -1,4 +1,4 @@
-package com.fr.swift.external.map.intpairs;
+package com.fr.swift.structure.external.map.intpairs;
 
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMapIO;

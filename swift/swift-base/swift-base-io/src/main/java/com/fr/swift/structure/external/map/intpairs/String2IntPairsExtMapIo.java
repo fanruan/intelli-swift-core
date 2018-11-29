@@ -1,4 +1,4 @@
-package com.fr.swift.external.map.intpairs;
+package com.fr.swift.structure.external.map.intpairs;
 
 import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.cube.nio.read.StringReadMappedList;

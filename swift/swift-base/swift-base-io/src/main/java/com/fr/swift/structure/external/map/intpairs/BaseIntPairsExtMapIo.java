@@ -1,10 +1,10 @@
-package com.fr.swift.external.map.intpairs;
+package com.fr.swift.structure.external.map.intpairs;
 
 import com.fr.swift.cube.nio.read.IntNIOReader;
 import com.fr.swift.cube.nio.write.IntNIOWriter;
-import com.fr.swift.external.map.BaseExternalMapIo;
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.external.map.BaseExternalMapIo;
 
 import java.util.ArrayList;
 import java.util.Collections;
