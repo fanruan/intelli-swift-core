@@ -15,4 +15,6 @@ public interface SwiftSegmentLocationService extends ConfigService<SwiftSegmentL
     boolean delete(String table, String clusterId, String segKey);
 
     Map<String, List<SwiftSegmentLocationEntity>> findAll();
+
+    boolean updateClusterId(String segmentKey, String oldClusterId, String newClusterId);
 }

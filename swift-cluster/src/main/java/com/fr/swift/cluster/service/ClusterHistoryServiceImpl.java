@@ -9,10 +9,11 @@ import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.event.history.CheckLoadHistoryEvent;
@@ -47,6 +48,7 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Qualifier;
 import com.fr.third.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,11 +96,36 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
             @Override
             public void run() {
                 checkSegmentExists();
+                switchToCluster();
                 sendLocalSegmentInfo();
                 checkLoad();
             }
         });
         return super.start();
+    }
+
+    private void switchToCluster() {
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
+        SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments("LOCAL");
+        if (!segments.isEmpty()) {
+            SwiftRepository repository = repositoryManager.currentRepo();
+            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+                for (SegmentKey segmentKey : entry.getValue()) {
+                    if (segmentKey.getStoreType().isPersistent()) {
+                        locationService.updateClusterId(segmentKey.toString(), "LOCAL", getID());
+                        String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
+                        String cubePath = CubeUtil.getSegPath(segmentKey);
+                        try {
+                            repository.copyToRemote(cubePath, remotePath);
+                        } catch (IOException e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void checkLoad() {
