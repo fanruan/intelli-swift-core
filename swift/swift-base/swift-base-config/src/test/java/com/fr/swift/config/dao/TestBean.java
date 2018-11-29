@@ -1,6 +1,6 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.convert.ObjectConverter;
+import com.fr.swift.converter.ObjectConverter;
 
 /**
  * @author yee

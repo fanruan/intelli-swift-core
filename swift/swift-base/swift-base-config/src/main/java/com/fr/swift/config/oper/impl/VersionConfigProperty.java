@@ -41,15 +41,17 @@ public final class VersionConfigProperty {
     }
 
     private static void load() throws IOException {
-        InputStream is = VersionConfigProperty.class.getResourceAsStream("com-fr-swift-version.properties");
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("com-fr-swift-version.properties");
         try {
-            Properties properties = new Properties();
-            properties.load(is);
-            String version = properties.getProperty("version");
-            String restrictions = properties.getProperty("hibernate.restrictions");
-            String matchMode = properties.getProperty("hibernate.matchMode");
-            String order = properties.getProperty("hibernate.order");
-            property = new VersionConfigProperty(version, restrictions, matchMode, order);
+            if (null != is) {
+                Properties properties = new Properties();
+                properties.load(is);
+                String version = properties.getProperty("version");
+                String restrictions = properties.getProperty("hibernate.restrictions");
+                String matchMode = properties.getProperty("hibernate.matchMode");
+                String order = properties.getProperty("hibernate.order");
+                property = new VersionConfigProperty(version, restrictions, matchMode, order);
+            }
         } finally {
             if (null != is) {
                 is.close();
@@ -65,12 +67,12 @@ public final class VersionConfigProperty {
         return version;
     }
 
-    Class getRestrictions() {
+    public Class getRestrictions() {
         return restrictions;
     }
 
 
-    Class getMatchMode() {
+    public Class getMatchMode() {
         return matchMode;
     }
 

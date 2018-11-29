@@ -4,14 +4,15 @@ import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.RestrictionFactory;
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Arrays;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -91,36 +92,70 @@ public class BasicDaoTest {
     public void findWithOrder() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(null).anyTimes();
+        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.<Object>asList(new TestEntity())).anyTimes();
         mockConfigCriteria.add(EasyMock.anyObject());
-        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
-            @Override
-            public Object answer() throws Throwable {
-                return null;
-            }
-        }).anyTimes();
-        mockConfigCriteria.addOrder(EasyMock.anyObject());
-        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
-            @Override
-            public Object answer() throws Throwable {
-                return null;
-            }
-        }).anyTimes();
+        mockConfigCriteria.addOrder(EasyMock.notNull());
+        mockConfigCriteria.addOrder(EasyMock.isNull());
+        EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception"));
         EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(TestEntity.class))).andReturn(mockConfigCriteria).anyTimes();
         PowerMock.replayAll();
-
-
+        assertFalse(mockBasicDao.find(mockConfigSession, new Object[]{new Object()}, new Object()).list().isEmpty());
+        assertTrue(mockBasicDao.find(mockConfigSession, new Object[]{null}, new Object()).isEmpty());
+        PowerMock.verifyAll();
     }
 
     @Test
     public void find1() {
+        ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
+        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
+        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.<Object>asList(new TestEntity())).anyTimes();
+        mockConfigCriteria.add(EasyMock.notNull());
+        mockConfigCriteria.add(EasyMock.isNull());
+        EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception"));
+        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(TestEntity.class))).andReturn(mockConfigCriteria).anyTimes();
+        PowerMock.replayAll();
+        assertFalse(mockBasicDao.find(mockConfigSession, new Object()).list().isEmpty());
+        assertTrue(mockBasicDao.find(mockConfigSession, new Object[]{null}).isEmpty());
+        PowerMock.verifyAll();
     }
 
     @Test
-    public void deleteById() {
+    public void deleteById() throws SQLException {
+        ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
+        EasyMock.expect(mockConfigSession.get(EasyMock.eq(TestEntity.class), EasyMock.notNull(Serializable.class))).andReturn(new TestEntity()).anyTimes();
+        EasyMock.expect(mockConfigSession.get(EasyMock.eq(TestEntity.class), EasyMock.isNull(Serializable.class))).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
+        mockConfigSession.delete(EasyMock.anyObject());
+        PowerMock.replayAll();
+        assertTrue(mockBasicDao.deleteById(mockConfigSession, ""));
+        boolean exception = false;
+        try {
+            mockBasicDao.deleteById(mockConfigSession, null);
+        } catch (SQLException e) {
+            exception = true;
+        }
+        assertTrue(exception);
+        PowerMock.verifyAll();
     }
 
     @Test
-    public void delete() {
+    public void delete() throws SQLException {
+        ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
+        mockConfigSession.delete(EasyMock.notNull());
+        mockConfigSession.delete(EasyMock.isNull());
+        EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception")).anyTimes();
+        TestBean mockTestBean = PowerMock.createMock(TestBean.class);
+        EasyMock.expect(mockTestBean.convert()).andReturn(null).anyTimes();
+        PowerMock.replayAll();
+
+        PowerMock.replayAll();
+        assertTrue(mockBasicDao.delete(mockConfigSession, new TestBean()));
+        boolean exception = false;
+        try {
+            mockBasicDao.delete(mockConfigSession, mockTestBean);
+        } catch (SQLException e) {
+            exception = true;
+        }
+        assertTrue(exception);
+        PowerMock.verifyAll();
     }
 }

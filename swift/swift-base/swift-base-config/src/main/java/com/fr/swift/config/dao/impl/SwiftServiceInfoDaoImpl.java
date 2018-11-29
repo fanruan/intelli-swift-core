@@ -5,6 +5,7 @@ import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
+import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.util.Strings;
 
@@ -23,6 +24,10 @@ public class SwiftServiceInfoDaoImpl extends BasicDao<SwiftServiceInfoBean> impl
 
     public SwiftServiceInfoDaoImpl() {
         super(SwiftServiceInfoBean.TYPE, RestrictionFactoryImpl.INSTANCE);
+    }
+
+    public SwiftServiceInfoDaoImpl(RestrictionFactory factory) {
+        super(SwiftServiceInfoBean.TYPE, factory);
     }
 
     @Override

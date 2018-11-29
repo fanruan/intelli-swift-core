@@ -1,11 +1,11 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.FinedListImpl;
 import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.converter.ObjectConverter;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -87,7 +87,7 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
     @Override
     public boolean deleteById(ConfigSession session, Serializable id) throws SQLException {
         try {
-            T entity = select(session, id);
+            Object entity = session.get(entityClass, id);
             if (null != entity) {
                 session.delete(entity);
             }
@@ -100,7 +100,7 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
     @Override
     public boolean delete(ConfigSession session, T obj) throws SQLException {
         try {
-            session.delete(obj);
+            session.delete(obj.convert());
         } catch (Exception e) {
             throw new SQLException(e);
         }

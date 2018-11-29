@@ -1,7 +1,7 @@
 package com.fr.swift.config.oper;
 
 
-import com.fr.swift.config.convert.ObjectConverter;
+import com.fr.swift.converter.ObjectConverter;
 
 import java.util.ArrayList;
 import java.util.Collections;

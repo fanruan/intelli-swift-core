@@ -62,9 +62,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
 
                     final Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
                     try {
-                        swiftSegmentDao.findAll(session).forEach(new FindList.Each<SegmentKeyBean>() {
+                        swiftSegmentDao.findAll(session).forEach(new FindList.Each<SegmentKey>() {
                             @Override
-                            public void each(int idx, SegmentKeyBean keyBean) throws Exception {
+                            public void each(int idx, SegmentKey keyBean) throws Exception {
                                 if (!result.containsKey(keyBean.getTable().getId())) {
                                     result.put(keyBean.getTable().getId(), new ArrayList<SegmentKey>());
                                 }
@@ -94,9 +94,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Map<String, List<SegmentKey>> work(ConfigSession session) {
                     final Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
                     try {
-                        swiftSegmentDao.find(session, factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, StoreType.MEMORY)).forEach(new FindList.Each<SegmentKeyBean>() {
+                        swiftSegmentDao.find(session, factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, StoreType.MEMORY)).forEach(new FindList.Each<SegmentKey>() {
                             @Override
-                            public void each(int idx, SegmentKeyBean bean) {
+                            public void each(int idx, SegmentKey bean) {
                                 if (!result.containsKey(bean.getTable().getId())) {
                                     result.put(bean.getTable().getId(), new ArrayList<SegmentKey>());
                                 }
@@ -135,9 +135,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                     try {
                         FindList<SegLocationBean> locations = segmentLocationDao.findAll(session);
                         if (locations.isEmpty()) {
-                            swiftSegmentDao.findAll(session).forEach(new FindList.Each<SegmentKeyBean>() {
+                            swiftSegmentDao.findAll(session).forEach(new FindList.Each<SegmentKey>() {
                                 @Override
-                                public void each(int idx, SegmentKeyBean segmentKey) throws SQLException {
+                                public void each(int idx, SegmentKey segmentKey) throws SQLException {
                                     SegLocationBean bean = new SegLocationBean("LOCAL", segmentKey.getId(), segmentKey.getTable().getId());
                                     segmentLocationDao.saveOrUpdate(session, bean);
                                 }
@@ -170,9 +170,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Map<String, List<SegmentKey>> work(final ConfigSession session) throws SQLException {
                     final Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
                     try {
-                        swiftSegmentDao.findAll(session).forEach(new FindList.Each<SegmentKeyBean>() {
+                        swiftSegmentDao.findAll(session).forEach(new FindList.Each<SegmentKey>() {
                             @Override
-                            public void each(int idx, SegmentKeyBean segmentKey) throws Exception {
+                            public void each(int idx, SegmentKey segmentKey) throws Exception {
                                 String sourceKey = segmentKey.getTable().getId();
                                 if (!result.containsKey(sourceKey)) {
                                     result.put(sourceKey, new ArrayList<SegmentKey>());
@@ -342,7 +342,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 @Override
                 public SegmentKey work(ConfigSession session) throws SQLException {
 
-                    List<SegmentKeyBean> entities = swiftSegmentDao.find(session,
+                    List<SegmentKey> entities = swiftSegmentDao.find(session,
                             new Object[]{ConfigOrder.desc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)},
                             factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId())).list();
 
@@ -517,14 +517,14 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 @Override
                 public List<SegmentKey> work(final ConfigSession session) throws SQLException {
                     try {
-                        return new ArrayList<SegmentKey>(swiftSegmentDao.find(session, criterion).forEach(new FindList.Each<SegmentKeyBean>() {
+                        return swiftSegmentDao.find(session, criterion).forEach(new FindList.Each<SegmentKey>() {
                             @Override
-                            public void each(int idx, SegmentKeyBean item) throws Exception {
+                            public void each(int idx, SegmentKey item) throws Exception {
                                 if (!segmentLocationDao.find(session, factory.eq("id.clusterId", clusterId),
                                         factory.eq("id.segmentId", item.getId())).isEmpty()) {
                                 }
                             }
-                        }));
+                        });
                     } catch (Exception e) {
                         if (e instanceof SQLException) {
                             throw (SQLException) e;

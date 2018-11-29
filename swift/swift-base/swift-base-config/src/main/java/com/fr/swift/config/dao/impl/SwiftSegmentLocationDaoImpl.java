@@ -5,6 +5,7 @@ import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
+import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 
 import java.sql.SQLException;
@@ -16,6 +17,15 @@ import java.sql.SQLException;
 public class SwiftSegmentLocationDaoImpl extends BasicDao<SegLocationBean> implements SwiftSegmentLocationDao {
     public SwiftSegmentLocationDaoImpl() {
         super(SegLocationBean.TYPE, RestrictionFactoryImpl.INSTANCE);
+    }
+
+    /**
+     * for test
+     *
+     * @param factory
+     */
+    public SwiftSegmentLocationDaoImpl(RestrictionFactory factory) {
+        super(SegLocationBean.TYPE, factory);
     }
 
     @Override
