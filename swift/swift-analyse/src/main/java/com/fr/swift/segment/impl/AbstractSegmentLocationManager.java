@@ -2,7 +2,7 @@ package com.fr.swift.segment.impl;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
-import com.fr.swift.config.bean.SegmentDestSelectRule;
+import com.fr.swift.config.SegmentDestSelectRule;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.SegmentDestination;

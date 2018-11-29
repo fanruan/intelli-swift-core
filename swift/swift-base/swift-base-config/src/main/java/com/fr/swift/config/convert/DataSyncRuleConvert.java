@@ -1,11 +1,13 @@
 package com.fr.swift.config.convert;
 
-import com.fr.swift.config.bean.DataSyncRule;
+import com.fr.swift.config.DataSyncRule;
 import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.context.SwiftContext;
+
+import java.sql.SQLException;
 
 /**
  * @author yee
@@ -15,8 +17,12 @@ public class DataSyncRuleConvert extends AbstractObjectConfigConvert<DataSyncRul
 
     private static final String DATA_SYNC_RULE_KEY = "DATA_SYNC_RULE";
 
+    public DataSyncRuleConvert() {
+        super(DataSyncRule.class);
+    }
+
     @Override
-    public DataSyncRule toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) {
+    public DataSyncRule toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
         try {
             return super.toBean(dao, session, args);
         } catch (Exception e) {

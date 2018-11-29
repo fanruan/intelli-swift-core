@@ -22,6 +22,7 @@
             <artifactId>swift-base-repository</artifactId>
             <version>${swift.version}</version>
         </dependency>
+
     </dependencies>
 
 </project>

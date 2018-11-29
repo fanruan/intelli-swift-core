@@ -1,7 +1,7 @@
 package com.fr.swift.segment.insert;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
@@ -43,9 +43,9 @@ public class HistoryBlockInserter extends BaseBlockInserter {
 
     private void init() {
         SourceKey sourceKey = dataSource.getSourceKey();
-        SwiftTablePathEntity entity = tablePathService.get(sourceKey.getId());
+        SwiftTablePathBean entity = tablePathService.get(sourceKey.getId());
         if (entity == null) {
-            entity = new SwiftTablePathEntity(sourceKey.getId(), 0);
+            entity = new SwiftTablePathBean(sourceKey.getId(), 0);
         } else {
             currentDir = entity.getTablePath() == null ? 0 : entity.getTablePath() + 1;
             entity.setTmpDir(currentDir);

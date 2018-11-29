@@ -1,6 +1,7 @@
 package com.fr.swift.config.oper;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 
 /**
  * @author yee
@@ -9,7 +10,7 @@ import java.io.Serializable;
 public interface ConfigSession {
     void persist(Object entity);
 
-    void merge(Object entity);
+    Object merge(Object entity) throws SQLException;
 
     <T> T get(Class<T> entityClass, Serializable id);
 

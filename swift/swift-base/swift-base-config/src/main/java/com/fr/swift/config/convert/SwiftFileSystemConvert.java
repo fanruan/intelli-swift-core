@@ -13,6 +13,10 @@ public class SwiftFileSystemConvert extends AbstractObjectConfigConvert<SwiftFil
     private static final String OLD_FTP_CONF = "com.fr.swift.config.bean.FtpRepositoryConfigBean";
     private static final String OLD_HDFS_CONF = "com.fr.swift.config.bean.HdfsRepositoryConfigBean";
 
+    public SwiftFileSystemConvert() {
+        super(SwiftFileSystemConfig.class);
+    }
+
     @Override
     protected String transferClassName(String className) {
         if (OLD_HDFS_CONF.equals(className)) {

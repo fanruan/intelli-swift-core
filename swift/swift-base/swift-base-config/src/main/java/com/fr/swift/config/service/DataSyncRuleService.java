@@ -1,7 +1,7 @@
 package com.fr.swift.config.service;
 
 
-import com.fr.swift.config.bean.DataSyncRule;
+import com.fr.swift.config.DataSyncRule;
 
 /**
  * @author yee
