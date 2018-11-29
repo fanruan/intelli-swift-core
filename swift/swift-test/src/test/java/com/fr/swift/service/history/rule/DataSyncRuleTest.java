@@ -32,9 +32,9 @@ import static org.junit.Assert.assertTrue;
 public class DataSyncRuleTest {
 
     private Set<String> nodeIds;
-    private Map<String, List<SegmentKey>> needLoad;
+    private Set<SegmentKey> needLoad;
 
-    public DataSyncRuleTest(Set<String> nodeIds, Map<String, List<SegmentKey>> needLoad) {
+    public DataSyncRuleTest(Set<String> nodeIds, Set<SegmentKey> needLoad) {
         this.nodeIds = nodeIds;
         this.needLoad = needLoad;
     }
@@ -65,21 +65,30 @@ public class DataSyncRuleTest {
 
     @Test
     public void calculate() {
-        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.get("tableA").size());
+        Map<String, List<SegmentKey>> needloadMap = new HashMap<>();
+        for (SegmentKey segmentKey : needLoad) {
+            if (!needloadMap.containsKey(segmentKey.getTable().getId())) {
+                needloadMap.put(segmentKey.getTable().getId(), new ArrayList<>());
+            }
+            needloadMap.get(segmentKey.getTable().getId()).add(segmentKey);
+        }
+
+        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needloadMap.get("tableA").size());
         Map<String, Set<SegmentKey>> target = new DefaultDataSyncRule().calculate(nodeIds, needLoad, new HashMap<String, List<SegmentDestination>>());
         Iterator<Set<SegmentKey>> it = target.values().iterator();
         int total = 0;
+
         while (it.hasNext()) {
             // 每个节点都有
             int size = it.next().size();
             assertTrue(size > 0);
             if (nodeIds.size() <= 3) {
-                assertEquals(size, needLoad.get("tableA").size());
+                assertEquals(size, needloadMap.get("tableA").size());
             } else {
-                assertTrue(size < needLoad.get("tableA").size());
+                assertTrue(size < needloadMap.get("tableA").size());
             }
             total += size;
         }
-        assertEquals(total, (nodeIds.size() > 3 ? 3 : nodeIds.size()) * needLoad.get("tableA").size());
+        assertEquals(total, (nodeIds.size() > 3 ? 3 : nodeIds.size()) * needloadMap.get("tableA").size());
     }
 }

@@ -3,20 +3,20 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
+        <artifactId>swift-base</artifactId>
         <groupId>com.fr.intelligence</groupId>
-        <artifactId>swift</artifactId>
         <version>2019.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-base</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>swift-base-io</module>
-        <module>swift-base-config</module>
-        <module>swift-base-structure</module>
-        <module>swift-base-bitmap</module>
-        <module>swift-base-beans</module>
-    </modules>
+    <artifactId>swift-base-beans</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-common</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

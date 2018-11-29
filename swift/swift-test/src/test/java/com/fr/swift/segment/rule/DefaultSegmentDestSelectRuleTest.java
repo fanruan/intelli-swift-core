@@ -32,8 +32,17 @@ public class DefaultSegmentDestSelectRuleTest {
 
     private List<SegmentDestination> selectDestination;
 
-    public DefaultSegmentDestSelectRuleTest(Set<String> nodeIds, Map<String, List<SegmentKey>> needLoad) {
-        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.get("tableA").size());
+    public DefaultSegmentDestSelectRuleTest(Set<String> nodeIds,  Set<SegmentKey>  needLoad) {
+
+        Map<String, List<SegmentKey>> needloadMap = new HashMap<>();
+        for (SegmentKey segmentKey : needLoad) {
+            if (!needloadMap.containsKey(segmentKey.getTable().getId())) {
+                needloadMap.put(segmentKey.getTable().getId(), new ArrayList<>());
+            }
+            needloadMap.get(segmentKey.getTable().getId()).add(segmentKey);
+        }
+
+        System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needloadMap.get("tableA").size());
         HashMap<String, List<SegmentDestination>> dest = new HashMap<>();
         new DefaultDataSyncRule().calculate(nodeIds, needLoad, dest);
         selectDestination = dest.get("tableA");
