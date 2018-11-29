@@ -29,7 +29,7 @@ class PostQueryBuilder {
             PostQueryType type = postQueryInfo.getType();
             switch (type) {
                 case CAL_FIELD:
-                    tmpQuery = new FieldCalQuery(tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfoList());
+                    tmpQuery = new FieldCalQuery(tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfo());
                     break;
                 case HAVING_FILTER:
                     tmpQuery = new HavingFilterQuery(tmpQuery, ((HavingFilterQueryInfo) postQueryInfo).getMatchFilterList());

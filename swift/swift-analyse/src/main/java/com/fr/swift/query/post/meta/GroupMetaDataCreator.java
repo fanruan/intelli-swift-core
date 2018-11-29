@@ -56,11 +56,9 @@ public class GroupMetaDataCreator implements MetaDataCreator<GroupQueryInfoBean>
             if (postQueryInfoBean.getType() != PostQueryType.CAL_FIELD) {
                 continue;
             }
-            List<CalculatedFieldBean> calculatedFieldBeans = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalculatedFieldBeans();
-            for (CalculatedFieldBean calculatedFieldBean : calculatedFieldBeans) {
-                String name = calculatedFieldBean.getName();
-                metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
-            }
+            CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
+            String name = calculatedFieldBean.getName();
+            metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
         }
         return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
     }

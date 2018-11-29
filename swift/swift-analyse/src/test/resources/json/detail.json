@@ -1,0 +1,63 @@
+{
+  "queryType": "DETAIL_SORT",
+  "fetchSize": 200,
+  "tableName": "table_name",
+  "filter": {
+    "filterValue": [
+      {
+        "filterValue": [
+          {
+            "type": "STRING_STARTS_WITH",
+            "filterValue": "foo"
+          },
+          {
+            "type": "IN",
+            "filterValue": [
+              "bar",
+              "foo"
+            ]
+          }
+        ],
+        "type": "AND"
+      },
+      {
+        "filterValue": [
+          {
+            "filterValue": {
+              "type": "STRING_STARTS_WITH",
+              "filterValue": "foo"
+            },
+            "type": "NOT"
+          },
+          {
+            "type": "IN",
+            "filterValue": [
+              "bar2",
+              "foo1"
+            ]
+          }
+        ],
+        "type": "OR"
+      }
+    ],
+    "type": "AND"
+  },
+  "dimensions": [
+    {
+      "column": "field_name_a",
+      "alias": "alias_name_b",
+      "type": "DETAIL"
+    },
+    {
+      "column": "field_name_b",
+      "alias": "alias_name_b",
+      "type": "DETAIL"
+    }
+  ],
+  "sorts": [
+    {
+      "type": "DESC",
+      "name": "alias_name_b"
+    }
+  ]
+}

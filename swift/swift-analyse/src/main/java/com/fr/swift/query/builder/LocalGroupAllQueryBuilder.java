@@ -16,7 +16,6 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
-import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.group.GroupResultQuery;
@@ -72,7 +71,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         int count = 0;
         for (PostQueryInfo postQueryInfo : postQueryInfoList) {
             if (postQueryInfo.getType() == PostQueryType.CAL_FIELD) {
-                count += ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfoList().size();
+                count += 1;
             }
         }
         return count;

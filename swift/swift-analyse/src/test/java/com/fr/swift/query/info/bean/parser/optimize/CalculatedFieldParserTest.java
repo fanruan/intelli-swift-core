@@ -1,23 +1,20 @@
-package com.fr.swift.query.info.bean.parser;
+package com.fr.swift.query.info.bean.parser.optimize;
 
-import com.fr.swift.generate.BaseTest;
+import com.fr.swift.query.info.bean.parser.QueryInfoParser;
+import com.fr.swift.query.info.bean.parser.ResourceUtils;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
-import com.fr.swift.resource.ResourceUtils;
+import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertEquals;
-
-public class CalculatedFieldParserTest extends BaseTest {
+public class CalculatedFieldParserTest extends TestCase {
 
     @Test
     public void test() {
@@ -33,8 +30,7 @@ public class CalculatedFieldParserTest extends BaseTest {
         GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(queryBean);
         assertEquals(1, info.getPostQueryInfoList().size());
         CalculatedFieldQueryInfo calInfo = (CalculatedFieldQueryInfo) info.getPostQueryInfoList().get(0);
-        assertEquals(1, calInfo.getCalInfoList().size());
-        GroupTarget target = calInfo.getCalInfoList().get(0);
+        GroupTarget target = calInfo.getCalInfo();
         assertEquals(2, target.resultIndex());
         assertTrue(Arrays.equals(target.paramIndexes(), new int[]{0}));
     }

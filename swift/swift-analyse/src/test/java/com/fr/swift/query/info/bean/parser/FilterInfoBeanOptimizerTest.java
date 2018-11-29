@@ -1,4 +1,4 @@
-package com.fr.swift.query.info.bean.parser.optimize;
+package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -7,6 +7,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.NFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.OrFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.StringOneValueFilterBean;
+import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class FilterInfoBeanOptimizerTest extends TestCase {
         b.setColumn("value");
         b.setFilterValue(40);
 
-        List<FilterInfoBean> beanList = new ArrayList<>();
+        List<FilterInfoBean> beanList = new ArrayList<FilterInfoBean>();
         beanList.add(a);
         beanList.add(b);
         FilterInfoBean or = new OrFilterBean();
@@ -46,9 +47,9 @@ public class FilterInfoBeanOptimizerTest extends TestCase {
         bn.setFilterValue(b);
 
         AndFilterBean ab = new AndFilterBean();
-        ab.setFilterValue(Arrays.asList(a, b));
+        ab.setFilterValue(Arrays.<FilterInfoBean>asList(a, b));
         AndFilterBean abn = new AndFilterBean();
-        abn.setFilterValue(Arrays.asList(a, bn));
+        abn.setFilterValue(Arrays.<FilterInfoBean>asList(a, bn));
 
         // ab + ab' = a
         or = new OrFilterBean();
