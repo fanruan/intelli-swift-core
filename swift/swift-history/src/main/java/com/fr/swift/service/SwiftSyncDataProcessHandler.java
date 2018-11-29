@@ -144,7 +144,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
     }
 
     @Override
-    protected Object mergeResult(List resultList) {
+    protected Object mergeResult(List resultList, Object... args) {
         return null;
     }
 

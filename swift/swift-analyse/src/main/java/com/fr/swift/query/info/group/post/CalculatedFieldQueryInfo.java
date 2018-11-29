@@ -3,21 +3,19 @@ package com.fr.swift.query.info.group.post;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.target.GroupTarget;
 
-import java.util.List;
-
 /**
  * Created by Lyon on 2018/6/3.
  */
 public class CalculatedFieldQueryInfo implements PostQueryInfo {
 
-    private List<GroupTarget> calInfoList;
+    private GroupTarget calInfo;
 
-    public CalculatedFieldQueryInfo(List<GroupTarget> calInfoList) {
-        this.calInfoList = calInfoList;
+    public CalculatedFieldQueryInfo(GroupTarget calInfo) {
+        this.calInfo = calInfo;
     }
 
-    public List<GroupTarget> getCalInfoList() {
-        return calInfoList;
+    public GroupTarget getCalInfo() {
+        return calInfo;
     }
 
     @Override

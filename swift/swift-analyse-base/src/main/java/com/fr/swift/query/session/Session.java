@@ -1,7 +1,7 @@
 package com.fr.swift.query.session;
 
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.io.Closeable;
 import java.sql.SQLException;
@@ -26,7 +26,7 @@ public interface Session extends Closeable {
      * @return
      * @throws SQLException
      */
-    SwiftResultSet executeQuery(QueryBean queryInfo) throws Exception;
+    QueryResultSet executeQuery(QueryBean queryInfo) throws Exception;
 
     /**
      * 关闭并清理缓存

@@ -16,7 +16,7 @@ import com.fr.swift.query.result.detail.SortDetailResultQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
@@ -43,8 +43,8 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
     }
 
     @Override
-    public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
-        List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
+    public Query<QueryResultSet> buildLocalQuery(DetailQueryInfo info) {
+        List<Query<QueryResultSet>> queries = new ArrayList<Query<QueryResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         List<Dimension> dimensions = info.getDimensions();
         for (Segment segment : segments) {
@@ -59,11 +59,6 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
                     FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), sorts));
         }
         return new SortDetailResultQuery(info.getFetchSize(), queries, getComparators(info.getTable(), info.getSorts()));
-    }
-
-    @Override
-    public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new SortDetailResultQuery(info.getFetchSize(), queries, info.getTargets(), getComparators(info.getTable(), info.getSorts()));
     }
 
     private static List<Pair<Sort, Comparator>> getComparators(SourceKey table, List<Sort> sorts) {

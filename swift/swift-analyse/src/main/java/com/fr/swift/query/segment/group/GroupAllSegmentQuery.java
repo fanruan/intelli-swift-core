@@ -6,7 +6,7 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeMergeResultSetImpl;
-import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,9 +22,10 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
     }
 
     @Override
-    public NodeResultSet getQueryResult() {
+    public QueryResultSet getQueryResult() {
         Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
-        return iterator.hasNext() ? iterator.next() : new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(),
-                new GroupNode(-1, null), new ArrayList<Map<Integer, Object>>());
+        // TODO: 2018/11/27
+        return (QueryResultSet) (iterator.hasNext() ? iterator.next() : new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(),
+                new GroupNode(-1, null), new ArrayList<Map<Integer, Object>>()));
     }
 }

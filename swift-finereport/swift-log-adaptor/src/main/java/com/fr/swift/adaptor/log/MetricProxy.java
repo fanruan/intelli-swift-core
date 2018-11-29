@@ -74,7 +74,9 @@ public class MetricProxy extends BaseMetric {
             List<T> tList = new ArrayList<T>();
 
             QueryBean queryBean = LogQueryUtils.getDetailQueryBean(entity, queryCondition);
-            SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
+            // TODO: 2018/11/28  QueryResultSet to SwiftResultSet
+            SwiftResultSet resultSet = null;
+//            SwiftResultSet resultSet = analyseService.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
             List<Row> page = LogQueryUtils.getPage(resultSet, queryCondition);
             for (Row row : page) {
                 tList.add(adaptor.apply(row));

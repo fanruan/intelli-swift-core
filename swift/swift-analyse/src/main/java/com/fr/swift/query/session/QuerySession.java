@@ -3,11 +3,12 @@ package com.fr.swift.query.session;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.cache.Cache;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.result.serialize.SwiftResultSetUtils;
 import com.fr.swift.query.session.exception.SessionClosedException;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.core.MD5Utils;
 
@@ -43,28 +44,29 @@ public class QuerySession implements Session {
     }
 
     @Override
-    public SwiftResultSet executeQuery(QueryBean queryInfo) throws Exception {
+    public QueryResultSet executeQuery(QueryBean queryInfo) throws Exception {
         if (isClose()) {
             throw new SessionClosedException(sessionId);
         }
         String queryId = queryInfo.getQueryId();
         QueryType type = queryInfo.getQueryType();
-        String jsonString = QueryInfoBeanFactory.queryBean2String(queryInfo);
+        String jsonString = QueryBeanFactory.queryBean2String(queryInfo);
         Cache<? extends SwiftResultSet> resultSetCache = cache.get(queryId);
         if (null != resultSetCache) {
             resultSetCache.update();
             return SwiftResultSetUtils.convert2Serializable(jsonString, queryInfo.getQueryType(), resultSetCache.get());
         }
         // 缓存具有本地上下文状态的resultSet
-        SwiftResultSet resultSet = query(queryInfo);
+        SwiftResultSet resultSet = query(jsonString);
         Cache<SwiftResultSet> cacheObj = new Cache<SwiftResultSet>(resultSet);
         cache.put(queryId, cacheObj);
         // 取本地resultSet的一个快照，得到可序列化的resultSet
         return SwiftResultSetUtils.convert2Serializable(jsonString, type, resultSet);
     }
 
-    protected SwiftResultSet query(QueryBean queryInfo) throws Exception {
-        return QueryBuilder.buildQuery(queryInfo).getQueryResult();
+    protected SwiftResultSet query(String jsonString) throws Exception {
+        // TODO: 2018/11/27 结果集类型转换在哪做？
+        return (SwiftResultSet) QueryBuilder.buildQuery(jsonString).getQueryResult();
     }
 
     @Override

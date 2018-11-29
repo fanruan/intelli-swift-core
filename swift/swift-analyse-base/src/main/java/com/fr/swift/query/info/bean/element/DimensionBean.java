@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.element;
 
-import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
 import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.third.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
@@ -15,17 +14,11 @@ public class DimensionBean {
     @JsonProperty
     private String column;  // 原始表中的字段名
     @JsonProperty
-    private String name;    // 客户端定义的转移名
-    @JsonProperty
-    private GroupBean groupBean;
+    private String alias;    // 客户端定义的转移名
     @JsonProperty
     private SortBean sortBean;
     @JsonProperty
-    private String formula;
-    @JsonProperty
-    private DimensionType dimensionType;
-    @JsonProperty
-    private IRelationSourceBean relation;
+    private DimensionType type;
 
     public String getColumn() {
         return column;
@@ -35,20 +28,12 @@ public class DimensionBean {
         this.column = column;
     }
 
-    public String getName() {
-        return name;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public GroupBean getGroupBean() {
-        return groupBean;
-    }
-
-    public void setGroupBean(GroupBean groupBean) {
-        this.groupBean = groupBean;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public SortBean getSortBean() {
@@ -59,27 +44,11 @@ public class DimensionBean {
         this.sortBean = sortBean;
     }
 
-    public String getFormula() {
-        return formula;
+    public DimensionType getType() {
+        return type;
     }
 
-    public void setFormula(String formula) {
-        this.formula = formula;
-    }
-
-    public DimensionType getDimensionType() {
-        return dimensionType;
-    }
-
-    public void setDimensionType(DimensionType dimensionType) {
-        this.dimensionType = dimensionType;
-    }
-
-    public IRelationSourceBean getRelation() {
-        return relation;
-    }
-
-    public void setRelation(IRelationSourceBean relation) {
-        this.relation = relation;
+    public void setType(DimensionType type) {
+        this.type = type;
     }
 }

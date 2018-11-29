@@ -45,16 +45,14 @@ class PostQueryInfoParser {
     private static Map<String, Integer> getFieldIndexMap(List<PostQueryInfoBean> postQueryInfoBeans, List<MetricBean> metrics) {
         Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();
         for (MetricBean metric : metrics) {
-            fieldIndexMap.put(metric.getName(), fieldIndexMap.size());
+            fieldIndexMap.put(metric.getAlias() == null ? metric.getColumn() : metric.getAlias(), fieldIndexMap.size());
         }
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
             if (postQueryInfoBean.getType() != PostQueryType.CAL_FIELD) {
                 continue;
             }
-            List<CalculatedFieldBean> calculatedFieldBeans = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalculatedFieldBeans();
-            for (CalculatedFieldBean calculatedFieldBean : calculatedFieldBeans) {
-                fieldIndexMap.put(calculatedFieldBean.getName(), fieldIndexMap.size());
-            }
+            CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
+            fieldIndexMap.put(calculatedFieldBean.getName(), fieldIndexMap.size());
         }
         return fieldIndexMap;
     }
@@ -63,7 +61,7 @@ class PostQueryInfoParser {
         PostQueryType type = bean.getType();
         switch (type) {
             case CAL_FIELD:
-                List<GroupTarget> targets = CalculatedFieldParser.parse(((CalculatedFieldQueryInfoBean) bean).getCalculatedFieldBeans(), fieldIndexMap);
+                GroupTarget targets = CalculatedFieldParser.parse(((CalculatedFieldQueryInfoBean) bean).getCalField(), fieldIndexMap);
                 return new CalculatedFieldQueryInfo(targets);
             case ROW_SORT:
                 return parseRowSortQueryInfo(dimensionSize, (RowSortQueryInfoBean) bean, fieldIndexMap);
@@ -77,7 +75,7 @@ class PostQueryInfoParser {
         List<SortBean> sortBeans = bean.getSortBeans();
         for (SortBean sortBean : sortBeans) {
             // TODO: 2018/6/7 这边复用之前排序的代码，所以targetIndex要算上维度
-            int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getColumn());
+            int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getName());
             sorts.add(sortBean.getType() == SortType.ASC ? new AscSort(targetIndex) : new DescSort(targetIndex));
         }
         return new RowSortQueryInfo(sorts);
@@ -106,29 +104,25 @@ class PostQueryInfoParser {
         Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();
         for (QueryInfoBean queryBean : queryBeans) {
             // TODO: 2018/6/8 这边都是假定groupQuery
-            List<MetricBean> metricBeans = ((GroupQueryInfoBean) queryBean).getMetricBeans();
+            List<MetricBean> metricBeans = ((GroupQueryInfoBean) queryBean).getAggregations();
             for (MetricBean metricBean : metricBeans) {
-                fieldIndexMap.put(metricBean.getName(), fieldIndexMap.size());
+                fieldIndexMap.put(metricBean.getColumn(), fieldIndexMap.size());
             }
-            List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryInfoBean) queryBean).getPostQueryInfoBeans();
+            List<PostQueryInfoBean> queryInfoBeans = ((GroupQueryInfoBean) queryBean).getPostAggregations();
             for (PostQueryInfoBean queryInfoBean : queryInfoBeans) {
                 if (queryInfoBean.getType() != PostQueryType.CAL_FIELD) {
                     continue;
                 }
-                List<CalculatedFieldBean> calculatedFieldBeans = ((CalculatedFieldQueryInfoBean) queryInfoBean).getCalculatedFieldBeans();
-                for (CalculatedFieldBean calculatedFieldBean : calculatedFieldBeans) {
-                    fieldIndexMap.put(calculatedFieldBean.getName(), fieldIndexMap.size());
-                }
+                CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) queryBean).getCalField();
+                fieldIndexMap.put(calculatedFieldBean.getName(), fieldIndexMap.size());
             }
         }
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
             if (postQueryInfoBean.getType() != PostQueryType.CAL_FIELD) {
                 continue;
             }
-            List<CalculatedFieldBean> calculatedFieldBeans = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalculatedFieldBeans();
-            for (CalculatedFieldBean calculatedFieldBean : calculatedFieldBeans) {
-                fieldIndexMap.put(calculatedFieldBean.getName(), fieldIndexMap.size());
-            }
+            CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
+            fieldIndexMap.put(calculatedFieldBean.getName(), fieldIndexMap.size());
         }
         return fieldIndexMap;
     }

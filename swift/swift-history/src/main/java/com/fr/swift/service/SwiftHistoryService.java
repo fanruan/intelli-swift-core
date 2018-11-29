@@ -25,8 +25,8 @@ import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.event.history.CheckLoadHistoryEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
@@ -84,8 +84,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     private transient SwiftTablePathService tablePathService;
 
-    private transient QueryBeanFactory queryBeanFactory;
-
     private transient SwiftSegmentService segmentService;
 
     private transient ExecutorService loadDataService;
@@ -106,7 +104,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
         metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
-        queryBeanFactory = SwiftContext.get().getBean(QueryBeanFactory.class);
         segmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
         loadDataService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftHistoryService.class));
         cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
@@ -162,7 +159,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         pathService = null;
         metaDataService = null;
         tablePathService = null;
-        queryBeanFactory = null;
         loadDataService.shutdown();
         loadDataService = null;
         segmentService = null;
@@ -273,9 +269,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     public SwiftResultSet query(final String queryDescription) throws Exception {
         try {
-            final QueryInfoBean bean = queryBeanFactory.create(queryDescription, false);
+            final QueryInfoBean bean = QueryBeanFactory.create(queryDescription);
             SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
-            return factory.openSession(bean.getQueryId()).executeQuery(bean);
+            // TODO: 2018/11/28
+            return (SwiftResultSet) factory.openSession(bean.getQueryId()).executeQuery(bean);
         } catch (IOException e) {
             throw new SQLException(e);
         }

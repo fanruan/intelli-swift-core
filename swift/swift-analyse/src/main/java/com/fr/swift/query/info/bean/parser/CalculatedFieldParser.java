@@ -5,7 +5,6 @@ import com.fr.swift.query.info.bean.type.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.element.target.cal.GroupTargetImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,18 +13,7 @@ import java.util.Map;
  */
 public class CalculatedFieldParser {
 
-    static List<GroupTarget> parse(List<CalculatedFieldBean> beans, Map<String, Integer> fieldIndexMap) {
-        List<GroupTarget> groupTargets = new ArrayList<GroupTarget>();
-        for (CalculatedFieldBean bean : beans) {
-            GroupTarget target = parse(bean, fieldIndexMap);
-            if (target != null) {
-                groupTargets.add(target);
-            }
-        }
-        return groupTargets;
-    }
-
-    private static GroupTarget parse(CalculatedFieldBean bean, Map<String, Integer> fieldIndexMap) {
+    static GroupTarget parse(CalculatedFieldBean bean, Map<String, Integer> fieldIndexMap) {
         CalTargetType type = bean.getType();
         switch (type) {
             case ARITHMETIC_ADD:

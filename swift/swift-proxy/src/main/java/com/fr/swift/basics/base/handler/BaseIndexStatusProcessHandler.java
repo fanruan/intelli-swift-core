@@ -31,7 +31,7 @@ public abstract class BaseIndexStatusProcessHandler extends BaseProcessHandler i
     }
 
     @Override
-    protected Object mergeResult(List resultList) throws Throwable {
+    protected Object mergeResult(List resultList, Object... args) throws Throwable {
         final List<ServerCurrentStatus> statusList = new ArrayList<ServerCurrentStatus>();
         for (Object obj : resultList) {
             if (obj instanceof RpcFuture) {

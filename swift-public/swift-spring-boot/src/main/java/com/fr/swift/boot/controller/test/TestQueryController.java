@@ -1,12 +1,12 @@
 package com.fr.swift.boot.controller.test;
 
 import com.fr.swift.api.rpc.SimpleDetailQueryBean;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.boot.controller.SwiftApiConstants;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.builder.QueryBuilder;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
-import com.fr.swift.query.query.Query;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,9 +34,9 @@ public class TestQueryController {
         List<Row> rows = new ArrayList<Row>();
         int count = 200;
         long start = System.currentTimeMillis();
-        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString, true);
-        Query query = QueryBuilder.buildQuery(queryBean);
-        SwiftResultSet resultSet = query.getQueryResult();
+        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+        // TODO: 2018/11/28
+        SwiftResultSet resultSet = (SwiftResultSet) service.getQueryResult(jsonString);
         if (resultSet != null) {
             while (resultSet.hasNext() && count-- > 0) {
                 rows.add(resultSet.getNextRow());
@@ -64,8 +64,9 @@ public class TestQueryController {
         List<Row> rows = new ArrayList<Row>();
         long start = System.currentTimeMillis();
         QueryBean queryBean = bean.toQueryBean();
-        Query query = QueryBuilder.buildQuery(queryBean);
-        SwiftResultSet resultSet = query.getQueryResult();
+        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+        // TODO: 2018/11/28
+        SwiftResultSet resultSet = (SwiftResultSet) service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
         if (resultSet != null) {
             while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());
@@ -81,10 +82,9 @@ public class TestQueryController {
     public List<Row> groupQuery(@PathVariable("sourceKey") String jsonString) throws Exception {
         List<Row> rows = new ArrayList<Row>();
         // swift-test模块的resources目录下有json示例
-        QueryBean queryBean = new QueryInfoBeanFactory().create(jsonString, true);
         long start = System.currentTimeMillis();
-        Query query = QueryBuilder.buildQuery(queryBean);
-        SwiftResultSet resultSet = query.getQueryResult();
+        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+        SwiftResultSet resultSet = (SwiftResultSet) service.getQueryResult(jsonString);
         if (resultSet != null) {
             while (resultSet.hasNext()) {
                 rows.add(resultSet.getNextRow());

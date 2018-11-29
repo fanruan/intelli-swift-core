@@ -5,9 +5,7 @@ import com.fr.stable.query.restriction.Restriction;
 import com.fr.stable.query.sort.SortItem;
 import com.fr.swift.db.Table;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
-import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
-import com.fr.swift.query.info.bean.element.GroupBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -44,32 +42,28 @@ public class QueryConditionAdaptor {
         queryInfoBean.setQueryId(UUID.randomUUID().toString());
         String tableName = swiftTable.getSourceKey().getId();
         queryInfoBean.setTableName(tableName);
-        queryInfoBean.setColumns(fieldNames);
 
         List<DimensionBean> dimensions = new ArrayList<DimensionBean>();
         for (int i = 0; i < fieldNames.size(); i++) {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
-            bean.setDimensionType(DimensionType.DETAIL);
-            GroupBean groupBean = new GroupBean();
-            groupBean.setType(GroupType.NONE);
-            bean.setGroupBean(groupBean);
+            bean.setType(DimensionType.DETAIL);
             dimensions.add(bean);
         }
-        queryInfoBean.setDimensionBeans(dimensions);
+        queryInfoBean.setDimensions(dimensions);
 
         List<SortBean> sorts = new ArrayList<SortBean>();
         List<SortItem> sortItems = condition.getSortList();
         for (SortItem sortItem : sortItems) {
             SortBean bean = new SortBean();
-            bean.setColumn(sortItem.getColumnName());
+            bean.setName(sortItem.getColumnName());
             bean.setType(sortItem.isDesc() ? SortType.DESC : SortType.ASC);
             sorts.add(bean);
         }
-        queryInfoBean.setSortBeans(sorts);
+        queryInfoBean.setSorts(sorts);
 
-        queryInfoBean.setFilterInfoBean(restriction2FilterInfo(condition.getRestriction()));
+        queryInfoBean.setFilter(restriction2FilterInfo(condition.getRestriction()));
         return queryInfoBean;
     }
 

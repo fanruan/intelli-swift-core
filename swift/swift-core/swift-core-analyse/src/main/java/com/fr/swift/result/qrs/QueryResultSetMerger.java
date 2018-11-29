@@ -1,4 +1,4 @@
-package com.fr.swift.result;
+package com.fr.swift.result.qrs;
 
 import java.util.List;
 

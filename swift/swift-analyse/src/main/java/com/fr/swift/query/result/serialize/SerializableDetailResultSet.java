@@ -1,12 +1,9 @@
 package com.fr.swift.query.result.serialize;
 
-import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SwiftRowIteratorImpl;
-import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -46,15 +43,15 @@ public class SerializableDetailResultSet implements DetailResultSet, Serializabl
         hasNextPage = false;
         List<Row> ret = rows;
         if (originHasNextPage) {
-            try {
-                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-                SerializableDetailResultSet resultSet = (SerializableDetailResultSet) service.getRemoteQueryResult(jsonString, null);
-                hasNextPage = true;
-                this.rows = resultSet.rows;
-                this.originHasNextPage = resultSet.originHasNextPage;
-            } catch (SQLException e) {
-                Crasher.crash(e);
-            }
+//            try {
+//                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+//                SerializableDetailResultSet resultSet = (SerializableDetailResultSet) service.getRemoteQueryResult(jsonString, null);
+//                hasNextPage = true;
+//                this.rows = resultSet.rows;
+//                this.originHasNextPage = resultSet.originHasNextPage;
+//            } catch (SQLException e) {
+//                Crasher.crash(e);
+//            }
         }
         return ret;
     }

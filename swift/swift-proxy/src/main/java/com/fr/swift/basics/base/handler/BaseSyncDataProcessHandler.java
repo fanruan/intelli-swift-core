@@ -25,7 +25,7 @@ public abstract class BaseSyncDataProcessHandler<T> extends BaseProcessHandler<T
     }
 
     @Override
-    protected Object mergeResult(List resultList) {
+    protected Object mergeResult(List resultList, Object... args) {
         return null;
     }
 

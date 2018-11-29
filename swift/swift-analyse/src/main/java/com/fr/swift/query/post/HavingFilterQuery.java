@@ -6,6 +6,7 @@ import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.resultset.ChainedNodeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
@@ -15,18 +16,18 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/5/31.
  */
-public class HavingFilterQuery extends AbstractPostQuery<NodeResultSet> {
+public class HavingFilterQuery implements PostQuery<QueryResultSet> {
 
-    private PostQuery<NodeResultSet> query;
+    private PostQuery<QueryResultSet> query;
     private List<MatchFilter> matchFilterList;
 
-    public HavingFilterQuery(PostQuery<NodeResultSet> query, List<MatchFilter> matchFilterList) {
+    public HavingFilterQuery(PostQuery<QueryResultSet> query, List<MatchFilter> matchFilterList) {
         this.query = query;
         this.matchFilterList = matchFilterList;
     }
 
     @Override
-    public NodeResultSet getQueryResult() throws SQLException {
+    public QueryResultSet getQueryResult() throws SQLException {
         SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
             public Pair<SwiftNode, List<Map<Integer, Object>>> apply(Pair<? extends SwiftNode, List<Map<Integer, Object>>> p) {
@@ -35,6 +36,6 @@ public class HavingFilterQuery extends AbstractPostQuery<NodeResultSet> {
             }
         };
         NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
-        return new ChainedNodeResultSet(operator, mergeResult);
+        return (QueryResultSet) new ChainedNodeResultSet(operator, mergeResult);
     }
 }

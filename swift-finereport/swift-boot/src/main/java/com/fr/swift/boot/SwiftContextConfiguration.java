@@ -9,8 +9,6 @@ import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.netty.rpc.registry.impl.SimpleServiceDiscovery;
 import com.fr.swift.netty.rpc.registry.impl.SimpleServiceRegistry;
 import com.fr.swift.netty.rpc.server.RpcServer;
-import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.query.info.bean.query.QueryInfoBeanFactory;
 import com.fr.swift.query.session.factory.SessionFactoryImpl;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.relation.column.RelationColumnImpl;
@@ -83,7 +81,6 @@ import java.util.List;
         SessionFactoryImpl.class,
         RedisClient.class,
         QueryIndexService.class,
-        QueryInfoBeanFactory.class,
         DefaultDataSyncRule.class,
         DefaultIndexingSelectRule.class,
         DefaultSegmentDestSelectRule.class,

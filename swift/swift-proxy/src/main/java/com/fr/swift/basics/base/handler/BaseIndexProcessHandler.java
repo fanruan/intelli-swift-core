@@ -24,7 +24,7 @@ public abstract class BaseIndexProcessHandler extends BaseProcessHandler impleme
     }
 
     @Override
-    protected Object mergeResult(List resultList) throws Throwable {
+    protected Object mergeResult(List resultList, Object... args) throws Throwable {
         Object obj = resultList.get(0);
         return handleAsyncResult(obj);
     }

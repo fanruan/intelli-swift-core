@@ -1,8 +1,7 @@
 package com.fr.swift.api.rpc;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryBeanFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +41,7 @@ public class SimpleDetailQueryBean {
     }
 
     public QueryBean toQueryBean() throws IOException {
-        return SwiftContext.get().getBean(QueryBeanFactory.class).create(getQueryString(), true);
+        return QueryBeanFactory.create(getQueryString());
     }
 
     public String getQueryString() {

@@ -4,6 +4,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.post.utils.ResultJoinUtils;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,22 +17,23 @@ import java.util.List;
  * <p>
  * Created by Lyon on 2018/5/31.
  */
-public class ResultJoinQuery extends AbstractPostQuery<NodeResultSet> {
+public class ResultJoinQuery implements PostQuery<QueryResultSet> {
 
-    private List<Query<NodeResultSet>> queries;
+    private List<Query<QueryResultSet>> queries;
     private List<Dimension> dimensions;
 
-    public ResultJoinQuery(List<Query<NodeResultSet>> queries, List<Dimension> dimensions) {
+    public ResultJoinQuery(List<Query<QueryResultSet>> queries, List<Dimension> dimensions) {
         this.queries = queries;
         this.dimensions = dimensions;
     }
 
     @Override
-    public NodeResultSet getQueryResult() throws SQLException {
+    public QueryResultSet getQueryResult() throws SQLException {
         List<NodeResultSet> resultSets = new ArrayList<NodeResultSet>();
-        for (Query<NodeResultSet> query : queries) {
-            resultSets.add(query.getQueryResult());
+        for (Query<QueryResultSet> query : queries) {
+            resultSets.add((NodeResultSet) query.getQueryResult());
         }
-        return ResultJoinUtils.join(resultSets, dimensions);
+        // TODO: 2018/11/27
+        return (QueryResultSet) ResultJoinUtils.join(resultSets, dimensions);
     }
 }

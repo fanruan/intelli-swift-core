@@ -32,7 +32,7 @@ public class QueryIndexService implements QueryIndexRunner {
         DetailQueryInfoBean queryInfoBean = new DetailQueryInfoBean();
         queryInfoBean.setQueryId(UUID.randomUUID().toString());
         queryInfoBean.setTableName(table.getSourceKey().getId());
-        queryInfoBean.setFilterInfoBean((FilterInfoBean) filterBean);
+        queryInfoBean.setFilter((FilterInfoBean) filterBean);
         return queryInfoBean;
     }
 

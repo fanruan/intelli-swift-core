@@ -16,18 +16,14 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
-import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
-import com.fr.swift.query.post.PostQuery;
-import com.fr.swift.query.post.UpdateNodeDataQuery;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.query.result.ResultQuery;
 import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupAllSegmentQuery;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
@@ -50,20 +46,9 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
     private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
-    // TODO: 2018/5/31 结果的配置计算中值的读写还是依赖之前解析的数组的index，外部调用查询写得时候比较麻烦。查询属性写字段名，做一层解析吧
-    // TODO: 2018/6/5 关于分页计算和结果集分页的问题，检查List<PostQueryInfo>有没有需要全部计算的条件，
-    // 如果有结果过滤、排序、组内计算和topN等则全部计算，否则进行分页计算。全部计算的情况下，内部节点之间传递全部结果集，最后一个
-    // 节点提供结果集分页的实现。分页计算情况下，内部节点之间传递部分结果集，结合最后一个节点的分页实现按需计算。
     @Override
-    public Query<NodeResultSet> buildPostQuery(ResultQuery<NodeResultSet> query, GroupQueryInfo info) {
-        PostQuery<NodeResultSet> tmpQuery = new UpdateNodeDataQuery(query);
-        List<PostQueryInfo> postQueryInfoList = info.getPostQueryInfoList();
-        return PostQueryBuilder.buildQuery(tmpQuery, postQueryInfoList);
-    }
-
-    @Override
-    public ResultQuery<NodeResultSet> buildLocalQuery(GroupQueryInfo info) {
-        List<Query<NodeResultSet>> queries = new ArrayList<Query<NodeResultSet>>();
+    public <T extends QueryResultSet> Query<T> buildLocalQuery(GroupQueryInfo info) {
+        List<Query<QueryResultSet>> queries = new ArrayList<Query<QueryResultSet>>();
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
@@ -78,7 +63,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
                     metrics.size() + countCalFields(info.getPostQueryInfoList()));
             queries.add(new GroupAllSegmentQuery(rowGroupByInfo, metricInfo));
         }
-        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(metrics),
+        return (Query<T>) new GroupResultQuery(info.getFetchSize(), queries, getAggregators(metrics),
                 getComparatorsForMerging(info.getTable(), dimensions), isGlobalIndexed(info.getDimensions()));
     }
 
@@ -86,7 +71,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         int count = 0;
         for (PostQueryInfo postQueryInfo : postQueryInfoList) {
             if (postQueryInfo.getType() == PostQueryType.CAL_FIELD) {
-                count += ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfoList().size();
+                count += 1;
             }
         }
         return count;
@@ -102,12 +87,6 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
             }
         }
         return aggregators;
-    }
-
-    @Override
-    public ResultQuery<NodeResultSet> buildResultQuery(List<Query<NodeResultSet>> queries, GroupQueryInfo info) {
-        return new GroupResultQuery(info.getFetchSize(), queries, getAggregators(info.getMetrics()),
-                getComparatorsForMerging(info.getTable(), info.getDimensions()), isGlobalIndexed(info.getDimensions()));
     }
 
     /**

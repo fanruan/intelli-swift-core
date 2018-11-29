@@ -16,12 +16,7 @@ import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
         visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DetailQueryInfoBean.class, name = "DETAIL"),
-        @JsonSubTypes.Type(value = GroupQueryInfoBean.class, name = "GROUP"),
-        @JsonSubTypes.Type(value = ResultJoinQueryInfoBean.class, name = "RESULT_JOIN"),
-        // TODO: 2018/6/27 下面三个类型按道理不应该在这用的
-        @JsonSubTypes.Type(value = GroupQueryInfoBean.class, name = "LOCAL_GROUP_ALL"),
-        @JsonSubTypes.Type(value = GroupQueryInfoBean.class, name = "LOCAL_GROUP_PART"),
-        @JsonSubTypes.Type(value = DetailQueryInfoBean.class, name = "LOCAL_DETAIL")
+        @JsonSubTypes.Type(value = GroupQueryInfoBean.class, name = "GROUP")
 })
 public interface QueryInfoBean extends QueryBean {
 }

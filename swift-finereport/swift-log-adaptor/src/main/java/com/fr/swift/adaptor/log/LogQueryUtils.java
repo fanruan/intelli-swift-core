@@ -7,9 +7,7 @@ import com.fr.stable.query.condition.QueryCondition;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.aggregator.AggregatorType;
-import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
-import com.fr.swift.query.info.bean.element.GroupBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -18,7 +16,6 @@ import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.DimensionType;
-import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.source.Row;
@@ -133,47 +130,42 @@ public class LogQueryUtils {
             and.setFilterValue(Arrays.asList(notNullFilter, filterInfoBean));
             filterInfoBean = and;
         }
-        queryInfoBean.setFilterInfoBean(filterInfoBean);
-
+        queryInfoBean.setFilter(filterInfoBean);
 
         List<DimensionBean> dimensions = new ArrayList<DimensionBean>();
         for (int i = 0; i < fieldNames.size(); i++) {
             // TODO: 2018/6/21 维度上的排序没适配
             DimensionBean bean = new DimensionBean();
             bean.setColumn(fieldNames.get(i));
-            bean.setDimensionType(DimensionType.GROUP);
-            GroupBean groupBean = new GroupBean();
-            groupBean.setType(GroupType.NONE);
-            bean.setGroupBean(groupBean);
+            bean.setType(DimensionType.GROUP);
             dimensions.add(bean);
         }
-        queryInfoBean.setDimensionBeans(dimensions);
+        queryInfoBean.setDimensions(dimensions);
 
         List<com.fr.swift.query.info.bean.element.MetricBean> metrics = new ArrayList<com.fr.swift.query.info.bean.element.MetricBean>();
         for (int i = 0; i < metricBeans.size(); i++) {
             MetricBean metricBean = metricBeans.get(i);
             com.fr.swift.query.info.bean.element.MetricBean bean = new com.fr.swift.query.info.bean.element.MetricBean();
-            bean.setMetricType(MetricType.GROUP);
             bean.setColumn(metricBean.getFiledName());
-            bean.setName(metricBean.getName());
+            bean.setAlias(metricBean.getName());
             bean.setType(getAggType(metricBean));
-            bean.setFilterInfoBean(createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()));
+            bean.setFilter(createMetricFilterInfo(metricBean.getFiledName(), metricBean.getFiledFilter()));
             metrics.add(bean);
         }
-        queryInfoBean.setMetricBeans(metrics);
+        queryInfoBean.setAggregations(metrics);
 
         List<SortBean> sortBeans = new ArrayList<SortBean>();
         for (MetricBean metricBean : metricBeans) {
             if (StringUtils.equals(metricBean.getAsc(), LogSearchConstants.SORT_ASC)) {
                 SortBean sortBean = new SortBean();
                 // TODO: 2018/7/4 因为这边是结果排序，所以用字段转义名
-                sortBean.setColumn(metricBean.getName());
+                sortBean.setName(metricBean.getName());
                 sortBean.setType(SortType.ASC);
                 sortBeans.add(sortBean);
             }
             if (StringUtils.equals(metricBean.getAsc(), LogSearchConstants.SORT_DESC)) {
                 SortBean sortBean = new SortBean();
-                sortBean.setColumn(metricBean.getName());
+                sortBean.setName(metricBean.getName());
                 sortBean.setType(SortType.DESC);
                 sortBeans.add(sortBean);
             }
@@ -182,7 +174,7 @@ public class LogQueryUtils {
         RowSortQueryInfoBean sortQueryInfoBean = new RowSortQueryInfoBean();
         sortQueryInfoBean.setSortBeans(sortBeans);
         postQueryInfoBeans.add(sortQueryInfoBean);
-        queryInfoBean.setPostQueryInfoBeans(postQueryInfoBeans);
+        queryInfoBean.setPostAggregations(postQueryInfoBeans);
 
         return queryInfoBean;
     }

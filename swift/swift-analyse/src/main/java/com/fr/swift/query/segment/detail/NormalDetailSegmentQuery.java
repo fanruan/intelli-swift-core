@@ -2,8 +2,8 @@ package com.fr.swift.query.segment.detail;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.info.IndexInfo;
-import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SegmentDetailResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.Pair;
 
@@ -20,7 +20,8 @@ public class NormalDetailSegmentQuery extends AbstractDetailSegmentQuery {
     }
 
     @Override
-    public DetailResultSet getQueryResult() {
-        return new SegmentDetailResultSet(fetchSize, columnList, filter);
+    public QueryResultSet getQueryResult() {
+        // TODO: 2018/11/27
+        return (QueryResultSet) new SegmentDetailResultSet(fetchSize, columnList, filter);
     }
 }

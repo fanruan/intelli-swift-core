@@ -2,8 +2,6 @@ package com.fr.swift.query.info.bean.element;
 
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
-import com.fr.swift.query.info.bean.element.relation.IRelationSourceBean;
-import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.third.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -16,15 +14,9 @@ public class MetricBean {
     @JsonProperty
     private String column;  // 原始表中的字段名
     @JsonProperty
-    private String name;    // 客户端定义的转移名
+    private String alias;    // 客户端定义的转移名
     @JsonProperty
-    private IRelationSourceBean relation;
-    @JsonProperty
-    private FilterInfoBean filterInfoBean;
-    @JsonProperty
-    private String formula;
-    @JsonProperty
-    private MetricType metricType;
+    private FilterInfoBean filter;
 
     public AggregatorType getType() {
         return type;
@@ -42,43 +34,19 @@ public class MetricBean {
         this.column = column;
     }
 
-    public String getName() {
-        return name;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
-    public IRelationSourceBean getRelation() {
-        return relation;
+    public FilterInfoBean getFilter() {
+        return filter;
     }
 
-    public void setRelation(IRelationSourceBean relation) {
-        this.relation = relation;
-    }
-
-    public FilterInfoBean getFilterInfoBean() {
-        return filterInfoBean;
-    }
-
-    public void setFilterInfoBean(FilterInfoBean filterInfoBean) {
-        this.filterInfoBean = filterInfoBean;
-    }
-
-    public String getFormula() {
-        return formula;
-    }
-
-    public void setFormula(String formula) {
-        this.formula = formula;
-    }
-
-    public MetricType getMetricType() {
-        return metricType;
-    }
-
-    public void setMetricType(MetricType metricType) {
-        this.metricType = metricType;
+    public void setFilter(FilterInfoBean filter) {
+        this.filter = filter;
     }
 }

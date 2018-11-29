@@ -5,8 +5,8 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.node.resultset.ChainedNodeMergeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,16 +20,16 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
 
     private boolean[] isGlobalIndexed;
 
-    public GroupResultQuery(int fetchSize, List<Query<NodeResultSet>> queries, List<Aggregator> aggregators,
+    public GroupResultQuery(int fetchSize, List<Query<QueryResultSet>> queries, List<Aggregator> aggregators,
                             List<Comparator<GroupNode>> comparators, boolean[] isGlobalIndexed) {
         super(fetchSize, queries, aggregators, comparators);
         this.isGlobalIndexed = isGlobalIndexed;
     }
 
     @Override
-    public NodeResultSet getQueryResult() throws SQLException {
+    public QueryResultSet getQueryResult() throws SQLException {
         List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
-        for (Query<NodeResultSet> query : queryList) {
+        for (Query<QueryResultSet> query : queryList) {
             NodeMergeResultSet<GroupNode> resultSet = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
             if (resultSet == null) {
                 SwiftLoggers.getLogger().info("failed to get result from query: ", query.toString());
@@ -37,6 +37,7 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
                 resultSets.add(resultSet);
             }
         }
-        return new ChainedNodeMergeResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, comparators);
+        // TODO: 2018/11/27
+        return (QueryResultSet) new ChainedNodeMergeResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, comparators);
     }
 }

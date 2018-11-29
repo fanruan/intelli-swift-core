@@ -7,34 +7,36 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.result.node.resultset.ChainedNodeResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Lyon on 2018/5/31.
  */
-public class FieldCalQuery extends AbstractPostQuery<NodeResultSet> {
+public class FieldCalQuery implements PostQuery<QueryResultSet> {
 
-    private PostQuery<NodeResultSet> query;
-    private List<GroupTarget> calInfo;
+    private PostQuery<QueryResultSet> query;
+    private GroupTarget calInfo;
 
-    public FieldCalQuery(PostQuery<NodeResultSet> query, List<GroupTarget> calInfo) {
+    public FieldCalQuery(PostQuery<QueryResultSet> query, GroupTarget calInfo) {
         this.query = query;
         this.calInfo = calInfo;
     }
 
     @Override
-    public NodeResultSet getQueryResult() throws SQLException {
+    public QueryResultSet getQueryResult() throws SQLException {
         SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
             public Pair<SwiftNode, List<Map<Integer, Object>>> apply(Pair<? extends SwiftNode, List<Map<Integer, Object>>> p) {
                 // TODO: 2018/6/13 同比环比依赖的字典去掉了，data已经set进来了，到时适配一下
                 try {
-                    TargetCalculatorUtils.calculate((GroupNode) p.getKey(), p.getValue(), calInfo);
+                    TargetCalculatorUtils.calculate((GroupNode) p.getKey(), p.getValue(), Collections.singletonList(calInfo));
                 } catch (SQLException e) {
                     Crasher.crash(e);
                 }
@@ -42,6 +44,7 @@ public class FieldCalQuery extends AbstractPostQuery<NodeResultSet> {
             }
         };
         NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
-        return new ChainedNodeResultSet(operator, mergeResult);
+        // TODO: 2018/11/27
+        return (QueryResultSet) new ChainedNodeResultSet(operator, mergeResult);
     }
 }
