@@ -6,14 +6,14 @@ import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
-import com.fr.swift.jdbc.result.SwiftPaginationResultSet;
+import com.fr.swift.jdbc.emb.EmbJdbcConnector;
+import com.fr.swift.jdbc.mode.Mode;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,36 +24,56 @@ import java.util.List;
 public class JdbcCaller implements TableService {
 
     protected String address;
-    protected ClientProxyPool pool;
+    protected Mode mode;
 
-    public static SelectJdbcCaller connectSelectService(String address, ClientProxyPool proxy) {
+    public static SelectJdbcCaller connectSelectService(String address, Mode proxy) {
         return new SelectJdbcCaller(address, proxy);
     }
 
-    public static SelectJdbcCaller connectSelectService(String host, int port, ClientProxyPool proxy) {
+    public static SelectJdbcCaller connectSelectService(String host, int port, Mode proxy) {
         return new SelectJdbcCaller(host, port, proxy);
     }
 
-    public static MaintenanceJdbcCaller connectMaintenanceService(String address, ClientProxyPool proxy) {
+    public static MaintenanceJdbcCaller connectMaintenanceService(String address, Mode proxy) {
         return new MaintenanceJdbcCaller(address, proxy);
     }
 
-    public static MaintenanceJdbcCaller connectMaintenanceService(String host, int port, ClientProxyPool proxy) {
+    public static MaintenanceJdbcCaller connectMaintenanceService(String host, int port, Mode proxy) {
         return new MaintenanceJdbcCaller(host, port, proxy);
     }
 
-    private SwiftMetaData getMetaData(SwiftDatabase schema, String tableName) throws Exception {
-        ClientProxy proxy = null;
-        try {
-            proxy = pool.borrowObject(address);
-            return proxy.getProxy(TableService.class).detectiveMetaData(schema, tableName);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            pool.invalidateObject(address, proxy);
-            return null;
-        } finally {
-            pool.returnObject(address, proxy);
+    protected <T> T invoke(Class proxyClass, Method method, Object... args) throws Exception {
+        switch (mode) {
+            case SERVER:
+                ClientProxy proxy = null;
+                ClientProxyPool pool = ClientProxyPool.getInstance(mode);
+                try {
+                    proxy = pool.borrowObject(address);
+                    return (T) method.invoke(proxy.getProxy(proxyClass), args);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                    pool.invalidateObject(address, proxy);
+                    return null;
+                } finally {
+                    pool.returnObject(address, proxy);
+                }
+            case EMB:
+                ClientProxy emb = new ClientProxy(new SimpleExecutor(new EmbJdbcConnector()));
+                try {
+                    emb.start();
+                    return (T) method.invoke(emb.getProxy(proxyClass), args);
+                } finally {
+                    emb.stop();
+                }
+            default:
+                return null;
         }
+
+    }
+
+    private SwiftMetaData getMetaData(SwiftDatabase schema, String tableName) throws Exception {
+        Method method = TableService.class.getDeclaredMethod("detectiveMetaData", SwiftDatabase.class, String.class);
+        return invoke(TableService.class, method, schema, tableName);
     }
 
     @Override
@@ -67,90 +87,42 @@ public class JdbcCaller implements TableService {
 
     @Override
     public List<String> detectiveAllTableNames(SwiftDatabase schema) {
-        ClientProxy proxy = null;
         try {
-            proxy = pool.borrowObject(address);
-            return proxy.getProxy(TableService.class).detectiveAllTableNames(schema);
+            Method method = TableService.class.getDeclaredMethod("detectiveAllTableNames", SwiftDatabase.class);
+            return invoke(TableService.class, method, schema);
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            try {
-                pool.invalidateObject(address, proxy);
-            } catch (Exception ignore) {
-            }
             return Collections.emptyList();
-        } finally {
-            pool.returnObject(address, proxy);
         }
     }
 
     @Override
     public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception {
-        ClientProxy proxy = null;
-        try {
-            proxy = pool.borrowObject(address);
-            return proxy.getProxy(TableService.class).createTable(schema, tableName, columns);
-        } catch (Exception e) {
-            pool.invalidateObject(address, proxy);
-            throw new SQLException(e);
-        } finally {
-            pool.returnObject(address, proxy);
-        }
+        Method method = TableService.class.getDeclaredMethod("createTable", SwiftDatabase.class, String.class, List.class);
+        return invoke(TableService.class, method, schema, tableName, columns);
     }
 
     @Override
     public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
-        ClientProxy proxy = null;
-        try {
-            proxy = pool.borrowObject(address);
-            proxy.getProxy(TableService.class).dropTable(schema, tableName);
-        } catch (Exception e) {
-            pool.invalidateObject(address, proxy);
-            throw new SQLException(e);
-        } finally {
-            pool.returnObject(address, proxy);
-        }
+        Method method = TableService.class.getDeclaredMethod("dropTable", SwiftDatabase.class, String.class);
+        invoke(TableService.class, method, schema, tableName);
     }
 
     @Override
     public void truncateTable(SwiftDatabase schema, String tableName) throws Exception {
-        ClientProxy proxy = null;
-        try {
-            proxy = pool.borrowObject(address);
-            proxy.getProxy(TableService.class).truncateTable(schema, tableName);
-        } catch (Exception e) {
-            pool.invalidateObject(address, proxy);
-            throw new SQLException(e);
-        } finally {
-            pool.returnObject(address, proxy);
-        }
+        Method method = TableService.class.getDeclaredMethod("truncateTable", SwiftDatabase.class, String.class);
+        invoke(TableService.class, method, schema, tableName);
     }
 
     @Override
     public boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws Exception {
-        ClientProxy proxy = null;
-        try {
-            proxy = pool.borrowObject(address);
-            return proxy.getProxy(TableService.class).addColumn(schema, tableName, column);
-        } catch (Exception e) {
-            pool.invalidateObject(address, proxy);
-            throw new SQLException(e);
-        } finally {
-            pool.returnObject(address, proxy);
-        }
+        Method method = TableService.class.getDeclaredMethod("addColumn", SwiftDatabase.class, String.class, Column.class);
+        return invoke(TableService.class, method, schema, tableName, column);
     }
 
     @Override
     public boolean dropColumn(SwiftDatabase schema, String tableName, String columnName) throws Exception {
-        ClientProxy proxy = null;
-        try {
-            proxy = pool.borrowObject(address);
-            return proxy.getProxy(TableService.class).dropColumn(schema, tableName, columnName);
-        } catch (Exception e) {
-            pool.invalidateObject(address, proxy);
-            throw new SQLException(e);
-        } finally {
-            pool.returnObject(address, proxy);
-        }
+        Method method = TableService.class.getDeclaredMethod("dropColumn", SwiftDatabase.class, String.class, String.class);
+        return invoke(TableService.class, method, schema, tableName, columnName);
     }
 
     @Override
@@ -159,57 +131,36 @@ public class JdbcCaller implements TableService {
     }
 
     public static class SelectJdbcCaller extends JdbcCaller implements SelectService, TableService {
-        private SelectJdbcCaller(String address, ClientProxyPool proxy) {
+        private SelectJdbcCaller(String address, Mode proxy) {
             this.address = address;
-            this.pool = proxy;
+            this.mode = proxy;
         }
 
-        private SelectJdbcCaller(String host, int port, ClientProxyPool proxy) {
+        private SelectJdbcCaller(String host, int port, Mode proxy) {
             this(host + ":" + port, proxy);
         }
 
         @Override
         public SwiftResultSet query(SwiftDatabase database, String queryJson) throws Exception {
-            ClientProxy proxy = null;
-            try {
-                proxy = pool.borrowObject(address);
-                SwiftResultSet resultSet = proxy.getProxy(SelectService.class).query(database, queryJson);
-                if (resultSet instanceof SerializableDetailResultSet) {
-                    return new SwiftPaginationResultSet((SerializableDetailResultSet) resultSet, this, database);
-                }
-                return resultSet;
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
-                pool.invalidateObject(address, proxy);
-                return null;
-            } finally {
-                pool.returnObject(address, proxy);
-            }
+            Method method = SelectService.class.getDeclaredMethod("query", SwiftDatabase.class, String.class);
+            return invoke(SelectService.class, method, database, queryJson);
         }
     }
 
     public static class MaintenanceJdbcCaller extends JdbcCaller implements DataMaintenanceService, TableService {
-        private MaintenanceJdbcCaller(String address, ClientProxyPool proxy) {
+        private MaintenanceJdbcCaller(String address, Mode proxy) {
             this.address = address;
-            this.pool = proxy;
+            this.mode = proxy;
         }
 
-        private MaintenanceJdbcCaller(String host, int port, ClientProxyPool proxy) {
+        private MaintenanceJdbcCaller(String host, int port, Mode proxy) {
             this(host + ":" + port, proxy);
         }
 
         @Override
         public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws Exception {
-            ClientProxy proxy = null;
-            try {
-                proxy = pool.borrowObject(address);
-                return proxy.getProxy(DataMaintenanceService.class).insert(schema, tableName, fields, rows);
-            } catch (Exception e) {
-                pool.invalidateObject(address, proxy);
-                throw new SQLException(e);
-            } finally {
-                pool.returnObject(address, proxy);
-            }
+            Method method = DataMaintenanceService.class.getDeclaredMethod("insert", SwiftDatabase.class, String.class, List.class, List.class);
+            return invoke(SelectService.class, method, schema, tableName, fields, rows);
         }
 
         @Override
@@ -219,44 +170,20 @@ public class JdbcCaller implements TableService {
 
         @Override
         public int insert(SwiftDatabase schema, String tableName, String queryJson) throws Exception {
-            ClientProxy proxy = null;
-            try {
-                proxy = pool.borrowObject(address);
-                return proxy.getProxy(DataMaintenanceService.class).insert(schema, tableName, queryJson);
-            } catch (Exception e) {
-                pool.invalidateObject(address, proxy);
-                throw new SQLException(e);
-            } finally {
-                pool.returnObject(address, proxy);
-            }
+            Method method = DataMaintenanceService.class.getDeclaredMethod("insert", SwiftDatabase.class, String.class, String.class);
+            return invoke(SelectService.class, method, schema, tableName, queryJson);
         }
 
         @Override
         public int delete(SwiftDatabase schema, String tableName, Where where) throws Exception {
-            ClientProxy proxy = null;
-            try {
-                proxy = pool.borrowObject(address);
-                return proxy.getProxy(DataMaintenanceService.class).delete(schema, tableName, where);
-            } catch (Exception e) {
-                pool.invalidateObject(address, proxy);
-                throw new SQLException(e);
-            } finally {
-                pool.returnObject(address, proxy);
-            }
+            Method method = DataMaintenanceService.class.getDeclaredMethod("delete", SwiftDatabase.class, String.class, Where.class);
+            return invoke(SelectService.class, method, schema, tableName, where);
         }
 
         @Override
         public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws Exception {
-            ClientProxy proxy = null;
-            try {
-                proxy = pool.borrowObject(address);
-                return proxy.getProxy(DataMaintenanceService.class).update(schema, tableName, resultSet, where);
-            } catch (Exception e) {
-                pool.invalidateObject(address, proxy);
-                throw new SQLException(e);
-            } finally {
-                pool.returnObject(address, proxy);
-            }
+            Method method = DataMaintenanceService.class.getDeclaredMethod("update", SwiftDatabase.class, String.class, SwiftResultSet.class, Where.class);
+            return invoke(SelectService.class, method, schema, tableName, resultSet, where);
         }
     }
 }
