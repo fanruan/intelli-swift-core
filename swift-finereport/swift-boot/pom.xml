@@ -76,8 +76,13 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-rpc-fr</artifactId>
-            <version>2019.1</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-config-fr</artifactId>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 </project>

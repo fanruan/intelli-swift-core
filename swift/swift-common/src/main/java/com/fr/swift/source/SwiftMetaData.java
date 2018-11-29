@@ -1,10 +1,7 @@
 package com.fr.swift.source;
 
-import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.third.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fr.third.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.List;
 
@@ -14,10 +11,10 @@ import java.util.List;
  * 先实现一些基本的功能，以后如果需要兼容jdbc，可扩展为ResultSetMetadata
  * column 从1开始
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-@JsonSubTypes({
-        @JsonSubTypes.Type(SwiftMetaDataBean.class)
-})
+//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(SwiftMetaDataBean.class)
+//})
 public interface SwiftMetaData {
     SwiftDatabase getSwiftDatabase();
 

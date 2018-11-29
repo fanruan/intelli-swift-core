@@ -1,6 +1,6 @@
 package com.fr.swift.segment.rule;
 
-import com.fr.swift.config.bean.SegmentDestSelectRule;
+import com.fr.swift.config.SegmentDestSelectRule;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;

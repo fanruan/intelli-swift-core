@@ -1,13 +1,13 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.RpcServiceAddressBean;
+import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftServiceAddressService;
-import com.fr.third.org.hibernate.Session;
+import com.fr.swift.util.Strings;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -24,9 +24,9 @@ import java.util.List;
 public class SwiftServiceAddressServiceImpl implements SwiftServiceAddressService {
     private final SwiftConfigService.ConfigConvert<RpcServiceAddressBean> CONVERT = new SwiftConfigService.ConfigConvert<RpcServiceAddressBean>() {
         @Override
-        public RpcServiceAddressBean toBean(SwiftConfigDao<SwiftConfigEntity> dao, Session session, Object... args) throws SQLException {
-            SwiftConfigEntity host = dao.select(session, getKey(args[0].toString(), "host"));
-            SwiftConfigEntity port = dao.select(session, getKey(args[0].toString(), "port"));
+        public RpcServiceAddressBean toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
+            SwiftConfigBean host = dao.select(session, getKey(args[0].toString(), "host"));
+            SwiftConfigBean port = dao.select(session, getKey(args[0].toString(), "port"));
             if (null == host || null == port) {
                 return null;
             }
@@ -39,10 +39,10 @@ public class SwiftServiceAddressServiceImpl implements SwiftServiceAddressServic
         }
 
         @Override
-        public List<SwiftConfigEntity> toEntity(RpcServiceAddressBean bean, Object... args) {
-            List<SwiftConfigEntity> list = new ArrayList<SwiftConfigEntity>();
-            list.add(new SwiftConfigEntity(getKey(args[0], "host"), bean.getAddress()));
-            list.add(new SwiftConfigEntity(getKey(args[0], "port"), bean.getPort()));
+        public List<SwiftConfigBean> toEntity(RpcServiceAddressBean bean, Object... args) {
+            List<SwiftConfigBean> list = new ArrayList<SwiftConfigBean>();
+            list.add(new SwiftConfigBean(getKey(args[0], "host"), bean.getAddress()));
+            list.add(new SwiftConfigBean(getKey(args[0], "port"), bean.getPort()));
             return Collections.unmodifiableList(list);
         }
 
@@ -56,7 +56,7 @@ public class SwiftServiceAddressServiceImpl implements SwiftServiceAddressServic
 
     @Override
     public boolean addOrUpdateAddress(String serviceName, RpcServiceAddressBean address) {
-        if (StringUtils.isEmpty(serviceName)) {
+        if (Strings.isEmpty(serviceName)) {
             return false;
         }
         return configService.updateConfigBean(CONVERT, address, serviceName);
