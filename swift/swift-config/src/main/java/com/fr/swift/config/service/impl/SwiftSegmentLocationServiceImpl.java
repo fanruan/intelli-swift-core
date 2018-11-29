@@ -1,15 +1,15 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
+import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
-import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
-import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
+import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.FindList;
+import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.third.org.hibernate.Session;
-import com.fr.third.org.hibernate.criterion.Criterion;
-import com.fr.third.org.hibernate.criterion.Restrictions;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -30,19 +30,27 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     @Autowired
     private SwiftSegmentLocationDao segmentLocationDao;
     @Autowired
-    private HibernateTransactionManager tx;
+    private TransactionManager tx;
+    private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
     @Override
     public boolean delete(final String table, final String clusterId) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) {
-                    List<SwiftSegmentLocationEntity> list = segmentLocationDao.find(session,
-                            Restrictions.eq("id.clusterId", clusterId),
-                            Restrictions.eq("sourceKey", table));
-                    for (SwiftSegmentLocationEntity locationEntity : list) {
-                        session.delete(locationEntity);
+                public Boolean work(final ConfigSession session) {
+                    try {
+                        segmentLocationDao.find(session,
+                                factory.eq("id.clusterId", clusterId),
+                                factory.eq("sourceKey", table)).justForEach(new FindList.Each() {
+                            @Override
+                            public void each(int idx, Object item) throws Exception {
+                                session.delete(item);
+                            }
+                        });
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
+                        return false;
                     }
                     return true;
                 }
@@ -56,11 +64,23 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     @Override
     public boolean delete(final String table, final String clusterId, final String segKey) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) throws SQLException {
-                    SwiftSegLocationEntityId id = new SwiftSegLocationEntityId(clusterId, segKey);
-                    return segmentLocationDao.deleteById(session, id);
+                public Boolean work(final ConfigSession session) throws SQLException {
+                    try {
+                        segmentLocationDao.find(session,
+                                factory.eq("id.clusterId", clusterId),
+                                factory.eq("id.segmentKey", segKey)).justForEach(new FindList.Each() {
+                            @Override
+                            public void each(int idx, Object item) throws Exception {
+                                session.delete(item);
+                            }
+                        });
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
+                        return false;
+                    }
+                    return true;
                 }
             });
         } catch (SQLException e) {
@@ -70,19 +90,25 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
-    public Map<String, List<SwiftSegmentLocationEntity>> findAll() {
+    public Map<String, List<SegLocationBean>> findAll() {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, List<SwiftSegmentLocationEntity>>>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Map<String, List<SegLocationBean>>>(false) {
                 @Override
-                public Map<String, List<SwiftSegmentLocationEntity>> work(Session session) {
-                    Map<String, List<SwiftSegmentLocationEntity>> result = new HashMap<String, List<SwiftSegmentLocationEntity>>();
-                    List<SwiftSegmentLocationEntity> all = segmentLocationDao.findAll(session);
-                    for (SwiftSegmentLocationEntity entity : all) {
-                        String sourceKey = entity.getSourceKey();
-                        if (null == result.get(sourceKey)) {
-                            result.put(sourceKey, new ArrayList<SwiftSegmentLocationEntity>());
-                        }
-                        result.get(sourceKey).add(entity);
+                public Map<String, List<SegLocationBean>> work(ConfigSession session) {
+                    final Map<String, List<SegLocationBean>> result = new HashMap<String, List<SegLocationBean>>();
+                    try {
+                        segmentLocationDao.findAll(session).forEach(new FindList.Each<SegLocationBean>() {
+                            @Override
+                            public void each(int idx, SegLocationBean item) throws Exception {
+                                String sourceKey = item.getSourceKey();
+                                if (null == result.get(sourceKey)) {
+                                    result.put(sourceKey, new ArrayList<SegLocationBean>());
+                                }
+                                result.get(sourceKey).add(item);
+                            }
+                        });
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
                     }
                     return result;
                 }
@@ -98,12 +124,12 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
-    public List<SwiftSegmentLocationEntity> find(final Criterion... criterion) {
+    public List<SegLocationBean> find(final Object... criterion) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<List<SwiftSegmentLocationEntity>>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<List<SegLocationBean>>(false) {
                 @Override
-                public List<SwiftSegmentLocationEntity> work(Session session) {
-                    return segmentLocationDao.find(session, criterion);
+                public List<SegLocationBean> work(ConfigSession session) {
+                    return segmentLocationDao.find(session, criterion).list();
                 }
 
                 @Override
@@ -117,11 +143,11 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
-    public boolean saveOrUpdate(final SwiftSegmentLocationEntity obj) {
+    public boolean saveOrUpdate(final SegLocationBean obj) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) throws SQLException {
+                public Boolean work(ConfigSession session) throws SQLException {
                     return segmentLocationDao.saveOrUpdate(session, obj);
                 }
             });

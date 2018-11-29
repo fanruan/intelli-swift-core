@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-repository-base</artifactId>
+            <artifactId>swift-base-repository</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>

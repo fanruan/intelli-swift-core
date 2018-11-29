@@ -1,13 +1,13 @@
 package com.fr.swift.decision.config.unique;
 
 
-import com.fr.swift.config.bean.Convert;
+import com.fr.swift.config.bean.ObjectConverter;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public interface RepositoryConfigUnique extends Convert<SwiftFileSystemConfig> {
+public interface RepositoryConfigUnique extends ObjectConverter<SwiftFileSystemConfig> {
     String getNameSpace();
 }
