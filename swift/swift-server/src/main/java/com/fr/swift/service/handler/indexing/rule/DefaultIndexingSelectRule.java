@@ -1,6 +1,6 @@
 package com.fr.swift.service.handler.indexing.rule;
 
-import com.fr.swift.config.bean.IndexingSelectRule;
+import com.fr.swift.config.IndexingSelectRule;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.third.springframework.stereotype.Service;
 

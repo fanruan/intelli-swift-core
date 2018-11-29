@@ -1,6 +1,6 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.bean.ObjectConverter;
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
@@ -27,12 +27,8 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
 
     @Override
     public boolean saveOrUpdate(ConfigSession session, T entity) throws SQLException {
-        try {
-            session.merge(entity.convert());
-            return true;
-        } catch (Exception e) {
-            throw new SQLException(e);
-        }
+        session.merge(entity.convert());
+        return true;
     }
 
     @Override

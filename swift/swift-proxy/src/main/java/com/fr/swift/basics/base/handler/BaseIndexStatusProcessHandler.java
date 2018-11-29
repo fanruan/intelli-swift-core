@@ -8,7 +8,7 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.IndexPHDefiner;
-import com.fr.swift.config.bean.IndexingSelectRule;
+import com.fr.swift.config.IndexingSelectRule;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.service.IndexingSelectRuleService;
 import com.fr.swift.log.SwiftLoggers;

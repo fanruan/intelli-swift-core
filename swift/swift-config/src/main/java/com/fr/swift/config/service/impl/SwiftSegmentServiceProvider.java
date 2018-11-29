@@ -11,6 +11,7 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

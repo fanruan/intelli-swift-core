@@ -1,7 +1,7 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.config.indexing.ColumnIndexingConf;
+import com.fr.swift.config.ColumnIndexingConf;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.query.group.Groups;

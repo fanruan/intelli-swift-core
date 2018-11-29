@@ -3,8 +3,8 @@ package com.fr.swift.decision.config.unique;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
-import com.fr.swift.config.bean.ObjectConverter;
 import com.fr.swift.config.bean.RpcServiceAddressBean;
+import com.fr.swift.config.convert.ObjectConverter;
 
 /**
  * @author yee

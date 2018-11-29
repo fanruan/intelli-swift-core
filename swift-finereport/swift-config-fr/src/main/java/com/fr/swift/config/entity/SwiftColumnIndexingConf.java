@@ -1,9 +1,9 @@
 package com.fr.swift.config.entity;
 
-import com.fr.swift.config.bean.ObjectConverter;
+import com.fr.swift.config.ColumnIndexingConf;
 import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.config.entity.key.ColumnId;
-import com.fr.swift.config.indexing.ColumnIndexingConf;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Assert;
 import com.fr.third.javax.persistence.Column;

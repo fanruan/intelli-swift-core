@@ -7,6 +7,8 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

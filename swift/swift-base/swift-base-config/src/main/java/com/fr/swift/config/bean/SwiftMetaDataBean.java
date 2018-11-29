@@ -1,5 +1,6 @@
 package com.fr.swift.config.bean;
 
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;

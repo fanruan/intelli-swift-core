@@ -1,6 +1,6 @@
 package com.fr.swift.config.convert;
 
-import com.fr.swift.config.bean.IndexingSelectRule;
+import com.fr.swift.config.IndexingSelectRule;
 import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
@@ -13,6 +13,10 @@ import com.fr.swift.context.SwiftContext;
  */
 public class IndexingSelectRuleConvert extends AbstractObjectConfigConvert<IndexingSelectRule> {
     private static final String INDEXING_SELECT_RULE = "INDEXING_SELECT_RULE";
+
+    public IndexingSelectRuleConvert() {
+        super(IndexingSelectRule.class);
+    }
 
     @Override
     public IndexingSelectRule toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) {

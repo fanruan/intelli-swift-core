@@ -18,6 +18,12 @@ import java.util.List;
  * @date 2018/7/16
  */
 public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T> {
+    private Class<T> tClass;
+
+    public AbstractObjectConfigConvert(Class<T> tClass) {
+        checkClass(tClass);
+        this.tClass = tClass;
+    }
 
     @Override
     public T toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
@@ -28,6 +34,9 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
         String className = transferClassName(entity.getConfigValue());
         try {
             Class<? extends T> clazz = (Class<? extends T>) this.getClass().getClassLoader().loadClass(className);
+            if (!ReflectUtils.isAssignable(clazz, tClass)) {
+                throw new Exception("Not Match");
+            }
             T rule = ReflectUtils.newInstance(clazz);
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
@@ -67,6 +76,12 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
             SwiftLoggers.getLogger().warn(e);
         }
         return null;
+    }
+
+    private void checkClass(Class tClass) {
+        if (ReflectUtils.isPrimitiveOrWrapper(tClass) || ReflectUtils.isAssignable(tClass, String.class)) {
+            throw new RuntimeException("Object " + tClass + " is simple. Please use SimpleConfigConvert");
+        }
     }
 
     protected abstract String transferClassName(String className);

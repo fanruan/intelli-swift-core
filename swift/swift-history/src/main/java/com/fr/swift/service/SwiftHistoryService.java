@@ -7,7 +7,7 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cluster.listener.NodeStartedListener;
-import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
@@ -219,9 +219,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
         SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
         int tmp = 0;
-        SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+        SwiftTablePathBean entity = tablePathService.get(sourceKey);
         if (null == entity) {
-            entity = new SwiftTablePathEntity(sourceKey, tmp);
+            entity = new SwiftTablePathBean(sourceKey, tmp);
             tablePathService.saveOrUpdate(entity);
             replace = true;
         } else {
@@ -309,7 +309,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     public void truncate(String sourceKey) {
-        SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+        SwiftTablePathBean entity = tablePathService.get(sourceKey);
         int path = 0;
         if (null != entity) {
             path = entity.getTablePath() == null ? 0 : entity.getTablePath();

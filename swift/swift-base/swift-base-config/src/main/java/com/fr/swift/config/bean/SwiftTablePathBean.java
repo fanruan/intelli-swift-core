@@ -1,5 +1,7 @@
 package com.fr.swift.config.bean;
 
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
@@ -25,6 +27,12 @@ public class SwiftTablePathBean implements ObjectConverter {
         this.tableKey = tableKey;
         this.tablePath = tablePath;
         this.lastPath = lastPath;
+        this.tmpDir = tmpDir;
+    }
+
+    public SwiftTablePathBean(String tableKey, Integer tmpDir) {
+        this.clusterId = SwiftConfigConstants.LOCALHOST;
+        this.tableKey = tableKey;
         this.tmpDir = tmpDir;
     }
 

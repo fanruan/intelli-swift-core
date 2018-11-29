@@ -1,4 +1,4 @@
-package com.fr.swift.config.indexing;
+package com.fr.swift.config;
 
 /**
  * @author anchore

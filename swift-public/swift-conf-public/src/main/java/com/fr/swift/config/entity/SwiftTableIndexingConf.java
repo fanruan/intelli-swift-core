@@ -1,10 +1,10 @@
 package com.fr.swift.config.entity;
 
-import com.fr.swift.config.bean.ObjectConverter;
+import com.fr.swift.config.TableIndexingConf;
 import com.fr.swift.config.bean.SwiftTableIdxConfBean;
 import com.fr.swift.config.convert.AllotRuleConverter;
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.config.entity.key.TableId;
-import com.fr.swift.config.indexing.TableIndexingConf;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.AllotRule;
 
