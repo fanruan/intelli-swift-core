@@ -7,6 +7,7 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Table;
@@ -78,6 +79,7 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
         NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
             @Override
             public void run() {
+                switchToCluster();
                 recover0();
                 sendLocalSegmentInfo();
             }
@@ -172,6 +174,22 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
     @Override
     public ServiceType getServiceType() {
         return ServiceType.REAL_TIME;
+    }
+
+    private void switchToCluster() {
+        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        clusterSegmentService.setClusterId(getID());
+        SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments("LOCAL");
+        if (!segments.isEmpty()) {
+            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+                for (SegmentKey segmentKey : entry.getValue()) {
+                    if (segmentKey.getStoreType().isTransient()) {
+                        locationService.updateClusterId(segmentKey.toString(), "LOCAL", getID());
+                    }
+                }
+            }
+        }
     }
 
     protected SegmentLocationInfo loadSelfSegmentDestination() {
