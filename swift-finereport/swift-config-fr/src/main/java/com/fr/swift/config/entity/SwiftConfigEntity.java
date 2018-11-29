@@ -1,8 +1,8 @@
 package com.fr.swift.config.entity;
 
 
-import com.fr.swift.config.bean.ObjectConverter;
 import com.fr.swift.config.bean.SwiftConfigBean;
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.util.Strings;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Entity;

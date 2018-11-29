@@ -1,6 +1,6 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.config.indexing.ColumnIndexingConf;
+import com.fr.swift.config.ColumnIndexingConf;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;

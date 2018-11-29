@@ -16,6 +16,8 @@ import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
+import com.fr.third.springframework.beans.factory.annotation.Autowired;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.Collections;

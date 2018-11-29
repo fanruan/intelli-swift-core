@@ -1,12 +1,12 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.config.bean.ObjectConverter;
+import com.fr.swift.config.ColumnIndexingConf;
+import com.fr.swift.config.TableIndexingConf;
 import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
 import com.fr.swift.config.bean.SwiftTableIdxConfBean;
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.config.indexing.ColumnIndexingConf;
-import com.fr.swift.config.indexing.TableIndexingConf;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;

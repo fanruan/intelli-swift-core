@@ -1,7 +1,7 @@
 package com.fr.swift.config.dao;
 
 
-import com.fr.swift.config.bean.ObjectConverter;
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
 

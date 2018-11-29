@@ -1,6 +1,6 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.config.bean.DataSyncRule;
+import com.fr.swift.config.DataSyncRule;
 import com.fr.swift.config.convert.DataSyncRuleConvert;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.third.springframework.stereotype.Service;

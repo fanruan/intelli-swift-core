@@ -1,5 +1,6 @@
 package com.fr.swift.config.bean;
 
+import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;

@@ -8,7 +8,7 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.ServerCurrentStatus;
-import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -196,7 +196,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
         public void uploadTable(final DataSource dataSource) throws Exception {
             final SourceKey sourceKey = dataSource.getSourceKey();
-            SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+            SwiftTablePathBean entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
             Integer path = entity.getTablePath();
             path = null == path ? -1 : path;
             Integer tmpPath = entity.getTmpDir();
@@ -324,7 +324,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 if (null != obj) {
                     if (obj instanceof DataSource) {
                         SourceKey sourceKey = ((DataSource) obj).getSourceKey();
-                        SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+                        SwiftTablePathBean entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
                         Integer tmpPath = entity.getTmpDir();
                         String deletePath = String.format("%s/%s/%d/%s",
                                 pathService.getSwiftPath(),
