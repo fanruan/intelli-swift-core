@@ -49,7 +49,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         queryBean.setQueryId(UUID.randomUUID().toString());
         SourceKey table = new SourceKey(queryBean.getTableName());
         List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
-        List<Pair<URL, Set<String>>> pairs = groupSegmentInfoByClusterId(segmentDestinations);
+        List<Pair<URL, Set<String>>> pairs = processUrl(target, segmentDestinations);
         final List<QueryResultSet> resultSets = new ArrayList<QueryResultSet>();
         final Class proxyClass = method.getDeclaringClass();
         final Class<?>[] parameterTypes = method.getParameterTypes();
@@ -90,9 +90,8 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                                 if (hasNextPage()) {
                                     Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, pair.getKey());
                                     try {
-                                        RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass,
+                                        resultSet = (QueryResultSet) invoke(invoker, proxyClass,
                                                 method, methodName, parameterTypes, queryJson);
-                                        resultSet = (QueryResultSet) rpcFuture.get();
                                     } catch (Throwable throwable) {
                                         return Crasher.crash(throwable);
                                     }
@@ -117,16 +116,24 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                 }
             });
         }
+        latch.await();
         QueryResultSetMerger merger = QueryResultSetUtils.createMerger(queryBean.getQueryType());
         // TODO: 2018/11/27 postAggregation
-        return merger.merge(resultSets);
+        return mergeResult(resultSets, merger);
     }
 
     private static boolean isLocalURL(URL url) {
         return url == null || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId());
     }
 
-    private static List<Pair<URL, Set<String>>> groupSegmentInfoByClusterId(List<SegmentDestination> uris) {
+    @Override
+    protected Object mergeResult(List resultList, Object... args) throws Throwable {
+        return ((QueryResultSetMerger) args[0]).merge(resultList);
+    }
+
+    @Override
+    public List<Pair<URL, Set<String>>> processUrl(Target target, Object... args) {
+        List<SegmentDestination> uris = (List<SegmentDestination>) args[0];
         Map<String, Pair<URL, Set<String>>> map = new HashMap<String, Pair<URL, Set<String>>>();
         for (SegmentDestination destination : uris) {
             String clusterId = destination.getClusterId();
@@ -137,15 +144,5 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
             map.get(clusterId).getValue().add(destination.getClusterId());
         }
         return Collections.unmodifiableList(new ArrayList<Pair<URL, Set<String>>>(map.values()));
-    }
-
-    @Override
-    protected Object mergeResult(List resultList) throws Throwable {
-        return null;
-    }
-
-    @Override
-    public List<URL> processUrl(Target target, Object... args) {
-        return null;
     }
 }

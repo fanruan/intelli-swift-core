@@ -22,7 +22,7 @@ public abstract class BaseCommonProcessHandler extends BaseProcessHandler<List<U
     }
 
     @Override
-    protected Object mergeResult(List resultList) {
+    protected Object mergeResult(List resultList, Object... args) {
         return null;
     }
 
