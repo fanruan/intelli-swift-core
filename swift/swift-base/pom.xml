@@ -17,6 +17,7 @@
         <module>swift-base-structure</module>
         <module>swift-base-bitmap</module>
         <module>swift-base-repository</module>
+        <module>swift-base-beans</module>
     </modules>
 
     <dependencyManagement>
