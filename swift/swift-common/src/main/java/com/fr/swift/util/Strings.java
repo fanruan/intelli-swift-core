@@ -1,5 +1,6 @@
 package com.fr.swift.util;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 
 /**
@@ -9,6 +10,7 @@ import java.util.regex.Matcher;
  * @date 17/11/27
  */
 public final class Strings {
+    public static final String EMPTY = "";
     public static String trimSeparator(String s, String sep) {
         return trimSeparator(s, sep, sep);
     }
@@ -69,6 +71,25 @@ public final class Strings {
             }
 
             return false;
+        }
+    }
+
+    public static boolean isEmpty(String string) {
+        return null == string || EMPTY.equals(string.trim());
+    }
+
+    public static boolean isNotEmpty(String string) {
+        return null != string && !EMPTY.equals(string.trim());
+    }
+
+    public static String rightPad(String str, int length) {
+        int offset = length - str.length();
+        if (offset <= 0) {
+            return str;
+        } else {
+            char[] var3 = new char[offset];
+            Arrays.fill(var3, ' ');
+            return str + String.valueOf(var3);
         }
     }
 }

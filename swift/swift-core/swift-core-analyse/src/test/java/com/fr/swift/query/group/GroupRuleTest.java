@@ -436,7 +436,7 @@ public class GroupRuleTest {
 
             @Override
             public Comparator<String> getComparator() {
-                return Comparators.PINYIN_ASC;
+                return Comparators.STRING_ASC;
             }
         });
 

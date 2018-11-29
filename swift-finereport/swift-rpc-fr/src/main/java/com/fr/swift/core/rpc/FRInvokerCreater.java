@@ -18,13 +18,13 @@ public class FRInvokerCreater extends AbstractInvokerCreater {
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {
         Invoker invoker = super.createAsyncInvoker(clazz, url);
-        return invoker != null ? invoker : new FRInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url, false);
+        return invoker != null ? invoker : new FRInvoker(ProxyServiceRegistry.get().getService(clazz.getName()), clazz, url, false);
     }
 
     @Override
     public Invoker createSyncInvoker(Class clazz, URL url) {
         Invoker invoker = super.createSyncInvoker(clazz, url);
-        return invoker != null ? invoker : new FRInvoker(ProxyServiceRegistry.get().getService(clazz), clazz, url);
+        return invoker != null ? invoker : new FRInvoker(ProxyServiceRegistry.get().getService(clazz.getName()), clazz, url);
     }
 
     @Override

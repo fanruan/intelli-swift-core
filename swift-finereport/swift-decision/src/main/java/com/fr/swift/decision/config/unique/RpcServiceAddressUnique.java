@@ -3,14 +3,14 @@ package com.fr.swift.decision.config.unique;
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
-import com.fr.swift.config.bean.Convert;
 import com.fr.swift.config.bean.RpcServiceAddressBean;
+import com.fr.swift.config.convert.ObjectConverter;
 
 /**
  * @author yee
  * @date 2018/6/15
  */
-public class RpcServiceAddressUnique extends UniqueKey implements Convert<RpcServiceAddressBean> {
+public class RpcServiceAddressUnique extends UniqueKey implements ObjectConverter<RpcServiceAddressBean> {
     private Conf<String> address = Holders.simple("127.0.0.1");
     private Conf<String> port = Holders.simple("7000");
 

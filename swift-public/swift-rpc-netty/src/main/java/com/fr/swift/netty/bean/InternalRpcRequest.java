@@ -1,6 +1,5 @@
 package com.fr.swift.netty.bean;
 
-import com.fr.swift.annotation.RpcService;
 import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 
@@ -16,8 +15,8 @@ public class InternalRpcRequest extends RpcRequest {
     private static final long serialVersionUID = -4343246390244615885L;
 
     @Override
-    public RpcService.RpcServiceType requestType() {
-        return RpcService.RpcServiceType.INTERNAL;
+    public RpcServiceType requestType() {
+        return RpcServiceType.INTERNAL;
     }
 
 }

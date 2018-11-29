@@ -1,11 +1,14 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.config.convert.hibernate.transaction.AbstractTransactionWorker;
-import com.fr.swift.config.convert.hibernate.transaction.HibernateTransactionManager;
-import com.fr.swift.config.dao.BasicDao;
-import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.config.entity.SwiftTablePathEntity;
-import com.fr.swift.config.entity.key.SwiftTablePathKey;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.bean.SwiftTablePathBean;
+import com.fr.swift.config.dao.SwiftTablePathDao;
+import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.FindList;
+import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -13,8 +16,6 @@ import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.third.org.hibernate.Session;
-import com.fr.third.org.hibernate.criterion.Criterion;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
@@ -29,10 +30,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Service
 public class SwiftTablePathServiceImpl implements SwiftTablePathService {
-    private final SwiftConfigDao<SwiftTablePathEntity> swiftTablePathDao = new BasicDao<SwiftTablePathEntity>(SwiftTablePathEntity.class);
+    private SwiftTablePathDao swiftTablePathDao;
     @Autowired
-    private HibernateTransactionManager tx;
-    private String clusterId = SwiftTablePathKey.LOCALHOST;
+    private TransactionManager tx;
+    private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
+    private String clusterId = SwiftConfigConstants.LOCALHOST;
     private ConcurrentHashMap<String, Integer> tablePath = new ConcurrentHashMap<String, Integer>();
 
     public SwiftTablePathServiceImpl() {
@@ -43,24 +45,19 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
                     clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
                 } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    clusterId = SwiftTablePathKey.LOCALHOST;
+                    clusterId = SwiftConfigConstants.LOCALHOST;
                 }
             }
         });
     }
 
     @Override
-    public List<SwiftTablePathEntity> find(final Criterion... criterion) {
+    public List<SwiftTablePathBean> find(final Object... criterion) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<List<SwiftTablePathEntity>>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftTablePathBean>>(false) {
                 @Override
-                public List<SwiftTablePathEntity> work(Session session) {
-                    return swiftTablePathDao.find(session, criterion);
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
+                public List<SwiftTablePathBean> work(ConfigSession session) {
+                    return swiftTablePathDao.find(session, criterion).list();
                 }
             });
         } catch (SQLException e) {
@@ -69,16 +66,16 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     }
 
     @Override
-    public boolean saveOrUpdate(final SwiftTablePathEntity entity) {
+    public boolean saveOrUpdate(final SwiftTablePathBean entity) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) throws SQLException {
-                    entity.getId().setClusterId(clusterId);
+                public Boolean work(ConfigSession session) throws SQLException {
+                    entity.setClusterId(clusterId);
                     boolean success = swiftTablePathDao.saveOrUpdate(session, entity);
                     if (success) {
                         if (null != entity.getTablePath()) {
-                            tablePath.put(entity.getId().getTableKey().getId(), entity.getTablePath());
+                            tablePath.put(entity.getTableKey(), entity.getTablePath());
                         }
                         return true;
                     }
@@ -94,13 +91,24 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     @Override
     public boolean removePath(final String table) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Boolean>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
-                public Boolean work(Session session) throws SQLException {
-                    boolean success = swiftTablePathDao.deleteById(session, new SwiftTablePathKey(table, clusterId));
-                    if (success) {
-                        tablePath.remove(table);
+                public Boolean work(final ConfigSession session) throws SQLException {
+                    try {
+                        swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).justForEach(new FindList.Each() {
+                            @Override
+                            public void each(int idx, Object item) throws Exception {
+                                try {
+                                    session.delete(item);
+                                    tablePath.remove(table);
+                                } catch (Exception e) {
+                                    SwiftLoggers.getLogger().warn(e);
+                                }
+                            }
+                        });
                         return true;
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
                     }
                     return false;
                 }
@@ -116,19 +124,24 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
         try {
             Integer path = tablePath.get(table);
             if (null == path) {
-                path = tx.doTransactionIfNeed(new AbstractTransactionWorker<Integer>() {
+                path = tx.doTransactionIfNeed(new BaseTransactionWorker<Integer>() {
                     @Override
-                    public Integer work(Session session) throws SQLException {
-                        SwiftTablePathEntity entity = swiftTablePathDao.select(session, new SwiftTablePathKey(table, clusterId));
-                        if (null != entity) {
-                            Integer path = entity.getTablePath();
-                            if (null != path && path.intValue() > -1) {
-                                tablePath.put(table, path);
-                                return path;
+                    public Integer work(ConfigSession session) throws SQLException {
+                        try {
+                            SwiftTablePathBean entity = swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).get(0);
+                            if (null != entity) {
+                                Integer path = entity.getTablePath();
+                                if (null != path && path.intValue() > -1) {
+                                    tablePath.put(table, path);
+                                    return path;
+                                }
+                                return 0;
                             }
                             return 0;
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().warn(e);
+                            return 0;
                         }
-                        return 0;
                     }
                 });
             }
@@ -141,14 +154,19 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     @Override
     public Integer getLastPath(final String table) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<Integer>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Integer>() {
                 @Override
-                public Integer work(Session session) throws SQLException {
-                    SwiftTablePathEntity entity = swiftTablePathDao.select(session, new SwiftTablePathKey(table, clusterId));
-                    if (null != entity) {
-                        return entity.getLastPath();
+                public Integer work(ConfigSession session) throws SQLException {
+                    try {
+                        SwiftTablePathBean entity = swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).get(0);
+                        if (null != entity) {
+                            return entity.getLastPath();
+                        }
+                        return 0;
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
+                        return 0;
                     }
-                    return 0;
                 }
             });
         } catch (SQLException e) {
@@ -157,12 +175,19 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     }
 
     @Override
-    public SwiftTablePathEntity get(final String table) {
+    public SwiftTablePathBean get(final String table) {
         try {
-            return tx.doTransactionIfNeed(new AbstractTransactionWorker<SwiftTablePathEntity>() {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<SwiftTablePathBean>() {
                 @Override
-                public SwiftTablePathEntity work(Session session) throws SQLException {
-                    return swiftTablePathDao.select(session, new SwiftTablePathKey(table, clusterId));
+                public SwiftTablePathBean work(ConfigSession session) throws SQLException {
+                    try {
+                        return swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).get(0);
+                    } catch (Exception e) {
+                        if (e instanceof SQLException) {
+                            throw (SQLException) e;
+                        }
+                        throw new SQLException(e);
+                    }
                 }
             });
         } catch (SQLException e) {

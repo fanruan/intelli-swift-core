@@ -8,7 +8,7 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.ServerCurrentStatus;
-import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -34,6 +34,7 @@ import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.IndexingStuff;
+import com.fr.swift.task.ReadyUploadContainer;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 import com.fr.swift.task.cube.CubeTaskGenerator;
@@ -41,7 +42,6 @@ import com.fr.swift.task.cube.CubeTaskManager;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
 import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.swift.upload.ReadyUploadContainer;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.Strings;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
@@ -196,7 +196,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
         public void uploadTable(final DataSource dataSource) throws Exception {
             final SourceKey sourceKey = dataSource.getSourceKey();
-            SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+            SwiftTablePathBean entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
             Integer path = entity.getTablePath();
             path = null == path ? -1 : path;
             Integer tmpPath = entity.getTmpDir();
@@ -324,7 +324,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 if (null != obj) {
                     if (obj instanceof DataSource) {
                         SourceKey sourceKey = ((DataSource) obj).getSourceKey();
-                        SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+                        SwiftTablePathBean entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
                         Integer tmpPath = entity.getTmpDir();
                         String deletePath = String.format("%s/%s/%d/%s",
                                 pathService.getSwiftPath(),

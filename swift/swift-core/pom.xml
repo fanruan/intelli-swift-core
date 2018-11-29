@@ -23,6 +23,53 @@
         <module>swift-core-proxy</module>
     </modules>
 
-    <dependencies>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-analyse</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-common</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-db</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-generator</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-proxy</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-segment</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-segment-operator</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-service</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-core-source</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

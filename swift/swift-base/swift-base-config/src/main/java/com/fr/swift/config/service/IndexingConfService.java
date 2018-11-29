@@ -1,7 +1,7 @@
 package com.fr.swift.config.service;
 
-import com.fr.swift.config.indexing.ColumnIndexingConf;
-import com.fr.swift.config.indexing.TableIndexingConf;
+import com.fr.swift.config.ColumnIndexingConf;
+import com.fr.swift.config.TableIndexingConf;
 import com.fr.swift.source.SourceKey;
 
 /**

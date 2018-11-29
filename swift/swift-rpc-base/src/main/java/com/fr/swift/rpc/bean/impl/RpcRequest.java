@@ -1,7 +1,5 @@
 package com.fr.swift.rpc.bean.impl;
 
-import com.fr.swift.annotation.RpcService;
-
 import java.io.Serializable;
 
 /**
@@ -72,7 +70,7 @@ public class RpcRequest implements com.fr.swift.rpc.bean.RpcRequest, Serializabl
     }
 
     @Override
-    public RpcService.RpcServiceType requestType() {
-        return RpcService.RpcServiceType.EXTERNAL;
+    public RpcServiceType requestType() {
+        return RpcServiceType.EXTERNAL;
     }
 }

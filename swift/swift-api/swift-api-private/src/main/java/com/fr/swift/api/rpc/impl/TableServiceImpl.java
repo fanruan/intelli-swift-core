@@ -8,7 +8,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -138,7 +138,7 @@ public class TableServiceImpl implements TableService {
         if (ClusterSelector.getInstance().getFactory().isCluster()) {
             ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new TruncateEvent(sourceKey));
         } else {
-            SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+            SwiftTablePathBean entity = tablePathService.get(sourceKey);
             int path = 0;
             if (null != entity) {
                 path = entity.getTablePath() == null ? 0 : entity.getTablePath();

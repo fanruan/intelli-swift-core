@@ -24,7 +24,7 @@ public abstract class BaseInvokerTest extends TestCase {
         ServiceRegistry serviceRegistry = PowerMock.createMock(ServiceRegistry.class);
         EasyMock.expect(ProxyServiceRegistry.get()).andReturn(serviceRegistry).anyTimes();
         PowerMock.replay(ProxyServiceRegistry.class);
-        EasyMock.expect(ProxyServiceRegistry.get().getService(ITestInvoker.class)).andReturn(new ITestInvokerImpl()).anyTimes();
+        EasyMock.expect(ProxyServiceRegistry.get().getService(ITestInvoker.class.getName())).andReturn(new ITestInvokerImpl()).anyTimes();
         EasyMock.replay(ProxyServiceRegistry.get());
     }
 }

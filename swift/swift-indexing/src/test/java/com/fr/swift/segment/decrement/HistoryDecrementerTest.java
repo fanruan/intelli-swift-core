@@ -17,6 +17,7 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Ignore;
 
 /**
  * This class created on 2018/9/18
@@ -25,6 +26,7 @@ import org.junit.Assert;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Ignore
 public class HistoryDecrementerTest extends TestCase {
 
     private SwiftSegmentManager swiftSegmentManager;

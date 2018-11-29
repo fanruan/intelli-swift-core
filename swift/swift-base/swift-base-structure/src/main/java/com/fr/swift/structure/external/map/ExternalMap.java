@@ -52,6 +52,8 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
     private Comparator comparator;
     private TreeMap<K, V> currentContainer;
     private Long containerSize;
+    private long containerValueMaxSize;
+    private long containerValueSize;
     private String diskContainerPath;
     private WriteFile writeFile;
     private ReadFile readFile;
@@ -80,6 +82,8 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
 
     public ExternalMap(Long containerSize, Comparator comparator, String diskContainerPath, boolean isKeepDiskFile) {
         this.containerSize = containerSize;
+        this.containerValueMaxSize = Math.max(containerSize, containerSize << 6);
+        this.containerValueSize = 0;
         traversal = false;
         this.diskContainerPath = diskContainerPath;
         fileContentSize = new HashMap<Integer, Integer>();
@@ -294,10 +298,16 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
     @Override
     public V put(K key, V value) {
         V v = currentContainer.put(key, value);
-        if (currentContainer.size() >= containerSize) {
+        if (currentContainer.size() >= containerSize || containerValueSize++ > containerValueMaxSize) {
             dump();
         }
         return v;
+    }
+
+    protected void increaseValueSize() {
+        if (containerValueSize++ > containerValueMaxSize) {
+            dump();
+        }
     }
 
     private void dump() {
@@ -308,6 +318,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
         if (!currentContainer.isEmpty()) {
             writeFile.push(currentContainer);
             currentContainer = getNewCurrentContainer();
+            containerValueSize = 0;
         }
     }
 

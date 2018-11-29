@@ -51,7 +51,7 @@ public class RemoteInvokerTest extends TestCase {
         ServiceRegistry serviceRegistry = PowerMock.createMock(ServiceRegistry.class);
         EasyMock.expect(ProxyServiceRegistry.get()).andReturn(serviceRegistry).anyTimes();
         PowerMock.replay(ProxyServiceRegistry.class);
-        EasyMock.expect(ProxyServiceRegistry.get().getService(IRemoteTest.class)).andReturn(new IRemoteTest() {
+        EasyMock.expect(ProxyServiceRegistry.get().getService(IRemoteTest.class.getName())).andReturn(new IRemoteTest() {
             @Override
             public String print(String id, long time) {
                 return id + time;

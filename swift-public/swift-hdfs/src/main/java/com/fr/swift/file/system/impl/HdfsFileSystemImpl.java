@@ -226,7 +226,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
     }
 
     @Override
-    public void testConnection() throws Exception {
+    public void testConnection() {
 
     }
 

@@ -1,11 +1,13 @@
 package com.fr.swift.query.group.by2.node;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeMergeResultSetImpl;
+import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class NodeGroupByUtils {
             // 只有指标的情况
             GroupNode root = new GroupNode(-1, null);
             aggregateRoot(root, groupByInfo.getDetailFilter().createFilterIndex(), metricInfo);
+            SwiftLoggers.getLogger().debug("Node Group by result {}", SwiftNodeUtils.node2RowIterator(root).next().toString());
             List<NodeMergeResultSet<GroupNode>> list = new ArrayList<NodeMergeResultSet<GroupNode>>();
             list.add(new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(), root, new ArrayList<Map<Integer, Object>>()));
             return list.iterator();

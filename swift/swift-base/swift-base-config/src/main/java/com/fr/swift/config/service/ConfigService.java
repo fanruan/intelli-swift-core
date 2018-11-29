@@ -1,7 +1,5 @@
 package com.fr.swift.config.service;
 
-import com.fr.third.org.hibernate.criterion.Criterion;
-
 import java.util.List;
 
 /**
@@ -15,7 +13,7 @@ public interface ConfigService<T> {
      * @param criterion
      * @return
      */
-    List<T> find(Criterion... criterion);
+    List<T> find(Object... criterion);
 
     /**
      * 保存

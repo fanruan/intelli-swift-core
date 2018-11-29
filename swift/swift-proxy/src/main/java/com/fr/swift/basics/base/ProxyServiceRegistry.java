@@ -38,25 +38,6 @@ public class ProxyServiceRegistry implements ServiceRegistry {
     }
 
     @Override
-    public <Service> Service getInternalService(Class<Service> serviceClass) {
-        return (Service) handlerMap.get(serviceClass.getName());
-    }
-
-    @Override
-    public <Service> Service getExternalService(Class<Service> serviceClass) {
-        return (Service) externalMap.get(serviceClass.getName());
-    }
-
-    @Override
-    public <Service> Service getService(Class<Service> proxyClass) {
-        Service service = getExternalService(proxyClass);
-        if (null == service) {
-            return getInternalService(proxyClass);
-        }
-        return service;
-    }
-
-    @Override
     public Object getService(String proxyClass) {
         Object service = getExternalService(proxyClass);
         if (null == service) {
@@ -65,11 +46,23 @@ public class ProxyServiceRegistry implements ServiceRegistry {
         return service;
     }
 
+    @Override
     public Object getInternalService(String serviceClass) {
         return handlerMap.get(serviceClass);
     }
 
+    @Override
+    public <Service> Service getInternalService(Class<Service> serviceClass) {
+        return (Service) getInternalService(serviceClass.getName());
+    }
+
+    @Override
     public Object getExternalService(String serviceClass) {
         return externalMap.get(serviceClass);
+    }
+
+    @Override
+    public <Service> Service getExternalService(Class<Service> serviceClass) {
+        return (Service) getExternalService(serviceClass.getName());
     }
 }

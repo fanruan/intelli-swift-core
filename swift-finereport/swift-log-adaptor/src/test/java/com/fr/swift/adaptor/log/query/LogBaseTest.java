@@ -1,11 +1,11 @@
 package com.fr.swift.adaptor.log.query;
 
-import com.fr.swift.basics.base.ProxyServiceRegistry;
-import com.fr.swift.config.TestConfDb;
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.Database;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
 import com.fr.swift.log.SwiftLogger;
@@ -13,14 +13,12 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.LocalSwiftServerService;
-import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
-import com.fr.swift.source.db.TestConnectionProvider;
-import com.fr.swift.test.Preparer;
 import org.junit.Before;
 
 import java.util.List;
@@ -36,18 +34,14 @@ public class LogBaseTest {
 
     static final SwiftLogger LOGGER = SwiftLoggers.getLogger(LogBaseTest.class);
 
-    @Before
-    public void beforeClass() {
-        Preparer.prepareCubeBuild(getClass());
-    }
+    Database db;
 
     @Before
     public void setUp() throws Exception {
+        SwiftContext.init();
         new LocalSwiftServerService().start();
-        ProxyServiceRegistry.get().registerService(new SwiftAnalyseService());
-        TestConnectionProvider.createConnection();
-        TestConfDb.setConfDb();
-//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
+        SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class).start();
+        db = com.fr.swift.db.impl.SwiftDatabase.getInstance();
     }
 
     protected void transportAndIndex(DataSource dataSource, Table table) throws Exception {

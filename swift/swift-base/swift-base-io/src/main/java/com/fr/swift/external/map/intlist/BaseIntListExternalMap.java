@@ -15,7 +15,7 @@ import java.util.TreeMap;
  * @author FineSoft
  * @date 2015/7/14
  */
-abstract class BaseIntListExternalMap<K> extends ExternalMap<K, IntList> {
+public abstract class BaseIntListExternalMap<K> extends ExternalMap<K, IntList> {
     public BaseIntListExternalMap(Comparator comparator, String dataFolderAbsPath) {
         super(comparator, dataFolderAbsPath);
     }
@@ -31,6 +31,18 @@ abstract class BaseIntListExternalMap<K> extends ExternalMap<K, IntList> {
     @Override
     public ExternalMapIO<K, IntList> getMemMapIO(TreeMap<K, IntList> currentContainer) {
         return new MemIntExternalMapIO<K>(currentContainer);
+    }
+
+    public void put(K key, int row) {
+        IntList old = this.get(key);
+        if (old == null) {
+            old = IntListFactory.createIntList();
+            old.add(row);
+            put(key, old);
+        } else {
+            old.add(row);
+            increaseValueSize();
+        }
     }
 
     @Override

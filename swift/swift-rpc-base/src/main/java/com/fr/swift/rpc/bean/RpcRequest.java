@@ -1,7 +1,5 @@
 package com.fr.swift.rpc.bean;
 
-import com.fr.swift.annotation.RpcService;
-
 /**
  * @author yee
  * @date 2018/8/27
@@ -24,5 +22,9 @@ public interface RpcRequest {
 
     Object[] getParameters();
 
-    RpcService.RpcServiceType requestType();
+    RpcServiceType requestType();
+
+    enum RpcServiceType {
+        INTERNAL, EXTERNAL
+    }
 }

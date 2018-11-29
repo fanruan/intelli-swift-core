@@ -1,9 +1,13 @@
-package com.fr.swift.segment.backup;
+package com.fr.swift.backup;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.creater.FilterCreater;
 import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
+import com.fr.swift.generate.BaseTest;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Decrementer;
 import com.fr.swift.segment.Incrementer;
@@ -19,8 +23,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.util.function.Predicate;
-import junit.framework.TestCase;
+import com.fr.swift.test.Preparer;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,7 +37,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class RealtimeDeleteAndRevoceryTest extends TestCase {
+public class RealtimeDeleteAndRevoceryTest extends BaseTest {
 
     private RedisClient redisClient;
 
@@ -43,13 +46,14 @@ public class RealtimeDeleteAndRevoceryTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        Preparer.prepareCubeBuild(getClass());
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
         swiftSegmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
     }
 
     @Test
     public void testFileDeleteAndRecovery() throws Exception {
-        final DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testFileDeleteAndRecovery");
+        DataSource dataSource = new QueryDBSource("select * from DEMO_CONTRACT", "testFileDeleteAndRecovery");
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
         Incrementer incrementer = new Incrementer(dataSource);
@@ -69,13 +73,7 @@ public class RealtimeDeleteAndRevoceryTest extends TestCase {
             }
         }
         //清空内存数据，并恢复数据和allshowindex
-        Predicate testPredicate = new Predicate<String>() {
-            @Override
-            public boolean test(String param) {
-                return param.contains("cubes/" + dataSource.getSourceKey().getId());
-            }
-        };
-        ResourceDiscovery.getInstance().removeIf(testPredicate);
+        ResourceDiscovery.getInstance().release(new ResourceLocation("cubes/" + dataSource.getSourceKey().getId(), StoreType.MEMORY));
         FileSegmentRecovery recovery = new FileSegmentRecovery();
         List<SegmentKey> segKeys = swiftSegmentManager.getSegmentKeys(dataSource.getSourceKey());
         recovery.recover(segKeys);

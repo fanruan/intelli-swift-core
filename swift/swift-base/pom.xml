@@ -16,7 +16,36 @@
         <module>swift-base-config</module>
         <module>swift-base-structure</module>
         <module>swift-base-bitmap</module>
-        <module>swift-base-beans</module>
+        <module>swift-base-repository</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-bitmap</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-config</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-io</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-structure</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-repository</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

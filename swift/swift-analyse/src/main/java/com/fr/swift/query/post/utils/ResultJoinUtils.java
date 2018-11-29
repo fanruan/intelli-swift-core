@@ -232,10 +232,10 @@ public class ResultJoinUtils {
             for (int i = 0; i < key1.size(); i++) {
                 String s1 = key1.get(i) == null ? null : key1.get(i).toString();
                 String s2 = key2.get(i) == null ? null : key2.get(i).toString();
-                if (Comparators.PINYIN_ASC.compare(s1, s2) > 0) {
+                if (Comparators.STRING_ASC.compare(s1, s2) > 0) {
                     return 1;
                 }
-                if (Comparators.PINYIN_ASC.compare(s1, s2) < 0) {
+                if (Comparators.STRING_ASC.compare(s1, s2) < 0) {
                     return -1;
                 }
             }

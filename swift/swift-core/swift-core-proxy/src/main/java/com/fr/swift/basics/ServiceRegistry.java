@@ -7,11 +7,13 @@ package com.fr.swift.basics;
 public interface ServiceRegistry {
     void registerService(Object service);
 
+    Object getInternalService(String serviceClass);
+
     <Service> Service getInternalService(Class<Service> serviceClass);
 
-    <Service> Service getExternalService(Class<Service> serviceClass);
+    Object getExternalService(String serviceClass);
 
-    <Service> Service getService(Class<Service> proxyClass);
+    <Service> Service getExternalService(Class<Service> serviceClass);
 
     Object getService(String proxyClass);
 }

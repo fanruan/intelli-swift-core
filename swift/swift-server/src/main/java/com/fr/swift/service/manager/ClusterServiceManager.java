@@ -64,7 +64,11 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
             for (SwiftService swiftService : swiftServiceList) {
                 swiftService.setId(swiftProperty.getServerAddress());
                 LOGGER.debug("begain to unregister " + swiftService.getServiceType() + "!");
-                senderProxy.unRegisterService(swiftService);
+                try {
+                    senderProxy.unRegisterService(swiftService);
+                } catch (Exception ignore) {
+                    LOGGER.warn(ignore);
+                }
                 swiftService.shutdown();
                 LOGGER.debug("unregister " + swiftService.getServiceType() + " succeed!");
             }
