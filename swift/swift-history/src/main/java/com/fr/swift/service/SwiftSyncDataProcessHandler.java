@@ -21,6 +21,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.MonitorUtil;
 
@@ -68,7 +69,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
         String methodName = method.getName();
         try {
             MonitorUtil.start();
-            final Map<String, List<SegmentDestination>> destinations = new HashMap<String, List<SegmentDestination>>();
+            final Map<SourceKey, List<SegmentDestination>> destinations = new HashMap<SourceKey, List<SegmentDestination>>();
             final boolean replace = (Boolean) args[1];
             Map<URL, Set<SegmentKey>> urlMap = processUrl(target, args, destinations);
 
@@ -132,7 +133,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
         }
         Set<String> nodeIds = services.keySet();
         Set<SegmentKey> segmentKeys = (Set<SegmentKey>) args[0];
-        Map<String, List<SegmentDestination>> destinations = (Map<String, List<SegmentDestination>>) args[2];
+        Map<SourceKey, List<SegmentDestination>> destinations = (Map<SourceKey, List<SegmentDestination>>) args[2];
 
         Map<String, Set<SegmentKey>> segkeyDistribution = dataSyncRuleService.getCurrentRule().calculate(nodeIds, segmentKeys, destinations);
 

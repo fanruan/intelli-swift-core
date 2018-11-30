@@ -88,14 +88,14 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     }
 
     @Override
-    public boolean removeMetaDatas(final String... sourceKeys) {
+    public boolean removeMetaDatas(final SourceKey... sourceKeys) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
 
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
-                    for (String sourceKey : sourceKeys) {
-                        swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey);
+                    for (SourceKey sourceKey : sourceKeys) {
+                        swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey.getId());
                         metaDataCache.remove(sourceKey);
                     }
                     // 集群情况下才去发rpc

@@ -40,10 +40,10 @@ public interface HistoryService extends SwiftService, Queryable, DeleteService {
      * @param remoteUris
      * @throws IOException
      */
-    void load(Map<String, Set<String>> remoteUris, boolean replace) throws Exception;
+    void load(Map<SourceKey, Set<String>> remoteUris, boolean replace) throws Exception;
 
     @InvokeMethod(value = CommonLoadProcessHandler.class, target = Target.HISTORY)
-    void commonLoad(String sourceKey, Map<String, List<String>> needLoad) throws Exception;
+    void commonLoad(SourceKey sourceKey, Map<SegmentKey, List<String>> needLoad) throws Exception;
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.HISTORY)
     void truncate(String sourceKey) throws Exception;

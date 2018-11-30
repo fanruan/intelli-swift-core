@@ -41,11 +41,11 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
      *
      * @return
      */
-    Map<String, List<SegmentKey>> getAllSegments();
+    Map<SourceKey, List<SegmentKey>> getAllSegments();
 
-    Map<String, List<SegmentKey>> getAllRealTimeSegments();
+    Map<SourceKey, List<SegmentKey>> getAllRealTimeSegments();
 
-    Map<String, List<SegmentKey>> getOwnSegments();
+    Map<SourceKey, List<SegmentKey>> getOwnSegments();
 
     /**
      * 根据SourceKey获取Segment

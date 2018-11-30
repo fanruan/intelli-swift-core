@@ -1,8 +1,6 @@
 package com.fr.swift.service.handler.history;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
@@ -12,6 +10,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.handler.base.AbstractHandler;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -38,31 +37,31 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
     @Override
     public <S extends Serializable> S handle(SegmentLoadRpcEvent event) {
 
-        Map<String, List<SegmentKey>> allSegments = clusterSegmentService.getAllSegments();
+        Map<SourceKey, List<SegmentKey>> allSegments = clusterSegmentService.getAllSegments();
         Set<SegmentKey> needLoadSegments = new HashSet<SegmentKey>();
         SegmentLocationInfo.UpdateType updateType;
-        String needLoadSourceKey;
+        SourceKey needLoadSourceKey;
         String sourceClusterId = event.getSourceClusterId();
 
         switch (event.subEvent()) {
             case LOAD_SEGMENT:
                 updateType = SegmentLocationInfo.UpdateType.ALL;
-                needLoadSourceKey = (String) event.getContent();
-                if (StringUtils.isNotEmpty(needLoadSourceKey)) {
+                needLoadSourceKey = (SourceKey) event.getContent();
+                if (null != needLoadSourceKey) {
                     List<SegmentKey> keys = allSegments.get(needLoadSourceKey);
                     needLoadSegments.addAll(keys);
                 } else {
-                    for (Map.Entry<String, List<SegmentKey>> segEntry : allSegments.entrySet()) {
+                    for (Map.Entry<SourceKey, List<SegmentKey>> segEntry : allSegments.entrySet()) {
                         needLoadSegments.addAll(segEntry.getValue());
                     }
                 }
                 break;
             case TRANS_COLLATE_LOAD:
                 updateType = SegmentLocationInfo.UpdateType.PART;
-                Pair<String, List<String>> content = (Pair<String, List<String>>) event.getContent();
+                Pair<SourceKey, List<SegmentKey>> content = (Pair<SourceKey, List<SegmentKey>>) event.getContent();
                 needLoadSourceKey = content.getKey();
-                List<String> contentSegmentKeys = content.getValue();
-                if (StringUtils.isNotEmpty(needLoadSourceKey)) {
+                List<SegmentKey> contentSegmentKeys = content.getValue();
+                if (null != needLoadSourceKey) {
                     List<SegmentKey> allSegmentKeys = allSegments.get(needLoadSourceKey);
                     List<SegmentKey> target = new ArrayList<SegmentKey>();
                     for (SegmentKey segmentKey : allSegmentKeys) {

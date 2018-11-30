@@ -1,22 +1,18 @@
 package com.fr.swift.config.service;
 
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author yee
  * @date 2018/6/7
  */
 public interface SwiftClusterSegmentService extends SwiftSegmentService {
-    Map<String, List<SegmentKey>> getOwnSegments(String clusterId);
-
-    Map<String, List<SegmentKey>> getOwnRealTimeSegments(String clusterId);
-
-    Map<String, List<SegmentKey>> getClusterSegments();
+    Map<SourceKey, List<SegmentKey>> getOwnSegments(String clusterId);
 
     boolean updateSegmentTable(Map<String, List<Pair<String, String>>> segmentTable);
 
@@ -24,5 +20,4 @@ public interface SwiftClusterSegmentService extends SwiftSegmentService {
 
     void setClusterId(String clusterId);
 
-    Map<String, List<SegmentKey>> getNotEnoughSegments(Set<String> clusterIds, int lessCount);
 }

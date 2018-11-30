@@ -8,8 +8,10 @@ import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.handler.base.AbstractHandler;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
@@ -53,7 +55,7 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                 case COMMON_LOAD:
                 case MODIFY_LOAD:
                     //需要load的seg
-                    Pair<String, Map<String, List<String>>> pair = (Pair<String, Map<String, List<String>>>) event.getContent();
+                    Pair<SourceKey, Map<SegmentKey, List<String>>> pair = (Pair<SourceKey, Map<SegmentKey, List<String>>>) event.getContent();
                     HistoryService service = factory.getProxy(HistoryService.class);
                     try {
                         service.commonLoad(pair.getKey(), pair.getValue());

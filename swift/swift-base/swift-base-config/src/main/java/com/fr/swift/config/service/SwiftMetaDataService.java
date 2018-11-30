@@ -33,7 +33,7 @@ public interface SwiftMetaDataService extends ConfigService<SwiftMetaData> {
      * @param sourceKey
      * @return
      */
-    boolean removeMetaDatas(String... sourceKey);
+    boolean removeMetaDatas(SourceKey... sourceKey);
 
     /**
      * 更新MetaData

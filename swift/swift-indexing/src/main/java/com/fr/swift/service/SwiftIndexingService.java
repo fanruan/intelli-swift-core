@@ -225,21 +225,20 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 manager.remove(sourceKey);
                 SegmentContainer.INDEXING.remove(sourceKey);
                 manager.getSegment(sourceKey);
-                doAfterUpload(new HistoryLoadSegmentRpcEvent(sourceKey.getId(), getID()));
+                doAfterUpload(new HistoryLoadSegmentRpcEvent(sourceKey, getID()));
             }
         }
 
         public void uploadRelation(RelationSource relation) {
             SourceKey sourceKey = relation.getForeignSource();
             SourceKey primary = relation.getPrimarySource();
-            Map<String, List<String>> segNeedUpload = new HashMap<String, List<String>>();
+            Map<SegmentKey, List<String>> segNeedUpload = new HashMap<SegmentKey, List<String>>();
             List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
             if (null != segmentKeys) {
                 if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                     for (SegmentKey segmentKey : segmentKeys) {
-                        String key = segmentKey.toString();
-                        if (null == segNeedUpload.get(key)) {
-                            segNeedUpload.put(key, new ArrayList<String>());
+                        if (null == segNeedUpload.get(segmentKey)) {
+                            segNeedUpload.put(segmentKey, new ArrayList<String>());
                         }
                         try {
                             String src = Strings.unifySlash(
@@ -255,16 +254,15 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                                     RelationIndexImpl.RELATIONS_KEY,
                                     primary.getId());
                             upload(src, dest);
-                            segNeedUpload.get(key).add(dest);
+                            segNeedUpload.get(segmentKey).add(dest);
                         } catch (IOException e) {
                             SwiftLoggers.getLogger().error("upload error! ", e);
                         }
                     }
                 } else {
                     for (SegmentKey segmentKey : segmentKeys) {
-                        String key = segmentKey.toString();
-                        if (null == segNeedUpload.get(key)) {
-                            segNeedUpload.put(key, new ArrayList<String>());
+                        if (null == segNeedUpload.get(segmentKey)) {
+                            segNeedUpload.put(segmentKey, new ArrayList<String>());
                         }
                         try {
                             String src = Strings.unifySlash(
@@ -279,13 +277,13 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                                     RelationIndexImpl.RELATIONS_KEY,
                                     primary.getId());
                             upload(src, dest);
-                            segNeedUpload.get(key).add(dest);
+                            segNeedUpload.get(segmentKey).add(dest);
                         } catch (IOException e) {
                             SwiftLoggers.getLogger().error("upload error! ", e);
                         }
                     }
                 }
-                doAfterUpload(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey.getId(), segNeedUpload), getID()));
+                doAfterUpload(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey, segNeedUpload), getID()));
             }
         }
 
