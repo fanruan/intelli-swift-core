@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
@@ -47,9 +46,9 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
     }
 
     private static void upload(final SegmentKey segKey) {
-        FineIO.doWhenFinished(new Runnable() {
-            @Override
-            public void run() {
+//        FineIO.doWhenFinished(new Runnable() {
+//            @Override
+//            public void run() {
                 if (ClusterSelector.getInstance().getFactory().isCluster()) {
                     String local = CubeUtil.getAbsoluteSegPath(segKey);
                     String remote = String.format("%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath());
@@ -65,8 +64,8 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
                     SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
                     SegmentUtils.clearSegment(realtimeSegKey);
                 }
-            }
-        });
+//            }
+//        });
 
     }
 
