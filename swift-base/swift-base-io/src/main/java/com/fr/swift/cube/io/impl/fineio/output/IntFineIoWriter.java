@@ -15,9 +15,9 @@ import java.net.URI;
 public class IntFineIoWriter extends BaseFineIoWriter<IntBuffer> implements IntWriter {
     private IntFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_INT);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_INT, true);
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_INT);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_INT, true);
         }
     }
 
