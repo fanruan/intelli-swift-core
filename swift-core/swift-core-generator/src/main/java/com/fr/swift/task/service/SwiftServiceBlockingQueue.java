@@ -25,8 +25,8 @@ public class SwiftServiceBlockingQueue extends LinkedBlockingQueue<ServiceCallab
 
     @Override
     public void put(ServiceCallable serviceCallable) throws InterruptedException {
+        super.put(serviceCallable);
         synchronized (this) {
-            super.put(serviceCallable);
             if (!sourceKeyCountMap.containsKey(serviceCallable.getKey())) {
                 sourceKeyCountMap.put(serviceCallable.getKey(), 0);
             }
@@ -36,29 +36,18 @@ public class SwiftServiceBlockingQueue extends LinkedBlockingQueue<ServiceCallab
     }
 
     @Override
-    public ServiceCallable take() throws InterruptedException {
-        ServiceCallable serviceCallable = super.take();
-        synchronized (this) {
-            int num = sourceKeyCountMap.get(serviceCallable.getKey());
-            sourceKeyCountMap.put(serviceCallable.getKey(), --num);
-        }
-        return serviceCallable;
-    }
-
-    @Override
-    public ServiceCallable poll() {
-        ServiceCallable serviceCallable = super.poll();
-        synchronized (this) {
-            int num = sourceKeyCountMap.get(serviceCallable.getKey());
-            sourceKeyCountMap.put(serviceCallable.getKey(), --num);
-        }
-        return serviceCallable;
-    }
-
-    @Override
     public Integer getNumBySourceKey(SourceKey sourceKey) {
         synchronized (this) {
             return sourceKeyCountMap.get(sourceKey);
         }
     }
+
+    @Override
+    public void decreaseNumBySourceKey(SourceKey sourceKey) {
+        synchronized (this) {
+            int num = sourceKeyCountMap.get(sourceKey);
+            sourceKeyCountMap.put(sourceKey, --num);
+        }
+    }
+
 }

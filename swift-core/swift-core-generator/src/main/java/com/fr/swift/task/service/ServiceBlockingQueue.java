@@ -13,6 +13,8 @@ import java.util.concurrent.BlockingQueue;
  */
 public interface ServiceBlockingQueue extends BlockingQueue<ServiceCallable> {
 
+    void decreaseNumBySourceKey(SourceKey sourceKey);
+
     Integer getNumBySourceKey(SourceKey sourceKey);
 
 }
