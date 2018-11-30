@@ -20,7 +20,6 @@ import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -64,8 +63,6 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
 
-    private transient RpcServer server;
-
     private transient SwiftCubePathService pathService;
 
     private transient SwiftTablePathService tablePathService;
@@ -101,7 +98,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             initListener();
             initable = false;
         }
-        server = SwiftContext.get().getBean(RpcServer.class);
         pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
@@ -112,7 +108,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
-        server = null;
         pathService = null;
         tablePathService = null;
         locationService = null;

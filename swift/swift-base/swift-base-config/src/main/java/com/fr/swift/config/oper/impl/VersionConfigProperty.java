@@ -30,7 +30,7 @@ public final class VersionConfigProperty {
 
     private VersionConfigProperty(String version, String restrictions, String matchMode, String order) {
         this.version = version;
-        ClassLoader loader = VersionConfigProperty.class.getClassLoader();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             this.restrictions = loader.loadClass(restrictions);
             this.matchMode = loader.loadClass(matchMode);

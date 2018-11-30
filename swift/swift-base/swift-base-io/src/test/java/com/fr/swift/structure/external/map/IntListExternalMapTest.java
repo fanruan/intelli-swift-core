@@ -1,10 +1,10 @@
 package com.fr.swift.structure.external.map;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.test.TestResource;
 import com.fr.swift.util.FileUtil;
 import junit.framework.TestCase;
