@@ -268,7 +268,7 @@ public class MetricProxy extends BaseMetric {
 
         @Override
         public void run() {
-            while (!Thread.interrupted()) {
+            while (true) {
                 try {
                     List<Object> data = dataQueue.take();
 
@@ -280,9 +280,8 @@ public class MetricProxy extends BaseMetric {
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().error(e);
                     }
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
-                    break;
                 }
             }
         }
