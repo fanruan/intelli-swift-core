@@ -275,11 +275,7 @@ public class MetricProxy extends BaseMetric {
                     Object first = data.get(0);
                     Class<?> entity = first.getClass();
                     Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
-                    try {
-                        realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().error(e);
-                    }
+                    realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                 }
