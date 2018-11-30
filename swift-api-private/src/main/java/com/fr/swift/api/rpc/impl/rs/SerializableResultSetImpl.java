@@ -1,40 +1,34 @@
 package com.fr.swift.api.rpc.impl.rs;
 
-import com.fr.swift.result.serialize.SerializableResultSet;
+import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by lyon on 2018/11/30.
  */
-public class SerializableResultSetImpl implements SerializableResultSet {
+public class SerializableResultSetImpl extends SerializableDetailResultSet {
 
-    private int fetchSize;
-    protected SwiftMetaData metaData;
-    protected List<Row> rows;
-    protected int rowCount;
+    private static final long serialVersionUID = -234778438828300179L;
     private transient Iterator<Row> rowIterator;
 
-    public SerializableResultSetImpl(int fetchSize, SwiftMetaData metaData, List<Row> rows, int rowCount) {
-        this.fetchSize = fetchSize;
-        this.metaData = metaData;
-        this.rows = rows == null ? new ArrayList<Row>() : rows;
-        this.rowCount = rowCount;
+    public SerializableResultSetImpl(String jsonString, SwiftMetaData metaData, List<Row> rows,
+                                     boolean originHasNextPage, int rowCount) {
+        super(jsonString, metaData, rows, originHasNextPage, rowCount);
     }
 
     @Override
-    public int getFetchSize() {
-        return fetchSize;
+    public List<Row> getPage() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return metaData;
+    public boolean hasNextPage() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -48,10 +42,5 @@ public class SerializableResultSetImpl implements SerializableResultSet {
     @Override
     public Row getNextRow() throws SQLException {
         return rowIterator.next();
-    }
-
-    @Override
-    public void close() throws SQLException {
-
     }
 }

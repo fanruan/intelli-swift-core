@@ -52,7 +52,7 @@ class SelectServiceImpl implements SelectService {
                     ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
                     resultSet = getAnalyseService().getQueryResult(queryBean);
                 }
-                return getPageResultSet(resultSet);
+                return getPageResultSet(queryJson, resultSet);
             }
             throw new UnsupportedOperationException();
         } catch (Exception e) {
@@ -61,7 +61,7 @@ class SelectServiceImpl implements SelectService {
     }
 
     // 不管分组还是明细，api返回的都是行结果
-    private SwiftResultSet getPageResultSet(SwiftResultSet resultSet) throws SQLException {
+    private SwiftResultSet getPageResultSet(String jsonString, SwiftResultSet resultSet) throws SQLException {
         List<Row> rows = new ArrayList<Row>();
         int fetchSize = resultSet.getFetchSize();
         int count = 0;
@@ -73,7 +73,7 @@ class SelectServiceImpl implements SelectService {
         if (resultSet instanceof DetailResultSet) {
             rowCount = ((DetailResultSet) resultSet).getRowCount();
         }
-        return new SerializableResultSetImpl(fetchSize, resultSet.getMetaData(), rows, rowCount);
+        return new SerializableResultSetImpl(jsonString, resultSet.getMetaData(), rows, resultSet.hasNext(), rowCount);
     }
 
     private AnalyseService getAnalyseService() {
