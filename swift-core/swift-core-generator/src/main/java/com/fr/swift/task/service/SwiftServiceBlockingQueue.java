@@ -25,8 +25,8 @@ public class SwiftServiceBlockingQueue extends LinkedBlockingQueue<ServiceCallab
 
     @Override
     public void put(ServiceCallable serviceCallable) throws InterruptedException {
+        super.put(serviceCallable);
         synchronized (this) {
-            super.put(serviceCallable);
             if (!sourceKeyCountMap.containsKey(serviceCallable.getKey())) {
                 sourceKeyCountMap.put(serviceCallable.getKey(), 0);
             }
