@@ -120,7 +120,7 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
                         try {
                             repository.copyToRemote(cubePath, remotePath);
                         } catch (IOException e) {
-                            SwiftLoggers.getLogger().error(e);
+                            SwiftLoggers.getLogger().warn("upload cause an exception {}", e);
                         }
                     }
                 }
