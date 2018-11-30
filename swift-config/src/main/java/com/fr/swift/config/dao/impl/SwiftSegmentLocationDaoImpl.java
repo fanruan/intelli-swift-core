@@ -3,6 +3,7 @@ package com.fr.swift.config.dao.impl;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
+import com.fr.third.org.hibernate.Query;
 import com.fr.third.org.hibernate.Session;
 import com.fr.third.org.hibernate.criterion.Restrictions;
 import com.fr.third.springframework.stereotype.Service;
@@ -48,5 +49,15 @@ public class SwiftSegmentLocationDaoImpl extends BasicDao<SwiftSegmentLocationEn
     @Override
     public List<SwiftSegmentLocationEntity> findAll(Session session) {
         return find(session);
+    }
+
+    @Override
+    public boolean updateClusterId(Session session, String segKey, String oldClusterId, String newClusterId) {
+        String hsql = "update " + entityClass.getSimpleName() + " s set s.id.clusterId= ? where s.id.clusterId=? and s.id.segmentId=?";
+        Query query = session.createQuery(hsql);
+        query.setString(0, newClusterId);
+        query.setString(1, oldClusterId);
+        query.setString(2, segKey);
+        return query.executeUpdate() >= 0;
     }
 }
