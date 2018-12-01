@@ -8,14 +8,16 @@ import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.basics.handler.IndexPHDefiner;
+import com.fr.swift.basics.handler.StatusProcessHandler;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.FindListImpl;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.util.Crasher;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018-12-01
  */
-public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> implements IndexPHDefiner.StatusProcessHandler {
+public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> implements StatusProcessHandler {
     public IndexStatusProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);
     }
@@ -37,6 +39,9 @@ public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> imp
     @Override
     public Object processResult(final Method method, Target target, final Object... args) throws Throwable {
         List<URL> urls = processUrl(target, args);
+        if (ClusterSelector.getInstance().getFactory().isCluster() && urls.isEmpty()) {
+            Crasher.crash("Remote  Not Found");
+        }
         FindList<RpcFuture> list = new FindListImpl<RpcFuture>(urls);
         final Class proxyClass = method.getDeclaringClass();
         final Class<?>[] parameterTypes = method.getParameterTypes();

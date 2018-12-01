@@ -5,7 +5,7 @@ import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.basics.handler.IndexPHDefiner;
+import com.fr.swift.basics.handler.IndexProcessHandler;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.IndexingService;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author yee
  * @date 2018/10/25
  */
-public abstract class BaseIndexProcessHandler extends BaseProcessHandler implements IndexPHDefiner.IndexProcessHandler {
+public abstract class BaseIndexProcessHandler extends BaseProcessHandler implements IndexProcessHandler {
 
     public BaseIndexProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);
