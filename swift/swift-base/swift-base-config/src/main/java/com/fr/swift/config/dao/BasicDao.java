@@ -3,7 +3,7 @@ package com.fr.swift.config.dao;
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
-import com.fr.swift.config.oper.FinedListImpl;
+import com.fr.swift.config.oper.FindListImpl;
 import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.converter.ObjectConverter;
 
@@ -62,7 +62,7 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
 
             final List list = criteria.list();
 
-            return new FinedListImpl<T>(list, new FindList.Through<T>() {
+            return new FindListImpl<T>(list, new FindList.Through<T>() {
 
                 @Override
                 public List<T> go() {

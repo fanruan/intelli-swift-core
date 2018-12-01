@@ -131,7 +131,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        swiftMetaDataDao.findAll(session).forEach(new FindList.Each<SwiftMetaDataBean>() {
+                        swiftMetaDataDao.findAll(session).forEach(new FindList.SimpleEach<SwiftMetaDataBean>() {
                             @Override
                             public void each(int idx, SwiftMetaDataBean bean) throws Exception {
                                 result.put(bean.getId(), bean);
@@ -139,7 +139,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                         });
                         metaDataCache.putAll(result);
                         return result;
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         if (e instanceof SQLException) {
                             throw (SQLException) e;
                         }

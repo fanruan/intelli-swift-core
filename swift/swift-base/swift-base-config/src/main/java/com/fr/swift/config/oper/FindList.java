@@ -1,5 +1,7 @@
 package com.fr.swift.config.oper;
 
+import com.fr.swift.converter.ObjectConverter;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -10,12 +12,12 @@ import java.util.List;
 public interface FindList<T> {
     FindList EMPTY = new FindList() {
         @Override
-        public List justForEach(Each each) {
+        public List justForEach(ConvertEach each) {
             return Collections.emptyList();
         }
 
         @Override
-        public List forEach(Each each) {
+        public List forEach(ConvertEach each) {
             return Collections.emptyList();
         }
 
@@ -40,9 +42,9 @@ public interface FindList<T> {
         }
     };
 
-    List justForEach(Each each) throws Exception;
+    List justForEach(ConvertEach each) throws Throwable;
 
-    List<T> forEach(Each<T> each) throws Exception;
+    <S> List<T> forEach(ConvertEach<S, T> each) throws Throwable;
 
     List<T> list();
 
@@ -52,18 +54,35 @@ public interface FindList<T> {
 
     T get(int i);
 
-    interface Each<T> {
-        Each EMPTY = new Each() {
-            @Override
-            public void each(int idx, Object item) {
-
-            }
-        };
-
-        void each(int idx, T item) throws Exception;
+    interface ConvertEach<S, T> {
+        T forEach(int idx, S item) throws Throwable;
     }
 
     interface Through<T> {
-        List<T> go() throws Exception;
+        List<T> go() throws Throwable;
+    }
+
+    abstract class SimpleEach<T> implements ConvertEach<Object, T> {
+
+        public static SimpleEach EMPTY = new SimpleEach() {
+            @Override
+            protected void each(int idx, Object bean) throws Exception {
+            }
+        };
+
+        @Override
+        public T forEach(int idx, Object item) throws Exception {
+            T bean = null;
+            if (item instanceof ObjectConverter) {
+                bean = ((ObjectConverter<T>) item).convert();
+            } else {
+                bean = (T) item;
+            }
+            each(idx, bean);
+            return bean;
+        }
+
+        protected abstract void each(int idx, T bean) throws Exception;
     }
 }
+

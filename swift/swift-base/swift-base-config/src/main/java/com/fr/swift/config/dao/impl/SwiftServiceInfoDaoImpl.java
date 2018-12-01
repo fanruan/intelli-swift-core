@@ -53,14 +53,15 @@ public class SwiftServiceInfoDaoImpl extends BasicDao<SwiftServiceInfoBean> impl
     @Override
     public boolean deleteByServiceInfo(final ConfigSession session, String serviceInfo) throws SQLException {
         try {
-            find(session, factory.eq("serviceInfo", serviceInfo)).justForEach(new FindList.Each() {
+            find(session, factory.eq("serviceInfo", serviceInfo)).justForEach(new FindList.ConvertEach() {
                 @Override
-                public void each(int idx, Object item) {
+                public Object forEach(int idx, Object item) {
                     session.delete(item);
+                    return null;
                 }
             });
             return true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SQLException(e);
         }
     }

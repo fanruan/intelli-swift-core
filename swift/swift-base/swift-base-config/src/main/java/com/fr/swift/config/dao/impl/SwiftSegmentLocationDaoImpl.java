@@ -31,14 +31,15 @@ public class SwiftSegmentLocationDaoImpl extends BasicDao<SegLocationBean> imple
     @Override
     public boolean deleteBySourceKey(final ConfigSession session, String sourceKey) throws SQLException {
         try {
-            find(session, factory.eq("sourceKey", sourceKey)).justForEach(new FindList.Each() {
+            find(session, factory.eq("sourceKey", sourceKey)).justForEach(new FindList.ConvertEach() {
                 @Override
-                public void each(int idx, Object item) {
+                public Object forEach(int idx, Object item) {
                     session.delete(item);
+                    return null;
                 }
             });
             return true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SQLException(e);
         }
     }

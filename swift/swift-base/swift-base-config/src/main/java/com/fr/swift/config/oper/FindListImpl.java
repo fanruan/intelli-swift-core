@@ -11,26 +11,26 @@ import java.util.List;
  * @author yee
  * @date 2018-11-27
  */
-public class FinedListImpl<T> implements FindList<T> {
+public class FindListImpl<T> implements FindList<T> {
     private List list;
     private Through<T> through;
 
-    public FinedListImpl(List list, Through<T> through) {
+    public FindListImpl(List list, Through<T> through) {
         this.list = list;
         this.through = through;
     }
 
-    public FinedListImpl(List list) {
+    public FindListImpl(List list) {
         this.list = list;
     }
 
     @Override
-    public List justForEach(final Each each) throws Exception {
+    public List justForEach(final ConvertEach each) throws Throwable {
         return new Through() {
             @Override
-            public List go() throws Exception {
+            public List go() throws Throwable {
                 for (int i = 0; i < list.size(); i++) {
-                    each.each(i, list.get(i));
+                    each.forEach(i, list.get(i));
                 }
                 return new ArrayList(list);
             }
@@ -38,20 +38,16 @@ public class FinedListImpl<T> implements FindList<T> {
     }
 
     @Override
-    public List<T> forEach(final Each<T> each) throws Exception {
+    public <S> List<T> forEach(final ConvertEach<S, T> each) throws Throwable {
         return new Through<T>() {
             @Override
-            public List go() throws Exception {
+            public List<T> go() throws Throwable {
                 List<T> result = new ArrayList<T>();
                 for (int i = 0; i < list.size(); i++) {
-                    Object obj = list.get(i);
-                    T bean = null;
-                    if (obj instanceof ObjectConverter) {
-                        bean = ((ObjectConverter<T>) obj).convert();
-                    } else {
-                        bean = (T) obj;
+                    T bean = each.forEach(i, (S) list.get(i));
+                    if (null != bean) {
+                        result.add(bean);
                     }
-                    each.each(i, bean);
                 }
                 return result;
             }
@@ -64,9 +60,9 @@ public class FinedListImpl<T> implements FindList<T> {
             if (null != through) {
                 return through.go();
             } else {
-                return forEach(Each.EMPTY);
+                return forEach(SimpleEach.EMPTY);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return Collections.emptyList();
         }
     }

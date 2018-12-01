@@ -49,67 +49,25 @@ public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSe
                 factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, type)).list();
     }
 
-//    @Override
-//    public List<SegmentKey> selectSelective(ConfigSession session, SegmentKey segmentKey) {
-//        List criterionList = new ArrayList();
-//        try {
-//            if (null != segmentKey.getTable()) {
-//                criterionList.add(factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, segmentKey.getTable().getId()));
-//            }
-//            if (null != segmentKey.getUri()) {
-//                criterionList.add(factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, segmentKey.getUri()));
-//            }
-//            if (null != segmentKey.getStoreType()) {
-//                criterionList.add(factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, segmentKey.getStoreType()));
-//            }
-//            if (null != segmentKey.getOrder()) {
-//                criterionList.add(factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER, segmentKey.getOrder()));
-//            }
-//            return new ArrayList<SegmentKey>(find(session, criterionList.toArray()).list());
-//        } catch (Exception e) {
-//            return Collections.emptyList();
-//        }
-//    }
-
     @Override
     public boolean deleteBySourceKey(final ConfigSession session, final String sourceKey) throws SQLException {
         try {
-            find(session, factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey)).justForEach(new FindList.Each() {
+            find(session, factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey)).justForEach(new FindList.ConvertEach() {
                 @Override
-                public void each(int idx, Object item) {
+                public Object forEach(int idx, Object item) {
                     session.delete(item);
+                    return null;
                 }
             });
             return true;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SQLException(e);
         }
     }
-
-//    @Override
-//    public boolean deleteByStoreType(final ConfigSession session, final Types.StoreType storeType) throws SQLException {
-//        try {
-//            find(session, factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, storeType)).justForEach(new FindList.Each() {
-//                @Override
-//                public void each(int idx, Object item) {
-//                    session.delete(item);
-//                }
-//            });
-//            return true;
-//        } catch (Exception e) {
-//            throw new SQLException(e);
-//        }
-//    }
 
     @Override
     public FindList<SegmentKey> findAll(ConfigSession session) {
         return find(session);
     }
 
-//    @Override
-//    public List<SegmentKey> findBySourceKey(ConfigSession session, String sourceKey) {
-//        List<SegmentKey> list = new ArrayList<SegmentKey>(find(session, new Object[]{ConfigOrder.asc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)},
-//                factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey)).list());
-//        return Collections.unmodifiableList(list);
-//    }
 }
