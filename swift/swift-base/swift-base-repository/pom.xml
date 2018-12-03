@@ -12,6 +12,11 @@
     <artifactId>swift-base-repository</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-common</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,6 +1,6 @@
 package com.fr.swift.jdbc.request;
 
-import com.fr.swift.jdbc.info.SqlInfo;
+import com.fr.swift.jdbc.info.RequestInfo;
 import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
@@ -28,7 +28,7 @@ public interface RequestService {
      * @param <T>
      * @return
      */
-    <T extends JdbcResponse> T apply(JdbcExecutor sender, SqlInfo sql);
+    <T extends JdbcResponse> T apply(JdbcExecutor sender, RequestInfo sql);
 
     <T extends JdbcResponse> T apply(JdbcExecutor sender, String requestJson);
 
@@ -53,7 +53,7 @@ public interface RequestService {
      * @param <T>
      * @return
      */
-    <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, SqlInfo sql, int retryTime);
+    <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, RequestInfo sql, int retryTime);
 
     <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, String requestJson, int retryTime);
 }
