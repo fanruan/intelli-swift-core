@@ -20,21 +20,27 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-common</artifactId>
-            <version>2019.1</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-db</artifactId>
-            <version>2019.1</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-analyse</artifactId>
-            <version>2019.1</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-bean</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

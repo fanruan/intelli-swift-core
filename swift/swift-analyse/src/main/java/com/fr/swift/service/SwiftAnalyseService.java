@@ -13,14 +13,14 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.impl.RealTimeSegDestImpl;
-import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
+import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.bean.impl.RealTimeSegDestImpl;
+import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
+import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.structure.Pair;
 

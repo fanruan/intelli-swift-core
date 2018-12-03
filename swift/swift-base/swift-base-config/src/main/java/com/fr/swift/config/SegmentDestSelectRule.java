@@ -1,6 +1,6 @@
 package com.fr.swift.config;
 
-import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.bean.SegmentDestination;
 
 import java.util.List;
 

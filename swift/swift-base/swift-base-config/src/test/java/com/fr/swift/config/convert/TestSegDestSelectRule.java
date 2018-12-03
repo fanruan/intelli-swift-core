@@ -1,7 +1,7 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.config.SegmentDestSelectRule;
-import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.bean.SegmentDestination;
 
 import java.util.Collections;
 import java.util.List;
