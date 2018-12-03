@@ -1,21 +1,22 @@
 package com.fr.swift.event.global;
 
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
+import com.fr.swift.source.SourceKey;
 
 /**
  * @author yee
  * @date 2018/6/27
  */
-public class CleanMetaDataCacheEvent extends AbstractGlobalRpcEvent<String[]> {
+public class CleanMetaDataCacheEvent extends AbstractGlobalRpcEvent<SourceKey[]> {
 
-    private String[] needClean;
+    private SourceKey[] needClean;
 
-    public CleanMetaDataCacheEvent(String[] needClean) {
+    public CleanMetaDataCacheEvent(SourceKey[] needClean) {
         this.needClean = needClean;
     }
 
     @Override
-    public String[] getContent() {
+    public SourceKey[] getContent() {
         return needClean;
     }
 

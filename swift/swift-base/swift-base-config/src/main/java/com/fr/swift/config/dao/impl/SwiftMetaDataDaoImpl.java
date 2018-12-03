@@ -6,6 +6,7 @@ import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
+import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 
 import java.sql.SQLException;
@@ -16,6 +17,15 @@ import java.sql.SQLException;
  * @date 2018/5/24
  */
 public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataBean> implements SwiftMetaDataDao {
+
+    /**
+     * for test
+     *
+     * @param factory
+     */
+    public SwiftMetaDataDaoImpl(RestrictionFactory factory) {
+        super(SwiftMetaDataBean.TYPE, factory);
+    }
 
     public SwiftMetaDataDaoImpl() {
         super(SwiftMetaDataBean.TYPE, RestrictionFactoryImpl.INSTANCE);

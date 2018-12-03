@@ -88,14 +88,14 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     }
 
     @Override
-    public boolean removeMetaDatas(final String... sourceKeys) {
+    public boolean removeMetaDatas(final SourceKey... sourceKeys) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
 
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
-                    for (String sourceKey : sourceKeys) {
-                        swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey);
+                    for (SourceKey sourceKey : sourceKeys) {
+                        swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey.getId());
                         metaDataCache.remove(sourceKey);
                     }
                     // 集群情况下才去发rpc
@@ -131,7 +131,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        swiftMetaDataDao.findAll(session).forEach(new FindList.Each<SwiftMetaDataBean>() {
+                        swiftMetaDataDao.findAll(session).forEach(new FindList.SimpleEach<SwiftMetaDataBean>() {
                             @Override
                             public void each(int idx, SwiftMetaDataBean bean) throws Exception {
                                 result.put(bean.getId(), bean);
@@ -139,7 +139,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                         });
                         metaDataCache.putAll(result);
                         return result;
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         if (e instanceof SQLException) {
                             throw (SQLException) e;
                         }

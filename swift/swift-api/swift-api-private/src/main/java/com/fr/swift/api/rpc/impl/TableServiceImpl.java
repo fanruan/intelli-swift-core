@@ -123,7 +123,7 @@ public class TableServiceImpl implements TableService {
     public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         truncateTable(metaData);
-        swiftMetaDataService.removeMetaDatas(metaData.getId());
+        swiftMetaDataService.removeMetaDatas(new SourceKey(metaData.getId()));
     }
 
     @Override

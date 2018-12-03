@@ -24,13 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2018/10/7
  */
 public abstract class AbstractSegmentLocationManager implements SegmentLocationManager {
-    protected Map<String, CheckRemoveHashMap> remoteSegments;
-    protected Map<String, CheckRemoveHashMap> localSegments;
+    protected Map<SourceKey, CheckRemoveHashMap> remoteSegments;
+    protected Map<SourceKey, CheckRemoveHashMap> localSegments;
     private SegmentDestSelectRule rule;
 
     public AbstractSegmentLocationManager() {
-        remoteSegments = new ConcurrentHashMap<String, CheckRemoveHashMap>();
-        localSegments = new ConcurrentHashMap<String, CheckRemoveHashMap>();
+        remoteSegments = new ConcurrentHashMap<SourceKey, CheckRemoveHashMap>();
+        localSegments = new ConcurrentHashMap<SourceKey, CheckRemoveHashMap>();
         rule = SwiftContext.get().getBean(SegmentDestSelectRuleService.class).getCurrentRule();
     }
 
@@ -63,9 +63,9 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
         if (updateType == SegmentLocationInfo.UpdateType.ALL) {
             remoteSegments.clear();
         }
-        Map<String, List<SegmentDestination>> map = segmentInfo.getDestinations();
-        for (Map.Entry<String, List<SegmentDestination>> entry : map.entrySet()) {
-            String sourceKey = entry.getKey();
+        Map<SourceKey, List<SegmentDestination>> map = segmentInfo.getDestinations();
+        for (Map.Entry<SourceKey, List<SegmentDestination>> entry : map.entrySet()) {
+            SourceKey sourceKey = entry.getKey();
             if (!localSegments.containsKey(sourceKey)) {
                 localSegments.put(sourceKey, new CheckRemoveHashMap());
             }
@@ -85,9 +85,9 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
         }
     }
 
-    protected abstract void calculateRemoteSegment(String sourceKey, SegmentDestination destination);
+    protected abstract void calculateRemoteSegment(SourceKey sourceKey, SegmentDestination destination);
 
-    protected boolean calculateContains(Map<String, CheckRemoveHashMap> map, String sourceKey, SegmentDestination destination) {
+    protected boolean calculateContains(Map<SourceKey, CheckRemoveHashMap> map, SourceKey sourceKey, SegmentDestination destination) {
         if (!map.get(sourceKey).containsKey(destination.getSegmentId())) {
             map.get(sourceKey).put(destination.getSegmentId(), destination);
             return true;
@@ -96,17 +96,17 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
     }
 
     @Override
-    public Map<String, List<SegmentDestination>> getSegmentInfo() {
-        Map<String, List<SegmentDestination>> target = new HashMap<String, List<SegmentDestination>>();
+    public Map<SourceKey, List<SegmentDestination>> getSegmentInfo() {
+        Map<SourceKey, List<SegmentDestination>> target = new HashMap<SourceKey, List<SegmentDestination>>();
         map2List(target, localSegments);
         map2List(target, remoteSegments);
         return target;
     }
 
-    private void map2List(Map<String, List<SegmentDestination>> target, Map<String, CheckRemoveHashMap> segments) {
-        Iterator<String> localIterator = segments.keySet().iterator();
+    private void map2List(Map<SourceKey, List<SegmentDestination>> target, Map<SourceKey, CheckRemoveHashMap> segments) {
+        Iterator<SourceKey> localIterator = segments.keySet().iterator();
         while (localIterator.hasNext()) {
-            String key = localIterator.next();
+            SourceKey key = localIterator.next();
             if (null == target.get(key)) {
                 target.put(key, new ArrayList<SegmentDestination>());
             }
@@ -127,19 +127,19 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
 
     @Override
     synchronized
-    public void removeTable(String cluster, String sourceKey) {
+    public void removeTable(String cluster, SourceKey sourceKey) {
         removeSegments(cluster, sourceKey, null, localSegments);
         removeSegments(cluster, sourceKey, null, remoteSegments);
     }
 
     @Override
     synchronized
-    public void removeSegments(final String cluster, String sourceKey, List<String> segmentKeys) {
+    public void removeSegments(final String cluster, SourceKey sourceKey, List<String> segmentKeys) {
         removeSegments(cluster, sourceKey, segmentKeys, remoteSegments);
         removeSegments(cluster, sourceKey, segmentKeys, localSegments);
     }
 
-    private void removeSegments(final String cluster, String sourceKey, List<String> segmentKeys, Map<String, CheckRemoveHashMap> remoteSegments) {
+    private void removeSegments(final String cluster, SourceKey sourceKey, List<String> segmentKeys, Map<SourceKey, CheckRemoveHashMap> remoteSegments) {
         if (remoteSegments.containsKey(sourceKey)) {
             // 传空删全部
             if (null == segmentKeys || segmentKeys.isEmpty()) {

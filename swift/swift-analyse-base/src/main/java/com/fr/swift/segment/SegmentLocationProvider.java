@@ -1,6 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.bean.SegmentDestination;
@@ -59,28 +58,31 @@ public class SegmentLocationProvider implements SegmentLocationManager {
     }
 
     @Override
-    public Map<String, List<SegmentDestination>> getSegmentInfo() {
+    public Map<SourceKey, List<SegmentDestination>> getSegmentInfo() {
         return null;
     }
 
     @Override
-    public void removeTable(String cluster, String sourceKey) {
-        if (StringUtils.isEmpty(sourceKey)) {
+    public void removeTable(String cluster, SourceKey sourceKey) {
+        if (null == sourceKey) {
             for (Table table : SwiftDatabase.getInstance().getAllTables()) {
-                historyManager.removeTable(cluster, table.getSourceKey().getId());
-                realTimeManager.removeTable(cluster, table.getSourceKey().getId());
+                historyManager.removeTable(cluster, table.getSourceKey());
+                realTimeManager.removeTable(cluster, table.getSourceKey());
             }
+        } else {
+            historyManager.removeTable(cluster, sourceKey);
+            realTimeManager.removeTable(cluster, sourceKey);
         }
 
     }
 
     @Override
-    public void removeSegments(String cluster, String sourceKey, List<String> segmentKeys) {
+    public void removeSegments(String cluster, SourceKey sourceKey, List<String> segmentKeys) {
         historyManager.removeSegments(cluster, sourceKey, segmentKeys);
         realTimeManager.removeSegments(cluster, sourceKey, segmentKeys);
     }
 
-    public Map<String, List<SegmentDestination>> getSegmentInfo(ServiceType serviceType) {
+    public Map<SourceKey, List<SegmentDestination>> getSegmentInfo(ServiceType serviceType) {
         switch (serviceType) {
             case HISTORY:
                 return historyManager.getSegmentInfo();

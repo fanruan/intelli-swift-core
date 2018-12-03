@@ -42,13 +42,14 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                     try {
                         segmentLocationDao.find(session,
                                 factory.eq("id.clusterId", clusterId),
-                                factory.eq("sourceKey", table)).justForEach(new FindList.Each() {
+                                factory.eq("sourceKey", table)).justForEach(new FindList.ConvertEach() {
                             @Override
-                            public void each(int idx, Object item) throws Exception {
+                            public Object forEach(int idx, Object item) throws Exception {
                                 session.delete(item);
+                                return null;
                             }
                         });
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         SwiftLoggers.getLogger().warn(e);
                         return false;
                     }
@@ -70,13 +71,14 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                     try {
                         segmentLocationDao.find(session,
                                 factory.eq("id.clusterId", clusterId),
-                                factory.eq("id.segmentKey", segKey)).justForEach(new FindList.Each() {
+                                factory.eq("id.segmentKey", segKey)).justForEach(new FindList.ConvertEach() {
                             @Override
-                            public void each(int idx, Object item) throws Exception {
+                            public Object forEach(int idx, Object item) throws Exception {
                                 session.delete(item);
+                                return null;
                             }
                         });
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         SwiftLoggers.getLogger().warn(e);
                         return false;
                     }
@@ -97,7 +99,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                 public Map<String, List<SegLocationBean>> work(ConfigSession session) {
                     final Map<String, List<SegLocationBean>> result = new HashMap<String, List<SegLocationBean>>();
                     try {
-                        segmentLocationDao.findAll(session).forEach(new FindList.Each<SegLocationBean>() {
+                        segmentLocationDao.findAll(session).forEach(new FindList.SimpleEach<SegLocationBean>() {
                             @Override
                             public void each(int idx, SegLocationBean item) throws Exception {
                                 String sourceKey = item.getSourceKey();
@@ -107,7 +109,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                                 result.get(sourceKey).add(item);
                             }
                         });
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         SwiftLoggers.getLogger().warn(e);
                     }
                     return result;

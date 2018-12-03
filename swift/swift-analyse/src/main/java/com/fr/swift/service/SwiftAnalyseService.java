@@ -22,6 +22,7 @@ import com.fr.swift.segment.bean.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.listener.RemoteSender;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
@@ -57,10 +58,10 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     private void cacheSegments() {
         SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         clusterSegmentService.setClusterId("LOCAL");
-        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
+        Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         if (!segments.isEmpty()) {
-            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+            for (Map.Entry<SourceKey, List<SegmentKey>> entry : segments.entrySet()) {
                 for (SegmentKey segmentKey : entry.getValue()) {
                     manager.getSegment(segmentKey);
                 }
@@ -82,7 +83,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         }
     }
 
-    private void initSegDestinations(Map<String, List<SegmentDestination>> map, String key) {
+    private void initSegDestinations(Map<SourceKey, List<SegmentDestination>> map, SourceKey key) {
         if (null == map.get(key)) {
             map.put(key, new ArrayList<SegmentDestination>() {
                 @Override
@@ -96,12 +97,12 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     private void loadSelfSegmentDestination(SwiftClusterSegmentService clusterSegmentService) {
 //        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 //        clusterSegmentService.setClusterId(getID());
-        Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
+        Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         if (!segments.isEmpty()) {
-            Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
-            Map<String, List<SegmentDestination>> realTime = new HashMap<String, List<SegmentDestination>>();
-            for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+            Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();
+            Map<SourceKey, List<SegmentDestination>> realTime = new HashMap<SourceKey, List<SegmentDestination>>();
+            for (Map.Entry<SourceKey, List<SegmentKey>> entry : segments.entrySet()) {
                 initSegDestinations(hist, entry.getKey());
                 initSegDestinations(realTime, entry.getKey());
                 for (SegmentKey segmentKey : entry.getValue()) {
@@ -152,12 +153,12 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     @RpcMethod(methodName = "removeTable")
     public void removeTable(String cluster, String sourceKey) {
-        SegmentLocationProvider.getInstance().removeTable(cluster, sourceKey);
+        SegmentLocationProvider.getInstance().removeTable(cluster, new SourceKey(sourceKey));
     }
 
     @Override
     @RpcMethod(methodName = "removeSegments")
     public void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys) {
-        SegmentLocationProvider.getInstance().removeSegments(clusterId, sourceKey, segmentKeys);
+        SegmentLocationProvider.getInstance().removeSegments(clusterId, new SourceKey(sourceKey), segmentKeys);
     }
 }

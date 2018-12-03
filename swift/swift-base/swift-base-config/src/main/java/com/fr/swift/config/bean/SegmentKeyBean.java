@@ -1,6 +1,5 @@
 package com.fr.swift.config.bean;
 
-import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
@@ -17,7 +16,7 @@ import java.net.URI;
  * @author yee
  * @date 2018/5/24
  */
-public class SegmentKeyBean implements Serializable, SegmentKey, ObjectConverter {
+public class SegmentKeyBean implements Serializable, SegmentKey {
     private static final long serialVersionUID = 3202594634845509238L;
     /**
      * sourceKey@storeType@order
@@ -29,13 +28,6 @@ public class SegmentKeyBean implements Serializable, SegmentKey, ObjectConverter
     private SwiftDatabase swiftSchema;
     private Types.StoreType storeType;
     public static final Class TYPE = entityType();
-
-    public SegmentKeyBean(SegmentKey bean) {
-        this.id = bean.getId();
-        this.sourceKey = bean.getTable().getId();
-        this.uri = bean.getUri();
-        this.order = bean.getOrder();
-    }
 
     private static Class entityType() {
         try {
@@ -151,7 +143,7 @@ public class SegmentKeyBean implements Serializable, SegmentKey, ObjectConverter
     @Override
     public Object convert() {
         try {
-            Constructor constructor = TYPE.getDeclaredConstructor(SegmentKeyBean.class);
+            Constructor constructor = TYPE.getDeclaredConstructor(SegmentKey.class);
             return constructor.newInstance(this);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

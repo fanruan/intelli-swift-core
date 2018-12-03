@@ -1,6 +1,5 @@
 package com.fr.swift.service.history.rule;
 
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.handler.history.rule.DefaultDataSyncRule;
 import com.fr.swift.source.SourceKey;
@@ -68,7 +67,7 @@ public class DataSyncRuleTest {
     @Test
     public void calculate() {
         System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.size());
-        Map<String, Set<SegmentKey>> target = new DefaultDataSyncRule().calculate(nodeIds, needLoad, new HashMap<String, List<SegmentDestination>>());
+        Map<String, Set<SegmentKey>> target = new DefaultDataSyncRule().calculate(nodeIds, needLoad, new HashMap<>());
         Iterator<Set<SegmentKey>> it = target.values().iterator();
         int total = 0;
         while (it.hasNext()) {

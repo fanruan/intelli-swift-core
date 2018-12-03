@@ -1,8 +1,8 @@
 package com.fr.swift.config.entity;
 
 import com.fr.swift.config.bean.SwiftTablePathBean;
-import com.fr.swift.config.convert.ObjectConverter;
 import com.fr.swift.config.entity.key.SwiftTablePathKey;
+import com.fr.swift.converter.ObjectConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

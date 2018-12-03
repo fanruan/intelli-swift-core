@@ -58,6 +58,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         for (final Pair<URL, Set<String>> pair : pairs) {
             queryBean.setSegments(pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
+            // TODO: 2018/12/01 这边这么调是不对的，这个URL不一定启了AnalyseService，有可能只是一台History或者Memory
             final Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, pair.getKey());
             RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass,
                     method, methodName, parameterTypes, query);

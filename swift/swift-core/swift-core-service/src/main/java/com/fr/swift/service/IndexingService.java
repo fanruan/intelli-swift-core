@@ -1,7 +1,8 @@
 package com.fr.swift.service;
 
 import com.fr.swift.basics.annotation.InvokeMethod;
-import com.fr.swift.basics.handler.IndexPHDefiner;
+import com.fr.swift.basics.handler.IndexProcessHandler;
+import com.fr.swift.basics.handler.StatusProcessHandler;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.IndexingStuff;
@@ -18,10 +19,10 @@ public interface IndexingService extends SwiftService {
      *
      * @param stuff stuff
      */
-    @InvokeMethod(IndexPHDefiner.IndexProcessHandler.class)
+    @InvokeMethod(IndexProcessHandler.class)
     <Stuff extends IndexingStuff> void index(Stuff stuff);
 
-    @InvokeMethod(IndexPHDefiner.StatusProcessHandler.class)
+    @InvokeMethod(StatusProcessHandler.class)
     ServerCurrentStatus currentStatus();
 
     void setListenerWorker(ListenerWorker listenerWorker);

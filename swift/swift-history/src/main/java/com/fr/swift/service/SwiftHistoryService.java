@@ -114,12 +114,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     private void checkSegmentExists() {
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-        Map<String, List<SegmentKey>> map = segmentService.getOwnSegments();
-        for (Map.Entry<String, List<SegmentKey>> entry : map.entrySet()) {
-            String table = entry.getKey();
+        Map<SourceKey, List<SegmentKey>> map = segmentService.getOwnSegments();
+        for (Map.Entry<SourceKey, List<SegmentKey>> entry : map.entrySet()) {
+            SourceKey table = entry.getKey();
             List<SegmentKey> value = entry.getValue();
             List<SegmentKey> notExists = new ArrayList<SegmentKey>();
-            final Map<String, Set<String>> needDownload = new HashMap<String, Set<String>>();
+            final Map<SourceKey, Set<String>> needDownload = new HashMap<SourceKey, Set<String>>();
             for (SegmentKey segmentKey : value) {
                 if (segmentKey.getStoreType().isPersistent()) {
                     if (!segmentManager.getSegment(segmentKey).isReadable()) {
@@ -173,9 +173,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     public void load(Set<SegmentKey> sourceSegKeys, boolean replace) throws Exception {
-        Map<String, Set<String>> needLoadSegments = new HashMap<String, Set<String>>();
+        Map<SourceKey, Set<String>> needLoadSegments = new HashMap<SourceKey, Set<String>>();
         for (SegmentKey segmentKey : sourceSegKeys) {
-            String sourceKey = segmentKey.getTable().getId();
+            SourceKey sourceKey = segmentKey.getTable();
             if (!needLoadSegments.containsKey(sourceKey)) {
                 needLoadSegments.put(sourceKey, new HashSet<String>());
             }
@@ -185,21 +185,21 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void load(Map<String, Set<String>> remoteUris, final boolean replace) throws Exception {
+    public void load(Map<SourceKey, Set<String>> remoteUris, final boolean replace) throws Exception {
         if (null == remoteUris || remoteUris.isEmpty()) {
             return;
         }
         List<Future<?>> futures = new ArrayList<Future<?>>(remoteUris.size());
-        for (final String sourceKey : remoteUris.keySet()) {
+        for (final SourceKey sourceKey : remoteUris.keySet()) {
             final Set<String> uris = remoteUris.get(sourceKey);
             if (uris.isEmpty()) {
                 return;
             }
             try {
-                futures.add(taskExecutor.submit(new SwiftServiceCallable<Void>(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD, new Callable<Void>() {
+                futures.add(taskExecutor.submit(new SwiftServiceCallable<Void>(sourceKey, ServiceTaskType.DOWNLOAD, new Callable<Void>() {
                     @Override
                     public Void call() {
-                        download(sourceKey, uris, replace);
+                        download(sourceKey.getId(), uris, replace);
                         SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
                         return null;
                     }
@@ -323,10 +323,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void commonLoad(String sourceKey, Map<String, List<String>> needLoad) throws Exception {
-        Map<String, Set<String>> needLoadPath = new HashMap<String, Set<String>>();
+    public void commonLoad(SourceKey sourceKey, Map<SegmentKey, List<String>> needLoad) throws Exception {
+        Map<SourceKey, Set<String>> needLoadPath = new HashMap<SourceKey, Set<String>>();
         Set<String> uris = new HashSet<String>();
-        for (Map.Entry<String, List<String>> entry : needLoad.entrySet()) {
+        for (Map.Entry<SegmentKey, List<String>> entry : needLoad.entrySet()) {
             uris.addAll(entry.getValue());
         }
         needLoadPath.put(sourceKey, uris);
@@ -365,12 +365,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
             SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
             segmentService.setClusterId(getID());
-            Map<String, List<SegmentKey>> map = segmentService.getOwnSegments();
-            for (Map.Entry<String, List<SegmentKey>> entry : map.entrySet()) {
-                String table = entry.getKey();
+            Map<SourceKey, List<SegmentKey>> map = segmentService.getOwnSegments();
+            for (Map.Entry<SourceKey, List<SegmentKey>> entry : map.entrySet()) {
+                SourceKey table = entry.getKey();
                 List<SegmentKey> value = entry.getValue();
                 List<SegmentKey> notExists = new ArrayList<SegmentKey>();
-                final Map<String, Set<String>> needDownload = new HashMap<String, Set<String>>();
+                final Map<SourceKey, Set<String>> needDownload = new HashMap<SourceKey, Set<String>>();
                 for (SegmentKey segmentKey : value) {
                     if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
                         if (!segmentManager.getSegment(segmentKey).isReadable()) {
@@ -425,10 +425,10 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         protected SegmentLocationInfo loadSelfSegmentDestination() {
             SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
             clusterSegmentService.setClusterId(getID());
-            Map<String, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
+            Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
             if (!segments.isEmpty()) {
-                Map<String, List<SegmentDestination>> hist = new HashMap<String, List<SegmentDestination>>();
-                for (Map.Entry<String, List<SegmentKey>> entry : segments.entrySet()) {
+                Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();
+                for (Map.Entry<SourceKey, List<SegmentKey>> entry : segments.entrySet()) {
                     initSegDestinations(hist, entry.getKey());
                     for (SegmentKey segmentKey : entry.getValue()) {
                         if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
@@ -444,7 +444,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             return null;
         }
 
-        private void initSegDestinations(Map<String, List<SegmentDestination>> map, String key) {
+        private void initSegDestinations(Map<SourceKey, List<SegmentDestination>> map, SourceKey key) {
             if (null == map.get(key)) {
                 map.put(key, new ArrayList<SegmentDestination>() {
                     @Override

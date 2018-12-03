@@ -20,6 +20,7 @@ public abstract class BaseTransactionManager implements TransactionManager {
                 new Class[]{ConfigSession.class}, new SessionInvocationHandler(object));
         if (worker.needTransaction()) {
             ConfigTransaction tx = session.beginTransaction();
+            tx.begin();
             try {
                 T result = worker.work(session);
                 tx.commit();

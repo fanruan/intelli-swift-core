@@ -73,7 +73,7 @@ public class SwiftDatabase implements Database, Serializable {
         if (!existsTable(tableKey)) {
             throw new NoSuchTableException(tableKey.getId());
         }
-        CONF_SVC.removeMetaDatas(tableKey.getId());
+        CONF_SVC.removeMetaDatas(tableKey);
     }
 
     private static final Database INSTANCE = new SwiftDatabase();
