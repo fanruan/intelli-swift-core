@@ -15,6 +15,7 @@ import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.MonitorUtil;
 
 import java.lang.reflect.Method;
@@ -33,7 +34,7 @@ import java.util.concurrent.CountDownLatch;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<URL, Map<String, List<String>>>> implements CommonLoadProcessHandler {
+public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<URL, Map<SourceKey, List<String>>>> implements CommonLoadProcessHandler {
 
     public SwiftCommonLoadProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);
@@ -54,11 +55,11 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
         try {
             MonitorUtil.start();
             String sourceKey = (String) args[0];
-            Map<URL, Map<String, List<String>>> urlMap = processUrl(target, args);
+            Map<URL, Map<SourceKey, List<String>>> urlMap = processUrl(target, args);
 
             final List<EventResult> resultList = new ArrayList<EventResult>();
             final CountDownLatch latch = new CountDownLatch(urlMap.size());
-            for (final Map.Entry<URL, Map<String, List<String>>> urlMapEntry : urlMap.entrySet()) {
+            for (final Map.Entry<URL, Map<SourceKey, List<String>>> urlMapEntry : urlMap.entrySet()) {
 
                 Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, urlMapEntry.getKey());
                 RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass, method, methodName, parameterTypes, sourceKey, urlMapEntry.getValue());
@@ -98,20 +99,20 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
      * @return 远程url
      */
     @Override
-    public Map<URL, Map<String, List<String>>> processUrl(Target target, Object... args) {
+    public Map<URL, Map<SourceKey, List<String>>> processUrl(Target target, Object... args) {
         SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
 
-        String sourceKey = (String) args[0];
+        SourceKey sourceKey = (SourceKey) args[0];
         Map<String, List<String>> uris = (Map<String, List<String>>) args[1];
 
         if (null == services || services.isEmpty()) {
             throw new RuntimeException("Cannot find history service");
         }
-        Map<URL, Map<String, List<String>>> resultMap = new HashMap<URL, Map<String, List<String>>>();
+        Map<URL, Map<SourceKey, List<String>>> resultMap = new HashMap<URL, Map<SourceKey, List<String>>>();
         for (Map.Entry<String, ClusterEntity> servicesEntry : services.entrySet()) {
             String clusterId = servicesEntry.getKey();
-            Map<String, List<SegmentKey>> map = clusterSegmentService.getOwnSegments(clusterId);
+            Map<SourceKey, List<SegmentKey>> map = clusterSegmentService.getOwnSegments(clusterId);
             List<SegmentKey> list = map.get(sourceKey);
             Set<String> needLoad = new HashSet<String>();
             if (!list.isEmpty()) {
@@ -123,7 +124,7 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
                 }
             }
             if (!needLoad.isEmpty()) {
-                Map<String, List<String>> loadMap = new HashMap<String, List<String>>();
+                Map<SourceKey, List<String>> loadMap = new HashMap<SourceKey, List<String>>();
                 loadMap.put(sourceKey, new ArrayList<String>(needLoad));
                 resultMap.put(UrlSelector.getInstance().getFactory().getURL(clusterId), loadMap);
             }

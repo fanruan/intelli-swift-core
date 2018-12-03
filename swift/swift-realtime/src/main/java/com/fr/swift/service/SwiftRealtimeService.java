@@ -11,7 +11,6 @@ import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.session.factory.SessionFactory;
@@ -42,7 +41,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private static final long serialVersionUID = 4719723736240190155L;
 
-    private transient RpcServer server;
 
     private transient SwiftSegmentManager segmentManager;
 
@@ -56,7 +54,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        server = SwiftContext.get().getBean(RpcServer.class);
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
         if (recoverable) {
@@ -71,7 +68,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         super.shutdown();
         ResourceDiscovery.getInstance().releaseAll();
         recoverable = true;
-        server = null;
         segmentManager = null;
         taskExecutor = null;
         return true;

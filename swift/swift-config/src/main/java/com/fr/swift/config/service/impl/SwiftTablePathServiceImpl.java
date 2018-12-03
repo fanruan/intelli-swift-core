@@ -95,19 +95,20 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 @Override
                 public Boolean work(final ConfigSession session) throws SQLException {
                     try {
-                        swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).justForEach(new FindList.Each() {
+                        swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).justForEach(new FindList.ConvertEach() {
                             @Override
-                            public void each(int idx, Object item) throws Exception {
+                            public Object forEach(int idx, Object item) throws Exception {
                                 try {
                                     session.delete(item);
                                     tablePath.remove(table);
                                 } catch (Exception e) {
                                     SwiftLoggers.getLogger().warn(e);
                                 }
+                                return null;
                             }
                         });
                         return true;
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         SwiftLoggers.getLogger().warn(e);
                     }
                     return false;

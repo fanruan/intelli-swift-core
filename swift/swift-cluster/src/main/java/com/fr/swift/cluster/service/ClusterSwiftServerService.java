@@ -243,35 +243,12 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
             public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
                 // rpc告诉indexing节点执行任务
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
-//                String address = null;
                 try {
-//                    IndexingSelectRule rule = SwiftContext.get().getBean(IndexingSelectRuleService.class).getCurrentRule();
-//                    address = rule.select(indexingServiceMap.keySet());
-//                    ClusterEntity entity = indexingServiceMap.get(address);
                     ProxyFactory factory = ProxySelector.getInstance().getFactory();
-//                    Invoker invoker = factory.getInvoker(null, entity.getServiceClass(), new RPCUrl(new RPCDestination(address)), false);
                     IndexingService indexingService = factory.getProxy(IndexingService.class);
                     indexingService.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
-//                    Result result = invoker.invoke(
-//                            new SwiftInvocation(entity.getServiceClass().getDeclaredMethod("index", IndexingStuff.class),
-//                                    new Object[]{new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap)}));
-//                    RpcFuture future = (RpcFuture) result.getValue();
-//                    if (null == future) {
-//                        throw new Exception(result.getException());
-//                    }
-//                    future.addCallback(new AsyncRpcCallback() {
-//                        @Override
-//                        public void success(Object result) {
-////                                    LOGGER.info(String.format("Indexing success! Cost: %d", System.currentTimeMillis() - start));
-//                        }
-//
-//                        @Override
-//                        public void fail(Exception e) {
-//                            LOGGER.error("Indexing error! ", e);
-//                        }
-//                    });
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    SwiftLoggers.getLogger().warn(e);
                 }
 
             }

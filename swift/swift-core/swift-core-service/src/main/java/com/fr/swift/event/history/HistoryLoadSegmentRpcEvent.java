@@ -1,16 +1,18 @@
 package com.fr.swift.event.history;
 
+import com.fr.swift.source.SourceKey;
+
 /**
  * @author yee
  * @date 2018/6/8
  */
-public class HistoryLoadSegmentRpcEvent extends SegmentLoadRpcEvent<String> {
+public class HistoryLoadSegmentRpcEvent extends SegmentLoadRpcEvent<SourceKey> {
 
     private static final long serialVersionUID = 5999241318201878252L;
 
-    private String sourceKey;
+    private SourceKey sourceKey;
 
-    public HistoryLoadSegmentRpcEvent(String sourceKey, String sourceClusterId) {
+    public HistoryLoadSegmentRpcEvent(SourceKey sourceKey, String sourceClusterId) {
         super(sourceClusterId);
         this.sourceKey = sourceKey;
     }
@@ -24,7 +26,7 @@ public class HistoryLoadSegmentRpcEvent extends SegmentLoadRpcEvent<String> {
     }
 
     @Override
-    public String getContent() {
+    public SourceKey getContent() {
         return sourceKey;
     }
 }

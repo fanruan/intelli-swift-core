@@ -5,6 +5,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.HistoryService;
+import com.fr.swift.source.SourceKey;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DefaultDataSyncRule implements DataSyncRule {
     @Override
     public Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Set<SegmentKey> needLoads,
-                                                  Map<String, List<SegmentDestination>> destinations) {
+                                                  Map<SourceKey, List<SegmentDestination>> destinations) {
 
         int lessCount = nodeIds.size();
 
@@ -40,7 +41,7 @@ public class DefaultDataSyncRule implements DataSyncRule {
         Map<String, Set<SegmentKey>> result = new HashMap<String, Set<SegmentKey>>();
 
         for (SegmentKey needLoad : needLoads) {
-            String sourceKey = needLoad.getTable().getId();
+            SourceKey sourceKey = needLoad.getTable();
             if (null == destinations.get(sourceKey)) {
                 destinations.put(sourceKey, new ArrayList<SegmentDestination>());
             }

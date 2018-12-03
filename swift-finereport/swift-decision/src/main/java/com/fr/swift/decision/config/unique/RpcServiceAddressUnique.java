@@ -4,7 +4,7 @@ import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
 import com.fr.swift.config.bean.RpcServiceAddressBean;
-import com.fr.swift.config.convert.ObjectConverter;
+import com.fr.swift.converter.ObjectConverter;
 
 /**
  * @author yee

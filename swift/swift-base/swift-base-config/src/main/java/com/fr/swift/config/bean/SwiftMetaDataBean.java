@@ -1,6 +1,6 @@
 package com.fr.swift.config.bean;
 
-import com.fr.swift.config.convert.ObjectConverter;
+import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -67,7 +67,11 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
         this.tableName = tableName;
         this.remark = remark;
         this.fields = fields;
-        this.columnCount = fields.size();
+        if (null == fields) {
+            this.columnCount = 0;
+        } else {
+            this.columnCount = fields.size();
+        }
     }
 
     public SwiftMetaDataBean() {

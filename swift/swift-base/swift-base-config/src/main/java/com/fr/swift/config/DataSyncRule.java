@@ -2,6 +2,7 @@ package com.fr.swift.config;
 
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 import java.util.Map;
@@ -20,5 +21,5 @@ public interface DataSyncRule {
      * @return
      */
     Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Set<SegmentKey> needLoads,
-                                           Map<String, List<SegmentDestination>> destinations);
+                                           Map<SourceKey, List<SegmentDestination>> destinations);
 }

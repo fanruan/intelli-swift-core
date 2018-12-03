@@ -1,33 +1,58 @@
-package com.fr.swift.basics.base.handler;
+package com.fr.swift.handler;
 
 import com.fr.swift.basics.AsyncRpcCallback;
+import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
-import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.basics.handler.IndexPHDefiner;
-import com.fr.swift.config.IndexingSelectRule;
+import com.fr.swift.basics.handler.StatusProcessHandler;
+import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
-import com.fr.swift.config.service.IndexingSelectRuleService;
+import com.fr.swift.config.oper.FindList;
+import com.fr.swift.config.oper.FindListImpl;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.service.ServiceType;
+import com.fr.swift.util.Crasher;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * @author yee
- * @date 2018/10/25
+ * @date 2018-12-01
  */
-public abstract class BaseIndexStatusProcessHandler extends BaseProcessHandler implements IndexPHDefiner.StatusProcessHandler {
-
-    public BaseIndexStatusProcessHandler(InvokerCreater invokerCreater) {
+public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> implements StatusProcessHandler {
+    public IndexStatusProcessHandler(InvokerCreater invokerCreater) {
         super(invokerCreater);
+    }
+
+    @Override
+    public Object processResult(final Method method, Target target, final Object... args) throws Throwable {
+        List<URL> urls = processUrl(target, args);
+        if (ClusterSelector.getInstance().getFactory().isCluster() && urls.isEmpty()) {
+            Crasher.crash("Remote  Not Found");
+        }
+        FindList<RpcFuture> list = new FindListImpl<RpcFuture>(urls);
+        final Class proxyClass = method.getDeclaringClass();
+        final Class<?>[] parameterTypes = method.getParameterTypes();
+        List<RpcFuture> resultList = list.forEach(new FindList.ConvertEach<URL, RpcFuture>() {
+            @Override
+            public RpcFuture forEach(int idx, URL item) throws Throwable {
+                Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, item);
+                return (RpcFuture) invoke(invoker, proxyClass, method, method.getName(), parameterTypes, args);
+            }
+        });
+        return mergeResult(resultList);
     }
 
     @Override
@@ -57,14 +82,14 @@ public abstract class BaseIndexStatusProcessHandler extends BaseProcessHandler i
                 statusList.add((ServerCurrentStatus) obj);
             }
         }
-        IndexingSelectRule rule = ProxyServiceRegistry.get().getInternalService(IndexingSelectRuleService.class).getCurrentRule();
-        return rule.select(statusList);
+        Collections.sort(statusList);
+        return statusList.get(0);
     }
 
     @Override
     public List<URL> processUrl(Target target, Object... args) {
-        // TODO 获取所有Index节点地址
-        Set<String> clusterIds = new HashSet<String>();
+        Map<String, ClusterEntity> entityMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.INDEXING);
+        Set<String> clusterIds = entityMap.keySet();
         List<URL> urls = new ArrayList<URL>();
         for (String clusterId : clusterIds) {
             urls.add(UrlSelector.getInstance().getFactory().getURL(clusterId));

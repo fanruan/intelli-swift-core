@@ -1,6 +1,6 @@
 package com.fr.swift.config.bean;
 
-import com.fr.swift.config.convert.ObjectConverter;
+import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 

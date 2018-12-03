@@ -15,34 +15,9 @@ public interface RestrictionFactory {
 
     enum MatchMode {
         //
-        EXACT {
-            @Override
-            public String toMatchString(String pattern) {
-                return pattern;
-            }
-        },
-        START {
-            @Override
-            public String toMatchString(String pattern) {
-                return pattern + '%';
-            }
-        },
-        END {
-            @Override
-            public String toMatchString(String pattern) {
-                return '%' + pattern;
-            }
-        },
-        ANYWHERE {
-            @Override
-            public String toMatchString(String pattern) {
-                return '%' + pattern + '%';
-            }
-        };
-
-        MatchMode() {
-        }
-
-        public abstract String toMatchString(String var1);
+        EXACT,
+        START,
+        END,
+        ANYWHERE
     }
 }

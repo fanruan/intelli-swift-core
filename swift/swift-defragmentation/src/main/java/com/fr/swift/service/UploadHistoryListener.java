@@ -73,7 +73,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
     private static void notifyDownload(final SegmentKey segKey) {
         final String currentClusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
         EventResult result = (EventResult) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(
-                new TransCollateLoadEvent(Pair.of(segKey.getTable().getId(), Collections.singletonList(segKey.toString())), currentClusterId));
+                new TransCollateLoadEvent(Pair.of(segKey.getTable(), Collections.singletonList(segKey)), currentClusterId));
         if (result.isSuccess()) {
             String clusterId = result.getClusterId();
             SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);

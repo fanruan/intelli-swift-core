@@ -1,4 +1,4 @@
-package com.fr.swift.config.convert;
+package com.fr.swift.converter;
 
 /**
  * @author yee
