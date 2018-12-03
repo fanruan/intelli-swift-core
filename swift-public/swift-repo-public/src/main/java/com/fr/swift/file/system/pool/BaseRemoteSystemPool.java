@@ -1,7 +1,7 @@
 package com.fr.swift.file.system.pool;
 
 import com.fr.swift.file.system.SwiftFileSystem;
-import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 
 /**
  * @author yee

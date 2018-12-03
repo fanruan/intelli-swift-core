@@ -5,7 +5,7 @@ import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 
 /**
  * @author yee
- * @date 2018/7/5
+ * @date 2018-12-03
  */
 public class BaseRemoteSystemPool<T extends SwiftFileSystem> extends GenericKeyedObjectPool<String, T> implements RemoteSystemPool<T> {
     public BaseRemoteSystemPool(BaseRemoteSystemPoolFactory factory) {
