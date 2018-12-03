@@ -10,7 +10,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.config.HdfsRepositoryConfig;
 import com.fr.swift.repository.config.HdfsSystemType;
-import com.fr.third.org.apache.commons.pool2.KeyedObjectPool;
+import org.apache.commons.pool2.KeyedObjectPool;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;

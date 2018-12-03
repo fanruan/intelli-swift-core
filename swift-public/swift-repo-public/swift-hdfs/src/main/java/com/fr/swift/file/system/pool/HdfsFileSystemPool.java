@@ -2,11 +2,11 @@ package com.fr.swift.file.system.pool;
 
 import com.fr.swift.file.system.impl.HdfsFileSystemImpl;
 import com.fr.swift.repository.config.HdfsRepositoryConfig;
-import com.fr.third.org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
-import com.fr.third.org.apache.commons.pool2.KeyedObjectPool;
-import com.fr.third.org.apache.commons.pool2.PooledObject;
-import com.fr.third.org.apache.commons.pool2.impl.DefaultPooledObject;
-import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
+import org.apache.commons.pool2.KeyedObjectPool;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
