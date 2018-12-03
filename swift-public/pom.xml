@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>swift-hdfs</module>
         <module>swift-redis</module>
         <module>swift-rpc-netty</module>
         <module>swift-spring-boot</module>
