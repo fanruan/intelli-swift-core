@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 
@@ -127,7 +128,10 @@ public abstract class UnregisteredDriver implements Driver {
     public static class Holder {
         private URI connectUri;
         private RequestService requestService;
-        private String authCode;
+        /**
+         * TODO: 2018/12/03 校验码 暂时不做先保留
+         */
+        private String authCode = UUID.randomUUID().toString();
         private Queue<String> realtimeAddresses;
         private Queue<String> analyseAddresses;
 

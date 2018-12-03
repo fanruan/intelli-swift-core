@@ -1,6 +1,7 @@
 package com.fr.swift.jdbc.request.impl;
 
-import com.fr.swift.jdbc.info.SqlInfo;
+import com.fr.swift.jdbc.info.AuthRequestInfo;
+import com.fr.swift.jdbc.info.RequestInfo;
 import com.fr.swift.jdbc.json.JsonRequestBuilder;
 import com.fr.swift.jdbc.request.RequestService;
 import com.fr.swift.jdbc.response.JdbcResponse;
@@ -19,13 +20,13 @@ import java.util.concurrent.TimeUnit;
 public class RequestServiceImpl implements RequestService {
     @Override
     public <T extends JdbcResponse> T apply(JdbcExecutor sender, String user, String password) {
-        String json = JsonRequestBuilder.INSTANCE.buildAuthRequest(user, password);
+        String json = JsonRequestBuilder.BUILDER.buildRequest(new AuthRequestInfo(user, password));
         return apply(sender, json);
     }
 
     @Override
-    public <T extends JdbcResponse> T apply(JdbcExecutor sender, SqlInfo sql) {
-        String json = JsonRequestBuilder.INSTANCE.buildSqlRequest(sql);
+    public <T extends JdbcResponse> T apply(JdbcExecutor sender, RequestInfo sql) {
+        String json = JsonRequestBuilder.BUILDER.buildRequest(sql);
         return apply(sender, json);
     }
 
@@ -55,13 +56,13 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, String user, String password, int retryTime) {
-        String json = JsonRequestBuilder.INSTANCE.buildAuthRequest(user, password);
+        String json = JsonRequestBuilder.BUILDER.buildRequest(new AuthRequestInfo(user, password));
         return applyWithRetry(sender, json, retryTime);
     }
 
     @Override
-    public <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, SqlInfo sql, int retryTime) {
-        String json = JsonRequestBuilder.INSTANCE.buildSqlRequest(sql);
+    public <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, RequestInfo sql, int retryTime) {
+        String json = JsonRequestBuilder.BUILDER.buildRequest(sql);
         return applyWithRetry(sender, json, retryTime);
     }
 
@@ -81,9 +82,6 @@ public class RequestServiceImpl implements RequestService {
 
                     @Override
                     public SQLException exception() {
-                        if (e instanceof SQLException) {
-                            return (SQLException) e;
-                        }
                         return new SQLException(e);
                     }
 

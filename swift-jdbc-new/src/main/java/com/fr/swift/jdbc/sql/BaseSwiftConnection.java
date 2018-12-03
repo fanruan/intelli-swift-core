@@ -2,8 +2,9 @@ package com.fr.swift.jdbc.sql;
 
 import com.fr.swift.jdbc.BuildInConnectionProperty;
 import com.fr.swift.jdbc.SwiftJdbcConstants;
+import com.fr.swift.jdbc.checker.GrammarChecker;
 import com.fr.swift.jdbc.exception.Exceptions;
-import com.fr.swift.jdbc.info.SqlInfo;
+import com.fr.swift.jdbc.info.RequestInfo;
 import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
@@ -349,7 +350,7 @@ public abstract class BaseSwiftConnection implements Connection {
         return false;
     }
 
-    Object executeQueryInternal(SqlInfo info, JdbcExecutor executor) throws SQLException {
+    Object executeQueryInternal(RequestInfo info, JdbcExecutor executor) throws SQLException {
         JdbcResponse response = driver.holder.getRequestService().applyWithRetry(executor, info, 3);
         if (response.exception() != null) {
             throw response.exception();
@@ -398,6 +399,17 @@ public abstract class BaseSwiftConnection implements Connection {
                         + " reference a normal, existent file: " + filePath);
             }
             return keytab;
+        }
+
+        @Override
+        public GrammarChecker grammarChecker() {
+            String grammar = BuildInConnectionProperty.GRAMMAR.getValue(properties);
+            try {
+                Class grammarChecker = getClass().getClassLoader().loadClass(grammar);
+                return (GrammarChecker) grammarChecker.newInstance();
+            } catch (Exception e) {
+                throw Exceptions.runtime(e);
+            }
         }
 
         @Override
