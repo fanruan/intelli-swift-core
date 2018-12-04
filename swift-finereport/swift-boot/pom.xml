@@ -84,5 +84,10 @@
             <artifactId>swift-config-fr</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-common-fr</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
 </project>

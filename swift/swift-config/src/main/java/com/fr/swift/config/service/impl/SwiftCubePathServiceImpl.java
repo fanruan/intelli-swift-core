@@ -9,7 +9,7 @@ import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.context.ContextUtil;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
@@ -40,7 +40,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
                 }
             } catch (Exception ignore) {
             }
-            String path = ContextUtil.getContextPath();
+            String path = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
             for (SwiftConfigBean swiftConfigEntity : toEntity(path)) {
                 dao.saveOrUpdate(session, swiftConfigEntity);
             }

@@ -1,7 +1,6 @@
 package com.fr.swift.util;
 
 import com.fr.swift.util.function.Consumer;
-import com.fr.third.javax.annotation.Nonnull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +49,7 @@ public class FileUtil {
         consumer.accept(f);
     }
 
-    public static boolean exists(@Nonnull String path) {
+    public static boolean exists(String path) {
         return new File(path).exists();
     }
 

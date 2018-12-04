@@ -108,6 +108,17 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-conf-public</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-common-public</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

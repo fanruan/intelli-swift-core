@@ -3,11 +3,11 @@ package com.fr.swift.segment.bean.impl;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.general.ComparatorUtils;
-import com.fr.stable.StringUtils;
 import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.bean.SegmentDestinationBean;
+import com.fr.swift.util.Strings;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class SegmentDestinationImpl implements SegmentDestinationBean {
     @JsonProperty
     private transient String currentNode;
     @JsonProperty
-    private String segmentId = StringUtils.EMPTY;
+    protected String segmentId = Strings.EMPTY;
     @JsonProperty
     private int order;
     @JsonProperty
@@ -113,7 +113,7 @@ public class SegmentDestinationImpl implements SegmentDestinationBean {
 
     @Override
     public boolean isRemote() {
-        return !StringUtils.isEmpty(clusterId) && !ComparatorUtils.equals(currentNode, clusterId);
+        return !Strings.isEmpty(clusterId) && !Util.equals(currentNode, clusterId);
     }
 
     @Override

@@ -1,8 +1,5 @@
 package com.fr.swift.context;
 
-import com.fr.workspace.WorkContext;
-
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -24,12 +21,12 @@ public class ContextUtil {
         }
     }
 
-    public static String getContextPath() {
-        String frPath = WorkContext.getCurrent().getPath();
-        if (frPath != null) {
-            return frPath + "/../";
-        }
-        String classPath = getClassPath();
-        return new File(classPath).isDirectory() ? classPath + "/../" : classPath + "/../../";
-    }
+//    public static String getContextPath() {
+//        String frPath = WorkContext.getCurrent().getPath();
+//        if (frPath != null) {
+//            return frPath + "/../";
+//        }
+//        String classPath = getClassPath();
+//        return new File(classPath).isDirectory() ? classPath + "/../" : classPath + "/../../";
+//    }
 }

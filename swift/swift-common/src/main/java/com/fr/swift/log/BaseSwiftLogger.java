@@ -1,6 +1,6 @@
 package com.fr.swift.log;
 
-import com.fr.stable.StringUtils;
+import com.fr.swift.util.Strings;
 import org.slf4j.Marker;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
@@ -16,17 +16,17 @@ abstract class BaseSwiftLogger implements SwiftLogger {
 
     @Override
     public void warn(Throwable t) {
-        warn(StringUtils.EMPTY, t);
+        warn(Strings.EMPTY, t);
     }
 
     @Override
     public void error(Throwable t) {
-        error(StringUtils.EMPTY, t);
+        error(Strings.EMPTY, t);
     }
 
     @Override
     public void debug(Throwable t) {
-        debug(StringUtils.EMPTY, t);
+        debug(Strings.EMPTY, t);
     }
 
     @Override

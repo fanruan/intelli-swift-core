@@ -1,6 +1,5 @@
 package com.fr.swift.segment.relation.impl;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.segment.relation.CubeMultiRelation;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.MD5Utils;
@@ -66,10 +65,12 @@ public class CubeMultiRelationImpl implements CubeMultiRelation<CubeLogicColumnK
         this.foreignTable = foreignTable;
     }
 
+    @Override
     public CubeLogicColumnKey getPrimaryKey() {
         return getPrimaryField();
     }
 
+    @Override
     public CubeLogicColumnKey getForeignKey() {
         return getForeignField();
     }
@@ -81,7 +82,7 @@ public class CubeMultiRelationImpl implements CubeMultiRelation<CubeLogicColumnK
      * @return 是否是自己连的自己
      */
     public boolean isSelfRelation() {
-        return ComparatorUtils.equals(primaryTable, foreignTable) && ComparatorUtils.equals(primaryField, foreignField);
+        return Util.equals(primaryTable, foreignTable) && Util.equals(primaryField, foreignField);
     }
 
     @Override
@@ -102,10 +103,10 @@ public class CubeMultiRelationImpl implements CubeMultiRelation<CubeLogicColumnK
     @Override
     public boolean equals(Object o) {
         return o instanceof CubeMultiRelationImpl
-                && ComparatorUtils.equals(primaryField, ((CubeMultiRelationImpl) o).primaryField)
-                && ComparatorUtils.equals(foreignField, ((CubeMultiRelationImpl) o).foreignField)
-                && ComparatorUtils.equals(primaryTable, ((CubeMultiRelationImpl) o).primaryTable)
-                && ComparatorUtils.equals(foreignTable, ((CubeMultiRelationImpl) o).foreignTable);
+                && Util.equals(primaryField, ((CubeMultiRelationImpl) o).primaryField)
+                && Util.equals(foreignField, ((CubeMultiRelationImpl) o).foreignField)
+                && Util.equals(primaryTable, ((CubeMultiRelationImpl) o).primaryTable)
+                && Util.equals(foreignTable, ((CubeMultiRelationImpl) o).foreignTable);
     }
 
     @Override

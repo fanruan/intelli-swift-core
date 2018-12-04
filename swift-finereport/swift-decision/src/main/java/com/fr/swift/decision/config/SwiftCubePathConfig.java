@@ -3,10 +3,10 @@ package com.fr.swift.decision.config;
 import com.fr.config.ConfigContext;
 import com.fr.config.Configuration;
 import com.fr.config.holder.factory.Holders;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.context.ContextUtil;
-import com.fr.swift.SwiftContext;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.decision.config.base.SwiftAbstractSimpleConfig;
 import com.fr.swift.util.Strings;
 import com.fr.transaction.Configurations;
@@ -22,7 +22,7 @@ import com.fr.transaction.Worker;
 public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
     private static SwiftCubePathConfig config = null;
 
-    private static final String BASE_CUBE_PATH = ContextUtil.getContextPath();
+    private static final String BASE_CUBE_PATH = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
 
     public SwiftCubePathConfig() {
         super(Holders.<String>simple(null));

@@ -18,7 +18,6 @@
         <module>swift-base-bitmap</module>
         <module>swift-base-repository</module>
         <module>swift-base-beans</module>
-        <module>swift-base-json</module>
     </modules>
 
     <dependencyManagement>

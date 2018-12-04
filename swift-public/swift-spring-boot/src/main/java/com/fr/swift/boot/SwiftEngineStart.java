@@ -1,12 +1,6 @@
 package com.fr.swift.boot;
 
 import com.fineio.FineIO;
-import com.fr.config.dao.DaoContext;
-import com.fr.config.dao.impl.LocalClassHelperDao;
-import com.fr.config.dao.impl.LocalEntityDao;
-import com.fr.config.dao.impl.LocalXmlEntityDao;
-import com.fr.data.impl.Connection;
-import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.api.rpc.impl.DataMaintenanceServiceImpl;
 import com.fr.swift.api.rpc.impl.DetectServiceImpl;
@@ -52,11 +46,6 @@ import com.fr.swift.service.UploadHistoryListener;
 import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.local.ServerManager;
 import com.fr.swift.service.local.ServiceManager;
-import com.fr.swift.source.db.ConnectionInfo;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
-import com.fr.swift.source.db.SwiftConnectionInfo;
-import com.fr.workspace.simple.SimpleWork;
 
 /**
  * This class created on 2018/6/12
@@ -70,11 +59,11 @@ public class SwiftEngineStart {
     public static void start(String[] args) {
         try {
             SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
-            SimpleWork.checkIn(System.getProperty("user.dir"));
+//            SimpleWork.checkIn(System.getProperty("user.dir"));
             ClusterListenerHandler.addInitialListener(new SwiftClusterListener());
             SwiftContext.get().init();
 
-            registerTmpConnectionProvider();
+//            registerTmpConnectionProvider();
             ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
             FineIO.setLogger(SwiftLoggers.getLogger());
             ProviderTaskManager.start();
@@ -100,21 +89,21 @@ public class SwiftEngineStart {
     }
 
     private static void registerTmpConnectionProvider() {
-        SwiftProperty property = SwiftProperty.getProperty();
-
-        DaoContext.setEntityDao(new LocalEntityDao());
-        DaoContext.setClassHelperDao(new LocalClassHelperDao());
-        DaoContext.setXmlEntityDao(new LocalXmlEntityDao());
-
-        Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
-                property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
-        final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);
-        ConnectionManager.getInstance().registerProvider(new IConnectionProvider() {
-            @Override
-            public ConnectionInfo getConnection(String connectionName) {
-                return connectionInfo;
-            }
-        });
+//        SwiftProperty property = SwiftProperty.getProperty();
+//
+//        DaoContext.setEntityDao(new LocalEntityDao());
+//        DaoContext.setClassHelperDao(new LocalClassHelperDao());
+//        DaoContext.setXmlEntityDao(new LocalXmlEntityDao());
+//
+//        Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
+//                property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
+//        final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);
+//        ConnectionManager.getInstance().registerProvider(new IConnectionProvider() {
+//            @Override
+//            public ConnectionInfo getConnection(String connectionName) {
+//                return connectionInfo;
+//            }
+//        });
     }
 
     private static void registerProxy() {

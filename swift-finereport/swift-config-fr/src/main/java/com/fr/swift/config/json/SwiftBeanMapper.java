@@ -7,7 +7,7 @@ import com.fr.swift.base.json.mapper.BeanMapperWrapper;
  * @date 2018-12-04
  */
 public class SwiftBeanMapper extends BeanMapperWrapper {
-    protected SwiftBeanMapper() {
+    public SwiftBeanMapper() {
         super(FRBeanMapper.INSTANCE);
     }
 }

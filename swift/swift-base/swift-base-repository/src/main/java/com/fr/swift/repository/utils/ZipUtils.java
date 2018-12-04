@@ -1,6 +1,5 @@
 package com.fr.swift.repository.utils;
 
-import com.fr.general.CommonIOUtils;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.io.BufferedInputStream;
@@ -8,6 +7,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
@@ -27,7 +27,7 @@ public class ZipUtils {
      * @throws RuntimeException 压缩失败会抛出运行时异常
      */
     public static void toZip(String srcDir, OutputStream out)
-            throws RuntimeException {
+            throws RuntimeException, IOException {
 
         long start = System.currentTimeMillis();
         ZipOutputStream zos = null;
@@ -40,7 +40,7 @@ public class ZipUtils {
         } catch (Exception e) {
             throw new RuntimeException("zip error", e);
         } finally {
-            CommonIOUtils.close(zos);
+            SwiftRepositoryUtils.close(zos);
         }
     }
 
@@ -55,11 +55,11 @@ public class ZipUtils {
             }
 
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fout));
-            CommonIOUtils.copyBinaryTo(zis, bos);
-            CommonIOUtils.close(bos);
+            SwiftRepositoryUtils.copyBinaryTo(zis, bos);
+            SwiftRepositoryUtils.close(bos);
         }
 
-        CommonIOUtils.close(zis);
+        SwiftRepositoryUtils.close(zis);
         long end = System.currentTimeMillis();
         SwiftLoggers.getLogger().info("Unzip {} finished. Cost {} ms", parent, (end - start));
     }
@@ -70,10 +70,10 @@ public class ZipUtils {
             zos.putNextEntry(new ZipEntry(name));
             // copy文件到zip输出流中
             FileInputStream in = new FileInputStream(sourceFile);
-            CommonIOUtils.copyBinaryTo(in, zos);
+            SwiftRepositoryUtils.copyBinaryTo(in, zos);
             // Complete the entry
             zos.closeEntry();
-            CommonIOUtils.close(in);
+            SwiftRepositoryUtils.close(in);
         } else {
             File[] listFiles = sourceFile.listFiles();
             if (listFiles == null || listFiles.length == 0) {
