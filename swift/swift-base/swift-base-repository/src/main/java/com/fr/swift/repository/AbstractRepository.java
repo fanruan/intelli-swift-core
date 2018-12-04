@@ -4,7 +4,7 @@ import com.fr.swift.file.SwiftFileSystemType;
 import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
-import com.fr.swift.file.system.pool.RemoteFactoryCreator;
+import com.fr.swift.file.system.pool.RemoteFileSystemFactoryCreator;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Strings;
 
@@ -42,7 +42,7 @@ public abstract class AbstractRepository implements SwiftRepository {
         if (SwiftRemoteFileSystemType.FR.equals(type)) {
             return buildDefaultFileSystem(uri);
         } else {
-            return RemoteFactoryCreator.creator().getFactory(type).createFileSystem(configuration, uri);
+            return RemoteFileSystemFactoryCreator.creator().getFactory(type).createFileSystem(configuration, uri);
         }
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractRepository implements SwiftRepository {
             if (SwiftRemoteFileSystemType.FR.equals(type)) {
                 fileSystem.close();
             } else {
-                RemoteFactoryCreator.creator().getFactory(type).closeFileSystem(fileSystem);
+                RemoteFileSystemFactoryCreator.creator().getFactory(type).closeFileSystem(fileSystem);
             }
         }
     }

@@ -6,7 +6,7 @@ import com.fr.swift.file.system.SwiftFileSystem;
  * @author yee
  * @date 2018-12-03
  */
-public interface RemoteSystemPool<S extends SwiftFileSystem> {
+public interface RemoteFileSystemPool<S extends SwiftFileSystem> {
     S borrowObject(String path);
 
     void returnObject(String resourceURI, S fileSystem);
