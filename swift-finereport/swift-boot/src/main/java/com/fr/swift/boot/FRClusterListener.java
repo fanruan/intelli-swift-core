@@ -1,10 +1,10 @@
 package com.fr.swift.boot;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.JdkProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.SwiftContext;
-import com.fr.swift.core.cluster.FRClusterNodeManager;
+import com.fr.swift.cluster.core.cluster.FRClusterNodeManager;
 import com.fr.swift.core.rpc.FRInvokerCreater;
 import com.fr.swift.core.rpc.FRUrlFactory;
 import com.fr.swift.event.ClusterEvent;

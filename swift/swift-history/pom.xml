@@ -13,17 +13,6 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-repository</artifactId>
-            <version>${swift.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>swift-repository-base</artifactId>
-                    <groupId>com.fr.intelligence</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
             <version>${swift.version}</version>
         </dependency>

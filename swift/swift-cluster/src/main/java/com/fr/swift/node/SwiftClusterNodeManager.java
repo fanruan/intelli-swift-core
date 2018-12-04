@@ -1,10 +1,9 @@
 package com.fr.swift.node;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Assert;
-import com.fr.third.jodd.util.StringUtil;
+import com.fr.swift.util.Util;
 
 /**
  * This class created on 2018/6/13
@@ -27,13 +26,13 @@ public class SwiftClusterNodeManager implements ClusterNodeManager<SwiftClusterN
         String masterAddress = swiftProperty.getMasterAddress();
         String serverAddress = swiftProperty.getServerAddress();
         if (masterAddress != null) {
-            String[] addressArray = StringUtil.split(masterAddress, ":");
+            String[] addressArray = masterAddress.split(":");
             String ip = addressArray[0];
             int port = Integer.parseInt(addressArray[1]);
             this.masterNode = new SwiftClusterNodeImpl(masterAddress, masterAddress, ip, port);
         }
         Assert.notNull(serverAddress);
-        String[] addressArray = StringUtil.split(serverAddress, ":");
+        String[] addressArray = serverAddress.split(":");
         String ip = addressArray[0];
         int port = Integer.parseInt(addressArray[1]);
         this.currentNode = new SwiftClusterNodeImpl(serverAddress, serverAddress, ip, port);
@@ -94,7 +93,7 @@ public class SwiftClusterNodeManager implements ClusterNodeManager<SwiftClusterN
             if (masterNode == null) {
                 return false;
             }
-            return ComparatorUtils.equals(getMasterId(), getCurrentId());
+            return Util.equals(getMasterId(), getCurrentId());
         }
     }
 }

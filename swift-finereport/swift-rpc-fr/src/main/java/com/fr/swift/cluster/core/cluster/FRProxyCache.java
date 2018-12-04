@@ -1,7 +1,7 @@
-package com.fr.swift.core.cluster;
+package com.fr.swift.cluster.core.cluster;
 
 import com.fr.cluster.engine.ticket.FineClusterToolKit;
-import com.fr.swift.core.exception.ProxyRegisterException;
+import com.fr.swift.cluster.core.exception.ProxyRegisterException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

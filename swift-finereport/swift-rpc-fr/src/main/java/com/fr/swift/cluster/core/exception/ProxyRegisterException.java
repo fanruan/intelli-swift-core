@@ -1,4 +1,4 @@
-package com.fr.swift.core.exception;
+package com.fr.swift.cluster.core.exception;
 
 /**
  * This class created on 2018/5/29
