@@ -12,6 +12,7 @@ public enum BuildInConnectionProperty {
     USERNAME("swift_username", SwiftJdbcConstants.EMPTY),
     PASSWORD("swift_password", SwiftJdbcConstants.EMPTY),
     STATEMENT_MAX_IDLE("sttm_max_idle", JdbcProperty.get().getStatementMaxIdle()),
+    GRAMMAR("grammar", "com.fr.swift.jdbc.checker.impl.SwiftGrammarChecker"),
     PRINCIPAL("principal", null),
     KEYTAB("keytab", null),
     URL("swift_url", null);

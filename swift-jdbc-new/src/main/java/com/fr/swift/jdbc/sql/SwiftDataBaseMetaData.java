@@ -1,6 +1,8 @@
 package com.fr.swift.jdbc.sql;
 
 import com.fr.swift.jdbc.JdbcProperty;
+import com.fr.swift.jdbc.info.ColumnsRequestInfo;
+import com.fr.swift.jdbc.info.TablesRequestInfo;
 import com.fr.swift.jdbc.json.JsonRequestBuilder;
 import com.fr.swift.jdbc.response.JdbcResponse;
 
@@ -650,7 +652,7 @@ public class SwiftDataBaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
         ConnectionConfig config = connection.getConfig();
-        String requestJson = JsonRequestBuilder.INSTANCE.buildTablesRequest(config.swiftDatabase());
+        String requestJson = JsonRequestBuilder.BUILDER.buildRequest(new TablesRequestInfo(config.swiftDatabase(), connection.driver.holder.getAuthCode()));
         JdbcResponse response = connection.driver.holder.getRequestService().applyWithRetry(config.requestExecutor(), requestJson, 3);
         return null;
     }
@@ -668,7 +670,7 @@ public class SwiftDataBaseMetaData implements DatabaseMetaData {
     @Override
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
         ConnectionConfig config = connection.getConfig();
-        String requestJson = JsonRequestBuilder.INSTANCE.buildColumnsRequest(config.swiftDatabase(), tableNamePattern);
+        String requestJson = JsonRequestBuilder.BUILDER.buildRequest(new ColumnsRequestInfo(config.swiftDatabase(), tableNamePattern, connection.driver.holder.getAuthCode()));
         JdbcResponse response = connection.driver.holder.getRequestService().applyWithRetry(config.requestExecutor(), requestJson, 3);
         return null;
     }
