@@ -1,14 +1,14 @@
 package com.fr.swift.segment.bean.impl;
 
-import com.fr.general.ComparatorUtils;
-import com.fr.stable.StringUtils;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SegmentDestSelectRule;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.Strings;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +53,7 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
         // 暂时先这么处理，，，，
         if (null == destinations || destinations.isEmpty()) {
             destinations = new ArrayList<SegmentDestination>();
-            destinations.add(new SegmentDestinationImpl(StringUtils.EMPTY, 0));
+            destinations.add(new SegmentDestinationImpl(Strings.EMPTY, 0));
         }
         return destinations;
     }
@@ -150,7 +150,7 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
                     @Override
                     public boolean check(SegmentDestination destination) {
                         if (null != destination) {
-                            return ComparatorUtils.equals(cluster, destination.getClusterId());
+                            return Util.equals(cluster, destination.getClusterId());
                         }
                         return false;
                     }

@@ -10,6 +10,7 @@ import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
+import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -29,7 +30,6 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.FileUtil;
-import com.fr.third.org.hibernate.criterion.Restrictions;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -52,8 +52,8 @@ public class TableServiceImpl implements TableService {
     @Override
     @SwiftApi
     public SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
-        List<SwiftMetaData> metaDataList = swiftMetaDataService.find(Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName),
-                Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
+        List<SwiftMetaData> metaDataList = swiftMetaDataService.find(RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName),
+                RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
         if (metaDataList.isEmpty()) {
             throw new SwiftMetaDataAbsentException(tableName);
         }
@@ -63,7 +63,7 @@ public class TableServiceImpl implements TableService {
     @Override
     @SwiftApi
     public List<String> detectiveAllTableNames(SwiftDatabase schema) {
-        List<SwiftMetaData> metaDataList = swiftMetaDataService.find(Restrictions.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
+        List<SwiftMetaData> metaDataList = swiftMetaDataService.find(RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
         if (metaDataList.isEmpty()) {
             return Collections.emptyList();
         } else {
