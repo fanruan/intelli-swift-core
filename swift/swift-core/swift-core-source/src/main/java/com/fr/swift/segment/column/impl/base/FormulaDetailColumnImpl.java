@@ -1,13 +1,9 @@
 package com.fr.swift.segment.column.impl.base;
 
-import com.fr.script.Calculator;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.FormulaDetailColumn;
 import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
-
-import java.util.Map;
 
 /**
  *
@@ -17,13 +13,13 @@ import java.util.Map;
 public class FormulaDetailColumnImpl implements FormulaDetailColumn {
     private String formula;
     private Segment segment;
-    private Calculator c = Calculator.createCalculator();
-    private Map<String, ColumnKey> columnIndexMap;
+//    private Calculator c = Calculator.createCalculator();
+//    private Map<String, ColumnKey> columnIndexMap;
 
     public FormulaDetailColumnImpl(String formula, Segment segment) {
         this.formula = FormulaUtils.getParameterIndexEncodedFormula(formula);
         this.segment = segment;
-        this.columnIndexMap = FormulaUtils.createColumnIndexMap(formula, segment);
+//        this.columnIndexMap = FormulaUtils.createColumnIndexMap(formula, segment);
     }
     @Override
     public int getInt(int pos) {
@@ -48,7 +44,7 @@ public class FormulaDetailColumnImpl implements FormulaDetailColumn {
 
     @Override
     public Object get(int pos) {
-        return FormulaUtils.getCalculatorValue(c, formula, segment, columnIndexMap, pos);
+        return null;
     }
 
     @Override

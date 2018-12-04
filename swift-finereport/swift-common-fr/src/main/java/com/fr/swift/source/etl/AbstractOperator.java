@@ -15,8 +15,8 @@ import java.util.List;
  * Created by pony on 2018/1/5.
  */
 public abstract class AbstractOperator implements ETLOperator {
-    private Core core;
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ETLOperator.class);
+    private Core core;
 
     @Override
     public Core fetchObjectCore() {
@@ -30,7 +30,7 @@ public abstract class AbstractOperator implements ETLOperator {
     public List<SwiftMetaDataColumn> getBaseColumns(SwiftMetaData[] metaDatas) {
         if (getOperatorType().isAddColumn()) {
             List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
-            for (SwiftMetaData basedMeta : metaDatas){
+            for (SwiftMetaData basedMeta : metaDatas) {
                 try {
                     for (int i = 0; i < basedMeta.getColumnCount(); i++) {
                         columns.add(basedMeta.getColumn(i + 1));

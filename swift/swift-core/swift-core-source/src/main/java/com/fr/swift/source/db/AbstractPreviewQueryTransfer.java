@@ -2,7 +2,6 @@ package com.fr.swift.source.db;
 
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.dialect.Dialect;
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
@@ -13,6 +12,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.dbdealer.DBDealer;
 import com.fr.swift.source.resultset.JdbcResultSet;
 import com.fr.swift.source.resultset.LimitedResultSet;
+import com.fr.swift.util.Strings;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -73,8 +73,8 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
             }
             outerColumnList.add(outerColumn);
         }
-        SwiftMetaData metaData = new SwiftMetaDataBean(StringUtils.EMPTY, columnList);
-        SwiftMetaData outerMeta = new SwiftMetaDataBean(StringUtils.EMPTY, outerColumnList);
+        SwiftMetaData metaData = new SwiftMetaDataBean(Strings.EMPTY, columnList);
+        SwiftMetaData outerMeta = new SwiftMetaDataBean(Strings.EMPTY, outerColumnList);
         DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, metaData, outerMeta);
         return new LimitedResultSet(new JdbcResultSet(rs, stmt, conn, metaData, dealers), row);
     }
