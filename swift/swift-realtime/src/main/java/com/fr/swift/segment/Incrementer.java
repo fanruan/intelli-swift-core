@@ -30,7 +30,7 @@ import java.util.List;
 @SwiftBean(name = "incrementer")
 @SwiftScope("prototype")
 public class Incrementer extends BaseBlockInserter implements Inserter {
-    private static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     public Incrementer(DataSource dataSource) {
         super(dataSource);

@@ -1,12 +1,12 @@
 package com.fr.swift.service.handler.history.rule;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.DataSyncRule;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.source.SourceKey;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author yee
  * @date 2018/7/16
  */
-@Service("defaultDataSyncRule")
+@SwiftBean(name = "defaultDataSyncRule")
 public class DefaultDataSyncRule implements DataSyncRule {
     @Override
     public Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Set<SegmentKey> needLoads,

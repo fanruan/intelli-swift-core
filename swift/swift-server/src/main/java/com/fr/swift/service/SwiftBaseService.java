@@ -15,7 +15,6 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 public class SwiftBaseService implements BaseService {
 
     @Override
-    @RpcMethod(methodName = "cleanMetaCache")
     public void cleanMetaCache(String[] sourceKeys) {
         SwiftContext.get().getBean(SwiftMetaDataService.class).cleanCache(sourceKeys);
     }

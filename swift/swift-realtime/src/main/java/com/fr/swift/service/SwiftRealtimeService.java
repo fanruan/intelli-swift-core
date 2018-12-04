@@ -38,6 +38,7 @@ import java.util.concurrent.Future;
  */
 @SwiftService(name = "realtime")
 @ProxyService(RealtimeService.class)
+@SwiftBean(name = "realtime")
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
     private static final long serialVersionUID = 4719723736240190155L;

@@ -72,6 +72,7 @@ import java.util.concurrent.Future;
  */
 @SwiftService(name = "history")
 @ProxyService(HistoryService.class)
+@SwiftBean(name = "history")
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;
 

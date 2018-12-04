@@ -26,13 +26,13 @@ public class ServiceBeanFactory {
     private final static Map<String, String> serverName2BeanName = new HashMap<String, String>();
 
     static {
-        Map<String, Object> swiftServiceBeans = SwiftContext.get().getBeansWithAnnotation(com.fr.swift.annotation.SwiftService.class);
+        Map<String, Object> swiftServiceBeans = SwiftContext.get().getBeansByAnnotations(com.fr.swift.annotation.SwiftService.class);
         for (Map.Entry<String, Object> entry : swiftServiceBeans.entrySet()) {
             com.fr.swift.annotation.SwiftService annotation =
                     entry.getValue().getClass().getAnnotation(com.fr.swift.annotation.SwiftService.class);
             serviceName2BeanName.put(annotation.name(), entry.getKey());
         }
-        Map<String, Object> serverServiceBeans = SwiftContext.get().getBeansWithAnnotation(com.fr.swift.annotation.ServerService.class);
+        Map<String, Object> serverServiceBeans = SwiftContext.get().getBeansByAnnotations(com.fr.swift.annotation.ServerService.class);
         for (Map.Entry<String, Object> entry : serverServiceBeans.entrySet()) {
             com.fr.swift.annotation.ServerService annotation =
                     entry.getValue().getClass().getAnnotation(com.fr.swift.annotation.ServerService.class);

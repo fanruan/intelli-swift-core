@@ -1,7 +1,9 @@
 package com.fr.swift.cluster.service;
 
 import com.fr.swift.ClusterNodeService;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.ClusterService;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.SlaveManager;

@@ -163,7 +163,7 @@ public class SwiftContextConfiguration {
 
     @Bean(name = {"serviceTaskExecutor"})
     public SwiftServiceTaskExecutor getSwiftServiceTaskExecutor() {
-        return new SwiftServiceTaskExecutor(10);
+        return new SwiftServiceTaskExecutor();
     }
 
     @Bean(name = {"segmentBackup"})

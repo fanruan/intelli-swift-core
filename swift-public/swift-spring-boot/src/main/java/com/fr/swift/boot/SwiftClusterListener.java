@@ -1,5 +1,6 @@
 package com.fr.swift.boot;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.ClusterService;
 import com.fr.swift.basics.base.JdkProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;

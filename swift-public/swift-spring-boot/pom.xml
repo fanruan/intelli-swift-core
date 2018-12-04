@@ -93,7 +93,11 @@
             <artifactId>swift-boot</artifactId>
             <version>${swift.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-conf-public</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

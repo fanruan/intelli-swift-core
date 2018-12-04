@@ -27,12 +27,14 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
 
     private Map<String, ServiceBlockingQueue> serviceBlockingQueueMap = new ConcurrentHashMap<String, ServiceBlockingQueue>();
 
-    public SwiftServiceTaskExecutor(int threadNum) {
+    private static int THREAD_NUM = 10;
+
+    public SwiftServiceTaskExecutor() {
         fetcher = new ServiceTaskFetcher();
         SwiftExecutors.newThread(fetcher).start();
 
         List<Thread> threadList = new ArrayList<Thread>();
-        for (int i = 0; i < threadNum; i++) {
+        for (int i = 0; i < THREAD_NUM; i++) {
             String threadName = "ServiceExecuteRunnable" + i;
             Thread thread = SwiftExecutors.newThread(new ServiceExecuteRunnable(threadName, this), threadName);
             threadList.add(thread);

@@ -2,6 +2,8 @@ package com.fr.swift.beans.factory;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.beans.factory.classreading.ClassAnnotations;
+import com.fr.swift.beans.factory.classreading.ClassReader;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.io.File;
@@ -12,6 +14,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
@@ -161,25 +164,56 @@ public class SwiftBeanScanner implements BeanScanner {
      * @param classes
      */
     private void findAndAddClassesInPackageByFile(String packageName, String packagePath, final boolean recursive, List<Class<?>> classes) {
-        File dir = new File(packagePath);
-        if (!dir.exists() || !dir.isDirectory()) {
-            return;
-        }
-        File[] dirfiles = dir.listFiles(new FileFilter() {
-            public boolean accept(File file) {
-                return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
+
+        Set<String> allPackagePaths = scanSelfAndChildsNames(packagePath);
+        for (String allPackagePath : allPackagePaths) {
+            File dir = new File(allPackagePath);
+            if (!dir.exists() || !dir.isDirectory()) {
+                return;
             }
-        });
-        for (File file : dirfiles) {
-            if (file.isDirectory()) {
-            } else {
-                String className = file.getName().substring(0, file.getName().length() - 6);
-                try {
-                    classes.add(Class.forName(packageName + '.' + className));
-                } catch (ClassNotFoundException e) {
-                    SwiftLoggers.getLogger().error(e);
+            File[] dirfiles = dir.listFiles(new FileFilter() {
+                public boolean accept(File file) {
+                    return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
+                }
+            });
+            for (File file : dirfiles) {
+                if (!file.isDirectory()) {
+                    ClassAnnotations classAnnotations = ClassReader.read(file.getPath());
+                    for (String annotation : classAnnotations.getAnnotationNames()) {
+                        try {
+                            if (annotation.equals(SwiftBean.class.getName())) {
+//                                String className = file.getName().substring(0, file.getName().length() - 6);
+                                try {
+                                    classes.add(Class.forName(classAnnotations.getClassName()));
+                                    continue;
+                                } catch (ClassNotFoundException e) {
+                                    SwiftLoggers.getLogger().error(e);
+                                } catch (ExceptionInInitializerError ee) {
+                                    SwiftLoggers.getLogger().error(ee);
+                                } catch (NoClassDefFoundError eee) {
+                                    SwiftLoggers.getLogger().error(eee);
+                                }
+                            }
+                        } catch (Exception ignore) {
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private Set<String> scanSelfAndChildsNames(String... packageNames) {
+        Set<String> packageSet = new HashSet<String>();
+        for (String packageName : packageNames) {
+            File file = new File(packageName);
+            if (file.isDirectory()) {
+                packageSet.add(packageName);
+                String[] childFiles = file.list();
+                for (String childFile : childFiles) {
+                    packageSet.addAll(scanSelfAndChildsNames(packageName + "/" + childFile));
+                }
+            }
+        }
+        return packageSet;
     }
 }

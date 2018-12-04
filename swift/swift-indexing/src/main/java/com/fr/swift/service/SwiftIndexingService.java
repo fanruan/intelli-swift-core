@@ -60,6 +60,7 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  */
 @SwiftService(name = "indexing")
 @ProxyService(IndexingService.class)
+@SwiftBean(name = "indexing")
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
     private static final long serialVersionUID = -7430843337225891194L;
 

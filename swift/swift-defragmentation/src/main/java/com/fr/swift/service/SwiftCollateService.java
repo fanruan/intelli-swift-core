@@ -54,6 +54,7 @@ import java.util.concurrent.Callable;
  * @since Advanced FineBI 5.0
  */
 @SwiftService(name = "collate")
+@SwiftBean(name = "collate")
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
     private static final long serialVersionUID = 7259915342007294244L;
