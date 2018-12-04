@@ -1,6 +1,6 @@
 package com.fr.swift.service;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.service.listener.EventOrder;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SwiftServiceListener;

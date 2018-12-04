@@ -6,7 +6,7 @@ import com.fr.config.holder.factory.Holders;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.ContextUtil;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.decision.config.base.SwiftAbstractSimpleConfig;
 import com.fr.swift.util.Strings;
 import com.fr.transaction.Configurations;

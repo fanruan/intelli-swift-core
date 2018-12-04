@@ -1,11 +1,11 @@
 package com.fr.swift.config.convert;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.DataSyncRule;
 import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.context.SwiftContext;
 
 import java.sql.SQLException;
 

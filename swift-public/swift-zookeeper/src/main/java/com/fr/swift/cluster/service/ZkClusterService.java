@@ -1,7 +1,9 @@
 package com.fr.swift.cluster.service;
 
 import com.fr.swift.ClusterNodeService;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.ClusterService;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.SlaveManager;
@@ -12,7 +14,6 @@ import com.fr.swift.property.ZkProperty;
 import com.fr.swift.rm.MasterManager;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.zk.SwiftZkClient;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
@@ -26,7 +27,8 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-//@ClusterService(initMethod = "init", destroyMethod = "destroy")
+@ClusterService(initMethod = "init", destroyMethod = "destroy")
+@SwiftBean
 public class ZkClusterService implements ClusterNodeService {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
@@ -40,14 +42,12 @@ public class ZkClusterService implements ClusterNodeService {
     private SwiftZkClient swiftZkClient;
 
     private SwiftProperty swiftProperty = SwiftProperty.getProperty();
-    @Autowired
-    private ZkProperty zkProperty;
 
-    @Autowired
-    private MasterManager masterManager;
+    private ZkProperty zkProperty = SwiftContext.get().getBean(ZkProperty.class);
 
-    @Autowired
-    private SlaveManager slaveManager;
+    private MasterManager masterManager = SwiftContext.get().getBean(MasterManager.class);
+
+    private SlaveManager slaveManager = SwiftContext.get().getBean(SlaveManager.class);
 
     public void init() {
         swiftZkClient = new SwiftZkClient(zkProperty.getZookeeperAddress(), zkProperty.getSessionTimeout(), zkProperty.getConnectionTimeout());

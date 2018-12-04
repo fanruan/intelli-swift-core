@@ -36,6 +36,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-beans</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <!--这边的依赖问题还是没有解决，暂时没有太好的办法-->
             <!--目前讨论过两种方式：
                 1、把jackson加到swift中（太大了）
@@ -45,7 +51,6 @@
             <artifactId>swift-bean</artifactId>
             <version>${swift.version}</version>
         </dependency>
-
     </dependencies>
 
 </project>

@@ -2,6 +2,8 @@ package com.fr.swift.boot.upgrade;
 
 import com.fr.decision.log.ExecuteMessage;
 import com.fr.decision.log.WriteMessage;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftDatabase;
@@ -10,9 +12,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.JpaAdaptor;
 import com.fr.third.aspectj.lang.annotation.Aspect;
 import com.fr.third.aspectj.lang.annotation.Before;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Qualifier;
-import com.fr.third.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -23,12 +22,10 @@ import java.util.List;
  * @date 2018/10/18
  */
 @Aspect
-@Service
+@SwiftBean
 public class SegmentRecoveryAspect {
 
-    @Autowired
-    @Qualifier("swiftMetaDataService")
-    private SwiftMetaDataService metaService;
+    private SwiftMetaDataService metaService = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
     private List<SourceKey> tableKeys;
 

@@ -1,5 +1,6 @@
 package com.fr.swift.basics.base.handler;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreater;
 import com.fr.swift.basics.URL;
@@ -9,7 +10,6 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.local.LocalInvoker;
 import com.fr.swift.util.MonitorUtil;
 

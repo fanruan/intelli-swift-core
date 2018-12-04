@@ -9,7 +9,7 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.boot.controller.SwiftApiConstants;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.queue.StuffProviderQueue;
 import com.fr.swift.cube.queue.SwiftImportStuff;

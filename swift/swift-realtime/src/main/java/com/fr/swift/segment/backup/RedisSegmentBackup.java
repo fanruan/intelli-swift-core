@@ -1,6 +1,6 @@
 package com.fr.swift.segment.backup;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.redis.RedisClientPipeline;
@@ -10,8 +10,6 @@ import com.fr.swift.transaction.RedisTransactionManager;
 import com.fr.swift.transaction.TransactionManager;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -22,14 +20,12 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service
 public class RedisSegmentBackup implements SwiftSegmentBackup {
     private Segment segment;
 
     protected TransactionManager transactionManager;
 
-    @Autowired
-    protected RedisClient redisClient;
+    protected RedisClient redisClient = SwiftContext.get().getBean(RedisClient.class);
 
     public RedisSegmentBackup(Segment segment, Segment currentSegment) {
         this(segment, currentSegment, segment.getMetaData().getFieldNames());

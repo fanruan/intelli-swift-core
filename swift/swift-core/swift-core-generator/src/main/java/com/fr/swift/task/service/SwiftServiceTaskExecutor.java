@@ -1,5 +1,6 @@
 package com.fr.swift.task.service;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean(name = "serviceTaskExecutor")
 public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
 
     private final BlockingQueue<ServiceCallable> callableQueue = new LinkedBlockingQueue<ServiceCallable>(10000);
@@ -25,12 +27,14 @@ public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
 
     private Map<String, ServiceBlockingQueue> serviceBlockingQueueMap = new ConcurrentHashMap<String, ServiceBlockingQueue>();
 
-    public SwiftServiceTaskExecutor(int threadNum) {
+    private static int THREAD_NUM = 10;
+
+    public SwiftServiceTaskExecutor() {
         fetcher = new ServiceTaskFetcher();
         SwiftExecutors.newThread(fetcher).start();
 
         List<Thread> threadList = new ArrayList<Thread>();
-        for (int i = 0; i < threadNum; i++) {
+        for (int i = 0; i < THREAD_NUM; i++) {
             String threadName = "ServiceExecuteRunnable" + i;
             Thread thread = SwiftExecutors.newThread(new ServiceExecuteRunnable(threadName, this), threadName);
             threadList.add(thread);

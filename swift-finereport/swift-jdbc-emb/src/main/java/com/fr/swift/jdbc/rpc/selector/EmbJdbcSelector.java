@@ -1,7 +1,7 @@
 package com.fr.swift.jdbc.rpc.selector;
 
 import com.fr.swift.annotation.SwiftApi;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.rpc.connection.EmbJdbcConnector;
 import com.fr.swift.jdbc.rpc.invoke.BaseSelector;

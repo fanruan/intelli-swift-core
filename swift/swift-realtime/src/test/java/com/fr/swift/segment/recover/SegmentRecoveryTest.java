@@ -1,6 +1,6 @@
 package com.fr.swift.segment.recover;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -13,7 +13,6 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.QuerySourceTransfer;
-import com.fr.swift.util.function.Predicate;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

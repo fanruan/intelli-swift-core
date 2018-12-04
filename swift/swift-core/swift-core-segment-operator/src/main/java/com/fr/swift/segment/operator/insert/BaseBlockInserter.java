@@ -1,7 +1,7 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -27,7 +27,7 @@ import java.util.List;
  * @date 2018/8/1
  */
 public abstract class BaseBlockInserter implements Inserter {
-    protected static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    protected final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
     protected SwiftSourceAlloter alloter;
 

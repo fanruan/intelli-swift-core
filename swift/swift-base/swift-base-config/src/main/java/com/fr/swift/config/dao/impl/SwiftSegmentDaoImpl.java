@@ -1,5 +1,6 @@
 package com.fr.swift.config.dao.impl;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.BasicDao;
@@ -20,6 +21,7 @@ import java.util.List;
  * @author yee
  * @date 2018/5/24
  */
+@SwiftBean
 public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSegmentDao {
 
     public SwiftSegmentDaoImpl() {

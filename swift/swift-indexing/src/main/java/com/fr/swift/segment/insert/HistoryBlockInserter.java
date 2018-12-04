@@ -1,9 +1,11 @@
 package com.fr.swift.segment.insert;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -24,6 +26,8 @@ import java.util.Collections;
  * @author anchore
  * @date 2018/8/1
  */
+@SwiftBean(name = "historyBlockInserter")
+@SwiftScope("prototype")
 public class HistoryBlockInserter extends BaseBlockInserter {
     private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
 

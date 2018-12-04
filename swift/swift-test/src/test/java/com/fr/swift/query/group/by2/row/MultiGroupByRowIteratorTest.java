@@ -1,8 +1,8 @@
 package com.fr.swift.query.group.by2.row;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.index.TestCubeData;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.group.by.GroupByEntry;

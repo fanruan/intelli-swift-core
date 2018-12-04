@@ -1,6 +1,6 @@
 package com.fr.swift.segment.decrement;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.generate.ColumnIndexer;
 import com.fr.swift.segment.Decrementer;

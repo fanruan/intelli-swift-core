@@ -12,7 +12,7 @@ import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;

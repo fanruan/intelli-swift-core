@@ -1,8 +1,10 @@
 package com.fr.swift.segment;
 
 import com.fr.event.EventDispatcher;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -24,6 +26,8 @@ import java.util.List;
  * @author anchore
  * @date 2018/6/5
  */
+@SwiftBean(name = "incrementer")
+@SwiftScope("prototype")
 public class Incrementer extends BaseBlockInserter implements Inserter {
     private static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 

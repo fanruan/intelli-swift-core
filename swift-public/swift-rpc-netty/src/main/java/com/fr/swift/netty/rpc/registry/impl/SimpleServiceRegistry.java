@@ -1,7 +1,7 @@
 package com.fr.swift.netty.rpc.registry.impl;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.netty.rpc.registry.ServiceRegistry;
-import com.fr.third.springframework.stereotype.Service;
 
 /**
  * This class created on 2018/6/7
@@ -10,7 +10,7 @@ import com.fr.third.springframework.stereotype.Service;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("serviceRegistry")
+@SwiftBean(name = "serviceRegistry")
 public class SimpleServiceRegistry implements ServiceRegistry {
 
     @Override

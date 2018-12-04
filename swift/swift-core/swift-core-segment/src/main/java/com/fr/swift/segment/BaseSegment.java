@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscovery;

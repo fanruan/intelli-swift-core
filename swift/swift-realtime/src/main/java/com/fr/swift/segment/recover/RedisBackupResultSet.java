@@ -1,8 +1,8 @@
 package com.fr.swift.segment.recover;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.ListBasedRow;

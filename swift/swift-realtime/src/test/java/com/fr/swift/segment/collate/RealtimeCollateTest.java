@@ -1,7 +1,7 @@
 package com.fr.swift.segment.collate;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;

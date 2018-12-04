@@ -1,10 +1,11 @@
 package com.fr.swift.service;
 
 import com.fr.event.EventDispatcher;
-import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
@@ -37,6 +38,7 @@ import java.util.concurrent.Future;
  */
 @SwiftService(name = "realtime")
 @ProxyService(RealtimeService.class)
+@SwiftBean(name = "realtime")
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
     private static final long serialVersionUID = 4719723736240190155L;

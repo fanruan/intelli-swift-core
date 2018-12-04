@@ -1,6 +1,6 @@
 package com.fr.swift.segment.backup;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Incrementer;
@@ -37,7 +37,7 @@ public class RedisBackupAndRevoceryTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        SwiftContext.init();
+        SwiftContext.get().init();
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
     }
 

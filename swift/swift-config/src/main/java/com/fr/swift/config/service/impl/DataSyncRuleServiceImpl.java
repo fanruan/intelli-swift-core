@@ -1,15 +1,15 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.DataSyncRule;
 import com.fr.swift.config.convert.DataSyncRuleConvert;
 import com.fr.swift.config.service.DataSyncRuleService;
-import com.fr.third.springframework.stereotype.Service;
 
 /**
  * @author yee
  * @date 2018/7/16
  */
-@Service("dataSyncRuleService")
+@SwiftBean(name = "dataSyncRuleService")
 public class DataSyncRuleServiceImpl extends BasicRuleService<DataSyncRule> implements DataSyncRuleService {
     public DataSyncRuleServiceImpl() {
         super(new DataSyncRuleConvert());

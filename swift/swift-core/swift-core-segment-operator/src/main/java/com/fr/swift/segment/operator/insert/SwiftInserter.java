@@ -1,5 +1,7 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.Row;
@@ -15,6 +17,8 @@ import java.util.List;
  * @description 指定数据和块insert
  * @since Advanced FineBI Analysis 1.0
  */
+@SwiftBean(name = "inserter")
+@SwiftScope("prototype")
 public class SwiftInserter extends BaseInserter implements Inserter {
     int cursor, lastCursor;
 

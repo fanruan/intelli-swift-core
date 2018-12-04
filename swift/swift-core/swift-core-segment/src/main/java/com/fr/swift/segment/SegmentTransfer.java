@@ -1,8 +1,8 @@
 package com.fr.swift.segment;
 
 import com.fineio.FineIO;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.operator.Inserter;

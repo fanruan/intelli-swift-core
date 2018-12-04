@@ -1,6 +1,6 @@
 package com.fr.swift.segment.recover;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.SwiftDatabase;

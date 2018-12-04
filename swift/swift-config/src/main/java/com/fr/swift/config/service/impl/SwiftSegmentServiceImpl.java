@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.bean.SegmentKeyBean;
@@ -23,8 +25,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Crasher;
 import com.fr.third.org.hibernate.NonUniqueObjectException;
 import com.fr.third.org.hibernate.exception.ConstraintViolationException;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,17 +38,12 @@ import java.util.Set;
  * @author yee
  * @date 2018/6/7
  */
-@Service("swiftClusterSegmentService")
+@SwiftBean(name = "swiftClusterSegmentService")
 public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, SwiftSegmentService {
-    @Autowired
-    private SwiftSegmentLocationDao segmentLocationDao;
-
+    private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
     private String clusterId = "LOCAL";
-    @Autowired
-    private TransactionManager transactionManager;
-
-    @Autowired
-    private SwiftSegmentDao swiftSegmentDao;
+    private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+    private SwiftSegmentDao swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
 
     private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
@@ -121,33 +116,33 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
 
     @Override
     public void checkOldConfig() {
-        try {
-            transactionManager.doTransactionIfNeed(new BaseTransactionWorker() {
-                @Override
-                public Void work(final ConfigSession session) throws SQLException {
-                    try {
-                        FindList<SegLocationBean> locations = segmentLocationDao.findAll(session);
-                        if (locations.isEmpty()) {
-                            swiftSegmentDao.findAll(session).forEach(new FindList.SimpleEach<SegmentKey>() {
-                                @Override
-                                public void each(int idx, SegmentKey segmentKey) throws SQLException {
-                                    SegLocationBean bean = new SegLocationBean("LOCAL", segmentKey.getId(), segmentKey.getTable().getId());
-                                    segmentLocationDao.saveOrUpdate(session, bean);
-                                }
-                            });
-                        }
-                        return null;
-                    } catch (Throwable e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
-                        throw new SQLException(e);
-                    }
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn("add segment error! ", e);
-        }
+//        try {
+//            transactionManager.doTransactionIfNeed(new BaseTransactionWorker() {
+//                @Override
+//                public Void work(final ConfigSession session) throws SQLException {
+//                    try {
+//                        FindList<SegLocationBean> locations = segmentLocationDao.findAll(session);
+//                        if (locations.isEmpty()) {
+//                            swiftSegmentDao.findAll(session).forEach(new FindList.SimpleEach<SegmentKey>() {
+//                                @Override
+//                                public void each(int idx, SegmentKey segmentKey) throws SQLException {
+//                                    SegLocationBean bean = new SegLocationBean("LOCAL", segmentKey.getId(), segmentKey.getTable().getId());
+//                                    segmentLocationDao.saveOrUpdate(session, bean);
+//                                }
+//                            });
+//                        }
+//                        return null;
+//                    } catch (Throwable e) {
+//                        if (e instanceof SQLException) {
+//                            throw (SQLException) e;
+//                        }
+//                        throw new SQLException(e);
+//                    }
+//                }
+//            });
+//        } catch (SQLException e) {
+//            SwiftLoggers.getLogger().warn("add segment error! ", e);
+//        }
     }
 
     @Override

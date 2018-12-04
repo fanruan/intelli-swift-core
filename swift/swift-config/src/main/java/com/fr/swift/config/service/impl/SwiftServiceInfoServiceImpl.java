@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
@@ -7,8 +9,6 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,13 +21,11 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("swiftServiceInfoService")
+@SwiftBean(name = "swiftServiceInfoService")
 class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
 
-    @Autowired
-    private TransactionManager transactionManager;
-    @Autowired
-    private SwiftServiceInfoDao swiftServiceInfoDao;
+    private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+    private SwiftServiceInfoDao swiftServiceInfoDao = SwiftContext.get().getBean(SwiftServiceInfoDao.class);
 
     public SwiftServiceInfoServiceImpl() {
     }

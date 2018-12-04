@@ -1,12 +1,12 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.convert.SwiftFileSystemConvert;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.service.SwiftRepositoryConfService;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +15,12 @@ import java.util.List;
  * @author yee
  * @date 2018/7/6
  */
-@Service("swiftRepositoryConfService")
+@SwiftBean(name = "swiftRepositoryConfService")
 public class SwiftRepositoryConfServiceImpl implements SwiftRepositoryConfService {
     private static final SwiftFileSystemConvert CONVERT = new SwiftFileSystemConvert();
 
     private List<ConfChangeListener> changeListeners = new ArrayList<ConfChangeListener>();
-    @Autowired
-    private SwiftConfigService configService;
+    private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
 
     @Override
     public SwiftFileSystemConfig getCurrentRepository() {

@@ -1,12 +1,12 @@
 package com.fr.swift.config.hibernate;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.third.org.hibernate.SessionFactory;
 import com.fr.third.org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import com.fr.third.org.hibernate.cfg.Configuration;
 import com.fr.third.org.hibernate.service.ServiceRegistry;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.Properties;
 
@@ -14,11 +14,10 @@ import java.util.Properties;
  * @author yee
  * @date 2018/6/29
  */
-@Service
+@SwiftBean
 public class HibernateManager {
     private SessionFactory sessionFactory;
-    @Autowired(required = false)
-    private SwiftConfigProperties properties;
+    private SwiftConfigProperties properties = SwiftContext.get().getBean(SwiftConfigProperties.class);
 
     public HibernateManager() {
 

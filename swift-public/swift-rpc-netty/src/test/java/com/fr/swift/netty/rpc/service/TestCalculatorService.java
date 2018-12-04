@@ -1,6 +1,5 @@
 package com.fr.swift.netty.rpc.service;
 
-import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.netty.rpc.CalculatorService;
 
@@ -15,7 +14,6 @@ import com.fr.swift.netty.rpc.CalculatorService;
 public class TestCalculatorService implements CalculatorService {
 
     @Override
-    @RpcMethod(methodName = "add")
     public int add(int a, int b, long sleepTime) {
         try {
             Thread.sleep(sleepTime);
@@ -25,7 +23,6 @@ public class TestCalculatorService implements CalculatorService {
     }
 
     @Override
-    @RpcMethod(methodName = "multiply")
     public int multiply(int a, int b, long sleepTime) {
         try {
             Thread.sleep(sleepTime);

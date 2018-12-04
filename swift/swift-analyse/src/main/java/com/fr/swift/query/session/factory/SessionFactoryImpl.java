@@ -1,11 +1,11 @@
 package com.fr.swift.query.session.factory;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.session.QuerySession;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @author yee
  * @date 2018/6/19
  */
-@Service("swiftQuerySessionFactory")
+@SwiftBean(name = "swiftQuerySessionFactory")
 public class SessionFactoryImpl implements SessionFactory {
 
     /**

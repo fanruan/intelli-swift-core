@@ -1,7 +1,7 @@
 package com.fr.swift.adaptor.log.query;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -38,7 +38,7 @@ public class LogBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        SwiftContext.init();
+        SwiftContext.get().init();
         new LocalSwiftServerService().start();
         SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class).start();
         db = com.fr.swift.db.impl.SwiftDatabase.getInstance();

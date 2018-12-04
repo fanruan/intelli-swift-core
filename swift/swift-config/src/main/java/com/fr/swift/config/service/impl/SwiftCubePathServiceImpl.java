@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractSimpleConfigConvert;
@@ -14,8 +16,6 @@ import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.util.Strings;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author yee
  * @date 2018/6/6
  */
-@Service("swiftPathService")
+@SwiftBean(name = "swiftPathService")
 public class SwiftCubePathServiceImpl implements SwiftCubePathService {
     private List<PathChangeListener> listeners = new ArrayList<PathChangeListener>();
     private String clusterId = SwiftConfigConstants.LOCALHOST;
@@ -66,8 +66,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
         });
     }
 
-    @Autowired
-    private SwiftConfigService configService;
+    private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
 
     private static boolean isValidPath(String path) {
         return path != null && !Strings.isEmpty(path) && !path.equals("__EMPTY__");

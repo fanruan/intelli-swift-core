@@ -1,5 +1,7 @@
 package com.fr.swift.generate;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
@@ -33,6 +35,8 @@ import java.util.TreeMap;
  * @author anchore
  * @date 2018/2/26
  */
+@SwiftBean(name = "columnDictMerger")
+@SwiftScope("prototype")
 public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMerger {
     private SwiftMetaData meta;
     protected ColumnKey key;

@@ -1,7 +1,7 @@
 package com.fr.swift.segment.collate;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
@@ -93,7 +93,7 @@ public class AutoCollateTest extends TestCase {
 
         //合并增量块，直接写history
         SwiftCollateService collaterService = SwiftContext.get().getBean(SwiftCollateService.class);
-        collaterService.setTaskExecutor(new SwiftServiceTaskExecutor(1));
+        collaterService.setTaskExecutor(new SwiftServiceTaskExecutor());
         collaterService.appointCollate(dataSource.getSourceKey(), collateSegmentKeys);
 
         Thread.sleep(5000L);

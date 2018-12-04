@@ -1,11 +1,11 @@
 package com.fr.swift.service;
 
-import com.fr.swift.annotation.RpcMethod;
-import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -38,6 +38,7 @@ import java.util.Map;
  */
 @SwiftService(name = "analyse")
 @ProxyService(AnalyseService.class)
+@SwiftBean(name = "analyse")
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
     private static final long serialVersionUID = 841582089735823794L;
 
@@ -139,7 +140,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    @RpcMethod(methodName = "updateSegmentInfo")
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
         String clusterId = getID();
         for (List<SegmentDestination> value : locationInfo.getDestinations().values()) {
@@ -151,13 +151,11 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    @RpcMethod(methodName = "removeTable")
     public void removeTable(String cluster, String sourceKey) {
         SegmentLocationProvider.getInstance().removeTable(cluster, new SourceKey(sourceKey));
     }
 
     @Override
-    @RpcMethod(methodName = "removeSegments")
     public void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys) {
         SegmentLocationProvider.getInstance().removeSegments(clusterId, new SourceKey(sourceKey), segmentKeys);
     }

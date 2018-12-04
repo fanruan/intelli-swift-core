@@ -2,10 +2,13 @@ package com.fr.swift.beans.factory;
 
 import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,6 +34,8 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         beanScanner = new SwiftBeanScanner(this);
     }
 
+    private List<String> beanNamesLoaded = new ArrayList<String>();
+
     public void init() {
         String[] packageArrays = new String[packageNames.size()];
         packageNames.toArray(packageArrays);
@@ -39,16 +44,19 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
 
         for (Map.Entry<String, SwiftBeanDefinition> entry : beanDefinitionMap.entrySet()) {
             if (entry.getValue().singleton()) {
-                singletonNotLoadNames.add(entry.getKey());
+                if (!singletonObjects.containsKey(entry.getKey())) {
+                    singletonNotLoadNames.add(entry.getKey());
+                }
             }
         }
         while (!singletonNotLoadNames.isEmpty()) {
             recursionCreateBean(beanDefinitionMap);
+            beanNamesLoaded.clear();
         }
+        SwiftLoggers.getLogger().info("Swift singleton beans create successfully!");
     }
 
     private void recursionCreateBean(Map<String, SwiftBeanDefinition> beanDefinitionMap) {
-        List<String> beanNamesLoaded = new ArrayList<String>();
         for (String singletonNotLoadName : singletonNotLoadNames) {
             SwiftBeanDefinition swiftBeanDefinition = beanDefinitionMap.get(singletonNotLoadName);
             try {
@@ -56,6 +64,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
                 singletonObjects.put(swiftBeanDefinition.getBeanName(), singletonObject);
                 beanNamesLoaded.add(swiftBeanDefinition.getBeanName());
             } catch (Exception ignore) {
+                SwiftLoggers.getLogger().error(ignore);
             }
         }
         if (beanNamesLoaded.isEmpty() && !singletonNotLoadNames.isEmpty()) {
@@ -130,12 +139,25 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         }
     }
 
+    @Override
+    public Map<String, Object> getBeansByAnnotations(Class<? extends Annotation> annotation) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> singletonObjectEntry : singletonObjects.entrySet()) {
+            Annotation marked = singletonObjectEntry.getValue().getClass().getAnnotation(annotation);
+            if (marked != null) {
+                resultMap.put(singletonObjectEntry.getKey(), singletonObjectEntry.getValue());
+            }
+        }
+        return resultMap;
+    }
+
     private <T> T createBean(Class<T> tClass, Object... params) throws Exception {
         Class<?>[] parameterTypes = new Class[params.length];
         for (int i = 0; i < params.length; i++) {
             parameterTypes[i] = params[i].getClass();
         }
         Constructor<T> cons = tClass.getDeclaredConstructor(parameterTypes);
+        cons.setAccessible(true);
         T bean = cons.newInstance(params);
         return bean;
     }

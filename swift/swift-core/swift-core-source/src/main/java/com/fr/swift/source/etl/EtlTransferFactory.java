@@ -1,6 +1,6 @@
 package com.fr.swift.source.etl;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.exception.SegmentAbsentException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;

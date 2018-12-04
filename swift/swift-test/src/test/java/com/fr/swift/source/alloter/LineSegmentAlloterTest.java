@@ -1,8 +1,8 @@
 package com.fr.swift.source.alloter;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.HistorySegmentImpl;

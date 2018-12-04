@@ -13,4 +13,8 @@ import com.fr.swift.beans.annotation.SwiftScope;
 @SwiftBean(name = "test_custom")
 @SwiftScope(value = "prototype")
 public class TestWithoutBeanPrototype implements ITestWithoutBeanPrototype {
+
+    public void print() {
+
+    }
 }

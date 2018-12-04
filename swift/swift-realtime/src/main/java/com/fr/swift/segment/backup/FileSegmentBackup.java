@@ -1,9 +1,11 @@
 package com.fr.swift.segment.backup;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
@@ -20,6 +22,8 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean(name = "segmentBackup")
+@SwiftScope("prototype")
 public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBackup {
 
     protected TransactionManager transactionManager;

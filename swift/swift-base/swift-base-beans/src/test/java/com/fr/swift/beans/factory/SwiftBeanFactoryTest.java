@@ -1,5 +1,6 @@
 package com.fr.swift.beans.factory;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.beans.factory.bean.IBean;
 import com.fr.swift.beans.factory.bean.ITestWithoutBeanPrototype;
@@ -7,6 +8,8 @@ import com.fr.swift.beans.factory.bean.ITestWithoutBeanSingleton;
 import com.fr.swift.beans.factory.bean.TestWithoutBeanPrototype;
 import com.fr.swift.beans.factory.bean.TestWithoutBeanSingleton;
 import junit.framework.TestCase;
+
+import java.util.Map;
 
 /**
  * This class created on 2018/11/26
@@ -142,5 +145,12 @@ public class SwiftBeanFactoryTest extends TestCase {
         assertTrue(beanFactory.isTypeMatch("testWithoutBeanSingleton", TestWithoutBeanSingleton.class));
         assertTrue(beanFactory.isTypeMatch("testWithoutBeanSingleton", ITestWithoutBeanSingleton.class));
         assertTrue(beanFactory.isTypeMatch("testWithoutBeanSingleton", IBean.class));
+    }
+
+    public void testGetBeansByAnnotations() {
+        IBean bean = (IBean) beanFactory.getBean("testWithoutBeanSingleton");
+        Map<String, Object> map = beanFactory.getBeansByAnnotations(SwiftBean.class);
+        assertEquals(map.size(), 1);
+        assertEquals(map.get("testWithoutBeanSingleton"), bean);
     }
 }

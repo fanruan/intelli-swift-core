@@ -1,5 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.Column;
@@ -17,6 +19,8 @@ import com.fr.swift.util.IoUtil;
  * @author anchore
  * @date 2017/12/12
  */
+@SwiftBean(name = "historySegment")
+@SwiftScope("prototype")
 public class HistorySegmentImpl extends MutableHistorySegment implements HistorySegment {
 
     private volatile ImmutableBitMap allShowBitMapCache;

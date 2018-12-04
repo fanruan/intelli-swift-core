@@ -1,6 +1,6 @@
 package com.fr.swift.task.cube;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.generate.history.index.FieldPathIndexer;
 import com.fr.swift.generate.history.index.MultiRelationIndexer;

@@ -23,7 +23,7 @@ class SwiftClassUtil {
      */
     protected static Set<Class<?>> getAllInterfacesAndSelf(Class<?> clazz) {
         Set<Class<?>> returnClasses = new HashSet<Class<?>>();
-        if (!clazz.isInterface()) {
+        if (!clazz.isInterface() && !clazz.equals(Object.class)) {
             returnClasses.add(clazz);
         }
         returnClasses.addAll(getAllInterfaces(clazz));
@@ -37,6 +37,9 @@ class SwiftClassUtil {
         }
         for (Class<?> aClass : clazz.getInterfaces()) {
             returnClasses.addAll(getAllInterfaces(aClass));
+        }
+        if (clazz.getSuperclass() != null) {
+            returnClasses.addAll(getAllInterfacesAndSelf(clazz.getSuperclass()));
         }
         return returnClasses;
     }

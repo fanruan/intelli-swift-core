@@ -1,6 +1,6 @@
 package com.fr.swift.redis;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.third.redis.clients.jedis.Jedis;
 import com.fr.third.redis.clients.jedis.Pipeline;
 

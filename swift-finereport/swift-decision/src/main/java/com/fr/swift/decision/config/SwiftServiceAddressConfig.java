@@ -3,7 +3,7 @@ package com.fr.swift.decision.config;
 import com.fr.config.ConfigContext;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftServiceAddressService;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.decision.config.base.SwiftAbstractObjectMapConfig;
 import com.fr.swift.decision.config.unique.RpcServiceAddressUnique;
 

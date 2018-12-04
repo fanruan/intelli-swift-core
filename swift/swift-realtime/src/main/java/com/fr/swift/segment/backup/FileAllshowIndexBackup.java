@@ -1,5 +1,7 @@
 package com.fr.swift.segment.backup;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.segment.Segment;
 
@@ -10,6 +12,8 @@ import com.fr.swift.segment.Segment;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean(name = "allShowIndexBackup")
+@SwiftScope("prototype")
 public class FileAllshowIndexBackup implements AllShowIndexBackup {
 
     private Segment segment;

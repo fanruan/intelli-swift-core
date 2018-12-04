@@ -7,7 +7,7 @@
 //import com.fr.swift.bitmap.ImmutableBitMap;
 //import com.fr.swift.cluster.listener.NodeStartedListener;
 //import com.fr.swift.config.service.SwiftClusterSegmentService;
-//import com.fr.swift.context.SwiftContext;
+//import com.fr.swift.beans.SwiftContext;
 //import com.fr.swift.cube.io.Types;
 //import com.fr.swift.cube.io.Types.StoreType;
 //import com.fr.swift.db.Table;

@@ -1,5 +1,6 @@
 package com.fr.swift.api.rpc.impl;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
@@ -13,7 +14,6 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.AlterTableAction;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;

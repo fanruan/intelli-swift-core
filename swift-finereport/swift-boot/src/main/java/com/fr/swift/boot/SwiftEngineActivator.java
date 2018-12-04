@@ -10,7 +10,7 @@ import com.fr.swift.boot.upgrade.UpgradeTask;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.context.SwiftConfigContext;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
@@ -42,7 +42,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         upgrade();
 
         ClusterListenerHandler.addInitialListener(new FRClusterListener());
-        SwiftContext.init();
+        SwiftContext.get().init();
         ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
         SwiftConfigContext.getInstance().init();
         FineIO.setLogger(new FineIOLoggerImpl());

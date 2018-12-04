@@ -2,7 +2,7 @@ package com.fr.swift.nm.collector;
 
 import com.fr.swift.Collect;
 import com.fr.swift.cluster.service.SlaveService;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.heart.HeartBeatInfo;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.service.SwiftSlaveService;

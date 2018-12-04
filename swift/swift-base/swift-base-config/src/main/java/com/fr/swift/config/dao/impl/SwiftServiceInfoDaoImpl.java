@@ -1,5 +1,6 @@
 package com.fr.swift.config.dao.impl;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
@@ -20,6 +21,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean
 public class SwiftServiceInfoDaoImpl extends BasicDao<SwiftServiceInfoBean> implements SwiftServiceInfoDao {
 
     public SwiftServiceInfoDaoImpl() {

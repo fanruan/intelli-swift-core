@@ -1,6 +1,8 @@
 package com.fr.swift.service.handler.history;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
@@ -12,8 +14,6 @@ import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,13 +26,12 @@ import java.util.Set;
  * @author yee
  * @date 2018/6/8
  */
-@Service
+@SwiftBean
 public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HistoryDataSyncManager.class);
 
-    @Autowired(required = false)
-    private SwiftClusterSegmentService clusterSegmentService;
+    private SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 
     @Override
     public <S extends Serializable> S handle(SegmentLoadRpcEvent event) {

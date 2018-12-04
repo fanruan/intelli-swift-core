@@ -4,7 +4,7 @@ import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
@@ -14,7 +14,6 @@ import com.fr.swift.selector.ClusterSelector;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.concurrent.Callable;
 
 /**
  * @author anchore

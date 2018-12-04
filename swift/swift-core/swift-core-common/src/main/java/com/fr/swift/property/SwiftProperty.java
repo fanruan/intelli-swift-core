@@ -28,11 +28,15 @@ public class SwiftProperty {
 
     private String rpcAddress;
 
+    private boolean selfStart;
+
     private String configDbDriverClass;
 
     private String configDbUsername;
 
     private String configDbPasswd;
+
+    private String configDbDialect;
 
     private String configDbJdbcUrl;
 
@@ -47,6 +51,11 @@ public class SwiftProperty {
      * swift中server相关服务
      */
     private Set<String> serverServiceNames;
+
+    private String redisIp;
+    private int redisPort;
+    private String redisPassward;
+    private int redisTimeout;
 
     private SwiftProperty() {
         initProperties();
@@ -72,10 +81,13 @@ public class SwiftProperty {
             initCluster();
             initClusterId();
             initMasterAddress();
+            initSelfStart();
             initConfigDbDriverClass();
             initConfigDbUsername();
             initConfigDbPasswd();
+            initConfigDbDialect();
             initConfigDbJdbcUrl();
+            initRedisConf();
         } catch (IOException e) {
             Crasher.crash(e);
         }
@@ -137,6 +149,10 @@ public class SwiftProperty {
         this.masterAddress = properties.getProperty("swift.master_address");
     }
 
+    private void initSelfStart() {
+        this.selfStart = Boolean.parseBoolean(properties.getProperty("swift.selfStart"));
+    }
+
     private void initConfigDbDriverClass() {
         this.configDbDriverClass = properties.getProperty("swift.configDb.driver");
     }
@@ -149,8 +165,19 @@ public class SwiftProperty {
         this.configDbPasswd = properties.getProperty("swift.configDb.passwd");
     }
 
+    private void initConfigDbDialect() {
+        this.configDbDialect = properties.getProperty("swift.configDb.dialect");
+    }
+
     private void initConfigDbJdbcUrl() {
         this.configDbJdbcUrl = properties.getProperty("swift.configDb.url");
+    }
+
+    private void initRedisConf() {
+        this.redisIp = properties.getProperty("redis.ip");
+        this.redisPort = Integer.valueOf(properties.getProperty("redis.port"));
+        this.redisPassward = properties.getProperty("redis.passward");
+        this.redisTimeout = Integer.valueOf(properties.getProperty("redis.timeout"));
     }
 
     public int getRpcMaxObjectSize() {
@@ -173,6 +200,10 @@ public class SwiftProperty {
         return masterAddress;
     }
 
+    public boolean isSelfStart() {
+        return selfStart;
+    }
+
     public String getConfigDbDriverClass() {
         return configDbDriverClass;
     }
@@ -185,6 +216,10 @@ public class SwiftProperty {
         return configDbPasswd;
     }
 
+    public String getConfigDbDialect() {
+        return configDbDialect;
+    }
+
     public String getConfigDbJdbcUrl() {
         return configDbJdbcUrl;
     }
@@ -195,5 +230,21 @@ public class SwiftProperty {
 
     public Set<String> getServerServiceNames() {
         return new HashSet<String>(serverServiceNames);
+    }
+
+    public String getRedisIp() {
+        return redisIp;
+    }
+
+    public int getRedisPort() {
+        return redisPort;
+    }
+
+    public String getRedisPassward() {
+        return redisPassward;
+    }
+
+    public int getRedisTimeout() {
+        return redisTimeout;
     }
 }

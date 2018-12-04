@@ -2,6 +2,8 @@ package com.fr.swift.rm;
 
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.Collect;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cluster.manager.ClusterManager;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
@@ -14,8 +16,6 @@ import com.fr.swift.service.AbstractSwiftManager;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.manager.ClusterServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 /**
  * This class created on 2018/7/17
@@ -24,14 +24,12 @@ import com.fr.third.springframework.stereotype.Service;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("masterManager")
+@SwiftBean(name = "masterManager")
 public class MasterManager extends AbstractSwiftManager implements ClusterManager {
 
-    @Autowired
-    private SwiftServiceInfoService serviceInfoService;
+    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
-    @Autowired
-    private ClusterServiceManager clusterServiceManager;
+    private ClusterServiceManager clusterServiceManager = SwiftContext.get().getBean(ClusterServiceManager.class);
 
     private Collect heartBeatCollect = new MasterHeartbeatCollect();
 

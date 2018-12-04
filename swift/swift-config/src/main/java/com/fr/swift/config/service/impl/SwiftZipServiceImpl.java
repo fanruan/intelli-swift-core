@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractSimpleConfigConvert;
@@ -7,8 +9,6 @@ import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftZipService;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 
@@ -16,7 +16,7 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018/6/27
  */
-@Service("swiftZipService")
+@SwiftBean(name = "swiftZipService")
 public class SwiftZipServiceImpl implements SwiftZipService {
 
     private final SwiftConfigService.ConfigConvert<Boolean> CONVERT = new AbstractSimpleConfigConvert<Boolean>(Boolean.class) {
@@ -39,8 +39,7 @@ public class SwiftZipServiceImpl implements SwiftZipService {
         }
     };
 
-    @Autowired
-    private SwiftConfigService configService;
+    private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
 
     @Override
     public boolean isZip() {

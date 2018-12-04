@@ -2,7 +2,7 @@ package com.fr.swift.generate;
 
 import com.fr.swift.config.ColumnIndexingConf;
 import com.fr.swift.config.service.IndexingConfService;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;

@@ -1,6 +1,6 @@
 package com.fr.swift.netty.rpc.server;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.netty.rpc.service.SwiftRpcService;
 import com.fr.workspace.simple.SimpleWork;
 
@@ -15,7 +15,7 @@ public class SwiftServerStart {
 
     public static void main(String[] args) {
         SimpleWork.checkIn(System.getProperty("user.dir"));
-        SwiftContext.init();
+        SwiftContext.get().init();
         SwiftRpcService swiftRpcService = SwiftRpcService.getInstance();
         swiftRpcService.startServerService();
     }

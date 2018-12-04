@@ -1,5 +1,7 @@
 package com.fr.swift.generate;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
@@ -42,6 +44,8 @@ import static com.fr.swift.segment.column.impl.base.FakeStringDetailColumn.EXTER
  * @author anchore
  * @date 2018/2/26
  */
+@SwiftBean(name = "columnIndexer")
+@SwiftScope("prototype")
 public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
 
     private SwiftMetaData meta;

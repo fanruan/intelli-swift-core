@@ -1,6 +1,6 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -14,7 +14,6 @@ import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.Optional;
-import com.fr.swift.util.function.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;

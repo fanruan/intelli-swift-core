@@ -1,9 +1,9 @@
 package com.fr.swift.query.post.meta;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.info.bean.element.DimensionBean;

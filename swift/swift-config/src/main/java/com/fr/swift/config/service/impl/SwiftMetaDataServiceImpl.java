@@ -2,6 +2,7 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
@@ -33,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author yee
  * @date 2018/6/6
  */
+@SwiftBean
 public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     private TransactionManager transactionManager;

@@ -1,6 +1,6 @@
 package com.fr.swift.service.handler;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.event.base.AbstractAnalyseRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
