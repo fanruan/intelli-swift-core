@@ -1,6 +1,5 @@
 package com.fr.swift.source.core;
 
-import com.fr.stable.EncodeConstants;
 import com.fr.swift.exception.AmountLimitUnmetException;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -42,7 +41,7 @@ public class BasicCore extends Core {
             String str = getObjectStringValue(coreAttribute);
             //pony MD5要指定编码
             try {
-                digest.update(str.getBytes(EncodeConstants.ENCODING_UTF_8));
+                digest.update(str.getBytes("UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 SwiftLoggers.getLogger().error(e.getMessage(), e);
             }

@@ -116,33 +116,33 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
 
     @Override
     public void checkOldConfig() {
-//        try {
-//            transactionManager.doTransactionIfNeed(new BaseTransactionWorker() {
-//                @Override
-//                public Void work(final ConfigSession session) throws SQLException {
-//                    try {
-//                        FindList<SegLocationBean> locations = segmentLocationDao.findAll(session);
-//                        if (locations.isEmpty()) {
-//                            swiftSegmentDao.findAll(session).forEach(new FindList.SimpleEach<SegmentKey>() {
-//                                @Override
-//                                public void each(int idx, SegmentKey segmentKey) throws SQLException {
-//                                    SegLocationBean bean = new SegLocationBean("LOCAL", segmentKey.getId(), segmentKey.getTable().getId());
-//                                    segmentLocationDao.saveOrUpdate(session, bean);
-//                                }
-//                            });
-//                        }
-//                        return null;
-//                    } catch (Throwable e) {
-//                        if (e instanceof SQLException) {
-//                            throw (SQLException) e;
-//                        }
-//                        throw new SQLException(e);
-//                    }
-//                }
-//            });
-//        } catch (SQLException e) {
-//            SwiftLoggers.getLogger().warn("add segment error! ", e);
-//        }
+        try {
+            transactionManager.doTransactionIfNeed(new BaseTransactionWorker() {
+                @Override
+                public Void work(final ConfigSession session) throws SQLException {
+                    try {
+                        FindList<SegLocationBean> locations = segmentLocationDao.findAll(session);
+                        if (locations.isEmpty()) {
+                            swiftSegmentDao.findAll(session).forEach(new FindList.SimpleEach<SegmentKey>() {
+                                @Override
+                                public void each(int idx, SegmentKey segmentKey) throws SQLException {
+                                    SegLocationBean bean = new SegLocationBean("LOCAL", segmentKey.getId(), segmentKey.getTable().getId());
+                                    segmentLocationDao.saveOrUpdate(session, bean);
+                                }
+                            });
+                        }
+                        return null;
+                    } catch (Throwable e) {
+                        if (e instanceof SQLException) {
+                            throw (SQLException) e;
+                        }
+                        throw new SQLException(e);
+                    }
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().warn("add segment error! ", e);
+        }
     }
 
     @Override

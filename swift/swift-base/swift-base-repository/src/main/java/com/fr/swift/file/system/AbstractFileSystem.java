@@ -1,8 +1,8 @@
 package com.fr.swift.file.system;
 
-import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 import com.fr.swift.util.Strings;
 
 import java.io.InputStream;
@@ -61,7 +61,7 @@ public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> i
     }
 
     protected String getParentURI() {
-        return ResourceIOUtils.getParent(uri);
+        return SwiftRepositoryUtils.getParent(uri);
     }
 
     @Override

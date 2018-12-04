@@ -1,6 +1,5 @@
 package com.fr.swift.file.system.pool;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.file.client.SwiftFTPClient;
 import com.fr.swift.file.client.impl.FTPClientImpl;
 import com.fr.swift.file.client.impl.SFTPClientImpl;
@@ -23,10 +22,10 @@ public class FTPClientPoolFactory implements PooledObjectFactory<SwiftFTPClient>
     @Override
     public PooledObject<SwiftFTPClient> makeObject() throws Exception {
         Object var1;
-        if (StringUtils.equalsIgnoreCase(this.config.getProtocol(), "FTP")) {
+        if ("FTP".equalsIgnoreCase(this.config.getProtocol())) {
             var1 = new FTPClientImpl(this.config);
         } else {
-            if (!StringUtils.equalsIgnoreCase(this.config.getProtocol(), "SFTP")) {
+            if (!"SFTP".equalsIgnoreCase(this.config.getProtocol())) {
                 throw new UnsupportedOperationException("Only FTP & SFTP are provided for ftp connection!");
             }
 

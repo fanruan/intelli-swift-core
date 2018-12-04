@@ -1,34 +1,23 @@
 package com.fr.swift.index;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
-import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.generate.ColumnIndexer;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
-import com.fr.swift.segment.insert.HistoryBlockInserter;
-import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.RowTraversal;
-import com.fr.swift.test.TestResource;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
@@ -41,19 +30,19 @@ import java.util.Set;
 public class TestCubeData {
 
     public static void prepare(DataSource dataSource, Class<?> clazz) throws Exception {
-        SwiftCubePathService service = SwiftContext.get().getBean(SwiftCubePathService.class);
-        service.setSwiftPath(TestResource.getRunPath(clazz));
-        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(dataSource.getSourceKey().getId());
-        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
-        SwiftResultSet resultSet = transfer.createResultSet();
-        Inserter inserter = new HistoryBlockInserter(dataSource);
-        inserter.insertData(resultSet);
-
-        List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(dataSource.getSourceKey());
-        for (String fieldName : dataSource.getMetadata().getFieldNames()) {
-            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(fieldName), segments);
-            columnIndexer.work();
-        }
+//        SwiftCubePathService service = SwiftContext.get().getBean(SwiftCubePathService.class);
+//        service.setSwiftPath(TestResource.getRunPath(clazz));
+//        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(dataSource.getSourceKey().getId());
+//        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+//        SwiftResultSet resultSet = transfer.createResultSet();
+//        Inserter inserter = new HistoryBlockInserter(dataSource);
+//        inserter.insertData(resultSet);
+//
+//        List<Segment> segments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(dataSource.getSourceKey());
+//        for (String fieldName : dataSource.getMetadata().getFieldNames()) {
+//            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(fieldName), segments);
+//            columnIndexer.work();
+//        }
     }
 
     public static List<Pair<Column, IndexInfo>> getDimensions(Segment segment, List<String> columnNames) {

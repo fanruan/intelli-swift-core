@@ -1,6 +1,5 @@
 package com.fr.swift.file.system.impl;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
@@ -10,6 +9,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.config.HdfsRepositoryConfig;
 import com.fr.swift.repository.config.HdfsSystemType;
+import com.fr.swift.util.Util;
 import org.apache.commons.pool2.KeyedObjectPool;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -76,7 +76,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
     @Override
     public SwiftFileSystem read(String remote) throws SwiftFileException {
         SwiftFileSystem fileSystem;
-        if (ComparatorUtils.equals(remote, getResourceURI())) {
+        if (Util.equals(remote, getResourceURI())) {
             fileSystem = this;
         } else {
             fileSystem = systemPool.createFileSystem(config, remote);

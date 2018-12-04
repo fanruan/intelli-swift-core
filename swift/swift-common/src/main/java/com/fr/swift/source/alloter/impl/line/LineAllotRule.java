@@ -1,5 +1,6 @@
 package com.fr.swift.source.alloter.impl.line;
 
+import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.source.alloter.impl.BaseAllotRule;
 
 /**
@@ -9,6 +10,7 @@ import com.fr.swift.source.alloter.impl.BaseAllotRule;
 public class LineAllotRule extends BaseAllotRule {
     public static final int STEP = 10000000, MEM_STEP = 100000;
 
+    @JsonProperty("step")
     private int step;
 
     public LineAllotRule() {
