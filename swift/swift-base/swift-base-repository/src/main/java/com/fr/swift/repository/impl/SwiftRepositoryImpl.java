@@ -1,11 +1,10 @@
 package com.fr.swift.repository.impl;
 
-import com.fr.general.CommonIOUtils;
-import com.fr.io.utils.ResourceIOUtils;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.repository.AbstractRepository;
 import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 import com.fr.swift.repository.utils.ZipUtils;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.FileUtil;
@@ -57,15 +56,15 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                 } else {
                     InputStream inputStream = null;
                     FileOutputStream fileOutputStream = null;
+                    inputStream = from.toStream();
+                    fileOutputStream = new FileOutputStream(new File(local));
                     try {
-                        inputStream = from.toStream();
-                        fileOutputStream = new FileOutputStream(new File(local));
-                        CommonIOUtils.copyBinaryTo(inputStream, fileOutputStream);
+                        SwiftRepositoryUtils.copyBinaryTo(inputStream, fileOutputStream);
                     } catch (Exception e) {
                         throw new SwiftFileException(e);
                     } finally {
-                        CommonIOUtils.close(inputStream);
-                        CommonIOUtils.close(fileOutputStream);
+                        SwiftRepositoryUtils.close(inputStream);
+                        SwiftRepositoryUtils.close(fileOutputStream);
                         closeFileSystem(from);
                     }
                 }
@@ -116,7 +115,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                 } catch (FileNotFoundException e) {
                     throw new SwiftFileException(e);
                 } finally {
-                    CommonIOUtils.close(inputStream);
+                    inputStream.close();
                     closeFileSystem(to);
                 }
             }
@@ -138,7 +137,8 @@ public class SwiftRepositoryImpl extends AbstractRepository {
         SwiftFileSystem parent = fileSystem.parent();
         parent.mkdirs();
         closeFileSystem(parent);
-        if (copyToRemote(zipFile.getAbsolutePath(), resolve(ResourceIOUtils.getParent(remote), zipFile.getName()))) {
+
+        if (copyToRemote(zipFile.getAbsolutePath(), resolve(SwiftRepositoryUtils.getParent(remote), zipFile.getName()))) {
             zipFile.delete();
         }
         closeFileSystem(fileSystem);

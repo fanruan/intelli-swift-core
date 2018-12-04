@@ -1,6 +1,5 @@
 package com.fr.swift.util;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.exception.FactoryKeyDuplicateException;
 
 import java.lang.reflect.Field;
@@ -124,7 +123,7 @@ public class BeanUtils {
      * @return
      */
     public static ArrayList<Field> fetchAllAttributes(Class clazz, ArrayList<Field> result, Class limit) {
-        if (ComparatorUtils.equals(clazz, limit)) {
+        if (Util.equals(clazz, limit)) {
             return result;
         } else {
             if (clazz.getSuperclass() == null) {

@@ -1,6 +1,5 @@
 package com.fr.swift.source.core;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.exception.AmountLimitUnmetException;
 
 import javax.activation.UnsupportedDataTypeException;
@@ -129,7 +128,7 @@ public abstract class Core implements CoreOperation {
 
         Core biCore = (Core) o;
 
-        return !(value != null ? !ComparatorUtils.equals(value, biCore.value) : biCore.value != null);
+        return !(value != null ? !value.equals(biCore.value) : biCore.value != null);
 
     }
 

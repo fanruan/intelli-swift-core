@@ -1,6 +1,5 @@
 package com.fr.swift.util;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.structure.array.HeapIntList;
 import com.fr.swift.structure.array.IntListFactory;
 
@@ -67,14 +66,14 @@ public class ArrayLookupHelper {
     }
 
     public static int getStartIndex4StartWith(Lookup lookup, String kw) {
-        if (StringUtils.isEmpty(kw)) {
+        if (Strings.isEmpty(kw)) {
             return 0;
         }
         return getStartIndex4StartWith(lookup, lookup.minIndex(), lookup.maxIndex(), kw);
     }
 
     public static int getEndIndex4StartWith(Lookup lookup, String kw) {
-        if (StringUtils.isEmpty(kw)) {
+        if (Strings.isEmpty(kw)) {
             return lookup.maxIndex() + 1;
         }
         return getEndIndex4StartWith(lookup, lookup.minIndex(), lookup.maxIndex(), kw);
@@ -83,7 +82,7 @@ public class ArrayLookupHelper {
 
     private static String getString(Lookup lookup, int index) {
         Object ob = lookup.lookupByIndex(index);
-        return ob == null ? StringUtils.EMPTY : ob.toString();
+        return ob == null ? Strings.EMPTY : ob.toString();
     }
 
     private static int getStartIndex4StartWith(Lookup lookup, int start, int end, String kw) {

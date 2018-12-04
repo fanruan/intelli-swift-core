@@ -21,6 +21,7 @@
         <module>swift-bean-fr</module>
         <module>swift-repo-fr</module>
         <module>swift-jdbc-emb</module>
+        <module>swift-common-fr</module>
     </modules>
     <properties>
         <fr.version>10.0-FEATURE-SNAPSHOT</fr.version>
@@ -56,6 +57,11 @@
             <groupId>com.fr.third.server</groupId>
             <artifactId>servlet-api</artifactId>
             <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-beans</artifactId>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,12 +1,12 @@
 package com.fr.swift.segment.relation.impl;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.exception.CubePathConfusionException;
 import com.fr.swift.exception.CubePathEmptyException;
 import com.fr.swift.segment.relation.CubeMultiRelation;
 import com.fr.swift.segment.relation.CubeMultiRelationPath;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.MD5Utils;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -111,7 +111,7 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
 
     @Override
     public boolean canRelationsBuildPath(CubeMultiRelation part_head, CubeMultiRelation part_tail) {
-        return ComparatorUtils.equals(part_head.getForeignTable(), part_tail.getPrimaryTable());
+        return Util.equals(part_head.getForeignTable(), part_tail.getPrimaryTable());
     }
 
     @Override
@@ -151,6 +151,7 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
         }
     }
 
+    @Override
     public void copyFrom(CubeMultiRelationPath path) {
         container.addAll(path.getAllRelations());
     }
@@ -186,7 +187,7 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
             while (it.hasNext()) {
                 CubeMultiRelation relation = it.next();
                 CubeMultiRelation thatRelation = thatIt.next();
-                if (!ComparatorUtils.equals(relation, thatRelation)) {
+                if (!Util.equals(relation, thatRelation)) {
                     return false;
                 }
             }
@@ -201,6 +202,7 @@ public class CubeMultiRelationPathImpl implements CubeMultiRelationPath {
         return getFirstRelation().getPrimaryTable();
     }
 
+    @Override
     public SourceKey getEndTable() {
         return getLastRelation().getForeignTable();
     }

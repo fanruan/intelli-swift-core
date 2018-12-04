@@ -4,7 +4,7 @@ import com.fr.swift.util.Crasher;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -107,14 +107,14 @@ public class SwiftProperty {
         String swiftServiceName = properties.getProperty("swift.service.name");
         swiftServiceNames = new HashSet<String>();
         String[] swiftServiceNameArray = swiftServiceName.split(",");
-        addAll(swiftServiceNames, swiftServiceNameArray);
+        swiftServiceNames.addAll(Arrays.asList(swiftServiceNameArray));
     }
 
     private void initServerServiceNames() {
         String serverServiceName = properties.getProperty("server.service.name");
         serverServiceNames = new HashSet<String>();
         String[] serverServiceNameArray = serverServiceName.split(",");
-        addAll(serverServiceNames, serverServiceNameArray);
+        serverServiceNames.addAll(Arrays.asList(serverServiceNameArray));
     }
 
     private void initRpcMaxObjectSize() {
@@ -246,17 +246,5 @@ public class SwiftProperty {
 
     public int getRedisTimeout() {
         return redisTimeout;
-    }
-
-    private <T> boolean addAll(Collection<T> collection, T[] elements) {
-        boolean changed = false;
-        T[] arrays = elements;
-        int length = elements.length;
-
-        for (int i = 0; i < length; i++) {
-            T element = arrays[i];
-            changed |= collection.add(element);
-        }
-        return changed;
     }
 }

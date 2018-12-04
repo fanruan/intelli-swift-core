@@ -1,9 +1,8 @@
 package com.fr.swift.structure.external.map.intlist;
 
-import com.fr.general.ComparatorUtils;
-import com.fr.stable.StringUtils;
 import com.fr.swift.cube.nio.read.StringReadMappedList;
 import com.fr.swift.cube.nio.write.StringWriteMappedList;
+import com.fr.swift.util.Strings;
 
 import java.io.FileNotFoundException;
 
@@ -31,6 +30,6 @@ class StringIntListMapIO extends BaseIntListExternalMapIO<String> {
 
     @Override
     public boolean isEmpty(String key) {
-        return key == null || ComparatorUtils.equals(key, StringUtils.EMPTY);
+        return Strings.isEmpty(key);
     }
 }

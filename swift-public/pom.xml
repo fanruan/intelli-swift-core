@@ -20,5 +20,14 @@
         <module>swift-conf-public</module>
         <module>swift-bean</module>
         <module>swift-repo-public</module>
+        <module>swift-common-public</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-beans</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+    </dependencies>
 </project>

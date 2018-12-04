@@ -1,8 +1,8 @@
 package com.fr.swift.structure.external.map.intlist;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.cube.nio.read.LongNIOReader;
 import com.fr.swift.cube.nio.write.LongNIOWriter;
+import com.fr.swift.util.Util;
 
 import java.io.FileNotFoundException;
 
@@ -30,6 +30,6 @@ class LongIntListMapIO extends BaseIntListExternalMapIO<Long> {
 
     @Override
     public boolean isEmpty(Long key) {
-        return key == null || ComparatorUtils.equals(key, 0L);
+        return key == null || Util.equals(key, 0L);
     }
 }

@@ -1,10 +1,9 @@
 package com.fr.swift.segment.container;
 
-import com.fr.general.ComparatorUtils;
-import com.fr.stable.AssistUtils;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,7 +107,7 @@ public enum SegmentContainer {
         if (tableMapSegments.containsKey(table)) {
             Iterator<SegmentPair> iterator = tableMapSegments.get(table).iterator();
             while (iterator.hasNext()) {
-                if (ComparatorUtils.equals(iterator.next().getSegmentId(), segmentKey.toString())) {
+                if (Util.equals(iterator.next().getSegmentId(), segmentKey.toString())) {
                     iterator.remove();
                 }
             }
@@ -144,12 +143,12 @@ public enum SegmentContainer {
         @Override
         public boolean equals(Object obj) {
             return obj instanceof SegmentPair
-                    && AssistUtils.equals(this.segmentId, ((SegmentPair) obj).segmentId);
+                    && Util.equals(this.segmentId, ((SegmentPair) obj).segmentId);
         }
 
         @Override
         public int hashCode() {
-            return AssistUtils.hashCode(this.segmentId);
+            return Util.hashCode(this.segmentId);
         }
     }
 }

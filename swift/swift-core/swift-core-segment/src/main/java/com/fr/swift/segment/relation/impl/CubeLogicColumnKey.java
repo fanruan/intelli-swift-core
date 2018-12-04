@@ -1,11 +1,10 @@
 package com.fr.swift.segment.relation.impl;
 
-import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.relation.BaseLogicKeyField;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.MD5Utils;
+import com.fr.swift.util.Strings;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class CubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey> 
 
     @Override
     public String getFieldName() {
-        if (StringUtils.isEmpty(fieldName)) {
+        if (Strings.isEmpty(fieldName)) {
             StringBuffer buffer = new StringBuffer();
             for (int i = 0, len = keyFields.size(); i < len; i++) {
                 buffer.append(keyFields.get(i).getName()).append(",");
@@ -42,15 +41,5 @@ public class CubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey> 
 
     public String getKey() {
         return MD5Utils.getMD5String(new String[]{getFieldName()});
-    }
-
-    @Override
-    public JSONObject createJSON() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void parseJSON(JSONObject jsonObject) {
-        throw new UnsupportedOperationException();
     }
 }

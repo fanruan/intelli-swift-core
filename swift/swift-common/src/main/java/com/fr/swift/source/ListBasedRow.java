@@ -1,7 +1,5 @@
 package com.fr.swift.source;
 
-import com.fr.third.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,13 +22,13 @@ public class ListBasedRow implements Row {
 
     @Override
     @SuppressWarnings("unchecked")
-    @JsonIgnore
+//    @JsonIgnore
     public <V> V getValue(int index) {
         return (V) values.get(index);
     }
 
     @Override
-    @JsonIgnore
+//    @JsonIgnore
     public int getSize() {
         return values == null ? 0 : values.size();
     }
