@@ -2,7 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.bean.impl.HistSegLocationManager;
 import com.fr.swift.segment.bean.impl.RealTimeSegLocationManager;
 import com.fr.swift.service.ServiceType;

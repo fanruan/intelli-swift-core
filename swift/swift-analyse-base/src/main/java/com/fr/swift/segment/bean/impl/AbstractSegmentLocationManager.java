@@ -5,9 +5,9 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.config.SegmentDestSelectRule;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
-import com.fr.swift.segment.bean.SegmentDestination;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;

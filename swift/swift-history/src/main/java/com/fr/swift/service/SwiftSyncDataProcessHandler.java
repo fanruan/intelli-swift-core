@@ -18,7 +18,7 @@ import com.fr.swift.event.base.EventResult;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.source.SourceKey;

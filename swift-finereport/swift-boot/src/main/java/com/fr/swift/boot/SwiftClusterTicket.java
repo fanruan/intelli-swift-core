@@ -24,7 +24,7 @@ import com.fr.swift.rm.MasterManager;
 import com.fr.swift.rm.view.NodeJoinedView;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.HistoryService;

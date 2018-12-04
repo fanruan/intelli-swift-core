@@ -1,8 +1,6 @@
-package com.fr.swift.segment.bean;
+package com.fr.swift.segment;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fr.swift.query.Queryable;
-import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,7 +9,6 @@ import java.util.List;
  * @author yee
  * @date 2018/6/13
  */
-@JsonDeserialize(as = SegmentDestinationImpl.class)
 public interface SegmentDestination extends Serializable, Comparable<SegmentDestination> {
     boolean isRemote();
 

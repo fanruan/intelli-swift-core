@@ -1,6 +1,6 @@
 package com.fr.swift.segment.bean.impl;
 
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SourceKey;
 
 /**

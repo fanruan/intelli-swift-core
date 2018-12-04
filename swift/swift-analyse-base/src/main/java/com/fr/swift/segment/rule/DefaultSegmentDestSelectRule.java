@@ -2,7 +2,7 @@ package com.fr.swift.segment.rule;
 
 import com.fr.swift.config.SegmentDestSelectRule;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.bean.impl.RealTimeSegDestImpl;
 import com.fr.third.springframework.stereotype.Service;
 

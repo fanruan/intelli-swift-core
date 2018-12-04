@@ -16,7 +16,7 @@ import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SourceKey;
 
 import java.net.URI;

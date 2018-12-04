@@ -2,7 +2,7 @@ package com.fr.swift.service.handler.history.rule;
 
 import com.fr.swift.config.DataSyncRule;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.source.SourceKey;

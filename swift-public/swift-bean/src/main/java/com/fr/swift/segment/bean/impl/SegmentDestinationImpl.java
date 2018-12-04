@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.query.Queryable;
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.bean.SegmentDestinationBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(value = {"remote"})
-public class SegmentDestinationImpl implements SegmentDestination {
+public class SegmentDestinationImpl implements SegmentDestinationBean {
     private static final long serialVersionUID = 3016733438741210788L;
     @JsonProperty
     protected String clusterId;

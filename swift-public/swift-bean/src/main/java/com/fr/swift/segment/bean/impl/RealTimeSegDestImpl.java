@@ -2,7 +2,7 @@ package com.fr.swift.segment.bean.impl;
 
 import com.fr.stable.AssistUtils;
 import com.fr.swift.query.Queryable;
-import com.fr.swift.segment.bean.SegmentDestination;
+import com.fr.swift.segment.SegmentDestination;
 
 /**
  * @author yee
