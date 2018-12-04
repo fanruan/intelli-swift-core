@@ -1,14 +1,11 @@
 package com.fr.swift.service;
 
 import com.fineio.FineIO;
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
@@ -16,6 +13,8 @@ import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
@@ -89,7 +88,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 @Override
                 public void work(Pair<TaskKey, TaskResult> result) {
                     try {
-                        EventDispatcher.fire(TaskEvent.DONE, result);
+                        SwiftEventDispatcher.fire(TaskEvent.DONE, result);
                         FineIO.doWhenFinished(new UploadRunnable(result, getID()));
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().error(e);
@@ -145,9 +144,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     private void triggerIndexing(IndexingStuff stuff) {
-        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getTables());
-        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelations());
-        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelationPaths());
+        SwiftEventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getTables());
+        SwiftEventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelations());
+        SwiftEventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelationPaths());
     }
 
     public void initTaskGenerator() {
@@ -167,13 +166,13 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     private void initListener() {
-        Listener listener = new Listener<Pair<TaskKey, TaskResult>>() {
+        SwiftEventListener listener = new SwiftEventListener<Pair<TaskKey, TaskResult>>() {
             @Override
-            public void on(Event event, final Pair<TaskKey, TaskResult> result) {
+            public void on(final Pair<TaskKey, TaskResult> result) {
                 worker.work(result);
             }
         };
-        EventDispatcher.listen(TaskEvent.LOCAL_DONE, listener);
+        SwiftEventDispatcher.listen(TaskEvent.LOCAL_DONE, listener);
 
         initTaskGenerator();
     }

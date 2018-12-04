@@ -10,6 +10,8 @@ import java.util.Map;
 /**
  * @author yee
  * @date 2018/6/6
+ * <p>
+ * todo String改用更易读的对象替代
  */
 public interface SwiftSegmentService extends ConfigService<SegmentKey> {
     /**
