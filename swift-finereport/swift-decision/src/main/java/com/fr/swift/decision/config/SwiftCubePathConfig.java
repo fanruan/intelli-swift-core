@@ -7,7 +7,7 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.ContextUtil;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.decision.config.base.SwiftAbstractSimpleConfig;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;

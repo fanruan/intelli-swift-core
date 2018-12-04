@@ -4,7 +4,7 @@ import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;

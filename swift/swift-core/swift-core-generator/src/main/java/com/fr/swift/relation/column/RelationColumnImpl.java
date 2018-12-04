@@ -1,8 +1,10 @@
 package com.fr.swift.relation.column;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.queue.CubeTasks;
@@ -48,6 +50,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author yee
  * @date 2018/4/3
  */
+@SwiftBean(name = "relationColumn")
+@SwiftScope("prototype")
 public class RelationColumnImpl implements RelationColumn {
     private RelationIndex relationIndex;
     private Segment[] segments;

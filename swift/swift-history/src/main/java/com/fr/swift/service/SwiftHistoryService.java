@@ -1,10 +1,12 @@
 package com.fr.swift.service;
 
 import com.fr.event.EventDispatcher;
-import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.bean.SwiftTablePathBean;
@@ -14,7 +16,6 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.ClusterEvent;

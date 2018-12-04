@@ -3,7 +3,7 @@
 //import com.fr.swift.basics.ProxyFactory;
 //import com.fr.swift.basics.base.selector.ProxySelector;
 //import com.fr.swift.basics.exception.SwiftProxyException;
-//import com.fr.swift.context.SwiftContext;
+//import com.fr.swift.beans.SwiftContext;
 //
 ///**
 // * This class created on 2018/7/17

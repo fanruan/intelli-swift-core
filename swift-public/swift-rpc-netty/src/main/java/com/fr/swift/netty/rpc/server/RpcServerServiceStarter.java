@@ -1,6 +1,6 @@
 package com.fr.swift.netty.rpc.server;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.netty.NettyServiceStarter;
 
 /**

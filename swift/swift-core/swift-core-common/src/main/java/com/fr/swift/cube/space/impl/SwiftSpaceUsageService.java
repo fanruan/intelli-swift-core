@@ -1,8 +1,8 @@
 package com.fr.swift.cube.space.impl;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
 import com.fr.swift.db.SwiftDatabase;

@@ -3,7 +3,7 @@ package com.fr.swift.netty.rpc.client;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.JdkProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.netty.rpc.CalculatorService;
 import com.fr.swift.netty.rpc.invoke.RPCInvokerCreater;
 import com.fr.workspace.simple.SimpleWork;
@@ -19,7 +19,7 @@ import com.fr.workspace.simple.SimpleWork;
 public class SyncTest {
     public static void main(String[] args) {
         SimpleWork.checkIn(System.getProperty("user.dir"));
-        SwiftContext.init();
+        SwiftContext.get().init();
         ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new RPCInvokerCreater()));
         //step1: get proxyFactory
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();

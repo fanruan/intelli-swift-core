@@ -1,7 +1,8 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
 import com.fr.swift.segment.operator.delete.SwiftWhereDeleter;
@@ -14,6 +15,8 @@ import com.fr.swift.segment.operator.delete.WhereDeleter;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean(name = "decrementer")
+@SwiftScope("prototype")
 public class Decrementer implements WhereDeleter {
     private SegmentKey segKey;
 

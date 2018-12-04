@@ -1,8 +1,8 @@
 package com.fr.swift.service.handler.indexing.rule;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.IndexingSelectRule;
 import com.fr.swift.config.bean.ServerCurrentStatus;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @author yee
  * @date 2018/7/16
  */
-@Service("defaultIndexingSelectRule")
+@SwiftBean(name = "defaultIndexingSelectRule")
 public class DefaultIndexingSelectRule implements IndexingSelectRule {
     /**
      * 获取所有索引节点当前运行状态

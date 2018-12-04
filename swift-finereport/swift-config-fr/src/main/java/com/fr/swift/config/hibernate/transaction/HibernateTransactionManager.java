@@ -1,19 +1,18 @@
 package com.fr.swift.config.hibernate.transaction;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.hibernate.HibernateManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 /**
  * @author yee
  * @date 2018/6/30
  */
-@Service
+@SwiftBean
 public class HibernateTransactionManager extends BaseTransactionManager {
 
-    @Autowired
-    private HibernateManager hibernateManager;
+    private HibernateManager hibernateManager = SwiftContext.get().getBean(HibernateManager.class);
 
     @Override
     protected Object createSession() {

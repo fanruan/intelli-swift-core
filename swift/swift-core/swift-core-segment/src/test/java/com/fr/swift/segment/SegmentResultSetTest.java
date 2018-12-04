@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.impl.RangeBitmap;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.operator.Inserter;

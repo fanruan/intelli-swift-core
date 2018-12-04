@@ -1,11 +1,9 @@
 package com.fr.swift.segment.collate;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.generate.ColumnIndexer;
-import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
-import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
@@ -23,7 +21,6 @@ import com.fr.swift.source.db.QueryDBSource;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 /**

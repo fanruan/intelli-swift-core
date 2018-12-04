@@ -1,5 +1,6 @@
 package com.fr.swift.task.service;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean(name = "serviceTaskExecutor")
 public class SwiftServiceTaskExecutor implements ServiceTaskExecutor {
 
     private final BlockingQueue<ServiceCallable> callableQueue = new LinkedBlockingQueue<ServiceCallable>(10000);

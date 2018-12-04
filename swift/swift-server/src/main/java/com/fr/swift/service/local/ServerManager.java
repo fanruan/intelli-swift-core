@@ -1,10 +1,10 @@
 package com.fr.swift.service.local;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.service.AbstractSwiftManager;
 import com.fr.swift.service.manager.ServerServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 /**
  * This class created on 2018/8/21
@@ -13,11 +13,10 @@ import com.fr.third.springframework.stereotype.Service;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("serverManager")
+@SwiftBean(name = "serverManager")
 public class ServerManager extends AbstractSwiftManager implements LocalManager {
 
-    @Autowired
-    private ServerServiceManager serverServiceManager;
+    private ServerServiceManager serverServiceManager = SwiftContext.get().getBean(ServerServiceManager.class);
 
     @Override
     public void startUp() throws Exception {

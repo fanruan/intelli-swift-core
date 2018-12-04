@@ -1,7 +1,7 @@
 package com.fr.swift.segment.operator.delete;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;

@@ -1,9 +1,9 @@
 package com.fr.swift.service.manager;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.SwiftService;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("localServiceManager")
+@SwiftBean(name = "localServiceManager")
 public class LocalServiceManager extends AbstractServiceManager<SwiftService> {
 
     private LocalServiceManager() {

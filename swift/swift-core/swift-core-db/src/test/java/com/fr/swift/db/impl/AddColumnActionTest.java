@@ -1,7 +1,7 @@
 package com.fr.swift.db.impl;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;

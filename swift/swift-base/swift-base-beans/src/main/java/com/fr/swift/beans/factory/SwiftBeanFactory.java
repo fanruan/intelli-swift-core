@@ -4,8 +4,10 @@ import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.util.Crasher;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -128,6 +130,18 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         for (String packageName : packageNames) {
             this.packageNames.add(packageName);
         }
+    }
+
+    @Override
+    public Map<String, Object> getBeansByAnnotations(Class<? extends Annotation> annotation) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> singletonObjectEntry : singletonObjects.entrySet()) {
+            Annotation marked = singletonObjectEntry.getValue().getClass().getAnnotation(annotation);
+            if (marked != null) {
+                resultMap.put(singletonObjectEntry.getKey(), singletonObjectEntry.getValue());
+            }
+        }
+        return resultMap;
     }
 
     private <T> T createBean(Class<T> tClass, Object... params) throws Exception {

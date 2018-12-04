@@ -1,8 +1,10 @@
 package com.fr.swift.service.handler.global;
 
 import com.fr.event.EventDispatcher;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -25,8 +27,6 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 import com.fr.swift.task.impl.TaskEvent;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,15 +38,12 @@ import java.util.Map;
  * @author yee
  * @date 2018/6/27
  */
-@Service
+@SwiftBean
 public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEvent> {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftGlobalEventHandler.class);
-    @Autowired(required = false)
-    private SwiftClusterSegmentService segmentService;
-    @Autowired(required = false)
-    private SwiftMetaDataService swiftMetaDataService;
-    @Autowired(required = false)
-    private HistoryDataSyncManager historyDataSyncManager;
+    private SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+    private SwiftMetaDataService swiftMetaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
+    private HistoryDataSyncManager historyDataSyncManager = SwiftContext.get().getBean(HistoryDataSyncManager.class);
 
     @Override
     public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) throws Exception {

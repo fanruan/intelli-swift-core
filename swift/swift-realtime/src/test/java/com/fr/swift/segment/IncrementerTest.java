@@ -1,6 +1,6 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;

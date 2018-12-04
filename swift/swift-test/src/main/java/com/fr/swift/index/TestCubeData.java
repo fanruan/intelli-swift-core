@@ -1,11 +1,11 @@
 package com.fr.swift.index;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.ColumnIndexer;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.info.IndexInfo;

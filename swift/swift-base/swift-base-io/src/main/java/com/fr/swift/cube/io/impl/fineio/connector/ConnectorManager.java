@@ -9,9 +9,9 @@ import com.fr.plugin.observer.PluginEventType;
 import com.fr.plugin.observer.PluginListenerRegistration;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.plugin.ExtraClassManagerProvider;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftZipService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 

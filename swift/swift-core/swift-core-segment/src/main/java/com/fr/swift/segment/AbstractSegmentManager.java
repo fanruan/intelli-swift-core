@@ -1,9 +1,9 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;

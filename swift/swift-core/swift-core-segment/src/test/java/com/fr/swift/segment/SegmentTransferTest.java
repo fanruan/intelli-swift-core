@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.column.ColumnKey;

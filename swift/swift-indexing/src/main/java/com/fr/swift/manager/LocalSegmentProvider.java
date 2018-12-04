@@ -1,10 +1,10 @@
 package com.fr.swift.manager;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/14.
  */
-@Service("localSegmentProvider")
+@SwiftBean(name = "localSegmentProvider")
 public class LocalSegmentProvider implements SwiftSegmentManager {
 
     private SwiftSegmentManager manager;

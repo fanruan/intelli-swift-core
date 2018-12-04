@@ -1,6 +1,6 @@
 package com.fr.swift.test.external;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import org.junit.rules.ExternalResource;
 
 /**
@@ -11,6 +11,6 @@ public class ContextResource extends ExternalResource {
 
     @Override
     protected void before() {
-        SwiftContext.init();
+        SwiftContext.get().init();
     }
 }

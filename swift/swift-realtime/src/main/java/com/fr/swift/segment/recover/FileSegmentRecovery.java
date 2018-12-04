@@ -1,5 +1,6 @@
 package com.fr.swift.segment.recover;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -7,7 +8,6 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/5/23
  */
-@Service("segmentRecovery")
+@SwiftBean(name = "segmentRecovery")
 public class FileSegmentRecovery extends AbstractSegmentRecovery {
 
     @Override

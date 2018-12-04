@@ -1,9 +1,9 @@
 package com.fr.swift.cube;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;

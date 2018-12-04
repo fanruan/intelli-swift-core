@@ -5,12 +5,12 @@ import com.fr.config.dao.impl.LocalClassHelperDao;
 import com.fr.config.dao.impl.LocalEntityDao;
 import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.invoke.Reflect;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.hibernate.transaction.HibernateTransactionManager;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
@@ -50,7 +50,7 @@ public class Preparer {
 
     public static void prepareContext() {
         prepareLogger();
-        SwiftContext.init();
+        SwiftContext.get().init();
     }
 
     public static void prepareConfDb() {

@@ -2,6 +2,7 @@ package com.fr.swift.rm.service;
 
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.cluster.service.SlaveService;
 import com.fr.swift.container.NodeContainer;
@@ -9,7 +10,6 @@ import com.fr.swift.heart.HeartBeatInfo;
 import com.fr.swift.heart.NodeState;
 import com.fr.swift.heart.NodeType;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("swiftMasterService")
+@SwiftBean(name = "swiftMasterService")
 @ProxyService(value = MasterService.class, type = ProxyService.ServiceType.INTERNAL)
 public class SwiftMasterService implements MasterService {
 

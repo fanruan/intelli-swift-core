@@ -1,7 +1,7 @@
 package com.fr.swift.service.manager;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.service.ServerService;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("serverServiceManager")
+@SwiftBean(name = "serverServiceManager")
 public class ServerServiceManager extends AbstractServiceManager<ServerService> {
 
     @Override

@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.dao.SwiftTablePathDao;
@@ -16,8 +18,6 @@ import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -28,11 +28,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author yee
  * @date 2018/7/18
  */
-@Service
+@SwiftBean
 public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     private SwiftTablePathDao swiftTablePathDao;
-    @Autowired
-    private TransactionManager tx;
+    private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
     private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
     private String clusterId = SwiftConfigConstants.LOCALHOST;
     private ConcurrentHashMap<String, Integer> tablePath = new ConcurrentHashMap<String, Integer>();

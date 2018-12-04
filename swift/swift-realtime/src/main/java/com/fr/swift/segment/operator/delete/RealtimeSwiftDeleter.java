@@ -1,7 +1,7 @@
 package com.fr.swift.segment.operator.delete;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;

@@ -1,6 +1,6 @@
 package com.fr.swift.util;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.SwiftService;
 import com.fr.third.springframework.beans.factory.NoSuchBeanDefinitionException;

@@ -1,7 +1,7 @@
 package com.fr.swift.cube.io.location;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.util.Strings;
 

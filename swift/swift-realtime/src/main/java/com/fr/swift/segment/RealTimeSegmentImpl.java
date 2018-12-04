@@ -1,5 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.log.SwiftLoggers;
@@ -21,6 +23,8 @@ import com.fr.swift.util.Crasher;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
+@SwiftBean(name = "realtimeSegment")
+@SwiftScope("prototype")
 public class RealTimeSegmentImpl extends BaseSegment implements RealTimeSegment {
     public RealTimeSegmentImpl(IResourceLocation parent, SwiftMetaData meta) {
         super(parent, meta);

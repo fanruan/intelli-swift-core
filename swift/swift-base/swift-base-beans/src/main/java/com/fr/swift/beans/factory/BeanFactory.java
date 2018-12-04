@@ -1,5 +1,8 @@
 package com.fr.swift.beans.factory;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
 /**
  * This class created on 2018/11/26
  *
@@ -8,6 +11,8 @@ package com.fr.swift.beans.factory;
  * @since Advanced FineBI 5.0
  */
 public interface BeanFactory {
+
+    void init();
 
     <T> T getBean(String beanName, Class<T> clazz, Object... params);
 
@@ -22,5 +27,7 @@ public interface BeanFactory {
     boolean isTypeMatch(String name, Class<?> typeToMatch);
 
     void registerPackages(String... packageNames);
+
+    Map<String, Object> getBeansByAnnotations(Class<? extends Annotation> annotation);
 
 }

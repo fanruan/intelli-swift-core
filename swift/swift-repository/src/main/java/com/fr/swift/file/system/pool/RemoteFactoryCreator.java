@@ -1,6 +1,6 @@
 package com.fr.swift.file.system.pool;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.file.SwiftFileSystemType;
 import com.fr.swift.file.system.annotation.FileSystemFactory;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
@@ -34,7 +34,7 @@ public class RemoteFactoryCreator {
     }
 
     private void init() {
-        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansWithAnnotation(FileSystemFactory.class);
+        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansByAnnotations(FileSystemFactory.class);
         if (MapUtils.isNotEmpty(serviceBeanMap)) {
             for (Object factoryBean : serviceBeanMap.values()) {
                 FileSystemFactory factory = factoryBean.getClass().getAnnotation(FileSystemFactory.class);

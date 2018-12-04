@@ -1,8 +1,8 @@
 package com.fr.swift.test.external;
 
 import com.fr.invoke.Reflect;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.test.TestResource;
 import com.fr.swift.util.FileUtil;

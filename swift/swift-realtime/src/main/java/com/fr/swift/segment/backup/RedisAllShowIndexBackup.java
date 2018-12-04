@@ -1,10 +1,10 @@
 package com.fr.swift.segment.backup;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.redis.RedisClient;
 import com.fr.swift.segment.Segment;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This class created on 2018/7/5
@@ -19,8 +19,7 @@ public class RedisAllShowIndexBackup implements AllShowIndexBackup {
 
     private static final String REDIS_ALLSHOWINDEX_KEY = "/redis_allshowindex";
 
-    @Autowired
-    protected RedisClient redisClient;
+    protected RedisClient redisClient = SwiftContext.get().getBean(RedisClient.class);
 
     public RedisAllShowIndexBackup(Segment segment) {
         this.segment = segment;

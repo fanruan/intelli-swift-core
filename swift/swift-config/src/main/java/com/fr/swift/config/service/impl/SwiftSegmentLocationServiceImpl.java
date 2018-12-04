@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
@@ -10,8 +12,6 @@ import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,13 +24,11 @@ import java.util.Map;
  * @author yee
  * @date 2018/7/24
  */
-@Service
+@SwiftBean
 public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationService {
 
-    @Autowired
-    private SwiftSegmentLocationDao segmentLocationDao;
-    @Autowired
-    private TransactionManager tx;
+    private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
+    private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
     private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
     @Override

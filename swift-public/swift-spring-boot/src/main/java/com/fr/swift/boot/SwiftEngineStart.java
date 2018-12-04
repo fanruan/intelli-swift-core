@@ -7,6 +7,7 @@ import com.fr.config.dao.impl.LocalEntityDao;
 import com.fr.config.dao.impl.LocalXmlEntityDao;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.api.rpc.impl.DataMaintenanceServiceImpl;
 import com.fr.swift.api.rpc.impl.DetectServiceImpl;
 import com.fr.swift.api.rpc.impl.SelectServiceImpl;
@@ -24,7 +25,6 @@ import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.cluster.listener.NodeStartedListener;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
@@ -72,7 +72,7 @@ public class SwiftEngineStart {
             SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
             SimpleWork.checkIn(System.getProperty("user.dir"));
             ClusterListenerHandler.addInitialListener(new SwiftClusterListener());
-            SwiftContext.init();
+            SwiftContext.get().init();
 
             registerTmpConnectionProvider();
             ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);

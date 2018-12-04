@@ -1,7 +1,7 @@
 package com.fr.swift.db.impl;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.AlterTableAction;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SwiftMetaData;

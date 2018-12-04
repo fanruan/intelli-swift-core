@@ -4,13 +4,12 @@ import com.fr.swift.Collect;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.container.NodeContainer;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.heart.NodeState;
 import com.fr.swift.heart.NodeType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 

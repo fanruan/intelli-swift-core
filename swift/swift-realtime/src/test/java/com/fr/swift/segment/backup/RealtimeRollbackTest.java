@@ -1,9 +1,9 @@
 package com.fr.swift.segment.backup;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -56,7 +56,7 @@ public class RealtimeRollbackTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        SwiftContext.init();
+        SwiftContext.get().init();
         redisClient = (RedisClient) SwiftContext.get().getBean("redisClient");
     }
 

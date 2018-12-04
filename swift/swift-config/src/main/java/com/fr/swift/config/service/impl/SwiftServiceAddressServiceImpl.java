@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.RpcServiceAddressBean;
 import com.fr.swift.config.bean.SwiftConfigBean;
@@ -8,8 +10,6 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftServiceAddressService;
 import com.fr.swift.util.Strings;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
  * @author yee
  * @date 2018/6/27
  */
-@Service("swiftServiceAddressService")
+@SwiftBean(name = "swiftServiceAddressService")
 public class SwiftServiceAddressServiceImpl implements SwiftServiceAddressService {
     private final SwiftConfigService.ConfigConvert<RpcServiceAddressBean> CONVERT = new SwiftConfigService.ConfigConvert<RpcServiceAddressBean>() {
         @Override
@@ -51,8 +51,7 @@ public class SwiftServiceAddressServiceImpl implements SwiftServiceAddressServic
         }
     };
 
-    @Autowired
-    private SwiftConfigService configService;
+    private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
 
     @Override
     public boolean addOrUpdateAddress(String serviceName, RpcServiceAddressBean address) {

@@ -1,13 +1,12 @@
 package com.fr.swift.query.index;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftWhere;
-import com.fr.swift.generate.BaseTest;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
@@ -26,12 +25,12 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.test.Preparer;
+import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotEquals;
 
 /**
@@ -41,7 +40,7 @@ import static org.junit.Assert.assertNotEquals;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class DeleteTest extends BaseTest {
+public class DeleteTest extends TestCase {
     private final Database db = SwiftDatabase.getInstance();
 
     private LocalSegmentProvider localSegmentProvider = (LocalSegmentProvider) SwiftContext.get().getBean("localSegmentProvider");

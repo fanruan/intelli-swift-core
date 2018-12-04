@@ -1,19 +1,19 @@
 package com.fr.swift.repository.manager;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.config.DefaultRepositoryConfig;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
 import com.fr.swift.service.SwiftRepositoryConfService;
-import com.fr.third.springframework.stereotype.Service;
 
 /**
  * @author yee
  * @date 2018/5/28
  */
-@Service("swiftRepositoryManager")
+@SwiftBean(name = "swiftRepositoryManager")
 public class SwiftRepositoryManager implements com.fr.swift.repository.SwiftRepositoryManager {
     private static SwiftRepository currentRepository = null;
     private SwiftRepositoryConfService service;

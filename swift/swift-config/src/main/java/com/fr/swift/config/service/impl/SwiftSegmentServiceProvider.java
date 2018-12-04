@@ -1,8 +1,9 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -11,7 +12,6 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/6/7
  */
-@Service("segmentServiceProvider")
+@SwiftBean(name = "segmentServiceProvider")
 public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     private SwiftClusterSegmentService service;
 

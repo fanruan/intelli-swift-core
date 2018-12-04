@@ -1,11 +1,11 @@
 package com.fr.swift.transaction;
 
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.third.springframework.stereotype.Service;
 
 /**
  * This class created on 2018/6/26
@@ -14,7 +14,6 @@ import com.fr.third.springframework.stereotype.Service;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service
 public abstract class AbstractTransactionManager implements TransactionManager<Segment> {
 
     private Segment realSegment;

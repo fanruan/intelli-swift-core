@@ -1,10 +1,10 @@
 package com.fr.swift.config.convert;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SegmentDestSelectRule;
 import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.context.SwiftContext;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;

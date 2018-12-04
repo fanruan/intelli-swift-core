@@ -1,7 +1,9 @@
 package com.fr.swift.service.manager;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.exception.SwiftServiceException;
@@ -10,8 +12,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.listener.RemoteSender;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -22,15 +22,14 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Service("clusterServiceManager")
+@SwiftBean(name = "clusterServiceManager")
 public class ClusterServiceManager extends AbstractServiceManager<SwiftService> {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
 
     private SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
-    @Autowired
-    private SwiftServiceInfoService serviceInfoService;
+    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
     private RemoteSender senderProxy;
 

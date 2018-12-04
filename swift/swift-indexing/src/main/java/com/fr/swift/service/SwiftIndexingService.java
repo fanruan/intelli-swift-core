@@ -4,16 +4,17 @@ import com.fineio.FineIO;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
-import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
@@ -43,7 +44,6 @@ import com.fr.swift.task.impl.WorkerTaskPool;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.Strings;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,8 +74,8 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     private transient ServiceTaskExecutor taskExecutor;
 
     private transient boolean initable = true;
-    @Autowired(required = false)
-    private transient SwiftRepositoryManager repositoryManager;
+
+    private transient SwiftRepositoryManager repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
 
     public SwiftIndexingService() {
     }

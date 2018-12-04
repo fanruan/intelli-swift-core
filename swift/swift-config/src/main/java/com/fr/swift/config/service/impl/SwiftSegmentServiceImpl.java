@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.bean.SegmentKeyBean;
@@ -23,8 +25,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Crasher;
 import com.fr.third.org.hibernate.NonUniqueObjectException;
 import com.fr.third.org.hibernate.exception.ConstraintViolationException;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,17 +38,12 @@ import java.util.Set;
  * @author yee
  * @date 2018/6/7
  */
-@Service("swiftClusterSegmentService")
+@SwiftBean(name = "swiftClusterSegmentService")
 public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, SwiftSegmentService {
-    @Autowired
-    private SwiftSegmentLocationDao segmentLocationDao;
-
+    private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
     private String clusterId = "LOCAL";
-    @Autowired
-    private TransactionManager transactionManager;
-
-    @Autowired
-    private SwiftSegmentDao swiftSegmentDao;
+    private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+    private SwiftSegmentDao swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
 
     private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 

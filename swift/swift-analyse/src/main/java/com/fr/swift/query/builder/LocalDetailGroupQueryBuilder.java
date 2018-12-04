@@ -1,7 +1,7 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.SwiftDetailFilterType;

@@ -1,5 +1,6 @@
 package com.fr.swift.config.dao.impl;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018/7/3
  */
+@SwiftBean
 public class SwiftSegmentLocationDaoImpl extends BasicDao<SegLocationBean> implements SwiftSegmentLocationDao {
     public SwiftSegmentLocationDaoImpl() {
         super(SegLocationBean.TYPE, RestrictionFactoryImpl.INSTANCE);

@@ -63,7 +63,6 @@ public class BeanRegistryTest extends TestCase {
             beanRegistry.registerBeanNamesByType(anInterface, "testWithoutBeanPrototype");
         }
 
-        assertEquals(beanRegistry.getBeanNamesByType(TestWithoutBeanSingleton.class).size(), 1);
         assertEquals(beanRegistry.getBeanNamesByType(TestWithoutBeanSingleton.class).get(0), "testWithoutBeanSingleton");
         assertEquals(beanRegistry.getBeanNamesByType(ITestWithoutBeanSingleton.class).size(), 1);
         assertEquals(beanRegistry.getBeanNamesByType(ITestWithoutBeanSingleton.class).get(0), "testWithoutBeanSingleton");

@@ -1,14 +1,13 @@
 package com.fr.swift.redis;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.third.org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import com.fr.third.redis.clients.jedis.Jedis;
 import com.fr.third.redis.clients.jedis.JedisPool;
 import com.fr.third.redis.clients.jedis.JedisPoolConfig;
-import com.fr.third.springframework.beans.factory.annotation.Autowired;
-import com.fr.third.springframework.beans.factory.annotation.Value;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -20,30 +19,22 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  * todo 使用类型自补充
  */
-@Service("redisClient")
+@SwiftBean(name = "redisClient")
 public class RedisClient {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RedisClient.class);
 
     private JedisPool jedisPool;
-    private final int timeout;
+    private final SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
-    @Autowired
-    public RedisClient(@Value("${redis.ip}") String ip, @Value("${redis.port}") int port,
-                       @Value("${redis.timeout}") int timeout, @Value("${redis.passward}") String passward) {
+    public RedisClient() {
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setMaxTotal(100);
         poolConfig.setMaxIdle(100);
         poolConfig.setMaxWaitMillis(1000);
         poolConfig.setTestOnBorrow(true);
-        jedisPool = new JedisPool(new GenericObjectPoolConfig(), ip, port, timeout, passward);
-        this.timeout = timeout;
+        jedisPool = new JedisPool(new GenericObjectPoolConfig(), swiftProperty.getRedisIp(), swiftProperty.getRedisPort(), swiftProperty.getRedisTimeout(), swiftProperty.getRedisPassward());
     }
-
-    public RedisClient(String ip, int port, int timeout) {
-        this(ip, port, timeout, null);
-    }
-
 
     /**
      * 将一个或多个值 value 插入到列表 key 的表尾(最右边)。

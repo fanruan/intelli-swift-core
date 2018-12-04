@@ -4,7 +4,6 @@ import com.fr.swift.annotation.ClusterService;
 import com.fr.swift.basics.base.JdkProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
@@ -98,7 +97,7 @@ public class SwiftClusterListener implements ClusterEventListener {
      * 加载init集群插件service（zk选举service）
      */
     private static void initClusterPluginService() {
-        Map<String, Object> map = SwiftContext.get().getBeansWithAnnotation(ClusterService.class);
+        Map<String, Object> map = SwiftContext.get().getBeansByAnnotations(ClusterService.class);
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             try {
                 String initMethodName = entry.getValue().getClass().getAnnotation(ClusterService.class).initMethod();
@@ -115,7 +114,7 @@ public class SwiftClusterListener implements ClusterEventListener {
     /**
      */
     private static void destroyClusterPluginService() {
-        Map<String, Object> map = SwiftContext.get().getBeansWithAnnotation(ClusterService.class);
+        Map<String, Object> map = SwiftContext.get().getBeansByAnnotations(ClusterService.class);
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             try {
                 String destroyMethodName = entry.getValue().getClass().getAnnotation(ClusterService.class).destroyMethod();
