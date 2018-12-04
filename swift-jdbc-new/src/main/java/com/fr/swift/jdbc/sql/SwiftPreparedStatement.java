@@ -1,8 +1,8 @@
 package com.fr.swift.jdbc.sql;
 
-import com.fr.swift.jdbc.checker.GrammarChecker;
+import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.exception.Exceptions;
-import com.fr.swift.jdbc.info.SqlInfo;
+import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
 import java.io.InputStream;
@@ -43,6 +43,7 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
 
     public SwiftPreparedStatement(BaseSwiftConnection connection, String sql, JdbcExecutor query, JdbcExecutor maintain) {
         super(connection, query, maintain);
+        SQLUtils.parseStatements(sql, null);
         this.sql = sql;
         this.values = new ArrayList();
         final Matcher matcher = SwiftPreparedStatement.VALUE_POS_PATTERN.matcher(sql);
@@ -60,15 +61,15 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        SqlInfo info = GrammarChecker.INSTANCE.check(sql, values);
-        Object result = connection.executeQueryInternal(info, queryExecutor);
+        SqlRequestInfo info = grammarChecker.check(sql, values);
+        Object result = execute(info, queryExecutor);
         return null;
     }
 
     @Override
     public int executeUpdate() throws SQLException {
-        SqlInfo info = GrammarChecker.INSTANCE.check(sql, values);
-        Object result = connection.executeQueryInternal(info, maintainExecutor);
+        SqlRequestInfo info = grammarChecker.check(sql, values);
+        Object result = execute(info, maintainExecutor);
         return 0;
     }
 

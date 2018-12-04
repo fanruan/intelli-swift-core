@@ -24,7 +24,6 @@
         <module>swift-jdbc-emb</module>
         <module>swift-master</module>
         <module>swift-realtime</module>
-        <module>swift-repository</module>
         <module>swift-server</module>
         <module>swift-slave</module>
         <module>swift-test</module>

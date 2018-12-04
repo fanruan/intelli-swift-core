@@ -1,7 +1,6 @@
 package com.fr.swift.jdbc.sql;
 
-import com.fr.swift.jdbc.checker.GrammarChecker;
-import com.fr.swift.jdbc.info.SqlInfo;
+import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
 import java.sql.Connection;
@@ -14,29 +13,28 @@ import java.util.UUID;
  * @author yee
  * @date 2018/11/19
  */
-public class SwiftStatementImpl implements SwiftStatement {
+public class SwiftStatementImpl extends BaseSwiftStatement {
     protected JdbcExecutor queryExecutor;
     protected JdbcExecutor maintainExecutor;
-    protected BaseSwiftConnection connection;
 
     public SwiftStatementImpl(BaseSwiftConnection connection, JdbcExecutor queryExecutor, JdbcExecutor maintainExecutor) {
+        super(connection);
         this.queryExecutor = queryExecutor;
         this.maintainExecutor = maintainExecutor;
-        this.connection = connection;
         reset();
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        SqlInfo info = GrammarChecker.INSTANCE.check(sql);
-        Object result = connection.executeQueryInternal(info, queryExecutor);
+        SqlRequestInfo info = grammarChecker.check(sql);
+        Object result = execute(info, queryExecutor);
         return null;
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        SqlInfo info = GrammarChecker.INSTANCE.check(sql);
-        Object result = connection.executeQueryInternal(info, maintainExecutor);
+        SqlRequestInfo info = grammarChecker.check(sql);
+        Object result = execute(info, maintainExecutor);
         return 0;
     }
 

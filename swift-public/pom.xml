@@ -13,13 +13,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>swift-hdfs</module>
         <module>swift-redis</module>
         <module>swift-rpc-netty</module>
         <module>swift-spring-boot</module>
         <module>swift-zookeeper</module>
         <module>swift-conf-public</module>
         <module>swift-bean</module>
+        <module>swift-repo-public</module>
     </modules>
 
 </project>

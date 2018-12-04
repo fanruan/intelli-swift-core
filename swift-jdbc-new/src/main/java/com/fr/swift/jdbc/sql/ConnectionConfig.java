@@ -1,5 +1,6 @@
 package com.fr.swift.jdbc.sql;
 
+import com.fr.swift.jdbc.checker.GrammarChecker;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
 import java.io.File;
@@ -50,4 +51,6 @@ public interface ConnectionConfig {
      * @return
      */
     File kerberosKeytab();
+
+    GrammarChecker grammarChecker();
 }

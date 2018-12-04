@@ -13,7 +13,12 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-repository</artifactId>
+            <artifactId>swift-base-repository</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-config</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

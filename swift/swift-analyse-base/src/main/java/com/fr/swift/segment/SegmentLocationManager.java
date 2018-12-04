@@ -19,5 +19,5 @@ public interface SegmentLocationManager {
 
     void removeTable(String clusterId, SourceKey sourceKey);
 
-    void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
+    void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentIds);
 }
