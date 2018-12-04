@@ -7,9 +7,15 @@ import java.util.concurrent.ExecutorService;
  * @date 2018/6/14
  */
 public class CommonExecutor {
-    private static final ExecutorService EXECUTOR = SwiftExecutors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new PoolThreadFactory(CommonExecutor.class));
+
+    private ExecutorService exec = SwiftExecutors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new PoolThreadFactory(getClass()));
 
     public static ExecutorService get() {
-        return EXECUTOR;
+        return INSTANCE.exec;
+    }
+
+    private static final CommonExecutor INSTANCE = new CommonExecutor();
+
+    private CommonExecutor() {
     }
 }
