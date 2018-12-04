@@ -1,6 +1,6 @@
 package com.fr.swift.file.system.pool;
 
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.file.SwiftFileSystemType;
 import com.fr.swift.file.system.annotation.FileSystemFactory;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
