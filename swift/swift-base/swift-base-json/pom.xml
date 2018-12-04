@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-base-config</artifactId>
+    <artifactId>swift-base-json</artifactId>
 
     <dependencies>
         <dependency>
@@ -17,17 +17,6 @@
             <artifactId>swift-common</artifactId>
             <version>${swift.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-repository</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-json</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>

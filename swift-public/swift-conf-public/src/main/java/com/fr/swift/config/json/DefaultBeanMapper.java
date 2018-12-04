@@ -3,12 +3,14 @@ package com.fr.swift.config.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.swift.base.json.mapper.BeanMapper;
+import com.fr.swift.base.json.mapper.BeanTypeReference;
 
 /**
  * @author yee
  * @date 2018-11-27
  */
-public enum DefaultConfigBeanMapper implements ConfigBeanMapper {
+public enum DefaultBeanMapper implements BeanMapper {
     //
     INSTANCE;
 
@@ -20,7 +22,7 @@ public enum DefaultConfigBeanMapper implements ConfigBeanMapper {
     }
 
     @Override
-    public Object readValue(String jsonString, ConfigBeanTypeReference reference) throws Exception {
+    public Object readValue(String jsonString, BeanTypeReference reference) throws Exception {
         return objectMapper.readValue(jsonString, (TypeReference) reference);
     }
 

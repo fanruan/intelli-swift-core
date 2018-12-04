@@ -1,5 +1,7 @@
 package com.fr.swift.config.json;
 
+import com.fr.swift.base.json.mapper.BeanMapper;
+import com.fr.swift.base.json.mapper.BeanTypeReference;
 import com.fr.third.fasterxml.jackson.core.type.TypeReference;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
@@ -7,7 +9,7 @@ import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
  * @author yee
  * @date 2018-11-27
  */
-public enum FRConfigBeanMapper implements ConfigBeanMapper {
+public enum FRBeanMapper implements BeanMapper {
     INSTANCE;
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -18,7 +20,7 @@ public enum FRConfigBeanMapper implements ConfigBeanMapper {
     }
 
     @Override
-    public Object readValue(String jsonString, ConfigBeanTypeReference reference) throws Exception {
+    public Object readValue(String jsonString, BeanTypeReference reference) throws Exception {
         return objectMapper.readValue(jsonString, (TypeReference) reference);
     }
 

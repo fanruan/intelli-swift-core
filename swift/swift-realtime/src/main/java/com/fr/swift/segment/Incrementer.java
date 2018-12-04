@@ -2,7 +2,6 @@ package com.fr.swift.segment;
 
 import com.fr.event.EventDispatcher;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -36,7 +35,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         super(dataSource, alloter);
     }
 
-    private SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+    private SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
 
     @Override
     protected Inserter getInserter() {

@@ -13,7 +13,6 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
@@ -104,7 +103,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
         metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
-        segmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+        segmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
         loadDataService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftHistoryService.class));
         cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
         checkSegmentExists();
