@@ -17,13 +17,13 @@
 //import com.fr.swift.exception.SwiftServiceException;
 //import com.fr.swift.log.SwiftLoggers;
 //import com.fr.swift.repository.SwiftRepositoryManager;
-//import com.fr.swift.segment.SegmentDestination;
+//import com.fr.swift.segment.bean.SegmentDestination;
 //import com.fr.swift.segment.SegmentKey;
 //import com.fr.swift.segment.SegmentLocationInfo;
 //import com.fr.swift.segment.SwiftSegmentManager;
 //import com.fr.swift.segment.event.SegmentEvent;
-//import com.fr.swift.segment.impl.RealTimeSegDestImpl;
-//import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
+//import com.fr.swift.segment.bean.impl.RealTimeSegDestImpl;
+//import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 //import com.fr.swift.segment.operator.delete.WhereDeleter;
 //import com.fr.swift.segment.recover.SegmentRecovery;
 //import com.fr.swift.selector.ClusterSelector;

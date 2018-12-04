@@ -1,7 +1,7 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.config.convert.hibernate.BaseAllotRuleConverter;
-import com.fr.swift.config.json.FRConfigBeanMapper;
+import com.fr.swift.config.json.FRBeanMapper;
 import com.fr.swift.source.alloter.AllotRule;
 import com.fr.third.javax.persistence.AttributeConverter;
 
@@ -11,6 +11,6 @@ import com.fr.third.javax.persistence.AttributeConverter;
  */
 public class FRAllotRuleConverter extends BaseAllotRuleConverter implements AttributeConverter<AllotRule, String> {
     public FRAllotRuleConverter() {
-        super(FRConfigBeanMapper.INSTANCE);
+        super(FRBeanMapper.INSTANCE);
     }
 }

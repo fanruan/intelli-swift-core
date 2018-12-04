@@ -1,8 +1,8 @@
 package com.fr.swift.config.convert.hibernate;
 
+import com.fr.swift.base.json.mapper.BeanMapper;
+import com.fr.swift.base.json.mapper.BeanTypeReference;
 import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.json.ConfigBeanMapper;
-import com.fr.swift.config.json.ConfigBeanTypeReference;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Strings;
 
@@ -14,9 +14,9 @@ import java.util.List;
  * @date 2018/5/24
  */
 public abstract class BaseMetaDataColumnListConverter extends LongStringTypeConverter<List<MetaDataColumnBean>> {
-    private ConfigBeanMapper mapper;
+    private BeanMapper mapper;
 
-    public BaseMetaDataColumnListConverter(ConfigBeanMapper mapper) {
+    public BaseMetaDataColumnListConverter(BeanMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -40,5 +40,5 @@ public abstract class BaseMetaDataColumnListConverter extends LongStringTypeConv
         }
     }
 
-    protected abstract ConfigBeanTypeReference getConfigBeanTypeReference();
+    protected abstract BeanTypeReference getConfigBeanTypeReference();
 }

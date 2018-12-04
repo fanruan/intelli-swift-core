@@ -1,6 +1,6 @@
 package com.fr.swift.config.convert.hibernate;
 
-import com.fr.swift.config.json.ConfigBeanMapper;
+import com.fr.swift.base.json.mapper.BeanMapper;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.alloter.AllotRule;
 
@@ -9,9 +9,9 @@ import com.fr.swift.source.alloter.AllotRule;
  * @date 2018/7/16
  */
 public abstract class BaseAllotRuleConverter implements ConfigAttributeConverter<AllotRule, String> {
-    private ConfigBeanMapper mapper;
+    private BeanMapper mapper;
 
-    public BaseAllotRuleConverter(ConfigBeanMapper mapper) {
+    public BaseAllotRuleConverter(BeanMapper mapper) {
         this.mapper = mapper;
     }
 

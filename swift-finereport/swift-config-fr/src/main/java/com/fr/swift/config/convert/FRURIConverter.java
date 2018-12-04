@@ -1,7 +1,7 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.config.convert.hibernate.BaseURIConverter;
-import com.fr.swift.config.json.FRConfigBeanMapper;
+import com.fr.swift.config.json.FRBeanMapper;
 import com.fr.third.javax.persistence.AttributeConverter;
 
 import java.net.URI;
@@ -12,6 +12,6 @@ import java.net.URI;
  */
 public class FRURIConverter extends BaseURIConverter implements AttributeConverter<URI, String> {
     public FRURIConverter() {
-        super(FRConfigBeanMapper.INSTANCE);
+        super(FRBeanMapper.INSTANCE);
     }
 }

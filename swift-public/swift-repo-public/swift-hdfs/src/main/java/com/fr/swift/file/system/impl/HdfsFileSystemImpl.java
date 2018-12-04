@@ -5,7 +5,7 @@ import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
-import com.fr.swift.file.system.pool.RemoteFactoryCreator;
+import com.fr.swift.file.system.pool.RemoteFileSystemFactoryCreator;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.config.HdfsRepositoryConfig;
@@ -36,7 +36,7 @@ public class HdfsFileSystemImpl extends AbstractFileSystem<HdfsRepositoryConfig>
     public HdfsFileSystemImpl(final HdfsRepositoryConfig config, String uri, KeyedObjectPool keyedObjectPool) {
         super(config, uri);
         this.keyedObjectPool = keyedObjectPool;
-        this.systemPool = RemoteFactoryCreator.creator().getFactory(HdfsSystemType.HDFS);
+        this.systemPool = RemoteFileSystemFactoryCreator.creator().getFactory(HdfsSystemType.HDFS);
     }
 
     @Override

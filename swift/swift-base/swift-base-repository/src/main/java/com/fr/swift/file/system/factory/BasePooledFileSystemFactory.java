@@ -1,7 +1,7 @@
 package com.fr.swift.file.system.factory;
 
 import com.fr.swift.file.system.SwiftFileSystem;
-import com.fr.swift.file.system.pool.RemoteSystemPool;
+import com.fr.swift.file.system.pool.RemoteFileSystemPool;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,13 +11,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2018/8/21
  */
 public abstract class BasePooledFileSystemFactory<S extends SwiftFileSystem, C extends SwiftFileSystemConfig> implements SwiftFileSystemFactory<S, C> {
-    protected ConcurrentHashMap<SwiftFileSystemConfig, RemoteSystemPool<S>> poolContainer;
+    protected ConcurrentHashMap<SwiftFileSystemConfig, RemoteFileSystemPool<S>> poolContainer;
 
     public BasePooledFileSystemFactory() {
-        poolContainer = new ConcurrentHashMap<SwiftFileSystemConfig, RemoteSystemPool<S>>();
+        poolContainer = new ConcurrentHashMap<SwiftFileSystemConfig, RemoteFileSystemPool<S>>();
     }
 
-    protected abstract RemoteSystemPool<S> createPool(C config);
+    protected abstract RemoteFileSystemPool<S> createPool(C config);
 
     @Override
     public S createFileSystem(C config, String path) {

@@ -1,0 +1,30 @@
+package com.fr.swift.query.info.bean.element.filter.impl;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+
+/**
+ * @author yee
+ * @date 2018/6/22
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+abstract class GeneralFilterInfoBean<T> implements FilterInfoBean<T> {
+
+    private static final long serialVersionUID = -6197559699952128572L;
+    @JsonProperty
+    protected T filterValue;
+    @JsonProperty
+    protected SwiftDetailFilterType type;
+
+    @Override
+    public SwiftDetailFilterType getType() {
+        return type;
+    }
+
+    @Override
+    public void setType(SwiftDetailFilterType type) {
+        this.type = type;
+    }
+}

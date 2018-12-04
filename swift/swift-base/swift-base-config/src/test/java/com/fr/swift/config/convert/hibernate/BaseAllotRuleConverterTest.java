@@ -1,6 +1,6 @@
 package com.fr.swift.config.convert.hibernate;
 
-import com.fr.swift.config.json.ConfigBeanMapper;
+import com.fr.swift.base.json.mapper.BeanMapper;
 import com.fr.swift.source.alloter.AllotRule;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class BaseAllotRuleConverterTest {
 
     @Test
     public void convertToDatabaseColumn() throws Exception {
-        ConfigBeanMapper mockConfigBeanMapper = PowerMock.createMock(ConfigBeanMapper.class);
+        BeanMapper mockConfigBeanMapper = PowerMock.createMock(BeanMapper.class);
         AllotRule mockAllotRule = PowerMock.createMock(AllotRule.class);
         EasyMock.expect(mockAllotRule.getType()).andReturn(AllotRule.Type.LINE).anyTimes();
         EasyMock.expect(mockConfigBeanMapper.writeValueAsString(EasyMock.notNull())).andReturn(writeString).anyTimes();
@@ -33,7 +33,7 @@ public class BaseAllotRuleConverterTest {
 
     @Test
     public void convertToEntityAttribute() throws Exception {
-        ConfigBeanMapper mockConfigBeanMapper = PowerMock.createMock(ConfigBeanMapper.class);
+        BeanMapper mockConfigBeanMapper = PowerMock.createMock(BeanMapper.class);
         AllotRule mockAllotRule = PowerMock.createMock(AllotRule.class);
         EasyMock.expect(mockAllotRule.getType()).andReturn(AllotRule.Type.LINE).anyTimes();
         EasyMock.expect(mockConfigBeanMapper.readValue(EasyMock.notNull(String.class), EasyMock.eq(AllotRule.class))).andReturn(mockAllotRule).anyTimes();

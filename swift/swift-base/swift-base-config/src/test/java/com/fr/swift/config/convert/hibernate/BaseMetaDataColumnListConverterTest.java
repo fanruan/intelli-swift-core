@@ -1,8 +1,8 @@
 package com.fr.swift.config.convert.hibernate;
 
+import com.fr.swift.base.json.mapper.BeanMapper;
+import com.fr.swift.base.json.mapper.BeanTypeReference;
 import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.json.ConfigBeanMapper;
-import com.fr.swift.config.json.ConfigBeanTypeReference;
 import com.fr.swift.util.Strings;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class BaseMetaDataColumnListConverterTest {
 
     @Test
     public void toDatabaseColumn() throws Exception {
-        ConfigBeanMapper mockConfigBeanMapper = PowerMock.createMock(ConfigBeanMapper.class);
+        BeanMapper mockConfigBeanMapper = PowerMock.createMock(BeanMapper.class);
         EasyMock.expect(mockConfigBeanMapper.writeValueAsString(EasyMock.notNull())).andReturn(writeString).anyTimes();
         EasyMock.expect(mockConfigBeanMapper.writeValueAsString(EasyMock.isNull())).andThrow(new Exception("Just Test Exception")).anyTimes();
         BaseMetaDataColumnListConverter converter = PowerMock.createMock(BaseMetaDataColumnListConverter.class, mockConfigBeanMapper);
@@ -36,11 +36,11 @@ public class BaseMetaDataColumnListConverterTest {
 
     @Test
     public void toEntityAttribute() throws Exception {
-        ConfigBeanMapper mockConfigBeanMapper = PowerMock.createMock(ConfigBeanMapper.class);
-        EasyMock.expect(mockConfigBeanMapper.readValue(EasyMock.eq(writeString), EasyMock.isA(ConfigBeanTypeReference.class))).andReturn(new ArrayList<MetaDataColumnBean>()).anyTimes();
-        EasyMock.expect(mockConfigBeanMapper.readValue(EasyMock.eq("testException"), EasyMock.isA(ConfigBeanTypeReference.class))).andThrow(new Exception("Just Test Exception")).anyTimes();
+        BeanMapper mockConfigBeanMapper = PowerMock.createMock(BeanMapper.class);
+        EasyMock.expect(mockConfigBeanMapper.readValue(EasyMock.eq(writeString), EasyMock.isA(BeanTypeReference.class))).andReturn(new ArrayList<MetaDataColumnBean>()).anyTimes();
+        EasyMock.expect(mockConfigBeanMapper.readValue(EasyMock.eq("testException"), EasyMock.isA(BeanTypeReference.class))).andThrow(new Exception("Just Test Exception")).anyTimes();
         BaseMetaDataColumnListConverter converter = PowerMock.createMock(BaseMetaDataColumnListConverter.class, mockConfigBeanMapper);
-        ConfigBeanTypeReference mockConfigBeanTypeReference = PowerMock.createMock(ConfigBeanTypeReference.class);
+        BeanTypeReference mockConfigBeanTypeReference = PowerMock.createMock(BeanTypeReference.class);
         EasyMock.expect(converter.getConfigBeanTypeReference()).andReturn(mockConfigBeanTypeReference).anyTimes();
         PowerMock.replayAll();
         List<MetaDataColumnBean> rule = converter.convertToEntityAttribute(writeString);

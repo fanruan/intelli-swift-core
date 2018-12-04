@@ -1,11 +1,9 @@
 package com.fr.swift.service;
 
 import com.fr.event.EventDispatcher;
-import com.fr.swift.SwiftContext;
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -54,7 +52,6 @@ import java.util.concurrent.Callable;
  * @since Advanced FineBI 5.0
  */
 @SwiftService(name = "collate")
-@SwiftBean(name = "collate")
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
     private static final long serialVersionUID = 7259915342007294244L;
@@ -82,7 +79,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         database = SwiftDatabase.getInstance();
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
-        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
         repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
         return true;
     }

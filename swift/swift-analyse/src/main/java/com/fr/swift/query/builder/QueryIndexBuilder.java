@@ -14,9 +14,9 @@ import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.LocalIndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SourceKey;
 
 import java.net.URI;
