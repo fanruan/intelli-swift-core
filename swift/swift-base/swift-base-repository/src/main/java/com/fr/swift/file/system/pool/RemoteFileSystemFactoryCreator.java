@@ -13,19 +13,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author yee
  * @date 2018/7/5
  */
-public class RemoteFactoryCreator {
-    private static RemoteFactoryCreator creator;
+public class RemoteFileSystemFactoryCreator {
+    private static RemoteFileSystemFactoryCreator creator;
     private Map<String, SwiftFileSystemFactory> factoryMap = new ConcurrentHashMap<String, SwiftFileSystemFactory>();
 
-    private RemoteFactoryCreator() {
+    private RemoteFileSystemFactoryCreator() {
         init();
     }
 
-    public static RemoteFactoryCreator creator() {
+    public static RemoteFileSystemFactoryCreator creator() {
         if (null == creator) {
-            synchronized (RemoteFactoryCreator.class) {
+            synchronized (RemoteFileSystemFactoryCreator.class) {
                 if (null == creator) {
-                    creator = new RemoteFactoryCreator();
+                    creator = new RemoteFileSystemFactoryCreator();
                 }
             }
         }

@@ -20,6 +20,7 @@
         <module>swift-config-fr</module>
         <module>swift-bean-fr</module>
         <module>swift-repo-fr</module>
+        <module>swift-jdbc-emb</module>
     </modules>
     <properties>
         <fr.version>10.0-FEATURE-SNAPSHOT</fr.version>

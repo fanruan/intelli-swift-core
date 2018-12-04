@@ -1,6 +1,6 @@
 package com.fr.swift.config.convert.hibernate;
 
-import com.fr.swift.config.json.ConfigBeanMapper;
+import com.fr.swift.base.json.mapper.BeanMapper;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Strings;
 
@@ -11,9 +11,9 @@ import java.net.URI;
  * @date 2018/5/24
  */
 public abstract class BaseURIConverter implements ConfigAttributeConverter<URI, String> {
-    private ConfigBeanMapper mapper;
+    private BeanMapper mapper;
 
-    public BaseURIConverter(ConfigBeanMapper mapper) {
+    public BaseURIConverter(BeanMapper mapper) {
         this.mapper = mapper;
     }
 

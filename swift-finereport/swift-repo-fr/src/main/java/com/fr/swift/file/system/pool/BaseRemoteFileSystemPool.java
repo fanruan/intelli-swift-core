@@ -1,14 +1,14 @@
 package com.fr.swift.file.system.pool;
 
 import com.fr.swift.file.system.SwiftFileSystem;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import com.fr.third.org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 
 /**
  * @author yee
- * @date 2018/7/5
+ * @date 2018-12-03
  */
-public class BaseRemoteSystemPool<T extends SwiftFileSystem> extends GenericKeyedObjectPool<String, T> implements RemoteSystemPool<T> {
-    public BaseRemoteSystemPool(BaseRemoteSystemPoolFactory factory) {
+public class BaseRemoteFileSystemPool<T extends SwiftFileSystem> extends GenericKeyedObjectPool<String, T> implements RemoteFileSystemPool<T> {
+    public BaseRemoteFileSystemPool(BaseRemoteSystemPoolFactory factory) {
         super(factory);
     }
 

@@ -50,10 +50,6 @@ public final class Strings {
         return trimSeparator(s, "\\", "/");
     }
 
-    public static boolean isEmpty(Object str) {
-        return str == null || "".equals(str);
-    }
-
     public static boolean hasLength(CharSequence str) {
         return str != null && str.length() > 0;
     }
@@ -79,7 +75,7 @@ public final class Strings {
     }
 
     public static boolean isNotEmpty(String string) {
-        return null != string && !EMPTY.equals(string.trim());
+        return !isEmpty(string);
     }
 
     public static String rightPad(String str, int length) {
@@ -87,9 +83,28 @@ public final class Strings {
         if (offset <= 0) {
             return str;
         } else {
-            char[] var3 = new char[offset];
-            Arrays.fill(var3, ' ');
-            return str + String.valueOf(var3);
+            char[] chars = new char[offset];
+            Arrays.fill(chars, ' ');
+            return str + String.valueOf(chars);
         }
+    }
+
+    public static boolean isNotBlank(String str) {
+        return !isBlank(str);
+    }
+
+    public static boolean isBlank(String str) {
+        int len = str.length();
+        return isEmpty(str) || len == 0 || isBlank(str, len);
+    }
+
+    private static boolean isBlank(String str, int len) {
+        for (int i = 0; i < len; ++i) {
+            if (!Character.isWhitespace(str.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

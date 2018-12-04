@@ -21,7 +21,6 @@
         <module>swift-defragmentation</module>
         <module>swift-history</module>
         <module>swift-indexing</module>
-        <module>swift-jdbc-emb</module>
         <module>swift-master</module>
         <module>swift-realtime</module>
         <module>swift-server</module>

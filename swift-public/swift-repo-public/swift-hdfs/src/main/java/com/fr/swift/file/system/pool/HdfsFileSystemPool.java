@@ -16,7 +16,7 @@ import java.net.URI;
  * @author yee
  * @date 2018/7/5
  */
-public class HdfsFileSystemPool extends BaseRemoteSystemPool {
+public class HdfsFileSystemPool extends BaseRemoteFileSystemPool {
 
     public HdfsFileSystemPool(HdfsRepositoryConfig config) {
         super(new HdfsFileSystemPoolFactory(config));

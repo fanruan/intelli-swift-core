@@ -3,7 +3,7 @@ package com.fr.swift.file.system.factory;
 import com.fr.swift.file.system.annotation.FileSystemFactory;
 import com.fr.swift.file.system.impl.FtpFileSystemImpl;
 import com.fr.swift.file.system.pool.FtpFileSystemPool;
-import com.fr.swift.file.system.pool.RemoteSystemPool;
+import com.fr.swift.file.system.pool.RemoteFileSystemPool;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
 
 
@@ -15,7 +15,7 @@ import com.fr.swift.repository.config.FtpRepositoryConfig;
 public class SwiftFtpFileSystemFactory extends BasePooledFileSystemFactory<FtpFileSystemImpl, FtpRepositoryConfig> {
 
     @Override
-    protected RemoteSystemPool<FtpFileSystemImpl> createPool(FtpRepositoryConfig config) {
+    protected RemoteFileSystemPool<FtpFileSystemImpl> createPool(FtpRepositoryConfig config) {
         return new FtpFileSystemPool(config);
     }
 }
