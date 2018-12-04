@@ -1,4 +1,4 @@
-package com.fr.swift.segment.recover;
+package com.fr.swift.segment.recovery;
 
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.log.SwiftLoggers;
@@ -6,6 +6,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
+import com.fr.swift.segment.recover.AbstractSegmentRecovery;
 
 import java.util.List;
 

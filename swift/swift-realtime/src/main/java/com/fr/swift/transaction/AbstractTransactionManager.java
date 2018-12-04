@@ -1,7 +1,6 @@
 package com.fr.swift.transaction;
 
 
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.segment.Segment;

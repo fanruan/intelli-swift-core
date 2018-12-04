@@ -1,5 +1,6 @@
-package com.fr.swift.segment.recover;
+package com.fr.swift.segment.recovery;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
@@ -11,7 +12,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
-import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.sql.SQLException;

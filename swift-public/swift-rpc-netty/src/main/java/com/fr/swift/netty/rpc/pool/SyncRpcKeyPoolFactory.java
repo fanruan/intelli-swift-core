@@ -3,9 +3,9 @@ package com.fr.swift.netty.rpc.pool;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.client.sync.SyncRpcClientHandler;
-import com.fr.third.org.apache.commons.pool2.PooledObject;
-import com.fr.third.org.apache.commons.pool2.impl.DefaultPooledObject;
 import io.netty.channel.ChannelFuture;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 /**
  * This class created on 2018/8/1
