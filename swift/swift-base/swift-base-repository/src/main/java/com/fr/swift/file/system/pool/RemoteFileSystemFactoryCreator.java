@@ -33,7 +33,7 @@ public class RemoteFileSystemFactoryCreator {
     }
 
     private void init() {
-        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansWithAnnotation(FileSystemFactory.class);
+        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansByAnnotations(FileSystemFactory.class);
         if (null != serviceBeanMap && !serviceBeanMap.isEmpty()) {
             for (Object factoryBean : serviceBeanMap.values()) {
                 FileSystemFactory factory = factoryBean.getClass().getAnnotation(FileSystemFactory.class);

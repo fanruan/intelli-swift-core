@@ -1,5 +1,6 @@
 package com.fr.swift.file.system.factory;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.file.system.annotation.FileSystemFactory;
 import com.fr.swift.file.system.impl.FtpFileSystemImpl;
 import com.fr.swift.file.system.pool.FtpFileSystemPool;
@@ -12,6 +13,7 @@ import com.fr.swift.repository.config.FtpRepositoryConfig;
  * @date 2018/8/21
  */
 @FileSystemFactory(name = "FTP")
+@SwiftBean(name = "FTP")
 public class SwiftFtpFileSystemFactory extends BasePooledFileSystemFactory<FtpFileSystemImpl, FtpRepositoryConfig> {
 
     @Override

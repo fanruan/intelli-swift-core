@@ -90,7 +90,7 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-boot</artifactId>
+            <artifactId>swift-conf-public</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
