@@ -1,7 +1,7 @@
 package com.fr.swift.config;
 
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;

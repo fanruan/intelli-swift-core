@@ -1,8 +1,8 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.config.DataSyncRule;
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Collections;

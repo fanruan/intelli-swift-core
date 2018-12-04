@@ -18,6 +18,7 @@
         <module>swift-log-adaptor</module>
         <module>swift-rpc-fr</module>
         <module>swift-config-fr</module>
+        <module>swift-bean-fr</module>
         <module>swift-repo-fr</module>
     </modules>
     <properties>
