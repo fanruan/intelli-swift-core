@@ -3,12 +3,12 @@ package com.fr.swift.decision.config;
 import com.fr.config.ConfigContext;
 import com.fr.config.Configuration;
 import com.fr.config.holder.factory.Holders;
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.ContextUtil;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.decision.config.base.SwiftAbstractSimpleConfig;
+import com.fr.swift.util.Strings;
 import com.fr.transaction.Configurations;
 import com.fr.transaction.Worker;
 
@@ -43,13 +43,8 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
         addOrUpdate(path);
     }
 
-    @Override
-    public String get() {
-        String path = super.get();
-        if (StringUtils.isEmpty(path)) {
-            path = SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
-        }
-        return StringUtils.isEmpty(path) ? BASE_CUBE_PATH : path;
+    private static boolean isValidPath(String path) {
+        return path != null && !Strings.isBlank(path);
     }
 
     @Override
@@ -71,8 +66,13 @@ public class SwiftCubePathConfig extends SwiftAbstractSimpleConfig<String> {
         return false;
     }
 
-    private static boolean isValidPath(String path) {
-        return path != null && !StringUtils.isBlank(path);
+    @Override
+    public String get() {
+        String path = super.get();
+        if (Strings.isEmpty(path)) {
+            path = SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
+        }
+        return Strings.isEmpty(path) ? BASE_CUBE_PATH : path;
     }
 
     @Override
