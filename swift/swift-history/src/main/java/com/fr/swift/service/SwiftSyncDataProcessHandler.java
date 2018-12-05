@@ -134,7 +134,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
         Set<SegmentKey> segmentKeys = (Set<SegmentKey>) args[0];
         Map<SourceKey, List<SegmentDestination>> destinations = (Map<SourceKey, List<SegmentDestination>>) args[2];
 
-        Map<String, Set<SegmentKey>> segkeyDistribution = dataSyncRuleService.getCurrentRule().calculate(nodeIds, segmentKeys, destinations);
+        Map<String, Set<SegmentKey>> segkeyDistribution = dataSyncRuleService.getCurrentRule().getNeedLoadAndUpdateDestinations(nodeIds, segmentKeys, destinations);
 
         Map<URL, Set<SegmentKey>> urlResultMap = new HashMap<URL, Set<SegmentKey>>();
         for (Map.Entry<String, Set<SegmentKey>> segkeyEntry : segkeyDistribution.entrySet()) {

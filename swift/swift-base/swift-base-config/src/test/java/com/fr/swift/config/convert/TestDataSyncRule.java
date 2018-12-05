@@ -25,7 +25,7 @@ public class TestDataSyncRule implements DataSyncRule {
     }
 
     @Override
-    public Map<String, Set<SegmentKey>> calculate(Set<String> nodeIds, Set<SegmentKey> needLoads, Map<SourceKey, List<SegmentDestination>> destinations) {
+    public Map<String, Set<SegmentKey>> getNeedLoadAndUpdateDestinations(Set<String> nodeIds, Set<SegmentKey> needLoads, Map<SourceKey, List<SegmentDestination>> destinations) {
         return Collections.emptyMap();
     }
 
