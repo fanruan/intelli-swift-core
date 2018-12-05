@@ -1,6 +1,5 @@
 package com.fr.swift.segment.column.impl.base;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.cube.io.Types.DataType;
@@ -9,6 +8,7 @@ import com.fr.swift.cube.io.input.ObjectReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.ObjectWriter;
 import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.util.Strings;
 
 import java.util.Comparator;
 
@@ -42,7 +42,7 @@ public class StringDictColumn extends BaseDictColumn<String, ObjectReader<String
 
     @Override
     public int getIndex(Object value) {
-        if (value == null || StringUtils.isBlank(value.toString())) {
+        if (value == null || Strings.isBlank(value.toString())) {
             return 0;
         }
         return super.getIndex(value);

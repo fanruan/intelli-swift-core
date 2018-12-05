@@ -1,6 +1,5 @@
 package com.fr.swift.query.group.impl;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.sort.SortType;
@@ -8,6 +7,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.util.Util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -128,7 +128,7 @@ public class BaseSortByOtherDimensionGroupRule<Base, Derive> extends BaseGroupRu
 
     public int getIndex(Object val) {
         for (int i = 0; i < dictColumn.size(); i++) {
-            if (ComparatorUtils.equals(getValue(i), val)) {
+            if (Util.equals(getValue(i), val)) {
                 return i;
             }
         }

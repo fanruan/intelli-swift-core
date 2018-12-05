@@ -4,8 +4,8 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
-import com.fr.swift.source.ColumnTypeConstants;
-import com.fr.swift.source.etl.utils.FormulaUtils;
+//import com.fr.swift.source.ColumnTypeConstants;
+//import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 
 /**
@@ -15,10 +15,10 @@ public class FormulaIndexColumn implements BitmapIndexedColumn {
     private ImmutableBitMap nullIndex;
 
     public FormulaIndexColumn(String formula, Segment segment) {
-        ColumnTypeConstants.ColumnType type = FormulaUtils.getColumnType(segment.getMetaData(), formula);
-        if (type != ColumnTypeConstants.ColumnType.NUMBER) {
-            nullIndex = AllShowBitMap.of(segment.getRowCount());
-        }
+//        ColumnTypeConstants.ColumnType type = FormulaUtils.getColumnType(segment.getMetaData(), formula);
+//        if (type != ColumnTypeConstants.ColumnType.NUMBER) {
+//            nullIndex = AllShowBitMap.of(segment.getRowCount());
+//        }
     }
 
     @Override

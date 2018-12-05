@@ -10,7 +10,6 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rm.collector.MasterHeartbeatCollect;
-import com.fr.swift.rm.collector.MasterSynchronizer;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftManager;
 import com.fr.swift.service.SwiftService;
@@ -33,7 +32,7 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
 
     private Collect heartBeatCollect = new MasterHeartbeatCollect();
 
-    private MasterSynchronizer masterSyncRunnable = new MasterSynchronizer();
+//    private MasterSynchronizer masterSyncRunnable = new MasterSynchronizer();
 
     @Override
     public void startUp() throws Exception {
@@ -42,7 +41,7 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
             if (!running) {
                 ClusterSwiftServerService.getInstance().start();
                 heartBeatCollect.startCollect();
-                masterSyncRunnable.start();
+//                masterSyncRunnable.start();
                 String masterAddress = swiftProperty.getMasterAddress();
                 serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(ClusterNodeService.SERVICE, masterAddress, masterAddress, true));
                 super.startUp();
@@ -58,7 +57,7 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
         try {
             if (running) {
                 heartBeatCollect.stopCollect();
-                masterSyncRunnable.stop();
+//                masterSyncRunnable.stop();
                 super.shutDown();
             }
         } finally {

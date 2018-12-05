@@ -1,7 +1,8 @@
 package com.fr.swift.query.filter;
 
-import com.fr.invoke.Reflect;
-import com.fr.stable.StringUtils;
+//import com.fr.invoke.Reflect;
+//import com.fr.stable.StringUtils;
+
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.EmptyDetailFilter;
@@ -13,7 +14,6 @@ import com.fr.swift.query.filter.detail.impl.nfilter.TopNFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringEndsWithFilter;
-import com.fr.swift.query.filter.detail.impl.string.StringKeyWordFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringLikeFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringStartsWithFilter;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
@@ -22,6 +22,7 @@ import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.util.Strings;
 
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class DetailFilterFactory {
         int rowCount = segment.getRowCount();
         ColumnKey columnKey = filterInfo.getColumnKey();
         Column column;
-        if (null == columnKey || StringUtils.isEmpty(columnKey.getName())) {
+        if (null == columnKey || Strings.isEmpty(columnKey.getName())) {
             column = null;
         } else {
             column = segment == null ? null : segment.getColumn(columnKey);
@@ -70,10 +71,10 @@ public class DetailFilterFactory {
                 return new BottomNFilter((Integer) filterInfo.getFilterValue(), column);
             case NULL:
                 return new NullFilter(column);
-            case FORMULA:
-                return Reflect.on("com.fr.swift.query.filter.FormulaFilter").create(filterInfo.getFilterValue(), segment).get();
-            case KEY_WORDS:
-                return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
+//            case FORMULA:
+//                return Reflect.on("com.fr.swift.query.filter.FormulaFilter").create(filterInfo.getFilterValue(), segment).get();
+//            case KEY_WORDS:
+//                return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
             case EMPTY:
                 return new EmptyDetailFilter();
             default:

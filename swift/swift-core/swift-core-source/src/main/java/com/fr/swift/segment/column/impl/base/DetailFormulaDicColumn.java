@@ -8,7 +8,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
-import com.fr.swift.source.etl.utils.FormulaUtils;
+//import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 
 import java.util.Comparator;
@@ -25,14 +25,14 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     private DictionaryEncodedColumn hostColumn;
 
     public DetailFormulaDicColumn(String formula, Segment segment) {
-        this.formula = FormulaUtils.getParameterIndexEncodedFormula(formula);
-        this.segment = segment;
-        this.columnIndexMap = FormulaUtils.createColumnIndexMap(formula, segment);
-        String[] paras = FormulaUtils.getRelatedParaNames(formula);
-        //todo 先取一个用到的列暂时用下，如果一个都没用到，就
-        if (paras.length != 0) {
-            hostColumn = segment.getColumn(new ColumnKey(paras[0])).getDictionaryEncodedColumn();
-        }
+////        this.formula = FormulaUtils.getParameterIndexEncodedFormula(formula);
+////        this.segment = segment;
+////        this.columnIndexMap = FormulaUtils.createColumnIndexMap(formula, segment);
+////        String[] paras = FormulaUtils.getRelatedParaNames(formula);
+//        //todo 先取一个用到的列暂时用下，如果一个都没用到，就
+//        if (paras.length != 0) {
+//            hostColumn = segment.getColumn(new ColumnKey(paras[0])).getDictionaryEncodedColumn();
+//        }
     }
 
     @Override
