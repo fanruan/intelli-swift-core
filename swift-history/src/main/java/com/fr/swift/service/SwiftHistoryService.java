@@ -163,9 +163,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 taskExecutor.submit(new SwiftServiceCallable(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD) {
                     @Override
                     public void doJob() {
-                        download(sourceKey, uris, replace);
-                        SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
-                        latch.countDown();
+                        try {
+                            download(sourceKey, uris, replace);
+                            SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
+                        } finally {
+                            latch.countDown();
+                        }
                     }
                 });
             } catch (InterruptedException e) {

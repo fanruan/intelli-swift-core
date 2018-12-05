@@ -1,9 +1,11 @@
 package com.fr.log.impl;
 
 import com.fr.intelli.record.MetricRegistry;
+import com.fr.intelli.record.scene.Metric;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
-import com.fr.swift.adaptor.log.MetricProxy;
+
+import java.lang.reflect.Proxy;
 
 /**
  * @author anchore
@@ -13,7 +15,11 @@ public class LogImplActivator extends Activator implements Prepare {
 
     @Override
     public void start() {
-        MetricRegistry.register(MetricProxy.getInstance());
+        Metric metric = (Metric) Proxy.newProxyInstance(
+                Thread.currentThread().getContextClassLoader(),
+                new Class<?>[]{Metric.class},
+                MetricInvocationHandler.getInstance());
+        MetricRegistry.register(metric);
     }
 
     @Override

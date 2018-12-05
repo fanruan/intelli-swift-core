@@ -8,7 +8,9 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.jdbc.emb.EmbJdbcConnector;
 import com.fr.swift.jdbc.mode.Mode;
+import com.fr.swift.jdbc.result.SwiftPaginationResultSet;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -143,7 +145,11 @@ public class JdbcCaller implements TableService {
         @Override
         public SwiftResultSet query(SwiftDatabase database, String queryJson) throws Exception {
             Method method = SelectService.class.getDeclaredMethod("query", SwiftDatabase.class, String.class);
-            return invoke(SelectService.class, method, database, queryJson);
+            SwiftResultSet resultSet = invoke(SelectService.class, method, database, queryJson);
+            if (resultSet instanceof SerializableDetailResultSet) {
+                return new SwiftPaginationResultSet((SerializableDetailResultSet) resultSet, this, database);
+            }
+            return resultSet;
         }
     }
 

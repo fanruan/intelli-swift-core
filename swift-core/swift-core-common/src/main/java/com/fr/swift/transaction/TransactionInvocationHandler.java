@@ -52,15 +52,10 @@ public class TransactionInvocationHandler implements InvocationHandler {
     }
 
     private void rollback(Method method, Transactional transactional, Throwable e) {
-        if (transactional.value().isAssignableFrom(e.getClass())) {
-            SwiftLoggers.getLogger().error(
-                    String.format("Invoke %s.%s failed ! Do rollback!", method.getDeclaringClass().getSimpleName(), method.getName()));
-            transactionManager.rollback();
-            SwiftLoggers.getLogger().error("Rollback finished!");
-        } else {
-            SwiftLoggers.getLogger().error(
-                    String.format("Invoke %s.%s failed but exception is not right! Will not rollback!", method.getDeclaringClass().getSimpleName(), method.getName()));
-        }
+        SwiftLoggers.getLogger().error(
+                String.format("Invoke %s.%s failed ! Do rollback!", method.getDeclaringClass().getSimpleName(), method.getName()));
+        transactionManager.rollback();
+        SwiftLoggers.getLogger().error("Rollback finished!");
     }
 
 }

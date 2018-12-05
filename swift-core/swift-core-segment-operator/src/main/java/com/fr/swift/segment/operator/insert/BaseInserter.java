@@ -69,7 +69,12 @@ public abstract class BaseInserter {
 
         for (int i = 0; i < columns.size(); i++) {
             BitmapIndexedColumn bitmapIndex = columns.get(i).getBitmapIndex();
-            ImmutableBitMap nullIndex = readable ? bitmapIndex.getNullIndex() : BitMaps.newRoaringMutable();
+            ImmutableBitMap nullIndex;
+            try {
+                nullIndex = readable ? bitmapIndex.getNullIndex() : BitMaps.newRoaringMutable();
+            } catch (Exception e) {
+                nullIndex = BitMaps.newRoaringMutable();
+            }
             MutableBitMap newNullIndex = nullIndices.get(i);
             newNullIndex.or(nullIndex);
             bitmapIndex.putNullIndex(newNullIndex);
@@ -77,7 +82,13 @@ public abstract class BaseInserter {
     }
 
     protected void putSegmentInfo(int lastCursor, int cursor) {
-        ImmutableBitMap allShowIndex = CubeUtil.isReadable(segment) ? segment.getAllShowIndex() : AllShowBitMap.of(0);
+        ImmutableBitMap allShowIndex;
+        try {
+            allShowIndex = CubeUtil.isReadable(segment) ? segment.getAllShowIndex() : AllShowBitMap.of(0);
+        } catch (Exception e) {
+            allShowIndex = AllShowBitMap.of(0);
+        }
+
         if (allShowIndex.isFull()) {
             allShowIndex = AllShowBitMap.of(cursor);
         } else {

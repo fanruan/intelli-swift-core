@@ -38,7 +38,7 @@ public class RedisSegmentBackup implements SwiftSegmentBackup {
     public RedisSegmentBackup(Segment segment, Segment currentSegment, List<String> fields) {
         this.segment = segment;
         transactionManager = (TransactionManager) SwiftContext.get().getBean("transactionManager");
-        transactionManager.setOldAttatch(currentSegment);
+        transactionManager.setOldAttach(currentSegment);
 
     }
 
@@ -51,7 +51,7 @@ public class RedisSegmentBackup implements SwiftSegmentBackup {
         } catch (JsonProcessingException e) {
             SwiftLoggers.getLogger().error(e);
         }
-        RedisClientPipeline pipeline = ((RedisTransactionManager) transactionManager).getRedisPipline();
+        RedisClientPipeline pipeline = ((RedisTransactionManager) transactionManager).getRedisPipeline();
         pipeline.rPush(segment.getLocation().getPath(), json);
     }
 
