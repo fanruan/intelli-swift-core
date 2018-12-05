@@ -27,7 +27,7 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
     public FileSegmentBackup(Segment segment, Segment currentSegment, List<String> fields) {
         super(segment, fields);
         transactionManager = (TransactionManager) SwiftContext.get().getBean("transactionManager", segment);
-        transactionManager.setOldAttatch(currentSegment);
+        transactionManager.setOldAttach(currentSegment);
     }
 
     @Override

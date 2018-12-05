@@ -23,7 +23,7 @@ public class TransatcionTest extends TestCase {
             queue.put("123");
             TransactionProxyFactory proxyFactory = new TransactionProxyFactory(new TransactionManager() {
                 @Override
-                public void setOldAttatch(Object o) {
+                public void setOldAttach(Object o) {
 
                 }
 
@@ -40,11 +40,6 @@ public class TransatcionTest extends TestCase {
                 @Override
                 public void rollback() {
                     assertEquals(queue.poll(), "123");
-                }
-
-                @Override
-                public void release() {
-
                 }
 
                 @Override
