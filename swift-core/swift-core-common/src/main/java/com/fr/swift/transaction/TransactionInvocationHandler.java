@@ -46,7 +46,6 @@ public class TransactionInvocationHandler implements InvocationHandler {
             rollback(method, transactional, e);
             throw e;
         } finally {
-            transactionManager.release();
             transactionManager.close();
             MonitorUtil.finish(method.getName());
         }
