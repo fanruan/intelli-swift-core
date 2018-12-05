@@ -1,5 +1,7 @@
 package com.fr.swift.segment.backup;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.redis.RedisClient;
@@ -8,8 +10,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
 import com.fr.swift.transaction.RedisTransactionManager;
 import com.fr.swift.transaction.TransactionManager;
-import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
-import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 

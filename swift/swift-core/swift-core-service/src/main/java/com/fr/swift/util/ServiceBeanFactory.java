@@ -1,9 +1,9 @@
 package com.fr.swift.util;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.SwiftService;
-import com.fr.third.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,7 +55,7 @@ public class ServiceBeanFactory {
                     }
                     swiftServiceList.add(swiftService);
                 }
-            } catch (NoSuchBeanDefinitionException e) {
+            } catch (NoSuchBeanException e) {
                 continue;
             }
         }
@@ -73,7 +73,7 @@ public class ServiceBeanFactory {
                     }
                     serverServiceList.add(serverService);
                 }
-            } catch (NoSuchBeanDefinitionException e) {
+            } catch (NoSuchBeanException e) {
                 continue;
             }
         }

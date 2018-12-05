@@ -15,7 +15,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.recover.FileSegmentRecovery;
-import com.fr.swift.segment.recover.RedisSegmentRecovery;
+import com.fr.swift.segment.recovery.RedisSegmentRecovery;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;

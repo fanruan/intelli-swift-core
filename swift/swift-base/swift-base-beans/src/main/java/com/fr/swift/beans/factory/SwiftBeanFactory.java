@@ -64,7 +64,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
                 singletonObjects.put(swiftBeanDefinition.getBeanName(), singletonObject);
                 beanNamesLoaded.add(swiftBeanDefinition.getBeanName());
             } catch (Exception ignore) {
-                SwiftLoggers.getLogger().error(ignore);
+                SwiftLoggers.getLogger().debug(ignore);
             }
         }
         if (beanNamesLoaded.isEmpty() && !singletonNotLoadNames.isEmpty()) {
