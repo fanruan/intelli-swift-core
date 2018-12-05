@@ -4,6 +4,7 @@ import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
+import com.fr.swift.api.rpc.impl.rs.SerializableResultSetImpl;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.SwiftDatabase;
@@ -11,7 +12,6 @@ import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryBeanFactory;
 import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -61,7 +61,7 @@ class SelectServiceImpl implements SelectService {
     }
 
     // 不管分组还是明细，api返回的都是行结果
-    private SerializableDetailResultSet getPageResultSet(String jsonString, SwiftResultSet resultSet) throws SQLException {
+    private SwiftResultSet getPageResultSet(String jsonString, SwiftResultSet resultSet) throws SQLException {
         List<Row> rows = new ArrayList<Row>();
         int fetchSize = resultSet.getFetchSize();
         int count = 0;
@@ -73,7 +73,7 @@ class SelectServiceImpl implements SelectService {
         if (resultSet instanceof DetailResultSet) {
             rowCount = ((DetailResultSet) resultSet).getRowCount();
         }
-        return new SerializableDetailResultSet(jsonString, resultSet.getMetaData(), rows, resultSet.hasNext(), rowCount);
+        return new SerializableResultSetImpl(jsonString, resultSet.getMetaData(), rows, resultSet.hasNext(), rowCount);
     }
 
     private AnalyseService getAnalyseService() {

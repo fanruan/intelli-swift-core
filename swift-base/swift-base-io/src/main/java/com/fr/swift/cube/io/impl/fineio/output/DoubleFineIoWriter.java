@@ -15,9 +15,9 @@ import java.net.URI;
 public class DoubleFineIoWriter extends BaseFineIoWriter<DoubleBuffer> implements DoubleWriter {
     private DoubleFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_DOUBLE);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_DOUBLE, true);
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_DOUBLE);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_DOUBLE, true);
         }
     }
 
