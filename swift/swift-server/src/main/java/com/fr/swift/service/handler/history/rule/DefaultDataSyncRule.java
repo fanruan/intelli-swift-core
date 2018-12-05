@@ -58,7 +58,7 @@ public class DefaultDataSyncRule implements DataSyncRule {
         return result;
     }
 
-    //从seg最少的node开始，取less个不含有当前segId的节点
+    //从seg最少的node开始，取less个不含有当前segId的node
     private List<NodeSegmentsPair> getSegmentParis(int lessCount, NodeSegmentsPair[] nodeSegs, String id) {
         if (nodeSegs.length == 0) {
             throw new RuntimeException("NodeSortMap is empty");
