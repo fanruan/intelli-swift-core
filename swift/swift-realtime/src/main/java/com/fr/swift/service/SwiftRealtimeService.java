@@ -1,15 +1,15 @@
 package com.fr.swift.service;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
@@ -110,6 +110,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         SwiftLoggers.getLogger().info("recover");
     }
 
+    /**
+     * todo SwiftHistoryService
+     */
     @Override
     public SwiftResultSet query(final String queryDescription) throws SQLException {
         try {
@@ -122,6 +125,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         }
     }
 
+    /**
+     * todo 公用实现，SwiftHistoryService
+     */
     @Override
     public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
         Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
@@ -140,9 +146,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
                     if (needUpload.contains(segKey.toString())) {
                         if (allShowBitmap.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
+                            SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
-                            EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
+                            SwiftEventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
                         }
                     }
                 }

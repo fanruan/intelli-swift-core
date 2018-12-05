@@ -1,8 +1,8 @@
 package com.fr.swift.redis;
 
 import com.fr.swift.SwiftContext;
-import com.fr.third.redis.clients.jedis.Jedis;
-import com.fr.third.redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 
 /**
  * This class created on 2018/6/26

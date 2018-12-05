@@ -1,8 +1,7 @@
 package com.fr.swift.cube.queue;
 
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -33,10 +32,10 @@ public class StuffFetcher implements Runnable {
     }
 
     private void initListener() {
-        EventDispatcher.listen(TaskEvent.TRIGGER, new Listener<TaskKey>() {
+        SwiftEventDispatcher.listen(TaskEvent.TRIGGER, new SwiftEventListener<TaskKey>() {
             @Override
-            public void on(Event event, TaskKey taskKey) {
-                EventDispatcher.fire(TaskEvent.RUN, Collections.singletonMap(taskKey, taskInfos.get(taskKey)));
+            public void on(TaskKey taskKey) {
+                SwiftEventDispatcher.fire(TaskEvent.RUN, Collections.singletonMap(taskKey, taskInfos.get(taskKey)));
             }
         });
     }

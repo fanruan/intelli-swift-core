@@ -1,6 +1,5 @@
 package com.fr.swift.service.handler.global;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
@@ -10,6 +9,7 @@ import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
@@ -51,7 +51,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         switch (event.subEvent()) {
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
-                EventDispatcher.fire(TaskEvent.DONE, pair);
+                SwiftEventDispatcher.fire(TaskEvent.DONE, pair);
                 break;
             case CLEAN:
                 String[] sourceKeys = (String[]) event.getContent();

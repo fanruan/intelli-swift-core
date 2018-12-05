@@ -1,8 +1,7 @@
 package com.fr.swift.task.impl;
 
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.task.SchedulerTask;
 import com.fr.swift.task.TaskKey;
@@ -26,9 +25,9 @@ public class SchedulerTaskPool extends BaseTaskPool<SchedulerTask> {
     }
 
     public void initListener() {
-        EventDispatcher.listen(TaskEvent.DONE, new Listener<Pair<TaskKey, TaskResult>>() {
+        SwiftEventDispatcher.listen(TaskEvent.DONE, new SwiftEventListener<Pair<TaskKey, TaskResult>>() {
             @Override
-            public void on(Event event, Pair<TaskKey, TaskResult> result) {
+            public void on(Pair<TaskKey, TaskResult> result) {
                 get(result.getKey()).onDone(result.getValue());
             }
         });

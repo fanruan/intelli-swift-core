@@ -64,7 +64,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
                 singletonObjects.put(swiftBeanDefinition.getBeanName(), singletonObject);
                 beanNamesLoaded.add(swiftBeanDefinition.getBeanName());
             } catch (Exception ignore) {
-                SwiftLoggers.getLogger().error(ignore);
+                SwiftLoggers.getLogger().debug(ignore);
             }
         }
         if (beanNamesLoaded.isEmpty() && !singletonNotLoadNames.isEmpty()) {
@@ -126,10 +126,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
     @Override
     public boolean isTypeMatch(String name, Class<?> typeToMatch) {
         List<String> names = getBeanNamesByType(typeToMatch);
-        if (names.contains(name)) {
-            return true;
-        }
-        return false;
+        return names.contains(name);
     }
 
     @Override

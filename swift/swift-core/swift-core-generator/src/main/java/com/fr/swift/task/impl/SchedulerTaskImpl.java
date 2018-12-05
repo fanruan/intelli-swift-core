@@ -1,6 +1,6 @@
 package com.fr.swift.task.impl;
 
-import com.fr.event.EventDispatcher;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.task.SchedulerTask;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
@@ -25,7 +25,7 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
 
     @Override
     public void cancel() {
-        EventDispatcher.fire(TaskEvent.CANCEL, key);
+        SwiftEventDispatcher.fire(TaskEvent.CANCEL, key);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
             }
         }
         setStatus(Status.RUNNABLE);
-        EventDispatcher.fire(TaskEvent.TRIGGER, key);
+        SwiftEventDispatcher.fire(TaskEvent.TRIGGER, key);
     }
 
     @Override

@@ -21,6 +21,7 @@
         <junit.version>4.12</junit.version>
         <easymock.version>3.4</easymock.version>
         <powermock.version>1.7.4</powermock.version>
+        <fineio.version>2.0-RELEASE-SNAPSHOT</fineio.version>
     </properties>
 
     <build>
@@ -70,6 +71,16 @@
             <artifactId>powermock-api-easymock</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fineio</groupId>
+            <artifactId>fineio</artifactId>
+            <version>${fineio.version}</version>
         </dependency>
     </dependencies>
 </project>

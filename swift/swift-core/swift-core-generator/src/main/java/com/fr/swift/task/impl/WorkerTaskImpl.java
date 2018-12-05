@@ -1,6 +1,6 @@
 package com.fr.swift.task.impl;
 
-import com.fr.event.EventDispatcher;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
@@ -57,6 +57,6 @@ public class WorkerTaskImpl extends BaseTask implements WorkerTask {
     }
 
     private void triggerDoneEvent(final TaskResult result) {
-        EventDispatcher.fire(TaskEvent.LOCAL_DONE, Pair.of(key, result));
+        SwiftEventDispatcher.fire(TaskEvent.LOCAL_DONE, Pair.of(key, result));
     }
 }

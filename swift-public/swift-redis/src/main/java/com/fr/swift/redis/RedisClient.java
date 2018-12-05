@@ -4,10 +4,10 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.third.org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import com.fr.third.redis.clients.jedis.Jedis;
-import com.fr.third.redis.clients.jedis.JedisPool;
-import com.fr.third.redis.clients.jedis.JedisPoolConfig;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.List;
 

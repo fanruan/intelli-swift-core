@@ -1,7 +1,5 @@
 package com.fr.swift.redis;
 
-import com.fr.third.org.redisson.client.RedisException;
-
 /**
  * This class created on 2018/6/21
  *
@@ -9,7 +7,7 @@ import com.fr.third.org.redisson.client.RedisException;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftRedisException extends RedisException {
+public class SwiftRedisException extends RuntimeException {
 
     public SwiftRedisException() {
     }
