@@ -1,4 +1,4 @@
-package com.fr.swift.core.cluster;
+package com.fr.swift.cluster.core.cluster;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;

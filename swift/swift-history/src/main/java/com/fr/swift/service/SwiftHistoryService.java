@@ -12,7 +12,6 @@ import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.io.Types;
@@ -28,21 +27,18 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.session.factory.SessionFactory;
-import com.fr.swift.repository.SwiftRepository;
-import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
-import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
@@ -51,7 +47,6 @@ import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -79,10 +74,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     private transient ServiceTaskExecutor taskExecutor;
 
-    private transient SwiftCubePathService pathService;
-
-    private transient SwiftMetaDataService metaDataService;
-
     private transient SwiftTablePathService tablePathService;
 
     private transient SwiftSegmentService segmentService;
@@ -102,63 +93,31 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         super.start();
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
-        pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
-        metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         segmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
         loadDataService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftHistoryService.class));
         cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
-        checkSegmentExists();
+        final Map<SourceKey, Set<String>> needLoad = SegmentHelper.checkSegmentExists(segmentService, segmentManager);
+        loadDataService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    load(needLoad, false);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().warn(e);
+                }
+            }
+        });
         ClusterListenerHandler.addExtraListener(historyClusterListener);
         return true;
     }
 
-    private void checkSegmentExists() {
-        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-        Map<SourceKey, List<SegmentKey>> map = segmentService.getOwnSegments();
-        for (Map.Entry<SourceKey, List<SegmentKey>> entry : map.entrySet()) {
-            SourceKey table = entry.getKey();
-            List<SegmentKey> value = entry.getValue();
-            List<SegmentKey> notExists = new ArrayList<SegmentKey>();
-            final Map<SourceKey, Set<String>> needDownload = new HashMap<SourceKey, Set<String>>();
-            for (SegmentKey segmentKey : value) {
-                if (segmentKey.getStoreType().isPersistent()) {
-                    if (!segmentManager.getSegment(segmentKey).isReadable()) {
-                        String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
-                        if (repository.exists(remotePath)) {
-                            if (null == needDownload.get(table)) {
-                                needDownload.put(table, new HashSet<String>());
-                            }
-                            needDownload.get(table).add(remotePath);
-                        } else {
-                            notExists.add(segmentKey);
-                        }
-                    }
-                }
-            }
-            if (!needDownload.isEmpty()) {
-                loadDataService.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            load(needDownload, false);
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
-                    }
-                });
-            }
-            segmentService.removeSegments(notExists);
-        }
-    }
 
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
         segmentManager = null;
         taskExecutor = null;
-        pathService = null;
-        metaDataService = null;
         tablePathService = null;
         loadDataService.shutdown();
         loadDataService = null;
@@ -200,7 +159,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 futures.add(taskExecutor.submit(new SwiftServiceCallable<Void>(sourceKey, ServiceTaskType.DOWNLOAD, new Callable<Void>() {
                     @Override
                     public Void call() {
-                        download(sourceKey.getId(), uris, replace);
+                        SegmentHelper.download(sourceKey.getId(), uris, replace);
                         SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
                         return null;
                     }
@@ -215,56 +174,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         }
     }
 
-    private void download(String sourceKey, Set<String> sets, boolean replace) {
-        String path = pathService.getSwiftPath();
-        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-        SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
-        int tmp = 0;
-        SwiftTablePathBean entity = tablePathService.get(sourceKey);
-        if (null == entity) {
-            entity = new SwiftTablePathBean(sourceKey, tmp);
-            tablePathService.saveOrUpdate(entity);
-            replace = true;
-        } else {
-            tmp = entity.getTablePath() == null ? -1 : entity.getTablePath();
-            if (replace) {
-                tmp += 1;
-                entity.setTmpDir(tmp);
-                tablePathService.saveOrUpdate(entity);
-            }
-        }
 
-        boolean downloadSuccess = true;
-        for (String uri : sets) {
-            String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), tmp, uri);
-            String remotePath = String.format("%s/%s", metaData.getSwiftDatabase().getDir(), uri);
-            try {
-                repository.copyFromRemote(remotePath, cubePath);
-            } catch (Exception e) {
-                downloadSuccess = false;
-                SwiftLoggers.getLogger().error("Download " + sourceKey + " with error! ", e);
-                break;
-            }
-        }
-
-        if (replace && downloadSuccess) {
-            entity = tablePathService.get(sourceKey);
-            int current = entity.getTablePath() == null ? -1 : entity.getTablePath();
-            entity.setLastPath(current);
-            entity.setTablePath(tmp);
-            tablePathService.saveOrUpdate(entity);
-            String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), current, sourceKey);
-            FileUtil.delete(cubePath);
-            new File(cubePath).getParentFile().delete();
-        }
-        if (downloadSuccess) {
-            SourceKey table = new SourceKey(sourceKey);
-            SegmentContainer.NORMAL.remove(table);
-            SegmentContainer.INDEXING.remove(table);
-            SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(table);
-            SwiftLoggers.getLogger().info("Download {} {}successful", sourceKey, sets);
-        }
-    }
 
 
     @Override
@@ -363,43 +273,20 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         }
 
         private void checkSegmentExists() {
-            SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
             SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
             segmentService.setClusterId(getID());
-            Map<SourceKey, List<SegmentKey>> map = segmentService.getOwnSegments();
-            for (Map.Entry<SourceKey, List<SegmentKey>> entry : map.entrySet()) {
-                SourceKey table = entry.getKey();
-                List<SegmentKey> value = entry.getValue();
-                List<SegmentKey> notExists = new ArrayList<SegmentKey>();
-                final Map<SourceKey, Set<String>> needDownload = new HashMap<SourceKey, Set<String>>();
-                for (SegmentKey segmentKey : value) {
-                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
-                        if (!segmentManager.getSegment(segmentKey).isReadable()) {
-                            String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
-                            if (repository.exists(remotePath)) {
-                                if (null == needDownload.get(table)) {
-                                    needDownload.put(table, new HashSet<String>());
-                                }
-                                needDownload.get(table).add(remotePath);
-                            } else {
-                                notExists.add(segmentKey);
-                            }
+            final Map<SourceKey, Set<String>> needDownload = SegmentHelper.checkSegmentExists(segmentService, segmentManager);
+            if (!needDownload.isEmpty()) {
+                loadDataService.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            load(needDownload, false);
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().warn(e);
                         }
                     }
-                }
-                if (!needDownload.isEmpty()) {
-                    loadDataService.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                load(needDownload, false);
-                            } catch (Exception e) {
-                                SwiftLoggers.getLogger().error(e);
-                            }
-                        }
-                    });
-                }
-                segmentService.removeSegments(notExists);
+                });
             }
         }
 

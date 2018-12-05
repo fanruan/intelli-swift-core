@@ -175,7 +175,7 @@ public class FormulaUtils {
         int parameterCount = 0;
         while (matcher.find()) {
             String matchStr = matcher.group(0);
-            expression = expression.replace(matchStr, "$" + String.valueOf(parameterCount));
+            expression = expression.replace(matchStr, "$" + parameterCount);
             parameterCount++;
         }
         return "=" + expression;

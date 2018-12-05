@@ -1,6 +1,5 @@
 package com.fr.swift.query.post.meta;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
@@ -16,6 +15,7 @@ import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.Strings;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -45,8 +45,8 @@ public class GroupMetaDataCreator implements MetaDataCreator<GroupQueryInfoBean>
         for (MetricBean metricBean : metricBeans) {
             String alias = metricBean.getAlias();
             String column = metricBean.getColumn();
-            SwiftMetaDataColumn metaDataColumn = StringUtils.isEmpty(column) ?
-                    new MetaDataColumnBean(StringUtils.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
+            SwiftMetaDataColumn metaDataColumn = Strings.isEmpty(column) ?
+                    new MetaDataColumnBean(Strings.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
             String name = alias == null ? column : alias;
             metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
                     metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));

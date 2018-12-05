@@ -35,30 +35,31 @@ public class EtlTransfer implements SwiftSourceTransfer {
 
     @Override
     public SwiftResultSet createResultSet() {
-        SwiftResultSet resultSet =  operator.createResultSet(metaData, basedMetas, basedSegments);
-        if (fieldsInfo == null || fieldsInfo.isEmpty()){
+        SwiftResultSet resultSet = operator.createResultSet(metaData, basedMetas, basedSegments);
+        if (fieldsInfo == null || fieldsInfo.isEmpty()) {
             return resultSet;
         }
         int[] indexes = new int[fieldsInfo.size()];
         Iterator<Integer> it = fieldsInfo.keySet().iterator();
         int index = 0;
-        while (it.hasNext()){
+        while (it.hasNext()) {
             indexes[index++] = it.next();
         }
         return new RowShiftSwiftResultSet(resultSet, indexes);
     }
 
-    private class RowShiftSwiftResultSet implements SwiftResultSet{
+    private class RowShiftSwiftResultSet implements SwiftResultSet {
         private SwiftResultSet resultSet;
         private int[] indices;
+
         public RowShiftSwiftResultSet(SwiftResultSet resultSet, int[] indexes) {
-           this.resultSet = resultSet;
+            this.resultSet = resultSet;
             this.indices = indexes;
         }
 
         @Override
         public void close() throws SQLException {
-           resultSet.close();
+            resultSet.close();
         }
 
         @Override
@@ -82,7 +83,7 @@ public class EtlTransfer implements SwiftSourceTransfer {
         }
     }
 
-    private class ShiftRow implements Row{
+    private class ShiftRow implements Row {
         private static final long serialVersionUID = -537161590337548026L;
         private Row row;
         private int[] shiftIndex;

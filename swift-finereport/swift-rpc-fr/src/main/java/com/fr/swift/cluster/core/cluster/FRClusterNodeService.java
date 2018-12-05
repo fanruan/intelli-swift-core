@@ -1,4 +1,4 @@
-package com.fr.swift.core.cluster;
+package com.fr.swift.cluster.core.cluster;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
@@ -7,9 +7,9 @@ import com.fr.cluster.lock.ClusterLock;
 import com.fr.cluster.lock.ClusterLockFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeService;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;

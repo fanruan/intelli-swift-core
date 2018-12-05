@@ -22,6 +22,7 @@
         <module>swift-repo-fr</module>
         <module>swift-jdbc-emb</module>
         <module>swift-common-fr</module>
+        <module>swift-api-fr</module>
     </modules>
     <properties>
         <fr.version>10.0-FEATURE-SNAPSHOT</fr.version>

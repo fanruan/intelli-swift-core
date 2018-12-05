@@ -1,6 +1,5 @@
 package com.fr.swift.util;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
@@ -78,7 +77,7 @@ public class DataSourceUtils {
                     if (etlSource.getFieldsInfo() != null) {
                         for (int i = 0; i < names.size(); i++) {
                             int originColumnSize = etlSource.getFieldsInfo().size() - names.size();
-                            if (ComparatorUtils.equals(etlSource.getFieldsInfo().get(i + originColumnSize), names.get(i))) {
+                            if (Util.equals(etlSource.getFieldsInfo().get(i + originColumnSize), names.get(i))) {
                                 fields.add(names.get(i));
                             } else {
                                 fields.add(etlSource.getFieldsInfo().get(i + originColumnSize));
@@ -192,7 +191,7 @@ public class DataSourceUtils {
                 return result;
             }
         } else {
-            return ComparatorUtils.equals(dataSource.getSourceKey(), baseSourceKey);
+            return Util.equals(dataSource.getSourceKey(), baseSourceKey);
         }
     }
 }

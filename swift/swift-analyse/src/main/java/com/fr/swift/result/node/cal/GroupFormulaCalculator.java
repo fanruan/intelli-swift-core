@@ -1,10 +1,6 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.script.Calculator;
-import com.fr.stable.Primitive;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.source.etl.utils.FormulaUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +11,7 @@ import java.util.List;
 public class GroupFormulaCalculator implements TargetCalculator {
 
     private String expression;
-    private int paramIndexes[];
+    private int[] paramIndexes;
     private int resultIndex;
     private Iterator<List<AggregatorValue[]>> iterator;
 
@@ -30,35 +26,35 @@ public class GroupFormulaCalculator implements TargetCalculator {
     private String[] paramNames() {
         String[] params = new String[paramIndexes.length];
         for (int i = 0; i < params.length; i++) {
-            params[i] = "$" + String.valueOf(i);
+            params[i] = "$" + i;
         }
         return params;
     }
 
     @Override
     public Object call() throws Exception {
-        Calculator calculator = Calculator.createCalculator();
-        String[] paramNames = paramNames();
-        String formula = FormulaUtils.getParameterIndexEncodedFormula(expression);
-        while (iterator.hasNext()) {
-            List<AggregatorValue[]> row = iterator.next();
-            for (AggregatorValue[] values : row) {
-                updateParameter(calculator, paramNames, values);
-                Object result = calculator.eval(formula);
-                result = result == Primitive.NULL ? null : result;
-                values[resultIndex] = result == null ? null : new DoubleAmountAggregatorValue(((Number) result).doubleValue());
-            }
-        }
+//        Calculator calculator = Calculator.createCalculator();
+//        String[] paramNames = paramNames();
+//        String formula = FormulaUtils.getParameterIndexEncodedFormula(expression);
+//        while (iterator.hasNext()) {
+//            List<AggregatorValue[]> row = iterator.next();
+//            for (AggregatorValue[] values : row) {
+//                updateParameter(calculator, paramNames, values);
+//                Object result = calculator.eval(formula);
+//                result = result == Primitive.NULL ? null : result;
+//                values[resultIndex] = result == null ? null : new DoubleAmountAggregatorValue(((Number) result).doubleValue());
+//            }
+//        }
         return null;
     }
 
-    private void updateParameter(Calculator calculator, String[] paramNames, AggregatorValue[] values) {
-        Object[] parameters = new Object[paramIndexes.length];
-        for (int i = 0; i < paramIndexes.length; i++) {
-            parameters[i] = values[paramIndexes[i]].calculateValue();
-        }
-        for (int i = 0; i < parameters.length; i++) {
-            calculator.set(paramNames[i], parameters[i]);
-        }
-    }
+//    private void updateParameter(Calculator calculator, String[] paramNames, AggregatorValue[] values) {
+//        Object[] parameters = new Object[paramIndexes.length];
+//        for (int i = 0; i < paramIndexes.length; i++) {
+//            parameters[i] = values[paramIndexes[i]].calculateValue();
+//        }
+//        for (int i = 0; i < parameters.length; i++) {
+//            calculator.set(paramNames[i], parameters[i]);
+//        }
+//    }
 }
