@@ -12,6 +12,9 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
+import com.fr.swift.config.oper.exception.SwiftEntityExistsException;
+import com.fr.swift.config.oper.exception.SwiftNonUniqueObjectException;
 import com.fr.swift.config.oper.impl.ConfigOrder;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -23,8 +26,6 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Crasher;
-import com.fr.third.org.hibernate.NonUniqueObjectException;
-import com.fr.third.org.hibernate.exception.ConstraintViolationException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -308,9 +309,11 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                         try {
                             swiftSegmentDao.persist(session, segKeyEntity);
                             break;
-                        } catch (ConstraintViolationException e) {
+                        } catch (SwiftConstraintViolationException e) {
                             appendOrder++;
-                        } catch (NonUniqueObjectException e) {
+                        } catch (SwiftNonUniqueObjectException e) {
+                            appendOrder++;
+                        } catch (SwiftEntityExistsException e) {
                             appendOrder++;
                         }
                     } while (true);

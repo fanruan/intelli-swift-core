@@ -4,7 +4,6 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rpc.bean.RpcRequest;
 import com.fr.swift.rpc.bean.RpcResponse;
-import com.fr.third.jodd.util.StringUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoopGroup;
@@ -32,7 +31,7 @@ public abstract class AbstractRpcClientHandler<T> extends SimpleChannelInboundHa
 
     public AbstractRpcClientHandler(String address) {
         this.address = address;
-        String[] array = StringUtil.split(address, ":");
+        String[] array = address.split(":");
         String host = array[0];
         int port = Integer.parseInt(array[1]);
         this.host = host;

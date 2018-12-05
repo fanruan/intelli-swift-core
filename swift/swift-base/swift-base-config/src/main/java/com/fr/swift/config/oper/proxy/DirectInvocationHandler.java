@@ -9,13 +9,18 @@ import java.lang.reflect.Method;
  */
 class DirectInvocationHandler implements InvocationHandler {
     private Object object;
+    private Class proxyClass;
 
     DirectInvocationHandler(Object object) {
         this.object = object;
+        this.proxyClass = object.getClass();
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return method.invoke(object, args);
+        Method invokeMethod = proxyClass.getMethod(method.getName(), method.getParameterTypes());
+        return invokeMethod.invoke(object, args);
     }
+
+
 }
