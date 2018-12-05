@@ -1,10 +1,10 @@
 package com.fr.swift.query.session.factory;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.session.QuerySession;
 import com.fr.swift.query.session.Session;
+import com.fr.swift.util.Strings;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 
 import java.util.Iterator;
@@ -59,12 +59,12 @@ public class SessionFactoryImpl implements SessionFactory {
 
     @Override
     public Session openSession(String queryId) {
-        if (StringUtils.isEmpty(queryId)) {
+        if (Strings.isEmpty(queryId)) {
             return new QuerySession(cacheTimeout);
         }
         String sessionId = queryMap2Session.get(queryId);
         Session session = null;
-        if (StringUtils.isEmpty(sessionId)) {
+        if (Strings.isEmpty(sessionId)) {
             session = createSession(queryId);
         } else {
             Cache<Session> cache = sessionMap.get(sessionId);

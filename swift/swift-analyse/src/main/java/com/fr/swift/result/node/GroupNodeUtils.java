@@ -1,12 +1,12 @@
 package com.fr.swift.result.node;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.info.element.target.cal.ResultTarget;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
+import com.fr.swift.util.Util;
 import com.fr.swift.util.function.Function;
 
 import java.util.Iterator;
@@ -80,7 +80,7 @@ public class GroupNodeUtils {
                 // 根节点
                 return -1;
             }
-            if (ComparatorUtils.equals(parent, node.getParent().getData())) {
+            if (Util.equals(parent, node.getParent().getData())) {
                 // 兄弟节点
                 return siblingCounter++;
             }

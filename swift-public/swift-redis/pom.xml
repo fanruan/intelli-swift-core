@@ -19,6 +19,12 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-realtime</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-beans</artifactId>
             <version>${swift.version}</version>
             <scope>compile</scope>
@@ -30,10 +36,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-beans</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
         </dependency>
     </dependencies>
 

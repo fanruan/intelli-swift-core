@@ -6,7 +6,6 @@ import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.base.DialectKeyConstants;
 import com.fr.data.core.db.dialect.base.key.create.statement.limit.DialectCreateLimitedFetchedStatementParameter;
 import com.fr.general.DateUtils;
-import com.fr.stable.StringUtils;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -32,6 +31,7 @@ import com.fr.swift.source.db.dbdealer.TimeDealer;
 import com.fr.swift.source.db.dbdealer.TimestampDealer;
 import com.fr.swift.source.retry.RetryLoop;
 import com.fr.swift.source.retry.RetryNTimes;
+import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 
 import java.io.UnsupportedEncodingException;
@@ -71,13 +71,13 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
                     conn = connection.createConnection();
                     String originalCharSetName = connection.getOriginalCharsetName();
                     String newCharSetName = connection.getNewCharsetName();
-                    boolean needCharSetConvert = StringUtils.isNotBlank(originalCharSetName)
-                            && StringUtils.isNotBlank(newCharSetName);
+                    boolean needCharSetConvert = Strings.isNotBlank(originalCharSetName)
+                            && Strings.isNotBlank(newCharSetName);
                     Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
                     sql = getQuery(dialect);
                     LOGGER.info("runSQL " + sql);
 
-                    if (StringUtils.isNotEmpty(sql)) {
+                    if (Strings.isNotEmpty(sql)) {
                         sql = dealWithSqlCharSet(sql, connection);
                         stmt = createStatement(conn, dialect);
                         rs = stmt.executeQuery(sql);

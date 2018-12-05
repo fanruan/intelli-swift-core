@@ -4,10 +4,7 @@ import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.handler.IndexProcessHandler;
 import com.fr.swift.basics.handler.StatusProcessHandler;
 import com.fr.swift.config.bean.ServerCurrentStatus;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.stuff.IndexingStuff;
-import com.fr.swift.task.TaskKey;
-import com.fr.swift.task.TaskResult;
 
 /**
  * @author anchore
@@ -24,10 +21,4 @@ public interface IndexingService extends SwiftService {
 
     @InvokeMethod(StatusProcessHandler.class)
     ServerCurrentStatus currentStatus();
-
-    void setListenerWorker(ListenerWorker listenerWorker);
-
-    interface ListenerWorker {
-        void work(Pair<TaskKey, TaskResult> result);
-    }
 }

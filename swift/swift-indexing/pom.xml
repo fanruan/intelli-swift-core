@@ -21,11 +21,6 @@
             <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-repository</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
     </dependencies>
 
 </project>

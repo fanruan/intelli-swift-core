@@ -1,9 +1,8 @@
 package com.fr.swift.query.info.bean.parser;
 
-import com.fr.general.ComparatorUtils;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.ColumnIndexingConf;
 import com.fr.swift.config.service.IndexingConfService;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
 import com.fr.swift.query.group.info.IndexInfoImpl;
@@ -18,6 +17,7 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ class DimensionParser {
     private static SortBean getDimensionSort(String name, List<SortBean> sortBeans) {
         if (null != sortBeans && null != name) {
             for (SortBean sortBean : sortBeans) {
-                if (ComparatorUtils.equals(sortBean.getName(), name)) {
+                if (Util.equals(sortBean.getName(), name)) {
                     return sortBean;
                 }
             }
