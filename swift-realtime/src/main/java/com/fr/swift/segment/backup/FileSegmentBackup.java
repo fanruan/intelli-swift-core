@@ -48,7 +48,11 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
             BitmapIndexedColumn bitmapIndex = columns.get(i).getBitmapIndex();
             ImmutableBitMap nullIndex;
             if (bitmapIndex.isReadable()) {
-                nullIndex = bitmapIndex.getNullIndex();
+                try {
+                    nullIndex = bitmapIndex.getNullIndex();
+                } catch (Exception e) {
+                    nullIndex = BitMaps.newRoaringMutable();
+                }
             } else if (readable) {
                 nullIndex = BitMaps.newRangeBitmap(0, segment.getRowCount());
             } else {
