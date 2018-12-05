@@ -32,7 +32,7 @@ public class DefaultSegmentDestSelectRuleTest {
     public DefaultSegmentDestSelectRuleTest(Set<String> nodeIds, Set<SegmentKey> needLoad) {
         System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.size());
         HashMap<SourceKey, List<SegmentDestination>> dest = new HashMap<>();
-        new DefaultDataSyncRule().calculate(nodeIds, needLoad, dest);
+        new DefaultDataSyncRule().getNeedLoadAndUpdateDestinations(nodeIds, needLoad, dest);
         selectDestination = dest.get("tableA");
     }
 

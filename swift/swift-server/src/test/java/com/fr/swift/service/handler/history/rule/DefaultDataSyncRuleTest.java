@@ -1,7 +1,7 @@
-package com.fr.swift.service.history.rule;
+package com.fr.swift.service.handler.history.rule;
 
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.service.handler.history.rule.DefaultDataSyncRule;
 import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -18,20 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-/**
- * @author yee
- * @date 2018/7/16
- */
 @RunWith(Parameterized.class)
-public class DataSyncRuleTest {
-
+public class DefaultDataSyncRuleTest {
     private Set<String> nodeIds;
     private Set<SegmentKey> needLoad;
 
-    public DataSyncRuleTest(Set<String> nodeIds, Set<SegmentKey> needLoad) {
+    public DefaultDataSyncRuleTest(Set<String> nodeIds, Set<SegmentKey> needLoad) {
         this.nodeIds = nodeIds;
         this.needLoad = needLoad;
     }
@@ -42,7 +36,7 @@ public class DataSyncRuleTest {
 
     @Parameterized.Parameters
     public static List<Object[]> randomParams() {
-        Set<SegmentKey> needLoad = new HashSet<>();
+        Set<SegmentKey> needLoad = new HashSet<SegmentKey>();
         for (int j = 0; j < 100; j++) {
             IMocksControl control = EasyMock.createControl();
             SegmentKey mockSegmentKey = control.createMock(SegmentKey.class);
@@ -52,10 +46,10 @@ public class DataSyncRuleTest {
             control.replay();
             needLoad.add(mockSegmentKey);
         }
-        List<Object[]> result = new ArrayList<>();
+        List<Object[]> result = new ArrayList<Object[]>();
         for (int i = 0; i < 100; i++) {
             int nodeCount = (int) (1 + Math.random() * 100);
-            Set<String> nodeIds = new HashSet<>();
+            Set<String> nodeIds = new HashSet<String>();
             for (int j = 0; j < nodeCount; j++) {
                 nodeIds.add("cluster_" + j);
             }
@@ -67,7 +61,7 @@ public class DataSyncRuleTest {
     @Test
     public void calculate() {
         System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.size());
-        Map<String, Set<SegmentKey>> target = new DefaultDataSyncRule().calculate(nodeIds, needLoad, new HashMap<>());
+        Map<String, Set<SegmentKey>> target = new DefaultDataSyncRule().getNeedLoadAndUpdateDestinations(nodeIds, needLoad, new HashMap<SourceKey, List<SegmentDestination>>());
         Iterator<Set<SegmentKey>> it = target.values().iterator();
         int total = 0;
         while (it.hasNext()) {
