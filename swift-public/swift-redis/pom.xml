@@ -26,7 +26,6 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-beans</artifactId>
-            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
