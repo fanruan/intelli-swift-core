@@ -43,6 +43,11 @@ public class TransatcionTest extends TestCase {
                 }
 
                 @Override
+                public void release() {
+
+                }
+
+                @Override
                 public void close() {
 
                 }

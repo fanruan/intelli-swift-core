@@ -17,5 +17,7 @@ public interface TransactionManager<T> {
 
     void rollback();
 
+    void release();
+
     void close();
 }
