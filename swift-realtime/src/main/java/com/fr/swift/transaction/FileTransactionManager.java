@@ -2,7 +2,10 @@ package com.fr.swift.transaction;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.impl.AllShowBitMap;
+import com.fr.swift.bitmap.impl.EmptyBitmap;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -22,7 +25,9 @@ public class FileTransactionManager extends AbstractTransactionManager {
     private Segment hisSegment;
 
     private int oldRowCount;
+
     private ImmutableBitMap oldAllShowIndex;
+
     private Map<String, ImmutableBitMap> oldNullIndexMap = new HashMap<String, ImmutableBitMap>();
 
     public FileTransactionManager(Segment hisSegment) {
@@ -33,13 +38,25 @@ public class FileTransactionManager extends AbstractTransactionManager {
     public void start() {
         super.start();
         if (hisSegment.isReadable()) {
-
             this.oldRowCount = hisSegment.getRowCount();
-            this.oldAllShowIndex = hisSegment.getAllShowIndex();
+
+            try {
+                this.oldAllShowIndex = hisSegment.getAllShowIndex();
+            } catch (Exception e) {
+                this.oldAllShowIndex = AllShowBitMap.of(oldRowCount);
+            }
+
             for (String fieldName : hisSegment.getMetaData().getFieldNames()) {
                 Column column = hisSegment.getColumn(new ColumnKey(fieldName));
                 BitmapIndexedColumn bitmapIndex = column.getBitmapIndex();
-                ImmutableBitMap nullIndex = bitmapIndex.isReadable() ? bitmapIndex.getNullIndex() : BitMaps.newRangeBitmap(0, oldRowCount);
+
+                ImmutableBitMap nullIndex;
+                try {
+                    nullIndex = bitmapIndex.isReadable() ? bitmapIndex.getNullIndex() : new EmptyBitmap();
+                } catch (Exception e) {
+                    nullIndex = new EmptyBitmap();
+                }
+
                 oldNullIndexMap.put(fieldName, nullIndex);
             }
         } else {
@@ -53,7 +70,6 @@ public class FileTransactionManager extends AbstractTransactionManager {
 
     @Override
     public void commit() {
-        super.commit();
     }
 
     @Override
@@ -64,11 +80,12 @@ public class FileTransactionManager extends AbstractTransactionManager {
         for (String fieldName : hisSegment.getMetaData().getFieldNames()) {
             hisSegment.getColumn(new ColumnKey(fieldName)).getBitmapIndex().putNullIndex(oldNullIndexMap.get(fieldName));
         }
-        hisSegment.release();
+
     }
 
     @Override
     public void close() {
-        super.close();
+        SegmentUtils.release(hisSegment);
+        SegmentUtils.releaseColumnsOf(hisSegment);
     }
 }

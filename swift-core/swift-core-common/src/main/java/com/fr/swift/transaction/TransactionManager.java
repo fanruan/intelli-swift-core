@@ -9,7 +9,7 @@ package com.fr.swift.transaction;
  */
 public interface TransactionManager<T> {
 
-    void setOldAttatch(T t);
+    void setOldAttach(T t);
 
     void start();
 

@@ -1,5 +1,6 @@
 package com.fr.swift.segment.backup;
 
+import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.source.Row;
 import com.fr.swift.transaction.TransactionManager;
 
@@ -10,15 +11,13 @@ import com.fr.swift.transaction.TransactionManager;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface SwiftSegmentBackup {
+public interface SwiftSegmentBackup extends Releasable {
 
     void backupRowData(int cursor, Row rowData);
 
     void backupNullIndex();
 
     void backupSegmentInfo(int lastCursor, int cursor);
-
-    void release();
 
     TransactionManager getTransactionManager();
 }

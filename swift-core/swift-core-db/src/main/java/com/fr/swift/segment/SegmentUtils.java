@@ -13,6 +13,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.IoUtil;
 import com.fr.third.guava.base.Optional;
 
 import java.util.ArrayList;
@@ -103,7 +104,7 @@ public class SegmentUtils {
 
     public static void release(Segment seg) {
         if (seg != null && seg.isHistory()) {
-            seg.release();
+            IoUtil.release(seg);
         }
     }
 
@@ -118,9 +119,9 @@ public class SegmentUtils {
 
     public static <T> void release(Column<T> column) {
         if (column != null && column.getLocation().getStoreType().isPersistent()) {
-            column.getDetailColumn().release();
-            column.getDictionaryEncodedColumn().release();
-            column.getBitmapIndex().release();
+            IoUtil.release(column.getDetailColumn());
+            IoUtil.release(column.getDictionaryEncodedColumn());
+            IoUtil.release(column.getBitmapIndex());
         }
     }
 
@@ -133,7 +134,7 @@ public class SegmentUtils {
         }
     }
 
-    public static void releaseColumns(Segment seg) {
+    public static void releaseColumnsOf(Segment seg) {
         try {
             SwiftMetaData meta = seg.getMetaData();
             for (int i = 0; i < meta.getColumnCount(); i++) {
