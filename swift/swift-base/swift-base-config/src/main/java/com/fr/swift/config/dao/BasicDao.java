@@ -33,7 +33,7 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
 
     @Override
     public void persist(ConfigSession session, T entity) {
-        session.persist(entity.convert());
+        session.save(entity.convert());
     }
 
     @Override

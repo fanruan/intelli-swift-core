@@ -1,5 +1,6 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
@@ -8,9 +9,7 @@ import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.FindList;
-import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.TransactionManager;
-import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -39,9 +38,13 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     private TransactionManager transactionManager;
     private SwiftMetaDataDao swiftMetaDataDao;
-    private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
     private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
+
+    public SwiftMetaDataServiceImpl() {
+        transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+        swiftMetaDataDao = SwiftContext.get().getBean(SwiftMetaDataDao.class);
+    }
 
     @Override
     public boolean addMetaData(final String sourceKey, final SwiftMetaData metaData) {

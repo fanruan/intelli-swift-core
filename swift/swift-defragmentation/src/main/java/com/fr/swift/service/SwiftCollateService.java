@@ -81,7 +81,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         database = SwiftDatabase.getInstance();
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
-        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
+        swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
         return true;
     }

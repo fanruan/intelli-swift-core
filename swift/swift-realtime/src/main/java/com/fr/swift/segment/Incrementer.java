@@ -39,7 +39,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         super(dataSource, alloter);
     }
 
-    private SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
+    private SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
     @Override
     protected Inserter getInserter() {
