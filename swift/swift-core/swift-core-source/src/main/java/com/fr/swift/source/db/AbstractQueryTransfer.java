@@ -115,7 +115,7 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
     protected abstract String getQuery(Dialect dialect) throws SQLException;
 
     private String dealWithSqlCharSet(String sql, com.fr.data.impl.Connection database) {
-        if (StringUtils.isNotBlank(database.getOriginalCharsetName()) && StringUtils.isNotBlank(database.getNewCharsetName())) {
+        if (Strings.isNotBlank(database.getOriginalCharsetName()) && Strings.isNotBlank(database.getNewCharsetName())) {
             try {
                 return new String(sql.getBytes(database.getNewCharsetName()), database.getOriginalCharsetName());
             } catch (UnsupportedEncodingException e) {

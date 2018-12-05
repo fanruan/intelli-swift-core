@@ -27,14 +27,22 @@ public final class VersionConfigProperty {
     private Class restrictions;
     private Class matchMode;
     private Class order;
+    private Class criterion;
+    private Class nonUniqueObjectException;
+    private Class constraintViolationException;
+    private Class entityExistsException;
 
-    private VersionConfigProperty(String version, String restrictions, String matchMode, String order) {
+    private VersionConfigProperty(String version, String restrictions, String matchMode, String criterion, String order, String nonUniqueObjectException, String constraintViolationException, String entityExistsException) {
         this.version = version;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             this.restrictions = loader.loadClass(restrictions);
             this.matchMode = loader.loadClass(matchMode);
             this.order = loader.loadClass(order);
+            this.criterion = loader.loadClass(criterion);
+            this.nonUniqueObjectException = loader.loadClass(nonUniqueObjectException);
+            this.constraintViolationException = loader.loadClass(constraintViolationException);
+            this.entityExistsException = loader.loadClass(entityExistsException);
         } catch (Exception e) {
             Crasher.crash(e);
         }
@@ -50,7 +58,11 @@ public final class VersionConfigProperty {
                 String restrictions = properties.getProperty("hibernate.restrictions");
                 String matchMode = properties.getProperty("hibernate.matchMode");
                 String order = properties.getProperty("hibernate.order");
-                property = new VersionConfigProperty(version, restrictions, matchMode, order);
+                String criterion = properties.getProperty("hibernate.criterion");
+                String nonUniqueObjectException = properties.getProperty("hibernate.exp.nonUnique");
+                String constraintViolationException = properties.getProperty("hibernate.exp.constraint");
+                String entityExistsException = properties.getProperty("jpa.exp.exists");
+                property = new VersionConfigProperty(version, restrictions, matchMode, criterion, order, nonUniqueObjectException, constraintViolationException, entityExistsException);
             }
         } finally {
             if (null != is) {
@@ -78,5 +90,21 @@ public final class VersionConfigProperty {
 
     public Class getOrder() {
         return order;
+    }
+
+    public Class getConstraintViolationException() {
+        return constraintViolationException;
+    }
+
+    public Class getNonUniqueObjectException() {
+        return nonUniqueObjectException;
+    }
+
+    public Class getCriterion() {
+        return criterion;
+    }
+
+    public Class getEntityExistsException() {
+        return entityExistsException;
     }
 }

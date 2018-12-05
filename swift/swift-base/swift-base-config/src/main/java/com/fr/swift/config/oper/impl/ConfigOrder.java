@@ -33,7 +33,7 @@ public final class ConfigOrder {
     static Object getObject(String methodName, Map<String, Method> nameToMethod, Object[] args) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         Method method = nameToMethod.get(methodName);
         if (method != null) {
-            return method.invoke(null, method, args);
+            return method.invoke(null, args);
         }
         throw new NoSuchMethodException(methodName);
     }

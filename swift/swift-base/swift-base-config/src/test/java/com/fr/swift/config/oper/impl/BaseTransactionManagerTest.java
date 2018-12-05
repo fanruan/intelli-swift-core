@@ -22,8 +22,8 @@ public class BaseTransactionManagerTest {
         // Generate by Mock Plugin
         final ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigTransaction mockConfigTransaction = PowerMock.createMock(ConfigTransaction.class);
-        mockConfigTransaction.begin();
-        EasyMock.expectLastCall().times(2);
+//        mockConfigTransaction.begin();
+//        EasyMock.expectLastCall().times(2);
         mockConfigTransaction.rollback();
         mockConfigTransaction.commit();
         EasyMock.expect(mockConfigSession.beginTransaction()).andReturn(mockConfigTransaction).anyTimes();

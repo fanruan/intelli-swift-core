@@ -3,7 +3,6 @@ package com.fr.swift.util;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.SwiftService;
-import com.fr.third.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+//import com.fr.third.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 /**
  * This class created on 2018/8/8
@@ -55,7 +56,7 @@ public class ServiceBeanFactory {
                     }
                     swiftServiceList.add(swiftService);
                 }
-            } catch (NoSuchBeanDefinitionException e) {
+            } catch (Exception e) {
                 continue;
             }
         }
@@ -73,7 +74,7 @@ public class ServiceBeanFactory {
                     }
                     serverServiceList.add(serverService);
                 }
-            } catch (NoSuchBeanDefinitionException e) {
+            } catch (Exception e) {
                 continue;
             }
         }

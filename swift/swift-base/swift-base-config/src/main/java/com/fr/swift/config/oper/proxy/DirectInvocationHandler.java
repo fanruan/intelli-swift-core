@@ -18,4 +18,6 @@ class DirectInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         return method.invoke(object, args);
     }
+
+
 }
