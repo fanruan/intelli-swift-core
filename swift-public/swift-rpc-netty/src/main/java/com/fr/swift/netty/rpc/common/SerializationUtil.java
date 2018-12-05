@@ -5,8 +5,8 @@ package com.fr.swift.netty.rpc.common;
 //import com.dyuproject.protostuff.SwiftDatabase;
 //import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-import com.fr.third.org.objenesis.Objenesis;
-import com.fr.third.org.objenesis.ObjenesisStd;
+//import com.fr.third.org.objenesis.Objenesis;
+//import com.fr.third.org.objenesis.ObjenesisStd;
 
 /**
  * This class created on 2018/6/6
@@ -20,7 +20,7 @@ public class SerializationUtil {
 
 //    private static Map<Class<?>, SwiftDatabase<?>> cachedSchema = new ConcurrentHashMap<Class<?>, SwiftDatabase<?>>();
 
-    private static Objenesis objenesis = new ObjenesisStd(true);
+//    private static Objenesis objenesis = new ObjenesisStd(true);
 
     private SerializationUtil() {
     }

@@ -1,6 +1,5 @@
 package com.fr.swift.segment.relation;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.IResourceDiscovery;
@@ -14,6 +13,7 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.cube.io.output.LongWriter;
+import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class RelationIndexImpl implements RelationIndex {
     private RelationIndexImpl(IResourceLocation baseLocation, String child, String primaryTable, String relationKey) {
         this.baseLocation = baseLocation;
         this.location = baseLocation.buildChildLocation(RELATIONS_KEY);
-        if (!StringUtils.isEmpty(child)) {
+        if (!Strings.isEmpty(child)) {
             this.location = this.location.buildChildLocation(child);
         }
         this.location = this.location.buildChildLocation(primaryTable).buildChildLocation(relationKey);

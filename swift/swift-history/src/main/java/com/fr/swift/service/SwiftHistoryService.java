@@ -175,8 +175,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
 
-
-
     @Override
     public SwiftResultSet query(final String queryDescription) throws Exception {
         try {

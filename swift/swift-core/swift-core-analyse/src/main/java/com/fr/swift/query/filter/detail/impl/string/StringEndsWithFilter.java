@@ -1,6 +1,5 @@
 package com.fr.swift.query.filter.detail.impl.string;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
@@ -10,6 +9,7 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
+import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 
 /**
@@ -20,7 +20,7 @@ public class StringEndsWithFilter extends AbstractDetailFilter<String> {
     private String endsWith;
 
     public StringEndsWithFilter(String endsWith, Column<String> column) {
-        Util.requireNonNull(StringUtils.isEmpty(endsWith) ? null : endsWith);
+        Util.requireNonNull(Strings.isEmpty(endsWith) ? null : endsWith);
         this.endsWith = endsWith;
         this.column = column;
     }

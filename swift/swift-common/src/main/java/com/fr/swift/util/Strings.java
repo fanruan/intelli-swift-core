@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
  */
 public final class Strings {
     public static final String EMPTY = "";
+
     public static String trimSeparator(String s, String sep) {
         return trimSeparator(s, sep, sep);
     }
@@ -106,5 +107,28 @@ public final class Strings {
         }
 
         return true;
+    }
+
+    public static String[] split(String src, String delimiter) {
+        int maxparts = src.length() / delimiter.length() + 2;
+        int[] positions = new int[maxparts];
+        int dellen = delimiter.length();
+        int j = 0;
+        int count = 0;
+
+        int i;
+        for (positions[0] = -dellen; (i = src.indexOf(delimiter, j)) != -1; j = i + dellen) {
+            ++count;
+            positions[count] = i;
+        }
+
+        ++count;
+        positions[count] = src.length();
+        String[] result = new String[count];
+
+        for (i = 0; i < count; ++i) {
+            result[i] = src.substring(positions[i] + dellen, positions[i + 1]);
+        }
+        return result;
     }
 }

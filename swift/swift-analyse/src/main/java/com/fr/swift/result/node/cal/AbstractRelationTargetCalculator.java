@@ -1,6 +1,5 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.group.GroupType;
@@ -9,6 +8,7 @@ import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
+import com.fr.swift.util.Util;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
                 decreaser = new SingleDecreaser();
                 break;
             default:
-                decreaser = decType == GroupType.QUARTER ? new SeasonDecreaser() :new DateDecreaser(getUnit());
+                decreaser = decType == GroupType.QUARTER ? new SeasonDecreaser() : new DateDecreaser(getUnit());
         }
 
     }
@@ -115,7 +115,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
     private GroupNode getChildByData(GroupNode parent, Object data) {
         List<GroupNode> children = parent.getChildren();
         for (GroupNode child : children) {
-            if (ComparatorUtils.equals(getNodeData(child), data)) {
+            if (Util.equals(getNodeData(child), data)) {
                 return child;
             }
         }

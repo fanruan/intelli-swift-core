@@ -1,12 +1,12 @@
-package com.fr.swift.http;
+package com.fr.swift.boot.controller;
 
 import com.fr.swift.ClusterNodeService;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.controller.BaseController;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -17,12 +17,12 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Assert;
-import com.fr.third.springframework.stereotype.Controller;
-import com.fr.third.springframework.web.bind.annotation.PathVariable;
-import com.fr.third.springframework.web.bind.annotation.RequestBody;
-import com.fr.third.springframework.web.bind.annotation.RequestMapping;
-import com.fr.third.springframework.web.bind.annotation.RequestMethod;
-import com.fr.third.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author yee
  * @date 2018/7/11
  */
-@Controller
+@RestController
 public class RealtimeController extends BaseController {
 
     private RealtimeService realtimeService = ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class);

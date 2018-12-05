@@ -1,6 +1,5 @@
 package com.fr.swift.query.group.impl;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.query.group.CustomGroupRule;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.core.Core;
@@ -10,6 +9,7 @@ import com.fr.swift.source.core.CoreService;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -141,7 +141,7 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
     @Override
     public int getIndex(Object val) {
         for (int i = 0, size = newSize(); i < size; i++) {
-            if (ComparatorUtils.equals(getValue(i), val)) {
+            if (Util.equals(getValue(i), val)) {
                 return i;
             }
         }
