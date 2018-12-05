@@ -1,35 +1,27 @@
 package com.fr.swift.service;
 
 import com.fineio.FineIO;
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
-import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.base.SwiftRpcEvent;
-import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
-import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
-import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.container.SegmentContainer;
-import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.Source;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
@@ -43,13 +35,9 @@ import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.util.FileUtil;
-import com.fr.swift.util.Strings;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
@@ -70,7 +58,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     private transient SwiftSegmentLocationService locationService;
 
-    private static ListenerWorker worker;
 
     private transient ServiceTaskExecutor taskExecutor;
 
@@ -85,17 +72,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     public boolean start() throws SwiftServiceException {
         super.start();
         if (initable) {
-            worker = new ListenerWorker() {
-                @Override
-                public void work(Pair<TaskKey, TaskResult> result) {
-                    try {
-                        EventDispatcher.fire(TaskEvent.DONE, result);
-                        FineIO.doWhenFinished(new UploadRunnable(result, getID()));
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().error(e);
-                    }
-                }
-            };
             initListener();
             initable = false;
         }
@@ -145,9 +121,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     }
 
     private void triggerIndexing(IndexingStuff stuff) {
-        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getTables());
-        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelations());
-        EventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelationPaths());
+        SwiftEventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getTables());
+        SwiftEventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelations());
+        SwiftEventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelationPaths());
     }
 
     public void initTaskGenerator() {
@@ -161,19 +137,19 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         return new ServerCurrentStatus(getID());
     }
 
-    @Override
-    public void setListenerWorker(ListenerWorker listenerWorker) {
-        worker = listenerWorker;
-    }
-
     private void initListener() {
-        Listener listener = new Listener<Pair<TaskKey, TaskResult>>() {
+        SwiftEventListener listener = new SwiftEventListener<Pair<TaskKey, TaskResult>>() {
             @Override
-            public void on(Event event, final Pair<TaskKey, TaskResult> result) {
-                worker.work(result);
+            public void on(final Pair<TaskKey, TaskResult> result) {
+                try {
+                    SwiftEventDispatcher.fire(TaskEvent.DONE, result);
+                    FineIO.doWhenFinished(new UploadRunnable(result));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
             }
         };
-        EventDispatcher.listen(TaskEvent.LOCAL_DONE, listener);
+        SwiftEventDispatcher.listen(TaskEvent.LOCAL_DONE, listener);
 
         initTaskGenerator();
     }
@@ -181,111 +157,11 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
     private class UploadRunnable implements Runnable {
 
         protected Pair<TaskKey, TaskResult> result;
-        private String id;
         private SwiftSegmentManager manager;
 
-        public UploadRunnable(Pair<TaskKey, TaskResult> result, String id) {
+        public UploadRunnable(Pair<TaskKey, TaskResult> result) {
             this.result = result;
-            this.id = id;
             this.manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-        }
-
-        public void uploadTable(final DataSource dataSource) throws Exception {
-            final SourceKey sourceKey = dataSource.getSourceKey();
-            SwiftTablePathBean entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
-            Integer path = entity.getTablePath();
-            path = null == path ? -1 : path;
-            Integer tmpPath = entity.getTmpDir();
-            entity.setTablePath(tmpPath);
-            entity.setLastPath(path);
-            List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
-            String cubePath = pathService.getSwiftPath();
-            if (null != segmentKeys) {
-                repositoryManager.currentRepo().delete(String.format("%s/%s", dataSource.getMetadata().getSwiftDatabase().getDir(), sourceKey.getId()));
-                for (SegmentKey segmentKey : segmentKeys) {
-                    try {
-                        String uploadPath = String.format("%s/%s",
-                                segmentKey.getSwiftSchema().getDir(),
-                                segmentKey.getUri().getPath());
-                        String local = String.format("%s/%s", cubePath, CubeUtil.getHistorySegPath(dataSource, tmpPath, segmentKey.getOrder()));
-                        upload(local, uploadPath);
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().error("upload error! ", e);
-                    }
-                }
-                if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity)
-                        && locationService.delete(sourceKey.getId(), id)) {
-                    String deletePath = String.format("%s/%s/%d/%s",
-                            pathService.getSwiftPath(),
-                            dataSource.getMetadata().getSwiftDatabase().getDir(),
-                            path,
-                            sourceKey.getId());
-                    FileUtil.delete(deletePath);
-                    new File(deletePath).getParentFile().delete();
-                }
-                manager.remove(sourceKey);
-                SegmentContainer.INDEXING.remove(sourceKey);
-                manager.getSegment(sourceKey);
-                doAfterUpload(new HistoryLoadSegmentRpcEvent(sourceKey, getID()));
-            }
-        }
-
-        public void uploadRelation(RelationSource relation) {
-            SourceKey sourceKey = relation.getForeignSource();
-            SourceKey primary = relation.getPrimarySource();
-            Map<SegmentKey, List<String>> segNeedUpload = new HashMap<SegmentKey, List<String>>();
-            List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
-            if (null != segmentKeys) {
-                if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
-                    for (SegmentKey segmentKey : segmentKeys) {
-                        if (null == segNeedUpload.get(segmentKey)) {
-                            segNeedUpload.put(segmentKey, new ArrayList<String>());
-                        }
-                        try {
-                            String src = Strings.unifySlash(
-                                    String.format("%s/%s/%s/%s",
-                                            pathService.getSwiftPath(),
-                                            CubeUtil.getSegPath(segmentKey),
-                                            RelationIndexImpl.RELATIONS_KEY,
-                                            primary.getId()
-                                    ));
-                            String dest = String.format("%s/%s/%s/%s",
-                                    segmentKey.getSwiftSchema().getDir(),
-                                    Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
-                                    RelationIndexImpl.RELATIONS_KEY,
-                                    primary.getId());
-                            upload(src, dest);
-                            segNeedUpload.get(segmentKey).add(dest);
-                        } catch (IOException e) {
-                            SwiftLoggers.getLogger().error("upload error! ", e);
-                        }
-                    }
-                } else {
-                    for (SegmentKey segmentKey : segmentKeys) {
-                        if (null == segNeedUpload.get(segmentKey)) {
-                            segNeedUpload.put(segmentKey, new ArrayList<String>());
-                        }
-                        try {
-                            String src = Strings.unifySlash(
-                                    String.format("%s/field/%s/%s",
-                                            CubeUtil.getSegPath(segmentKey),
-                                            RelationIndexImpl.RELATIONS_KEY,
-                                            primary.getId()
-                                    ));
-                            String dest = String.format("%s/%s/field/%s/%s",
-                                    segmentKey.getSwiftSchema().getDir(),
-                                    Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
-                                    RelationIndexImpl.RELATIONS_KEY,
-                                    primary.getId());
-                            upload(src, dest);
-                            segNeedUpload.get(segmentKey).add(dest);
-                        } catch (IOException e) {
-                            SwiftLoggers.getLogger().error("upload error! ", e);
-                        }
-                    }
-                }
-                doAfterUpload(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey, segNeedUpload), getID()));
-            }
         }
 
         @Override
@@ -296,9 +172,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 try {
                     if (null != obj) {
                         if (obj instanceof DataSource) {
-                            uploadTable((DataSource) obj);
+                            SegmentHelper.uploadTable(manager, (DataSource) obj, getID());
                         } else if (obj instanceof RelationSource) {
-                            uploadRelation((RelationSource) obj);
+                            SegmentHelper.uploadRelation((RelationSource) obj, getID());
                         }
                         ReadyUploadContainer.instance().remove(key);
                     }

@@ -126,10 +126,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
     @Override
     public boolean isTypeMatch(String name, Class<?> typeToMatch) {
         List<String> names = getBeanNamesByType(typeToMatch);
-        if (names.contains(name)) {
-            return true;
-        }
-        return false;
+        return names.contains(name);
     }
 
     @Override

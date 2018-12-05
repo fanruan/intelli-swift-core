@@ -3,13 +3,13 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>swift-api</artifactId>
+        <artifactId>swift-finereport</artifactId>
         <groupId>com.fr.intelligence</groupId>
         <version>2019.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-api-public</artifactId>
+    <artifactId>swift-api-fr</artifactId>
 
     <dependencies>
         <dependency>

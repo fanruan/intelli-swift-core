@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.parser;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
@@ -22,6 +21,7 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +119,7 @@ public class QueryInfoParser {
 
     private static int getDimensionIndex(String columnName, List<Dimension> dimensions) {
         for (int i = 0; i < dimensions.size(); i++) {
-            if (ComparatorUtils.equals(columnName, dimensions.get(i).getColumnKey().getName())) {
+            if (Util.equals(columnName, dimensions.get(i).getColumnKey().getName())) {
                 return i;
             }
         }

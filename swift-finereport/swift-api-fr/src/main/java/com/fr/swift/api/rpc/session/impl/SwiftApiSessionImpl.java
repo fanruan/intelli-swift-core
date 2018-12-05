@@ -90,7 +90,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession, DataMaintenan
     @Override
     public SwiftResultSet query(SwiftDatabase database, QueryBean queryBean) {
         if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
-            String tableName = findUniqueTableName(database, ((AbstractSingleTableQueryInfoBean) queryBean).getTableName());
+            String tableName = findUniqueTableName(database, queryBean.getTableName());
             ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(tableName);
         }
         return query(database, queryBean.toString());

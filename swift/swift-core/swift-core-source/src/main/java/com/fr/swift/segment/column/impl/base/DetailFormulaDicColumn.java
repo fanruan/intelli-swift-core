@@ -1,8 +1,8 @@
 package com.fr.swift.segment.column.impl.base;
 
-import com.fr.script.Calculator;
-import com.fr.stable.Primitive;
-import com.fr.stable.UtilEvalError;
+//import com.fr.script.Calculator;
+//import com.fr.stable.Primitive;
+//import com.fr.stable.UtilEvalError;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -12,7 +12,6 @@ import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -21,7 +20,7 @@ import java.util.Map;
 public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     private String formula;
     private Segment segment;
-    private Calculator c = Calculator.createCalculator();
+    //    private Calculator c = Calculator.createCalculator();
     private Map<String, ColumnKey> columnIndexMap;
     private DictionaryEncodedColumn hostColumn;
 
@@ -49,29 +48,31 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     @Override
     public Object getValue(int index) {
         //todo 这个是错的，只适用于一个字段的，看来中位数还得生成啊
-        Iterator<Map.Entry<String, ColumnKey>> iter = columnIndexMap.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<String, ColumnKey> entry = iter.next();
-            String columnName = entry.getKey();
-            ColumnKey columnKey = entry.getValue();
-            if (columnKey != null && hostColumn != null) {
-                Object value = hostColumn.getValue(index);
-                c.set(columnName, value);
-            } else {
-                c.remove(columnName);
-            }
-        }
-        try {
-            Object ob = c.eval(formula);
-            return ob == Primitive.NULL ? null : ob;
-        } catch (UtilEvalError e) {
-            return null;
-        }
+//        Iterator<Map.Entry<String, ColumnKey>> iter = columnIndexMap.entrySet().iterator();
+//        while (iter.hasNext()) {
+//            Map.Entry<String, ColumnKey> entry = iter.next();
+//            String columnName = entry.getKey();
+//            ColumnKey columnKey = entry.getValue();
+//            if (columnKey != null && hostColumn != null) {
+//                Object value = hostColumn.getValue(index);
+//                c.set(columnName, value);
+//            } else {
+//                c.remove(columnName);
+//            }
+//        }
+//        try {
+//            Object ob = c.eval(formula);
+//            return ob == Primitive.NULL ? null : ob;
+//        } catch (UtilEvalError e) {
+//            return null;
+//        }
+        return null;
     }
 
     @Override
     public Object getValueByRow(int row) {
-        return FormulaUtils.getCalculatorValue(c, formula, segment, columnIndexMap, row);
+        return null;
+//        return FormulaUtils.getCalculatorValue(c, formula, segment, columnIndexMap, row);
     }
 
     @Override

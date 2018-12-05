@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * @author yee
  * @date 2018/6/13
+ * todo 除了Query接口，其他的应该是通过事件触发的操作（更新seg信息啥的），放在接口上怪怪的
  */
 public interface AnalyseService extends SwiftService, Serializable {
 
