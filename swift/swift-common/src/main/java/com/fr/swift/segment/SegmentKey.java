@@ -15,6 +15,9 @@ import java.net.URI;
 public interface SegmentKey extends Serializable, ObjectConverter {
     SourceKey getTable();
 
+    /**
+     * todo "去除这个接口，路径可以拼出来的，不用存取配置"
+     */
     URI getUri();
 
     Integer getOrder();

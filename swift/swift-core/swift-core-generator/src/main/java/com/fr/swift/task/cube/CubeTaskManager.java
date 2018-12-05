@@ -1,8 +1,7 @@
 package com.fr.swift.task.cube;
 
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.task.Task.Status;
 import com.fr.swift.task.TaskExecutor;
 import com.fr.swift.task.TaskKey;
@@ -62,9 +61,9 @@ public class CubeTaskManager implements TaskManager {
     }
 
     public void initListener() {
-        EventDispatcher.listen(TaskEvent.LOCAL_RUN, new Listener<Map<TaskKey, ?>>() {
+        SwiftEventDispatcher.listen(TaskEvent.LOCAL_RUN, new SwiftEventListener<Map<TaskKey, ?>>() {
             @Override
-            public void on(Event event, Map<TaskKey, ?> tasks) {
+            public void on(Map<TaskKey, ?> tasks) {
                 for (Entry<TaskKey, ?> entry : tasks.entrySet()) {
                     WorkerTask task = WorkerTaskPool.getInstance().generate(entry.getKey(), entry.getValue());
                     CubeTaskManager.getInstance().run(task);
