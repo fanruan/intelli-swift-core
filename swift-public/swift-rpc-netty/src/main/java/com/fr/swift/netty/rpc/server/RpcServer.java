@@ -1,12 +1,12 @@
 package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.registry.ServiceRegistry;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.third.jodd.util.StringUtil;
-import com.fr.third.springframework.beans.BeansException;
+import com.fr.swift.util.Strings;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -54,7 +54,7 @@ public class RpcServer {
     }
 
     @PostConstruct
-    public void initService() throws BeansException {
+    public void initService() throws SwiftBeanException {
     }
 
     public void start() throws Exception {
@@ -78,7 +78,7 @@ public class RpcServer {
             });
             bootstrap.option(ChannelOption.SO_BACKLOG, 1024);
             bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-            String[] addressArray = StringUtil.split(serviceAddress, ":");
+            String[] addressArray = Strings.split(serviceAddress, ":");
             String ip = addressArray[0];
             int port = Integer.parseInt(addressArray[1]);
             ChannelFuture future = bootstrap.bind(ip, port).sync();

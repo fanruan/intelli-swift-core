@@ -3,7 +3,7 @@ package com.fr.swift.reliance;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.etl.EtlSource;
+//import com.fr.swift.source.etl.EtlSource;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,13 +64,13 @@ public abstract class AbstractRelationReliance<T extends IRelationNode, R extend
 
     private void initDataSource(DataSource source) {
         allDataSourceList.put(source.getSourceKey(), source);
-        if (source instanceof EtlSource) {
-            EtlSource etl = (EtlSource) source;
-            List<DataSource> dataSources = etl.getBasedSources();
-            for (DataSource dataSource : dataSources) {
-                initDataSource(dataSource);
-            }
-        }
+//        if (source instanceof EtlSource) {
+//            EtlSource etl = (EtlSource) source;
+//            List<DataSource> dataSources = etl.getBasedSources();
+//            for (DataSource dataSource : dataSources) {
+//                initDataSource(dataSource);
+//            }
+//        }
     }
 
     protected abstract void handleSingleRelationSource(List<R> allRelationSource);

@@ -1,5 +1,6 @@
 package com.fr.swift.config.dao.impl;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.BasicDao;
@@ -16,6 +17,7 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018/5/24
  */
+@SwiftBean
 public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataBean> implements SwiftMetaDataDao {
 
     /**

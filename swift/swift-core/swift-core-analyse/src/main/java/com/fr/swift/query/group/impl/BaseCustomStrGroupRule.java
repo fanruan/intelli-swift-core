@@ -1,9 +1,9 @@
 package com.fr.swift.query.group.impl;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
+import com.fr.swift.util.Strings;
 
 import java.util.Comparator;
 import java.util.List;
@@ -26,7 +26,7 @@ abstract class BaseCustomStrGroupRule<Base> extends BaseCustomGroupRule<Base, St
 
     @Override
     boolean hasOtherGroup() {
-        return StringUtils.isNotEmpty(otherGroupName);
+        return Strings.isNotEmpty(otherGroupName);
     }
 
     @Override
