@@ -22,7 +22,7 @@
 //import com.fr.swift.source.SourceKey;
 //import com.fr.swift.source.SwiftResultSet;
 //import com.fr.swift.source.SwiftSourceTransfer;
-//import com.fr.swift.source.SwiftSourceTransferFactory;
+//import com.fr.swift.source.DefaultSourceTransferProvider;
 //import com.fr.swift.source.db.QueryDBSource;
 //import com.fr.swift.test.Preparer;
 //import junit.framework.TestCase;
@@ -114,13 +114,13 @@
 //    }
 //
 //    protected void transportHisAndIndex(DataSource dataSource, Table table) throws Exception {
-//        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+//        SwiftSourceTransfer transfer = DefaultSourceTransferProvider.createSourceTransfer(dataSource);
 //        SwiftResultSet resultSet = transfer.createResultSet();
 //        table.importFrom(resultSet);
 //    }
 //
 //    protected void transportRealAndIndex(DataSource dataSource, Table table) throws Exception {
-//        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+//        SwiftSourceTransfer transfer = DefaultSourceTransferProvider.createSourceTransfer(dataSource);
 //        SwiftResultSet resultSet = transfer.createResultSet();
 //        table.insert(resultSet);
 //    }

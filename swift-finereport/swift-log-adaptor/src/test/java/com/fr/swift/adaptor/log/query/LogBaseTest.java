@@ -18,7 +18,7 @@ import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
+import com.fr.swift.source.SwiftSourceTransferProvider;
 import org.junit.Before;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class LogBaseTest {
     }
 
     protected void transportAndIndex(DataSource dataSource, Table table) throws Exception {
-        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+        SwiftSourceTransfer transfer = SwiftContext.get().getBean(SwiftSourceTransferProvider.class).createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
 
         table.insert(resultSet);

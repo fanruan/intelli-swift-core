@@ -1,5 +1,6 @@
 package com.fr.swift.generate.history.transport;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.generate.Transporter;
 import com.fr.swift.log.SwiftLogger;
@@ -9,7 +10,7 @@ import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
+import com.fr.swift.source.SwiftSourceTransferProvider;
 import com.fr.swift.source.resultset.progress.ProgressResultSet;
 import com.fr.swift.task.TaskResult.Type;
 import com.fr.swift.task.impl.BaseWorker;
@@ -49,7 +50,7 @@ public class TableTransporter extends BaseWorker implements Transporter {
 
     @Override
     public void transport() throws Exception {
-        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+        SwiftSourceTransfer transfer = SwiftContext.get().getBean(SwiftSourceTransferProvider.class).createSourceTransfer(dataSource);
         SwiftResultSet resultSet = new ProgressResultSet(transfer.createResultSet(), CubeTasks.newTableName(dataSource));
         try {
             inserter.insertData(resultSet);
