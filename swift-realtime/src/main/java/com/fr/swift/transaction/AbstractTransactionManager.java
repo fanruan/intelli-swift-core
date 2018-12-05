@@ -50,6 +50,11 @@ public abstract class AbstractTransactionManager implements TransactionManager<S
     }
 
     @Override
+    public void release() {
+
+    }
+
+    @Override
     public void close() {
 
     }

@@ -3,6 +3,7 @@ package com.fr.swift.transaction;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -64,7 +65,13 @@ public class FileTransactionManager extends AbstractTransactionManager {
         for (String fieldName : hisSegment.getMetaData().getFieldNames()) {
             hisSegment.getColumn(new ColumnKey(fieldName)).getBitmapIndex().putNullIndex(oldNullIndexMap.get(fieldName));
         }
-        hisSegment.release();
+
+    }
+
+    @Override
+    public void release() {
+        SegmentUtils.release(hisSegment);
+        SegmentUtils.releaseColumns(hisSegment);
     }
 
     @Override
