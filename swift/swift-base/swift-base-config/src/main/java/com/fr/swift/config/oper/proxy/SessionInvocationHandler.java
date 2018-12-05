@@ -3,9 +3,6 @@ package com.fr.swift.config.oper.proxy;
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigTransaction;
-import com.fr.swift.config.oper.exception.SwiftEntityExistsException;
-import com.fr.swift.config.oper.impl.VersionConfigProperty;
-import com.fr.swift.util.ReflectUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -42,19 +39,9 @@ public class SessionInvocationHandler implements InvocationHandler {
             }
             return obj;
         } catch (Throwable throwable) {
-            throwThrowable(throwable);
-            throw throwable;
+            throw HibernateThrowableHelper.throwThrowable(throwable, throwable);
         }
     }
 
-    private void throwThrowable(Throwable throwable) {
-        if (ReflectUtils.isAssignable(throwable.getClass(), VersionConfigProperty.get().getEntityExistsException())) {
-            throw new SwiftEntityExistsException(throwable);
-        }
-        if (null != throwable.getCause()) {
-            throwThrowable(throwable.getCause());
-        } else {
-            return;
-        }
-    }
+
 }

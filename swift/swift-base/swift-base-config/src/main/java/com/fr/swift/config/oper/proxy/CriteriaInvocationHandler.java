@@ -1,9 +1,6 @@
 package com.fr.swift.config.oper.proxy;
 
-import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
-import com.fr.swift.config.oper.exception.SwiftNonUniqueObjectException;
 import com.fr.swift.config.oper.impl.VersionConfigProperty;
-import com.fr.swift.util.ReflectUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -33,23 +30,9 @@ public class CriteriaInvocationHandler implements InvocationHandler {
                 invokeMethod = proxyClass.getMethod(method.getName(), method.getParameterTypes());
             }
             return invokeMethod.invoke(object, args);
-        } catch (Throwable t) {
-            throwThrowable(t);
-            throw t;
+        } catch (Throwable throwable) {
+            throw HibernateThrowableHelper.throwThrowable(throwable, throwable);
         }
     }
 
-    private void throwThrowable(Throwable throwable) {
-        if (ReflectUtils.isAssignable(throwable.getClass(), VersionConfigProperty.get().getConstraintViolationException())) {
-            throw new SwiftConstraintViolationException(throwable);
-        }
-        if (ReflectUtils.isAssignable(throwable.getClass(), VersionConfigProperty.get().getNonUniqueObjectException())) {
-            throw new SwiftNonUniqueObjectException(throwable);
-        }
-        if (null != throwable.getCause()) {
-            throwThrowable(throwable.getCause());
-        } else {
-            return;
-        }
-    }
 }
