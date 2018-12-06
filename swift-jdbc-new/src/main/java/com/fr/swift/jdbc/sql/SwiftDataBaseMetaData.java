@@ -1,9 +1,9 @@
 package com.fr.swift.jdbc.sql;
 
+import com.fr.swift.api.json.JsonRequestBuilder;
 import com.fr.swift.jdbc.JdbcProperty;
 import com.fr.swift.jdbc.info.ColumnsRequestInfo;
 import com.fr.swift.jdbc.info.TablesRequestInfo;
-import com.fr.swift.jdbc.json.JsonRequestBuilder;
 import com.fr.swift.jdbc.response.JdbcResponse;
 
 import java.sql.Connection;

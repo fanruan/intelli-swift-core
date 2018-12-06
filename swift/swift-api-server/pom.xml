@@ -10,10 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
-    <artifactId>swift-api</artifactId>
+    <artifactId>swift-api-server</artifactId>
     <modules>
-        <module>swift-api-base</module>
-        <module>swift-api-private</module>
+        <module>swift-api-server-base</module>
+        <module>swift-api-server-impl</module>
     </modules>
 
 </project>

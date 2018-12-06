@@ -1,6 +1,6 @@
 package com.fr.swift.jdbc.request;
 
-import com.fr.swift.jdbc.info.RequestInfo;
+import com.fr.swift.api.info.RequestInfo;
 import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 

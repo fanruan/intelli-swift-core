@@ -1,4 +1,4 @@
-package com.fr.swift.jdbc.json.annotation;
+package com.fr.swift.api.json.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface JsonProperty {
+public @interface ApiJsonProperty {
     String value();
 
     boolean require() default false;

@@ -1,14 +1,14 @@
-package com.fr.swift.jdbc.json;
+package com.fr.swift.api.json;
 
-import com.fr.swift.jdbc.info.RequestInfo;
-import com.fr.swift.jdbc.json.impl.JdbcJsonRequestBuilder;
+
+import com.fr.swift.api.info.RequestInfo;
 
 /**
  * @author yee
  * @date 2018/11/16
  */
 public interface JsonRequestBuilder {
-    JsonRequestBuilder BUILDER = new JdbcJsonRequestBuilder();
+//    JsonRequestBuilder BUILDER = new JdbcJsonRequestBuilder();
 
     /**
      * build request json info

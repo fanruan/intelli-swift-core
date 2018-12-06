@@ -1,13 +1,13 @@
 package com.fr.swift.jdbc.request.impl;
 
+import com.fr.swift.api.info.RequestInfo;
+import com.fr.swift.api.json.JsonRequestBuilder;
+import com.fr.swift.api.server.ApiServerService;
 import com.fr.swift.jdbc.info.AuthRequestInfo;
-import com.fr.swift.jdbc.info.RequestInfo;
-import com.fr.swift.jdbc.json.JsonRequestBuilder;
 import com.fr.swift.jdbc.request.RequestService;
 import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
-import com.fr.swift.jdbc.server.JdbcServerService;
 import com.fr.swift.rpc.bean.RpcResponse;
 
 import java.sql.SQLException;
@@ -35,7 +35,7 @@ public class RequestServiceImpl implements RequestService {
     public <T extends JdbcResponse> T apply(JdbcExecutor sender, final String requestJson) {
         ClientProxy proxy = new ClientProxy(sender);
         proxy.start();
-        final RpcResponse response = proxy.getProxy(JdbcServerService.class).dispatchRequest(requestJson);
+        final RpcResponse response = proxy.getProxy(ApiServerService.class).dispatchRequest(requestJson);
         if (response.isError()) {
             return (T) new JdbcResponse() {
 

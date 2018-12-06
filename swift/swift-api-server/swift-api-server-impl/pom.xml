@@ -3,23 +3,18 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>swift-api</artifactId>
+        <artifactId>swift-api-server</artifactId>
         <groupId>com.fr.intelligence</groupId>
         <version>2019.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-api-private</artifactId>
+    <artifactId>swift-api-server-impl</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-api-base</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-api-base</artifactId>
+            <artifactId>swift-api-server-base</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>

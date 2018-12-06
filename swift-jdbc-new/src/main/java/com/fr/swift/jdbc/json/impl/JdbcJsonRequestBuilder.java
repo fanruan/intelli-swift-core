@@ -1,9 +1,9 @@
 package com.fr.swift.jdbc.json.impl;
 
+import com.fr.swift.api.info.RequestInfo;
+import com.fr.swift.api.json.JsonRequestBuilder;
+import com.fr.swift.api.json.annotation.ApiJsonProperty;
 import com.fr.swift.jdbc.exception.Exceptions;
-import com.fr.swift.jdbc.info.RequestInfo;
-import com.fr.swift.jdbc.json.JsonRequestBuilder;
-import com.fr.swift.jdbc.json.annotation.JsonProperty;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -40,8 +40,8 @@ public class JdbcJsonRequestBuilder implements JsonRequestBuilder {
 
     private void buildClassFieldJson(StringBuffer buffer, Class clazz, Object o) {
         for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(JsonProperty.class)) {
-                JsonProperty property = field.getAnnotation(JsonProperty.class);
+            if (field.isAnnotationPresent(ApiJsonProperty.class)) {
+                ApiJsonProperty property = field.getAnnotation(ApiJsonProperty.class);
                 String propertyName = property.value();
                 try {
                     field.setAccessible(true);

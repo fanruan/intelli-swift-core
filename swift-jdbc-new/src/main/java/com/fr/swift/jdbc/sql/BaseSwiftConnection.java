@@ -1,10 +1,10 @@
 package com.fr.swift.jdbc.sql;
 
+import com.fr.swift.api.info.RequestInfo;
 import com.fr.swift.jdbc.BuildInConnectionProperty;
 import com.fr.swift.jdbc.SwiftJdbcConstants;
 import com.fr.swift.jdbc.checker.GrammarChecker;
 import com.fr.swift.jdbc.exception.Exceptions;
-import com.fr.swift.jdbc.info.RequestInfo;
 import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 

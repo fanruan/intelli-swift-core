@@ -1,6 +1,6 @@
-package com.fr.swift.jdbc.info;
+package com.fr.swift.api.info;
 
-import com.fr.swift.jdbc.json.annotation.JsonProperty;
+import com.fr.swift.api.json.annotation.ApiJsonProperty;
 
 import java.util.UUID;
 
@@ -9,9 +9,9 @@ import java.util.UUID;
  * @date 2018-12-03
  */
 public class BaseRequestInfo implements RequestInfo {
-    @JsonProperty(value = "requestType", require = true)
+    @ApiJsonProperty(value = "requestType", require = true)
     protected RequestInfo.Request request;
-    @JsonProperty(value = "requestId", require = true)
+    @ApiJsonProperty(value = "requestId", require = true)
     private String requestId;
 
     public BaseRequestInfo(RequestInfo.Request request) {

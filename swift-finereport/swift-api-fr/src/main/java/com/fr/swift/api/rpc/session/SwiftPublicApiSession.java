@@ -1,6 +1,5 @@
-package com.fr.swift.api.rpc.session.impl;
+package com.fr.swift.api.rpc.session;
 
-import com.fr.swift.api.rpc.session.SwiftApiSession;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.query.query.QueryBean;

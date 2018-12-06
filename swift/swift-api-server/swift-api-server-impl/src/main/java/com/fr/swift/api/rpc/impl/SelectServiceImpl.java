@@ -39,7 +39,7 @@ public class SelectServiceImpl implements SelectService {
         try {
             QueryBean queryBean = QueryBeanFactory.create(queryJson);
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
-                String tableName = ((AbstractSingleTableQueryInfoBean) queryBean).getTableName();
+                String tableName = queryBean.getTableName();
                 SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableName);
                 AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
                 SwiftResultSet resultSet = null;

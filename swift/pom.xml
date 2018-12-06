@@ -28,7 +28,7 @@
         <module>swift-rpc-base</module>
         <module>swift-analyse-base</module>
         <module>swift-proxy</module>
-        <module>swift-api</module>
+        <module>swift-api-server</module>
         <module>swift-config</module>
 
     </modules>
