@@ -206,4 +206,17 @@ public final class ReflectUtils {
             }
         }
     }
+
+    public static <T> T newInstance(Class<T> c) throws IllegalAccessException, InstantiationException {
+        return c.newInstance();
+    }
+
+    public static <T> Optional<T> newInstance(String className, Object... args) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            return Optional.of((T) newInstance(clazz, args));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 }
