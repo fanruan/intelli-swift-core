@@ -2,6 +2,7 @@ package com.fr.swift.db.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.db.impl.AddColumnActionTest.SupplierResultSet;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
@@ -12,13 +13,11 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.resultset.LimitedResultSet;
-import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.Supplier;
-import com.fr.third.javax.persistence.Column;
-import com.fr.third.javax.persistence.Table;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,7 +38,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class DropColumnActionTest {
-    private final SwiftMetaData meta = JpaAdaptor.adapt(A.class);
+    private final SwiftMetaData meta = A.getMeta();
 
     private boolean alterHistory;
 
@@ -115,12 +114,16 @@ public class DropColumnActionTest {
         Assert.assertEquals(Types.BIGINT, meta.getColumn(1).getType());
     }
 
-    @Table(name = "A")
-    class A {
-        @Column(name = "l")
+    static class A {
         long l;
 
-        @Column(name = "s")
         String s;
+
+        static SwiftMetaData getMeta() {
+            return new SwiftMetaDataBean("A",
+                    Arrays.<SwiftMetaDataColumn>asList(
+                            new MetaDataColumnBean("l", Types.BIGINT),
+                            new MetaDataColumnBean("s", Types.VARCHAR)));
+        }
     }
 }

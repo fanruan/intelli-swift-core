@@ -1,6 +1,5 @@
 package com.fr.swift.db;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -8,6 +7,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.Util;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -79,10 +79,10 @@ public class DatabaseTest {
     }
 
     public static void assertEquals(SwiftMetaDataColumn columnMeta1, SwiftMetaDataColumn columnMeta2) {
-        if (!ComparatorUtils.equals(columnMeta1.getName(), columnMeta2.getName())) {
+        if (!Util.equals(columnMeta1.getName(), columnMeta2.getName())) {
             fail();
         }
-        if (!ComparatorUtils.equals(columnMeta1.getRemark(), columnMeta2.getRemark())) {
+        if (!Util.equals(columnMeta1.getRemark(), columnMeta2.getRemark())) {
             fail();
         }
         if (columnMeta1.getType() != columnMeta2.getType()) {
@@ -94,7 +94,7 @@ public class DatabaseTest {
         if (columnMeta1.getScale() != columnMeta2.getScale()) {
             fail();
         }
-        if (!ComparatorUtils.equals(columnMeta1.getColumnId(), columnMeta2.getColumnId())) {
+        if (!Util.equals(columnMeta1.getColumnId(), columnMeta2.getColumnId())) {
             fail();
         }
     }
