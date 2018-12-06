@@ -6,13 +6,15 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Strings;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2018/1/17
  */
-public class CubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey> {
+public class CubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey> implements Serializable {
+    private static final long serialVersionUID = 7862037448502167163L;
     private String fieldName;
     private SourceKey belongTo;
 

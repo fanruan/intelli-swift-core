@@ -26,7 +26,7 @@ import java.util.List;
 
 public final class SQLNotExpr extends SQLExprImpl implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1539376062876265885L;
     public SQLExpr expr;
 
     public SQLNotExpr() {

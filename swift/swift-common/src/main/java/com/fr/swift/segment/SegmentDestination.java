@@ -2,7 +2,6 @@ package com.fr.swift.segment;
 
 import com.fr.swift.query.Queryable;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +9,7 @@ import java.util.List;
  * @date 2018/6/13
  * todo 补javadoc
  */
-public interface SegmentDestination extends Serializable, Comparable<SegmentDestination> {
+public interface SegmentDestination extends Comparable<SegmentDestination> {
     boolean isRemote();
 
     Class<? extends Queryable> getServiceClass();

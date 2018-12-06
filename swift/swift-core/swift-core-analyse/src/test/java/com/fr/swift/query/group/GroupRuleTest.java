@@ -1,6 +1,5 @@
 package com.fr.swift.query.group;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
@@ -11,6 +10,7 @@ import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.test.Temps.TempDictColumn;
+import com.fr.swift.util.Util;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -380,7 +380,7 @@ public class GroupRuleTest {
             @Override
             public int getIndex(Object value) {
                 for (int i = 0; i < numbers.length; i++) {
-                    if (ComparatorUtils.equals(numbers[i], value)) {
+                    if (Util.equals(numbers[i], value)) {
                         return i;
                     }
                 }
@@ -422,7 +422,7 @@ public class GroupRuleTest {
             @Override
             public int getIndex(Object value) {
                 for (int i = 0; i < values.length; i++) {
-                    if (ComparatorUtils.equals(values[i], value)) {
+                    if (Util.equals(values[i], value)) {
                         return i;
                     }
                 }

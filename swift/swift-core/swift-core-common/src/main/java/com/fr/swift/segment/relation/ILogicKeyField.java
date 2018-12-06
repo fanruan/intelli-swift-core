@@ -1,13 +1,12 @@
 package com.fr.swift.segment.relation;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2018/1/16
  */
-public interface ILogicKeyField<T, F> extends Serializable {
+public interface ILogicKeyField<T, F> {
     T belongTo();
 
     List<F> getKeyFields();

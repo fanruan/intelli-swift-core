@@ -34,8 +34,7 @@ import java.util.List;
 
 public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -394319700136087775L;
     protected String methodName;
     protected long methodNameHashCod64;
 
