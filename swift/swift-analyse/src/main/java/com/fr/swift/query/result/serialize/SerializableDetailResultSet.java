@@ -5,6 +5,7 @@ import com.fr.swift.result.SwiftRowIteratorImpl;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author yee
  * @date 2018/6/11
  */
-public class SerializableDetailResultSet implements DetailResultSet, SerializableResultSet {
+public class SerializableDetailResultSet implements DetailResultSet, SerializableResultSet, Serializable {
     private static final long serialVersionUID = -2306723089258907631L;
 
     protected String jsonString;

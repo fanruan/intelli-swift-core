@@ -1,10 +1,10 @@
 package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
@@ -13,11 +13,11 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.bean.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
@@ -25,6 +25,7 @@ import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.Map;
 @SwiftService(name = "analyse")
 @ProxyService(AnalyseService.class)
 @SwiftBean(name = "analyse")
-public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
+public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService, Serializable {
     private static final long serialVersionUID = 841582089735823794L;
 
     private transient SessionFactory sessionFactory;
