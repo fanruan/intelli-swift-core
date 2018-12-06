@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.ProxyFactory;
@@ -20,6 +19,7 @@ import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.event.history.CheckLoadHistoryEvent;
 import com.fr.swift.exception.SwiftServiceException;
@@ -175,8 +175,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
 
-
-
     @Override
     public SwiftResultSet query(final String queryDescription) throws Exception {
         try {
@@ -206,9 +204,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (needUpload.contains(segKey.toString())) {
                         if (allShowBitmap.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
+                            SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
-                            EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
+                            SwiftEventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
                         }
                     }
                 }

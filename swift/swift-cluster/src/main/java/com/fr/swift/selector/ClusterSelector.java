@@ -2,7 +2,7 @@ package com.fr.swift.selector;
 
 import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.basics.Selector;
-import com.fr.swift.core.cluster.FRClusterNodeManager;
+import com.fr.swift.node.SwiftClusterNodeManager;
 
 /**
  * This class created on 2018/6/13
@@ -16,7 +16,7 @@ public class ClusterSelector implements Selector<ClusterNodeManager> {
     private ClusterNodeManager clusterNodeManager;
 
     private ClusterSelector() {
-        clusterNodeManager = FRClusterNodeManager.getInstance();
+        clusterNodeManager = SwiftClusterNodeManager.getInstance();
     }
 
     private static final ClusterSelector INSTANCE = new ClusterSelector();

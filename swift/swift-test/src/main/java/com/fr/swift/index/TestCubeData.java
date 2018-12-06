@@ -33,7 +33,7 @@ public class TestCubeData {
 //        SwiftCubePathService service = SwiftContext.get().getBean(SwiftCubePathService.class);
 //        service.setSwiftPath(TestResource.getRunPath(clazz));
 //        SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(dataSource.getSourceKey().getId());
-//        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+//        SwiftSourceTransfer transfer = DefaultSourceTransferProvider.createSourceTransfer(dataSource);
 //        SwiftResultSet resultSet = transfer.createResultSet();
 //        Inserter inserter = new HistoryBlockInserter(dataSource);
 //        inserter.insertData(resultSet);

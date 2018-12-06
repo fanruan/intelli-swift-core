@@ -2,7 +2,7 @@ package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.FormulaDetailColumn;
-import com.fr.swift.source.etl.utils.FormulaUtils;
+//import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 
 /**
@@ -17,8 +17,8 @@ public class FormulaDetailColumnImpl implements FormulaDetailColumn {
 //    private Map<String, ColumnKey> columnIndexMap;
 
     public FormulaDetailColumnImpl(String formula, Segment segment) {
-        this.formula = FormulaUtils.getParameterIndexEncodedFormula(formula);
-        this.segment = segment;
+//        this.formula = FormulaUtils.getParameterIndexEncodedFormula(formula);
+//        this.segment = segment;
 //        this.columnIndexMap = FormulaUtils.createColumnIndexMap(formula, segment);
     }
     @Override

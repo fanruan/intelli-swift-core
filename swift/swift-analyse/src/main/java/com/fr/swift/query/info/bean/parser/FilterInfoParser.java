@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.parser;
 
-import com.fr.general.DateUtils;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
@@ -167,8 +166,8 @@ class FilterInfoParser {
             case INTEGER:
             case LONG:
                 return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : Long.parseLong(origin.toString());
-            case DATE:
-                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString(), true).getTime();
+//            case DATE:
+//                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString(), true).getTime();
             default:
                 return origin == null ? (start ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY) : Double.parseDouble(origin.toString());
         }
@@ -229,8 +228,8 @@ class FilterInfoParser {
             case INTEGER:
             case LONG:
                 return Long.parseLong(origin.toString());
-            case DATE:
-                return DateUtils.string2Date(origin.toString(), true).getTime();
+//            case DATE:
+//                return DateUtils.string2Date(origin.toString(), true).getTime();
             case DOUBLE:
                 return Double.parseDouble(origin.toString());
             default:

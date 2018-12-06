@@ -23,4 +23,6 @@ public interface ConfigSession {
     ConfigTransaction beginTransaction();
 
     void close();
+
+    void save(Object convert);
 }

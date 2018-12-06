@@ -1,5 +1,7 @@
 package com.fr.swift.boot.upgrade;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.context.ContextUtil;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
@@ -17,7 +19,7 @@ public class UpgradeTask implements Runnable {
     public void run() {
         String encodedClassPath = ContextUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         String oldPath = new File(encodedClassPath).isDirectory() ? encodedClassPath + "/../" : encodedClassPath + "/../../",
-                newPath = ContextUtil.getContextPath();
+                newPath = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
 
         try {
             handleUrlEncodedPath(oldPath, newPath);

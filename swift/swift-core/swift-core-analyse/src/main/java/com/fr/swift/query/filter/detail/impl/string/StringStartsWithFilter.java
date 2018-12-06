@@ -1,6 +1,5 @@
 package com.fr.swift.query.filter.detail.impl.string;
 
-import com.fr.stable.StringUtils;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.query.filter.match.MatchConverter;
@@ -12,6 +11,7 @@ import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.ArrayLookupHelper;
+import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 
 /**
@@ -21,7 +21,7 @@ public class StringStartsWithFilter extends AbstractDetailFilter<String> {
     private String startsWith;
 
     public StringStartsWithFilter(String startsWith, Column<String> column) {
-        Util.requireNonNull(StringUtils.isEmpty(startsWith) ? null : startsWith);
+        Util.requireNonNull(Strings.isEmpty(startsWith) ? null : startsWith);
         this.startsWith = startsWith;
         this.column = column;
     }

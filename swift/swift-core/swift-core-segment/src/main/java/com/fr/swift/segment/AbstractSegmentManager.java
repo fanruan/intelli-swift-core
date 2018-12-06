@@ -2,6 +2,8 @@ package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.db.Table;
@@ -9,8 +11,6 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
-import com.fr.third.org.hibernate.criterion.MatchMode;
-import com.fr.third.org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,8 +102,8 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                     String likeKey = segmentId.substring(0, segmentId.length() - 2);
                     if (!likeKeys.contains(likeKey)) {
                         keys.addAll(segmentService.find(
-                                Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
-                                Restrictions.like("id", likeKey, MatchMode.START)));
+                                RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
+                                RestrictionFactoryImpl.INSTANCE.like("id", likeKey, RestrictionFactory.MatchMode.START)));
                         SwiftLoggers.getLogger().debug("RealTime like segments {}", keys);
                         likeKeys.add(likeKey);
                     }
@@ -118,8 +118,8 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                 segments.addAll(container.getSegments(notLikeKeys, notMatch));
                 if (!notMatch.isEmpty()) {
                     notMatchKeys.addAll(segmentService.find(
-                            Restrictions.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
-                            Restrictions.in("id", notMatch)));
+                            RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, table.getId()),
+                            RestrictionFactoryImpl.INSTANCE.in("id", notMatch)));
                 }
             }
             segments.addAll(container.getSegments(keys, notMatchKeys));
