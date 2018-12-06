@@ -16,7 +16,7 @@ import com.fr.swift.util.IoUtil;
  * @date 2018/7/22
  */
 public class BitmapNio extends BaseNio implements BitMapReader, BitMapWriter, ObjectIo<ImmutableBitMap> {
-    private ObjectIo<byte[]> obj;
+    private ByteArrayNio obj;
 
     BitmapNio(NioConf conf) {
         super(conf);
@@ -72,5 +72,10 @@ public class BitmapNio extends BaseNio implements BitMapReader, BitMapWriter, Ob
     public void release() {
         IoUtil.release(obj);
         obj = null;
+    }
+
+    @Override
+    public void resetContentPosition() {
+        obj.resetContentPosition();
     }
 }
