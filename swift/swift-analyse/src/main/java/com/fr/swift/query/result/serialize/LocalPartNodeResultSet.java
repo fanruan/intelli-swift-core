@@ -6,7 +6,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.Map;
  * <p>
  * Created by Lyon on 2018/6/14.
  */
-public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, SerializableResultSet, Serializable {
+public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = -7163285398162627401L;
     private int fetchSize;

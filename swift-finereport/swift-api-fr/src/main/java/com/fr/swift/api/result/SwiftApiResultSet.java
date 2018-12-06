@@ -5,14 +5,13 @@ import com.fr.swift.api.rpc.session.impl.SwiftApiSessionImpl;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.result.serialize.SerializableDetailResultSet;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
  * @author yee
  * @date 2018/8/27
  */
-public class SwiftApiResultSet extends AbstractSwiftResultSet implements Serializable {
+public class SwiftApiResultSet extends AbstractSwiftResultSet {
     private static final long serialVersionUID = 6857337351317783867L;
     private SwiftApiSessionImpl session;
 
