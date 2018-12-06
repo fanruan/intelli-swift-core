@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * Created by pony on 2017/12/8.
- *
  */
 public abstract class IndexNode extends AbstractSwiftNode<IndexNode> {
     private static Object NULL_DATA = new Object();
@@ -20,7 +19,7 @@ public abstract class IndexNode extends AbstractSwiftNode<IndexNode> {
 
     @Override
     public Object getData() {
-        if (data == NULL_DATA){
+        if (data == NULL_DATA) {
             initDataByIndex();
         }
         return data;
@@ -62,15 +61,15 @@ public abstract class IndexNode extends AbstractSwiftNode<IndexNode> {
 
     protected abstract Object createKey();
 
-    private ChildMap<IndexNode> getChildMap(){
-        if (children == null){
+    private ChildMap<IndexNode> getChildMap() {
+        if (children == null) {
             children = new ChildMap<IndexNode>();
         }
         return children;
     }
 
     @Override
-    public List<IndexNode> getChildren(){
+    public List<IndexNode> getChildren() {
         return getChildMap().getList();
     }
 

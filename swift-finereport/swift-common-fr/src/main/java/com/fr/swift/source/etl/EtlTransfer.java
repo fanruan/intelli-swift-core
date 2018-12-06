@@ -7,6 +7,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.util.Util;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +84,7 @@ public class EtlTransfer implements SwiftSourceTransfer {
         }
     }
 
-    private class ShiftRow implements Row {
+    private class ShiftRow implements Row, Serializable {
         private static final long serialVersionUID = -537161590337548026L;
         private Row row;
         private int[] shiftIndex;

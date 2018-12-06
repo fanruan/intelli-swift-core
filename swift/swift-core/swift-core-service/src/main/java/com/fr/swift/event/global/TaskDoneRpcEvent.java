@@ -5,11 +5,13 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 
+import java.io.Serializable;
+
 /**
  * @author yee
  * @date 2018/6/29
  */
-public class TaskDoneRpcEvent extends AbstractGlobalRpcEvent<Pair<TaskKey, TaskResult>> {
+public class TaskDoneRpcEvent extends AbstractGlobalRpcEvent<Pair<TaskKey, TaskResult>> implements Serializable {
     private static final long serialVersionUID = -3276289536047862494L;
 
     private Pair<TaskKey, TaskResult> content;

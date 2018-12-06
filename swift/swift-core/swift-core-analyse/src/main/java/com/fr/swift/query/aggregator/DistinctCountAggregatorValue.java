@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,8 +8,7 @@ import java.util.Set;
  * @author Xiaolei.liu
  */
 
-public class DistinctCountAggregatorValue implements AggregatorValue<Double> {
-
+public class DistinctCountAggregatorValue implements AggregatorValue<Double>, Serializable {
 
     private static final long serialVersionUID = -6054571707233716739L;
     private Set set = new HashSet();

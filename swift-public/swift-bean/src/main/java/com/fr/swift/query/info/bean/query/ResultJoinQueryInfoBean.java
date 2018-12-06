@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +12,9 @@ import java.util.List;
  * @author Lyon
  * @date 2018/6/7
  */
-public class ResultJoinQueryInfoBean extends AbstractQueryInfoBean {
+public class ResultJoinQueryInfoBean extends AbstractQueryInfoBean implements Serializable {
 
+    private static final long serialVersionUID = 4937477475343105392L;
     @JsonProperty
     private List<QueryInfoBean> queryInfoBeans = new ArrayList<QueryInfoBean>(0);
     @JsonProperty

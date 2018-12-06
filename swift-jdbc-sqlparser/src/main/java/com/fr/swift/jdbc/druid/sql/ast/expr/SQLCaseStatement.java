@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
+    private static final long serialVersionUID = 2044937560795876781L;
     private final List<Item> items = new ArrayList<Item>();
     private SQLExpr valueExpr;
     private List<SQLStatement> elseStatements = new ArrayList<SQLStatement>();
@@ -83,7 +84,7 @@ public class SQLCaseStatement extends SQLStatementImpl implements Serializable {
 
     public static class Item extends SQLObjectImpl implements Serializable {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 4531999656368119103L;
         private SQLExpr conditionExpr;
         private SQLStatement statement;
 
