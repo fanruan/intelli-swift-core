@@ -5,7 +5,7 @@ import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.pool.RemoteFileSystemFactoryCreator;
-import com.fr.swift.util.Crasher;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Strings;
 
 import java.io.IOException;
@@ -51,7 +51,8 @@ public abstract class AbstractRepository implements SwiftRepository {
             Class system = this.getClass().getClassLoader().loadClass("com.fr.swift.file.system.impl.DefaultFileSystemImpl");
             return (SwiftFileSystem) system.getDeclaredConstructor(SwiftFileSystemConfig.class, String.class).newInstance(configuration, uri);
         } catch (Exception e) {
-            return Crasher.crash(e);
+            SwiftLoggers.getLogger().warn(e);
+            return null;
         }
     }
 

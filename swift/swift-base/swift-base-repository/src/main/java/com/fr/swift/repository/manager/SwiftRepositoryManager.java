@@ -54,6 +54,9 @@ public class SwiftRepositoryManager implements com.fr.swift.repository.SwiftRepo
                     currentRepository.testConnection();
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
+                    if (e instanceof NullPointerException) {
+                        return null;
+                    }
                     currentRepository = new SwiftRepositoryImpl();
                 }
             }
