@@ -2,18 +2,18 @@ package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.impl.RangeBitmap;
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.resultset.LimitedResultSet;
 import com.fr.swift.test.TestResource;
-import com.fr.swift.util.JpaAdaptor;
-import com.fr.third.javax.persistence.Column;
-import com.fr.third.javax.persistence.Table;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -21,7 +21,9 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,14 +32,18 @@ import java.util.List;
  */
 public class SegmentResultSetTest {
 
-    @Table(name = "DEMO_CONTRACT")
-    class DemoContract {
+    static class DemoContract {
 
-        @Column(name = "合同ID")
         String contractId;
+
+        static SwiftMetaData getMeta() {
+            return new SwiftMetaDataBean("DEMO_CONTRACT",
+                    Collections.<SwiftMetaDataColumn>singletonList(
+                            new MetaDataColumnBean("合同ID", Types.VARCHAR)));
+        }
     }
 
-    private final SwiftMetaData meta = JpaAdaptor.adapt(DemoContract.class);
+    private final SwiftMetaData meta = DemoContract.getMeta();
 
     @Rule
     public TestRule getExternalResource() throws Exception {

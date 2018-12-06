@@ -1,7 +1,9 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.column.ColumnKey;
@@ -12,12 +14,9 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.resultset.LimitedResultSet;
-import com.fr.swift.util.JpaAdaptor;
-import com.fr.third.javax.persistence.Column;
-import com.fr.third.javax.persistence.Entity;
-import com.fr.third.javax.persistence.Table;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -27,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class SegmentTransferTest {
 
-    private final SwiftMetaData meta = JpaAdaptor.adapt(A.class);
+    private final SwiftMetaData meta = A.getMeta();
     private final A a = new A();
 
     private StoreType from, to;
@@ -156,16 +156,19 @@ public class SegmentTransferTest {
         }
     }
 
-    @Entity
-    @Table(name = "A")
-    class A {
-        @Column(name = "l")
+    static class A {
         long l = 2;
 
-        @Column(name = "d")
         double d = 0.76;
 
-        @Column(name = "s")
         String s = "string";
+
+        static SwiftMetaData getMeta() {
+            return new SwiftMetaDataBean("A",
+                    Arrays.<SwiftMetaDataColumn>asList(
+                            new MetaDataColumnBean("l", Types.BIGINT),
+                            new MetaDataColumnBean("d", Types.DOUBLE),
+                            new MetaDataColumnBean("s", Types.VARCHAR)));
+        }
     }
 }

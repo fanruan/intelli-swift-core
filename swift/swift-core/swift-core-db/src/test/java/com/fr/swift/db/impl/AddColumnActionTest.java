@@ -2,6 +2,7 @@ package com.fr.swift.db.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -13,14 +14,12 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.resultset.LimitedResultSet;
-import com.fr.swift.util.JpaAdaptor;
 import com.fr.swift.util.function.Supplier;
-import com.fr.third.javax.persistence.Column;
-import com.fr.third.javax.persistence.Table;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -44,7 +43,7 @@ import java.util.List;
 @Ignore
 @RunWith(Parameterized.class)
 public class AddColumnActionTest {
-    private final SwiftMetaData meta = JpaAdaptor.adapt(A.class);
+    private final SwiftMetaData meta = A.getMeta();
 
     private boolean alterHistory;
 
@@ -168,9 +167,12 @@ public class AddColumnActionTest {
         }
     }
 
-    @Table(name = "A")
     static class A {
-        @Column(name = "i")
         long i = -1;
+
+        static SwiftMetaData getMeta() {
+            return new SwiftMetaDataBean("A",
+                    Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("i", Types.BIGINT)));
+        }
     }
 }
