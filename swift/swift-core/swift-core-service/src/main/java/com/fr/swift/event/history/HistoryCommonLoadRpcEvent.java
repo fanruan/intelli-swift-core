@@ -4,6 +4,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * @author yee
  * @date 2018/6/29
  */
-public class HistoryCommonLoadRpcEvent extends CommonLoadRpcEvent {
+public class HistoryCommonLoadRpcEvent extends CommonLoadRpcEvent implements Serializable {
 
     private static final long serialVersionUID = -6256005102486640777L;
 

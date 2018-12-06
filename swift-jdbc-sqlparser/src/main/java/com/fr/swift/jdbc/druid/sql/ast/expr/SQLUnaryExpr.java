@@ -26,7 +26,7 @@ import java.util.List;
 
 public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6206826632623888197L;
     private SQLExpr expr;
     private SQLUnaryOperator operator;
 

@@ -29,7 +29,7 @@ import java.util.List;
 
 public class SQLQueryExpr extends SQLExprImpl implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3127505211146642853L;
     public SQLSelect subQuery;
 
     public SQLQueryExpr() {

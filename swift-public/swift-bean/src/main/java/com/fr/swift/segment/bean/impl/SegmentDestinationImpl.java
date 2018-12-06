@@ -9,6 +9,7 @@ import com.fr.swift.segment.bean.SegmentDestinationBean;
 import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(value = {"remote"})
-public class SegmentDestinationImpl implements SegmentDestinationBean {
+public class SegmentDestinationImpl implements SegmentDestinationBean, Serializable {
     private static final long serialVersionUID = 3016733438741210788L;
     @JsonProperty
     protected String clusterId;

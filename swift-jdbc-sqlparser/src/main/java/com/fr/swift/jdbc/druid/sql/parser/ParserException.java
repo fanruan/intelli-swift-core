@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 public class ParserException extends RuntimeException implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6344698445138860412L;
 
     public ParserException() {
     }

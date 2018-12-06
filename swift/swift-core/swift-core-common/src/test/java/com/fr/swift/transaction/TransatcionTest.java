@@ -1,6 +1,5 @@
 package com.fr.swift.transaction;
 
-import com.fr.third.springframework.web.bind.annotation.ControllerAdvice;
 import junit.framework.TestCase;
 
 import java.util.concurrent.BlockingQueue;
@@ -13,7 +12,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @description
  * @since Advanced FineBI 5.0
  */
-@ControllerAdvice
 public class TransatcionTest extends TestCase {
     public void testRollBack() {
         try {

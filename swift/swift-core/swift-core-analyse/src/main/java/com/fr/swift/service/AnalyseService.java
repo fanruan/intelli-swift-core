@@ -27,11 +27,9 @@ public interface AnalyseService extends SwiftService, Serializable {
     @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
+    // TODO: 2018/12/5 增删改可以合并成一个接口
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
-
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
-    void removeTable(String cluster, String sourceKey);
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys);

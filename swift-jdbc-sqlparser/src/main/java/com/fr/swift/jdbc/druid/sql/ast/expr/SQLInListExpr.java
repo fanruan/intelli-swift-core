@@ -27,7 +27,7 @@ import java.util.List;
 
 public final class SQLInListExpr extends SQLExprImpl implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3635279694899650068L;
     private boolean not = false;
     private SQLExpr expr;
     private List<SQLExpr> targetList = new ArrayList<SQLExpr>();
