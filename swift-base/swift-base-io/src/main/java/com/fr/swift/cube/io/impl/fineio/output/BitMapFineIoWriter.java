@@ -42,4 +42,9 @@ public class BitMapFineIoWriter implements BitMapWriter {
         }
         baw.put(pos, combine);
     }
+
+    @Override
+    public void resetContentPosition() {
+        baw.resetContentPosition();
+    }
 }

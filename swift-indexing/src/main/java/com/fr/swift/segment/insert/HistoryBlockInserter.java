@@ -9,6 +9,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
@@ -71,5 +72,13 @@ public class HistoryBlockInserter extends BaseBlockInserter {
 
         SEG_SVC.addSegments(Collections.singletonList(currentSegKey));
         return true;
+    }
+
+    @Override
+    protected void clearDirtySegIfNeed() {
+        if (currentSegKey != null) {
+            SEG_SVC.removeSegments(Collections.singletonList(currentSegKey));
+            SegmentUtils.clearSegment(currentSegKey);
+        }
     }
 }
