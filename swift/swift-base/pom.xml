@@ -19,7 +19,6 @@
         <module>swift-base-repository</module>
         <module>swift-base-beans</module>
         <module>swift-base-common</module>
-        <module>swift-base-result</module>
     </modules>
 
     <dependencyManagement>

@@ -1,6 +1,5 @@
 package com.fr.swift.test.external;
 
-import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.function.Function;
@@ -16,8 +15,8 @@ public class LoggerResource extends ExternalResource {
 
     @Override
     protected void before() {
-        loggerFactory = SwiftLoggers.getLoggerFactory();
-        SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
+//        loggerFactory = SwiftLoggers.getLoggerFactory();
+//        SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
     }
 
     @Override
