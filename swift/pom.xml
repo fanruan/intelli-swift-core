@@ -16,7 +16,6 @@
         <module>swift-analyse</module>
         <module>swift-base</module>
         <module>swift-core</module>
-        <module>swift-common</module>
         <module>swift-cluster</module>
         <module>swift-defragmentation</module>
         <module>swift-history</module>
@@ -31,6 +30,7 @@
         <module>swift-proxy</module>
         <module>swift-api</module>
         <module>swift-config</module>
+
     </modules>
 
 </project>

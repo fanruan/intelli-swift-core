@@ -3,6 +3,7 @@ package com.fr.swift.query.result.serialize;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SwiftRowIteratorImpl;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;

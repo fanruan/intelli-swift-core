@@ -4,10 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.fr.intelligence</groupId>
-        <artifactId>swift</artifactId>
+        <artifactId>swift-base</artifactId>
         <version>2019.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-common</artifactId>
+    <artifactId>swift-base-common</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-result</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+    </dependencies>
 </project>
