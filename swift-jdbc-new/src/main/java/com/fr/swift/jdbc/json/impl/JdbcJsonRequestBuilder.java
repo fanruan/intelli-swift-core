@@ -33,6 +33,7 @@ public class JdbcJsonRequestBuilder implements JsonRequestBuilder {
     public String buildRequest(RequestInfo requestInfo) {
         StringBuffer buffer = new StringBuffer("{");
         buildClassFieldJson(buffer, requestInfo.getClass(), requestInfo);
+        buffer.setLength(buffer.length() - 1);
         buffer.append("}");
         return buffer.toString();
     }

@@ -8,8 +8,6 @@ import com.fr.swift.file.system.pool.RemoteFileSystemFactoryCreator;
 import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
 import com.fr.swift.util.Strings;
 
-import java.io.IOException;
-
 /**
  * @author yee
  * @date 2018/5/28
@@ -21,18 +19,6 @@ public abstract class AbstractRepository implements SwiftRepository {
     public AbstractRepository(SwiftFileSystemConfig configuration) {
         this.configuration = configuration;
     }
-
-    @Override
-    public abstract String copyFromRemote(String remote, String local) throws IOException;
-
-    @Override
-    public abstract boolean copyToRemote(String local, String remote) throws IOException;
-
-    @Override
-    public abstract boolean zipToRemote(String local, String remote) throws IOException;
-
-    @Override
-    public abstract boolean delete(String remote) throws IOException;
 
     public SwiftFileSystem createFileSystem(String uri) {
         if (null == configuration) {

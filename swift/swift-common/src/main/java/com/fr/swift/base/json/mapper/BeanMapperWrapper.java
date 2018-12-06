@@ -41,6 +41,9 @@ public abstract class BeanMapperWrapper implements BeanMapper {
         if (ReflectUtils.isAssignable(reference, String.class)) {
             return (T) jsonString.replace("\"", "");
         }
+        if (ReflectUtils.isAssignable(reference, Map.class)) {
+            return mapper.readValue(jsonString, reference);
+        }
         Map map = mapper.readValue(jsonString, Map.class);
         if (reference.isAnnotationPresent(JsonTypeInfo.class)) {
             JsonTypeInfo info = reference.getAnnotation(JsonTypeInfo.class);

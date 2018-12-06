@@ -2,6 +2,7 @@ package com.fr.swift.base.json;
 
 import com.fr.swift.base.json.annotation.JsonMapper;
 import com.fr.swift.base.json.mapper.BeanMapper;
+import com.fr.swift.util.ReflectUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class JsonBuilder {
 
     public static <T> T readValue(String jsonString, Class<T> reference) throws Exception {
         BeanMapper mapper = DEFAULT;
-        if (reference.isAnnotationPresent(JsonMapper.class)) {
+        if (!ReflectUtils.isAssignable(reference, Map.class) && reference.isAnnotationPresent(JsonMapper.class)) {
             JsonMapper jsonMapper = reference.getAnnotation(JsonMapper.class);
             mapper = getMapper(jsonMapper);
         }
