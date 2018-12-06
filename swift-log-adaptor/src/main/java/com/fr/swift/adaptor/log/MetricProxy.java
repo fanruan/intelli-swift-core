@@ -1,8 +1,10 @@
 package com.fr.swift.adaptor.log;
 
+import com.fr.intelli.record.MetricException;
 import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
+import com.fr.stable.query.data.DataColumn;
 import com.fr.stable.query.data.DataList;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Database;
@@ -18,6 +20,7 @@ import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.global.DeleteEvent;
+import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.QueryBean;
@@ -41,6 +44,7 @@ import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.swift.utils.ClusterCommonUtils;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,22 +113,17 @@ public class MetricProxy extends BaseMetric {
     }
 
     @Override
-    public <T> DataList<List<T>> find(String s) {
-        return null;
+    public <T> ResultSet findWithMetaData(Class<T> aClass, QueryCondition queryCondition, List<DataColumn> list) throws MetricException {
+        ResultSet ret = null;
+        try {
+            QueryBean queryBean = LogQueryUtils.query(aClass, queryCondition, list);
+            SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
+            ret = new ResultSetWrapper(resultSet);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+        return ret;
     }
-
-//    @Override
-//    public <T> ResultSet findWithMetaData(Class<T> aClass, QueryCondition queryCondition, List<DataColumn> list) throws MetricException {
-//        QueryBean queryBean = LogQueryUtils.groupQuery(aClass, queryCondition, list);
-//        ResultSet ret = null;
-//        try {
-//            SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
-//            ret = new ResultSetWrapper(resultSet);
-//        } catch (Exception e) {
-//            SwiftLoggers.getLogger().error(e);
-//        }
-//        return ret;
-//    }
 
     @Override
     public void submit(Object o) {
