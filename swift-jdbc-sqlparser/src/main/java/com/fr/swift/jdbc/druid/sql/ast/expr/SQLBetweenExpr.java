@@ -28,7 +28,7 @@ import java.util.List;
 
 public class SQLBetweenExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 836155366598951332L;
     public SQLExpr testExpr;
     private boolean not;
     public SQLExpr beginExpr;

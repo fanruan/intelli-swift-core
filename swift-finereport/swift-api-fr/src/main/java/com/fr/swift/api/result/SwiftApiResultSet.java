@@ -12,6 +12,7 @@ import java.sql.SQLException;
  * @date 2018/8/27
  */
 public class SwiftApiResultSet extends AbstractSwiftResultSet {
+    private static final long serialVersionUID = 6857337351317783867L;
     private SwiftApiSessionImpl session;
 
     public SwiftApiResultSet(SerializableDetailResultSet resultSet, SwiftDatabase database, SwiftApiSessionImpl session) throws SQLException {

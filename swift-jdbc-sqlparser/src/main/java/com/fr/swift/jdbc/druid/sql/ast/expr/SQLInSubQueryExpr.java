@@ -30,7 +30,7 @@ import java.util.List;
 
 public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1661112482512130596L;
     private boolean not = false;
     private SQLExpr expr;
 

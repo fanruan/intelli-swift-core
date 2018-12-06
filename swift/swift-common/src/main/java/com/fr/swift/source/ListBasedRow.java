@@ -1,10 +1,11 @@
 package com.fr.swift.source;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListBasedRow implements Row {
+public class ListBasedRow implements Row, Serializable {
     private static final long serialVersionUID = -5283575301909309763L;
 
     private List<?> values;

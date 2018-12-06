@@ -3,12 +3,15 @@ package com.fr.swift.segment.bean.impl;
 import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentDestination;
 
+import java.io.Serializable;
+
 /**
  * @author yee
  * @date 2018/9/5
  */
-public class RealTimeSegDestImpl extends SegmentDestinationImpl {
+public class RealTimeSegDestImpl extends SegmentDestinationImpl implements Serializable {
     private static final long serialVersionUID = -5969030726680132148L;
+
     public RealTimeSegDestImpl() {
     }
 

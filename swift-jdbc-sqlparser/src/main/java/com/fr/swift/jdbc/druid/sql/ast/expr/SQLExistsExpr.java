@@ -25,7 +25,7 @@ import java.util.List;
 
 public final class SQLExistsExpr extends SQLExprImpl implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 999222881693987445L;
     public boolean not = false;
     public SQLSelect subQuery;
 

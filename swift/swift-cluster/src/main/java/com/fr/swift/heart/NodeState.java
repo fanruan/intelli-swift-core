@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public class NodeState implements Serializable {
 
+    private static final long serialVersionUID = 3930712723392870381L;
     private HeartBeatInfo heartBeatInfo;
     private NodeType nodeType;
 
