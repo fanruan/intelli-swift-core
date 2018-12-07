@@ -1,16 +1,12 @@
 package com.fr.swift.boot.controller.test;
 
-import com.fr.swift.api.rpc.SimpleDetailQueryBean;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.boot.controller.SwiftApiConstants;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.info.bean.query.QueryBeanFactory;
-import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -47,35 +43,24 @@ public class TestQueryController {
         return rows;
     }
 
-    /**
-     * postman测试 post请求，requestBody填：
-     * {
-     * "table": "sourceKey",
-     * "columns": ["字段1", "字段2"]
-     * }
-     *
-     * @param bean
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = "/simpleQuery", method = RequestMethod.POST)
-    @ResponseBody
-    public List<Row> query(@RequestBody SimpleDetailQueryBean bean) throws Exception {
-        List<Row> rows = new ArrayList<Row>();
-        long start = System.currentTimeMillis();
-        QueryBean queryBean = bean.toQueryBean();
-        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-        // TODO: 2018/11/28
-        SwiftResultSet resultSet = (SwiftResultSet) service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
-        if (resultSet != null) {
-            while (resultSet.hasNext()) {
-                rows.add(resultSet.getNextRow());
-            }
-            resultSet.close();
-        }
-        SwiftLoggers.getLogger().info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
-        return rows;
-    }
+//    @RequestMapping(value = "/simpleQuery", method = RequestMethod.POST)
+//    @ResponseBody
+//    public List<Row> query(@RequestBody SimpleDetailQueryBean bean) throws Exception {
+//        List<Row> rows = new ArrayList<Row>();
+//        long start = System.currentTimeMillis();
+//        QueryBean queryBean = bean.toQueryBean();
+//        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+//        // TODO: 2018/11/28
+//        SwiftResultSet resultSet = (SwiftResultSet) service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+//        if (resultSet != null) {
+//            while (resultSet.hasNext()) {
+//                rows.add(resultSet.getNextRow());
+//            }
+//            resultSet.close();
+//        }
+//        SwiftLoggers.getLogger().info("group query cost: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds!");
+//        return rows;
+//    }
 
     @ResponseBody
     @RequestMapping(value = "/group/{sourceKey}", method = RequestMethod.GET)

@@ -21,7 +21,7 @@ public class SwiftApiResultSet extends AbstractSwiftResultSet {
     }
 
     @Override
-    protected AbstractSwiftResultSet queryNextPage(String queryJson) {
+    protected AbstractSwiftResultSet queryNextPage(String queryJson) throws Exception {
         return (AbstractSwiftResultSet) session.query(database, queryJson);
     }
 }

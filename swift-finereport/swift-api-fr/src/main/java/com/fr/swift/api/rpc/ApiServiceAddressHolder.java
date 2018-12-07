@@ -3,6 +3,7 @@ package com.fr.swift.api.rpc;
 import com.fr.swift.api.rpc.holder.AbstractServiceAddressHolder;
 import com.fr.swift.service.ServiceType;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +18,7 @@ public class ApiServiceAddressHolder extends AbstractServiceAddressHolder {
 
     private ApiServiceAddressHolder(String address) {
         super(address);
-        detect();
+//        detect();
     }
 
     public static ApiServiceAddressHolder getHolder(String address) {
@@ -30,6 +31,7 @@ public class ApiServiceAddressHolder extends AbstractServiceAddressHolder {
 
     @Override
     protected Map<ServiceType, List<String>> detectiveAddress(String address) {
-        return Api.connectDetectiveApi(address).detectiveAnalyseAndRealTime(address);
+//        return Api.connectDetectiveApi(address).detectiveAnalyseAndRealTime(address);
+        return Collections.emptyMap();
     }
 }
