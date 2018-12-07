@@ -13,7 +13,6 @@ import com.fr.swift.util.qm.bool.BVar;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class DetailFilterInfoBean<T> extends BVar implements FilterInfoBean<T> {
 
-    private static final long serialVersionUID = 2298764777503853299L;
     @JsonProperty
     protected SwiftDetailFilterType type;
     @JsonProperty

@@ -25,6 +25,7 @@ import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.Map;
 @SwiftService(name = "analyse")
 @ProxyService(AnalyseService.class)
 @SwiftBean(name = "analyse")
-public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService {
+public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService, Serializable {
     private static final long serialVersionUID = 841582089735823794L;
 
     private transient SessionFactory sessionFactory;
