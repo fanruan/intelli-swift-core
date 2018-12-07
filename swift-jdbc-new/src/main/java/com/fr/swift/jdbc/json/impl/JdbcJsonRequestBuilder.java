@@ -29,6 +29,12 @@ public class JdbcJsonRequestBuilder implements JsonRequestBuilder {
         primitiveToWrapper.put(Byte.TYPE, Byte.class);
     }
 
+    private static JdbcJsonRequestBuilder BUILDER = new JdbcJsonRequestBuilder();
+
+    public static JsonRequestBuilder getInstance() {
+        return BUILDER;
+    }
+
     @Override
     public String buildRequest(RequestInfo requestInfo) {
         StringBuffer buffer = new StringBuffer("{");
