@@ -57,6 +57,13 @@ public class CubePathBuilderTest {
         int segOrder = 10;
 
         String path = new CubePathBuilder().setSwiftSchema(swiftSchema)
+                .setTempDir(0)
+                .setTableKey(tableKey)
+                .setSegOrder(segOrder)
+                .setColumnId(columnId).build();
+        Assert.assertEquals(String.format("%s/0/%s/seg%d/%s", swiftSchema.getDir(), tableKey, segOrder, columnId), path);
+
+        path = new CubePathBuilder().setSwiftSchema(swiftSchema)
                 .setTableKey(tableKey)
                 .setSegOrder(segOrder)
                 .setColumnId(columnId).build();
