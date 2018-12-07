@@ -6,11 +6,13 @@ import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.util.Util;
 
+import java.io.Serializable;
+
 /**
  * @author yee
  * @date 2018/5/2
  */
-public class FieldRelationSource extends RelationSourceImpl {
+public class FieldRelationSource extends RelationSourceImpl implements Serializable {
     private static final long serialVersionUID = 3089847771095685104L;
     @CoreField
     private ColumnKey columnKey;

@@ -6,10 +6,12 @@ import com.fr.swift.util.qm.bool.BExpr;
 import com.fr.swift.util.qm.bool.BExprType;
 import com.fr.swift.util.qm.bool.BUExpr;
 
+import java.io.Serializable;
+
 /**
  * Created by Lyon on 2018/6/28.
  */
-public class NotFilterBean extends GeneralFilterInfoBean<FilterInfoBean> implements BUExpr {
+public class NotFilterBean extends GeneralFilterInfoBean<FilterInfoBean> implements BUExpr, Serializable {
 
     private static final long serialVersionUID = -1060322652409398537L;
 

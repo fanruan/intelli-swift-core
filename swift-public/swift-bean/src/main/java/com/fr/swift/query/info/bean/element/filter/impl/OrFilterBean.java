@@ -6,12 +6,13 @@ import com.fr.swift.util.qm.bool.BExpr;
 import com.fr.swift.util.qm.bool.BExprType;
 import com.fr.swift.util.qm.bool.BNExpr;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Lyon on 2018/6/28.
  */
-public class OrFilterBean extends GeneralFilterInfoBean<List<FilterInfoBean>> implements BNExpr {
+public class OrFilterBean extends GeneralFilterInfoBean<List<FilterInfoBean>> implements BNExpr, Serializable {
 
     private static final long serialVersionUID = -5854713752764823833L;
 
