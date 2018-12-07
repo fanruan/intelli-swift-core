@@ -2,7 +2,7 @@ package com.fr.swift.segment.operator.delete;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
@@ -48,7 +48,7 @@ public class RealtimeSwiftDeleter implements WhereDeleter {
     }
 
     private Segment getBackupSegment() {
-        String backupPath = CubeUtil.getSegPath(segKey).replace(segKey.getSwiftSchema().getDir(), segKey.getSwiftSchema().getBackupDir());
+        String backupPath = new CubePathBuilder(segKey).asBackup().build();
         return new MutableHistorySegment(
                 new ResourceLocation(backupPath, Types.StoreType.NIO),
                 SwiftDatabase.getInstance().getTable(segKey.getTable()).getMetadata());

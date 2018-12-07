@@ -8,7 +8,9 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
@@ -142,7 +144,6 @@ public class SegmentHelper {
         try {
             SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
             if (null != repository) {
-                SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
                 SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
                 SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
                 final SourceKey sourceKey = dataSource.getSourceKey();
@@ -153,15 +154,13 @@ public class SegmentHelper {
                 entity.setTablePath(tmpPath);
                 entity.setLastPath(path);
                 List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
-                String cubePath = pathService.getSwiftPath();
                 if (null != segmentKeys) {
-                    repository.delete(String.format("%s/%s", dataSource.getMetadata().getSwiftDatabase().getDir(), sourceKey.getId()));
+                    SwiftDatabase swiftSchema = dataSource.getMetadata().getSwiftDatabase();
+                    repository.delete(new CubePathBuilder().setSwiftSchema(swiftSchema).setTableKey(sourceKey).build());
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
-                            String uploadPath = String.format("%s/%s",
-                                    segmentKey.getSwiftSchema().getDir(),
-                                    segmentKey.getUri().getPath());
-                            String local = String.format("%s/%s", cubePath, CubeUtil.getHistorySegPath(dataSource, tmpPath, segmentKey.getOrder()));
+                            String uploadPath = new CubePathBuilder(segmentKey).build();
+                            String local = new CubePathBuilder(segmentKey).asAbsolute().setTempDir(tmpPath).build();
                             repository.copyToRemote(local, uploadPath);
                         } catch (Exception e) {
                             SwiftLoggers.getLogger().error("upload error! ", e);
@@ -169,11 +168,9 @@ public class SegmentHelper {
                     }
                     if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity)
                             && locationService.delete(sourceKey.getId(), clusterId)) {
-                        String deletePath = String.format("%s/%s/%d/%s",
-                                pathService.getSwiftPath(),
-                                dataSource.getMetadata().getSwiftDatabase().getDir(),
-                                path,
-                                sourceKey.getId());
+                        String deletePath = new CubePathBuilder().asAbsolute()
+                                .setSwiftSchema(swiftSchema).setTempDir(path)
+                                .setTableKey(sourceKey).build();
                         FileUtil.delete(deletePath);
                         new File(deletePath).getParentFile().delete();
                     }
@@ -205,15 +202,13 @@ public class SegmentHelper {
                             }
                             try {
                                 String src = Strings.unifySlash(
-                                        String.format("%s/%s/%s/%s",
-                                                pathService.getSwiftPath(),
-                                                CubeUtil.getSegPath(segmentKey),
+                                        String.format("%s/%s/%s",
+                                                new CubePathBuilder(segmentKey).asAbsolute().setTempDir(CubeUtil.getCurrentDir(sourceKey)).build(),
                                                 RelationIndexImpl.RELATIONS_KEY,
                                                 primary.getId()
                                         ));
-                                String dest = String.format("%s/%s/%s/%s",
-                                        segmentKey.getSwiftSchema().getDir(),
-                                        Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
+                                String dest = String.format("%s/%s/%s",
+                                        new CubePathBuilder(segmentKey).build(),
                                         RelationIndexImpl.RELATIONS_KEY,
                                         primary.getId());
                                 repository.copyToRemote(src, dest);
@@ -230,13 +225,12 @@ public class SegmentHelper {
                             try {
                                 String src = Strings.unifySlash(
                                         String.format("%s/field/%s/%s",
-                                                CubeUtil.getSegPath(segmentKey),
+                                                new CubePathBuilder(segmentKey).setTempDir(CubeUtil.getCurrentDir(sourceKey)).build(),
                                                 RelationIndexImpl.RELATIONS_KEY,
                                                 primary.getId()
                                         ));
-                                String dest = String.format("%s/%s/field/%s/%s",
-                                        segmentKey.getSwiftSchema().getDir(),
-                                        Strings.unifySlash(segmentKey.getUri().getPath() + "/"),
+                                String dest = String.format("%s/field/%s/%s",
+                                        new CubePathBuilder(segmentKey).build(),
                                         RelationIndexImpl.RELATIONS_KEY,
                                         primary.getId());
                                 repository.copyToRemote(src, dest);

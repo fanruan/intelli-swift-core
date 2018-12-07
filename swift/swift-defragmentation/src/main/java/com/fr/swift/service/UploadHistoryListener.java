@@ -6,6 +6,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.event.SwiftEventDispatcher;
@@ -50,8 +51,9 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
             @Override
             public void run() {
                 if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                    String local = CubeUtil.getAbsoluteSegPath(segKey);
-                    String remote = String.format("%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath());
+                    int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
+                    String local = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
+                    String remote = new CubePathBuilder(segKey).build();
                     try {
                         REPO.currentRepo().copyToRemote(local, remote);
 

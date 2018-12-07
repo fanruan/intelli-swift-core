@@ -1,6 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -11,6 +12,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.Optional;
@@ -27,13 +29,13 @@ import java.util.List;
  */
 public class SegmentUtils {
     public static Segment newSegment(SegmentKey segKey) {
-        SwiftMetaData meta = SwiftDatabase.getInstance().getTable(segKey.getTable()).getMetadata();
-        String segPath = CubeUtil.getSegPath(segKey);
+        SourceKey tableKey = segKey.getTable();
+        SwiftMetaData meta = SwiftDatabase.getInstance().getTable(tableKey).getMetadata();
 
         if (segKey.getStoreType().isTransient()) {
-            return newSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
+            return newSegment(new ResourceLocation(new CubePathBuilder(segKey).build()), meta);
         }
-        return newSegment(new ResourceLocation(segPath, segKey.getStoreType()), meta);
+        return newSegment(new ResourceLocation(new CubePathBuilder(segKey).setTempDir(CubeUtil.getCurrentDir(tableKey)).build()), meta);
     }
 
     public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {
@@ -58,15 +60,14 @@ public class SegmentUtils {
     }
 
     private static void clearRealtimeSegment(SegmentKey segKey) {
-        final String segPath = CubeUtil.getSegPath(segKey);
+        ResourceDiscovery.getInstance().release(new ResourceLocation(new CubePathBuilder(segKey).build(), StoreType.MEMORY));
 
-        ResourceDiscovery.getInstance().release(new ResourceLocation(segPath, StoreType.MEMORY));
-
-        FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey).replace(segKey.getSwiftSchema().getDir(), segKey.getSwiftSchema().getBackupDir()));
+        FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().asBackup().build());
     }
 
     private static void clearHistorySegment(SegmentKey segKey) {
-        FileUtil.delete(CubeUtil.getAbsoluteSegPath(segKey));
+        int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
+        FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build());
     }
 
     public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {
