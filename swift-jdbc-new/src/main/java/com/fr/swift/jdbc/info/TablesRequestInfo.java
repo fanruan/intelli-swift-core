@@ -1,19 +1,20 @@
 package com.fr.swift.jdbc.info;
 
-import com.fr.swift.jdbc.json.annotation.JsonProperty;
+import com.fr.swift.api.info.BaseRequestInfo;
+import com.fr.swift.api.json.annotation.ApiJsonProperty;
 
 /**
  * @author yee
  * @date 2018-12-03
  */
 public class TablesRequestInfo extends BaseRequestInfo {
-    @JsonProperty(value = "database", require = true)
+    @ApiJsonProperty(value = "database", require = true)
     private String database;
-    @JsonProperty(value = "auth", require = true)
+    @ApiJsonProperty(value = "auth", require = true)
     private String authCode;
 
     public TablesRequestInfo(String database, String authCode) {
-        super(Request.TABLES);
+        super(JdbcRequestType.TABLES);
         this.database = database;
         this.authCode = authCode;
     }

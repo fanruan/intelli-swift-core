@@ -14,13 +14,8 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-common</artifactId>
+            <artifactId>swift-base-common</artifactId>
             <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.objenesis</groupId>
-            <artifactId>objenesis</artifactId>
-            <version>2.2</version>
         </dependency>
     </dependencies>
 

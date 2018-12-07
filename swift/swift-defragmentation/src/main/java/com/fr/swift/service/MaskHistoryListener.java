@@ -7,6 +7,7 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
 import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.event.SegmentEvent;
@@ -53,6 +54,8 @@ public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
                     String remote = String.format("%s/%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
                     try {
                         REPO.currentRepo().zipToRemote(local, remote);
+                    } catch (DefaultRepoNotFoundException e) {
+                        SwiftLoggers.getLogger().warn("default repository not fount. ", e);
                     } catch (IOException e) {
                         SwiftLoggers.getLogger().error("mask segment {} failed", segKey, e);
                     }

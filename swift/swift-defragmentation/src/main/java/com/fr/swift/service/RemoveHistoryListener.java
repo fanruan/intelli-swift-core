@@ -11,7 +11,6 @@ import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.selector.ClusterSelector;
 
-import java.io.IOException;
 import java.util.Collections;
 
 /**
@@ -34,7 +33,7 @@ public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
 
                 SEG_SVC.removeSegments(Collections.singletonList(segKey));
                 SegmentUtils.clearSegment(segKey);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 SwiftLoggers.getLogger().error("unload segment {} failed", segKey, e);
             }
         } else {

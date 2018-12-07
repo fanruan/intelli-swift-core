@@ -5,6 +5,7 @@ import com.fr.swift.api.rpc.Api;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.bean.Column;
+import com.fr.swift.api.rpc.session.SwiftPublicApiSession;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;

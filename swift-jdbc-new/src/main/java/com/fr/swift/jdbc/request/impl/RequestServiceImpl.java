@@ -1,14 +1,14 @@
 package com.fr.swift.jdbc.request.impl;
 
+import com.fr.swift.api.info.RequestInfo;
+import com.fr.swift.api.server.ApiServerService;
+import com.fr.swift.api.server.response.ApiResponse;
 import com.fr.swift.jdbc.info.AuthRequestInfo;
-import com.fr.swift.jdbc.info.RequestInfo;
-import com.fr.swift.jdbc.json.JsonRequestBuilder;
+import com.fr.swift.jdbc.json.impl.JdbcJsonRequestBuilder;
 import com.fr.swift.jdbc.request.RequestService;
 import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
-import com.fr.swift.jdbc.server.JdbcServerService;
-import com.fr.swift.rpc.bean.RpcResponse;
 
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit;
 public class RequestServiceImpl implements RequestService {
     @Override
     public <T extends JdbcResponse> T apply(JdbcExecutor sender, String user, String password) {
-        String json = JsonRequestBuilder.BUILDER.buildRequest(new AuthRequestInfo(user, password));
+        String json = JdbcJsonRequestBuilder.getInstance().buildRequest(new AuthRequestInfo(user, password));
         return apply(sender, json);
     }
 
     @Override
     public <T extends JdbcResponse> T apply(JdbcExecutor sender, RequestInfo sql) {
-        String json = JsonRequestBuilder.BUILDER.buildRequest(sql);
+        String json = JdbcJsonRequestBuilder.getInstance().buildRequest(sql);
         return apply(sender, json);
     }
 
@@ -35,13 +35,13 @@ public class RequestServiceImpl implements RequestService {
     public <T extends JdbcResponse> T apply(JdbcExecutor sender, final String requestJson) {
         ClientProxy proxy = new ClientProxy(sender);
         proxy.start();
-        final RpcResponse response = proxy.getProxy(JdbcServerService.class).dispatchRequest(requestJson);
+        final ApiResponse response = proxy.getProxy(ApiServerService.class).dispatchRequest(requestJson);
         if (response.isError()) {
             return (T) new JdbcResponse() {
 
                 @Override
                 public SQLException exception() {
-                    return new SQLException(response.getException());
+                    return new SQLException(response.errorCode().getDescription());
                 }
 
                 @Override
@@ -56,13 +56,13 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, String user, String password, int retryTime) {
-        String json = JsonRequestBuilder.BUILDER.buildRequest(new AuthRequestInfo(user, password));
+        String json = JdbcJsonRequestBuilder.getInstance().buildRequest(new AuthRequestInfo(user, password));
         return applyWithRetry(sender, json, retryTime);
     }
 
     @Override
     public <T extends JdbcResponse> T applyWithRetry(JdbcExecutor sender, RequestInfo sql, int retryTime) {
-        String json = JsonRequestBuilder.BUILDER.buildRequest(sql);
+        String json = JdbcJsonRequestBuilder.getInstance().buildRequest(sql);
         return applyWithRetry(sender, json, retryTime);
     }
 
