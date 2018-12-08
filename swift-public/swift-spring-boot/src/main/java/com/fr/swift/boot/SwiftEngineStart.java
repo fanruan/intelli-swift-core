@@ -2,10 +2,6 @@ package com.fr.swift.boot;
 
 import com.fineio.FineIO;
 import com.fr.swift.SwiftContext;
-import com.fr.swift.api.rpc.impl.DataMaintenanceServiceImpl;
-import com.fr.swift.api.rpc.impl.DetectServiceImpl;
-import com.fr.swift.api.rpc.impl.SelectServiceImpl;
-import com.fr.swift.api.rpc.impl.TableServiceImpl;
 import com.fr.swift.basics.ProcessHandlerRegistry;
 import com.fr.swift.basics.ServiceRegistry;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
@@ -114,10 +110,10 @@ public class SwiftEngineStart {
         serviceRegistry.registerService(new SwiftRealtimeService());
         serviceRegistry.registerService(new SwiftAnalyseService());
         serviceRegistry.registerService(new RemoteServiceSender());
-        serviceRegistry.registerService(new TableServiceImpl());
-        serviceRegistry.registerService(new DetectServiceImpl());
-        serviceRegistry.registerService(new DataMaintenanceServiceImpl());
-        serviceRegistry.registerService(new SelectServiceImpl());
+//        serviceRegistry.registerService(new TableServiceImpl());
+//        serviceRegistry.registerService(new DetectServiceImpl());
+//        serviceRegistry.registerService(new DataMaintenanceServiceImpl());
+//        serviceRegistry.registerService(new SelectServiceImpl());
         serviceRegistry.registerService(new SwiftMasterService());
         serviceRegistry.registerService(new SwiftSlaveService());
 
