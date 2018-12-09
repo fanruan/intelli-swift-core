@@ -41,7 +41,7 @@ public class SwiftApiSessionFactoryImpl implements SwiftApiSessionFactory<SwiftA
     @Override
     public SwiftApiSessionImpl openSession() {
         if (Strings.isEmpty(authCode)) {
-            Crasher.crash("Auth code cannot be null. Please ensure already init session factory before you open a session.");
+            Crasher.crash("Auth code cannot be null. Please ensure the factory had been initialized before you open a session.");
         }
 
         return new SwiftApiSessionImpl(holder.nextAnalyseAddress(), holder.nextRealTimeAddress(), this);
