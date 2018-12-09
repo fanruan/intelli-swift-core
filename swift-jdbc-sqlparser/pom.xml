@@ -10,4 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-jdbc-sqlparser</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-bean</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>

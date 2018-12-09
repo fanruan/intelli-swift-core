@@ -15,6 +15,9 @@
  */
 package com.fr.swift.jdbc.druid.sql.parser;
 
+import com.fr.swift.jdbc.adaptor.parser.SwiftExprParser;
+import com.fr.swift.jdbc.adaptor.parser.SwiftLexer;
+import com.fr.swift.jdbc.adaptor.parser.SwiftStatementParser;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
@@ -42,14 +45,23 @@ public class SQLParserUtils {
     }
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType, SQLParserFeature... features) {
+        if (JdbcConstants.SWIFT.equals(dbType)) {
+            return new SwiftStatementParser(sql, dbType);
+        }
         return new SQLStatementParser(sql, dbType);
     }
 
     public static SQLExprParser createExprParser(String sql, String dbType) {
+        if (JdbcConstants.SWIFT.equals(dbType)) {
+            return new SwiftExprParser(sql);
+        }
         return new SQLExprParser(sql);
     }
 
     public static Lexer createLexer(String sql, String dbType) {
+        if (JdbcConstants.SWIFT.equals(dbType)) {
+            return new SwiftLexer(sql);
+        }
         return new Lexer(sql);
     }
 

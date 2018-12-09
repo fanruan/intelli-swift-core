@@ -17,6 +17,8 @@ package com.fr.swift.jdbc.druid.util;
 
 public interface JdbcConstants {
 
+    String SWIFT = "swift";
+
     String JTDS = "jtds";
 
     String MOCK = "mock";

@@ -15,11 +15,13 @@
  */
 package com.fr.swift.jdbc.druid.sql.parser;
 
+import com.fr.swift.jdbc.adaptor.ast.expr.SwiftOrderingExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLLimit;
 import com.fr.swift.jdbc.druid.sql.ast.SQLName;
 import com.fr.swift.jdbc.druid.sql.ast.SQLObject;
 import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
+import com.fr.swift.jdbc.druid.sql.ast.SQLOrderingSpecification;
 import com.fr.swift.jdbc.druid.sql.ast.SQLOver;
 import com.fr.swift.jdbc.druid.sql.ast.SQLSetQuantifier;
 import com.fr.swift.jdbc.druid.sql.ast.SQLWindow;
@@ -637,6 +639,15 @@ public class SQLSelectParser extends SQLParser {
 
     protected SQLExpr parseGroupByItem() {
         SQLExpr item = this.exprParser.expr();
+        if (JdbcConstants.SWIFT.equals(getDbType())) {
+            if (lexer.token == Token.DESC) {
+                lexer.nextToken(); // skip
+                item = new SwiftOrderingExpr(item, SQLOrderingSpecification.DESC);
+            } else if (lexer.token == Token.ASC) {
+                lexer.nextToken(); // skip
+                item = new SwiftOrderingExpr(item, SQLOrderingSpecification.ASC);
+            }
+        }
         return item;
     }
 
