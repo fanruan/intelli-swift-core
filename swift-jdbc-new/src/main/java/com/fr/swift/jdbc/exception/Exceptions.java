@@ -27,8 +27,8 @@ public final class Exceptions {
         return new RuntimeException(msg);
     }
 
-    public static RuntimeException runtime(Throwable msg) {
-        return new RuntimeException(msg);
+    public static RuntimeException runtime(String msg, Throwable t) {
+        return new RuntimeException(msg, t);
     }
 
     public static SQLException notSupported(Throwable t) {
@@ -61,5 +61,9 @@ public final class Exceptions {
 
     public static SQLException environment(Throwable t) {
         return new EnvironmentException(t);
+    }
+
+    public static SQLException sql(Exception e) {
+        return new SQLException(e);
     }
 }

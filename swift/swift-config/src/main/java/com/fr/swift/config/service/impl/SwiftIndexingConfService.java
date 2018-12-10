@@ -1,9 +1,9 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.config.ColumnIndexingConf;
-import com.fr.swift.config.TableIndexingConf;
+import com.fr.swift.config.TableAllotConf;
 import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
-import com.fr.swift.config.bean.SwiftTableIdxConfBean;
+import com.fr.swift.config.bean.SwiftTableAllotConfBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
@@ -27,21 +27,21 @@ import java.sql.SQLException;
 public class SwiftIndexingConfService implements IndexingConfService {
     private TransactionManager tx;
 
-    private BasicDao<SwiftTableIdxConfBean> tableConf = new BasicDao<SwiftTableIdxConfBean>(SwiftTableIdxConfBean.TYPE, RestrictionFactoryImpl.INSTANCE);
+    private BasicDao<SwiftTableAllotConfBean> tableConf = new BasicDao<SwiftTableAllotConfBean>(SwiftTableAllotConfBean.TYPE, RestrictionFactoryImpl.INSTANCE);
 
     private BasicDao<SwiftColumnIdxConfBean> columnConf = new BasicDao<SwiftColumnIdxConfBean>(SwiftColumnIdxConfBean.TYPE, RestrictionFactoryImpl.INSTANCE);
 
     private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
     @Override
-    public TableIndexingConf getTableConf(final SourceKey table) {
+    public TableAllotConf getTableConf(final SourceKey table) {
         try {
-            return tx.doTransactionIfNeed(new BaseTransactionWorker<TableIndexingConf>(false) {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<TableAllotConf>(false) {
                 @Override
-                public TableIndexingConf work(ConfigSession session) throws SQLException {
-                    FindList<SwiftTableIdxConfBean> list = tableConf.find(session, factory.eq("tableId.tableKey", table.getId()));
-                    SwiftTableIdxConfBean bean = !list.isEmpty() ? list.get(0) : new SwiftTableIdxConfBean(table.getId(), new LineAllotRule());
-                    return (TableIndexingConf) bean.convert();
+                public TableAllotConf work(ConfigSession session) throws SQLException {
+                    FindList<SwiftTableAllotConfBean> list = tableConf.find(session, factory.eq("tableId.tableKey", table.getId()));
+                    SwiftTableAllotConfBean bean = !list.isEmpty() ? list.get(0) : new SwiftTableAllotConfBean(table.getId(), new LineAllotRule());
+                    return (TableAllotConf) bean.convert();
                 }
             });
         } catch (SQLException e) {
@@ -69,7 +69,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
     }
 
     @Override
-    public void setTableConf(final TableIndexingConf conf) {
+    public void setTableConf(final TableAllotConf conf) {
         setConfig(tableConf, conf);
     }
 

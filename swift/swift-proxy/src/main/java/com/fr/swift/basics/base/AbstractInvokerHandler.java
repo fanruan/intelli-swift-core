@@ -1,6 +1,6 @@
 package com.fr.swift.basics.base;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.InvokerHandler;
 
 /**
@@ -12,9 +12,9 @@ import com.fr.swift.basics.InvokerHandler;
  */
 public abstract class AbstractInvokerHandler implements InvokerHandler {
 
-    protected InvokerCreater invokerCreater;
+    protected InvokerCreator invokerCreator;
 
-    public AbstractInvokerHandler(InvokerCreater invokerCreater) {
-        this.invokerCreater = invokerCreater;
+    public AbstractInvokerHandler(InvokerCreator invokerCreator) {
+        this.invokerCreator = invokerCreator;
     }
 }

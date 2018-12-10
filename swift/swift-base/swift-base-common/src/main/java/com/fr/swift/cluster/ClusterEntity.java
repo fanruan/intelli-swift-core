@@ -1,6 +1,6 @@
-package com.fr.swift.cluster.entity;
+package com.fr.swift.cluster;
 
-import com.fr.swift.basics.URL;
+import com.fr.swift.basic.URL;
 import com.fr.swift.service.ServiceType;
 
 /**

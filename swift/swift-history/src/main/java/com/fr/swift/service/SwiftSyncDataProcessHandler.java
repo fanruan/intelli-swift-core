@@ -1,24 +1,24 @@
 package com.fr.swift.service;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseSyncDataProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.source.SourceKey;
@@ -46,8 +46,8 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
     private SwiftClusterSegmentService clusterSegmentService;
 
 
-    public SwiftSyncDataProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public SwiftSyncDataProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
         dataSyncRuleService = SwiftContext.get().getBean(DataSyncRuleService.class);
         clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
     }
@@ -79,7 +79,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
 //                for (SegmentKey segmentKey : urlSetEntry.getValue()) {
 //                    idList.add(Pair.of(segmentKey.getTable(), segmentKey));
 //                }
-                Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, urlSetEntry.getKey());
+                Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, urlSetEntry.getKey());
                 RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass, method, methodName, parameterTypes, urlSetEntry.getValue(), replace);
 
                 rpcFuture.addCallback(new AsyncRpcCallback() {

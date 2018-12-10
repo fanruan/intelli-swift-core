@@ -26,7 +26,7 @@ public class LineAllotRule extends BaseAllotRule {
     }
 
     @Override
-    public Type getType() {
-        return Type.LINE;
+    public AllotType getType() {
+        return AllotType.LINE;
     }
 }

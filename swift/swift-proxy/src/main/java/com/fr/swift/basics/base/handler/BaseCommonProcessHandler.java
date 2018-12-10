@@ -1,7 +1,7 @@
 package com.fr.swift.basics.base.handler;
 
-import com.fr.swift.basics.InvokerCreater;
-import com.fr.swift.basics.URL;
+import com.fr.swift.basic.URL;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.CommonProcessHandler;
@@ -17,8 +17,8 @@ import java.util.Set;
  */
 public abstract class BaseCommonProcessHandler extends BaseProcessHandler<List<URL>> implements CommonProcessHandler {
 
-    public BaseCommonProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public BaseCommonProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override

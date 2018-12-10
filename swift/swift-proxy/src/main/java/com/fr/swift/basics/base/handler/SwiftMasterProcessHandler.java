@@ -1,9 +1,9 @@
 package com.fr.swift.basics.base.handler;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
-import com.fr.swift.basics.URL;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.UrlSelector;
@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> implements MasterProcessHandler {
 
-    public SwiftMasterProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public SwiftMasterProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     /**
@@ -47,7 +47,7 @@ public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> imple
                 Invoker invoker = new LocalInvoker(ProxyServiceRegistry.get().getService(proxyClass.getName()), proxyClass, null);
                 return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
             }
-            Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, masterUrl);
+            Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, masterUrl);
             Object object = invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
             return object;
         } finally {

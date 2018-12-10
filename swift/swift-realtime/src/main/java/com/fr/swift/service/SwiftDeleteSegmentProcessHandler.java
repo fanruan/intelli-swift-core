@@ -1,13 +1,13 @@
 package com.fr.swift.service;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
-import com.fr.swift.basics.URL;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
-import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
@@ -26,8 +26,8 @@ import java.util.concurrent.Future;
  */
 public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Optional<List<URL>>> implements DeleteSegmentProcessHandler {
 
-    public SwiftDeleteSegmentProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public SwiftDeleteSegmentProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Opt
 
         if (!optionalUrls.isPresent()) {
             // local invoke
-            Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, null);
+            Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, null);
             return invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
         }
 
@@ -50,7 +50,7 @@ public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Opt
         List<Future<?>> futures = new ArrayList<Future<?>>();
         for (URL url : urls) {
             // remote invoke
-            Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, url);
+            Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
             Future<?> future = (Future<?>) invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
             futures.add(future);
         }

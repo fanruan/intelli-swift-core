@@ -9,7 +9,7 @@ import com.fr.swift.basics.InvokerType;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class LocalInvokerCreater extends AbstractInvokerCreater {
+public class LocalInvokerCreator extends AbstractInvokerCreator {
 
     @Override
     public InvokerType getType() {

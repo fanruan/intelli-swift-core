@@ -1,4 +1,4 @@
-package com.fr.swift.basics;
+package com.fr.swift.basic;
 
 /**
  * This class created on 2018/5/26

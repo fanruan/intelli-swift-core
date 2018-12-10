@@ -1,15 +1,15 @@
 package com.fr.swift.handler;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.StatusProcessHandler;
-import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.oper.FindList;
@@ -32,8 +32,8 @@ import java.util.concurrent.CountDownLatch;
  * @date 2018-12-01
  */
 public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> implements StatusProcessHandler {
-    public IndexStatusProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public IndexStatusProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> imp
         List<RpcFuture> resultList = list.forEach(new FindList.ConvertEach<URL, RpcFuture>() {
             @Override
             public RpcFuture forEach(int idx, URL item) throws Throwable {
-                Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, item);
+                Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, item);
                 return (RpcFuture) invoke(invoker, proxyClass, method, method.getName(), parameterTypes, args);
             }
         });

@@ -1,8 +1,8 @@
 package com.fr.swift.local;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
-import com.fr.swift.basics.URL;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.property.SwiftProperty;
 
@@ -13,7 +13,7 @@ import com.fr.swift.property.SwiftProperty;
  * @description
  * @since Advanced FineBI 5.0
  */
-public abstract class AbstractInvokerCreater implements InvokerCreater {
+public abstract class AbstractInvokerCreator implements InvokerCreator {
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {
         if (url == null || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId())) {

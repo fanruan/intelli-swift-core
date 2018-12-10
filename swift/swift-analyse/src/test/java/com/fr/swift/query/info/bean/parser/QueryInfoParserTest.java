@@ -43,7 +43,7 @@
 ////        TestConfDb.setConfDb(SwiftTableIndexingConf.class, SwiftColumnIndexingConf.class);
 ////        service = SwiftContext.get().getBean(IndexingConfService.class);
 ////        SourceKey a = new SourceKey("DEMO_CONTRACT");
-////        TableIndexingConf tableConf = new SwiftTableIndexingConf(a, new LineAllotRule());
+////        TableAllotConf tableConf = new SwiftTableIndexingConf(a, new LineAllotRule());
 ////        service.setTableConf(tableConf);
 //    }
 //

@@ -1,6 +1,6 @@
 package com.fr.swift.invoker;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 
@@ -15,8 +15,8 @@ import java.lang.reflect.Method;
  */
 public class TestInvokerProcessHandler extends AbstractProcessHandler {
 
-    public TestInvokerProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public TestInvokerProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override

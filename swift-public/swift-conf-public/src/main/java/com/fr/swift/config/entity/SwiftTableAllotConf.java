@@ -1,7 +1,7 @@
 package com.fr.swift.config.entity;
 
-import com.fr.swift.config.TableIndexingConf;
-import com.fr.swift.config.bean.SwiftTableIdxConfBean;
+import com.fr.swift.config.TableAllotConf;
+import com.fr.swift.config.bean.SwiftTableAllotConfBean;
 import com.fr.swift.config.convert.AllotRuleConverter;
 import com.fr.swift.config.entity.key.TableId;
 import com.fr.swift.converter.ObjectConverter;
@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "fine_swift_tab_idx_conf")
-public class SwiftTableIndexingConf implements TableIndexingConf, ObjectConverter<SwiftTableIdxConfBean> {
+public class SwiftTableAllotConf implements TableAllotConf, ObjectConverter<SwiftTableAllotConfBean> {
     @Id
     private TableId tableId;
 
@@ -28,15 +28,15 @@ public class SwiftTableIndexingConf implements TableIndexingConf, ObjectConverte
     @Convert(converter = AllotRuleConverter.class)
     private AllotRule allotRule;
 
-    public SwiftTableIndexingConf() {
+    public SwiftTableAllotConf() {
     }
 
-    public SwiftTableIndexingConf(SourceKey tableKey, AllotRule allotRule) {
+    public SwiftTableAllotConf(SourceKey tableKey, AllotRule allotRule) {
         this.tableId = new TableId(tableKey);
         this.allotRule = allotRule;
     }
 
-    public SwiftTableIndexingConf(SwiftTableIdxConfBean bean) {
+    public SwiftTableAllotConf(SwiftTableAllotConfBean bean) {
         this(new SourceKey(bean.getTableKey()), bean.getAllotRule());
     }
 
@@ -51,7 +51,7 @@ public class SwiftTableIndexingConf implements TableIndexingConf, ObjectConverte
     }
 
     @Override
-    public SwiftTableIdxConfBean convert() {
-        return new SwiftTableIdxConfBean(this.getTable().getId(), this.getAllotRule());
+    public SwiftTableAllotConfBean convert() {
+        return new SwiftTableAllotConfBean(this.getTable().getId(), this.getAllotRule());
     }
 }

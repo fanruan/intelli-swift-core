@@ -1,6 +1,6 @@
 package com.fr.swift.basics.base;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.InvokerHandler;
 import com.fr.swift.basics.InvokerType;
 
@@ -16,11 +16,11 @@ public class JdkProxyInvokeHandler implements InvokerHandler, InvocationHandler 
 
     private InvokerHandler invokerHandler;
 
-    public JdkProxyInvokeHandler(InvokerCreater invokerCreater) {
-        if (invokerCreater.getType() == InvokerType.LOCAL) {
-            this.invokerHandler = new LocalInvokerHandler(invokerCreater);
+    public JdkProxyInvokeHandler(InvokerCreator invokerCreator) {
+        if (invokerCreator.getType() == InvokerType.LOCAL) {
+            this.invokerHandler = new LocalInvokerHandler(invokerCreator);
         } else {
-            this.invokerHandler = new RemoteInvokerHandler(invokerCreater);
+            this.invokerHandler = new RemoteInvokerHandler(invokerCreator);
         }
     }
 

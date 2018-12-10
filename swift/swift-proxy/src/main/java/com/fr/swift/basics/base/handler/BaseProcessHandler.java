@@ -1,6 +1,6 @@
 package com.fr.swift.basics.base.handler;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.annotation.Target;
 
@@ -14,8 +14,8 @@ import java.util.List;
  */
 public abstract class BaseProcessHandler<T> extends AbstractProcessHandler<T> implements ProcessHandler {
 
-    public BaseProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public BaseProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override

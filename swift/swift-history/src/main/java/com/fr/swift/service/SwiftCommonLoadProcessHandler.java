@@ -1,18 +1,18 @@
 package com.fr.swift.service;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
-import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -36,8 +36,8 @@ import java.util.concurrent.CountDownLatch;
  */
 public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<URL, Map<SourceKey, List<String>>>> implements CommonLoadProcessHandler {
 
-    public SwiftCommonLoadProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public SwiftCommonLoadProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     /**
@@ -61,7 +61,7 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
             final CountDownLatch latch = new CountDownLatch(urlMap.size());
             for (final Map.Entry<URL, Map<SourceKey, List<String>>> urlMapEntry : urlMap.entrySet()) {
 
-                Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, urlMapEntry.getKey());
+                Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, urlMapEntry.getKey());
                 RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass, method, methodName, parameterTypes, sourceKey, urlMapEntry.getValue());
                 rpcFuture.addCallback(new AsyncRpcCallback() {
                     @Override

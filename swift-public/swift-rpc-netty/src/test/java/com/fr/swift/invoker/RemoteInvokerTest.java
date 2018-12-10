@@ -1,6 +1,6 @@
 package com.fr.swift.invoker;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.ProcessHandlerPool;
 import com.fr.swift.basics.ServiceRegistry;
@@ -13,7 +13,7 @@ import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.local.LocalInvoker;
 import com.fr.swift.netty.rpc.invoke.RPCInvoker;
-import com.fr.swift.netty.rpc.invoke.RPCInvokerCreater;
+import com.fr.swift.netty.rpc.invoke.RPCInvokerCreator;
 import com.fr.swift.netty.rpc.url.RPCDestination;
 import com.fr.swift.netty.rpc.url.RPCUrl;
 import com.fr.swift.property.SwiftProperty;
@@ -76,14 +76,14 @@ public class RemoteInvokerTest extends TestCase {
         EasyMock.expect(SwiftProperty.getProperty().getClusterId()).andReturn("master").anyTimes();
         EasyMock.replay(SwiftProperty.getProperty());
 
-        InvokerCreater invokerCreater = new RPCInvokerCreater();
+        InvokerCreator invokerCreator = new RPCInvokerCreator();
         try {
-            EasyMock.expect(ProxyProcessHandlerPool.get().getProcessHandler(EasyMock.anyObject(Class.class), EasyMock.anyObject(InvokerCreater.class))).andReturn(new RemoteInvokerTestHandler(invokerCreater)).anyTimes();
+            EasyMock.expect(ProxyProcessHandlerPool.get().getProcessHandler(EasyMock.anyObject(Class.class), EasyMock.anyObject(InvokerCreator.class))).andReturn(new RemoteInvokerTestHandler(invokerCreator)).anyTimes();
             EasyMock.replay(ProxyProcessHandlerPool.get());
         } catch (Exception e) {
             assertTrue(false);
         }
-        ProxySelector.getInstance().switchFactory(new JdkProxyFactory(invokerCreater));
+        ProxySelector.getInstance().switchFactory(new JdkProxyFactory(invokerCreator));
         IRemoteTest proxy = ProxySelector.getInstance().getFactory().getProxy(IRemoteTest.class);
         long time = System.currentTimeMillis();
         assertEquals(proxy.print("1", time), LocalInvoker.class.getName());
@@ -99,14 +99,14 @@ public class RemoteInvokerTest extends TestCase {
         EasyMock.expect(SwiftProperty.getProperty().getClusterId()).andReturn("slave").anyTimes();
         EasyMock.replay(SwiftProperty.getProperty());
 
-        InvokerCreater invokerCreater = new RPCInvokerCreater();
+        InvokerCreator invokerCreator = new RPCInvokerCreator();
         try {
-            EasyMock.expect(ProxyProcessHandlerPool.get().getProcessHandler(EasyMock.anyObject(Class.class), EasyMock.anyObject(InvokerCreater.class))).andReturn(new RemoteInvokerTestHandler(invokerCreater)).anyTimes();
+            EasyMock.expect(ProxyProcessHandlerPool.get().getProcessHandler(EasyMock.anyObject(Class.class), EasyMock.anyObject(InvokerCreator.class))).andReturn(new RemoteInvokerTestHandler(invokerCreator)).anyTimes();
             EasyMock.replay(ProxyProcessHandlerPool.get());
         } catch (Exception e) {
             assertTrue(false);
         }
-        ProxySelector.getInstance().switchFactory(new JdkProxyFactory(invokerCreater));
+        ProxySelector.getInstance().switchFactory(new JdkProxyFactory(invokerCreator));
         IRemoteTest proxy = ProxySelector.getInstance().getFactory().getProxy(IRemoteTest.class);
         long time = System.currentTimeMillis();
         assertEquals(proxy.print("1", time), RPCInvoker.class.getName());
@@ -120,13 +120,13 @@ interface IRemoteTest {
 
 class RemoteInvokerTestHandler extends AbstractProcessHandler {
 
-    public RemoteInvokerTestHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public RemoteInvokerTestHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override
     public Object processResult(Method method, Target target, Object... args) throws Throwable {
-        return invokerCreater.createSyncInvoker(method.getDeclaringClass(), new RPCUrl(new RPCDestination("master"))).getClass().getName();
+        return invokerCreator.createSyncInvoker(method.getDeclaringClass(), new RPCUrl(new RPCDestination("master"))).getClass().getName();
     }
 
     @Override

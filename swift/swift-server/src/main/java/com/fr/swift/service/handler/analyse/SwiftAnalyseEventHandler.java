@@ -2,7 +2,7 @@ package com.fr.swift.service.handler.analyse;
 
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.cluster.service.SegmentLocationInfoContainer;
 import com.fr.swift.event.base.AbstractAnalyseRpcEvent;

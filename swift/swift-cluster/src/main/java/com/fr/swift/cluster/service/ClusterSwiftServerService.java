@@ -1,11 +1,11 @@
 package com.fr.swift.cluster.service;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
-import com.fr.swift.cluster.entity.ClusterEntity;
+import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.event.SwiftEventDispatcher;

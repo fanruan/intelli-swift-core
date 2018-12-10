@@ -1,10 +1,10 @@
 package com.fr.swift.api.info;
 
-import com.fr.swift.api.json.JsonRequestBuilder;
+import com.fr.swift.base.json.JsonBuilder;
 
 /**
  * 预解析后的sql信息
- * @see JsonRequestBuilder#buildRequest(RequestInfo)
+ * @see JsonBuilder#writeJsonString(Object)
  * @author yee
  * @date 2018/11/16
  */

@@ -1,6 +1,6 @@
 package com.fr.swift.basics.base;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.util.Assert;
@@ -16,8 +16,8 @@ import java.lang.reflect.Method;
  */
 class RemoteInvokerHandler extends AbstractInvokerHandler {
 
-    protected RemoteInvokerHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    protected RemoteInvokerHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override
@@ -27,7 +27,7 @@ class RemoteInvokerHandler extends AbstractInvokerHandler {
         Class<? extends ProcessHandler> handlerInterface = invokeMethod.value();
         Class<? extends ProcessHandler> handlerClass = ProxyProcessHandlerRegistry.get().getHandler(handlerInterface);
 
-        ProcessHandler handler = ProxyProcessHandlerPool.get().getProcessHandler(handlerClass, invokerCreater);
+        ProcessHandler handler = ProxyProcessHandlerPool.get().getProcessHandler(handlerClass, invokerCreator);
         return handler.processResult(method, invokeMethod.target(), args);
     }
 }

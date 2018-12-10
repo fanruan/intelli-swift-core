@@ -1,6 +1,6 @@
 package com.fr.swift.basics.base.handler;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
 
@@ -15,8 +15,8 @@ import java.util.List;
  */
 public abstract class BaseSyncDataProcessHandler<T> extends BaseProcessHandler<T> implements SyncDataProcessHandler {
 
-    public BaseSyncDataProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public BaseSyncDataProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override

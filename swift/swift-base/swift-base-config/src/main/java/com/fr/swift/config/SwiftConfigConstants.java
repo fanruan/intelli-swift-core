@@ -6,7 +6,7 @@ import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
 import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.bean.SwiftTableIdxConfBean;
+import com.fr.swift.config.bean.SwiftTableAllotConfBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 
 import java.util.Arrays;
@@ -23,7 +23,7 @@ public class SwiftConfigConstants {
             SwiftConfigBean.TYPE,
             SegLocationBean.TYPE,
             SwiftServiceInfoBean.TYPE,
-            SwiftTableIdxConfBean.TYPE,
+            SwiftTableAllotConfBean.TYPE,
             SwiftColumnIdxConfBean.TYPE,
             SwiftTablePathBean.TYPE
     };
@@ -59,6 +59,5 @@ public class SwiftConfigConstants {
         public static final String SERVICE_ADDRESS_NAMESPACE = "SWIFT_RPC_SERVICE_ADDRESS";
         public static final String ZIP_NAMESPACE = "SWIFT_USE_ZIP";
         public static final String REPOSITORY_CONF_NAMESPACE = "SWIFT_REPOSITORY_CONF";
-        public static final String SWIFT_DB_CONF_NAMESPACE = "SWIFT_DB_CONF";
     }
 }

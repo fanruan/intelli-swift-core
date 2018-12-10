@@ -1,4 +1,4 @@
-package com.fr.swift.basics;
+package com.fr.swift.basic;
 
 /**
  * This class created on 2018/5/26
@@ -9,6 +9,11 @@ package com.fr.swift.basics;
  */
 public interface Destination {
 
+    /**
+     * clusterId or ip address
+     *
+     * @return
+     */
     String getId();
 
 }

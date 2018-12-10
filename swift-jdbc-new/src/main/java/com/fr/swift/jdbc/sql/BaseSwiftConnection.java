@@ -408,7 +408,7 @@ public abstract class BaseSwiftConnection implements Connection {
                 Class grammarChecker = getClass().getClassLoader().loadClass(grammar);
                 return (GrammarChecker) grammarChecker.newInstance();
             } catch (Exception e) {
-                throw Exceptions.runtime(e);
+                throw Exceptions.runtime("", e);
             }
         }
 

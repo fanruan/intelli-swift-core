@@ -1,6 +1,6 @@
 package com.fr.swift.basics.base;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.InvokerType;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.ProcessHandlerPool;
@@ -30,20 +30,20 @@ public class ProxyProcessHandlerPool implements ProcessHandlerPool {
     }
 
     @Override
-    public ProcessHandler getProcessHandler(Class<? extends ProcessHandler> aClass, InvokerCreater invokerCreater) throws Exception {
-        if (!handlerMap.containsKey(invokerCreater.getType())) {
+    public ProcessHandler getProcessHandler(Class<? extends ProcessHandler> aClass, InvokerCreator invokerCreator) throws Exception {
+        if (!handlerMap.containsKey(invokerCreator.getType())) {
             synchronized (this) {
-                if (!handlerMap.containsKey(invokerCreater.getType())) {
-                    handlerMap.put(invokerCreater.getType(), new HashMap<Class<? extends ProcessHandler>, ProcessHandler>());
+                if (!handlerMap.containsKey(invokerCreator.getType())) {
+                    handlerMap.put(invokerCreator.getType(), new HashMap<Class<? extends ProcessHandler>, ProcessHandler>());
                 }
             }
         }
-        Map<Class<? extends ProcessHandler>, ProcessHandler> processHandlerMap = handlerMap.get(invokerCreater.getType());
+        Map<Class<? extends ProcessHandler>, ProcessHandler> processHandlerMap = handlerMap.get(invokerCreator.getType());
         if (!processHandlerMap.containsKey(aClass)) {
             synchronized (this) {
                 if (!processHandlerMap.containsKey(aClass)) {
-                    Constructor<? extends ProcessHandler> cons = aClass.getDeclaredConstructor(InvokerCreater.class);
-                    ProcessHandler handler = cons.newInstance(invokerCreater);
+                    Constructor<? extends ProcessHandler> cons = aClass.getDeclaredConstructor(InvokerCreator.class);
+                    ProcessHandler handler = cons.newInstance(invokerCreator);
                     processHandlerMap.put(aClass, handler);
                 }
             }

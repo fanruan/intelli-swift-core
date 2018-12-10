@@ -1,10 +1,10 @@
 package com.fr.swift.basics.base.handler;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
@@ -15,8 +15,8 @@ import com.fr.swift.result.qrs.DSType;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSetUtils;
-import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
@@ -38,8 +38,8 @@ import java.util.concurrent.CountDownLatch;
  */
 public class SwiftQueryableProcessHandler extends BaseProcessHandler implements QueryableProcessHandler {
 
-    public SwiftQueryableProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public SwiftQueryableProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
             queryBean.setSegments(pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
             // TODO: 2018/12/01 这边这么调是不对的，这个URL不一定启了AnalyseService，有可能只是一台History或者Memory
-            final Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, pair.getKey());
+            final Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
             RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass,
                     method, methodName, parameterTypes, query);
             rpcFuture.addCallback(new AsyncRpcCallback() {
@@ -89,7 +89,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                                 Object ret = resultSet.getPage();
                                 // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
                                 if (hasNextPage()) {
-                                    Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, pair.getKey());
+                                    Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
                                     try {
                                         resultSet = (QueryResultSet) invoke(invoker, proxyClass,
                                                 method, methodName, parameterTypes, queryJson);

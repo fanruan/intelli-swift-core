@@ -1,7 +1,7 @@
 package com.fr.swift.basics.base;
 
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.InvokerHandler;
 
 import java.lang.reflect.InvocationHandler;
@@ -15,14 +15,14 @@ public class JdkProxyFactory extends BaseProxyFactory {
 
     private InvocationHandler handler;
 
-    public JdkProxyFactory(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public JdkProxyFactory(InvokerCreator invokerCreator) {
+        super(invokerCreator);
         this.handler = (InvocationHandler) createInvokerHandler();
     }
 
     @Override
     protected InvokerHandler createInvokerHandler() {
-        return new JdkProxyInvokeHandler(invokerCreater);
+        return new JdkProxyInvokeHandler(invokerCreator);
     }
 
     @Override

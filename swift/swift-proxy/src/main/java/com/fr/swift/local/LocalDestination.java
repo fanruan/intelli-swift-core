@@ -1,6 +1,6 @@
 package com.fr.swift.local;
 
-import com.fr.swift.basics.Destination;
+import com.fr.swift.basic.Destination;
 
 /**
  * This class created on 2018/5/26

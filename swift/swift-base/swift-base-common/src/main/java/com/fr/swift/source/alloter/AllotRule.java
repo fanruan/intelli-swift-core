@@ -15,8 +15,6 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 public interface AllotRule {
     Type getType();
 
-    enum Type {
-        //
-        LINE, HASH
+    interface Type {
     }
 }

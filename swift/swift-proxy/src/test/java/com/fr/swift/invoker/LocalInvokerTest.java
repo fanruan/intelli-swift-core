@@ -6,7 +6,7 @@ import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.local.LocalFuture;
 import com.fr.swift.local.LocalInvoker;
-import com.fr.swift.local.LocalInvokerCreater;
+import com.fr.swift.local.LocalInvokerCreator;
 import com.fr.swift.property.SwiftProperty;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -29,7 +29,7 @@ public class LocalInvokerTest extends BaseInvokerTest {
     }
 
     public void testSyncLocalInvoker() {
-        Invoker invoker = new LocalInvokerCreater().createSyncInvoker(ITestInvoker.class, null);
+        Invoker invoker = new LocalInvokerCreator().createSyncInvoker(ITestInvoker.class, null);
         assertTrue(invoker instanceof LocalInvoker);
         assertNull(invoker.getUrl());
         Class[] parameterTypes = new Class[]{String.class, String.class, int.class, long.class};
@@ -41,7 +41,7 @@ public class LocalInvokerTest extends BaseInvokerTest {
     }
 
     public void testAsyncLocalInvoker() {
-        Invoker invoker = new LocalInvokerCreater().createAsyncInvoker(ITestInvoker.class, null);
+        Invoker invoker = new LocalInvokerCreator().createAsyncInvoker(ITestInvoker.class, null);
         assertTrue(invoker instanceof LocalInvoker);
         assertNull(invoker.getUrl());
         Class[] parameterTypes = new Class[]{String.class, String.class, int.class, long.class};

@@ -11,22 +11,22 @@ import java.lang.reflect.Constructor;
  * @author yee
  * @date 2018-11-26
  */
-public class SwiftTableIdxConfBean implements ObjectConverter {
+public class SwiftTableAllotConfBean implements ObjectConverter {
     public static final Class TYPE = entityType();
     private String tableKey;
     private AllotRule allotRule;
 
-    public SwiftTableIdxConfBean() {
+    public SwiftTableAllotConfBean() {
     }
 
-    public SwiftTableIdxConfBean(String id, AllotRule allotRule) {
+    public SwiftTableAllotConfBean(String id, AllotRule allotRule) {
         this.tableKey = id;
         this.allotRule = allotRule;
     }
 
     private static Class entityType() {
         try {
-            return Class.forName("com.fr.swift.config.entity.SwiftTableIndexingConf");
+            return Class.forName("com.fr.swift.config.entity.SwiftTableAllotConf");
         } catch (ClassNotFoundException e) {
             return Crasher.crash(e);
         }
@@ -51,7 +51,7 @@ public class SwiftTableIdxConfBean implements ObjectConverter {
     @Override
     public Object convert() {
         try {
-            Constructor constructor = TYPE.getDeclaredConstructor(SwiftTableIdxConfBean.class);
+            Constructor constructor = TYPE.getDeclaredConstructor(SwiftTableAllotConfBean.class);
             return constructor.newInstance(this);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

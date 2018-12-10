@@ -47,7 +47,7 @@ public class RpcNioSelector extends BaseSelector<RpcNioConnector> {
             connectorCache = new ConcurrentHashMap<SocketChannel, RpcNioConnector>();
             connectors = new CopyOnWriteArrayList<RpcNioConnector>();
         } catch (IOException e) {
-            throw Exceptions.runtime(e);
+            throw Exceptions.runtime("", e);
         }
     }
 

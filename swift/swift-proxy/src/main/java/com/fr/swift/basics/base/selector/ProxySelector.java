@@ -3,7 +3,7 @@ package com.fr.swift.basics.base.selector;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.Selector;
 import com.fr.swift.basics.base.JdkProxyFactory;
-import com.fr.swift.local.LocalInvokerCreater;
+import com.fr.swift.local.LocalInvokerCreator;
 
 /**
  * This class created on 2018/5/28
@@ -17,7 +17,7 @@ public class ProxySelector implements Selector<ProxyFactory> {
     private ProxyFactory proxyFactory;
 
     private ProxySelector() {
-        this.proxyFactory = new JdkProxyFactory(new LocalInvokerCreater());
+        this.proxyFactory = new JdkProxyFactory(new LocalInvokerCreator());
     }
 
     private static final ProxySelector INSTANCE = new ProxySelector();
