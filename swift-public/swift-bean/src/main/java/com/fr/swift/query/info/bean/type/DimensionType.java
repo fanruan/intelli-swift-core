@@ -5,5 +5,9 @@ package com.fr.swift.query.info.bean.type;
  * @date 2018/8/24
  */
 public enum DimensionType {
-    DETAIL, DETAIL_FORMULA, GROUP, GROUP_FORMULA
+    DETAIL,
+    DETAIL_ALL_COLUMN,
+    DETAIL_FORMULA,
+    GROUP,
+    GROUP_FORMULA
 }
