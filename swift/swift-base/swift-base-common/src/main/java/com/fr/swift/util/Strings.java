@@ -34,15 +34,17 @@ public final class Strings {
      */
     public static String trimSeparator(String s, String oldSep, String newSep) {
         if (s.contains(oldSep)) {
+            // oldSep全换成单个newSep
             String quoteOldSep = Matcher.quoteReplacement(oldSep);
-            String onlyHasNewSep = s.replaceAll("(" + quoteOldSep + ")+", Matcher.quoteReplacement(newSep));
-            if (onlyHasNewSep.contains(newSep + newSep)) {
-                return trimSeparator(onlyHasNewSep, newSep);
-            }
-            return onlyHasNewSep;
+            s = s.replaceAll("(" + quoteOldSep + ")+", Matcher.quoteReplacement(newSep));
         }
         if (s.contains(newSep + newSep)) {
+            // 去除重复newSep
             return trimSeparator(s, newSep);
+        }
+        if (s.endsWith(newSep)) {
+            // 去除最后的newSep
+            return s.substring(0, s.length() - 1);
         }
         return s;
     }

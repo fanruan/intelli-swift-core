@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -219,7 +220,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     private Segment newHistorySegment(SegmentKey segKey, SwiftMetaData meta) {
-        String segPath = CubeUtil.getSegPath(segKey);
+        String segPath = new CubePathBuilder(segKey).setTempDir(CubeUtil.getCurrentDir(segKey.getTable())).build();
         return new HistorySegmentImpl(new ResourceLocation(segPath, Types.StoreType.FINE_IO), meta);
     }
 

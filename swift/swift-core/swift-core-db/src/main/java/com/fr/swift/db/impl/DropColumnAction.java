@@ -2,6 +2,7 @@ package com.fr.swift.db.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -41,14 +42,15 @@ public class DropColumnAction extends BaseAlterTableAction {
             final String columnId = relatedColumnMeta.getColumnId();
             if (segKey.getStoreType().isTransient()) {
                 // 删内存
-                ResourceDiscovery.getInstance().release(new ResourceLocation(CubeUtil.getColumnPath(segKey, columnId), StoreType.MEMORY));
+                ResourceDiscovery.getInstance().release(new ResourceLocation(new CubePathBuilder(segKey).setColumnId(columnId).build(), StoreType.MEMORY));
                 // 删备份
-                FileUtil.delete(CubeUtil.getAbsoluteColumnPath(segKey, columnId).replace(segKey.getSwiftSchema().getDir(), segKey.getSwiftSchema().getBackupDir()));
+                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().asBackup().build());
                 continue;
             }
 
             // 删history todo 还要删共享存储
-            FileUtil.delete(CubeUtil.getAbsoluteColumnPath(segKey, columnId));
+            int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
+            FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).setColumnId(columnId).build());
         }
 
         alterMeta(table);
