@@ -1,9 +1,8 @@
-package com.fr.swift.jdbc.json.impl;
+package com.fr.swift.api.json.impl;
 
 import com.fr.swift.api.info.RequestInfo;
 import com.fr.swift.api.json.JsonRequestBuilder;
 import com.fr.swift.api.json.annotation.ApiJsonProperty;
-import com.fr.swift.jdbc.exception.Exceptions;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -13,9 +12,9 @@ import java.util.Map;
 
 /**
  * @author yee
- * @date 2018-12-03
+ * @date 2018-12-07
  */
-public class JdbcJsonRequestBuilder implements JsonRequestBuilder {
+public class JsonRequestBuilderImpl implements JsonRequestBuilder {
     private Map<Class, Class> primitiveToWrapper = new HashMap<Class, Class>();
 
     {
@@ -29,10 +28,10 @@ public class JdbcJsonRequestBuilder implements JsonRequestBuilder {
         primitiveToWrapper.put(Byte.TYPE, Byte.class);
     }
 
-    private static JdbcJsonRequestBuilder BUILDER = new JdbcJsonRequestBuilder();
+    private static JsonRequestBuilder INSTANCE = new JsonRequestBuilderImpl();
 
     public static JsonRequestBuilder getInstance() {
-        return BUILDER;
+        return INSTANCE;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class JdbcJsonRequestBuilder implements JsonRequestBuilder {
                     if (null != obj) {
                         buffer.append("\"").append(propertyName).append("\": ").append(getString(obj)).append(",");
                     } else if (property.require()) {
-                        throw Exceptions.runtime(String.format("%s is require", propertyName));
+                        throw new RuntimeException(String.format("%s is require", propertyName));
                     }
                 } catch (IllegalAccessException ignore) {
                 }

@@ -1,4 +1,4 @@
-package com.fr.swift.api.rpc.invoke;
+package com.fr.swift.api.request;
 
 import com.fr.swift.rpc.bean.RpcResponse;
 import com.fr.swift.rpc.bean.impl.RpcRequest;

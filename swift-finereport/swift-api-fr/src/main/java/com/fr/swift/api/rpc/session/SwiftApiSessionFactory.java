@@ -12,6 +12,8 @@ public interface SwiftApiSessionFactory<T extends SwiftApiSession> {
      */
     T openSession();
 
+    void init(String username, String password) throws Exception;
+
     /**
      * 关闭Factory
      *

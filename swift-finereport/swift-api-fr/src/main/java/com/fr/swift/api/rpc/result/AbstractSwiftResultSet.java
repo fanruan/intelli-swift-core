@@ -42,5 +42,5 @@ public abstract class AbstractSwiftResultSet extends SerializableDetailResultSet
         return ret;
     }
 
-    protected abstract AbstractSwiftResultSet queryNextPage(String queryJson);
+    protected abstract AbstractSwiftResultSet queryNextPage(String queryJson) throws Exception;
 }

@@ -1,7 +1,5 @@
-package com.fr.swift.jdbc.info;
+package com.fr.swift.api.info;
 
-import com.fr.swift.api.info.BaseRequestInfo;
-import com.fr.swift.api.info.RequestInfo;
 import com.fr.swift.api.json.annotation.ApiJsonProperty;
 
 /**
