@@ -7,6 +7,7 @@ import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @ProxyService(value = SelectService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
+@SwiftBean
 public class SelectServiceImpl implements SelectService {
     private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
     private TableService tableService = ProxyServiceRegistry.get().getExternalService(TableService.class);

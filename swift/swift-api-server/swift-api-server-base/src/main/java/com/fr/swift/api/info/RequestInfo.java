@@ -4,11 +4,12 @@ import com.fr.swift.api.json.JsonRequestBuilder;
 
 /**
  * 预解析后的sql信息
- * @see JsonRequestBuilder#buildRequest(RequestInfo)
+ *
  * @author yee
  * @date 2018/11/16
+ * @see JsonRequestBuilder#buildRequest(RequestInfo)
  */
-public interface RequestInfo {
+public interface RequestInfo<T> extends Accepter<T> {
     String getAuthCode();
 
     Request getRequest();

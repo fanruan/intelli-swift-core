@@ -41,7 +41,7 @@ public class RequestServiceImpl implements RequestService {
 
                 @Override
                 public SQLException exception() {
-                    return new SQLException(response.errorCode().getDescription());
+                    return new SQLException(response.description());
                 }
 
                 @Override

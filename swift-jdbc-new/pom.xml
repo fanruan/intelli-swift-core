@@ -27,6 +27,16 @@
             <artifactId>swift-jdbc-sqlparser</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-beans</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-common</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

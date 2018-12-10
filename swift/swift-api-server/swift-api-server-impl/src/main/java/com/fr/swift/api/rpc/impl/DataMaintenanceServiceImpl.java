@@ -8,6 +8,7 @@ import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
@@ -18,11 +19,7 @@ import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.*;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.ServiceBeanFactory;
 
@@ -37,6 +34,7 @@ import java.util.List;
  */
 @ProxyService(value = DataMaintenanceService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
+@SwiftBean
 public class DataMaintenanceServiceImpl implements DataMaintenanceService {
     private TableService tableService = ProxyServiceRegistry.get().getExternalService(TableService.class);
 
