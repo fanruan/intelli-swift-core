@@ -7,7 +7,9 @@ import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
 import com.fr.swift.jdbc.druid.sql.ast.SQLOrderingSpecification;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateOption;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
@@ -103,6 +105,8 @@ public class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements Quer
             SQLExpr name = x.getExpr();
             if (name instanceof SQLIdentifierExpr) {
                 tableName = ((SQLIdentifierExpr) name).getName();
+            } else if (name instanceof SQLPropertyExpr) {
+                tableName = ((SQLPropertyExpr) name).getName();
             }
             return false;
         }
@@ -150,6 +154,11 @@ public class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements Quer
                     dimensionBean.setColumn(((SQLIdentifierExpr) name).getName());
                     dimensionBean.setType(DimensionType.DETAIL);
                     dimensionBeans.add(dimensionBean);
+                } else if (name instanceof SQLAllColumnExpr) {
+                    DimensionBean dimensionBean = new DimensionBean();
+                    dimensionBean.setType(DimensionType.DETAIL_ALL_COLUMN);
+                    dimensionBeans.add(dimensionBean);
+                    break;
                 }
             }
             bean.setDimensions(dimensionBeans);
