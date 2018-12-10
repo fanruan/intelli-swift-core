@@ -12,8 +12,6 @@ import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.log.SwiftLog4jLoggers;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.util.FileUtil;
 import com.fr.workspace.WorkContext;
@@ -21,13 +19,15 @@ import com.fr.workspace.simple.SimpleWork;
 
 import java.sql.SQLException;
 
+//import com.fr.swift.log.SwiftLog4jLoggers;
+
 /**
  * @author anchore
  * @date 2018/5/8
  */
 public class Preparer {
     public static void prepareLogger() {
-        SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
+//        SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
     }
 
     public static void prepareFrEnv() {

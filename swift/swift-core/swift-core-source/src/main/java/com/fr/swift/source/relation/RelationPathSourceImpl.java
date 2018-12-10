@@ -9,6 +9,7 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.util.Util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  * @author yee
  * @date 2018/4/3
  */
-public class RelationPathSourceImpl implements SourcePath {
+public class RelationPathSourceImpl implements SourcePath, Serializable {
     private static final long serialVersionUID = 1640228855301769583L;
     protected SourceKey key;
     private List<RelationSource> relations;

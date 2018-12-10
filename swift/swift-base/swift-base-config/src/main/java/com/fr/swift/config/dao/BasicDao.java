@@ -39,7 +39,11 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
     @Override
     public T select(ConfigSession session, Serializable id) throws SQLException {
         try {
-            return ((ObjectConverter<T>) session.get(entityClass, id)).convert();
+            Object result = session.get(entityClass, id);
+            if (null != result) {
+                return ((ObjectConverter<T>) result).convert();
+            }
+            return null;
         } catch (Exception e) {
             throw new SQLException(e);
         }

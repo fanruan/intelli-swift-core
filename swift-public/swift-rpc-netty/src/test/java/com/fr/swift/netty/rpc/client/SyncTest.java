@@ -1,12 +1,11 @@
 package com.fr.swift.netty.rpc.client;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.JdkProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.netty.rpc.CalculatorService;
 import com.fr.swift.netty.rpc.invoke.RPCInvokerCreater;
-import com.fr.workspace.simple.SimpleWork;
 
 /**
  * This class created on 2018/6/11
@@ -18,7 +17,7 @@ import com.fr.workspace.simple.SimpleWork;
  */
 public class SyncTest {
     public static void main(String[] args) {
-        SimpleWork.checkIn(System.getProperty("user.dir"));
+//        SimpleWork.checkIn(System.getProperty("user.dir"));
         SwiftContext.get().init();
         ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new RPCInvokerCreater()));
         //step1: get proxyFactory

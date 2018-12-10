@@ -8,6 +8,7 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.util.Util;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class RelationSourceImpl implements RelationSource {
+public class RelationSourceImpl implements RelationSource, Serializable {
     private static final long serialVersionUID = -440451044374432042L;
     protected SourceKey key;
     @CoreField

@@ -10,7 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +47,7 @@ public class ApiTest {
 
     @Test
     @Ignore
-    public void query() throws SQLException {
+    public void query() throws Exception {
 //        aa4f69b2
         SimpleDetailQueryBean bean = new SimpleDetailQueryBean();
         bean.setTable("36e09331");

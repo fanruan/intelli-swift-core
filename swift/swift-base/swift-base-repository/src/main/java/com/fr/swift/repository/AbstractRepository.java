@@ -5,10 +5,8 @@ import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.pool.RemoteFileSystemFactoryCreator;
-import com.fr.swift.util.Crasher;
+import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
 import com.fr.swift.util.Strings;
-
-import java.io.IOException;
 
 /**
  * @author yee
@@ -21,18 +19,6 @@ public abstract class AbstractRepository implements SwiftRepository {
     public AbstractRepository(SwiftFileSystemConfig configuration) {
         this.configuration = configuration;
     }
-
-    @Override
-    public abstract String copyFromRemote(String remote, String local) throws IOException;
-
-    @Override
-    public abstract boolean copyToRemote(String local, String remote) throws IOException;
-
-    @Override
-    public abstract boolean zipToRemote(String local, String remote) throws IOException;
-
-    @Override
-    public abstract boolean delete(String remote) throws IOException;
 
     public SwiftFileSystem createFileSystem(String uri) {
         if (null == configuration) {
@@ -49,9 +35,9 @@ public abstract class AbstractRepository implements SwiftRepository {
     private SwiftFileSystem buildDefaultFileSystem(String uri) {
         try {
             Class system = this.getClass().getClassLoader().loadClass("com.fr.swift.file.system.impl.DefaultFileSystemImpl");
-            return (SwiftFileSystem) system.getDeclaredConstructor(SwiftFileSystemConfig.class, String.class).newInstance(configuration, uri);
+            return (SwiftFileSystem) system.getDeclaredConstructor(String.class).newInstance(uri);
         } catch (Exception e) {
-            return Crasher.crash(e);
+            throw new DefaultRepoNotFoundException(e);
         }
     }
 

@@ -6,7 +6,7 @@ import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.HistorySegmentImpl;
@@ -64,7 +64,7 @@ public class HistoryBlockInserter extends BaseBlockInserter {
 
     private Segment newHistorySegment(SegmentInfo segInfo, int segCount) {
         currentSegKey = new SegmentKeyBean(dataSource.getSourceKey(), segCount + segInfo.getOrder(), StoreType.FINE_IO, dataSource.getMetadata().getSwiftDatabase());
-        ResourceLocation location = new ResourceLocation(CubeUtil.getHistorySegPath(dataSource, currentDir, currentSegKey.getOrder()), currentSegKey.getStoreType());
+        ResourceLocation location = new ResourceLocation(new CubePathBuilder(currentSegKey).setTempDir(currentDir).build(), currentSegKey.getStoreType());
         return new HistorySegmentImpl(location, dataSource.getMetadata());
     }
 

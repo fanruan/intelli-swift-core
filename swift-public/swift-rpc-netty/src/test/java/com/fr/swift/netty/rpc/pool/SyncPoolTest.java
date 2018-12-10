@@ -6,7 +6,6 @@ import com.fr.swift.basics.base.JdkProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.netty.rpc.CalculatorService;
 import com.fr.swift.netty.rpc.invoke.RPCInvokerCreater;
-import com.fr.workspace.simple.SimpleWork;
 
 
 /**
@@ -18,7 +17,7 @@ import com.fr.workspace.simple.SimpleWork;
  */
 public class SyncPoolTest {
     public static void main(String[] args) {
-        SimpleWork.checkIn(System.getProperty("user.dir"));
+//        SimpleWork.checkIn(System.getProperty("user.dir"));
         SwiftContext.get().init();
         ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new RPCInvokerCreater()));
         ProxyFactory proxyFactory = ProxySelector.getInstance().getFactory();

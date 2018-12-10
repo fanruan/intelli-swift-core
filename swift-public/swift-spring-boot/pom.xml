@@ -59,13 +59,12 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-api-private</artifactId>
+            <artifactId>swift-api-server-impl</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-beans</artifactId>
-            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -108,6 +107,11 @@
             <artifactId>swift-common-public</artifactId>
             <version>${swift.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-redis</artifactId>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 
