@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fineio.FineIO;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
@@ -50,8 +51,10 @@ public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
             @Override
             public void run() {
                 if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                    String local = String.format("%s/%s", CubeUtil.getAbsoluteSegPath(segKey), BaseSegment.ALL_SHOW_INDEX);
-                    String remote = String.format("%s/%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath(), BaseSegment.ALL_SHOW_INDEX);
+                    int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
+                    String absoluteSegPath = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
+                    String local = String.format("%s/%s", absoluteSegPath, BaseSegment.ALL_SHOW_INDEX);
+                    String remote = String.format("%s/%s", new CubePathBuilder(segKey).build(), BaseSegment.ALL_SHOW_INDEX);
                     try {
                         REPO.currentRepo().zipToRemote(local, remote);
                     } catch (DefaultRepoNotFoundException e) {

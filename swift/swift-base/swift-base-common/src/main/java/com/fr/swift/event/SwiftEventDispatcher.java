@@ -5,6 +5,7 @@ import com.fr.swift.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -31,6 +32,23 @@ public class SwiftEventDispatcher {
         }
     }
 
+    public static void remove(SwiftEventListener<?> listener) {
+        if (listener == null) {
+            return;
+        }
+
+        synchronized (EVENTS) {
+            for (List<SwiftEventListener> listeners : EVENTS.values()) {
+                Iterator<SwiftEventListener> itr = listeners.iterator();
+                while (itr.hasNext()) {
+                    if (itr.next() == listener) {
+                        itr.remove();
+                    }
+                }
+            }
+        }
+    }
+
     public static <T> void fire(SwiftEvent event, T content) {
         Assert.notNull(event);
 
@@ -41,7 +59,7 @@ public class SwiftEventDispatcher {
                 }
             } else {
                 // warn
-                SwiftLoggers.getLogger().error("no listener for event {}", event);
+                SwiftLoggers.getLogger().warn("no listener for event {}", event);
             }
         }
     }

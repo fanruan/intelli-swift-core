@@ -5,7 +5,7 @@ import com.fr.swift.jdbc.JdbcProperty;
 import com.fr.swift.jdbc.Mode;
 import com.fr.swift.jdbc.SwiftJdbcConstants;
 import com.fr.swift.jdbc.exception.Exceptions;
-import com.fr.swift.jdbc.request.RequestService;
+import com.fr.swift.jdbc.request.JdbcRequestService;
 import com.fr.swift.jdbc.request.impl.RequestServiceImpl;
 
 import java.lang.reflect.Constructor;
@@ -127,7 +127,7 @@ public abstract class UnregisteredDriver implements Driver {
 
     public static class Holder {
         private URI connectUri;
-        private RequestService requestService;
+        private JdbcRequestService requestService;
         /**
          * TODO: 2018/12/03 校验码 暂时不做先保留
          */
@@ -143,7 +143,7 @@ public abstract class UnregisteredDriver implements Driver {
             return authCode;
         }
 
-        public RequestService getRequestService() {
+        public JdbcRequestService getRequestService() {
             return requestService;
         }
 

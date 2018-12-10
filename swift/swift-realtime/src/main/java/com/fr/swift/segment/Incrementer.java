@@ -4,7 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
@@ -50,7 +50,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
     }
 
     private Segment newRealtimeSegment(SegmentKey segKey) {
-        ResourceLocation location = new ResourceLocation(CubeUtil.getRealtimeSegPath(dataSource, segKey.getOrder()), StoreType.MEMORY);
+        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).build(), StoreType.MEMORY);
         return new RealTimeSegmentImpl(location, dataSource.getMetadata());
     }
 

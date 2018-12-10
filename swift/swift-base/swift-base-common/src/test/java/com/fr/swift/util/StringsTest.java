@@ -25,8 +25,8 @@ public class StringsTest {
                 b = "/a//b/c",
                 c = "a\\b\\\\c\\\\\\";
 
-        assertEquals("/a/b/c/d/e/f 1/", Strings.unifySlash(a));
+        assertEquals("/a/b/c/d/e/f 1", Strings.unifySlash(a));
         assertEquals("/a/b/c", Strings.unifySlash(b));
-        assertEquals("a/b/c/", Strings.unifySlash(c));
+        assertEquals("a/b/c", Strings.unifySlash(c));
     }
 }
