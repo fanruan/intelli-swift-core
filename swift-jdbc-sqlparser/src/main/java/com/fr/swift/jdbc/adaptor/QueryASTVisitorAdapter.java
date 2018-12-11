@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Created by lyon on 2018/12/6.
  */
-public class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBeanParser {
+class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBeanParser {
 
     private QueryInfoBean queryInfoBean;
 

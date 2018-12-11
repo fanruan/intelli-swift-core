@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Created by lyon on 2018/12/7.
  */
-public class WhereASTVisitorAdapter extends SQLASTVisitorAdapter implements FilterInfoBeanParser {
+class WhereASTVisitorAdapter extends SQLASTVisitorAdapter implements FilterInfoBeanParser {
 
     private FilterInfoBean bean;
 
@@ -158,9 +158,10 @@ public class WhereASTVisitorAdapter extends SQLASTVisitorAdapter implements Filt
         return bean;
     }
 
+    // 不包括边界
     private static class BetweenSQLASTVisitorAdapter extends SQLASTVisitorAdapter implements FilterInfoBeanParser {
 
-        private NumberInRangeFilterBean bean;
+        private NumberInRangeFilterBean numberInRangeFilterBean;
 
         @Override
         public boolean visit(SQLBetweenExpr x) {
@@ -169,24 +170,29 @@ public class WhereASTVisitorAdapter extends SQLASTVisitorAdapter implements Filt
             }
             SQLExpr col = x.getTestExpr();
             if (col instanceof SQLIdentifierExpr) {
-                bean = new NumberInRangeFilterBean();
-                bean.setColumn(((SQLIdentifierExpr) col).getName());
+                numberInRangeFilterBean = new NumberInRangeFilterBean();
+                numberInRangeFilterBean.setColumn(((SQLIdentifierExpr) col).getName());
                 RangeFilterValueBean bean = new RangeFilterValueBean();
                 SQLExpr start = x.getBeginExpr();
-                if (start instanceof SQLIdentifierExpr) {
-                    bean.setStart(((SQLIdentifierExpr) start).getName());
+                if (start instanceof SQLNumericLiteralExpr) {
+                    bean.setStart(((SQLNumericLiteralExpr) start).getNumber().toString());
+                } else if (start instanceof SQLTextLiteralExpr) {
+                    bean.setStart(((SQLTextLiteralExpr) start).getText());
                 }
                 SQLExpr end = x.getEndExpr();
-                if (end instanceof SQLIdentifierExpr) {
-                    bean.setEnd(((SQLIdentifierExpr) end).getName());
+                if (end instanceof SQLNumericLiteralExpr) {
+                    bean.setEnd(((SQLNumericLiteralExpr) end).getNumber().toString());
+                } else if (end instanceof SQLTextLiteralExpr) {
+                    bean.setStart(((SQLTextLiteralExpr) end).getText());
                 }
+                numberInRangeFilterBean.setFilterValue(bean);
             }
             return false;
         }
 
         @Override
         public FilterInfoBean getFilterInfoBean() {
-            return bean;
+            return numberInRangeFilterBean;
         }
     }
 
@@ -206,8 +212,10 @@ public class WhereASTVisitorAdapter extends SQLASTVisitorAdapter implements Filt
                 List<SQLExpr> list = x.getTargetList();
                 Set<String> items = new HashSet<String>();
                 for (SQLExpr sqlExpr : list) {
-                    if (sqlExpr instanceof SQLIdentifierExpr) {
-                        items.add(((SQLIdentifierExpr) sqlExpr).getName());
+                    if (sqlExpr instanceof SQLNumericLiteralExpr) {
+                        items.add(((SQLNumericLiteralExpr) sqlExpr).getNumber().toString());
+                    } else if (sqlExpr instanceof SQLTextLiteralExpr) {
+                        items.add(((SQLTextLiteralExpr) sqlExpr).getText());
                     }
                 }
                 in.setFilterValue(items);

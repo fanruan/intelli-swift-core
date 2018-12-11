@@ -1,6 +1,5 @@
-package com.fr.swift.jdbc.adaptor.parser;
+package com.fr.swift.jdbc.adaptor;
 
-import com.fr.swift.jdbc.adaptor.QueryASTVisitorAdapter;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
