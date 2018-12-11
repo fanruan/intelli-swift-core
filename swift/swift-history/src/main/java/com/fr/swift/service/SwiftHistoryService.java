@@ -139,7 +139,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             if (!needLoadSegments.containsKey(sourceKey)) {
                 needLoadSegments.put(sourceKey, new HashSet<String>());
             }
-            needLoadSegments.get(sourceKey).add(segmentKey.getUri().getPath());
+            needLoadSegments.get(sourceKey).add(String.format("%s/seg%d", segmentKey.getTable(), segmentKey.getOrder()));
         }
         load(needLoadSegments, replace);
     }

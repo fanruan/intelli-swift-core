@@ -8,6 +8,7 @@ import org.slf4j.Logger;
  * @date 2018/7/4
  */
 public interface SwiftLogger extends Logger, FineIOLogger {
+
     void debug(Throwable t);
 
     void warn(Throwable t);
