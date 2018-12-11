@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
@@ -27,7 +28,7 @@ public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
     @Override
     public void on(final SegmentKey segKey) {
         if (ClusterSelector.getInstance().getFactory().isCluster()) {
-            String remote = String.format("%s/%s", segKey.getSwiftSchema().getDir(), segKey.getUri().getPath());
+            String remote = new CubePathBuilder(segKey).build();
             try {
                 REPO.currentRepo().delete(remote);
 

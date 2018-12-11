@@ -1,12 +1,11 @@
 package com.fr.swift.log;
 
-import com.fr.swift.util.function.Function;
-
 /**
  * @author anchore
  */
 public final class SwiftLoggers {
-    private static Function<?, SwiftLogger> loggerFactory;
+
+    private static SwiftLoggerFactory<?> loggerFactory;
 
     /**
      * 不用static final SwiftLogger = SwiftLoggers.getLogger();的方式了
@@ -24,11 +23,11 @@ public final class SwiftLoggers {
         return getLogger();
     }
 
-    public static void setLoggerFactory(Function<?, SwiftLogger> loggerFactory) {
+    public static void setLoggerFactory(SwiftLoggerFactory<?> loggerFactory) {
         SwiftLoggers.loggerFactory = loggerFactory;
     }
 
-    public static Function<?, SwiftLogger> getLoggerFactory() {
+    public static SwiftLoggerFactory<?> getLoggerFactory() {
         return loggerFactory;
     }
 }

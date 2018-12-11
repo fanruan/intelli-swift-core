@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
 
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -51,7 +50,6 @@ public class SwiftSegmentDaoImplTest {
         EasyMock.expect(testException.getId()).andReturn("keyId").anyTimes();
         EasyMock.expect(testException.getOrder()).andReturn(0).anyTimes();
         EasyMock.expect(testException.getTable()).andReturn(new SourceKey("table")).anyTimes();
-        EasyMock.expect(testException.getUri()).andReturn(URI.create("0")).anyTimes();
 
         SegmentKey mockSegmentKey = PowerMock.createMock(SegmentKey.class);
         EasyMock.expect(mockSegmentKey.getStoreType()).andReturn(Types.StoreType.MEMORY).anyTimes();
@@ -59,7 +57,6 @@ public class SwiftSegmentDaoImplTest {
         EasyMock.expect(mockSegmentKey.getId()).andReturn("keyId").anyTimes();
         EasyMock.expect(mockSegmentKey.getOrder()).andReturn(0).anyTimes();
         EasyMock.expect(mockSegmentKey.getTable()).andReturn(new SourceKey("table")).anyTimes();
-        EasyMock.expect(mockSegmentKey.getUri()).andReturn(URI.create("0")).anyTimes();
         EasyMock.expect(mockSegmentKey.convert()).andReturn(mockEntity).anyTimes();
 
         PowerMock.replayAll();
@@ -83,7 +80,7 @@ public class SwiftSegmentDaoImplTest {
         SwiftSegmentDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentDaoImpl.class, mockRestrictionFactory);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
-        final SegmentKey segmentKey = new SegmentKeyBean("sourceKey", URI.create("0"), 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
+        final SegmentKey segmentKey = new SegmentKeyBean("sourceKey", 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
         EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
         mockConfigCriteria.add(EasyMock.notNull());
         EasyMock.expectLastCall().anyTimes();
@@ -108,7 +105,7 @@ public class SwiftSegmentDaoImplTest {
         SwiftSegmentDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentDaoImpl.class, mockRestrictionFactory);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
-        final SegmentKey segmentKey = new SegmentKeyBean("sourceKey", URI.create("0"), 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
+        final SegmentKey segmentKey = new SegmentKeyBean("sourceKey", 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
 
         EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
         mockConfigCriteria.add(EasyMock.notNull());

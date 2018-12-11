@@ -57,7 +57,7 @@ public class SegmentHelper {
                     for (SegmentKey segmentKey : value) {
                         if (segmentKey.getStoreType().isPersistent()) {
                             if (!segmentManager.getSegment(segmentKey).isReadable()) {
-                                String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
+                                String remotePath = new CubePathBuilder(segmentKey).build();
                                 if (repository.exists(remotePath)) {
                                     if (null == needDownload.get(table)) {
                                         needDownload.put(table, new HashSet<String>());

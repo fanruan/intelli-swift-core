@@ -10,7 +10,6 @@ import com.fr.swift.util.Crasher;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.net.URI;
 
 /**
  * @author yee
@@ -23,7 +22,6 @@ public class SegmentKeyBean implements Serializable, SegmentKey {
      */
     private String id;
     private String sourceKey;
-    private URI uri;
     private Integer order;
     private SwiftDatabase swiftSchema;
     private Types.StoreType storeType;
@@ -37,13 +35,12 @@ public class SegmentKeyBean implements Serializable, SegmentKey {
         }
     }
 
-    public SegmentKeyBean(SourceKey sourceKey, int order, StoreType storeType, SwiftDatabase swiftSchema) {
-        this(sourceKey.getId(), URI.create(sourceKey + "/seg" + order), order, storeType, swiftSchema);
+    public SegmentKeyBean(SourceKey tableKey, int order, StoreType storeType, SwiftDatabase swiftSchema) {
+        this(tableKey.getId(), order, storeType, swiftSchema);
     }
 
-    public SegmentKeyBean(String sourceKey, URI uri, int order, Types.StoreType storeType, SwiftDatabase schema) {
+    public SegmentKeyBean(String sourceKey, int order, Types.StoreType storeType, SwiftDatabase schema) {
         this.sourceKey = sourceKey;
-        this.uri = uri;
         this.order = order;
         this.storeType = storeType;
         this.id = toString();
@@ -68,15 +65,6 @@ public class SegmentKeyBean implements Serializable, SegmentKey {
             return null;
         }
         return new SourceKey(sourceKey);
-    }
-
-    @Override
-    public URI getUri() {
-        return uri;
-    }
-
-    public void setUri(URI uri) {
-        this.uri = uri;
     }
 
     @Override

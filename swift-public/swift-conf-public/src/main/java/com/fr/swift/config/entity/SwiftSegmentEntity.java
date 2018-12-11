@@ -77,14 +77,6 @@ public class SwiftSegmentEntity implements ObjectConverter<SegmentKeyBean> {
         this.segmentOwner = segmentOwner;
     }
 
-    public URI getSegmentUri() {
-        return segmentUri;
-    }
-
-    public void setSegmentUri(URI segmentUri) {
-        this.segmentUri = segmentUri;
-    }
-
     public int getSegmentOrder() {
         return segmentOrder;
     }
@@ -126,31 +118,27 @@ public class SwiftSegmentEntity implements ObjectConverter<SegmentKeyBean> {
             return false;
         }
 
-        SwiftSegmentEntity entity = (SwiftSegmentEntity) o;
+        SwiftSegmentEntity that = (SwiftSegmentEntity) o;
 
-        if (segmentOrder != entity.segmentOrder) {
+        if (segmentOrder != that.segmentOrder) {
             return false;
         }
-        if (id != null ? !id.equals(entity.id) : entity.id != null) {
+        if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
         }
-        if (segmentOwner != null ? !segmentOwner.equals(entity.segmentOwner) : entity.segmentOwner != null) {
+        if (segmentOwner != null ? !segmentOwner.equals(that.segmentOwner) : that.segmentOwner != null) {
             return false;
         }
-        if (segmentUri != null ? !segmentUri.equals(entity.segmentUri) : entity.segmentUri != null) {
+        if (storeType != that.storeType) {
             return false;
         }
-        if (storeType != entity.storeType) {
-            return false;
-        }
-        return swiftSchema == entity.swiftSchema;
+        return swiftSchema == that.swiftSchema;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (segmentOwner != null ? segmentOwner.hashCode() : 0);
-        result = 31 * result + (segmentUri != null ? segmentUri.hashCode() : 0);
         result = 31 * result + segmentOrder;
         result = 31 * result + (storeType != null ? storeType.hashCode() : 0);
         result = 31 * result + (swiftSchema != null ? swiftSchema.hashCode() : 0);
@@ -159,6 +147,6 @@ public class SwiftSegmentEntity implements ObjectConverter<SegmentKeyBean> {
 
     @Override
     public SegmentKeyBean convert() {
-        return new SegmentKeyBean(segmentOwner, segmentUri, segmentOrder, storeType, swiftSchema);
+        return new SegmentKeyBean(segmentOwner, segmentOrder, storeType, swiftSchema);
     }
 }
