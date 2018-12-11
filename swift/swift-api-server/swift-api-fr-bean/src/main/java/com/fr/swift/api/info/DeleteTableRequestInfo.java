@@ -1,13 +1,13 @@
 package com.fr.swift.api.info;
 
-import com.fr.swift.api.json.annotation.ApiJsonProperty;
+import com.fr.swift.base.json.annotation.JsonProperty;
 
 /**
  * @author yee
  * @date 2018-12-07
  */
 public class DeleteTableRequestInfo extends TableRequestInfo {
-    @ApiJsonProperty("where")
+    @JsonProperty("where")
     private String where;
 
     public DeleteTableRequestInfo() {
@@ -20,5 +20,10 @@ public class DeleteTableRequestInfo extends TableRequestInfo {
 
     public void setWhere(String where) {
         this.where = where;
+    }
+
+    @Override
+    public ApiInvocation accept(ApiRequestParserVisitor visitor) {
+        return visitor.visit(this);
     }
 }

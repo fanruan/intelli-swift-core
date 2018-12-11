@@ -49,7 +49,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
         info.setSelectFields(fields);
         ApiResponse response = sessionFactory.callRpc(realTimeAddress, info);
         if (response.isError()) {
-            throw new Exception(response.errorCode().getDescription());
+            throw new Exception(response.description());
         }
         return (Integer) response.result();
     }
@@ -68,7 +68,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
         info.setWhere(objectMapper.writeValueAsString(where.getFilterBean()));
         ApiResponse response = sessionFactory.callRpc(realTimeAddress, info);
         if (response.isError()) {
-            throw new Exception(response.errorCode().getDescription());
+            throw new Exception(response.description());
         }
         return (Integer) response.result();
     }
@@ -80,7 +80,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
         info.setQueryJson(queryJson);
         ApiResponse response = sessionFactory.callRpc(realTimeAddress, info);
         if (response.isError()) {
-            throw new Exception(response.errorCode().getDescription());
+            throw new Exception(response.description());
         }
         SwiftResultSet result = (SwiftResultSet) response.result();
         if (result instanceof SerializableDetailResultSet) {
@@ -102,7 +102,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
         info.setTable(tableName);
         ApiResponse response = sessionFactory.callRpc(realTimeAddress, info);
         if (response.isError()) {
-            throw new Exception(response.errorCode().getDescription());
+            throw new Exception(response.description());
         }
         return (Boolean) response.result();
     }
@@ -115,7 +115,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
         info.setAuthCode(sessionFactory.getAuthCode());
         ApiResponse response = sessionFactory.callRpc(realTimeAddress, info);
         if (response.isError()) {
-            throw new Exception(response.errorCode().getDescription());
+            throw new Exception(response.description());
         }
     }
 
@@ -127,7 +127,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
         info.setAuthCode(sessionFactory.getAuthCode());
         ApiResponse response = sessionFactory.callRpc(realTimeAddress, info);
         if (response.isError()) {
-            throw new Exception(response.errorCode().getDescription());
+            throw new Exception(response.description());
         }
     }
 

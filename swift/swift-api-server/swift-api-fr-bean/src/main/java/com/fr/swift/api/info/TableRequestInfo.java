@@ -1,18 +1,18 @@
 package com.fr.swift.api.info;
 
-import com.fr.swift.api.json.annotation.ApiJsonProperty;
+import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.db.SwiftDatabase;
 
 /**
  * @author yee
  * @date 2018-12-07
  */
-public class TableRequestInfo extends BaseRequestInfo {
-    @ApiJsonProperty(value = "auth", require = true)
+public class TableRequestInfo extends BaseRequestInfo<ApiRequestParserVisitor> {
+    @JsonProperty(value = "auth")
     private String authCode;
-    @ApiJsonProperty(value = "database", require = true)
+    @JsonProperty(value = "database")
     private SwiftDatabase database;
-    @ApiJsonProperty(value = "table", require = true)
+    @JsonProperty(value = "table")
     private String table;
 
     public TableRequestInfo(Request request) {
@@ -43,5 +43,10 @@ public class TableRequestInfo extends BaseRequestInfo {
 
     public void setTable(String table) {
         this.table = table;
+    }
+
+    @Override
+    public ApiInvocation accept(ApiRequestParserVisitor visitor) {
+        return visitor.visit(this);
     }
 }

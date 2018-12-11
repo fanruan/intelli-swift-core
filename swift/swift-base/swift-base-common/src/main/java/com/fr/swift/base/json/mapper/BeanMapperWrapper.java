@@ -98,7 +98,7 @@ public abstract class BeanMapperWrapper implements BeanMapper {
             if (field.isAnnotationPresent(JsonProperty.class)) {
                 JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
                 field.setAccessible(true);
-                field.set(o, JsonBuilder.readValue(writeValueAsString(map.get(jsonProperty.value())), field.getType()));
+                field.set(o, JsonBuilder.readValue(mapper.writeValueAsString(map.get(jsonProperty.value())), field.getType()));
             }
         }
         return (T) o;

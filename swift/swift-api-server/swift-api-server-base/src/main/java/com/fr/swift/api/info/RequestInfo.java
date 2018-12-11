@@ -11,15 +11,16 @@ import com.fr.swift.base.json.JsonBuilder;
 public interface RequestInfo<T> extends Accepter<T> {
     String getAuthCode();
 
-    Request getRequest();
-
     Request AUTH = new Request() {
         @Override
-        public String toString() {
+        public String name() {
             return "AUTH";
         }
     };
 
+    <R extends Request> R getRequest();
+
     interface Request {
+        String name();
     }
 }

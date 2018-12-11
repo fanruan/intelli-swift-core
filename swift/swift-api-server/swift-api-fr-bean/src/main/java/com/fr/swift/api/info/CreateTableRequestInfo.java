@@ -1,7 +1,7 @@
 package com.fr.swift.api.info;
 
-import com.fr.swift.api.json.annotation.ApiJsonProperty;
 import com.fr.swift.api.rpc.bean.Column;
+import com.fr.swift.base.json.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2018-12-07
  */
 public class CreateTableRequestInfo extends TableRequestInfo {
-    @ApiJsonProperty(value = "columns", require = true)
+    @JsonProperty(value = "columns")
     private List<Column> columns = new ArrayList<Column>();
 
     public CreateTableRequestInfo() {
@@ -27,4 +27,8 @@ public class CreateTableRequestInfo extends TableRequestInfo {
         this.columns = columns;
     }
 
+    @Override
+    public ApiInvocation accept(ApiRequestParserVisitor visitor) {
+        return visitor.visit(this);
+    }
 }

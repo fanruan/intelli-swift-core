@@ -8,7 +8,7 @@ import java.util.UUID;
  * @author yee
  * @date 2018-12-03
  */
-public abstract class BaseRequestInfo<T> implements RequestInfo<T> {
+public abstract class BaseRequestInfo<T extends RequestParserVisitor> implements RequestInfo<T> {
     @JsonProperty(value = "requestType")
     protected RequestInfo.Request request;
     @JsonProperty(value = "requestId")
@@ -29,7 +29,7 @@ public abstract class BaseRequestInfo<T> implements RequestInfo<T> {
     }
 
     @Override
-    public RequestInfo.Request getRequest() {
-        return request;
+    public <R extends Request> R getRequest() {
+        return (R) request;
     }
 }
