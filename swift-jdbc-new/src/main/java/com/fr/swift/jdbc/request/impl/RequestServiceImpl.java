@@ -1,10 +1,10 @@
 package com.fr.swift.jdbc.request.impl;
 
-import com.fr.swift.api.info.AuthRequestInfo;
 import com.fr.swift.api.info.RequestInfo;
 import com.fr.swift.api.json.impl.JsonRequestBuilderImpl;
 import com.fr.swift.api.server.ApiServerService;
 import com.fr.swift.api.server.response.ApiResponse;
+import com.fr.swift.jdbc.info.AuthRequestInfo;
 import com.fr.swift.jdbc.request.JdbcRequestService;
 import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;

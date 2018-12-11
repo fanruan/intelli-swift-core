@@ -3,6 +3,7 @@ package com.fr.swift.cube.space.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.cube.space.SpaceUsageService;
 import com.fr.swift.db.SwiftDatabase;
@@ -31,7 +32,7 @@ public class SwiftSpaceUsageService implements SpaceUsageService {
         }
         long size = 0;
         for (SegmentKey seg : segConf) {
-            size += detector.detectUsed(seg.getUri());
+            size += detector.detectUsed(URI.create(new CubePathBuilder(seg).build()));
         }
         return size;
     }
