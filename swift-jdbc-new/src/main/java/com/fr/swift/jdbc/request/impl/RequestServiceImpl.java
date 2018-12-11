@@ -45,7 +45,7 @@ public class RequestServiceImpl implements JdbcRequestService {
 
                 @Override
                 public SQLException exception() {
-                    return new SQLException(response.errorCode().getDescription());
+                    return new SQLException(response.description());
                 }
 
                 @Override

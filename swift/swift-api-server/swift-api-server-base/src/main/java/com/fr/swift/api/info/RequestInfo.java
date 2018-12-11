@@ -8,7 +8,7 @@ import com.fr.swift.base.json.JsonBuilder;
  * @author yee
  * @date 2018/11/16
  */
-public interface RequestInfo {
+public interface RequestInfo<T> extends Accepter<T> {
     String getAuthCode();
 
     Request getRequest();

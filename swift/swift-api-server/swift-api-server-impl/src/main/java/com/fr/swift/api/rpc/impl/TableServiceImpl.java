@@ -6,6 +6,7 @@ import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.MetaDataColumnBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
@@ -43,6 +44,7 @@ import java.util.UUID;
  */
 @ProxyService(value = TableService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
+@SwiftBean
 public class TableServiceImpl implements TableService {
     private SwiftMetaDataService swiftMetaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
     private SwiftCubePathService cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
