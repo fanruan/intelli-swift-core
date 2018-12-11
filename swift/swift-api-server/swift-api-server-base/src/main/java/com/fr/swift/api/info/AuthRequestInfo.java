@@ -1,16 +1,23 @@
-package com.fr.swift.api.info;
+package com.fr.swift.jdbc.info;
 
-import com.fr.swift.api.json.annotation.ApiJsonProperty;
+import com.fr.swift.api.info.ApiInvocation;
+import com.fr.swift.api.info.BaseRequestInfo;
+import com.fr.swift.api.info.RequestInfo;
+import com.fr.swift.base.json.annotation.JsonProperty;
 
 /**
  * @author yee
  * @date 2018-12-03
  */
 public class AuthRequestInfo extends BaseRequestInfo {
-    @ApiJsonProperty(value = "swiftUser", require = true)
+    @JsonProperty(value = "swiftUser")
     private String swiftUser;
-    @ApiJsonProperty(value = "swiftPassword", require = true)
+    @JsonProperty(value = "swiftPassword")
     private String swiftPassword;
+
+    public AuthRequestInfo() {
+        super(RequestInfo.AUTH);
+    }
 
     public AuthRequestInfo(String swiftUser, String swiftPassword) {
         super(RequestInfo.AUTH);
@@ -26,4 +33,9 @@ public class AuthRequestInfo extends BaseRequestInfo {
         return swiftPassword;
     }
 
+    @Override
+    public ApiInvocation accept(Object visitor) {
+        // TODO: 2018/12/10
+        return null;
+    }
 }

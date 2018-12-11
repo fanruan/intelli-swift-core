@@ -1,0 +1,121 @@
+package com.fr.swift.server;
+
+import com.fr.swift.SwiftContext;
+import com.fr.swift.api.rpc.TableService;
+import com.fr.swift.api.server.ApiServerServiceImpl;
+import com.fr.swift.api.server.response.ApiResponse;
+import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class created on 2018/12/10
+ *
+ * @author Lucifer
+ * @description
+ * @since Advanced FineBI 5.0
+ */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({SwiftContext.class})
+public class ApiServerServiceTest extends TestCase {
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        PowerMock.mockStatic(SwiftContext.class);
+        BeanFactory beanFactory = PowerMock.createMock(BeanFactory.class);
+        EasyMock.expect(SwiftContext.get()).andReturn(beanFactory).anyTimes();
+        PowerMock.replay(SwiftContext.class);
+    }
+
+    public void testUser() throws Exception {
+        String request = " {\n" +
+                "    \"swiftUser\": \"username\",\n" +
+                "    \"swiftPassword\": \"password\",\n" +
+                "    \"requestType\": \"AUTH\",\n" +
+                "    \"requestId\": \"fdfd91e4-e7d5-4473-8d13-79e3e250f553\"\n" +
+                "}";
+        return;
+    }
+
+
+    public void testSQL() {
+        String request = "{\n" +
+                "    \"sql\": \"select * from table\",\n" +
+                "    \"auth\": \"authCode\",\n" +
+                "    \"database\": \"cube\",\n" +
+                "    \"requestType\": \"SQL\",\n" +
+                "    \"requestId\": \"71859bfa-6534-45b0-a3a8-bd8bc3719554\"\n" +
+                "}";
+        assertTrue(false);
+    }
+
+    public void testTable() {
+        String request = "{\n" +
+                "    \"database\": \"cube\",\n" +
+                "    \"auth\": \"authCode\",\n" +
+                "    \"requestType\": \"TABLES\",\n" +
+                "    \"requestId\": \"9756991f-ecc9-4aac-afd6-96b9453763fc\"\n" +
+                "}";
+        TableService tableService = EasyMock.createMock(TableService.class);
+        EasyMock.expect(SwiftContext.get().getBean(TableService.class)).andReturn(tableService).anyTimes();
+        List<String> tables = new ArrayList<String>();
+        tables.add("tableA");
+        tables.add("tableB");
+        EasyMock.expect(tableService.detectiveAllTableNames(SwiftDatabase.CUBE)).andReturn(tables).anyTimes();
+        EasyMock.replay(SwiftContext.get(), tableService);
+
+        ApiResponse response = new ApiServerServiceImpl().dispatchRequest(request);
+        assertTrue(response.result() instanceof List);
+        assertEquals(((List) response.result()).get(0), "tableA");
+        assertEquals(((List) response.result()).get(1), "tableB");
+        assertTrue(true);
+    }
+
+    public void testFields() throws SwiftMetaDataAbsentException {
+        String request = "{\n" +
+                "    \"database\": \"cube\",\n" +
+                "    \"table\": \"tableA\",\n" +
+                "    \"auth\": \"authCode\",\n" +
+                "    \"requestType\": \"COLUMNS\",\n" +
+                "    \"requestId\": \"c028db37-72d4-4ac6-bc22-625770418791\"\n" +
+                "}";
+
+        TableService tableService = EasyMock.createMock(TableService.class);
+        EasyMock.expect(SwiftContext.get().getBean(TableService.class)).andReturn(tableService).anyTimes();
+
+        SwiftMetaDataBean swiftMetaDataBean = new SwiftMetaDataBean();
+        List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
+        fields.add(new MetaDataColumnBean("a", 1));
+        fields.add(new MetaDataColumnBean("b", 2));
+        fields.add(new MetaDataColumnBean("c", 3));
+        swiftMetaDataBean.setFields(fields);
+
+        EasyMock.expect(tableService.detectiveMetaData(SwiftDatabase.CUBE, "tableA")).andReturn(swiftMetaDataBean).anyTimes();
+        EasyMock.replay(SwiftContext.get(), tableService);
+
+        ApiResponse response = new ApiServerServiceImpl().dispatchRequest(request);
+        List<SwiftMetaDataColumn> resultFields = ((SwiftMetaDataBean) (response).result()).getFields();
+        assertEquals(resultFields.size(), 3);
+        assertEquals(resultFields.get(0).getName(), "a");
+        assertEquals(resultFields.get(1).getName(), "b");
+        assertEquals(resultFields.get(2).getName(), "c");
+        assertEquals(resultFields.get(0).getType(), 1);
+        assertEquals(resultFields.get(1).getType(), 2);
+        assertEquals(resultFields.get(2).getType(), 3);
+
+        assertTrue(true);
+    }
+}

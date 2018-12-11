@@ -8,11 +8,18 @@ import java.io.Serializable;
  */
 public interface ApiResponse extends Serializable {
     /**
-     * 错误码
+     * 状态码
      *
      * @return
      */
-    ErrorCode errorCode();
+    int statusCode();
+
+    /**
+     * 异常描述
+     *
+     * @return
+     */
+    String description();
 
     /**
      * 是否错误
@@ -28,22 +35,9 @@ public interface ApiResponse extends Serializable {
      */
     Serializable result();
 
-    /**
-     * 这个可以enum实现
-     */
-    interface ErrorCode extends Serializable {
-        /**
-         * 错误码
-         *
-         * @return
-         */
-        String getCode();
+    void setResult(Serializable result);
 
-        /**
-         * 错误描述
-         *
-         * @return
-         */
-        String getDescription();
-    }
+    void setThrowable(Throwable throwable);
+
+    void setStatusCode(int statusCode);
 }
