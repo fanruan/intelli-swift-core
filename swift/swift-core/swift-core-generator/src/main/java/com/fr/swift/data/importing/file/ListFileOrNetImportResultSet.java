@@ -8,11 +8,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
+ * TODO 还没实现
  * @author yee
  * @date 2018-12-11
  */
-public class ListFileOrNetInportResultSet extends BaseFileOrNetImportResultSet<List<String>> {
-    public ListFileOrNetInportResultSet(List<String> paths, SwiftSourceAlloter alloter, LineParser parser) {
+public class ListFileOrNetImportResultSet extends BaseFileOrNetImportResultSet<List<String>> {
+    public ListFileOrNetImportResultSet(List<String> paths, SwiftSourceAlloter alloter, LineParser parser) {
         super(paths, alloter, parser);
     }
 
