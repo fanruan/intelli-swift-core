@@ -1,17 +1,22 @@
 package com.fr.swift.jdbc.info;
 
+import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.BaseRequestInfo;
-import com.fr.swift.api.json.annotation.ApiJsonProperty;
+import com.fr.swift.base.json.annotation.JsonProperty;
 
 /**
  * @author yee
  * @date 2018-12-03
  */
-public class TablesRequestInfo extends BaseRequestInfo {
-    @ApiJsonProperty(value = "database", require = true)
+public class TablesRequestInfo extends BaseRequestInfo<RequestParserVisitor> {
+    @JsonProperty(value = "database")
     private String database;
-    @ApiJsonProperty(value = "auth", require = true)
+    @JsonProperty(value = "auth")
     private String authCode;
+
+    public TablesRequestInfo() {
+        super(JdbcRequestType.TABLES);
+    }
 
     public TablesRequestInfo(String database, String authCode) {
         super(JdbcRequestType.TABLES);
@@ -30,6 +35,11 @@ public class TablesRequestInfo extends BaseRequestInfo {
 
     public void setAuthCode(String authCode) {
         this.authCode = authCode;
+    }
+
+    @Override
+    public ApiInvocation accept(RequestParserVisitor visitor) {
+        return visitor.visit(this);
     }
 }
 

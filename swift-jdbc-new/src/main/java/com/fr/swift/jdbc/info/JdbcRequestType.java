@@ -7,5 +7,6 @@ import com.fr.swift.api.info.RequestInfo;
  * @date 2018-12-06
  */
 public enum JdbcRequestType implements RequestInfo.Request {
+
     SQL, TABLES, COLUMNS
 }
