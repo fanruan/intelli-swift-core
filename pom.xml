@@ -10,7 +10,7 @@
     <version>2019.1</version>
     <modules>
         <module>swift</module>
-        <!--<module>swift-finereport</module>-->
+        <module>swift-finereport</module>
         <module>swift-public</module>
         <module>swift-jdbc-new</module>
         <module>swift-jdbc-sqlparser</module>
