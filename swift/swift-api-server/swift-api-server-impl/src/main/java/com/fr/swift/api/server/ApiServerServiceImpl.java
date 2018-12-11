@@ -2,6 +2,7 @@ package com.fr.swift.api.server;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.api.info.ApiInvocation;
+import com.fr.swift.api.info.AuthRequestInfo;
 import com.fr.swift.api.info.RequestInfo;
 import com.fr.swift.api.server.exception.ApiCrasher;
 import com.fr.swift.api.server.exception.ApiRequestRuntimeException;
@@ -11,7 +12,10 @@ import com.fr.swift.api.server.response.error.ParamErrorCode;
 import com.fr.swift.api.server.response.error.ServerErrorCode;
 import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.jdbc.info.*;
+import com.fr.swift.jdbc.info.ColumnsRequestInfo;
+import com.fr.swift.jdbc.info.JdbcRequestType;
+import com.fr.swift.jdbc.info.SqlRequestInfo;
+import com.fr.swift.jdbc.info.TablesRequestInfo;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
