@@ -25,7 +25,7 @@ public class WhereASTVisitorAdapterTest extends TestCase {
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);
         }
-        DetailQueryInfoBean bean = (DetailQueryInfoBean) visitor.getQueryInfoBean();
+        DetailQueryInfoBean bean = (DetailQueryInfoBean) visitor.getSelectionBean().getQueryInfoBean();
         FilterInfoBean filterInfoBean = bean.getFilter();
         assertEquals(SwiftDetailFilterType.NUMBER_IN_RANGE, filterInfoBean.getType());
         NumberInRangeFilterBean filter = (NumberInRangeFilterBean) filterInfoBean;
@@ -43,7 +43,7 @@ public class WhereASTVisitorAdapterTest extends TestCase {
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);
         }
-        DetailQueryInfoBean bean = (DetailQueryInfoBean) visitor.getQueryInfoBean();
+        DetailQueryInfoBean bean = (DetailQueryInfoBean) visitor.getSelectionBean().getQueryInfoBean();
         FilterInfoBean filterInfoBean = bean.getFilter();
         assertEquals(SwiftDetailFilterType.IN, filterInfoBean.getType());
         InFilterBean filter = (InFilterBean) filterInfoBean;

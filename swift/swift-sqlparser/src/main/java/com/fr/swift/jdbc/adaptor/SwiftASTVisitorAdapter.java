@@ -4,21 +4,22 @@ import com.fr.swift.jdbc.adaptor.bean.CreationBean;
 import com.fr.swift.jdbc.adaptor.bean.DeletionBean;
 import com.fr.swift.jdbc.adaptor.bean.DropBean;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
+import com.fr.swift.jdbc.adaptor.bean.SelectionBean;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDropTableSpaceStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeleteStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDropTableStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLInsertStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
-import com.fr.swift.query.info.bean.query.QueryInfoBean;
 
 /**
  * Created by lyon on 2018/12/10.
  */
-public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBeanParser, CreationBeanParser,
+public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements SelectionBeanParser, CreationBeanParser,
         InsertionBeanParser, DeletionBeanParser, DropBeanParser {
 
-    private QueryInfoBean queryInfoBean;
+    private SwiftSQLType sqlType;
+    private SelectionBean queryInfoBean;
     private CreationBean creationBean;
     private InsertionBean insertionBean;
     private DeletionBean deletionBean;
@@ -26,14 +27,16 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Quer
 
     @Override
     public boolean visit(SQLSelectQueryBlock x) {
+        sqlType = SwiftSQLType.SELECT;
         QueryASTVisitorAdapter visitor = new QueryASTVisitorAdapter();
         visitor.visit(x);
-        queryInfoBean = visitor.getQueryInfoBean();
+        queryInfoBean = visitor.getSelectionBean();
         return false;
     }
 
     @Override
     public boolean visit(SQLCreateTableStatement x) {
+        sqlType = SwiftSQLType.CREATE;
         CreationASTVisitorAdapter visitor = new CreationASTVisitorAdapter();
         visitor.visit(x);
         creationBean = visitor.getCreationBean();
@@ -42,6 +45,7 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Quer
 
     @Override
     public boolean visit(SQLInsertStatement x) {
+        sqlType = SwiftSQLType.INSERT;
         InsertionASTVisitorAdapter visitor = new InsertionASTVisitorAdapter();
         visitor.visit(x);
         insertionBean = visitor.getInsertionBean();
@@ -50,6 +54,7 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Quer
 
     @Override
     public boolean visit(SQLDropTableStatement x) {
+        sqlType = SwiftSQLType.DROP;
         DeletionASTVisitorAdapter visitor = new DeletionASTVisitorAdapter();
         visitor.visit(x);
         deletionBean = visitor.getDeletionBean();
@@ -57,7 +62,8 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Quer
     }
 
     @Override
-    public boolean visit(SQLDropTableSpaceStatement x) {
+    public boolean visit(SQLDeleteStatement x) {
+        sqlType = SwiftSQLType.DELETE;
         DeletionASTVisitorAdapter visitor = new DeletionASTVisitorAdapter();
         visitor.visit(x);
         dropBean = visitor.getDropBean();
@@ -65,7 +71,7 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Quer
     }
 
     @Override
-    public QueryInfoBean getQueryInfoBean() {
+    public SelectionBean getSelectionBean() {
         return queryInfoBean;
     }
 
@@ -87,5 +93,9 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Quer
     @Override
     public InsertionBean getInsertionBean() {
         return insertionBean;
+    }
+
+    public SwiftSQLType getSqlType() {
+        return sqlType;
     }
 }

@@ -1,5 +1,7 @@
 package com.fr.swift.jdbc.adaptor.bean;
 
+import com.fr.swift.source.Row;
+
 import java.util.List;
 
 /**
@@ -10,7 +12,7 @@ public class InsertionBean {
     private String schema;
     private String tableName;
     private List<String> fields;
-    private List<List> rows;
+    private List<Row> rows;
 
     public String getSchema() {
         return schema;
@@ -36,11 +38,11 @@ public class InsertionBean {
         this.fields = fields;
     }
 
-    public List<List> getRows() {
+    public List<Row> getRows() {
         return rows;
     }
 
-    public void setRows(List<List> rows) {
+    public void setRows(List<Row> rows) {
         this.rows = rows;
     }
 }

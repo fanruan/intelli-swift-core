@@ -1,24 +1,13 @@
 package com.fr.swift.jdbc.adaptor;
 
-import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
-import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeleteStatement;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDropTableStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLInsertStatement;
-import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
-import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.fr.swift.jdbc.druid.util.FnvHash;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
 import java.sql.Types;
-import java.util.List;
 
 /**
  * Created by lyon on 2018/12/11.
@@ -57,45 +46,5 @@ public class SwiftSQLUtils {
             tableName[1] = ((SQLPropertyExpr) name).getOwnernName();
         }
         return tableName;
-    }
-
-    public static SwiftSQLType getSqlType(String sql) {
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.SWIFT);
-        final SwiftSQLType[] type = new SwiftSQLType[1];
-        SQLASTVisitor visitor = new SQLASTVisitorAdapter() {
-            @Override
-            public boolean visit(SQLSelectQueryBlock x) {
-                type[0] = SwiftSQLType.SELECT;
-                return false;
-            }
-
-            @Override
-            public boolean visit(SQLCreateTableStatement x) {
-                type[0] = SwiftSQLType.CREATE;
-                return false;
-            }
-
-            @Override
-            public boolean visit(SQLInsertStatement x) {
-                type[0] = SwiftSQLType.INSERT;
-                return false;
-            }
-
-            @Override
-            public boolean visit(SQLDeleteStatement x) {
-                type[0] = SwiftSQLType.DELETE;
-                return false;
-            }
-
-            @Override
-            public boolean visit(SQLDropTableStatement x) {
-                type[0] = SwiftSQLType.DROP;
-                return false;
-            }
-        };
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
-        return type[0];
     }
 }

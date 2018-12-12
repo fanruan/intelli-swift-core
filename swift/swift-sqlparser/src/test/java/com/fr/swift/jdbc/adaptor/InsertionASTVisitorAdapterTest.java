@@ -4,6 +4,7 @@ import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.util.JdbcConstants;
+import com.fr.swift.source.ListBasedRow;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
@@ -26,6 +27,6 @@ public class InsertionASTVisitorAdapterTest extends TestCase {
         assertEquals("tbl_name", bean.getTableName());
         assertEquals("cube", bean.getSchema());
         assertEquals(Arrays.asList("a", "b", "c"), bean.getFields());
-        assertEquals(Arrays.asList(Arrays.asList("a", "b", 233), Arrays.asList("a1", "b1", 234)), bean.getRows());
+        assertEquals(Arrays.asList(new ListBasedRow(Arrays.asList("a", "b", 233)), new ListBasedRow(Arrays.asList("a1", "b1", 234))), bean.getRows());
     }
 }

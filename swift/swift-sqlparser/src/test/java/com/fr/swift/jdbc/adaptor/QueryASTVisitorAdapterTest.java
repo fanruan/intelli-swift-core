@@ -31,7 +31,7 @@ public class QueryASTVisitorAdapterTest extends TestCase {
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);
         }
-        DetailQueryInfoBean bean = (DetailQueryInfoBean) visitor.getQueryInfoBean();
+        DetailQueryInfoBean bean = (DetailQueryInfoBean) visitor.getSelectionBean().getQueryInfoBean();
         assertEquals(QueryType.DETAIL, bean.getQueryType());
         assertEquals("table_name", bean.getTableName());
         assertEquals(1, bean.getDimensions().size());
@@ -49,7 +49,7 @@ public class QueryASTVisitorAdapterTest extends TestCase {
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);
         }
-        GroupQueryInfoBean bean = (GroupQueryInfoBean) visitor.getQueryInfoBean();
+        GroupQueryInfoBean bean = (GroupQueryInfoBean) visitor.getSelectionBean().getQueryInfoBean();
         assertEquals(QueryType.GROUP, bean.getQueryType());
         assertEquals("table_a", bean.getTableName());
         // dimensions

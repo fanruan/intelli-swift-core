@@ -1,5 +1,7 @@
 package com.fr.swift.jdbc.adaptor.bean;
 
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+
 /**
  * Created by lyon on 2018/12/10.
  */
@@ -8,7 +10,7 @@ public class DeletionBean {
     private String schema;
     private String tableName;
     // TODO: 2018/12/10 FilterInfoBean依赖问题
-    private Object filter;
+    private FilterInfoBean filter;
 
     public String getSchema() {
         return schema;
@@ -26,11 +28,11 @@ public class DeletionBean {
         this.tableName = tableName;
     }
 
-    public Object getFilter() {
+    public FilterInfoBean getFilter() {
         return filter;
     }
 
-    public void setFilter(Object filter) {
+    public void setFilter(FilterInfoBean filter) {
         this.filter = filter;
     }
 }

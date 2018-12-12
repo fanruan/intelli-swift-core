@@ -8,6 +8,8 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLTextLiteralExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLInsertStatement;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
+import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements Inserti
             }
         }
         insertionBean.setFields(fields);
-        List<List> rows = new ArrayList<List>();
+        List<Row> rows = new ArrayList<Row>();
         List<SQLInsertStatement.ValuesClause> valuesClauses = x.getValuesList();
         for (SQLInsertStatement.ValuesClause valuesClause : valuesClauses) {
             List<SQLExpr> exprList = valuesClause.getValues();
@@ -49,7 +51,7 @@ class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements Inserti
                     row.add(((SQLNumericLiteralExpr) expr).getNumber());
                 }
             }
-            rows.add(row);
+            rows.add(new ListBasedRow(row));
         }
         insertionBean.setRows(rows);
         return false;

@@ -1,6 +1,7 @@
 package com.fr.swift.jdbc.adaptor;
 
 import com.fr.swift.jdbc.adaptor.ast.expr.SwiftOrderingExpr;
+import com.fr.swift.jdbc.adaptor.bean.SelectionBean;
 import com.fr.swift.jdbc.adaptor.parser.SwiftExprParser;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.SQLOrderBy;
@@ -9,7 +10,6 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAggregateOption;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectItem;
@@ -28,7 +28,6 @@ import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.query.sort.SortType;
 
@@ -39,9 +38,9 @@ import java.util.List;
 /**
  * Created by lyon on 2018/12/6.
  */
-class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBeanParser {
+class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements SelectionBeanParser {
 
-    private QueryInfoBean queryInfoBean;
+    private SelectionBean selectionBean;
 
     // select clause
     @Override
@@ -49,11 +48,11 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBe
         if (isGroup(x.getSelectList())) {
             GroupASTVisitorAdapter visitor = new GroupASTVisitorAdapter();
             visitor.visit(x);
-            this.queryInfoBean = visitor.getQueryInfoBean();
+            this.selectionBean = visitor.getSelectionBean();
         } else {
             DetailASTVisitorAdapter visitor = new DetailASTVisitorAdapter();
             visitor.visit(x);
-            this.queryInfoBean = visitor.getQueryInfoBean();
+            this.selectionBean = visitor.getSelectionBean();
         }
         return false;
     }
@@ -81,13 +80,13 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBe
     }
 
     @Override
-    public QueryInfoBean getQueryInfoBean() {
-        return queryInfoBean;
+    public SelectionBean getSelectionBean() {
+        return selectionBean;
     }
 
-    private static abstract class AbstractASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBeanParser {
+    private static abstract class AbstractASTVisitorAdapter extends SQLASTVisitorAdapter implements SelectionBeanParser {
 
-        String tableName;
+        String[] table;
         List<SortBean> sortBeans;
         FilterInfoBean filterInfoBean;
 
@@ -102,12 +101,7 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBe
 
         @Override
         public boolean visit(SQLExprTableSource x) {
-            SQLExpr name = x.getExpr();
-            if (name instanceof SQLIdentifierExpr) {
-                tableName = ((SQLIdentifierExpr) name).getName();
-            } else if (name instanceof SQLPropertyExpr) {
-                tableName = ((SQLPropertyExpr) name).getName();
-            }
+            table = SwiftSQLUtils.getTableName(x);
             return false;
         }
 
@@ -131,7 +125,7 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBe
         }
     }
 
-    private static class DetailASTVisitorAdapter extends AbstractASTVisitorAdapter implements QueryInfoBeanParser {
+    private static class DetailASTVisitorAdapter extends AbstractASTVisitorAdapter implements SelectionBeanParser {
 
         private DetailQueryInfoBean bean;
 
@@ -142,7 +136,7 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBe
         @Override
         public boolean visit(SQLSelectQueryBlock x) {
             visit((SQLExprTableSource) x.getFrom());
-            bean.setTableName(tableName);
+            bean.setTableName(table[0]);
             // dimensions
             List<DimensionBean> dimensionBeans = new ArrayList<DimensionBean>();
             List<SQLSelectItem> items = x.getSelectList();
@@ -172,12 +166,12 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBe
         }
 
         @Override
-        public QueryInfoBean getQueryInfoBean() {
-            return bean;
+        public SelectionBean getSelectionBean() {
+            return new SelectionBean(table[1], table[0], bean);
         }
     }
 
-    private static class GroupASTVisitorAdapter extends AbstractASTVisitorAdapter implements QueryInfoBeanParser {
+    private static class GroupASTVisitorAdapter extends AbstractASTVisitorAdapter implements SelectionBeanParser {
 
         private GroupQueryInfoBean bean;
 
@@ -188,7 +182,7 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBe
         @Override
         public boolean visit(SQLSelectQueryBlock x) {
             visit((SQLExprTableSource) x.getFrom());
-            bean.setTableName(tableName);
+            bean.setTableName(table[0]);
             // dimensions and metrics
             List<MetricBean> metricBeans = new ArrayList<MetricBean>();
             List<DimensionBean> dimensionBeans = new ArrayList<DimensionBean>();
@@ -292,8 +286,8 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements QueryInfoBe
         }
 
         @Override
-        public QueryInfoBean getQueryInfoBean() {
-            return bean;
+        public SelectionBean getSelectionBean() {
+            return new SelectionBean(table[1], table[0], bean);
         }
     }
 }
