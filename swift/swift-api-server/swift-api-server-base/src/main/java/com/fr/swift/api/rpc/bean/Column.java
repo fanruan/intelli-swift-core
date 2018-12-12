@@ -1,7 +1,7 @@
 package com.fr.swift.api.rpc.bean;
 
 
-import com.fr.swift.api.json.annotation.ApiJsonProperty;
+import com.fr.swift.base.json.annotation.JsonProperty;
 
 import java.io.Serializable;
 
@@ -11,9 +11,9 @@ import java.io.Serializable;
  */
 public class Column implements Serializable {
     private static final long serialVersionUID = 3899734575575468524L;
-    @ApiJsonProperty(value = "columnName", require = true)
+    @JsonProperty(value = "columnName")
     private String columnName;
-    @ApiJsonProperty(value = "columnType", require = true)
+    @JsonProperty(value = "columnType")
     private int columnType;
 
     /**

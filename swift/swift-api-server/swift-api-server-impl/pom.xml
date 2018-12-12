@@ -34,6 +34,11 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-api-fr-bean</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-analyse</artifactId>
             <version>${swift.version}</version>
         </dependency>

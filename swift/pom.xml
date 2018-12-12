@@ -30,7 +30,7 @@
         <module>swift-proxy</module>
         <module>swift-api-server</module>
         <module>swift-config</module>
-
+        <module>swift-sqlparser</module>
     </modules>
 
 </project>

@@ -1,5 +1,7 @@
 package com.fr.swift.basics;
 
+import com.fr.swift.basic.URL;
+
 /**
  * This class created on 2018/6/12
  *

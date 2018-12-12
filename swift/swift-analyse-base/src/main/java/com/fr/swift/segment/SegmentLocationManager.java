@@ -1,6 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;

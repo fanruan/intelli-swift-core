@@ -2,7 +2,7 @@ package com.fr.swift.basics.base.handler;
 
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.annotation.Target;
@@ -21,10 +21,10 @@ public abstract class AbstractProcessHandler<T> implements ProcessHandler {
     private static final String HASH_CODE = "hashCode";
     private static final String EQUALS = "equals";
 
-    protected InvokerCreater invokerCreater;
+    protected InvokerCreator invokerCreator;
 
-    public AbstractProcessHandler(InvokerCreater invokerCreater) {
-        this.invokerCreater = invokerCreater;
+    public AbstractProcessHandler(InvokerCreator invokerCreator) {
+        this.invokerCreator = invokerCreator;
     }
 
     /**

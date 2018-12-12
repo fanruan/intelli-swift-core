@@ -9,5 +9,5 @@ package com.fr.swift.basics;
  */
 public interface ProcessHandlerPool {
 
-    ProcessHandler getProcessHandler(Class<? extends ProcessHandler> aClass, InvokerCreater invokerCreater) throws Exception;
+    ProcessHandler getProcessHandler(Class<? extends ProcessHandler> aClass, InvokerCreator invokerCreator) throws Exception;
 }
