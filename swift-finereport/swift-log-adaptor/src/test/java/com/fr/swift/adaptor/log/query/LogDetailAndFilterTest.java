@@ -16,7 +16,7 @@
 //import com.fr.swift.source.DataSource;
 //import com.fr.swift.source.Row;
 //import com.fr.swift.source.SourceKey;
-//import com.fr.swift.source.SwiftResultSet;
+//import com.fr.swift.result.SwiftResultSet;
 //import com.fr.swift.source.db.QueryDBSource;
 //import org.junit.Before;
 //import org.junit.Test;

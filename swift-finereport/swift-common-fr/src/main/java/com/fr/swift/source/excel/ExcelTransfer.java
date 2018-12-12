@@ -1,8 +1,8 @@
 package com.fr.swift.source.excel;
 
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.db.DataModelResultSet;
 import com.fr.swift.source.excel.data.IExcelDataModel;

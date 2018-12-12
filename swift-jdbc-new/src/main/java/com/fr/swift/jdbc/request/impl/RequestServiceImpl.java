@@ -7,11 +7,10 @@ import com.fr.swift.api.server.response.ApiResponse;
 import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.request.JdbcRequestService;
-import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 import com.fr.swift.jdbc.rpc.invoke.ClientProxy;
 
-import java.sql.SQLException;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,12 +19,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class RequestServiceImpl implements JdbcRequestService {
     @Override
-    public JdbcResponse apply(JdbcExecutor sender, String user, String password) {
+    public ApiResponse apply(JdbcExecutor sender, String user, String password) {
         return apply(sender, new AuthRequestInfo(user, password));
     }
 
     @Override
-    public JdbcResponse apply(JdbcExecutor sender, RequestInfo sql) {
+    public ApiResponse apply(JdbcExecutor sender, RequestInfo sql) {
         try {
             String json = JsonBuilder.writeJsonString(sql);
             return apply(sender, json);
@@ -36,35 +35,18 @@ public class RequestServiceImpl implements JdbcRequestService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public JdbcResponse apply(JdbcExecutor sender, final String requestJson) {
+    public ApiResponse apply(JdbcExecutor sender, final String requestJson) {
         ClientProxy proxy = new ClientProxy(sender);
-        proxy.start();
-        final ApiResponse response = proxy.getProxy(ApiServerService.class).dispatchRequest(requestJson);
-        if (response.isError()) {
-            return new JdbcResponse() {
-
-                @Override
-                public SQLException exception() {
-                    return new SQLException(response.description());
-                }
-
-                @Override
-                public Object result() {
-                    return null;
-                }
-            };
-        }
-        // TODO JdbcResponse实现
-        return null;
+        return proxy.getProxy(ApiServerService.class).dispatchRequest(requestJson);
     }
 
     @Override
-    public JdbcResponse applyWithRetry(JdbcExecutor sender, String user, String password, int retryTime) {
+    public ApiResponse applyWithRetry(JdbcExecutor sender, String user, String password, int retryTime) {
         return applyWithRetry(sender, new AuthRequestInfo(user, password), retryTime);
     }
 
     @Override
-    public JdbcResponse applyWithRetry(JdbcExecutor sender, RequestInfo sql, int retryTime) {
+    public ApiResponse applyWithRetry(JdbcExecutor sender, RequestInfo sql, int retryTime) {
         try {
             String json = JsonBuilder.writeJsonString(sql);
             return applyWithRetry(sender, json, retryTime);
@@ -75,26 +57,50 @@ public class RequestServiceImpl implements JdbcRequestService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public JdbcResponse applyWithRetry(JdbcExecutor sender, String requestJson, int retryTime) {
-        JdbcResponse response = null;
+    public ApiResponse applyWithRetry(JdbcExecutor sender, String requestJson, int retryTime) {
+        ApiResponse response = null;
         for (int i = 0; i < retryTime; i++) {
             try {
                 response = apply(sender, requestJson);
-                if (null == response.exception()) {
+                if (!response.isError()) {
                     return response;
                 }
                 TimeUnit.MILLISECONDS.sleep(10);
             } catch (final Exception e) {
-                response = new JdbcResponse() {
-
+                return new ApiResponse() {
                     @Override
-                    public SQLException exception() {
-                        return new SQLException(e);
+                    public int statusCode() {
+                        return UNKNOWN_ERROR;
                     }
 
                     @Override
-                    public Object result() {
+                    public String description() {
+                        return e.getMessage();
+                    }
+
+                    @Override
+                    public boolean isError() {
+                        return true;
+                    }
+
+                    @Override
+                    public Serializable result() {
                         return null;
+                    }
+
+                    @Override
+                    public void setResult(Serializable result) {
+
+                    }
+
+                    @Override
+                    public void setThrowable(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void setStatusCode(int statusCode) {
+
                     }
                 };
             }

@@ -12,8 +12,8 @@ import com.fr.swift.basics.handler.StatusProcessHandler;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
-import com.fr.swift.config.oper.FindList;
-import com.fr.swift.config.oper.FindListImpl;
+import com.fr.swift.converter.FindList;
+import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ServiceType;
@@ -47,9 +47,13 @@ public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> imp
         final Class<?>[] parameterTypes = method.getParameterTypes();
         List<RpcFuture> resultList = list.forEach(new FindList.ConvertEach<URL, RpcFuture>() {
             @Override
-            public RpcFuture forEach(int idx, URL item) throws Throwable {
+            public RpcFuture forEach(int idx, URL item) throws Exception {
                 Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, item);
-                return (RpcFuture) invoke(invoker, proxyClass, method, method.getName(), parameterTypes, args);
+                try {
+                    return (RpcFuture) invoke(invoker, proxyClass, method, method.getName(), parameterTypes, args);
+                } catch (Throwable throwable) {
+                    throw new Exception(throwable);
+                }
             }
         });
         return mergeResult(resultList);

@@ -1,9 +1,9 @@
 package com.fr.swift.db;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Source;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 

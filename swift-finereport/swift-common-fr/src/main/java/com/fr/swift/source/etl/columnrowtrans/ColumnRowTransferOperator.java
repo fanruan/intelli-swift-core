@@ -1,8 +1,8 @@
 package com.fr.swift.source.etl.columnrowtrans;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
 import com.fr.swift.structure.Pair;
 

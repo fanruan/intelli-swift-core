@@ -1,8 +1,7 @@
 package com.fr.swift.test.external;
 
-import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggerFactory;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.util.function.Function;
 import org.junit.rules.ExternalResource;
 
 /**
@@ -11,7 +10,7 @@ import org.junit.rules.ExternalResource;
  */
 public class LoggerResource extends ExternalResource {
 
-    private Function<?, SwiftLogger> loggerFactory;
+    private SwiftLoggerFactory<?> loggerFactory;
 
     @Override
     protected void before() {

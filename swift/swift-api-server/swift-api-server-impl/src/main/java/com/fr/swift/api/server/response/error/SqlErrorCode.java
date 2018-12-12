@@ -11,6 +11,6 @@ public interface SqlErrorCode {
     /**
      * SQL通用错误
      */
-    public static int SQL_COMMON_ERROR = ErrorCodeConfig.SQL_ERROR_CODE_BASE + 1;
+    int SQL_COMMON_ERROR = ErrorCodeConfig.SQL_ERROR_CODE_BASE + 1;
 
 }

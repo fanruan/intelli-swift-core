@@ -64,19 +64,12 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi
-    public List<String> detectiveAllTableNames(SwiftDatabase schema) {
+    public List<SwiftMetaData> detectiveAllTable(SwiftDatabase schema) {
         List<SwiftMetaData> metaDataList = swiftMetaDataService.find(RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
         if (metaDataList.isEmpty()) {
             return Collections.emptyList();
         } else {
-            List<String> tableNames = new ArrayList<String>();
-            try {
-                for (SwiftMetaData metaData : metaDataList) {
-                    tableNames.add(metaData.getTableName());
-                }
-            } catch (Exception ignore) {
-            }
-            return tableNames;
+            return metaDataList;
         }
     }
 

@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.util.ArrayList;
 import java.util.List;

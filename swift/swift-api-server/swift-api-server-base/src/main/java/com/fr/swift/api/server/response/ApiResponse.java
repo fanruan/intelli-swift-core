@@ -7,6 +7,8 @@ import java.io.Serializable;
  * @date 2018-12-07
  */
 public interface ApiResponse extends Serializable {
+    int UNKNOWN_ERROR = 500000;
+
     /**
      * 状态码
      *

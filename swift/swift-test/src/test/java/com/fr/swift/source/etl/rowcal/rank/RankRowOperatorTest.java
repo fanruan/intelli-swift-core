@@ -1,10 +1,10 @@
 package com.fr.swift.source.etl.rowcal.rank;
 
 import com.fr.swift.query.sort.SortType;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
 import junit.framework.TestCase;
 
 import java.sql.SQLException;

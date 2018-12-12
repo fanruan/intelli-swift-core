@@ -1,8 +1,8 @@
 package com.fr.swift.source.excel;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
 import junit.framework.TestCase;
 import org.junit.Test;
 

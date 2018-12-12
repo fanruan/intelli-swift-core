@@ -2,9 +2,9 @@ package com.fr.swift.config.dao;
 
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
-import com.fr.swift.config.oper.FindListImpl;
 import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.converter.FindList;
+import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.converter.ObjectConverter;
 
 import java.io.Serializable;

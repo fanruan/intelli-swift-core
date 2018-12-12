@@ -6,12 +6,12 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.RealtimeInsertException;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.MutableHistorySegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.backup.SwiftSegmentBackup;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.transaction.Transactional;
 
 import java.sql.SQLException;

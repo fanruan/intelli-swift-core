@@ -28,7 +28,7 @@ public interface TableService extends ApiService {
      * @param schema
      * @return
      */
-    List<String> detectiveAllTableNames(SwiftDatabase schema);
+    List<SwiftMetaData> detectiveAllTable(SwiftDatabase schema);
 
     /**
      * 表是否存在

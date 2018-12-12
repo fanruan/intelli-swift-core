@@ -1,9 +1,9 @@
 package com.fr.swift.source.etl.columnfilter;
 
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
 
 import java.util.List;
