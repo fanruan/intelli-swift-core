@@ -4,15 +4,15 @@ public class ApiInvocation {
 
     private String methodName;
 
-    private Class<?> aClass;
+    private Class<?> target;
 
     private Class<?>[] parameterTypes;
 
     private Object[] arguments;
 
-    public ApiInvocation(String methodName, Class<?> aClass, Class<?>[] parameterTypes, Object[] arguments) {
+    public ApiInvocation(String methodName, Class<?> target, Class<?>[] parameterTypes, Object[] arguments) {
         this.methodName = methodName;
-        this.aClass = aClass;
+        this.target = target;
         this.parameterTypes = parameterTypes;
         this.arguments = arguments;
     }
@@ -21,8 +21,8 @@ public class ApiInvocation {
         return methodName;
     }
 
-    public Class<?> getaClass() {
-        return aClass;
+    public Class<?> getTarget() {
+        return target;
     }
 
     public Class<?>[] getParameterTypes() {

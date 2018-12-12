@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-api-server-base</artifactId>
+            <artifactId>swift-api-fr-bean</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

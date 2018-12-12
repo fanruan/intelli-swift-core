@@ -1,7 +1,7 @@
 package com.fr.swift.local;
 
-import com.fr.swift.basics.Destination;
-import com.fr.swift.basics.URL;
+import com.fr.swift.basic.Destination;
+import com.fr.swift.basic.URL;
 
 /**
  * This class created on 2018/5/26

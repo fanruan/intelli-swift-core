@@ -31,7 +31,7 @@ public class SwiftRequestParserVisitorTest extends TestCase {
         ColumnsRequestInfo columnsRequestInfo = new ColumnsRequestInfo("cube", "a", "authCode");
         ApiInvocation invocation = columnsRequestInfo.accept(new SwiftRequestParserVisitor());
 
-        Class<?> aClass = invocation.getaClass();
+        Class<?> aClass = invocation.getTarget();
         Class<?>[] parameterTypes = invocation.getParameterTypes();
         Object[] arguments = invocation.getArguments();
         String methodName = invocation.getMethodName();
@@ -48,7 +48,7 @@ public class SwiftRequestParserVisitorTest extends TestCase {
         TablesRequestInfo tablesRequestInfo = new TablesRequestInfo("cube", "authCode");
         ApiInvocation invocation = tablesRequestInfo.accept(new SwiftRequestParserVisitor());
 
-        Class<?> aClass = invocation.getaClass();
+        Class<?> aClass = invocation.getTarget();
         Class<?>[] parameterTypes = invocation.getParameterTypes();
         Object[] arguments = invocation.getArguments();
         String methodName = invocation.getMethodName();

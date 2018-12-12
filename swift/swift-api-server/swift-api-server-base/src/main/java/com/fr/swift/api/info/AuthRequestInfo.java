@@ -6,11 +6,13 @@ import com.fr.swift.base.json.annotation.JsonProperty;
  * @author yee
  * @date 2018-12-03
  */
-public class AuthRequestInfo extends BaseRequestInfo {
+public class AuthRequestInfo extends BaseRequestInfo<RequestParserVisitor> {
     @JsonProperty(value = "swiftUser")
     private String swiftUser;
     @JsonProperty(value = "swiftPassword")
     private String swiftPassword;
+    @JsonProperty("from")
+    private String from;
 
     public AuthRequestInfo() {
         super(RequestInfo.AUTH);
@@ -30,9 +32,16 @@ public class AuthRequestInfo extends BaseRequestInfo {
         return swiftPassword;
     }
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
     @Override
-    public ApiInvocation accept(Object visitor) {
-        // TODO: 2018/12/10
-        return null;
+    public ApiInvocation accept(RequestParserVisitor visitor) {
+        return visitor.visit(this);
     }
 }

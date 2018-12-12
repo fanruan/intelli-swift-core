@@ -8,7 +8,7 @@ import com.fr.swift.base.json.annotation.JsonProperty;
  * @author yee
  * @date 2018-12-03
  */
-public class ColumnsRequestInfo extends BaseRequestInfo<RequestParserVisitor> {
+public class ColumnsRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor> {
     @JsonProperty(value = "database")
     private String database;
     @JsonProperty(value = "table")
@@ -45,7 +45,7 @@ public class ColumnsRequestInfo extends BaseRequestInfo<RequestParserVisitor> {
     }
 
     @Override
-    public ApiInvocation accept(RequestParserVisitor visitor) {
+    public ApiInvocation accept(JdbcRequestParserVisitor visitor) {
         return visitor.visit(this);
     }
 }

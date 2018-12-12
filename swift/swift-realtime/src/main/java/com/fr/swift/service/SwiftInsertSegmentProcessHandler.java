@@ -1,8 +1,8 @@
 package com.fr.swift.service;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
-import com.fr.swift.basics.URL;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
@@ -18,8 +18,8 @@ import java.lang.reflect.Method;
  */
 public class SwiftInsertSegmentProcessHandler extends AbstractProcessHandler<Optional<URL>> implements InsertSegmentProcessHandler {
 
-    public SwiftInsertSegmentProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public SwiftInsertSegmentProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SwiftInsertSegmentProcessHandler extends AbstractProcessHandler<Opt
         Class<?> proxyClass = method.getDeclaringClass();
         Class<?>[] proxyMethodParamTypes = method.getParameterTypes();
 
-        Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, url.isPresent() ? url.get() : null);
+        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, url.isPresent() ? url.get() : null);
         return invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
     }
 }

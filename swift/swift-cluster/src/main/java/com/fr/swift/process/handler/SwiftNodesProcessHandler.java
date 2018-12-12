@@ -1,10 +1,10 @@
 package com.fr.swift.process.handler;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
@@ -27,8 +27,8 @@ import java.util.concurrent.CountDownLatch;
  */
 public class SwiftNodesProcessHandler extends AbstractProcessHandler implements NodesProcessHandler {
 
-    public SwiftNodesProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public SwiftNodesProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     /**
@@ -52,7 +52,7 @@ public class SwiftNodesProcessHandler extends AbstractProcessHandler implements 
             final List<EventResult> resultList = new ArrayList<EventResult>();
             final CountDownLatch latch = new CountDownLatch(urlList.size());
             for (final URL url : urlList) {
-                Invoker invoker = invokerCreater.createAsyncInvoker(proxyClass, url);
+                Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
                 RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
                 rpcFuture.addCallback(new AsyncRpcCallback() {
                     @Override

@@ -1,16 +1,18 @@
 package com.fr.swift.base.json.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by lyon on 2018/12/11.
+ * @author yee
+ * @date 2018-12-10
  */
-@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-// TODO: 2018/12/11 @yee
+@Inherited
 public @interface JsonIgnoreProperties {
     String[] value() default {};
 }

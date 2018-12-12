@@ -1,6 +1,5 @@
 package com.fr.swift.query.info.bean.query;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.swift.query.query.QueryBean;
 
@@ -14,7 +13,7 @@ import java.net.URL;
 public class QueryBeanFactory {
     private static ObjectMapper MAPPER = new ObjectMapper();
 
-    public static String queryBean2String(QueryBean bean) throws JsonProcessingException {
+    public static String queryBean2String(QueryBean bean) throws Exception {
         return MAPPER.writeValueAsString(bean);
     }
 

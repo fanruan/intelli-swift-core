@@ -14,6 +14,7 @@
     <modules>
         <module>swift-api-server-base</module>
         <module>swift-api-server-impl</module>
+        <module>swift-api-fr-bean</module>
     </modules>
 
 </project>

@@ -2,8 +2,14 @@ package com.fr.swift.api.server;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.api.info.ApiInvocation;
+import com.fr.swift.api.info.ApiRequestType;
 import com.fr.swift.api.info.AuthRequestInfo;
+import com.fr.swift.api.info.CreateTableRequestInfo;
+import com.fr.swift.api.info.DeleteTableRequestInfo;
+import com.fr.swift.api.info.InsertRequestInfo;
+import com.fr.swift.api.info.QueryRequestInfo;
 import com.fr.swift.api.info.RequestInfo;
+import com.fr.swift.api.info.TableRequestInfo;
 import com.fr.swift.api.server.exception.ApiCrasher;
 import com.fr.swift.api.server.exception.ApiRequestRuntimeException;
 import com.fr.swift.api.server.response.ApiResponse;
@@ -36,10 +42,16 @@ public class ApiServerServiceImpl implements ApiServerService {
     private static final Map<String, Class<? extends RequestInfo>> requestTypeMap = new HashMap<String, Class<? extends RequestInfo>>();
 
     {
-        requestTypeMap.put(AuthRequestInfo.AUTH.toString(), AuthRequestInfo.class);
+        requestTypeMap.put(AuthRequestInfo.AUTH.name(), AuthRequestInfo.class);
         requestTypeMap.put(JdbcRequestType.TABLES.name(), TablesRequestInfo.class);
         requestTypeMap.put(JdbcRequestType.COLUMNS.name(), ColumnsRequestInfo.class);
         requestTypeMap.put(JdbcRequestType.SQL.name(), SqlRequestInfo.class);
+        requestTypeMap.put(ApiRequestType.JSON_QUERY.name(), QueryRequestInfo.class);
+        requestTypeMap.put(ApiRequestType.CREATE_TABLE.name(), CreateTableRequestInfo.class);
+        requestTypeMap.put(ApiRequestType.DELETE.name(), DeleteTableRequestInfo.class);
+        requestTypeMap.put(ApiRequestType.INSERT.name(), InsertRequestInfo.class);
+        requestTypeMap.put(ApiRequestType.DROP_TABLE.name(), TableRequestInfo.class);
+        requestTypeMap.put(ApiRequestType.TRUNCATE_TABLE.name(), TableRequestInfo.class);
     }
 
     @Override
@@ -72,7 +84,7 @@ public class ApiServerServiceImpl implements ApiServerService {
     }
 
     private Object invokeRequest(ApiInvocation invocation) {
-        Class<?> aClass = invocation.getaClass();
+        Class<?> aClass = invocation.getTarget();
         Class<?>[] parameterTypes = invocation.getParameterTypes();
         Object[] arguments = invocation.getArguments();
         String methodName = invocation.getMethodName();
