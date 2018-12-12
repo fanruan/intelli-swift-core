@@ -6,6 +6,7 @@ import com.fr.swift.config.service.SegmentDestSelectRuleService;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;

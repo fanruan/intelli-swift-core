@@ -4,7 +4,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SegmentDestSelectRule;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.bean.impl.RealTimeSegDestImpl;
+import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;

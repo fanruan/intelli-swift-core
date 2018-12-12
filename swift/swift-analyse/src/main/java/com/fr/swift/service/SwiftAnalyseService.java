@@ -9,6 +9,7 @@ import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -29,9 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-//import com.fr.swift.query.info.bean.query.QueryBeanFactory;
-
 
 /**
  * @author pony
@@ -138,8 +136,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     public QueryResultSet getQueryResult(String queryJson) throws Exception {
         SwiftLoggers.getLogger().debug(queryJson);
         // TODO: 2018/12/12
-//        QueryBean info = QueryBeanFactory.create(queryJson);
-        QueryBean info = null;
+        QueryBean info = QueryBeanFactory.create(queryJson);
         return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
     }
 
