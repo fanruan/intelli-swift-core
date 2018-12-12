@@ -1,5 +1,6 @@
 package com.fr.swift.query.result.serialize;
 
+import com.fr.swift.result.BaseNodeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.source.Row;
@@ -17,7 +18,7 @@ import java.util.Map;
  * <p>
  * Created by Lyon on 2018/6/14.
  */
-public class LocalAllNodeResultSet implements NodeResultSet<SwiftNode>, SerializableResultSet {
+public class LocalAllNodeResultSet extends BaseNodeResultSet<SwiftNode> implements NodeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = 7098094791977510417L;
     private int fetchSize;

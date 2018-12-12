@@ -1,7 +1,8 @@
 package com.fr.swift.result.qrs;
 
 /**
- * Created by lyon on 2018/11/21.
+ * @author lyon
+ * @date 2018/11/21
  */
 public interface QueryResultSet<T> {
 
@@ -9,10 +10,10 @@ public interface QueryResultSet<T> {
 
     /**
      * 根据这个type来转换
+     * TODO: 2018/11/28 这个type及这边的泛型不利于处理中间结果过程中在多种实现之间灵活切换
      *
      * @return
      */
-    // TODO: 2018/11/28 这个type及这边的泛型不利于处理中间结果过程中在多种实现之间灵活切换
     DSType type();
 
     /**

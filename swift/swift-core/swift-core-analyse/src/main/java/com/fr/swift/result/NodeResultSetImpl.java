@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by pony on 2018/4/19.
  */
-public class NodeResultSetImpl<T extends SwiftNode> implements NodeResultSet {
+public class NodeResultSetImpl<T extends SwiftNode> extends BaseNodeResultSet implements NodeResultSet {
 
     private int fetchSize;
     private SwiftNode node;
