@@ -10,6 +10,7 @@ import org.slf4j.helpers.MessageFormatter;
  * @date 2018/7/4
  */
 abstract class BaseSwiftLogger implements SwiftLogger {
+
     static FormattingTuple format(String s, Object... objects) {
         return MessageFormatter.arrayFormat(s, objects);
     }
