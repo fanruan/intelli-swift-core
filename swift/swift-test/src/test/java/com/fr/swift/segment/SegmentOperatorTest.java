@@ -7,7 +7,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.core.Core;
-import com.fr.swift.test.Preparer;
 import com.fr.swift.test.TestResource;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +28,7 @@ public class SegmentOperatorTest {
 
     @Before
     public void setUp() throws Exception {
-        Preparer.prepareCubeBuild(getClass());
+//        Preparer.prepareCubeBuild(getClass());
         File file = new File(TestResource.getRunPath(getClass()), "resources");
         file.deleteOnExit();
         intKey = new SourceKey("int_table");
