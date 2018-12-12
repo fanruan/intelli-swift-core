@@ -2,7 +2,7 @@ package com.fr.swift.boot.controller;
 
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
-import com.fr.swift.basics.URL;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;

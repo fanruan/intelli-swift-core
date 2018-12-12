@@ -1,6 +1,6 @@
 package com.fr.swift.local;
 
-import com.fr.swift.basics.URL;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.UrlFactory;
 
 /**

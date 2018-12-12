@@ -1,8 +1,8 @@
 package com.fr.swift.local;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
-import com.fr.swift.basics.InvokerCreater;
-import com.fr.swift.basics.URL;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 
@@ -17,8 +17,8 @@ import java.lang.reflect.Method;
  */
 public class LocalProcessHandler extends AbstractProcessHandler<URL> {
 
-    public LocalProcessHandler(InvokerCreater invokerCreater) {
-        super(invokerCreater);
+    public LocalProcessHandler(InvokerCreator invokerCreator) {
+        super(invokerCreator);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class LocalProcessHandler extends AbstractProcessHandler<URL> {
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
-        Invoker invoker = invokerCreater.createSyncInvoker(proxyClass, null);
+        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, null);
         return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
     }
 

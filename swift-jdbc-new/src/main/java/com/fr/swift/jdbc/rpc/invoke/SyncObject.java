@@ -15,7 +15,7 @@ public class SyncObject {
                 Thread.sleep(5);
                 timeAll += 5;
             } catch (Exception e) {
-                throw Exceptions.runtime(e);
+                throw Exceptions.runtime("", e);
             }
             if (timeAll > time) {
                 throw Exceptions.timeout();

@@ -8,11 +8,11 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
-import com.fr.swift.local.LocalInvokerCreater;
+import com.fr.swift.local.LocalInvokerCreator;
 import com.fr.swift.local.LocalUrlFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.rpc.invoke.RPCInvokerCreater;
+import com.fr.swift.netty.rpc.invoke.RPCInvokerCreator;
 import com.fr.swift.netty.rpc.url.RPCUrlFactory;
 import com.fr.swift.nm.SlaveManager;
 import com.fr.swift.node.SwiftClusterNodeManager;
@@ -64,7 +64,7 @@ public class SwiftClusterListener implements ClusterEventListener {
         try {
             if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
                 SwiftProperty.getProperty().setCluster(true);
-                ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new RPCInvokerCreater()));
+                ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new RPCInvokerCreator()));
                 UrlSelector.getInstance().switchFactory(new RPCUrlFactory());
                 ClusterSelector.getInstance().switchFactory(SwiftClusterNodeManager.getInstance());
 
@@ -80,7 +80,7 @@ public class SwiftClusterListener implements ClusterEventListener {
                 }
             } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
                 SwiftProperty.getProperty().setCluster(false);
-                ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new LocalInvokerCreater()));
+                ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new LocalInvokerCreator()));
                 UrlSelector.getInstance().switchFactory(new LocalUrlFactory());
 
                 destroyClusterPluginService();

@@ -59,7 +59,7 @@ public abstract class BaseConnector implements JdbcConnector {
             try {
                 Thread.sleep(3);
             } catch (InterruptedException e) {
-                throw Exceptions.runtime(e);
+                throw Exceptions.runtime("", e);
             }
             if (timeout > 0 && cost > timeout) {
                 throw Exceptions.timeout();

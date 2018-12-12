@@ -1,6 +1,6 @@
 package com.fr.swift.netty.rpc.url;
 
-import com.fr.swift.basics.URL;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.UrlFactory;
 
 /**

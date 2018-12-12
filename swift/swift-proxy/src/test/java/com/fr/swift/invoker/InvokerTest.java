@@ -1,6 +1,6 @@
 package com.fr.swift.invoker;
 
-import com.fr.swift.basics.InvokerCreater;
+import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.InvokerType;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.ProcessHandlerRegistry;
@@ -8,7 +8,7 @@ import com.fr.swift.basics.base.JdkProxyFactory;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.local.LocalInvokerCreater;
+import com.fr.swift.local.LocalInvokerCreator;
 import com.fr.swift.property.SwiftProperty;
 import org.easymock.EasyMock;
 import org.junit.runner.RunWith;
@@ -50,7 +50,7 @@ public class InvokerTest extends BaseInvokerTest {
      * 执行对象print方法
      */
     public void testLocalInvoker() {
-        ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new LocalInvokerCreater()));
+        ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new LocalInvokerCreator()));
         ITestInvoker proxy = ProxySelector.getInstance().getFactory().getProxy(ITestInvoker.class);
         long time = System.currentTimeMillis();
         assertEquals(proxy.print("1", "test", 20, time), "1test20" + time);
@@ -61,11 +61,11 @@ public class InvokerTest extends BaseInvokerTest {
      * 执行handler的processResult 返回null
      */
     public void testRemoteInvoker() {
-        InvokerCreater clusterInvokerCreater = EasyMock.createMock(InvokerCreater.class);
-        EasyMock.expect(clusterInvokerCreater.getType()).andReturn(InvokerType.REMOTE).anyTimes();
-        EasyMock.replay(clusterInvokerCreater);
+        InvokerCreator clusterInvokerCreator = EasyMock.createMock(InvokerCreator.class);
+        EasyMock.expect(clusterInvokerCreator.getType()).andReturn(InvokerType.REMOTE).anyTimes();
+        EasyMock.replay(clusterInvokerCreator);
 
-        ProxySelector.getInstance().switchFactory(new JdkProxyFactory(clusterInvokerCreater));
+        ProxySelector.getInstance().switchFactory(new JdkProxyFactory(clusterInvokerCreator));
         ITestInvoker proxy = ProxySelector.getInstance().getFactory().getProxy(ITestInvoker.class);
         long time = System.currentTimeMillis();
         assertNull(proxy.print("1", "test", 20, time));
