@@ -10,10 +10,10 @@ public interface ParamErrorCode {
     /**
      * 参数resultType缺失错误
      */
-    public static int RESULT_TYPE_ABSENT = ErrorCodeConfig.PARSE_ERROR_CODE_BASE + 1;
+    int RESULT_TYPE_ABSENT = ErrorCodeConfig.PARSE_ERROR_CODE_BASE + 1;
 
     /**
      * 参数json解析错误
      */
-    public static int PARAMS_PARSER_ERROR = ErrorCodeConfig.PARSE_ERROR_CODE_BASE + 2;
+    int PARAMS_PARSER_ERROR = ErrorCodeConfig.PARSE_ERROR_CODE_BASE + 2;
 }

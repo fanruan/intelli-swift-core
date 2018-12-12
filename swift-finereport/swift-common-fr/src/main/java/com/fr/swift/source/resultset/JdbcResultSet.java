@@ -1,10 +1,10 @@
 package com.fr.swift.source.resultset;
 
 import com.fr.data.core.db.DBUtils;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.db.dbdealer.DBDealer;
 
 import java.sql.Connection;

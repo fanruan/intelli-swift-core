@@ -32,7 +32,7 @@
 //import com.fr.swift.service.ServiceType;
 //import com.fr.swift.service.cluster.ClusterRealTimeService;
 //import com.fr.swift.source.SourceKey;
-//import com.fr.swift.source.SwiftResultSet;
+//import com.fr.swift.result.SwiftResultSet;
 //import com.fr.swift.task.service.ServiceTaskExecutor;
 //import com.fr.swift.task.service.ServiceTaskType;
 //import com.fr.swift.task.service.SwiftServiceCallable;

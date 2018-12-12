@@ -11,16 +11,16 @@ public interface ErrorCodeConfig {
     /**
      * 服务器内部错误
      */
-    public static final int SERVER_INTERNAL_ERROR_CODE_BASE = 100000;
+    int SERVER_INTERNAL_ERROR_CODE_BASE = 100000;
 
     /**
      * 参数类错误
      */
-    public static final int PARSE_ERROR_CODE_BASE = 200000;
+    int PARSE_ERROR_CODE_BASE = 200000;
 
     /**
      * SQL错误
      */
-    public static final int SQL_ERROR_CODE_BASE = 300000;
+    int SQL_ERROR_CODE_BASE = 300000;
 
 }

@@ -1,6 +1,6 @@
 package com.fr.swift.segment.operator;
 
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.result.SwiftResultSet;
 
 /**
  * This class created on 2018/7/9

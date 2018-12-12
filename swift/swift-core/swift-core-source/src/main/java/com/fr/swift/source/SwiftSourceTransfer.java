@@ -1,5 +1,7 @@
 package com.fr.swift.source;
 
+import com.fr.swift.result.SwiftResultSet;
+
 /**
  * @author pony
  * @date 2017/10/25

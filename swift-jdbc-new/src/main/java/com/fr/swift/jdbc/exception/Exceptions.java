@@ -23,7 +23,15 @@ public final class Exceptions {
         return new SQLException(msg);
     }
 
+    public static SQLException sql(int statusCode, String msg) {
+        return new SQLException(String.format("Error code: %d, %s", statusCode, msg));
+    }
+
     public static RuntimeException runtime(String msg) {
+        return new RuntimeException(msg);
+    }
+
+    public static RuntimeException runtime(Throwable msg) {
         return new RuntimeException(msg);
     }
 
@@ -65,5 +73,9 @@ public final class Exceptions {
 
     public static SQLException sql(Exception e) {
         return new SQLException(e);
+    }
+
+    public static AddressNotFoundException addressNotFound(String type) {
+        return new AddressNotFoundException(type);
     }
 }

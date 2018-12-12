@@ -15,6 +15,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.DeleteEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.listener.RemoteSender;
@@ -23,7 +24,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.ServiceBeanFactory;
 

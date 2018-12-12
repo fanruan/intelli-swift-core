@@ -2,15 +2,18 @@ package com.fr.swift.api.rpc.impl;
 
 import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.DetectService;
+import com.fr.swift.api.server.response.AuthResponse;
+import com.fr.swift.api.server.response.AuthResponseImpl;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.event.global.GetAnalyseAndRealTimeAddrEvent;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.listener.RemoteSender;
+import com.fr.swift.source.core.MD5Utils;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,19 +26,26 @@ import java.util.Map;
 public class DetectServiceImpl implements DetectService {
     @Override
     @SwiftApi
-    public Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress) {
+    public AuthResponse detectiveAnalyseAndRealTime(String defaultAddress, String username, String password) {
+        // TODO 真的做校验，这里就是个假的校验
+        String authCode = MD5Utils.getMD5String(new String[]{username, password});
+        AuthResponseImpl response = new AuthResponseImpl();
+        response.setAuthCode(authCode);
         try {
             if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                return (Map<ServiceType, List<String>>) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new GetAnalyseAndRealTimeAddrEvent());
+                Map<ServiceType, List<String>> map = (Map<ServiceType, List<String>>) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new GetAnalyseAndRealTimeAddrEvent());
+                response.setAnalyseAddress(map.get(ServiceType.ANALYSE));
+                response.setRealTimeAddress(map.get(ServiceType.REAL_TIME));
             } else {
-                Map<ServiceType, List<String>> result = new HashMap<ServiceType, List<String>>();
-                result.put(ServiceType.ANALYSE, Collections.singletonList(defaultAddress));
-                result.put(ServiceType.REAL_TIME, Collections.singletonList(defaultAddress));
-                return result;
+                response.setRealTimeAddress(Collections.singletonList(defaultAddress));
+                response.setAnalyseAddress(Collections.singletonList(defaultAddress));
             }
         } catch (Exception e) {
-            return Collections.emptyMap();
+            SwiftLoggers.getLogger().warn(e);
+            response.setRealTimeAddress(Collections.<String>emptyList());
+            response.setAnalyseAddress(Collections.<String>emptyList());
         }
+        return response;
     }
 
 }

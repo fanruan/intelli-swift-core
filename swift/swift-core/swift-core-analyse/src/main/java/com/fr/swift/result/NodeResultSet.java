@@ -1,6 +1,5 @@
 package com.fr.swift.result;
 
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
 
 import java.util.List;

@@ -1,10 +1,10 @@
 package com.fr.swift.core.rpc;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerType;
-import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
-import com.fr.swift.local.AbstractInvokerCreater;
+import com.fr.swift.local.AbstractInvokerCreator;
 
 /**
  * This class created on 2018/11/1
@@ -13,7 +13,7 @@ import com.fr.swift.local.AbstractInvokerCreater;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class FRInvokerCreater extends AbstractInvokerCreater {
+public class FRInvokerCreater extends AbstractInvokerCreator {
 
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {

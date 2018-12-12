@@ -1,6 +1,4 @@
-package com.fr.swift.config.oper;
-
-import com.fr.swift.converter.ObjectConverter;
+package com.fr.swift.converter;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,9 +40,9 @@ public interface FindList<T> {
         }
     };
 
-    List justForEach(ConvertEach each) throws Throwable;
+    List justForEach(ConvertEach each) throws Exception;
 
-    <S> List<T> forEach(ConvertEach<S, T> each) throws Throwable;
+    <S> List<T> forEach(ConvertEach<S, T> each) throws Exception;
 
     List<T> list();
 
@@ -55,11 +53,11 @@ public interface FindList<T> {
     T get(int i);
 
     interface ConvertEach<S, T> {
-        T forEach(int idx, S item) throws Throwable;
+        T forEach(int idx, S item) throws Exception;
     }
 
     interface Through<T> {
-        List<T> go() throws Throwable;
+        List<T> go() throws Exception;
     }
 
     abstract class SimpleEach<T> implements ConvertEach<Object, T> {

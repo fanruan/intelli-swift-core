@@ -1,8 +1,8 @@
 package com.fr.swift.result.qrs;
 
 import com.fr.swift.query.query.QueryType;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 /**
  * Created by lyon on 2018/11/27.

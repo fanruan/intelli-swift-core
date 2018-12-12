@@ -5,9 +5,9 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.converter.FindList;
 import com.fr.swift.util.Strings;
 
 import java.sql.SQLException;
@@ -63,7 +63,7 @@ public class SwiftServiceInfoDaoImpl extends BasicDao<SwiftServiceInfoBean> impl
                 }
             });
             return true;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new SQLException(e);
         }
     }

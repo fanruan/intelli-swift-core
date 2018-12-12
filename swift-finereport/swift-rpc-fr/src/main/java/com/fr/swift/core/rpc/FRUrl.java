@@ -1,7 +1,8 @@
 package com.fr.swift.core.rpc;
 
-import com.fr.swift.basics.Destination;
-import com.fr.swift.basics.URL;
+
+import com.fr.swift.basic.Destination;
+import com.fr.swift.basic.URL;
 
 /**
  * This class created on 2018/5/28

@@ -6,9 +6,9 @@ import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.converter.FindList;
 
 import java.sql.SQLException;
 
