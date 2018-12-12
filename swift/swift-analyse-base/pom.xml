@@ -41,6 +41,13 @@
             <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-sqlparser</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

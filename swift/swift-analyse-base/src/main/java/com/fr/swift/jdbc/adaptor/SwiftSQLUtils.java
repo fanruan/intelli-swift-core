@@ -1,18 +1,33 @@
 package com.fr.swift.jdbc.adaptor;
 
+import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLDataType;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLPropertyExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.util.FnvHash;
+import com.fr.swift.jdbc.druid.util.JdbcConstants;
 
 import java.sql.Types;
+import java.util.List;
 
 /**
  * Created by lyon on 2018/12/11.
  */
 public class SwiftSQLUtils {
+
+    /**
+     * 当前一次只处理一条sql语句（取第一条）
+     *
+     * @param sql
+     * @return
+     */
+    public static SQLStatement parseStatement(String sql) {
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.SWIFT);
+        return stmtList.size() > 0 ? stmtList.get(0) : null;
+    }
 
     public static int getDataType(String type) {
         if (FnvHash.fnv1a_64_lower(type) == FnvHash.Constants.BOOLEAN) {

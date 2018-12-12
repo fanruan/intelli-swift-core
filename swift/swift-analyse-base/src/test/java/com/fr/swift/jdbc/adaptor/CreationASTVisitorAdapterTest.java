@@ -1,13 +1,10 @@
 package com.fr.swift.jdbc.adaptor;
 
 import com.fr.swift.jdbc.adaptor.bean.CreationBean;
-import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 import org.junit.Test;
 
 import java.sql.Types;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,11 +16,9 @@ public class CreationASTVisitorAdapterTest {
     @Test
     public void test() {
         String sql = "create table cube.tbl_name (a int, b bigint, c double, d timestamp, e date, f varchar)";
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.SWIFT);
         CreationASTVisitorAdapter visitor = new CreationASTVisitorAdapter();
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
+        SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
+        stmt.accept(visitor);
         CreationBean creationBean = visitor.getCreationBean();
         assertEquals("tbl_name", creationBean.getTableName());
         assertEquals("cube", creationBean.getSchema());

@@ -1,8 +1,6 @@
 package com.fr.swift.jdbc.adaptor;
 
-import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -17,8 +15,6 @@ import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.SortType;
 import junit.framework.TestCase;
 
-import java.util.List;
-
 /**
  * Created by lyon on 2018/12/7.
  */
@@ -26,11 +22,9 @@ public class QueryASTVisitorAdapterTest extends TestCase {
 
     public void testSelectStar() {
         String sql = "select * from cube.table_name";
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.SWIFT);
         QueryASTVisitorAdapter visitor = new QueryASTVisitorAdapter();
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
+        SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
+        stmt.accept(visitor);
         DetailQueryInfoBean bean = (DetailQueryInfoBean) visitor.getSelectionBean().getQueryInfoBean();
         assertEquals(QueryType.DETAIL, bean.getQueryType());
         assertEquals("table_name", bean.getTableName());
@@ -44,11 +38,9 @@ public class QueryASTVisitorAdapterTest extends TestCase {
                 "where a > 233 and aa <= 999 " +
                 "group by a asc, aa desc " +
                 "order by bb asc";
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.SWIFT);
         QueryASTVisitorAdapter visitor = new QueryASTVisitorAdapter();
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
+        SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
+        stmt.accept(visitor);
         GroupQueryInfoBean bean = (GroupQueryInfoBean) visitor.getSelectionBean().getQueryInfoBean();
         assertEquals(QueryType.GROUP, bean.getQueryType());
         assertEquals("table_a", bean.getTableName());

@@ -10,12 +10,4 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-sqlparser</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-analyse-base</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
 </project>

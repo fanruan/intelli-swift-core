@@ -1,11 +1,7 @@
 package com.fr.swift.jdbc.adaptor;
 
-import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 import junit.framework.TestCase;
-
-import java.util.List;
 
 /**
  * Created by lyon on 2018/12/12.
@@ -28,10 +24,8 @@ public class SwiftASTVisitorAdapterTest extends TestCase {
 
     private static SwiftSQLType getType(String sql) {
         SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter();
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.SWIFT);
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
+        SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
+        stmt.accept(visitor);
         return visitor.getSqlType();
     }
 }

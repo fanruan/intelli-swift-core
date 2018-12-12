@@ -21,15 +21,14 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.jdbc.adaptor.SwiftASTVisitorAdapter;
 import com.fr.swift.jdbc.adaptor.SwiftSQLType;
+import com.fr.swift.jdbc.adaptor.SwiftSQLUtils;
 import com.fr.swift.jdbc.adaptor.bean.ColumnBean;
 import com.fr.swift.jdbc.adaptor.bean.CreationBean;
 import com.fr.swift.jdbc.adaptor.bean.DeletionBean;
 import com.fr.swift.jdbc.adaptor.bean.DropBean;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.adaptor.bean.SelectionBean;
-import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 import com.fr.swift.jdbc.info.ColumnsRequestInfo;
 import com.fr.swift.jdbc.info.JdbcRequestParserVisitor;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
@@ -52,10 +51,8 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
     public ApiInvocation visit(SqlRequestInfo sqlRequestInfo) {
         String sql = sqlRequestInfo.getSql();
         SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter();
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.SWIFT);
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
+        SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
+        stmt.accept(visitor);
         SwiftSQLType sqlType = visitor.getSqlType();
         switch (sqlType) {
             case CREATE: {
@@ -100,7 +97,6 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
                 try {
                     queryJson = JsonBuilder.writeJsonString(bean.getQueryInfoBean());
                 } catch (Exception e) {
-                    e.printStackTrace();
                     return ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
                 }
                 return createApiInvocation("query", SelectService.class,

@@ -1,14 +1,11 @@
 package com.fr.swift.jdbc.adaptor;
 
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
-import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
-import com.fr.swift.jdbc.druid.util.JdbcConstants;
 import com.fr.swift.source.ListBasedRow;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -18,11 +15,9 @@ public class InsertionASTVisitorAdapterTest extends TestCase {
 
     public void test() {
         String sql = "insert into cube.tbl_name (a, b, c) values ('a', 'b', 233), ('a1', 'b1', 234)";
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.SWIFT);
         InsertionASTVisitorAdapter visitor = new InsertionASTVisitorAdapter();
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
+        SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
+        stmt.accept(visitor);
         InsertionBean bean = visitor.getInsertionBean();
         assertEquals("tbl_name", bean.getTableName());
         assertEquals("cube", bean.getSchema());
