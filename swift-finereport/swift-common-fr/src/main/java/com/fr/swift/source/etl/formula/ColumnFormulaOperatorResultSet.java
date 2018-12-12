@@ -3,13 +3,13 @@ package com.fr.swift.source.etl.formula;
 import com.fr.base.Utils;
 import com.fr.general.DateUtils;
 import com.fr.script.Calculator;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.utils.FormulaUtils;
 
 import java.sql.SQLException;

@@ -2,8 +2,8 @@ package com.fr.swift.query.info;
 
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.util.HashSet;
 import java.util.List;

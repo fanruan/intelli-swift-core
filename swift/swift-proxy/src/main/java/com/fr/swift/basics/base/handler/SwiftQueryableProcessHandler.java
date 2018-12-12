@@ -21,6 +21,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +59,6 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         for (final Pair<URL, Set<String>> pair : pairs) {
             queryBean.setSegments(pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
-            // TODO: 2018/12/01 这边这么调是不对的，这个URL不一定启了AnalyseService，有可能只是一台History或者Memory
             final Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
             RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass,
                     method, methodName, parameterTypes, query);
@@ -85,8 +85,8 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                             }
 
                             @Override
-                            public Object getPage() {
-                                Object ret = resultSet.getPage();
+                            public Serializable getPage() {
+                                Serializable ret = resultSet.getPage();
                                 // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
                                 if (hasNextPage()) {
                                     Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());

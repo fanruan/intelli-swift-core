@@ -7,15 +7,14 @@ import com.fr.swift.api.info.InsertRequestInfo;
 import com.fr.swift.api.info.QueryRequestInfo;
 import com.fr.swift.api.info.TableRequestInfo;
 import com.fr.swift.api.result.SwiftApiResultSet;
+import com.fr.swift.api.result.SwiftApiResultSetImpl;
 import com.fr.swift.api.rpc.bean.Column;
-import com.fr.swift.api.rpc.session.SwiftPublicApiSession;
+import com.fr.swift.api.rpc.session.SwiftApiSession;
 import com.fr.swift.api.server.response.ApiResponse;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
@@ -25,7 +24,7 @@ import java.util.List;
  * @author yee
  * @date 2018/8/27
  */
-public class SwiftApiSessionImpl implements SwiftPublicApiSession {
+public class SwiftApiSessionImpl implements SwiftApiSession {
 
     private String analyseAddress;
     private String realTimeAddress;
@@ -74,7 +73,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
     }
 
     @Override
-    public SwiftResultSet query(SwiftDatabase database, String queryJson) throws Exception {
+    public SwiftApiResultSet<String> query(SwiftDatabase database, String queryJson) throws Exception {
         QueryRequestInfo info = new QueryRequestInfo();
         info.setAuthCode(sessionFactory.getAuthCode());
         info.setQueryJson(queryJson);
@@ -82,11 +81,8 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
         if (response.isError()) {
             throw new Exception(response.description());
         }
-        SwiftResultSet result = (SwiftResultSet) response.result();
-        if (result instanceof SerializableDetailResultSet) {
-            return new SwiftApiResultSet((SerializableDetailResultSet) result, database, this);
-        }
-        return result;
+        SwiftApiResultSet result = (SwiftApiResultSet) response.result();
+        return new SwiftApiResultSetImpl(result, database, this, queryJson);
     }
 
     @Override
@@ -132,7 +128,7 @@ public class SwiftApiSessionImpl implements SwiftPublicApiSession {
     }
 
     @Override
-    public SwiftResultSet query(SwiftDatabase database, QueryBean queryBean) throws Exception {
+    public SwiftApiResultSet<String> query(SwiftDatabase database, QueryBean queryBean) throws Exception {
         return query(database, queryBean.toString());
     }
 }

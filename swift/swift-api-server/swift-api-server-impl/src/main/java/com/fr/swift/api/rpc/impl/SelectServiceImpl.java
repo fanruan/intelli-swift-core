@@ -2,6 +2,8 @@ package com.fr.swift.api.rpc.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftApi;
+import com.fr.swift.api.result.OnePageApiResultSet;
+import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
@@ -13,12 +15,12 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.serialize.SerializableDetailResultSet;
 import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.SwiftResultSetUtils;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class SelectServiceImpl implements SelectService {
 
     @Override
     @SwiftApi
-    public SwiftResultSet query(SwiftDatabase database, String queryJson) {
+    public SwiftApiResultSet query(SwiftDatabase database, String queryJson) {
         try {
             QueryBean queryBean = QueryBeanFactory.create(queryJson);
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
@@ -46,15 +48,13 @@ public class SelectServiceImpl implements SelectService {
                 AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
                 SwiftResultSet resultSet = null;
                 if (null != metaData && metaData.getSwiftDatabase() == database) {
-                    // TODO: 2018/11/28  
-                    resultSet = (SwiftResultSet) service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+                    resultSet = SwiftResultSetUtils.toSwiftResultSet(service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)));
                 } else {
                     metaData = tableService.detectiveMetaData(database, tableName);
                     ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
-                    // TODO: 2018/11/28  
-                    resultSet = (SwiftResultSet) service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+                    resultSet = SwiftResultSetUtils.toSwiftResultSet(service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)));
                 }
-                return getPageResultSet(queryJson, resultSet);
+                return getPageResultSet(resultSet);
             }
             throw new UnsupportedOperationException();
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class SelectServiceImpl implements SelectService {
     }
 
     // 不管分组还是明细，api返回的都是行结果
-    private SerializableDetailResultSet getPageResultSet(String jsonString, SwiftResultSet resultSet) throws SQLException {
+    private SwiftApiResultSet getPageResultSet(SwiftResultSet resultSet) throws SQLException {
         List<Row> rows = new ArrayList<Row>();
         int fetchSize = resultSet.getFetchSize();
         int count = 0;
@@ -75,6 +75,6 @@ public class SelectServiceImpl implements SelectService {
         if (resultSet instanceof DetailResultSet) {
             rowCount = ((DetailResultSet) resultSet).getRowCount();
         }
-        return new SerializableDetailResultSet(jsonString, resultSet.getMetaData(), rows, resultSet.hasNext(), rowCount);
+        return new OnePageApiResultSet(null, resultSet.getMetaData(), rows, rowCount, resultSet.hasNext());
     }
 }

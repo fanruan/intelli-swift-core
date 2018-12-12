@@ -3,7 +3,7 @@ package com.fr.swift.query.info.group;
 import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.result.SwiftResultSet;
 
 import java.util.List;
 

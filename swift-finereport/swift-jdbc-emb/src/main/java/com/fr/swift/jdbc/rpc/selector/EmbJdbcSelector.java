@@ -1,7 +1,7 @@
 package com.fr.swift.jdbc.rpc.selector;
 
-import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.rpc.connection.EmbJdbcConnector;
 import com.fr.swift.jdbc.rpc.invoke.BaseSelector;
@@ -10,6 +10,7 @@ import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -35,6 +36,7 @@ public class EmbJdbcSelector extends BaseSelector<EmbJdbcConnector> {
     @Override
     protected void shutdownSelector() {
         stop.set(true);
+        semaphore.release();
     }
 
     @Override
@@ -81,7 +83,7 @@ public class EmbJdbcSelector extends BaseSelector<EmbJdbcConnector> {
                     fireRpcResponse(connector, response);
                 }
                 try {
-                    semaphore.acquire();
+                    semaphore.tryAcquire(10, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     fireRpcException(connector, e);
                 }

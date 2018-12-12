@@ -1,11 +1,8 @@
 package com.fr.swift.jdbc.result;
 
-import com.fr.swift.jdbc.MetadataWrapper;
+import com.fr.swift.jdbc.exception.Exceptions;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.util.Crasher;
-import com.fr.swift.util.Util;
 
 import javax.naming.OperationNotSupportedException;
 import java.io.InputStream;
@@ -28,43 +25,21 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Created by pony on 2018/8/17.
+ *
+ * @author pony
+ * @date 2018/8/17
  */
 public class ResultSetWrapper implements ResultSet {
     private SwiftResultSet resultSet;
     private Row current;
     private Map<String, Integer> label2Index;
 
-    public ResultSetWrapper(SwiftResultSet resultSet) {
-        Util.requireNonNull(resultSet);
-        this.resultSet = resultSet;
-        try {
-            initLabel2IndexMap();
-        } catch (SQLException e) {
-            Crasher.crash(new OperationNotSupportedException());
-        }
-    }
-
     public ResultSetWrapper(SwiftResultSet resultSet, Map<String, Integer> label2Index) {
-        Util.requireNonNull(resultSet);
         this.resultSet = resultSet;
         this.label2Index = label2Index;
-    }
-
-    private void initLabel2IndexMap() throws SQLException {
-        label2Index = new HashMap<String, Integer>();
-        SwiftMetaData metaData = resultSet.getMetaData();
-        if (null != metaData) {
-            List<String> fieldNames = metaData.getFieldNames();
-            for (String fieldName : fieldNames) {
-                label2Index.put(fieldName, metaData.getColumnIndex(fieldName));
-            }
-        }
     }
 
     @Override
@@ -137,12 +112,12 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex, int scale) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public byte[] getBytes(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -162,17 +137,17 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public InputStream getAsciiStream(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public InputStream getUnicodeStream(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public InputStream getBinaryStream(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -217,47 +192,47 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public byte[] getBytes(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Date getDate(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Time getTime(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Timestamp getTimestamp(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public InputStream getAsciiStream(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public InputStream getUnicodeStream(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public InputStream getBinaryStream(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public SQLWarning getWarnings() {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -267,7 +242,7 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public String getCursorName() {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -282,35 +257,35 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public Object getObject(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public int findColumn(String columnLabel) {
         if (label2Index == null || !label2Index.containsKey(columnLabel)) {
-            return Crasher.crash(columnLabel);
+            throw Exceptions.runtime(columnLabel);
         }
         return label2Index.get(columnLabel);
     }
 
     @Override
     public Reader getCharacterStream(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Reader getCharacterStream(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -645,97 +620,97 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public Statement getStatement() {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Object getObject(int columnIndex, Map<String, Class<?>> map) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Ref getRef(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Blob getBlob(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Clob getClob(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Array getArray(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Object getObject(String columnLabel, Map<String, Class<?>> map) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Ref getRef(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Blob getBlob(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Clob getClob(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Array getArray(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Date getDate(int columnIndex, Calendar cal) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Date getDate(String columnLabel, Calendar cal) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Time getTime(int columnIndex, Calendar cal) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Time getTime(String columnLabel, Calendar cal) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Timestamp getTimestamp(int columnIndex, Calendar cal) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Timestamp getTimestamp(String columnLabel, Calendar cal) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public URL getURL(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public URL getURL(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -780,12 +755,12 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public RowId getRowId(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public RowId getRowId(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -830,22 +805,22 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public NClob getNClob(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public NClob getNClob(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public SQLXML getSQLXML(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public SQLXML getSQLXML(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -860,22 +835,22 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public String getNString(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public String getNString(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Reader getNCharacterStream(int columnIndex) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public Reader getNCharacterStream(String columnLabel) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
@@ -1019,16 +994,16 @@ public class ResultSetWrapper implements ResultSet {
     }
 
     public <T> T getObject(int columnIndex, Class<T> type) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     public <T> T getObject(String columnLabel, Class<T> type) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override
     public <T> T unwrap(Class<T> iface) {
-        return Crasher.crash(new OperationNotSupportedException());
+        throw Exceptions.runtime(new OperationNotSupportedException());
     }
 
     @Override

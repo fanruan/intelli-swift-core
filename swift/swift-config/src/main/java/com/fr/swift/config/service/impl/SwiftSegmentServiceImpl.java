@@ -9,7 +9,6 @@ import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
@@ -19,6 +18,7 @@ import com.fr.swift.config.oper.impl.ConfigOrder;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.converter.FindList;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
@@ -65,7 +65,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                                 result.get(keyBean.getTable()).add(keyBean);
                             }
                         });
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         if (e instanceof SQLException) {
                             throw (SQLException) e;
                         }

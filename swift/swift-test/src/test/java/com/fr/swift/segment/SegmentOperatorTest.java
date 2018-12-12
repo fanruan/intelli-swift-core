@@ -1,11 +1,11 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.test.TestResource;
 import org.junit.Before;

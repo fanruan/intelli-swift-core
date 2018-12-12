@@ -55,7 +55,7 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
     public ApiInvocation visit(TablesRequestInfo tablesRequestInfo) {
         String database = tablesRequestInfo.getDatabase();
         SwiftDatabase swiftDatabase = SwiftDatabase.fromKey(database);
-        return createApiInvocation("detectiveAllTableNames", TableService.class, swiftDatabase);
+        return createApiInvocation("detectiveAllTable", TableService.class, swiftDatabase);
     }
 
     private ApiInvocation createApiInvocation(String method, Class<?> clazz, Object... arguments) {
@@ -69,7 +69,7 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
 
     @Override
     public ApiInvocation visit(AuthRequestInfo authRequestInfo) {
-        return createApiInvocation("detectiveAnalyseAndRealTime", DetectService.class, authRequestInfo.getFrom());
+        return createApiInvocation("detectiveAnalyseAndRealTime", DetectService.class, authRequestInfo.getFrom(), authRequestInfo.getSwiftUser(), authRequestInfo.getSwiftPassword());
     }
 
     @Override

@@ -1,12 +1,13 @@
 package com.fr.swift.api.request;
 
 import com.fr.swift.api.info.RequestInfo;
+import com.fr.swift.api.server.response.ApiResponse;
 
 /**
  * @author yee
  * @date 2018/11/16
  */
-public interface RequestService<T, Sender extends RpcSender> {
+public interface RequestService<Sender extends RpcSender> {
 
 
     /**
@@ -16,9 +17,9 @@ public interface RequestService<T, Sender extends RpcSender> {
      * @param sql
      * @return
      */
-    T apply(Sender sender, RequestInfo sql);
+    ApiResponse apply(Sender sender, RequestInfo sql);
 
-    T apply(Sender sender, String requestJson);
+    ApiResponse apply(Sender sender, String requestJson);
 
     /**
      * execute query with retry
@@ -28,7 +29,7 @@ public interface RequestService<T, Sender extends RpcSender> {
      * @param retryTime
      * @return
      */
-    T applyWithRetry(Sender sender, RequestInfo sql, int retryTime);
+    ApiResponse applyWithRetry(Sender sender, RequestInfo sql, int retryTime);
 
-    T applyWithRetry(Sender sender, String requestJson, int retryTime);
+    ApiResponse applyWithRetry(Sender sender, String requestJson, int retryTime);
 }

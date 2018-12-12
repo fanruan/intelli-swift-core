@@ -1,4 +1,4 @@
-package com.fr.swift.source;
+package com.fr.swift.result;
 
 import java.io.Serializable;
 

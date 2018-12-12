@@ -18,9 +18,9 @@ import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.sort.SortType;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.JpaAdaptor;
 
 import java.sql.SQLException;

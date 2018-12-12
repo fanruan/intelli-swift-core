@@ -2,10 +2,10 @@ package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.resultset.IterableResultSet;
 
 import java.util.List;

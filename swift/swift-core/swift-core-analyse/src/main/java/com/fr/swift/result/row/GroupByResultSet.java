@@ -2,7 +2,7 @@ package com.fr.swift.result.row;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.KeyValue;
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.result.SwiftResultSet;
 
 import java.util.List;
 import java.util.Map;

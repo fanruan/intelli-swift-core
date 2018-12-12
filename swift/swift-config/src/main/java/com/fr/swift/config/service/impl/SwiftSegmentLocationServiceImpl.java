@@ -6,11 +6,11 @@ import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
+import com.fr.swift.converter.FindList;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.sql.SQLException;
@@ -107,7 +107,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                                 result.get(sourceKey).add(item);
                             }
                         });
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         SwiftLoggers.getLogger().warn(e);
                     }
                     return result;

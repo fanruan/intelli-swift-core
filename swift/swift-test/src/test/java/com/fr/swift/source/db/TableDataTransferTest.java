@@ -1,9 +1,9 @@
 package com.fr.swift.source.db;
 
 import com.fr.swift.resource.ResourceUtils;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.excel.ExcelDataSource;
 import com.fr.swift.source.excel.ExcelTableData;
 import com.fr.workspace.simple.SimpleWork;

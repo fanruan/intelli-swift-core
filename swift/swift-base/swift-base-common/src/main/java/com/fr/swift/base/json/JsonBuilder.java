@@ -14,11 +14,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JsonBuilder {
     private static final Map<Class<? extends BeanMapper>, BeanMapper> MAPPERS = new ConcurrentHashMap<Class<? extends BeanMapper>, BeanMapper>();
+    private static final Map<Class, BeanMapper> BEAN_MAPPER_MAP = new ConcurrentHashMap<Class, BeanMapper>();
     private static final BeanMapper DEFAULT = defaultBeanMapper();
 
     private static BeanMapper defaultBeanMapper() {
         try {
-            Class clazz = JsonBuilder.class.getClassLoader().loadClass("com.fr.swift.config.json.SwiftBeanMapper");
+            Class clazz = Thread.currentThread().getContextClassLoader().loadClass("com.fr.swift.config.json.SwiftBeanMapper");
             Constructor constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
             return (BeanMapper) constructor.newInstance();
@@ -43,14 +44,20 @@ public class JsonBuilder {
         if (null == mapper) {
             mapper = DEFAULT;
         }
+        BEAN_MAPPER_MAP.put(reference, mapper);
         return mapper.writeValueAsString(o);
     }
 
     private static BeanMapper writeMapper(Class ref) throws Exception {
+        if (BEAN_MAPPER_MAP.containsKey(ref)) {
+            return BEAN_MAPPER_MAP.get(ref);
+        }
         for (Class anInterface : ref.getInterfaces()) {
             if (anInterface.isAnnotationPresent(JsonMapper.class)) {
                 JsonMapper jsonMapper = (JsonMapper) anInterface.getAnnotation(JsonMapper.class);
-                return getMapper(jsonMapper);
+                BeanMapper mapper = getMapper(jsonMapper);
+                BEAN_MAPPER_MAP.put(ref, mapper);
+                return mapper;
             }
         }
         Class superClass = ref.getSuperclass();

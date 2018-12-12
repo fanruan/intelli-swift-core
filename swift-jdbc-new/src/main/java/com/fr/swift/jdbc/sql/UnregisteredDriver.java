@@ -147,9 +147,24 @@ public abstract class UnregisteredDriver implements Driver {
             return requestService;
         }
 
+        public void setAuthCode(String authCode) {
+            this.authCode = authCode;
+        }
+
+        public void setRealtimeAddresses(Queue<String> realtimeAddresses) {
+            this.realtimeAddresses = realtimeAddresses;
+        }
+
+        public void setAnalyseAddresses(Queue<String> analyseAddresses) {
+            this.analyseAddresses = analyseAddresses;
+        }
+
         synchronized
         public String nextRealTime() {
             String address = realtimeAddresses.poll();
+            if (null == address) {
+                throw Exceptions.addressNotFound("Insert service");
+            }
             realtimeAddresses.offer(address);
             return address;
         }
@@ -157,6 +172,9 @@ public abstract class UnregisteredDriver implements Driver {
         synchronized
         public String nextAnalyse() {
             String address = analyseAddresses.poll();
+            if (null == address) {
+                throw Exceptions.addressNotFound("Analyse service");
+            }
             analyseAddresses.offer(address);
             return address;
         }

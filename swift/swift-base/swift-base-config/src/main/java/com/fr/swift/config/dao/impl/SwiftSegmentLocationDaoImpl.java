@@ -5,9 +5,9 @@ import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.converter.FindList;
 
 import java.sql.SQLException;
 
@@ -41,7 +41,7 @@ public class SwiftSegmentLocationDaoImpl extends BasicDao<SegLocationBean> imple
                 }
             });
             return true;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new SQLException(e);
         }
     }

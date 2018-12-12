@@ -8,9 +8,9 @@ import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.query.Queryable;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.io.IOException;
 import java.util.List;

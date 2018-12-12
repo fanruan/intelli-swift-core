@@ -3,13 +3,13 @@ package com.fr.swift.segment;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.util.ArrayList;
 import java.util.List;

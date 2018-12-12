@@ -1,8 +1,8 @@
 package com.fr.swift.source.resultset;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.Iterator;
