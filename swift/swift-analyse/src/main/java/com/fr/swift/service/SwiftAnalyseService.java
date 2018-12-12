@@ -9,7 +9,6 @@ import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -18,9 +17,9 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.bean.impl.RealTimeSegDestImpl;
-import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
+import com.fr.swift.segment.impl.RealTimeSegDestImpl;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
@@ -30,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 
 
 /**
@@ -136,7 +137,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public QueryResultSet getQueryResult(String queryJson) throws Exception {
         SwiftLoggers.getLogger().debug(queryJson);
-        QueryBean info = QueryBeanFactory.create(queryJson);
+        // TODO: 2018/12/12
+//        QueryBean info = QueryBeanFactory.create(queryJson);
+        QueryBean info = null;
         return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
     }
 

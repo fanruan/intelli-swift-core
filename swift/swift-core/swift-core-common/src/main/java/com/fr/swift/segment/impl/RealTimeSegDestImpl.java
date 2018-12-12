@@ -1,4 +1,4 @@
-package com.fr.swift.segment.bean.impl;
+package com.fr.swift.segment.impl;
 
 import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentDestination;

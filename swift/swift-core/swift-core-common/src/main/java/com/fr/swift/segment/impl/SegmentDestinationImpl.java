@@ -1,11 +1,9 @@
-package com.fr.swift.segment.bean.impl;
+package com.fr.swift.segment.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
+import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.bean.SegmentDestinationBean;
 import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 
@@ -17,9 +15,8 @@ import java.util.List;
  * @author yee
  * @date 2018/6/13
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(value = {"remote"})
-public class SegmentDestinationImpl implements SegmentDestinationBean, Serializable {
+public class SegmentDestinationImpl implements SegmentDestination, Serializable {
     private static final long serialVersionUID = 3016733438741210788L;
     @JsonProperty
     protected String clusterId;
