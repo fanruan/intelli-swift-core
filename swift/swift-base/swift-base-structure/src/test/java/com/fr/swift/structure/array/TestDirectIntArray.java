@@ -1,5 +1,6 @@
 package com.fr.swift.structure.array;
 
+import com.fr.swift.structure.IntIterable.IntIterator;
 import junit.framework.TestCase;
 
 /**
@@ -10,7 +11,7 @@ public class TestDirectIntArray extends TestCase {
         DirectIntArray array = new DirectIntArray(2);
         assertEquals(array.size(), 2);
         array.release();
-   }
+    }
 
     public void testPut() {
         DirectIntArray array = new DirectIntArray(1);
@@ -28,13 +29,24 @@ public class TestDirectIntArray extends TestCase {
     public void testRelease() {
         DirectIntArray array = new DirectIntArray(2, 2);
         array.release();
-        try{
+        try {
             array.get(0);
             assert false;
-        } catch (Exception e){
+        } catch (Exception e) {
             //do nothing
         }
 
     }
 
+    public void testIterate() {
+        IntArray ints = new DirectIntArray(2, 2);
+        for (Integer anInt : ints) {
+            assertEquals(2, anInt.intValue());
+        }
+
+        IntIterator intItr = ints.intIterator();
+        while (intItr.hasNext()) {
+            assertEquals(2, intItr.nextInt());
+        }
+    }
 }
