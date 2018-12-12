@@ -110,4 +110,9 @@ public class ByteArrayFineIoWriter implements ByteArrayWriter {
 
         curPos += len;
     }
+
+    @Override
+    public void resetContentPosition() {
+        curPos = 0;
+    }
 }
