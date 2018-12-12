@@ -14,10 +14,10 @@ public class CodeGenUtils {
 
     public static void main(String[] args) throws Exception {
         // 执行生成依赖fr-third的代码
-//        String srcDir = "/Users/lyon/finereport/intelli/intelli-swift/swift-public/swift-bean/src/main/java/com/fr/swift";
-//        String destDir = "/Users/lyon/finereport/intelli/intelli-swift/swift-finereport/swift-bean-fr/src/main/java/com/fr/swift";
-        String srcDir = "<absolute_path_2_module_swift-public>/swift-bean/src/main/java/com/fr/swift";
-        String destDir = "<absolute_path_2_module_swift-finereport>/swift-bean-fr/src/main/java/com/fr/swift";
+        String srcDir = "/Users/lyon/finereport/intelli/intelli-swift/swift-public/swift-bean/src/main/java/com/fr/swift/query/info/bean";
+        String destDir = "/Users/lyon/finereport/intelli/intelli-swift/swift/swift-analyse-base/src/main/java/com/fr/swift/query/info/bean";
+//        String srcDir = "<absolute_path_2_module_swift-public>/swift-bean/src/main/java/com/fr/swift";
+//        String destDir = "<absolute_path_2_module_swift-finereport>/swift-bean-fr/src/main/java/com/fr/swift";
         File source = new File(srcDir);
         File dest = new File(destDir);
         copy(source, dest);
@@ -42,7 +42,7 @@ public class CodeGenUtils {
         BufferedReader reader = new BufferedReader(new FileReader(src));
         String line = null;
         while ((line = reader.readLine()) != null) {
-            line = line.replaceAll("com\\.fasterxml", "com.fr.third.fasterxml");
+            line = line.replaceAll("com\\.fasterxml\\.jackson", "com.fr.swift.base.json");
             lines.add(line);
         }
         reader.close();
