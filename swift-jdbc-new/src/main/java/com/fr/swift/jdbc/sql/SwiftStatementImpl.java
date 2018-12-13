@@ -1,6 +1,8 @@
 package com.fr.swift.jdbc.sql;
 
+import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
+import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
 import java.sql.Connection;
@@ -27,15 +29,14 @@ public class SwiftStatementImpl extends BaseSwiftStatement {
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql);
-        Object result = execute(info, queryExecutor);
-        return null;
+        SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+        return new ResultSetWrapper(new JdbcSwiftResultSet(info, result, this), result.getLabel2Index());
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql);
-        Object result = execute(info, maintainExecutor);
-        return 0;
+        return execute(info, maintainExecutor);
     }
 
     @Override

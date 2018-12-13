@@ -1,9 +1,8 @@
-package com.fr.swift.jdbc;
+package com.fr.swift.jdbc.result;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.util.Util;
 
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -17,7 +16,6 @@ public class IteratorBasedResultSet implements SwiftResultSet {
     private Iterator<Row> iterator;
 
     public IteratorBasedResultSet(Iterator<Row> iterator) {
-        Util.requireNonNull(iterator);
         this.iterator = iterator;
     }
 

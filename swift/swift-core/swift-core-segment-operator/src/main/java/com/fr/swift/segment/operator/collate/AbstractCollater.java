@@ -1,10 +1,10 @@
 package com.fr.swift.segment.operator.collate;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
-import com.fr.swift.source.SwiftResultSet;
 
 /**
  * This class created on 2018/7/9

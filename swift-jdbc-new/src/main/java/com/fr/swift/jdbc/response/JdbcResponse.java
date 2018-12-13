@@ -14,5 +14,7 @@ public interface JdbcResponse {
      */
     SQLException exception();
 
+    boolean isError();
+
     Object result();
 }

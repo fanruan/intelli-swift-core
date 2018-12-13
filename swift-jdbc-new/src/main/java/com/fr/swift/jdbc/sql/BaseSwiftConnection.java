@@ -1,11 +1,11 @@
 package com.fr.swift.jdbc.sql;
 
 import com.fr.swift.api.info.RequestInfo;
+import com.fr.swift.api.server.response.ApiResponse;
 import com.fr.swift.jdbc.BuildInConnectionProperty;
 import com.fr.swift.jdbc.SwiftJdbcConstants;
 import com.fr.swift.jdbc.checker.GrammarChecker;
 import com.fr.swift.jdbc.exception.Exceptions;
-import com.fr.swift.jdbc.response.JdbcResponse;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
 import java.io.File;
@@ -14,6 +14,7 @@ import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -93,6 +94,11 @@ public abstract class BaseSwiftConnection implements Connection {
         }
         holder.using(statement);
         return (PreparedStatement) statement;
+    }
+
+    @Override
+    public DatabaseMetaData getMetaData() throws SQLException {
+        return new SwiftDataBaseMetaData(this);
     }
 
     @Override
@@ -351,9 +357,9 @@ public abstract class BaseSwiftConnection implements Connection {
     }
 
     Object executeQueryInternal(RequestInfo info, JdbcExecutor executor) throws SQLException {
-        JdbcResponse response = driver.holder.getRequestService().applyWithRetry(executor, info, 3);
-        if (response.exception() != null) {
-            throw response.exception();
+        ApiResponse response = driver.holder.getRequestService().applyWithRetry(executor, info, 3);
+        if (response.isError()) {
+            throw Exceptions.sql(response.statusCode(), response.description());
         }
         return response.result();
     }

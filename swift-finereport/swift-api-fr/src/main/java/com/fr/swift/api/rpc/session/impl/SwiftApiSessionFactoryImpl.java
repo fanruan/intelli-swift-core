@@ -9,10 +9,11 @@ import com.fr.swift.api.rpc.invoke.CallClient;
 import com.fr.swift.api.rpc.pool.CallClientPool;
 import com.fr.swift.api.rpc.session.SwiftApiSessionFactory;
 import com.fr.swift.api.server.response.ApiResponse;
+import com.fr.swift.api.server.response.AuthResponse;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Strings;
 
-import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author yee
@@ -44,17 +45,21 @@ public class SwiftApiSessionFactoryImpl implements SwiftApiSessionFactory<SwiftA
             Crasher.crash("Auth code cannot be null. Please ensure the factory had been initialized before you open a session.");
         }
 
-        return new SwiftApiSessionImpl(holder.nextAnalyseAddress(), holder.nextRealTimeAddress(), this);
+        return new SwiftApiSessionImpl(holder.nextAnalyse(), holder.nextRealTime(), this);
     }
 
     @Override
     public void init(String username, String password) throws Exception {
         RequestInfo info = new AuthRequestInfo(username, password);
         ApiResponse response = callRpc(address, info);
-        // TODO: response 处理
-        this.holder = ApiServiceAddressHolder.getHolder(address);
-        // TODO: 这里先暂时这样，实际上是需要获取的
-        authCode = UUID.randomUUID().toString();
+        if (response.isError()) {
+            throw new Exception(String.format("Api ERROR. Code %d, %s", response.statusCode(), response.description()));
+        }
+        AuthResponse auth = (AuthResponse) response.result();
+        authCode = auth.getAuthCode();
+        this.holder = new ApiServiceAddressHolder();
+        holder.setAnalyseAddresses(new LinkedBlockingQueue<String>(auth.getAnalyseAddresses()));
+        holder.setRealtimeAddresses(new LinkedBlockingQueue<String>(auth.getRealTimeAddresses()));
     }
 
     ApiResponse callRpc(String address, RequestInfo requestInfo) throws Exception {

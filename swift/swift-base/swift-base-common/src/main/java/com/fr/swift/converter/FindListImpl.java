@@ -1,7 +1,5 @@
-package com.fr.swift.config.oper;
+package com.fr.swift.converter;
 
-
-import com.fr.swift.converter.ObjectConverter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,10 +23,10 @@ public class FindListImpl<T> implements FindList<T> {
     }
 
     @Override
-    public List justForEach(final ConvertEach each) throws Throwable {
+    public List justForEach(final ConvertEach each) throws Exception {
         return new Through() {
             @Override
-            public List go() throws Throwable {
+            public List go() throws Exception {
                 for (int i = 0; i < list.size(); i++) {
                     each.forEach(i, list.get(i));
                 }
@@ -38,10 +36,10 @@ public class FindListImpl<T> implements FindList<T> {
     }
 
     @Override
-    public <S> List<T> forEach(final ConvertEach<S, T> each) throws Throwable {
+    public <S> List<T> forEach(final ConvertEach<S, T> each) throws Exception {
         return new Through<T>() {
             @Override
-            public List<T> go() throws Throwable {
+            public List<T> go() throws Exception {
                 List<T> result = new ArrayList<T>();
                 for (int i = 0; i < list.size(); i++) {
                     T bean = each.forEach(i, (S) list.get(i));

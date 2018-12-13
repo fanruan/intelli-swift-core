@@ -1,37 +1,42 @@
 package com.fr.swift.api.rpc;
 
-import com.fr.swift.api.rpc.holder.AbstractServiceAddressHolder;
-import com.fr.swift.service.ServiceType;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Queue;
 
 /**
  * @author yee
  * @date 2018/8/23
  */
-public class ApiServiceAddressHolder extends AbstractServiceAddressHolder {
+public class ApiServiceAddressHolder {
+    private Queue<String> realtimeAddresses;
+    private Queue<String> analyseAddresses;
 
-    private static ConcurrentHashMap<String, ApiServiceAddressHolder> instances = new ConcurrentHashMap<String, ApiServiceAddressHolder>();
 
-    private ApiServiceAddressHolder(String address) {
-        super(address);
-//        detect();
+
+    public void setRealtimeAddresses(Queue<String> realtimeAddresses) {
+        this.realtimeAddresses = realtimeAddresses;
     }
 
-    public static ApiServiceAddressHolder getHolder(String address) {
-        if (null == instances.get(address)) {
-            instances.put(address, new ApiServiceAddressHolder(address));
+    public void setAnalyseAddresses(Queue<String> analyseAddresses) {
+        this.analyseAddresses = analyseAddresses;
+    }
+
+    synchronized
+    public String nextRealTime() {
+        String address = realtimeAddresses.poll();
+        if (null == address) {
+            throw new RuntimeException("Insert service address not found");
         }
-        return instances.get(address);
+        realtimeAddresses.offer(address);
+        return address;
     }
 
-
-    @Override
-    protected Map<ServiceType, List<String>> detectiveAddress(String address) {
-//        return Api.connectDetectiveApi(address).detectiveAnalyseAndRealTime(address);
-        return Collections.emptyMap();
+    synchronized
+    public String nextAnalyse() {
+        String address = analyseAddresses.poll();
+        if (null == address) {
+            throw new RuntimeException("Analyse service address not found");
+        }
+        analyseAddresses.offer(address);
+        return address;
     }
 }

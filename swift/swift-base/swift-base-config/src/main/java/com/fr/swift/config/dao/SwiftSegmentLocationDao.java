@@ -2,7 +2,7 @@ package com.fr.swift.config.dao;
 
 import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
+import com.fr.swift.converter.FindList;
 
 import java.sql.SQLException;
 

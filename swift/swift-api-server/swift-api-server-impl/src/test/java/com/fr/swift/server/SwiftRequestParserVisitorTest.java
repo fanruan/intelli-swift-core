@@ -131,7 +131,7 @@ public class SwiftRequestParserVisitorTest extends TestCase {
         assertEquals(aClass, TableService.class);
         assertEquals(parameterTypes.length, 1);
         assertEquals(arguments.length, 1);
-        assertEquals(methodName, "detectiveAllTableNames");
+        assertEquals(methodName, "detectiveAllTable");
         assertNotNull(method);
 
     }

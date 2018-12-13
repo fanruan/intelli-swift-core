@@ -12,15 +12,15 @@ public interface ServerErrorCode {
     /**
      * 正常状态
      */
-    public static int SERVER_OK = 0;
+    int SERVER_OK = 0;
 
     /**
      * 服务器内部错误
      */
-    public static int SERVER_UNKNOWN_ERROR = ErrorCodeConfig.SERVER_INTERNAL_ERROR_CODE_BASE + 1;
+    int SERVER_UNKNOWN_ERROR = ErrorCodeConfig.SERVER_INTERNAL_ERROR_CODE_BASE + 1;
 
     /**
      * 服务器方法调用错误
      */
-    public static int SERVER_INVOKE_ERROR = ErrorCodeConfig.SERVER_INTERNAL_ERROR_CODE_BASE + 2;
+    int SERVER_INVOKE_ERROR = ErrorCodeConfig.SERVER_INTERNAL_ERROR_CODE_BASE + 2;
 }

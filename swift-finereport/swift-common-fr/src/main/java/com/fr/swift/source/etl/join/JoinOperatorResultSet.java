@@ -7,6 +7,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.group.by.MergerGroupByValues;
 import com.fr.swift.result.KeyValue;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -17,7 +18,6 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.utils.MergerGroupByValuesFactory;
 import com.fr.swift.structure.iterator.RowTraversal;
 

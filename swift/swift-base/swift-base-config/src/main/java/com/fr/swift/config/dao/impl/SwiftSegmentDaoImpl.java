@@ -6,9 +6,9 @@ import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.converter.FindList;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.util.Strings;
@@ -62,7 +62,7 @@ public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSe
                 }
             });
             return true;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new SQLException(e);
         }
     }

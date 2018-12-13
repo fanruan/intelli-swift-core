@@ -29,7 +29,7 @@
 //import com.fr.swift.service.cluster.ClusterAnalyseService;
 //import com.fr.swift.service.cluster.ClusterHistoryService;
 //import com.fr.swift.service.cluster.ClusterRealTimeService;
-//import com.fr.swift.source.SwiftResultSet;
+//import com.fr.swift.result.SwiftResultSet;
 //import com.fr.swift.structure.Pair;
 //import com.fr.swift.util.Assert;
 //import com.fr.swift.util.ServiceBeanFactory;

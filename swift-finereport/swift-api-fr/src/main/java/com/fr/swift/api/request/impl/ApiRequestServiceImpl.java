@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @author yee
  * @date 2018-12-07
  */
-public class ApiRequestServiceImpl implements RequestService<ApiResponse, CallClient> {
+public class ApiRequestServiceImpl implements RequestService<CallClient> {
 
     @Override
     public ApiResponse apply(CallClient sender, RequestInfo sql) {
