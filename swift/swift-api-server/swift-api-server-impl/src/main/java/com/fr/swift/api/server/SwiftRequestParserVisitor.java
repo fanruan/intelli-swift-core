@@ -13,16 +13,30 @@ import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.DetectService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
+import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.api.server.exception.ApiCrasher;
 import com.fr.swift.api.server.response.error.ParamErrorCode;
 import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.impl.SwiftWhere;
+import com.fr.swift.jdbc.adaptor.SwiftASTVisitorAdapter;
+import com.fr.swift.jdbc.adaptor.SwiftSQLType;
+import com.fr.swift.jdbc.adaptor.SwiftSQLUtils;
+import com.fr.swift.jdbc.adaptor.bean.ColumnBean;
+import com.fr.swift.jdbc.adaptor.bean.CreationBean;
+import com.fr.swift.jdbc.adaptor.bean.DeletionBean;
+import com.fr.swift.jdbc.adaptor.bean.DropBean;
+import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
+import com.fr.swift.jdbc.adaptor.bean.SelectionBean;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.info.ColumnsRequestInfo;
 import com.fr.swift.jdbc.info.JdbcRequestParserVisitor;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.info.TablesRequestInfo;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class created on 2018/12/10
@@ -35,12 +49,70 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
 
     @Override
     public ApiInvocation visit(SqlRequestInfo sqlRequestInfo) {
-        String database = sqlRequestInfo.getDatabase();
         String sql = sqlRequestInfo.getSql();
-        //todo sql解析 @Lyon
-        SwiftDatabase swiftDatabase = SwiftDatabase.fromKey(database);
-        String queryJson = null;
-        return createApiInvocation("query", SelectService.class, swiftDatabase, queryJson);
+        SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter();
+        SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
+        if (stmt == null) {
+            return ApiCrasher.crash(ParamErrorCode.SQL_PARSE_ERROR);
+        }
+        stmt.accept(visitor);
+        SwiftSQLType sqlType = visitor.getSqlType();
+        switch (sqlType) {
+            case CREATE: {
+                CreationBean bean = visitor.getCreationBean();
+                CreateTableRequestInfo requestInfo = new CreateTableRequestInfo();
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
+                List<Column> columns = new ArrayList<Column>();
+                for (ColumnBean columnBean : bean.getFields()) {
+                    columns.add(new Column(columnBean.getColumnName(), columnBean.getColumnType()));
+                }
+                requestInfo.setColumns(columns);
+                return visit(requestInfo);
+            }
+            case INSERT: {
+                InsertionBean bean = visitor.getInsertionBean();
+                InsertRequestInfo requestInfo = new InsertRequestInfo();
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
+                requestInfo.setSelectFields(bean.getFields());
+                requestInfo.setData(bean.getRows());
+                return visit(requestInfo);
+            }
+            case DROP: {
+                DropBean bean = visitor.getDropBean();
+                TableRequestInfo requestInfo = new TableRequestInfo(ApiRequestType.DROP_TABLE);
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
+                return visit(requestInfo);
+            }
+            case DELETE: {
+                DeletionBean bean = visitor.getDeletionBean();
+                DeleteTableRequestInfo requestInfo = new DeleteTableRequestInfo();
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
+                try {
+                    requestInfo.setWhere(JsonBuilder.writeJsonString(bean.getFilter()));
+                } catch (Exception e) {
+                    return ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
+                }
+                return visit(requestInfo);
+            }
+            case SELECT: {
+                SelectionBean bean = visitor.getSelectionBean();
+                String queryJson = null;
+                try {
+                    queryJson = JsonBuilder.writeJsonString(bean.getQueryInfoBean());
+                } catch (Exception e) {
+                    return ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
+                }
+                return createApiInvocation("query", SelectService.class,
+                        SwiftDatabase.fromKey(bean.getSchema()), queryJson);
+            }
+        }
+        return null;
+    }
+
+    private static void setProperties(TableRequestInfo requestInfo, String authCode, String schema, String tableName) {
+        requestInfo.setAuthCode(authCode);
+        requestInfo.setDatabase(SwiftDatabase.fromKey(schema));
+        requestInfo.setTable(tableName);
     }
 
     @Override

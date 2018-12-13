@@ -42,25 +42,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <!--这边的依赖问题还是没有解决，暂时没有太好的办法-->
-            <!--目前讨论过两种方式：
-                1、把jackson加到swift中（太大了）
-                2、提接口or写个mini版jackson（都不可行）-->
-            <!--备注：按照设计要求，swift模块中的所有子模块都不能依赖swift-public或者swift-finereport-->
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-bean</artifactId>
+            <artifactId>swift-sqlparser</artifactId>
             <version>${swift.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jackson-annotations</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jackson-databind</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-            </exclusions>
+            <scope>compile</scope>
         </dependency>
+
     </dependencies>
 
 </project>

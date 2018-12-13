@@ -11,7 +11,6 @@ public class ApiServiceAddressHolder {
     private Queue<String> analyseAddresses;
 
 
-
     public void setRealtimeAddresses(Queue<String> realtimeAddresses) {
         this.realtimeAddresses = realtimeAddresses;
     }

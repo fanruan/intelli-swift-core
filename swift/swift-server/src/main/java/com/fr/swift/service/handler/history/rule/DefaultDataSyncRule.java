@@ -2,22 +2,19 @@ package com.fr.swift.service.handler.history.rule;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.DataSyncRule;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author yee

@@ -16,4 +16,9 @@ public interface ParamErrorCode {
      * 参数json解析错误
      */
     int PARAMS_PARSER_ERROR = ErrorCodeConfig.PARSE_ERROR_CODE_BASE + 2;
+
+    /**
+     * 参数sql解析错误
+     */
+    int SQL_PARSE_ERROR = ErrorCodeConfig.SQL_ERROR_CODE_BASE + 1;
 }

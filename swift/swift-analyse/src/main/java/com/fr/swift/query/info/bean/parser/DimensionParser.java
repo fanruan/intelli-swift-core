@@ -51,6 +51,9 @@ class DimensionParser {
                     dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
                             new IndexInfoImpl(conf.requireIndex(), conf.requireGlobalDict())));
                     break;
+                case DETAIL_ALL_COLUMN: {
+                    // TODO: 2018/12/10 select * from table_name
+                }
                 default:
             }
         }
