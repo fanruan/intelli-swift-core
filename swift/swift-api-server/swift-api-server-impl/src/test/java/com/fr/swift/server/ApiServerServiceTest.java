@@ -1,6 +1,8 @@
 package com.fr.swift.server;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.api.result.SwiftApiResultSet;
+import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.server.ApiServerServiceImpl;
 import com.fr.swift.api.server.response.ApiResponse;
@@ -61,7 +63,18 @@ public class ApiServerServiceTest extends TestCase {
                 "    \"requestType\": \"SQL\",\n" +
                 "    \"requestId\": \"71859bfa-6534-45b0-a3a8-bd8bc3719554\"\n" +
                 "}";
-        assertTrue(false);
+        SelectService selectService = EasyMock.createMock(SelectService.class);
+        EasyMock.expect(SwiftContext.get().getBean(SelectService.class)).andReturn(selectService).anyTimes();
+        SwiftApiResultSet result = EasyMock.createMock(SwiftApiResultSet.class);
+        try {
+            EasyMock.expect(selectService.query(SwiftDatabase.CUBE, null)).andReturn(result).anyTimes();
+        } catch (Exception e) {
+            fail();
+        }
+        EasyMock.replay(SwiftContext.get(), selectService);
+        ApiResponse response = new ApiServerServiceImpl().dispatchRequest(request);
+        // TODO: 2018/12/12 不同类型sql对应返回值类型
+        assertNotNull(response.result());
     }
 
     public void testTable() throws SwiftMetaDataException {

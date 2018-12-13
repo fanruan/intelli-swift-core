@@ -34,7 +34,7 @@ class MergeOperator implements Function<List<NodeMergeResultSet<GroupNode>>, Nod
     public NodeMergeResultSet<GroupNode> apply(List<NodeMergeResultSet<GroupNode>> groupByResultSets) {
         List<GroupNode> roots = new ArrayList<GroupNode>();
         List<Map<Integer, Object>> totalDictionaries = new ArrayList<Map<Integer, Object>>();
-        for (NodeResultSet resultSet : groupByResultSets) {
+        for (NodeResultSet<GroupNode> resultSet : groupByResultSets) {
             Pair<GroupNode, List<Map<Integer, Object>>> pair = resultSet.getPage();
             roots.add(pair.getKey());
             addDictionaries(pair.getValue(), totalDictionaries);

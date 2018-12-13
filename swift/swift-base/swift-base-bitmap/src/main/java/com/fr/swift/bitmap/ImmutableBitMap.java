@@ -1,6 +1,7 @@
 package com.fr.swift.bitmap;
 
 
+import com.fr.swift.structure.IntIterable;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 /**
@@ -8,7 +9,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
  * @date 2017/10/9
  * 不可改变的位图
  */
-public interface ImmutableBitMap extends RowTraversal, BytesGetter {
+public interface ImmutableBitMap extends RowTraversal, BytesGetter, IntIterable {
 
     ImmutableBitMap getAnd(ImmutableBitMap index);
 

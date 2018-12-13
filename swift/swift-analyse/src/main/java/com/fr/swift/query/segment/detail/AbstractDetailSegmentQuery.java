@@ -10,7 +10,8 @@ import com.fr.swift.structure.Pair;
 import java.util.List;
 
 /**
- * Created by pony on 2017/11/24.
+ * @author pony
+ * @date 2017/11/24
  */
 public abstract class AbstractDetailSegmentQuery extends AbstractSegmentQuery<QueryResultSet> {
 

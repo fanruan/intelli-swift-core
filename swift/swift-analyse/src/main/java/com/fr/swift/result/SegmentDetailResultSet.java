@@ -1,15 +1,16 @@
 package com.fr.swift.result;
 
-import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.IntIterable.IntIterator;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.structure.array.IntArray;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,18 +21,23 @@ import java.util.List;
  */
 public class SegmentDetailResultSet extends AbstractDetailResultSet {
 
-    // 明细行的游标
-    private int rowCursor = 0;
-    // 当前块中过滤后的行号
-    private IntArray rows;
+    /**
+     * 当前块中过滤后的行号
+     */
+    private IntIterator rowItr;
+
+    private int rowCount;
+
     private List<Column> columnList;
+
     private Iterator<Row> iterator;
 
     public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
         super(fetchSize);
         this.columnList = SortSegmentDetailResultSet.getColumnList(columnList);
-        // TODO: 2018/8/30 这个地方new一个大数组造成查询一开始都会卡顿一下，roaring bitmap社区的版本已经加了批次迭代器了，可以考虑更新一下
-        this.rows = BitMaps.traversal2Array(filter.createFilterIndex());
+        ImmutableBitMap filterIndex = filter.createFilterIndex();
+        rowCount = filterIndex.getCardinality();
+        this.rowItr = filterIndex.intIterator();
     }
 
     @Override
@@ -41,9 +47,8 @@ public class SegmentDetailResultSet extends AbstractDetailResultSet {
         }
         List<Row> page = new ArrayList<Row>();
         int count = fetchSize;
-        while (rowCursor < rows.size() && count-- > 0) {
-            page.add(readRow(rows.get(rowCursor), columnList));
-            rowCursor++;
+        while (rowItr.hasNext() && count-- > 0) {
+            page.add(readRow(rowItr.nextInt(), columnList));
         }
         return page;
     }
@@ -60,12 +65,12 @@ public class SegmentDetailResultSet extends AbstractDetailResultSet {
 
     @Override
     public boolean hasNextPage() {
-        return rowCursor < rows.size();
+        return rowItr.hasNext();
     }
 
     @Override
     public int getRowCount() {
-        return rows.size();
+        return rowCount;
     }
 
     @Override
@@ -88,7 +93,7 @@ public class SegmentDetailResultSet extends AbstractDetailResultSet {
 
     @Override
     public void close() {
-
+        SegmentUtils.releaseColumns(columnList);
     }
 
 }

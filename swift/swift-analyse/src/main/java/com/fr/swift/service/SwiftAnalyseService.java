@@ -18,9 +18,9 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.bean.impl.RealTimeSegDestImpl;
-import com.fr.swift.segment.bean.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
+import com.fr.swift.segment.impl.RealTimeSegDestImpl;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * @author pony
@@ -136,6 +135,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public QueryResultSet getQueryResult(String queryJson) throws Exception {
         SwiftLoggers.getLogger().debug(queryJson);
+        // TODO: 2018/12/12
         QueryBean info = QueryBeanFactory.create(queryJson);
         return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
     }

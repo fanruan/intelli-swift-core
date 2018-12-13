@@ -3,12 +3,15 @@ package com.fr.swift.query.post;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.post.utils.ResultJoinUtils;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 对应关联数据库中的几个子表通过关联字段组成一张大表，然后依据关联字段做groupBy的操作
@@ -19,21 +22,21 @@ import java.util.List;
  */
 public class ResultJoinQuery implements PostQuery<QueryResultSet> {
 
-    private List<Query<QueryResultSet>> queries;
+    private List<Query<QueryResultSet<Pair<GroupNode, List<Map<Integer, Object>>>>>> queries;
     private List<Dimension> dimensions;
 
-    public ResultJoinQuery(List<Query<QueryResultSet>> queries, List<Dimension> dimensions) {
+    public ResultJoinQuery(List<Query<QueryResultSet<Pair<GroupNode, List<Map<Integer, Object>>>>>> queries, List<Dimension> dimensions) {
         this.queries = queries;
         this.dimensions = dimensions;
     }
 
     @Override
     public QueryResultSet getQueryResult() throws SQLException {
-        List<NodeResultSet> resultSets = new ArrayList<NodeResultSet>();
-        for (Query<QueryResultSet> query : queries) {
-            resultSets.add((NodeResultSet) query.getQueryResult());
+        List<NodeResultSet<GroupNode>> resultSets = new ArrayList<NodeResultSet<GroupNode>>();
+        for (Query<QueryResultSet<Pair<GroupNode, List<Map<Integer, Object>>>>> query : queries) {
+            resultSets.add((NodeResultSet<GroupNode>) query.getQueryResult());
         }
         // TODO: 2018/11/27
-        return (QueryResultSet) ResultJoinUtils.join(resultSets, dimensions);
+        return ResultJoinUtils.join(resultSets, dimensions);
     }
 }
