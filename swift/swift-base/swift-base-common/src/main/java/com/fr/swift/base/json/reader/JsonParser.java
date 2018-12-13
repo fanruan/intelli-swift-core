@@ -29,47 +29,47 @@ import java.util.Map;
  */
 public class JsonParser {
     /**
-     * Should read EOF for next token.
+     * read EOF for next token.
      */
     private static final int STATUS_EXPECT_END_DOCUMENT = 0x0002;
     /**
-     * Should read "{" for next token.
+     * read "{" for next token.
      */
     private static final int STATUS_EXPECT_BEGIN_OBJECT = 0x0004;
     /**
-     * Should read "}" for next token.
+     * read "}" for next token.
      */
     private static final int STATUS_EXPECT_END_OBJECT = 0x0008;
     /**
-     * Should read object key for next token.
+     * read object key for next token.
      */
     private static final int STATUS_EXPECT_OBJECT_KEY = 0x0010;
     /**
-     * Should read object value for next token.
+     * read object value for next token.
      */
     private static final int STATUS_EXPECT_OBJECT_VALUE = 0x0020;
     /**
-     * Should read ":" for next token.
+     * read ":" for next token.
      */
     private static final int STATUS_EXPECT_COLON = 0x0040;
     /**
-     * Should read "," for next token.
+     * read "," for next token.
      */
     private static final int STATUS_EXPECT_COMMA = 0x0080;
     /**
-     * Should read "[" for next token.
+     * read "[" for next token.
      */
     private static final int STATUS_EXPECT_BEGIN_ARRAY = 0x0100;
     /**
-     * Should read "]" for next token.
+     * read "]" for next token.
      */
     private static final int STATUS_EXPECT_END_ARRAY = 0x0200;
     /**
-     * Should read array value for next token.
+     * read array value for next token.
      */
     private static final int STATUS_EXPECT_ARRAY_VALUE = 0x0400;
     /**
-     * Should read a single value for next token (must not be "{" or "[").
+     * read a single value for next token (must not be "{" or "[").
      */
     private static final int STATUS_EXPECT_SINGLE_VALUE = 0x0800;
     private Tokenizer tokenizer;

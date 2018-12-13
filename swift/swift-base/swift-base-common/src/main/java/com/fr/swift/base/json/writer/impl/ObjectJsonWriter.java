@@ -5,7 +5,6 @@ import com.fr.swift.base.json.serialization.SerializationConfigHolder;
 import com.fr.swift.base.json.writer.JsonWriter;
 import com.fr.swift.util.ReflectUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -20,7 +19,7 @@ public class ObjectJsonWriter implements JsonWriter {
     private static final MapJsonWriter MAP_JSON_WRITER = new MapJsonWriter();
 
     @Override
-    public String write(Object o) throws IOException {
+    public String write(Object o) {
         if (o instanceof Date) {
             return String.valueOf(((Date) o).getTime());
         }
@@ -49,7 +48,7 @@ public class ObjectJsonWriter implements JsonWriter {
         return buffer.toString();
     }
 
-    private void writeArray(StringBuffer buffer, Object array) throws IOException {
+    private void writeArray(StringBuffer buffer, Object array) {
         if (array instanceof boolean[]) {
             buffer.append(Arrays.toString((boolean[]) array));
         } else if (array instanceof int[]) {
@@ -103,7 +102,7 @@ public class ObjectJsonWriter implements JsonWriter {
         buffer.append('}');
     }
 
-    private void write(StringBuffer buffer, Object obj) throws IOException {
+    private void write(StringBuffer buffer, Object obj) {
         if (obj == null) {
             buffer.append("null");
             return;

@@ -2,7 +2,6 @@ package com.fr.swift.base.json.writer.impl;
 
 import com.fr.swift.base.json.writer.JsonWriter;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,13 +13,13 @@ public class MapJsonWriter implements JsonWriter<Map> {
     private static final ObjectJsonWriter OBJECT_JSON_WRITER = new ObjectJsonWriter();
 
     @Override
-    public String write(Map map) throws IOException {
+    public String write(Map map) {
         StringBuffer buffer = new StringBuffer(1024);
         writeMap(buffer, map);
         return buffer.toString();
     }
 
-    private void writeMap(StringBuffer buffer, Map map) throws IOException {
+    private void writeMap(StringBuffer buffer, Map map) {
         if (map == null) {
             buffer.append("null");
             return;
