@@ -52,6 +52,9 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
         String sql = sqlRequestInfo.getSql();
         SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter();
         SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
+        if (stmt == null) {
+            return ApiCrasher.crash(ParamErrorCode.SQL_PARSE_ERROR);
+        }
         stmt.accept(visitor);
         SwiftSQLType sqlType = visitor.getSqlType();
         switch (sqlType) {
