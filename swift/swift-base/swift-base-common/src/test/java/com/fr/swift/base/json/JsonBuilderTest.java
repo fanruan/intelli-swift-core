@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
  * @date 2018-12-04
  */
 public class JsonBuilderTest {
-    private static final String JSON = "{\"type\":\"C\",\"testInf\":{\"type\":\"B\",\"name\":\"testName\",\"age\":100}}";
+    private static final String JSON = "{\"testInf\":{\"name\":\"testName\",\"type\":\"B\",\"age\":100},\"type\":\"C\"}";
 
     @Test
     public void writeJsonString() throws Exception {
