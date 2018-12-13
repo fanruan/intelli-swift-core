@@ -25,6 +25,6 @@ public class SortDetailSegmentQuery extends AbstractDetailSegmentQuery {
 
     @Override
     public QueryResultSet getQueryResult() {
-        return (QueryResultSet) new SortSegmentDetailResultSet(fetchSize, columnList, filter, sorts);
+        return new SortSegmentDetailResultSet(fetchSize, columnList, filter, sorts);
     }
 }

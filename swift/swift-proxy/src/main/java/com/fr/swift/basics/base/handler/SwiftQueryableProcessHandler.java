@@ -21,7 +21,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,8 +84,8 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                             }
 
                             @Override
-                            public Serializable getPage() {
-                                Serializable ret = resultSet.getPage();
+                            public Object getPage() {
+                                Object ret = resultSet.getPage();
                                 // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
                                 if (hasNextPage()) {
                                     Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());

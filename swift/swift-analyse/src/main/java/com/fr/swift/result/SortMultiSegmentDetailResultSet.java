@@ -16,8 +16,9 @@ import java.util.List;
 
 /**
  * Created by Xiaolei.Liu on 2018/1/24
+ * @author yee
  */
-public class SortMultiSegmentDetailResultSet extends AbstractDetailResultSet {
+public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
 
     private List<Query<QueryResultSet>> queries;
     private List<Pair<Sort, Comparator>> comparators;

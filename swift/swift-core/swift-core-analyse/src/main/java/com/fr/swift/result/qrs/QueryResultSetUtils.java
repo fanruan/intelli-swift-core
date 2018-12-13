@@ -7,7 +7,8 @@ import com.fr.swift.source.SwiftMetaData;
 import java.io.Serializable;
 
 /**
- * Created by lyon on 2018/11/27.
+ * @author lyon
+ * @date 2018/11/27
  */
 public class QueryResultSetUtils {
 
@@ -15,6 +16,7 @@ public class QueryResultSetUtils {
         switch (type) {
             case DETAIL:
             case GROUP:
+            default:
         }
         return null;
     }
@@ -25,6 +27,7 @@ public class QueryResultSetUtils {
             case ROW:
             case NODE:
                 converter = null;
+            default:
         }
         return converter.convert(resultSet, metaData);
     }
