@@ -1,7 +1,7 @@
 package com.fr.swift.config.convert;
 
+import com.fr.swift.base.json.mapper.SwiftBeanMapper;
 import com.fr.swift.config.convert.hibernate.BaseAllotRuleConverter;
-import com.fr.swift.config.json.SwiftBeanMapper;
 import com.fr.swift.source.alloter.AllotRule;
 
 import javax.persistence.AttributeConverter;
