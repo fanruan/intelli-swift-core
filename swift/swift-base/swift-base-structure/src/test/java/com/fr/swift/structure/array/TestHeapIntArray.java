@@ -1,5 +1,6 @@
 package com.fr.swift.structure.array;
 
+import com.fr.swift.structure.IntIterable.IntIterator;
 import junit.framework.TestCase;
 
 /**
@@ -30,6 +31,18 @@ public class TestHeapIntArray extends TestCase {
             assert false;
         } catch (Exception e){
             assert true;
+        }
+    }
+
+    public void testIterate() {
+        IntArray ints = new HeapIntArray(2, 3);
+        for (Integer anInt : ints) {
+            assertEquals(3, anInt.intValue());
+        }
+
+        IntIterator intItr = ints.intIterator();
+        while (intItr.hasNext()) {
+            assertEquals(3, intItr.nextInt());
         }
     }
 

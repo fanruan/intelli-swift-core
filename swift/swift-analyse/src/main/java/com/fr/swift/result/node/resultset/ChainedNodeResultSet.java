@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
+import com.fr.swift.result.BaseNodeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNode2RowIterator;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/6/12.
  */
-public class ChainedNodeResultSet implements NodeResultSet<SwiftNode> {
+public class ChainedNodeResultSet extends BaseNodeResultSet<SwiftNode> implements NodeResultSet<SwiftNode> {
 
     private SwiftNodeOperator operator;
     private NodeResultSet<SwiftNode> source;

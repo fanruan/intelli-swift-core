@@ -9,6 +9,8 @@ import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.util.Assert;
 
+import java.util.Iterator;
+
 /**
  * @author anchore
  * @date 2018/6/4
@@ -130,5 +132,38 @@ public class RangeBitmap extends AbstractBitMap {
     @Override
     public String toString() {
         return String.format("{%d, ..., %d}", start, end - 1);
+    }
+
+    @Override
+    public IntIterator intIterator() {
+        return new IntIterator() {
+
+            private int cursor = start;
+
+            @Override
+            public int nextInt() {
+                return cursor++;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return cursor < end;
+            }
+
+            @Override
+            public Integer next() {
+                return nextInt();
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return intIterator();
     }
 }

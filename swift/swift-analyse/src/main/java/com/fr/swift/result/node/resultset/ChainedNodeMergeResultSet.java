@@ -1,6 +1,7 @@
 package com.fr.swift.result.node.resultset;
 
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.result.BaseNodeResultSet;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.source.Row;
@@ -13,9 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Lyon on 2018/6/14.
+ * @author Lyon
+ * @date 2018/6/14
  */
-public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> {
+public class ChainedNodeMergeResultSet extends BaseNodeResultSet<GroupNode> implements NodeMergeResultSet<GroupNode> {
 
     private int fetchSize;
     private Iterator<NodeMergeResultSet<GroupNode>> iterator;
@@ -36,7 +38,7 @@ public class ChainedNodeMergeResultSet implements NodeMergeResultSet<GroupNode> 
         if (!iterator.hasNext()) {
             return null;
         }
-        NodeMergeResultSet resultSet = iterator.next();
+        NodeMergeResultSet<GroupNode> resultSet = iterator.next();
         return resultSet.getPage();
     }
 

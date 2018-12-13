@@ -2,8 +2,11 @@ package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
+import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.structure.IntIterable.IntIterator;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Random;
@@ -146,5 +149,17 @@ public class RoaringBitmapTest {
                 fail();
             }
         }
+    }
+
+    @Test
+    public void testIterate() {
+        ImmutableBitMap bitmap = RoaringImmutableBitMap.of(MutableRoaringBitmap.bitmapOf(1, 4, 9));
+        IntIterator itr = bitmap.intIterator();
+        Assert.assertTrue(itr.hasNext());
+        Assert.assertEquals(1, itr.nextInt());
+        Assert.assertTrue(itr.hasNext());
+        Assert.assertEquals(4, itr.nextInt());
+        Assert.assertTrue(itr.hasNext());
+        Assert.assertEquals(9, itr.nextInt());
     }
 }

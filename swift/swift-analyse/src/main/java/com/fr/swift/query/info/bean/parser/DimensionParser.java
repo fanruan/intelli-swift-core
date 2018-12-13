@@ -27,7 +27,9 @@ import java.util.List;
  */
 class DimensionParser {
 
-    // TODO: 2018/6/7 解析各类bean过程中相关参数的合法性校验以及相关异常处理规范
+    /**
+     * TODO: 2018/6/7 解析各类bean过程中相关参数的合法性校验以及相关异常处理规范
+     */
     static List<Dimension> parse(SourceKey table, List<DimensionBean> dimensionBeans, List<SortBean> sortBeans) {
         IndexingConfService service = SwiftContext.get().getBean(IndexingConfService.class);
         List<Dimension> dimensions = new ArrayList<Dimension>();
@@ -49,6 +51,7 @@ class DimensionParser {
                     dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
                             new IndexInfoImpl(conf.requireIndex(), conf.requireGlobalDict())));
                     break;
+                default:
             }
         }
         return dimensions;
@@ -77,6 +80,7 @@ class DimensionParser {
                 case DETAIL:
                     dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), null, new IndexInfoImpl(false, false)));
                     break;
+                default:
             }
         }
 

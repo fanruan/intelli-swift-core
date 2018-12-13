@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * Created by 小灰灰 on 2017/5/22.
  */
-public class HeapIntArray implements IntArray {
+public class HeapIntArray extends BaseIntArray {
     private int[] items;
 
     public HeapIntArray(int capacity, int defaultValue) {

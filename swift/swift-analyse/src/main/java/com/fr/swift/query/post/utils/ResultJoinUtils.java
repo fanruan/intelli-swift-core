@@ -37,12 +37,12 @@ public class ResultJoinUtils {
      * @return
      * @throws SQLException
      */
-    public static NodeResultSet join(final List<NodeResultSet> resultSets, List<Dimension> dimensions) throws SQLException {
+    public static NodeResultSet join(final List<NodeResultSet<GroupNode>> resultSets, List<Dimension> dimensions) throws SQLException {
         int dimensionSize = dimensions.size();
         final List<Integer> metricLengthList = getMetricLengthList(dimensionSize, resultSets);
         List<Iterator<MergeRow>> iterators = new ArrayList<Iterator<MergeRow>>();
         for (int i = 0; i < resultSets.size(); i++) {
-            final GroupNode root = (GroupNode) resultSets.get(i).getPage().getKey();
+            final GroupNode root = resultSets.get(i).getPage().getKey();
             Iterator<List<GroupNode>> iterator = new Tree2RowIterator<GroupNode>(dimensionSize, root.getChildren().iterator(), new Function<GroupNode, Iterator<GroupNode>>() {
                 @Override
                 public Iterator<GroupNode> apply(GroupNode p) {
@@ -103,7 +103,7 @@ public class ResultJoinUtils {
         return root;
     }
 
-    private static SwiftMetaData crateMetaData(List<NodeResultSet> resultSets, List<Dimension> dimensions) throws SQLException {
+    private static SwiftMetaData crateMetaData(List<NodeResultSet<GroupNode>> resultSets, List<Dimension> dimensions) throws SQLException {
         final List<String> columnNames = getColumnNames(dimensions, resultSets);
         return new SwiftMetaData() {
             @Override
@@ -193,16 +193,16 @@ public class ResultJoinUtils {
         };
     }
 
-    private static List<Integer> getMetricLengthList(int dimensionSize, List<NodeResultSet> resultSets) throws SQLException {
+    private static List<Integer> getMetricLengthList(int dimensionSize, List<NodeResultSet<GroupNode>> resultSets) throws SQLException {
         List<Integer> list = new ArrayList<Integer>();
-        for (NodeResultSet resultSet : resultSets) {
+        for (NodeResultSet<GroupNode> resultSet : resultSets) {
             int len = resultSet.getMetaData().getFieldNames().size() - dimensionSize;
             list.add(len);
         }
         return list;
     }
 
-    private static List<String> getColumnNames(List<Dimension> dimensions, List<NodeResultSet> resultSets) throws SQLException {
+    private static List<String> getColumnNames(List<Dimension> dimensions, List<NodeResultSet<GroupNode>> resultSets) throws SQLException {
         List<String> names = new ArrayList<String>();
         for (Dimension dimension : dimensions) {
             names.add(dimension.getColumnKey().getName());
