@@ -7,7 +7,7 @@ import com.fineio.memory.MemoryUtils;
  * @author daniel
  * @date 2017/5/18
  */
-public class DirectIntArray implements IntArray {
+public class DirectIntArray extends BaseIntArray {
     private long address;
     private int maxLen;
     private volatile boolean isClear = false;

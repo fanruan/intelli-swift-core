@@ -4,6 +4,8 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
+import com.fr.swift.structure.IntIterable.IntIterator;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -109,5 +111,17 @@ public class BitmapTest {
 
         roaringBitmap.not(11);
         BitmapAssert.equals(roaringBitmap, RoaringImmutableBitMap.of(MutableRoaringBitmap.bitmapOf(0, 1, 2, 6, 8, 10, 50)));
+    }
+
+    @Test
+    public void testIterateRangeBitmap() {
+        ImmutableBitMap bitmap = new RangeBitmap(1, 4);
+        IntIterator itr = bitmap.intIterator();
+        Assert.assertTrue(itr.hasNext());
+        Assert.assertEquals(1, itr.nextInt());
+        Assert.assertTrue(itr.hasNext());
+        Assert.assertEquals(2, itr.nextInt());
+        Assert.assertTrue(itr.hasNext());
+        Assert.assertEquals(3, itr.nextInt());
     }
 }

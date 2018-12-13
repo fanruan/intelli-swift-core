@@ -2,7 +2,6 @@ package com.fr.swift.segment.rule;
 
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.service.handler.history.rule.DefaultDataSyncRule;
 import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -31,14 +30,14 @@ public class DefaultSegmentDestSelectRuleTest {
 
     public DefaultSegmentDestSelectRuleTest(Set<String> nodeIds, Set<SegmentKey> needLoad) {
         System.out.println("NodeSize： " + nodeIds.size() + " SegCount: " + needLoad.size());
-        HashMap<SourceKey, List<SegmentDestination>> dest = new HashMap<>();
-        new DefaultDataSyncRule().getNeedLoadAndUpdateDestinations(nodeIds, needLoad, dest);
+        HashMap<SourceKey, List<SegmentDestination>> dest = new HashMap<SourceKey, List<SegmentDestination>>();
+//        new DefaultDataSyncRule().getNeedLoadAndUpdateDestinations(nodeIds, needLoad, dest);
         selectDestination = dest.get("tableA");
     }
 
     @Parameterized.Parameters
     public static List<Object[]> randomParams() {
-        List<Object[]> result = new ArrayList<>();
+        List<Object[]> result = new ArrayList<Object[]>();
         Set<SegmentKey> needLoad = new HashSet<SegmentKey>();
 
 //        needLoad.put("tableA", new ArrayList<SegmentKey>(100));
@@ -53,7 +52,7 @@ public class DefaultSegmentDestSelectRuleTest {
         }
         for (int i = 0; i < 100; i++) {
             int nodeCount = (int) (1 + Math.random() * 100);
-            Set<String> nodeIds = new HashSet<>();
+            Set<String> nodeIds = new HashSet<String>();
             for (int j = 0; j < nodeCount; j++) {
                 nodeIds.add("cluster_" + j);
             }

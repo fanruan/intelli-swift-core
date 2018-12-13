@@ -9,20 +9,20 @@ import java.util.List;
 public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> implements Serializable {
 
     private static final long serialVersionUID = -538699789884622264L;
-    protected int deep;
+    protected int depth;
     protected int nodeIndex = 0;
     protected Object data;
     protected ChildMap<T> childMap = new ChildMap<T>();
     protected int dictionaryIndex = -1;
     private boolean isGlobalIndexUpdated = false;
 
-    public GroupNode(int deep, Object data) {
-        this.deep = deep;
+    public GroupNode(int depth, Object data) {
+        this.depth = depth;
         this.data = data;
     }
 
-    public GroupNode(int deep, int segmentIndex) {
-        this.deep = deep;
+    public GroupNode(int depth, int segmentIndex) {
+        this.depth = depth;
         this.dictionaryIndex = segmentIndex;
     }
 
@@ -50,11 +50,11 @@ public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> impl
 
     @Override
     public int getDepth() {
-        return deep;
+        return depth;
     }
 
-    public void setDepth(int deep) {
-        this.deep = deep;
+    public void setDepth(int dedepth) {
+        this.depth = dedepth;
     }
 
     @Override

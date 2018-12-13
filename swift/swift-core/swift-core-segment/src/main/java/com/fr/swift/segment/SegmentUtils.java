@@ -102,6 +102,11 @@ public class SegmentUtils {
         return Optional.of(maxSegmentKey);
     }
 
+    /**
+     * 只release非内存seg todo 可能需要更明确的方法名
+     *
+     * @param seg 块
+     */
     public static void release(Segment seg) {
         if (seg != null && seg.isHistory()) {
             seg.release();
@@ -117,6 +122,12 @@ public class SegmentUtils {
         }
     }
 
+    /**
+     * 只release非内存seg todo 可能需要更明确的方法名
+     *
+     * @param column 列
+     * @param <T>    数据类型
+     */
     public static <T> void release(Column<T> column) {
         if (column != null && column.getLocation().getStoreType().isPersistent()) {
             column.getDetailColumn().release();

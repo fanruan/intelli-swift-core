@@ -5,6 +5,7 @@ import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 
 import java.util.BitSet;
+import java.util.Iterator;
 
 /**
  * @author anchore
@@ -50,6 +51,41 @@ public abstract class BaseBitSetBitMap extends AbstractBitMap {
             }
         }
         return false;
+    }
+
+    @Override
+    public IntIterator intIterator() {
+        return new IntIterator() {
+
+            int i = bitset.nextSetBit(0);
+
+            @Override
+            public int nextInt() {
+                int prevI = i;
+                i = bitset.nextSetBit(i + 1);
+                return prevI;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return i >= 0;
+            }
+
+            @Override
+            public Integer next() {
+                return nextInt();
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return intIterator();
     }
 
     @Override

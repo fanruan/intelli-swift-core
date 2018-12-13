@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
+import com.fr.swift.result.BaseNodeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.source.Row;
@@ -15,7 +16,7 @@ import java.util.Map;
  * <p>
  * Created by lyon on 2018/8/22.
  */
-public class Node2RowResultSet implements NodeResultSet<SwiftNode> {
+public class Node2RowResultSet extends BaseNodeResultSet<SwiftNode> implements NodeResultSet<SwiftNode> {
 
     private NodeResultSet source;
     private SwiftMetaData metaData;
