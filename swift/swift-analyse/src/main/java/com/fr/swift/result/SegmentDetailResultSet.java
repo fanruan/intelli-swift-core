@@ -93,7 +93,7 @@ public class SegmentDetailResultSet extends AbstractDetailResultSet {
 
     @Override
     public void close() {
-//        SegmentUtils.releaseColumns(columnList);
+        SegmentUtils.releaseColumns(columnList);
     }
 
 }

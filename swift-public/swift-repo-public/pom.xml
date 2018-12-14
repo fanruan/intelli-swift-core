@@ -13,8 +13,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <!--<module>swift-hdfs</module>-->
-        <!--<module>swift-ftp</module>-->
+        <module>swift-hdfs</module>
+        <module>swift-ftp</module>
     </modules>
 
     <dependencies>

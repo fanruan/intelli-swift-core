@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelQueryResultSet> {
+public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelResultSet, FunnelQueryResultSet> {
 
     private int numberOfSteps;
 
@@ -62,5 +62,4 @@ public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelQu
         }
         return lists;
     }
-
 }
