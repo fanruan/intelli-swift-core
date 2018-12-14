@@ -29,9 +29,10 @@ import java.util.List;
  * 调用groupBy来进行排序
  *
  * Created by Xiaolei.Liu on 2018/1/24
+ * @author yee
  */
 
-public class SortSegmentDetailResultSet extends AbstractDetailResultSet {
+public class SortSegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
 
     private int rowCount;
     private int fetchSize;

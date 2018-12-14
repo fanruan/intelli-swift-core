@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by lyon on 2018/11/21.
+ * This class created on 2018/11/21
+ *
+ * @author lyon
+ * @description
  */
 public interface QueryResultSetMerger<T extends Serializable, Q extends QueryResultSet<T>> {
 

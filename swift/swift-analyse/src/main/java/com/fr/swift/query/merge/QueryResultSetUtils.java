@@ -10,7 +10,10 @@ import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.SwiftMetaData;
 
 /**
- * Created by lyon on 2018/11/27.
+ * This class created on 2018/11/27
+ *
+ * @author lyon
+ * @description
  */
 public class QueryResultSetUtils {
 
