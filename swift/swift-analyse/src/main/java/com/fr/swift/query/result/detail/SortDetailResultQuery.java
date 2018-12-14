@@ -2,12 +2,13 @@ package com.fr.swift.query.result.detail;
 
 import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.SortMultiSegmentDetailResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.result.qrs.QueryResultSetUtils;
 import com.fr.swift.structure.Pair;
 
-import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class SortDetailResultQuery extends AbstractDetailResultQuery {
         this.comparators = comparators;
     }
 
+
     @Override
-    public QueryResultSet getQueryResult() throws SQLException {
-        // TODO: 2018/11/27
-        return (QueryResultSet) new SortMultiSegmentDetailResultSet(fetchSize, queryList, comparators);
+    protected QueryResultSetMerger createMerger() {
+        return QueryResultSetUtils.createMerger(QueryType.DETAIL_SORT);
     }
 }

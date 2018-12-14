@@ -1,12 +1,10 @@
 package com.fr.swift.result.qrs;
 
-import java.io.Serializable;
-
 /**
  * @author lyon
  * @date 2018/11/21
  */
-public interface QueryResultSet<T extends Serializable> {
+public interface QueryResultSet<T> {
 
     int getFetchSize();
 

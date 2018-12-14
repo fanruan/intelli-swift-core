@@ -18,8 +18,9 @@ import java.util.List;
 
 /**
  * Created by Xiaolei.Liu on 2018/1/18
+ * @author yee
  */
-public class SegmentDetailResultSet extends AbstractDetailResultSet {
+public class SegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
 
     /**
      * 当前块中过滤后的行号

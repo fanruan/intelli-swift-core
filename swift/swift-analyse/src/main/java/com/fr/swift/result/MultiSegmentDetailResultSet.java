@@ -13,9 +13,10 @@ import java.util.List;
 
 /**
  * Created by Xiaolei.Liu on 2018/1/23
+ * @author yee
  */
 
-public class MultiSegmentDetailResultSet extends AbstractDetailResultSet {
+public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
 
     private int rowCount;
     private List<Query<QueryResultSet>> queries;

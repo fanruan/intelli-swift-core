@@ -2,10 +2,11 @@ package com.fr.swift.query.result.detail;
 
 import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.MultiSegmentDetailResultSet;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.result.qrs.QueryResultSetUtils;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -24,8 +25,9 @@ public class NormalDetailResultQuery extends AbstractDetailResultQuery {
     }
 
     @Override
-    public QueryResultSet getQueryResult() throws SQLException {
-        // TODO: 2018/11/27
-        return (QueryResultSet) new MultiSegmentDetailResultSet(fetchSize, queryList);
+    protected QueryResultSetMerger createMerger() {
+        return QueryResultSetUtils.createMerger(QueryType.DETAIL);
     }
+
+
 }

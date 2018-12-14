@@ -10,7 +10,9 @@ import com.fr.swift.structure.Pair;
 import java.util.List;
 
 /**
- * Created by pony on 2017/11/24.
+ *
+ * @author pony
+ * @date 2017/11/24
  * 处理不排序的明细表
  */
 public class NormalDetailSegmentQuery extends AbstractDetailSegmentQuery {
@@ -21,7 +23,6 @@ public class NormalDetailSegmentQuery extends AbstractDetailSegmentQuery {
 
     @Override
     public QueryResultSet getQueryResult() {
-        // TODO: 2018/11/27
-        return (QueryResultSet) new SegmentDetailResultSet(fetchSize, columnList, filter);
+        return new SegmentDetailResultSet(fetchSize, columnList, filter);
     }
 }
