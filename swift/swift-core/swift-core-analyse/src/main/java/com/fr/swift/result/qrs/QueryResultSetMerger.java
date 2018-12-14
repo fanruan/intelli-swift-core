@@ -1,11 +1,12 @@
 package com.fr.swift.result.qrs;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by lyon on 2018/11/21.
  */
-public interface QueryResultSetMerger<T extends QueryResultSet> {
+public interface QueryResultSetMerger<T extends Serializable> {
 
     /**
      * 合并多个结果集

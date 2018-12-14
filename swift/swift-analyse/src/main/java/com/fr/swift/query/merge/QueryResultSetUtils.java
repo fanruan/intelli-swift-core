@@ -2,12 +2,12 @@ package com.fr.swift.query.merge;
 
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.funnel.FunnelQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetConverter;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 /**
  * Created by lyon on 2018/11/27.

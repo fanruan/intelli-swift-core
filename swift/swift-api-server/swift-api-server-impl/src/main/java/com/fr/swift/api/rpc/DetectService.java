@@ -1,9 +1,6 @@
 package com.fr.swift.api.rpc;
 
-import com.fr.swift.service.ServiceType;
-
-import java.util.List;
-import java.util.Map;
+import com.fr.swift.api.server.response.AuthResponse;
 
 /**
  * @author yee
@@ -15,5 +12,5 @@ public interface DetectService extends ApiService {
      * @param defaultAddress
      * @return
      */
-    Map<ServiceType, List<String>> detectiveAnalyseAndRealTime(String defaultAddress);
+    AuthResponse detectiveAnalyseAndRealTime(String defaultAddress, String username, String password);
 }

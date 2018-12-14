@@ -3,7 +3,8 @@ package com.fr.swift.result;
 import java.util.List;
 
 /**
- * Created by pony on 2017/10/10.
+ * @author pony
+ * @date 2017/10/10
  * 存储聚合之后的值的树状结构
  */
 public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer {

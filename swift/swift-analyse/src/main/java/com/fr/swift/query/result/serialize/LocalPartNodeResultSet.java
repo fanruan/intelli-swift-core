@@ -1,9 +1,10 @@
 package com.fr.swift.query.result.serialize;
 
+import com.fr.swift.result.BaseNodeResultSet;
 import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.SerializableResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SerializableResultSet;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 
@@ -16,7 +17,7 @@ import java.util.Map;
  * <p>
  * Created by Lyon on 2018/6/14.
  */
-public class LocalPartNodeResultSet implements NodeMergeResultSet<SwiftNode>, SerializableResultSet {
+public class LocalPartNodeResultSet extends BaseNodeResultSet<SwiftNode> implements NodeMergeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = -7163285398162627401L;
     private int fetchSize;

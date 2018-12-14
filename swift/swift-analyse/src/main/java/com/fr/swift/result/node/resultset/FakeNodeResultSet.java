@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
+import com.fr.swift.result.BaseNodeResultSet;
 import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftRowOperator;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/6/13.
  */
-public class FakeNodeResultSet implements NodeResultSet<SwiftNode> {
+public class FakeNodeResultSet extends BaseNodeResultSet<SwiftNode> implements NodeResultSet<SwiftNode> {
 
     private SwiftRowOperator<Row> operator;
     private NodeResultSet<SwiftNode> source;

@@ -1,6 +1,6 @@
 package com.fr.swift.data.importing;
 
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.result.SwiftResultSet;
 
 /**
  * @author yee

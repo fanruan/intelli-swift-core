@@ -1,7 +1,7 @@
 package com.fr.swift.source.db;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
-import com.fr.swift.source.SwiftResultSet;
 import junit.framework.TestCase;
 
 import java.util.LinkedHashMap;

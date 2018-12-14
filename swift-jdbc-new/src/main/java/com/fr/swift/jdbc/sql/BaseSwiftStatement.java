@@ -19,9 +19,9 @@ public abstract class BaseSwiftStatement implements SwiftStatement {
         this.grammarChecker = connection.getConfig().grammarChecker();
     }
 
-    protected Object execute(SqlRequestInfo info, JdbcExecutor executor) throws SQLException {
+    <T> T execute(SqlRequestInfo info, JdbcExecutor executor) throws SQLException {
         info.setDatabase(connection.getConfig().swiftDatabase());
         info.setAuthCode(connection.driver.holder.getAuthCode());
-        return connection.executeQueryInternal(info, executor);
+        return (T) connection.executeQueryInternal(info, executor);
     }
 }

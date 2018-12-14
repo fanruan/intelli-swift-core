@@ -2,8 +2,8 @@ package com.fr.swift.api.rpc;
 
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
 

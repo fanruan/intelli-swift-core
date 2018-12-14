@@ -1,11 +1,11 @@
 package com.fr.swift.source.etl.selfrelation;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.BaseCreateSegmentForColumnTransTest;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;

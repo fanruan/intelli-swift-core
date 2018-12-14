@@ -2,9 +2,9 @@ package com.fr.swift.query.result.serialize;
 
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.NodeResultSet;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

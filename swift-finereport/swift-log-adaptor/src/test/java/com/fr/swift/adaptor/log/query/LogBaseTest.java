@@ -10,13 +10,13 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferProvider;
 import org.junit.Before;
@@ -72,7 +72,7 @@ public class LogBaseTest {
     protected Segment createSegment(int order, Types.StoreType storeType, Table table, List<SegmentKey> configSegment) throws Exception {
         String cubePath = System.getProperty("user.dir") + "/cubes/" + table.getSourceKey().getId() + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, storeType);
-        SegmentKey segmentKey = new SegmentKeyBean(table.getSourceKey().getId(), location.getUri(), order, storeType, SwiftDatabase.DECISION_LOG);
+        SegmentKey segmentKey = new SegmentKeyBean(table.getSourceKey().getId(), order, storeType, SwiftDatabase.DECISION_LOG);
         configSegment.add(segmentKey);
         return new RealTimeSegmentImpl(location, table.getMeta());
     }

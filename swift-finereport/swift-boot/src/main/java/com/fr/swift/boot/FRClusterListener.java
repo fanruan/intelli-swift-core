@@ -10,7 +10,7 @@ import com.fr.swift.core.rpc.FRUrlFactory;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
-import com.fr.swift.local.LocalInvokerCreater;
+import com.fr.swift.local.LocalInvokerCreator;
 import com.fr.swift.local.LocalUrlFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -75,7 +75,7 @@ public class FRClusterListener implements ClusterEventListener {
 
             } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
                 SwiftProperty.getProperty().setCluster(false);
-                ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new LocalInvokerCreater()));
+                ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new LocalInvokerCreator()));
                 UrlSelector.getInstance().switchFactory(new LocalUrlFactory());
 
                 localManager.startUp();

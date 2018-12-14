@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/4/27.
  */
-public class NodeMergeResultSetImpl<T extends GroupNode> implements NodeMergeResultSet<T> {
+public class NodeMergeResultSetImpl<T extends GroupNode> extends BaseNodeResultSet<T> implements NodeMergeResultSet<T> {
 
     private int fetchSize;
     private T root;

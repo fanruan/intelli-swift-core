@@ -8,8 +8,8 @@ import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.result.serialize.SwiftResultSetUtils;
 import com.fr.swift.query.session.exception.SessionClosedException;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.core.MD5Utils;
 
 import java.io.Closeable;

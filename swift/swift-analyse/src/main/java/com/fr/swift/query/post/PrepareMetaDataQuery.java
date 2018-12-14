@@ -9,7 +9,7 @@
 //import com.fr.swift.result.NodeResultSet;
 //import com.fr.swift.result.node.resultset.Node2RowResultSet;
 //import com.fr.swift.source.SwiftMetaData;
-//import com.fr.swift.source.SwiftResultSet;
+//import com.fr.swift.result.SwiftResultSet;
 //
 //import java.sql.SQLException;
 //

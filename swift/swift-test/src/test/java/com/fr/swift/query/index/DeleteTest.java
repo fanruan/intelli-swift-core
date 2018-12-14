@@ -20,7 +20,7 @@
 //import com.fr.swift.service.AnalyseService;
 //import com.fr.swift.source.DataSource;
 //import com.fr.swift.source.SourceKey;
-//import com.fr.swift.source.SwiftResultSet;
+//import com.fr.swift.result.SwiftResultSet;
 //import com.fr.swift.source.SwiftSourceTransfer;
 //import com.fr.swift.source.DefaultSourceTransferProvider;
 //import com.fr.swift.source.db.QueryDBSource;

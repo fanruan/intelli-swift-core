@@ -1,6 +1,6 @@
 package com.fr.swift.query;
 
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.result.SwiftResultSet;
 
 /**
  * @author yee

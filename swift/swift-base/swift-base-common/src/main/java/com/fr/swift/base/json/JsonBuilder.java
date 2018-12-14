@@ -2,6 +2,7 @@ package com.fr.swift.base.json;
 
 import com.fr.swift.base.json.annotation.JsonMapper;
 import com.fr.swift.base.json.mapper.BeanMapper;
+import com.fr.swift.base.json.mapper.SwiftBeanMapper;
 import com.fr.swift.util.ReflectUtils;
 
 import java.lang.reflect.Constructor;
@@ -14,50 +15,50 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JsonBuilder {
     private static final Map<Class<? extends BeanMapper>, BeanMapper> MAPPERS = new ConcurrentHashMap<Class<? extends BeanMapper>, BeanMapper>();
-    private static final BeanMapper DEFAULT = defaultBeanMapper();
-
-    private static BeanMapper defaultBeanMapper() {
-        try {
-            Class clazz = JsonBuilder.class.getClassLoader().loadClass("com.fr.swift.config.json.SwiftBeanMapper");
-            Constructor constructor = clazz.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            return (BeanMapper) constructor.newInstance();
-        } catch (Exception e) {
-//            SwiftLoggers.getLogger().warn(e);
-            return null;
-        }
-    }
+    private static final Map<Class, BeanMapper> BEAN_MAPPER_MAP = new ConcurrentHashMap<Class, BeanMapper>();
+    private static final BeanMapper DEFAULT = new SwiftBeanMapper();
 
     public static <T> T readValue(String jsonString, Class<T> reference) throws Exception {
-        BeanMapper mapper = DEFAULT;
+        BeanMapper mapper;
         if (!ReflectUtils.isAssignable(reference, Map.class) && reference.isAnnotationPresent(JsonMapper.class)) {
             JsonMapper jsonMapper = reference.getAnnotation(JsonMapper.class);
             mapper = getMapper(jsonMapper);
+        } else {
+            mapper = calculateMapper(reference);
+        }
+        if (null == mapper) {
+            mapper = DEFAULT;
         }
         return mapper.readValue(jsonString, reference);
     }
 
     public static String writeJsonString(Object o) throws Exception {
         Class reference = o.getClass();
-        BeanMapper mapper = writeMapper(reference);
+        BeanMapper mapper = calculateMapper(reference);
         if (null == mapper) {
             mapper = DEFAULT;
         }
+        BEAN_MAPPER_MAP.put(reference, mapper);
         return mapper.writeValueAsString(o);
     }
 
-    private static BeanMapper writeMapper(Class ref) throws Exception {
+    private static BeanMapper calculateMapper(Class ref) throws Exception {
+        if (BEAN_MAPPER_MAP.containsKey(ref)) {
+            return BEAN_MAPPER_MAP.get(ref);
+        }
         for (Class anInterface : ref.getInterfaces()) {
             if (anInterface.isAnnotationPresent(JsonMapper.class)) {
                 JsonMapper jsonMapper = (JsonMapper) anInterface.getAnnotation(JsonMapper.class);
-                return getMapper(jsonMapper);
+                BeanMapper mapper = getMapper(jsonMapper);
+                BEAN_MAPPER_MAP.put(ref, mapper);
+                return mapper;
             }
         }
         Class superClass = ref.getSuperclass();
-        if (superClass.equals(Object.class)) {
+        if (null == superClass || superClass.equals(Object.class)) {
             return null;
         }
-        return writeMapper(superClass);
+        return calculateMapper(superClass);
     }
 
     private static BeanMapper getMapper(JsonMapper jsonMapper) throws Exception {

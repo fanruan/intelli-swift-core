@@ -4,7 +4,6 @@ import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -17,6 +16,8 @@ import java.util.Map;
  * @description
  */
 public class FunnelResultSet implements SwiftResultSet, Serializable {
+
+    private static final long serialVersionUID = 7369105047420564136L;
 
     private Map<FunnelGroupKey, FunnelAggValue> result;
 

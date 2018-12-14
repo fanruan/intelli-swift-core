@@ -2,7 +2,6 @@ package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.IntConsumer;
-import com.fr.swift.bitmap.roaringbitmap.IntIterator;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
@@ -12,6 +11,7 @@ import com.fr.swift.util.IoUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * @author anchore
@@ -66,13 +66,46 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
 
     @Override
     public boolean breakableTraversal(final BreakTraversalAction action) {
-        IntIterator iterator = bitmap.getIntIterator();
+        IntIterator iterator = intIterator();
         while (iterator.hasNext()) {
-            if (action.actionPerformed(iterator.next())) {
+            if (action.actionPerformed(iterator.nextInt())) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public IntIterator intIterator() {
+        return new IntIterator() {
+
+            com.fr.swift.bitmap.roaringbitmap.IntIterator itr = bitmap.getIntIterator();
+
+            @Override
+            public int nextInt() {
+                return itr.next();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return itr.hasNext();
+            }
+
+            @Override
+            public Integer next() {
+                return nextInt();
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return intIterator();
     }
 
     @Override

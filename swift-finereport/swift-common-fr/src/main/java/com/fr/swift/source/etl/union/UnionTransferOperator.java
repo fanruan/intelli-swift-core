@@ -1,8 +1,8 @@
 package com.fr.swift.source.etl.union;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
 
 import java.util.ArrayList;

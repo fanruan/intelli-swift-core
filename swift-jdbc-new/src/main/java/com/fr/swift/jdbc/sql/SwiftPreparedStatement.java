@@ -1,8 +1,10 @@
 package com.fr.swift.jdbc.sql;
 
+import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
+import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 
 import java.io.InputStream;
@@ -62,15 +64,15 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     @Override
     public ResultSet executeQuery() throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql, values);
-        Object result = execute(info, queryExecutor);
-        return null;
+        SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+        JdbcSwiftResultSet resultSet = new JdbcSwiftResultSet(info, result, this);
+        return new ResultSetWrapper(resultSet, result.getLabel2Index());
     }
 
     @Override
     public int executeUpdate() throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql, values);
-        Object result = execute(info, maintainExecutor);
-        return 0;
+        return execute(info, maintainExecutor);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.fr.swift.core.rpc;
 
-import com.fr.swift.basics.URL;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.UrlFactory;
 
 /**

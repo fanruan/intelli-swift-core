@@ -74,7 +74,8 @@ public final class ReflectUtils {
             }
         } else if (isAssignable(String.class, tClass)) {
             return fieldValue;
-        } else {
+        } else if (tClass.isEnum()) {
+            return Enum.valueOf(tClass, fieldValue);
 //            Object obj = MAPPER.readValue(fieldValue, tClass);
 //            return obj;
         }

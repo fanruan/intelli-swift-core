@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yee
@@ -16,7 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ClientProxy {
     private JdbcExecutor remoteExecutor;
-    private AtomicBoolean start = new AtomicBoolean(false);
 
     public ClientProxy(JdbcExecutor remoteExecutor) {
         this.remoteExecutor = remoteExecutor;
@@ -24,20 +22,6 @@ public class ClientProxy {
 
     public <T> T getProxy(Class<T> proxyClass) {
         return (T) Proxy.newProxyInstance(proxyClass.getClassLoader(), new Class[]{proxyClass}, new ProxyHandler(proxyClass, remoteExecutor));
-    }
-
-    public void start() {
-        if (!start.get()) {
-            remoteExecutor.start();
-            start.set(true);
-        }
-    }
-
-    public void stop() {
-        if (start.get()) {
-            remoteExecutor.stop();
-            start.set(false);
-        }
     }
 
     private class ProxyHandler implements InvocationHandler {

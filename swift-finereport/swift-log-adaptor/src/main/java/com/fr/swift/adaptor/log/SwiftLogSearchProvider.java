@@ -24,7 +24,7 @@
 //import com.fr.swift.result.DetailResultSet;
 //import com.fr.swift.service.AnalyseService;
 //import com.fr.swift.source.Row;
-//import com.fr.swift.source.SwiftResultSet;
+//import com.fr.swift.result.SwiftResultSet;
 //import com.fr.swift.structure.iterator.IteratorUtils;
 //import com.fr.swift.structure.iterator.MapperIterator;
 //import com.fr.swift.util.Crasher;

@@ -1,4 +1,4 @@
-package com.fr.swift.service;
+package com.fr.swift.basics.base.handler;
 
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
@@ -6,25 +6,25 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.annotation.Target;
-import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
-import com.fr.swift.query.merge.QueryResultSetUtils;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.qrs.DSType;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.query.info.bean.merge.QueryResultSetUtils;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,60 +62,56 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         for (final Pair<URL, Set<String>> pair : pairs) {
             queryBean.setSegments(pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
-            // TODO: 2018/12/01 这边这么调是不对的，这个URL不一定启了AnalyseService，有可能只是一台History或者Memory
             final Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
             RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass,
                     method, methodName, parameterTypes, query);
             rpcFuture.addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(final Object result) {
-                    try {
-                        if (!isLocalURL(pair.getKey())) {
-                            // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
-                            final QueryResultSet rs = (QueryResultSet) result;
-                            resultSets.add(new QueryResultSet() {
-                                private String queryJson = query;
-                                private DSType type = rs.type();
-                                private int fetchSize = rs.getFetchSize();
-                                private QueryResultSet resultSet = rs;
+                    if (!isLocalURL(pair.getKey())) {
+                        // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
+                        final QueryResultSet rs = (QueryResultSet) result;
+                        resultSets.add(new QueryResultSet() {
+                            private String queryJson = query;
+                            private DSType type = rs.type();
+                            private int fetchSize = rs.getFetchSize();
+                            private QueryResultSet resultSet = rs;
 
-                                @Override
-                                public int getFetchSize() {
-                                    return fetchSize;
-                                }
+                            @Override
+                            public int getFetchSize() {
+                                return fetchSize;
+                            }
 
-                                @Override
-                                public DSType type() {
-                                    return type;
-                                }
+                            @Override
+                            public DSType type() {
+                                return type;
+                            }
 
-                                @Override
-                                public Object getPage() {
-                                    Object ret = resultSet.getPage();
-                                    // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
-                                    if (hasNextPage()) {
-                                        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                                        try {
-                                            resultSet = (QueryResultSet) invoke(invoker, proxyClass,
-                                                    method, methodName, parameterTypes, queryJson);
-                                        } catch (Throwable throwable) {
-                                            return Crasher.crash(throwable);
-                                        }
+                            @Override
+                            public Serializable getPage() {
+                                Serializable ret = resultSet.getPage();
+                                // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
+                                if (hasNextPage()) {
+                                    Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                    try {
+                                        resultSet = (QueryResultSet) invoke(invoker, proxyClass,
+                                                method, methodName, parameterTypes, queryJson);
+                                    } catch (Throwable throwable) {
+                                        return Crasher.crash(throwable);
                                     }
-                                    return ret;
                                 }
+                                return ret;
+                            }
 
-                                @Override
-                                public boolean hasNextPage() {
-                                    return resultSet != null && resultSet.hasNextPage();
-                                }
-                            });
-                        } else {
-                            resultSets.add((QueryResultSet) result);
-                        }
-                    } finally {
-                        latch.countDown();
+                            @Override
+                            public boolean hasNextPage() {
+                                return resultSet != null && resultSet.hasNextPage();
+                            }
+                        });
+                    } else {
+                        resultSets.add((QueryResultSet) result);
                     }
+                    latch.countDown();
                 }
 
                 @Override

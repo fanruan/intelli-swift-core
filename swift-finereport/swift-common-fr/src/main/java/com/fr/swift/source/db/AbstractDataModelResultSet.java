@@ -3,11 +3,11 @@ package com.fr.swift.source.db;
 import com.fr.general.DateUtils;
 import com.fr.stable.Primitive;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;

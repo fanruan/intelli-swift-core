@@ -8,9 +8,9 @@ import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.FindList;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.converter.FindList;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
@@ -144,7 +144,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                         });
                         metaDataCache.putAll(result);
                         return result;
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         if (e instanceof SQLException) {
                             throw (SQLException) e;
                         }
