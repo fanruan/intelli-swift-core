@@ -12,7 +12,8 @@ import com.fr.swift.source.SwiftMetaData;
 import java.io.Serializable;
 
 /**
- * Created by lyon on 2018/11/27.
+ * @author lyon on
+ * @date 2018/11/27
  */
 public class QueryResultSetUtils {
 
