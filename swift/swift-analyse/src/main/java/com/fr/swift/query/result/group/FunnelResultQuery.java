@@ -34,7 +34,7 @@ public class FunnelResultQuery implements ResultQuery {
             resultList.add(query.getQueryResult());
         }
         QueryResultSetMerger merger = new FunnelQueryResultSetMerger(numberOfSteps);
-        QueryResultSet result = (QueryResultSet) merger.merge(resultList);
+        QueryResultSet result = merger.merge(resultList);
         return result;
     }
 }

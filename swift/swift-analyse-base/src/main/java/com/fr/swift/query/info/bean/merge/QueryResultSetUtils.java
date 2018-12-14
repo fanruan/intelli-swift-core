@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 public class QueryResultSetUtils {
 
-    public static <T extends Serializable> QueryResultSetMerger<T> createMerger(QueryBean queryBean) {
+    public static <T extends Serializable, Q extends QueryResultSet<T>> QueryResultSetMerger<T, Q> createMerger(QueryBean queryBean) {
         switch (queryBean.getQueryType()) {
             case DETAIL:
                 return null;
