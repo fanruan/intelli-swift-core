@@ -1,4 +1,4 @@
-package com.fr.swift.basics.base.handler;
+package com.fr.swift.service;
 
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
@@ -6,15 +6,19 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.annotation.Target;
+import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
+import com.fr.swift.query.merge.QueryResultSetUtils;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.qrs.DSType;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
-import com.fr.swift.result.qrs.QueryResultSetUtils;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
@@ -65,62 +69,68 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
             rpcFuture.addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(final Object result) {
-                    if (!isLocalURL(pair.getKey())) {
-                        // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
-                        final QueryResultSet rs = (QueryResultSet) result;
-                        resultSets.add(new QueryResultSet() {
-                            private String queryJson = query;
-                            private DSType type = rs.type();
-                            private int fetchSize = rs.getFetchSize();
-                            private QueryResultSet resultSet = rs;
+                    try {
+                        if (!isLocalURL(pair.getKey())) {
+                            // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
+                            final QueryResultSet rs = (QueryResultSet) result;
+                            resultSets.add(new QueryResultSet() {
+                                private String queryJson = query;
+                                private DSType type = rs.type();
+                                private int fetchSize = rs.getFetchSize();
+                                private QueryResultSet resultSet = rs;
 
-                            @Override
-                            public int getFetchSize() {
-                                return fetchSize;
-                            }
-
-                            @Override
-                            public DSType type() {
-                                return type;
-                            }
-
-                            @Override
-                            public Object getPage() {
-                                Object ret = resultSet.getPage();
-                                // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
-                                if (hasNextPage()) {
-                                    Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                                    try {
-                                        resultSet = (QueryResultSet) invoke(invoker, proxyClass,
-                                                method, methodName, parameterTypes, queryJson);
-                                    } catch (Throwable throwable) {
-                                        return Crasher.crash(throwable);
-                                    }
+                                @Override
+                                public int getFetchSize() {
+                                    return fetchSize;
                                 }
-                                return ret;
-                            }
 
-                            @Override
-                            public boolean hasNextPage() {
-                                return resultSet != null && resultSet.hasNextPage();
-                            }
-                        });
-                    } else {
-                        resultSets.add((QueryResultSet) result);
+                                @Override
+                                public DSType type() {
+                                    return type;
+                                }
+
+                                @Override
+                                public Object getPage() {
+                                    Object ret = resultSet.getPage();
+                                    // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
+                                    if (hasNextPage()) {
+                                        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                        try {
+                                            resultSet = (QueryResultSet) invoke(invoker, proxyClass,
+                                                    method, methodName, parameterTypes, queryJson);
+                                        } catch (Throwable throwable) {
+                                            return Crasher.crash(throwable);
+                                        }
+                                    }
+                                    return ret;
+                                }
+
+                                @Override
+                                public boolean hasNextPage() {
+                                    return resultSet != null && resultSet.hasNextPage();
+                                }
+                            });
+                        } else {
+                            resultSets.add((QueryResultSet) result);
+                        }
+                    } finally {
+                        latch.countDown();
                     }
-                    latch.countDown();
                 }
 
                 @Override
                 public void fail(Exception e) {
-                    // TODO: 2018/11/26
+                    SwiftLoggers.getLogger().error("Remote invoke clusterId{}", pair.getKey().getDestination().getId(), e);
+                    latch.countDown();
                 }
             });
         }
         latch.await();
-        QueryResultSetMerger merger = QueryResultSetUtils.createMerger(queryBean.getQueryType());
+        QueryResultSetMerger merger = QueryResultSetUtils.createMerger(queryBean);
         // TODO: 2018/11/27 postAggregation
-        return mergeResult(resultSets, merger);
+        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, merger);
+        Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
+        return postQuery.getQueryResult();
     }
 
     private static boolean isLocalURL(URL url) {

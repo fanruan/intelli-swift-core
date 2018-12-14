@@ -11,7 +11,7 @@ import com.fr.swift.basics.ServiceRegistry;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
-import com.fr.swift.basics.base.handler.SwiftQueryableProcessHandler;
+import com.fr.swift.service.SwiftQueryableProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
