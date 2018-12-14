@@ -43,7 +43,7 @@ public class MetricInvocationHandler implements InvocationHandler {
         for (Pair<Method, Object[]> invocation : invocations) {
             try {
                 invocation.getKey().invoke(MetricProxy.getInstance(), invocation.getValue());
-                SwiftLoggers.getLogger().error("invoked {}", invocation);
+                SwiftLoggers.getLogger().info("invoked {}", invocation);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }
