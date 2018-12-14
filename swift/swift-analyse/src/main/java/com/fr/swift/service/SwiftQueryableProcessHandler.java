@@ -12,6 +12,7 @@ import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.query.info.bean.merge.QueryResultSetUtils;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
