@@ -1,5 +1,6 @@
 package com.fr.swift.result.qrs;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -15,5 +16,5 @@ public interface QueryResultSetMerger<T> {
      * @param resultSets 多个部分结果集
      * @return 合并结果集（可分页）
      */
-    QueryResultSet<T> merge(List<QueryResultSet<T>> resultSets);
+    QueryResultSet<T> merge(List<? extends QueryResultSet<T>> resultSets) throws SQLException;
 }

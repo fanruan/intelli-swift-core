@@ -9,7 +9,6 @@ import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -26,26 +25,10 @@ public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet im
     private Iterator<List<Row>> mergerIterator;
     private Iterator<Row> rowIterator;
 
-    public SortMultiSegmentDetailResultSet(int fetchSize, List<Query<QueryResultSet>> queries,
-                                           List<Pair<Sort, Comparator>> comparators) throws SQLException {
+    public SortMultiSegmentDetailResultSet(int fetchSize, int rowCount, SortedQueryResultSetMerger.SortedRowIterator mergerIterator) throws SQLException {
         super(fetchSize);
-        this.queries = queries;
-        this.comparators = comparators;
-        init();
-    }
-
-    private void init() throws SQLException {
-        List<DetailResultSet> resultSets = new ArrayList<DetailResultSet>();
-        for (Query query : queries) {
-            DetailResultSet resultSet = (DetailResultSet) query.getQueryResult();
-            if (resultSet == null) {
-                continue;
-            }
-            rowCount += resultSet.getRowCount();
-            resultSets.add(resultSet);
-        }
-        mergerIterator = resultSets.isEmpty() ? new ArrayList<List<Row>>().iterator()
-                : new SortedDetailResultSetMerger(fetchSize, createRowComparator(comparators), resultSets);
+        this.rowCount = rowCount;
+        this.mergerIterator = mergerIterator;
     }
 
     @Override
@@ -89,24 +72,5 @@ public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet im
 
     }
 
-    private static Comparator<Row> createRowComparator(final List<Pair<Sort, Comparator>> comparators) {
-        Collections.sort(comparators, new Comparator<Pair<Sort, Comparator>>() {
-            @Override
-            public int compare(Pair<Sort, Comparator> o1, Pair<Sort, Comparator> o2) {
-                return o1.getKey().getTargetIndex() - o2.getKey().getTargetIndex();
-            }
-        });
-        return new Comparator<Row>() {
-            @Override
-            public int compare(Row o1, Row o2) {
-                for (Pair<Sort, Comparator> pair : comparators) {
-                    int result = pair.getValue().compare(o1.getValue(pair.getKey().getTargetIndex()), o2.getValue(pair.getKey().getTargetIndex()));
-                    if (result != 0) {
-                        return result;
-                    }
-                }
-                return 0;
-            }
-        };
-    }
+
 }
