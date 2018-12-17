@@ -11,10 +11,10 @@ import java.io.IOException;
  * @author anchore
  * @date 2018/8/17
  */
-abstract class BaseConnector extends AbstractConnector {
+public abstract class BaseConnector extends AbstractConnector {
     String parentURI;
 
-    BaseConnector(String path) {
+    public BaseConnector(String path) {
         initParentPath(path);
     }
 
@@ -22,7 +22,7 @@ abstract class BaseConnector extends AbstractConnector {
         parentURI = Strings.unifySlash("/" + path + "/");
     }
 
-    File getFolderPath(FileBlock block) {
+    public File getFolderPath(FileBlock block) {
         String path = Strings.unifySlash(parentURI + "/" + block.getParentUri().getPath());
         return new File(path);
     }
