@@ -24,6 +24,7 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
         return queryId;
     }
 
+    @Override
     public void setQueryId(String queryId) {
         this.queryId = queryId;
     }
@@ -46,10 +47,12 @@ public abstract class AbstractQueryInfoBean implements QueryInfoBean {
         this.fetchSize = fetchSize;
     }
 
+    @Override
     public Set<String> getSegments() {
         return segments;
     }
 
+    @Override
     public void setSegments(Set<String> segments) {
         this.segments = segments;
     }

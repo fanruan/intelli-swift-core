@@ -1,13 +1,15 @@
 package com.fr.swift.result.qrs;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
+ * This class created on 2018/11/21
  *
  * @author lyon
- * @date 2018/11/21
+ * @description
  */
-public interface QueryResultSetMerger<T> {
+public interface QueryResultSetMerger<T extends Serializable, Q extends QueryResultSet<T>> {
 
     /**
      * 合并多个结果集
@@ -15,5 +17,5 @@ public interface QueryResultSetMerger<T> {
      * @param resultSets 多个部分结果集
      * @return 合并结果集（可分页）
      */
-    QueryResultSet<T> merge(List<QueryResultSet<T>> resultSets);
+    Q merge(List<Q> resultSets);
 }

@@ -1,4 +1,4 @@
-package com.fr.swift.basics.base.handler;
+package com.fr.swift.service;
 
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
@@ -6,15 +6,19 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.annotation.Target;
+import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.query.builder.QueryBuilder;
+import com.fr.swift.query.info.bean.merge.QueryResultSetUtils;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.qrs.DSType;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
-import com.fr.swift.result.qrs.QueryResultSetUtils;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
@@ -112,14 +116,17 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
 
                 @Override
                 public void fail(Exception e) {
-                    // TODO: 2018/11/26
+                    SwiftLoggers.getLogger().error("Remote invoke clusterId{}", pair.getKey().getDestination().getId(), e);
+                    latch.countDown();
                 }
             });
         }
         latch.await();
-        QueryResultSetMerger merger = QueryResultSetUtils.createMerger(queryBean.getQueryType());
+        QueryResultSetMerger merger = QueryResultSetUtils.createMerger(queryBean);
         // TODO: 2018/11/27 postAggregation
-        return mergeResult(resultSets, merger);
+        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, merger);
+        Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
+        return postQuery.getQueryResult();
     }
 
     private static boolean isLocalURL(URL url) {

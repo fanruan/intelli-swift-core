@@ -2,6 +2,7 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
+import com.fr.swift.query.info.group.post.FunnelPostQueryInfo;
 import com.fr.swift.query.info.group.post.HavingFilterQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.info.group.post.RowSortQueryInfo;
@@ -9,6 +10,7 @@ import com.fr.swift.query.info.group.post.TreeAggregationQueryInfo;
 import com.fr.swift.query.info.group.post.TreeFilterQueryInfo;
 import com.fr.swift.query.info.group.post.TreeSortQueryInfo;
 import com.fr.swift.query.post.FieldCalQuery;
+import com.fr.swift.query.post.FunnelPostQuery;
 import com.fr.swift.query.post.HavingFilterQuery;
 import com.fr.swift.query.post.PostQuery;
 import com.fr.swift.query.post.RowSortQuery;
@@ -46,6 +48,8 @@ class PostQueryBuilder {
                 case ROW_SORT:
                     tmpQuery = new RowSortQuery(tmpQuery, ((RowSortQueryInfo) postQueryInfo).getSortList());
                     break;
+                case FUNNEL_MEDIAN:
+                    tmpQuery = new FunnelPostQuery(tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getQueryBean());
             }
         }
         return tmpQuery;
