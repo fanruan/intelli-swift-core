@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * @date 2018-12-10
  */
 public class SingleFileOrNetImportResultSet extends BaseFileOrNetImportResultSet<String> {
-    public SingleFileOrNetImportResultSet(String path, SwiftSourceAlloter alloter, LineParser parser) {
+    public SingleFileOrNetImportResultSet(String path, SwiftSourceAlloter alloter, FileLineParser parser) {
         super(path, alloter, parser);
     }
 

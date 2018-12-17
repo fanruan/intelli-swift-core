@@ -1,6 +1,7 @@
 package com.fr.swift.source.alloter.impl.line;
 
 import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fr.swift.source.alloter.RowAnalyzer;
 import com.fr.swift.source.alloter.impl.BaseAllotRule;
 
 /**
@@ -18,15 +19,25 @@ public class LineAllotRule extends BaseAllotRule {
     }
 
     public LineAllotRule(int step) {
+        super(AllotType.LINE);
         this.step = step;
     }
 
+    /**
+     * TODO 这些getStep方法外界应该无需感知，全部通过RowAnalyzer计算
+     *
+     * @return
+     */
     public int getStep() {
         return step;
     }
 
+    /**
+     * TODO 实现一个RowAnalyzer，用来计算Hist，RealTime，Collate的seg
+     * @return
+     */
     @Override
-    public AllotType getType() {
-        return AllotType.LINE;
+    public RowAnalyzer analyzer() {
+        return null;
     }
 }
