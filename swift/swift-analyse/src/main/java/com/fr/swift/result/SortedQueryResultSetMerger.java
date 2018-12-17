@@ -8,7 +8,6 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,7 +18,7 @@ import java.util.List;
  * @author yee
  * @date 2018-12-17
  */
-public class SortedQueryResultSetMerger implements QueryResultSetMerger<List<Row>> {
+public class SortedQueryResultSetMerger implements QueryResultSetMerger<List<Row>, DetailQueryResultSet> {
     private static Comparator<Row> createRowComparator(final List<Pair<Sort, Comparator>> comparators) {
         Collections.sort(comparators, new Comparator<Pair<Sort, Comparator>>() {
             @Override
@@ -42,7 +41,7 @@ public class SortedQueryResultSetMerger implements QueryResultSetMerger<List<Row
     }
 
     @Override
-    public QueryResultSet<List<Row>> merge(List<? extends QueryResultSet<List<Row>>> queryResultSets) throws SQLException {
+    public DetailQueryResultSet merge(List<DetailQueryResultSet> queryResultSets) {
         int rowCount = 0;
         for (QueryResultSet<List<Row>> queryResultSet : queryResultSets) {
             rowCount += ((DetailQueryResultSet) queryResultSet).getRowCount();
@@ -52,7 +51,7 @@ public class SortedQueryResultSetMerger implements QueryResultSetMerger<List<Row
                 queryResultSets.get(0).getFetchSize(), rowCount,
                 new SortedRowIterator(queryResultSets.get(0).getFetchSize(),
                         createRowComparator(Collections.<Pair<Sort, Comparator>>emptyList()),
-                        (List<DetailQueryResultSet>) queryResultSets));
+                        queryResultSets));
     }
 
     /**

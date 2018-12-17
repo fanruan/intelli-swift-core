@@ -4,7 +4,6 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.Row;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,16 +11,16 @@ import java.util.List;
  * @author yee
  * @date 2018-12-16
  */
-public class DetailQueryResultSetMerger implements QueryResultSetMerger<List<Row>> {
+public class DetailQueryResultSetMerger implements QueryResultSetMerger<List<Row>, DetailQueryResultSet> {
     @Override
-    public QueryResultSet<List<Row>> merge(List<? extends QueryResultSet<List<Row>>> queryResultSets) throws SQLException {
+    public DetailQueryResultSet merge(List<DetailQueryResultSet> queryResultSets) {
         int rowCount = 0;
         for (QueryResultSet<List<Row>> queryResultSet : queryResultSets) {
             rowCount += ((DetailQueryResultSet) queryResultSet).getRowCount();
         }
         // TODO fetch size怎么传
         return new MultiSegmentDetailResultSet(queryResultSets.get(0).getFetchSize(), rowCount,
-                new DetailRowIterator((List<DetailQueryResultSet>) queryResultSets));
+                new DetailRowIterator(queryResultSets));
     }
 
     static class DetailRowIterator implements Iterator<Row> {

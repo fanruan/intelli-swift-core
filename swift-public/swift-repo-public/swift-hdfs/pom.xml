@@ -60,6 +60,11 @@
             <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-io</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
