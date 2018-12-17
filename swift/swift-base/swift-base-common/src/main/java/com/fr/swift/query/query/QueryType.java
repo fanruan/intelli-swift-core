@@ -19,5 +19,9 @@ public enum QueryType {
     /**
      * 分组聚合
      */
-    GROUP
+    GROUP,
+    /**
+     * 漏斗
+     */
+    FUNNEL
 }

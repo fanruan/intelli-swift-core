@@ -54,4 +54,8 @@ public class IntListRowTraversal implements RowTraversal {
         }
         return bitMap;
     }
+
+    public IntList getList() {
+        return list;
+    }
 }

@@ -97,4 +97,22 @@ public class Comparators {
     private Comparators() {
         throw new InstantiationError();
     }
+
+    public static final Comparable<?> MIN_INFINITY = new Comparable<Object>() {
+        @Override
+        public int compareTo(Object o) {
+            return -1;
+        }
+    };
+
+    public static final Comparable<?> MAX_INFINITY = new Comparable<Object>() {
+        @Override
+        public int compareTo(Object o) {
+            return 1;
+        }
+    };
+
+    public static final String MIN_INFINITY_STRING = new String("I am MIN_INFINITY_STRING");
+
+    public static final String MAX_INFINITY_STRING = new String("I am MAX_INFINITY_STRING");
 }

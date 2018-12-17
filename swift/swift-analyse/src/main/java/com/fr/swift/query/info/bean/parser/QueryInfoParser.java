@@ -2,7 +2,9 @@ package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.element.SortBean;
+import com.fr.swift.query.info.bean.parser.funnel.FunnelQueryInfoImpl;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
@@ -11,6 +13,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
+import com.fr.swift.query.info.group.post.FunnelPostQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
@@ -24,6 +27,7 @@ import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,6 +42,9 @@ public class QueryInfoParser {
                 return parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean);
             case DETAIL:
                 return parseDetailQueryInfo((DetailQueryInfoBean) queryInfoBean);
+            case FUNNEL:
+                return parseFunnelQueryInfo((FunnelQueryBean) queryInfoBean);
+            default:
         }
         return Crasher.crash(new UnsupportedOperationException("Unsupported query type!"));
     }
@@ -46,6 +53,9 @@ public class QueryInfoParser {
         switch (queryInfoBean.getQueryType()) {
             case GROUP:
                 return ((GroupQueryInfo) parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean)).getPostQueryInfoList();
+            case FUNNEL:
+                PostQueryInfo postQueryInfo = new FunnelPostQueryInfo((FunnelQueryBean) queryInfoBean);
+                return Collections.singletonList(postQueryInfo);
         }
         return new ArrayList<PostQueryInfo>();
     }
@@ -73,6 +83,10 @@ public class QueryInfoParser {
             }
         }
         return true;
+    }
+
+    private static QueryInfo parseFunnelQueryInfo(FunnelQueryBean bean) {
+        return new FunnelQueryInfoImpl(bean.getQueryId(), bean.getSegments(), bean);
     }
 
 //    private static QueryInfo parseResultJoinQueryInfo(ResultJoinQueryInfoBean bean) {

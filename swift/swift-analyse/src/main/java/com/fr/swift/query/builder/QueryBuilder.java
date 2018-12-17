@@ -2,6 +2,7 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -35,8 +36,11 @@ public final class QueryBuilder {
                 return (Query<T>) DetailQueryBuilder.buildQuery((DetailQueryInfoBean) bean);
             case GROUP:
                 return (Query<T>) GroupQueryBuilder.buildQuery((GroupQueryInfoBean) bean);
+            case FUNNEL:
+                return (Query<T>) FunnelQueryBuilder.buildQuery((FunnelQueryBean) bean);
+            default:
+                return Crasher.crash(new UnsupportedOperationException("unsupported Query type!"));
         }
-        return Crasher.crash(new UnsupportedOperationException("unsupported Query type!"));
     }
 
     public static <T extends QueryResultSet> Query<T> buildPostQuery(final QueryResultSet mergeResultSet, QueryBean bean) throws Exception {

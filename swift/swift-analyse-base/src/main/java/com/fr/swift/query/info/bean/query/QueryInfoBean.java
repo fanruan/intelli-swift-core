@@ -13,7 +13,9 @@ import com.fr.swift.query.query.QueryType;
         defaultImpl = QueryType.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DetailQueryInfoBean.class, name = "DETAIL"),
-        @JsonSubTypes.Type(value = GroupQueryInfoBean.class, name = "GROUP")
+        @JsonSubTypes.Type(value = GroupQueryInfoBean.class, name = "GROUP"),
+        @JsonSubTypes.Type(value = FunnelQueryBean.class, name = "FUNNEL")
+
 })
 public interface QueryInfoBean extends QueryBean {
 }
