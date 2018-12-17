@@ -1,15 +1,9 @@
 package com.fr.swift.result;
 
-import com.fr.swift.query.query.Query;
-import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.Pair;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,13 +13,11 @@ import java.util.List;
  */
 public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
 
-    private List<Query<QueryResultSet>> queries;
-    private List<Pair<Sort, Comparator>> comparators;
     private int rowCount;
     private Iterator<List<Row>> mergerIterator;
     private Iterator<Row> rowIterator;
 
-    public SortMultiSegmentDetailResultSet(int fetchSize, int rowCount, SortedQueryResultSetMerger.SortedRowIterator mergerIterator) throws SQLException {
+    public SortMultiSegmentDetailResultSet(int fetchSize, int rowCount, SortedQueryResultSetMerger.SortedRowIterator mergerIterator) {
         super(fetchSize);
         this.rowCount = rowCount;
         this.mergerIterator = mergerIterator;

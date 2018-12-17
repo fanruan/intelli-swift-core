@@ -3,7 +3,6 @@ package com.fr.swift.result;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +22,7 @@ public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet implem
     private Iterator<Row> mergeIterator;
     private Iterator<Row> rowIterator;
 
-    public MultiSegmentDetailResultSet(int fetchSize, int rowCount, DetailQueryResultSetMerger.DetailRowIterator queries) throws SQLException {
+    public MultiSegmentDetailResultSet(int fetchSize, int rowCount, DetailQueryResultSetMerger.DetailRowIterator queries) {
         super(fetchSize);
         this.mergeIterator = queries;
         this.rowCount = rowCount;
