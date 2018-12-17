@@ -1,8 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.config.bean.SegmentKeyBean;
@@ -11,6 +8,8 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.TransCollateLoadEvent;
 import com.fr.swift.log.SwiftLoggers;
@@ -30,7 +29,7 @@ import java.util.Collections;
  * @date 2018/9/11
  * @see SegmentEvent#UPLOAD_HISTORY
  */
-public class UploadHistoryListener extends Listener<SegmentKey> {
+public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
 
     private static final SwiftRepositoryManager REPO = SwiftContext.get().getBean(SwiftRepositoryManager.class);
 
@@ -41,7 +40,7 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
     private static final SwiftSegmentLocationService LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
     @Override
-    public void on(Event event, final SegmentKey segKey) {
+    public void on(final SegmentKey segKey) {
         upload(segKey);
     }
 
@@ -104,6 +103,6 @@ public class UploadHistoryListener extends Listener<SegmentKey> {
 
     public static void listen() {
         // todo 何时listen
-        EventDispatcher.listen(SegmentEvent.UPLOAD_HISTORY, INSTANCE);
+        SwiftEventDispatcher.listen(SegmentEvent.UPLOAD_HISTORY, INSTANCE);
     }
 }

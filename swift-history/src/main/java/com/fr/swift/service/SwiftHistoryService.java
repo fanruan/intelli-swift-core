@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
@@ -11,6 +10,7 @@ import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -252,7 +252,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
                         ImmutableBitMap allshow = whereDeleter.delete(where);
                         if (allshow.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
+                            SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
                         }
                     }
                 }

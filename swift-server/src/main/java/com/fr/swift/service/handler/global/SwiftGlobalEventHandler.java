@@ -1,6 +1,5 @@
 package com.fr.swift.service.handler.global;
 
-import com.fr.event.EventDispatcher;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.basics.AsyncRpcCallback;
@@ -16,6 +15,7 @@ import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
@@ -76,7 +76,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 break;
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
-                EventDispatcher.fire(TaskEvent.DONE, pair);
+                SwiftEventDispatcher.fire(TaskEvent.DONE, pair);
                 break;
             case CLEAN:
                 Map<String, ClusterEntity> analyseMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);

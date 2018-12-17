@@ -1,8 +1,5 @@
 package com.fr.swift.cluster.service;
 
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
@@ -18,6 +15,8 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.IndexingSelectRuleService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -251,9 +250,9 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
     protected void initListener() {
         SchedulerTaskPool.getInstance().initListener();
-        EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
+        SwiftEventDispatcher.listen(TaskEvent.RUN, new SwiftEventListener<Map<TaskKey, ?>>() {
             @Override
-            public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
+            public void on(Map<TaskKey, ?> taskKeyMap) {
                 // rpc告诉indexing节点执行任务
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
                 String address = null;
@@ -288,9 +287,9 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
             }
         });
-        EventDispatcher.listen(TaskEvent.CANCEL, new Listener<TaskKey>() {
+        SwiftEventDispatcher.listen(TaskEvent.CANCEL, new SwiftEventListener<TaskKey>() {
             @Override
-            public void on(Event event, TaskKey taskKey) {
+            public void on(TaskKey taskKey) {
                 // rpc告诉indexing节点取消任务
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点取消任务");
             }

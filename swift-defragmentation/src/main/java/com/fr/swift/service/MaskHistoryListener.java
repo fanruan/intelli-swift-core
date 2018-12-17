@@ -1,11 +1,10 @@
 package com.fr.swift.service;
 
 import com.fineio.FineIO;
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.BaseSegment;
@@ -23,14 +22,14 @@ import java.io.IOException;
  * @date 2018/9/11
  * @see SegmentEvent#MASK_HISTORY
  */
-public class MaskHistoryListener extends Listener<SegmentKey> {
+public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
 
     private static final SwiftRepositoryManager REPO = SwiftContext.get().getBean(SwiftRepositoryManager.class);
 
     private static final ServiceTaskExecutor SVC_EXEC = SwiftContext.get().getBean(ServiceTaskExecutor.class);
 
     @Override
-    public void on(Event event, final SegmentKey segKey) {
+    public void on(final SegmentKey segKey) {
         try {
             SVC_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.UPLOAD) {
                 @Override
@@ -63,6 +62,6 @@ public class MaskHistoryListener extends Listener<SegmentKey> {
     public static final MaskHistoryListener INSTANCE = new MaskHistoryListener();
 
     public static void listen() {
-        EventDispatcher.listen(SegmentEvent.MASK_HISTORY, INSTANCE);
+        SwiftEventDispatcher.listen(SegmentEvent.MASK_HISTORY, INSTANCE);
     }
 }
