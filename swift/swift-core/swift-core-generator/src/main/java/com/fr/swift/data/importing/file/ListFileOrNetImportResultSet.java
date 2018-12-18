@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2018-12-11
  */
 public class ListFileOrNetImportResultSet extends BaseFileOrNetImportResultSet<List<String>> {
-    public ListFileOrNetImportResultSet(List<String> paths, SwiftSourceAlloter alloter, LineParser parser) {
+    public ListFileOrNetImportResultSet(List<String> paths, SwiftSourceAlloter alloter, FileLineParser parser) {
         super(paths, alloter, parser);
     }
 

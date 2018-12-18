@@ -16,10 +16,10 @@ import java.util.regex.Pattern;
 public abstract class BaseFileOrNetImportResultSet<Paths> extends BaseImportResultSet {
     protected Paths paths;
     protected SwiftSourceAlloter alloter;
-    protected LineParser parser;
+    protected FileLineParser parser;
     private Pattern pattern = Pattern.compile("(http|https)+://");
 
-    public BaseFileOrNetImportResultSet(Paths paths, SwiftSourceAlloter alloter, LineParser parser) {
+    public BaseFileOrNetImportResultSet(Paths paths, SwiftSourceAlloter alloter, FileLineParser parser) {
         super(ImportType.FILE_NET_BASE);
         this.paths = paths;
         this.alloter = alloter;
