@@ -14,25 +14,30 @@ public class SwiftEventDispatcherTest {
     @Test
     public void testListenAndFire() throws InterruptedException {
 
-        SwiftEventDispatcher.listen(Evt.EVT1, new SwiftEventListener<Object>() {
+        SwiftEventListener<Object> listener = new SwiftEventListener<Object>() {
             @Override
             public void on(Object data) {
                 Assert.assertEquals("data1", data);
             }
-        });
+        };
+        SwiftEventDispatcher.listen(Evt.EVT1, listener);
 
         SwiftEventDispatcher.fire(Evt.EVT1, "data1");
 
-        SwiftEventDispatcher.listen(Evt.EVT2, new SwiftEventListener<Object>() {
+        SwiftEventListener<Object> listener1 = new SwiftEventListener<Object>() {
             @Override
             public void on(Object data) {
                 Assert.assertEquals("data2", data);
             }
-        });
+        };
+        SwiftEventDispatcher.listen(Evt.EVT2, listener1);
         SwiftEventDispatcher.fire(Evt.EVT1, "data1");
         SwiftEventDispatcher.fire(Evt.EVT2, "data2");
 
         Thread.sleep(1000);
+
+        SwiftEventDispatcher.remove(listener);
+        SwiftEventDispatcher.remove(listener1);
     }
 
     @Test

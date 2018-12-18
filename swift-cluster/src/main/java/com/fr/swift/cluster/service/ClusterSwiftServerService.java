@@ -282,7 +282,7 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                         }
                     });
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error(e);
                 }
 
             }

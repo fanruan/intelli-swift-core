@@ -43,7 +43,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -153,29 +152,19 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         if (null == remoteUris || remoteUris.isEmpty()) {
             return;
         }
-        final CountDownLatch latch = new CountDownLatch(remoteUris.size());
         for (final String sourceKey : remoteUris.keySet()) {
             final Set<String> uris = remoteUris.get(sourceKey);
             if (uris.isEmpty()) {
                 return;
             }
+
             try {
-                taskExecutor.submit(new SwiftServiceCallable(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD) {
-                    @Override
-                    public void doJob() {
-                        try {
-                            download(sourceKey, uris, replace);
-                            SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
-                        } finally {
-                            latch.countDown();
-                        }
-                    }
-                });
-            } catch (InterruptedException e) {
+                download(sourceKey, uris, replace);
+                SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
+            } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
             }
         }
-        latch.await();
     }
 
     private void download(String sourceKey, Set<String> sets, boolean replace) {

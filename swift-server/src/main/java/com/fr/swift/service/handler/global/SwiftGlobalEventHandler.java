@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author yee
@@ -184,21 +185,12 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
     }
 
     private void clean(Map<String, ClusterEntity> map, String[] sourceKeys) throws Exception {
-        Iterator<Map.Entry<String, ClusterEntity>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, ClusterEntity> entry = iterator.next();
-            runAsyncRpc(entry.getKey(), entry.getValue().getServiceClass(), "cleanMetaCache", sourceKeys)
-                    .addCallback(new AsyncRpcCallback() {
-                        @Override
-                        public void success(Object result) {
-
-                        }
-
-                        @Override
-                        public void fail(Exception e) {
-
-                        }
-                    });
+        for (Entry<String, ClusterEntity> entry : map.entrySet()) {
+            try {
+                runAsyncRpc(entry.getKey(), entry.getValue().getServiceClass(), "cleanMetaCache", sourceKeys);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
         }
     }
 }

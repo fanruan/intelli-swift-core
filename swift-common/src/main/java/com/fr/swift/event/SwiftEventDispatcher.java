@@ -9,11 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author anchore
@@ -23,10 +21,7 @@ public class SwiftEventDispatcher {
 
     private static final ConcurrentMap<SwiftEvent, List<SwiftEventListener>> EVENTS = new ConcurrentHashMap<SwiftEvent, List<SwiftEventListener>>();
 
-    private static final ExecutorService EXEC = SwiftExecutors.newThreadPoolExecutor(2, 2,
-            0, TimeUnit.MILLISECONDS,
-            new ArrayBlockingQueue<Runnable>(1000),
-            new PoolThreadFactory(SwiftEventDispatcher.class));
+    private static final ExecutorService EXEC = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftEventDispatcher.class));
 
     public static void listen(SwiftEvent event, SwiftEventListener<?> listener) {
         Assert.notNull(event);
