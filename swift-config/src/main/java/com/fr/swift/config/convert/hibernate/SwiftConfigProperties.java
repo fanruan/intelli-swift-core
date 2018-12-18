@@ -36,7 +36,14 @@ public class SwiftConfigProperties {
     }
 
     private DBOption getOption() {
-        return selfStart ? this.option : FineDBProperties.getInstance().get();
+        if (selfStart) {
+            return this.option;
+        }
+        try {
+            return FineDBProperties.getInstance().get();
+        } catch (Exception e) {
+            return option;
+        }
     }
 
     public String getDriverClass() {
