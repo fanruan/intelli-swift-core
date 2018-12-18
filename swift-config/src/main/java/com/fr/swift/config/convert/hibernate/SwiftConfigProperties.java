@@ -1,11 +1,13 @@
 package com.fr.swift.config.convert.hibernate;
 
+import com.fr.data.pool.DBCPConnectionPoolAttr;
 import com.fr.finedb.FineDBProperties;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.db.option.DBOption;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.beans.factory.annotation.Value;
 import com.fr.third.springframework.stereotype.Service;
+import com.fr.workspace.WorkContext;
 
 import java.util.Properties;
 
@@ -42,8 +44,28 @@ public class SwiftConfigProperties {
         try {
             return FineDBProperties.getInstance().get();
         } catch (Exception e) {
-            return option;
+            return getDefault();
         }
+    }
+
+    private DBOption getDefault() {
+        final String string = "jdbc:hsqldb:file://" + WorkContext.getCurrent().getPath() + "/" + "embed" + "/finedb/db";
+        final DBCPConnectionPoolAttr dbcpConnectionPoolAttr = new DBCPConnectionPoolAttr();
+        return new DBOption().dialectClass("com.fr.third.org.hibernate.dialect.HSQLDialect")
+                .driverClass("com.fr.third.org.hsqldb.jdbcDriver").url(string).username("sa")
+                .addRawProperty("default_schema", "PUBLIC")
+                .addRawProperty("hibernate.connection.provider_class", "com.fr.third.alibaba.druid.support.hibernate.DruidConnectionProvider")
+                .addRawProperty("initialSize", dbcpConnectionPoolAttr.getInitialSize())
+                .addRawProperty("maxActive", dbcpConnectionPoolAttr.getMaxActive())
+                .addRawProperty("minIdle", dbcpConnectionPoolAttr.getMinIdle())
+                .addRawProperty("maxWait", dbcpConnectionPoolAttr.getMaxWait())
+                .addRawProperty("validationQuery", dbcpConnectionPoolAttr.getValidationQuery())
+                .addRawProperty("testOnBorrow", dbcpConnectionPoolAttr.isTestOnBorrow())
+                .addRawProperty("testOnReturn", dbcpConnectionPoolAttr.isTestOnReturn())
+                .addRawProperty("testWhileIdle", dbcpConnectionPoolAttr.isTestWhileIdle())
+                .addRawProperty("timeBetweenEvictionRunsMillis", dbcpConnectionPoolAttr.getTimeBetweenEvictionRunsMillis())
+                .addRawProperty("numTestsPerEvictionRun", dbcpConnectionPoolAttr.getNumTestsPerEvictionRun())
+                .addRawProperty("minEvictableIdleTimeMillis", dbcpConnectionPoolAttr.getMinEvictableIdleTimeMillis());
     }
 
     public String getDriverClass() {
