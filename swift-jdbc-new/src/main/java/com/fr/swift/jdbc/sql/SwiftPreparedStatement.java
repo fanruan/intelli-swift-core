@@ -25,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -357,100 +356,6 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
         super.close();
     }
 
-    @Override
-    public int getMaxFieldSize() {
-        return 0;
-    }
-
-    @Override
-    public void setMaxFieldSize(int max) {
-
-    }
-
-    @Override
-    public int getMaxRows() {
-        return 0;
-    }
-
-    @Override
-    public void setMaxRows(int max) {
-
-    }
-
-    @Override
-    public void setEscapeProcessing(boolean enable) {
-
-    }
-
-    @Override
-    public int getQueryTimeout() {
-        return 0;
-    }
-
-    @Override
-    public void setQueryTimeout(int seconds) {
-
-    }
-
-    @Override
-    public void cancel() {
-
-    }
-
-    @Override
-    public SQLWarning getWarnings() {
-        return null;
-    }
-
-    @Override
-    public void clearWarnings() {
-
-    }
-
-    @Override
-    public void setCursorName(String name) {
-
-    }
-
-    @Override
-    public boolean execute(String sql) {
-        return false;
-    }
-
-    @Override
-    public ResultSet getResultSet() {
-        return null;
-    }
-
-    @Override
-    public int getUpdateCount() {
-        return 0;
-    }
-
-    @Override
-    public boolean getMoreResults() {
-        return false;
-    }
-
-    @Override
-    public int getFetchDirection() {
-        return 0;
-    }
-
-    @Override
-    public void setFetchDirection(int direction) {
-
-    }
-
-    @Override
-    public int getFetchSize() {
-        return 0;
-    }
-
-    @Override
-    public void setFetchSize(int rows) {
-
-    }
 
     @Override
     public String getObjId() {
