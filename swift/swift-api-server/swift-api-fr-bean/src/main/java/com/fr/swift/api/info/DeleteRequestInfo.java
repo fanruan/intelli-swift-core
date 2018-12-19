@@ -6,11 +6,11 @@ import com.fr.swift.base.json.annotation.JsonProperty;
  * @author yee
  * @date 2018-12-07
  */
-public class DeleteTableRequestInfo extends TableRequestInfo {
+public class DeleteRequestInfo extends TableRequestInfo {
     @JsonProperty("where")
     private String where;
 
-    public DeleteTableRequestInfo() {
+    public DeleteRequestInfo() {
         super(ApiRequestType.DELETE);
     }
 

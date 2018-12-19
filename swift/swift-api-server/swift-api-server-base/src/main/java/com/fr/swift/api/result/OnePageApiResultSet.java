@@ -17,11 +17,11 @@ import java.util.Map;
  */
 public class OnePageApiResultSet<T> implements SwiftApiResultSet<T> {
     private static final long serialVersionUID = -4562401863852149125L;
-    protected SwiftMetaData metaData;
+    private SwiftMetaData metaData;
     protected List<Row> rows;
-    protected int rowCount;
-    protected boolean hasNextPage = true;
-    protected boolean originHasNextPage;
+    private int rowCount;
+    private boolean hasNextPage = true;
+    private boolean originHasNextPage;
     private transient Iterator<Row> rowIterator;
     private T queryObject;
 

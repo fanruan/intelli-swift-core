@@ -4,8 +4,6 @@ import com.fr.swift.jdbc.rpc.JdbcExecutor;
 import com.fr.swift.jdbc.rpc.connection.RpcNioConnector;
 import com.fr.swift.jdbc.rpc.invoke.SimpleExecutor;
 
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -25,10 +23,5 @@ public class RemoteConnection extends BaseSwiftConnection {
     @Override
     protected JdbcExecutor createJdbcExecutor(String address) {
         return new SimpleExecutor(new RpcNioConnector(address), connectionTimeout());
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
-        return new SwiftDataBaseMetaData(this);
     }
 }
