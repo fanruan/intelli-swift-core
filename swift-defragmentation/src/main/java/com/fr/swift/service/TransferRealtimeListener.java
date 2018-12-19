@@ -1,9 +1,8 @@
 package com.fr.swift.service;
 
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.event.SegmentEvent;
@@ -17,12 +16,12 @@ import com.fr.swift.task.service.SwiftServiceCallable;
  * @date 2018/9/11
  * @see SegmentEvent#TRANSFER_REALTIME
  */
-public class TransferRealtimeListener extends Listener<SegmentKey> {
+public class TransferRealtimeListener implements SwiftEventListener<SegmentKey> {
 
     private static final ServiceTaskExecutor TASK_EXEC = SwiftContext.get().getBean(ServiceTaskExecutor.class);
 
     @Override
-    public void on(Event event, final SegmentKey segKey) {
+    public void on(final SegmentKey segKey) {
         try {
             TASK_EXEC.submit(new SwiftServiceCallable(segKey.getTable(), ServiceTaskType.PERSIST) {
                 @Override
@@ -39,6 +38,6 @@ public class TransferRealtimeListener extends Listener<SegmentKey> {
 
     public static void listen() {
         // todo 何时listen
-        EventDispatcher.listen(SegmentEvent.TRANSFER_REALTIME, INSTANCE);
+        SwiftEventDispatcher.listen(SegmentEvent.TRANSFER_REALTIME, INSTANCE);
     }
 }

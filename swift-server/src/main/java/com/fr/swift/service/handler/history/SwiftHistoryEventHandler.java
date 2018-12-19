@@ -105,19 +105,22 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                         .addCallback(new AsyncRpcCallback() {
                             @Override
                             public void success(Object result) {
-                                LOGGER.info("load success");
-                                success.set(true);
-                                if (null != latch) {
-                                    latch.countDown();
+                                try {
+                                    LOGGER.info("load success");
+                                    success.set(true);
+                                } finally {
+                                    if (null != latch) {
+                                        latch.countDown();
+                                    }
                                 }
                             }
 
                             @Override
                             public void fail(Exception e) {
-                                LOGGER.error("load error! ", e);
                                 if (null != latch) {
                                     latch.countDown();
                                 }
+                                LOGGER.error("load error! ", e);
                             }
                         });
             }

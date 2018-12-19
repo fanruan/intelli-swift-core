@@ -1,10 +1,7 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.Result;
-import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.URL;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.selector.ProxySelector;
@@ -121,17 +118,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                         URL masterURL = getMasterURL();
                         ProxyFactory factory = ProxySelector.getInstance().getFactory();
                         Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, masterURL, false);
-                        Result result = invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));
-                        RpcFuture future = (RpcFuture) result.getValue();
-                        future.addCallback(new AsyncRpcCallback() {
-                            @Override
-                            public void success(Object result) {
-                            }
-
-                            @Override
-                            public void fail(Exception e) {
-                            }
-                        });
+                        invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{new CleanMetaDataCacheEvent(sourceKeys)}));
                     }
                     return true;
                 }

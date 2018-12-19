@@ -1,12 +1,12 @@
 package com.fr.swift.segment;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.SegmentEvent;
@@ -74,7 +74,7 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
 
             currentSeg = newRealtimeSegment(currentSegKey);
             SegmentContainer.NORMAL.updateSegment(currentSegKey, currentSeg);
-            EventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, maxLocalSegmentKey.get());
+            SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, maxLocalSegmentKey.get());
             return true;
         }
         currentSegKey = maxLocalSegmentKey.get();

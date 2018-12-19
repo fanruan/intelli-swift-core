@@ -67,8 +67,11 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
             queryRemoteNodeNode(jsonString, remoteURI).addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(Object result) {
-                    resultSet[0] = (SwiftResultSet) result;
-                    latch.countDown();
+                    try {
+                        resultSet[0] = (SwiftResultSet) result;
+                    } finally {
+                        latch.countDown();
+                    }
                 }
 
                 @Override
@@ -82,8 +85,11 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                             queryRemoteNodeNode(jsonString, spare).addCallback(new AsyncRpcCallback() {
                                 @Override
                                 public void success(Object result) {
-                                    resultSet[0] = (SwiftResultSet) result;
-                                    count.countDown();
+                                    try {
+                                        resultSet[0] = (SwiftResultSet) result;
+                                    } finally {
+                                        count.countDown();
+                                    }
                                 }
 
                                 @Override
@@ -100,9 +106,9 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
                         if (resultSet[0] == null) {
                             // 远程查询抛错这边应该知晓
                             // TODO 远程查询抛错应该怎么处理
+                            latch.countDown();
                             SwiftLoggers.getLogger().error("Query remote node error! ", e);
                             SwiftLoggers.getLogger().error("caused by query: {}\n", jsonString);
-                            latch.countDown();
                         }
                     } catch (Exception e1) {
                         SwiftLoggers.getLogger().error("Query remote node error! ", e1);
