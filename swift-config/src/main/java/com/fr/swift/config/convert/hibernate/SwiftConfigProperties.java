@@ -19,6 +19,7 @@ import java.util.Properties;
 public class SwiftConfigProperties {
     private DBOption option;
     private boolean selfStart;
+    private boolean frEnable = false;
 
     public SwiftConfigProperties() {
         this.option = new DBOption().addRawProperty("hibernate.connection.autocommit", false);
@@ -42,9 +43,11 @@ public class SwiftConfigProperties {
             return this.option;
         }
         try {
-            return FineDBProperties.getInstance().get();
+            DBOption option = FineDBProperties.getInstance().get();
+            frEnable = true;
+            return option;
         } catch (Exception e) {
-            return getDefault();
+            return frEnable ? option : getDefault();
         }
     }
 

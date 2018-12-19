@@ -89,5 +89,10 @@
             <artifactId>swift-slave</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-log-adaptor</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
 </project>
