@@ -10,25 +10,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Lyon on 2018/4/27.
+ *
+ * @author Lyon
+ * @date 2018/4/27
  */
 public class NodeMergeResultSetImpl<T extends GroupNode> extends BaseNodeResultSet<T> implements NodeMergeResultSet<T> {
 
-    private int fetchSize;
     private T root;
+
     private List<Map<Integer, Object>> rowGlobalDictionaries;
+
     private Iterator<Row> iterator;
+
     private boolean hasNextPage = true;
 
     public NodeMergeResultSetImpl(int fetchSize, T root, List<Map<Integer, Object>> rowGlobalDictionaries) {
-        this.fetchSize = fetchSize;
+        super(fetchSize);
         this.root = root;
         this.rowGlobalDictionaries = rowGlobalDictionaries;
-    }
-
-    @Override
-    public int getFetchSize() {
-        return fetchSize;
     }
 
     @Override

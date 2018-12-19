@@ -14,22 +14,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Lyon on 2018/6/13.
+ *
+ * @author Lyon
+ * @date 2018/6/13
  */
 public class FakeNodeResultSet extends BaseNodeResultSet<SwiftNode> implements NodeResultSet<SwiftNode> {
 
     private SwiftRowOperator<Row> operator;
+
     private NodeResultSet<SwiftNode> source;
+
     private Iterator<Row> rowIterator;
 
     public FakeNodeResultSet(SwiftRowOperator<Row> operator, NodeResultSet<SwiftNode> source) {
+        super(source.getFetchSize());
         this.operator = operator;
         this.source = source;
-    }
-
-    @Override
-    public int getFetchSize() {
-        return source.getFetchSize();
     }
 
     @Override

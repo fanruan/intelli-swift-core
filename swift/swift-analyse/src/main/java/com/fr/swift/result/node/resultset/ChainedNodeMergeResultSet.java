@@ -17,20 +17,14 @@ import java.util.Map;
  * @author Lyon
  * @date 2018/6/14
  */
-public class ChainedNodeMergeResultSet extends BaseNodeResultSet<GroupNode> implements NodeMergeResultSet<GroupNode> {
+class ChainedNodeMergeResultSet extends BaseNodeResultSet<GroupNode> implements NodeMergeResultSet<GroupNode> {
 
-    private int fetchSize;
     private Iterator<NodeMergeResultSet<GroupNode>> iterator;
 
-    public ChainedNodeMergeResultSet(int fetchSize, boolean[] isGlobalIndexed, List<NodeMergeResultSet<GroupNode>> sources,
-                                     List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
-        this.fetchSize = fetchSize;
+    ChainedNodeMergeResultSet(int fetchSize, boolean[] isGlobalIndexed, List<NodeMergeResultSet<GroupNode>> sources,
+                              List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
+        super(fetchSize);
         this.iterator = new NodeResultSetMerger(fetchSize, isGlobalIndexed, sources, aggregators, comparators);
-    }
-
-    @Override
-    public int getFetchSize() {
-        return fetchSize;
     }
 
     @Override

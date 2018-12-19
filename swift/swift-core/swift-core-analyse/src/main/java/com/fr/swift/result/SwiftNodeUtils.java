@@ -11,6 +11,7 @@ import com.fr.swift.structure.stack.LimitedStack;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,9 +62,7 @@ public class SwiftNodeUtils {
     public static Iterator<Row> node2RowIterator(SwiftNode root) {
         if (getDimensionSize(root) == 0) {
             Row row = new ListBasedRow(aggValue2Object(root.getAggregatorValue()));
-            List<Row> list = new ArrayList<Row>();
-            list.add(row);
-            return list.iterator();
+            return Collections.singletonList(row).iterator();
         }
         Iterator<List<SwiftNode>> iterator = node2RowListIterator(root);
         return new MapperIterator<List<SwiftNode>, Row>(iterator, new Function<List<SwiftNode>, Row>() {
@@ -75,7 +74,7 @@ public class SwiftNodeUtils {
     }
 
     public static Row nodes2Row(List<SwiftNode> row) {
-        List data = new ArrayList();
+        List<Object> data = new ArrayList<Object>();
         if (null != row) {
             for (SwiftNode col : row) {
                 if (null != col) {
@@ -96,9 +95,10 @@ public class SwiftNodeUtils {
 
     private static List<Object> aggValue2Object(AggregatorValue[] values) {
         List<Object> objects = new ArrayList<Object>();
-        values = values == null ? new AggregatorValue[0] : values;
-        for (int i = 0; i < values.length; i++) {
-            objects.add(values[i] == null ? null : values[i].calculateValue());
+        if (values != null) {
+            for (AggregatorValue value : values) {
+                objects.add(value == null ? null : value.calculateValue());
+            }
         }
         return objects;
     }
