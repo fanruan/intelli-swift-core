@@ -1,8 +1,7 @@
 package com.fr.swift.task.impl;
 
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.WorkerTask;
 import com.fr.swift.util.function.BinaryFunction;
@@ -36,9 +35,9 @@ public class WorkerTaskPool extends BaseTaskPool<WorkerTask> {
     }
 
     public void initListener() {
-        EventDispatcher.listen(TaskEvent.LOCAL_CANCEL, new Listener<TaskKey>() {
+        SwiftEventDispatcher.listen(TaskEvent.LOCAL_CANCEL, new SwiftEventListener<TaskKey>() {
             @Override
-            public void on(Event event, TaskKey key) {
+            public void on(TaskKey key) {
                 WorkerTask workerTask = get(key);
                 synchronized (workerTask) {
                     workerTask.onCancel();

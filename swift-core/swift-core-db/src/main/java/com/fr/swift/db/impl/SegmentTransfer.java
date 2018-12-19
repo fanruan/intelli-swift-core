@@ -42,14 +42,9 @@ public class SegmentTransfer {
             swiftResultSet = new SegmentResultSet(oldSeg);
             inserter.insertData(swiftResultSet);
 
-//            FineIO.doWhenFinished(new Callable<Void>() {
-//                @Override
-//                public Void call() throws Exception {
-                    indexSegmentIfNeed(newSeg);
-                    onSucceed();
-//                    return null;
-//                }
-//            }).get();
+            indexSegmentIfNeed(newSeg);
+            onSucceed();
+
             SegmentContainer.NORMAL.updateSegment(newSegKey, newSeg);
 
             SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);

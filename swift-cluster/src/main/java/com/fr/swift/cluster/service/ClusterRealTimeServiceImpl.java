@@ -1,6 +1,5 @@
 package com.fr.swift.cluster.service;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
@@ -13,6 +12,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -251,9 +251,9 @@ public class ClusterRealTimeServiceImpl extends AbstractSwiftService implements 
 
                     if (needUpload.contains(segKey.toString())) {
                         if (allShowBitmap.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
+                            SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
-                            EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
+                            SwiftEventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
                         }
                     }
                 }

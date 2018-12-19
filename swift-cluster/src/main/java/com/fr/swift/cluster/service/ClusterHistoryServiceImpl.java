@@ -1,6 +1,5 @@
 package com.fr.swift.cluster.service;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.RpcMethod;
 import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
@@ -15,6 +14,7 @@ import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.event.history.CheckLoadHistoryEvent;
 import com.fr.swift.exception.SwiftServiceException;
@@ -273,9 +273,9 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
                     if (needUpload.contains(segKey.toString())) {
                         if (allShowBitmap.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
+                            SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
-                            EventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
+                            SwiftEventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
                         }
                     }
                 }

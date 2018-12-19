@@ -15,9 +15,9 @@ import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author yee
@@ -41,9 +41,7 @@ public class SwiftRealTimeEventHandler extends AbstractHandler<AbstractRealTimeR
             switch (event.subEvent()) {
                 case RECOVER:
                     final Map<String, List<SegmentKey>> map = clusterSegmentService.getClusterSegments();
-                    Iterator<Map.Entry<String, ClusterEntity>> iterator = realTimeServices.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, ClusterEntity> entityEntry = iterator.next();
+                    for (Entry<String, ClusterEntity> entityEntry : realTimeServices.entrySet()) {
                         final String key = entityEntry.getKey();
                         ClusterEntity entity = entityEntry.getValue();
                         final List<SegmentKey> list = map.get(key);
@@ -66,9 +64,7 @@ public class SwiftRealTimeEventHandler extends AbstractHandler<AbstractRealTimeR
                     return null;
                 case MERGE:
                     final Map<String, List<SegmentKey>> mergeMap = clusterSegmentService.getClusterSegments();
-                    Iterator<Map.Entry<String, ClusterEntity>> mergeIterator = realTimeServices.entrySet().iterator();
-                    while (mergeIterator.hasNext()) {
-                        Map.Entry<String, ClusterEntity> entityEntry = mergeIterator.next();
+                    for (Entry<String, ClusterEntity> entityEntry : realTimeServices.entrySet()) {
                         final String key = entityEntry.getKey();
                         ClusterEntity entity = entityEntry.getValue();
                         final List<SegmentKey> list = mergeMap.get(key);
@@ -89,6 +85,7 @@ public class SwiftRealTimeEventHandler extends AbstractHandler<AbstractRealTimeR
                         }
                     }
                     return null;
+                default:
             }
         } catch (Exception e) {
             LOGGER.error("handle error! ", e);
