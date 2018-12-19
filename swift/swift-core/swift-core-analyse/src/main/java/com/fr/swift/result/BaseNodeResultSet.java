@@ -13,6 +13,17 @@ import java.util.Map;
  */
 public abstract class BaseNodeResultSet<T extends SwiftNode> implements QueryResultSet<Pair<T, List<Map<Integer, Object>>>> {
 
+    private int fetchSize;
+
+    public BaseNodeResultSet(int fetchSize) {
+        this.fetchSize = fetchSize;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
+    }
+
     @Override
     public DSType type() {
         return DSType.NODE;

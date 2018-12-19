@@ -5,7 +5,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.node.resultset.ChainedNodeMergeResultSet;
+import com.fr.swift.result.node.resultset.NodeQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
@@ -14,7 +14,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created by pony on 2017/11/27.
+ * @author pony
+ * @date 2017/11/27
  */
 public class GroupResultQuery extends AbstractGroupResultQuery {
 
@@ -38,6 +39,6 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
             }
         }
         // TODO: 2018/11/27
-        return (QueryResultSet) new ChainedNodeMergeResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, comparators);
+        return new NodeQueryResultSetMerger(fetchSize, isGlobalIndexed, aggregators, comparators).merge(resultSets);
     }
 }

@@ -10,28 +10,25 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by pony on 2018/4/19.
+ * @author pony
+ * @date 2018/4/19
  */
-public class NodeResultSetImpl<T extends SwiftNode> extends BaseNodeResultSet implements NodeResultSet {
+public class NodeResultSetImpl<T extends SwiftNode> extends BaseNodeResultSet<T> implements NodeResultSet<T> {
 
-    private int fetchSize;
-    private SwiftNode node;
+    private T node;
+
     private SwiftMetaData metaData;
+
     private Iterator<Row> iterator;
 
-    public NodeResultSetImpl(int fetchSize, SwiftNode node, SwiftMetaData metaData) {
-        this.fetchSize = fetchSize;
+    public NodeResultSetImpl(int fetchSize, T node, SwiftMetaData metaData) {
+        super(fetchSize);
         this.node = node;
         this.metaData = metaData;
     }
 
     @Override
-    public int getFetchSize() {
-        return fetchSize;
-    }
-
-    @Override
-    public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
+    public Pair<T, List<Map<Integer, Object>>> getPage() {
         return Pair.of(node, null);
     }
 

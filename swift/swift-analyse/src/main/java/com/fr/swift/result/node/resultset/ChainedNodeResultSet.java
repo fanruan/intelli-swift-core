@@ -14,16 +14,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Lyon on 2018/6/12.
+ * @author Lyon
+ * @date 2018/6/12
  */
 public class ChainedNodeResultSet extends BaseNodeResultSet<SwiftNode> implements NodeResultSet<SwiftNode> {
 
     private SwiftNodeOperator operator;
+
     private NodeResultSet<SwiftNode> source;
+
     private SwiftMetaData metaData;
+
     private Iterator<Row> rowIterator;
 
     public ChainedNodeResultSet(SwiftNodeOperator operator, NodeResultSet<SwiftNode> source) {
+        super(source.getFetchSize());
         this.operator = operator;
         this.source = source;
     }
@@ -31,11 +36,6 @@ public class ChainedNodeResultSet extends BaseNodeResultSet<SwiftNode> implement
     public ChainedNodeResultSet(SwiftNodeOperator operator, NodeResultSet source, SwiftMetaData metaData) {
         this(operator, source);
         this.metaData = metaData;
-    }
-
-    @Override
-    public int getFetchSize() {
-        return source.getFetchSize();
     }
 
     @Override
