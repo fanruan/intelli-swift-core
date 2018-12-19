@@ -1,5 +1,6 @@
 package com.fr.swift.base.json.serialization;
 
+import com.fr.swift.base.json.annotation.JsonIgnore;
 import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
 import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.base.json.annotation.JsonSubTypes;
@@ -75,6 +76,9 @@ public class SerializationConfigHolder {
             }
             for (final Field f : clazz.getDeclaredFields()) {
                 String propertyName = f.getName();
+                if (f.isAnnotationPresent(JsonIgnore.class)) {
+                    continue;
+                }
                 if (f.isAnnotationPresent(JsonProperty.class)) {
                     JsonProperty property = f.getAnnotation(JsonProperty.class);
                     if (Strings.isNotEmpty(property.value())) {

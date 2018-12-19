@@ -2,13 +2,16 @@ package com.fr.swift.jdbc.sql;
 
 import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
+import com.fr.swift.jdbc.result.MaintainResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
+import com.fr.swift.source.ListBasedRow;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -29,13 +32,22 @@ public class SwiftStatementImpl extends BaseSwiftStatement {
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql);
-        SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
-        return new ResultSetWrapper(new JdbcSwiftResultSet(info, result, this), result.getLabel2Index());
+        if (info.isSelect()) {
+            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+            return new ResultSetWrapper(new JdbcSwiftResultSet(info, result, this), result.getLabel2Index());
+        } else {
+            int result = execute(info, maintainExecutor);
+            return new MaintainResultSet(new ListBasedRow(result), Arrays.asList("affects"));
+        }
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql);
+        if (info.isSelect()) {
+            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+            return result.getRowCount();
+        }
         return execute(info, maintainExecutor);
     }
 

@@ -4,8 +4,10 @@ import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
+import com.fr.swift.jdbc.result.MaintainResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
+import com.fr.swift.source.ListBasedRow;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -28,6 +30,7 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -64,14 +67,23 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     @Override
     public ResultSet executeQuery() throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql, values);
-        SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
-        JdbcSwiftResultSet resultSet = new JdbcSwiftResultSet(info, result, this);
-        return new ResultSetWrapper(resultSet, result.getLabel2Index());
+        if (info.isSelect()) {
+            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+            JdbcSwiftResultSet resultSet = new JdbcSwiftResultSet(info, result, this);
+            return new ResultSetWrapper(resultSet, result.getLabel2Index());
+        } else {
+            int result = execute(info, maintainExecutor);
+            return new MaintainResultSet(new ListBasedRow(result), Arrays.asList("affects"));
+        }
     }
 
     @Override
     public int executeUpdate() throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql, values);
+        if (info.isSelect()) {
+            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+            return result.getRowCount();
+        }
         return execute(info, maintainExecutor);
     }
 

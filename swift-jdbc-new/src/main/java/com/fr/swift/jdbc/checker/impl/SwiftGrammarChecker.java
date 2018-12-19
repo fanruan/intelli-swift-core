@@ -2,6 +2,8 @@ package com.fr.swift.jdbc.checker.impl;
 
 import com.fr.swift.jdbc.checker.GrammarChecker;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.sql.SwiftPreparedStatement;
@@ -17,8 +19,12 @@ import java.util.List;
 public class SwiftGrammarChecker implements GrammarChecker {
     @Override
     public SqlRequestInfo check(String sql) {
-        SQLUtils.parseStatements(sql, null);
-        return new SqlRequestInfo(sql);
+        List<SQLStatement> list = SQLUtils.parseStatements(sql, null);
+        if (list.get(0) instanceof SQLSelectStatement) {
+            return new SqlRequestInfo(sql, true);
+        } else {
+            return new SqlRequestInfo(sql, false);
+        }
     }
 
     @Override
