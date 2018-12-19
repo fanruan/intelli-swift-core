@@ -22,7 +22,7 @@ public class SwiftStatementHolder {
     private Queue<SwiftStatement> idle;
     private int timeout = JdbcProperty.get().getConnectionTimeout().intValue();
 
-    public SwiftStatementHolder(int idleCount) {
+    SwiftStatementHolder(int idleCount) {
         this.maxIdle = idleCount;
         this.idleSemaphore = new Semaphore(idleCount);
         this.using = new ConcurrentHashMap<String, SwiftStatement>(idleCount);
@@ -33,8 +33,7 @@ public class SwiftStatementHolder {
         this.timeout = timeout;
     }
 
-    synchronized
-    public void using(SwiftStatement obj) {
+    synchronized void using(SwiftStatement obj) {
         try {
             if (idleSemaphore.tryAcquire(timeout, TimeUnit.MILLISECONDS)) {
                 using.put(obj.getObjId(), obj);
@@ -47,8 +46,7 @@ public class SwiftStatementHolder {
 
     }
 
-    synchronized
-    public void idle(SwiftStatement obj) {
+    synchronized void idle(SwiftStatement obj) {
         SwiftStatement remove = using.remove(obj.getObjId());
         if (null != remove) {
             idle.add(remove);
@@ -56,13 +54,11 @@ public class SwiftStatementHolder {
         }
     }
 
-    synchronized
-    public SwiftStatement getIdle() {
+    synchronized SwiftStatement getIdle() {
         return idle.poll();
     }
 
-    synchronized
-    public SwiftStatement getPreparedIdle(String id) {
+    synchronized SwiftStatement getPreparedIdle(String id) {
         SwiftStatement statement;
         while (null != (statement = idle.peek())) {
             if (statement.getObjId().equals(id) && statement instanceof PreparedStatement) {

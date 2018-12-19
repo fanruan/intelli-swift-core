@@ -45,7 +45,7 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     private String sql;
     private List values;
 
-    public SwiftPreparedStatement(BaseSwiftConnection connection, String sql, JdbcExecutor query, JdbcExecutor maintain) {
+    SwiftPreparedStatement(BaseSwiftConnection connection, String sql, JdbcExecutor query, JdbcExecutor maintain) {
         super(connection, query, maintain);
         SQLUtils.parseStatements(sql, null);
         this.sql = sql;
