@@ -1,5 +1,6 @@
 package com.fr.swift.io.nio;
 
+import com.fr.swift.cube.io.output.ByteArrayWriter;
 import com.fr.swift.io.ByteIo;
 import com.fr.swift.io.IntIo;
 import com.fr.swift.io.LongIo;
@@ -11,7 +12,7 @@ import com.fr.swift.util.IoUtil;
  * @author anchore
  * @date 2018/7/20
  */
-public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
+public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]>, ByteArrayWriter {
     private LongIo position;
     private IntIo length;
     private ByteIo data;
@@ -22,7 +23,6 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
         super(conf);
         init();
     }
-
 
     private void init() {
         position = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "pos")));
@@ -59,6 +59,11 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
         for (byte b : val) {
             data.put(currentPos++, b);
         }
+    }
+
+    @Override
+    public void resetContentPosition() {
+        currentPos = 0;
     }
 
     @Override

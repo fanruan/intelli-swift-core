@@ -9,4 +9,8 @@ import com.fr.swift.cube.io.output.BitMapWriter;
  * @date 2017/11/23
  */
 public class BitMapMemIo extends SwiftObjectMemIo<ImmutableBitMap> implements BitMapReader, BitMapWriter {
+    @Override
+    public void resetContentPosition() {
+        // nothing
+    }
 }
