@@ -9,6 +9,7 @@ import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.sql.SwiftPreparedStatement;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -18,18 +19,16 @@ import java.util.List;
  */
 public class SwiftGrammarChecker implements GrammarChecker {
     @Override
-    public SqlRequestInfo check(String sql) {
+    public SqlRequestInfo check(String sql, Object... paramValues) throws SQLException {
+        if (null != paramValues && paramValues.length > 0) {
+            sql = getRealSql(sql, Arrays.asList(paramValues));
+        }
         List<SQLStatement> list = SQLUtils.parseStatements(sql, null);
         if (list.get(0) instanceof SQLSelectStatement) {
             return new SqlRequestInfo(sql, true);
         } else {
             return new SqlRequestInfo(sql, false);
         }
-    }
-
-    @Override
-    public SqlRequestInfo check(String sql, List paramValues) throws SQLException {
-        return check(getRealSql(sql, paramValues));
     }
 
     private String getRealSql(String sql, List values) throws SQLException {

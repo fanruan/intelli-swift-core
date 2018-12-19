@@ -12,21 +12,21 @@ public interface JdbcRequestService extends RequestService<JdbcExecutor> {
     /**
      * execute auth
      *
-     * @param sender
-     * @param user
-     * @param password
-     * @return
+     * @param sender an operator to send rpc request
+     * @param user swift username
+     * @param password swift password
+     * @return response of the request
      */
     ApiResponse apply(JdbcExecutor sender, String user, String password);
 
     /**
      * execute auth with retry
      *
-     * @param sender
-     * @param user
-     * @param password
-     * @param retryTime
-     * @return
+     * @param sender an operator to send rpc request
+     * @param user swift username
+     * @param password swift password
+     * @param retryTime retry time
+     * @return response of the request
      */
     ApiResponse applyWithRetry(JdbcExecutor sender, String user, String password, int retryTime);
 }

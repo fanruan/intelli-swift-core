@@ -13,23 +13,38 @@ public interface RequestService<Sender extends RpcSender> {
     /**
      * execute query
      *
-     * @param sender
-     * @param sql
-     * @return
+     * @param sender an operator to send rpc request
+     * @param sql request info
+     * @return response of the request
      */
     ApiResponse apply(Sender sender, RequestInfo sql);
 
+    /**
+     * execute query
+     *
+     * @param sender      an operator to send rpc request
+     * @param requestJson request json
+     * @return response of the request
+     */
     ApiResponse apply(Sender sender, String requestJson);
 
     /**
-     * execute query with retry
+     * execute query
      *
-     * @param sender
-     * @param sql
-     * @param retryTime
-     * @return
+     * @param sender an operator to send rpc request
+     * @param sql request info
+     * @param retryTime retry time of this request.
+     * @return response of the request
      */
     ApiResponse applyWithRetry(Sender sender, RequestInfo sql, int retryTime);
 
+    /**
+     * execute query
+     *
+     * @param sender an operator to send rpc request
+     * @param requestJson request json
+     * @param retryTime retry time of this request.
+     * @return response of the request
+     */
     ApiResponse applyWithRetry(Sender sender, String requestJson, int retryTime);
 }

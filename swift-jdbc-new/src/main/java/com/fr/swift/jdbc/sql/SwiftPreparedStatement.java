@@ -65,7 +65,7 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        SqlRequestInfo info = grammarChecker.check(sql, values);
+        SqlRequestInfo info = grammarChecker.check(sql, values.toArray());
         if (info.isSelect()) {
             SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
             JdbcSwiftResultSet resultSet = new JdbcSwiftResultSet(info, result, this);
@@ -78,7 +78,7 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
 
     @Override
     public int executeUpdate() throws SQLException {
-        SqlRequestInfo info = grammarChecker.check(sql, values);
+        SqlRequestInfo info = grammarChecker.check(sql, values.toArray());
         if (info.isSelect()) {
             SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
             return result.getRowCount();
@@ -368,8 +368,19 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
         values.clear();
     }
 
+    /**
+     * Prepared statement parameter value.
+     * Any parameters in the sql would be filled by <code>INSTANCE</code> on initializing.
+     * The parameter will be filled by NULL when set null value to the parameter.
+     */
     public enum NullValue {
+        /**
+         * Initialization Null value
+         */
         INSTANCE,
+        /**
+         * Real Null value
+         */
         NULL;
 
         @Override
