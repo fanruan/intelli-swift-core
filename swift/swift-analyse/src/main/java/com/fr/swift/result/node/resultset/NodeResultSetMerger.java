@@ -28,7 +28,9 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
     private List<Comparator<GroupNode>> comparators;
     private Function<List<NodeMergeResultSet<GroupNode>>, NodeMergeResultSet<GroupNode>> operator;
     private NodeMergeResultSet<GroupNode> remainResultSet;
-    // 用于判断是否从源resultSet中更新数据。remainRowCount >= fetchSize不为空，否则为空
+    /**
+     * 用于判断是否从源resultSet中更新数据。remainRowCount >= fetchSize不为空，否则为空
+     */
     private List<GroupNode> theRowOfRemainNode;
     private List<List<GroupNode>> lastRowOfPrevPages;
 

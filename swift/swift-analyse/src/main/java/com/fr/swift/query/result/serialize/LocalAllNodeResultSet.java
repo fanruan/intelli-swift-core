@@ -16,28 +16,26 @@ import java.util.Map;
 /**
  * 对应QueryType.LOCAL_ALL（当前节点包含查询的所有segment，并且当前节点处理的是查询节点转发过来的请求）
  * <p>
- * Created by Lyon on 2018/6/14.
+ *
+ * @author Lyon
+ * @date 2018/6/14
  */
 public class LocalAllNodeResultSet extends BaseNodeResultSet<SwiftNode> implements NodeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = 7098094791977510417L;
-    private int fetchSize;
-    private String jsonString;
+
     private List<Row> page;
+
     private boolean originHasNextPage;
+
     private transient Iterator<Row> iterator;
+
     private transient SwiftMetaData metaData;
 
-    public LocalAllNodeResultSet(int fetchSize, String jsonString, List<Row> page, boolean originHasNextPage) {
-        this.fetchSize = fetchSize;
-        this.jsonString = jsonString;
+    public LocalAllNodeResultSet(int fetchSize, List<Row> page, boolean originHasNextPage) {
+        super(fetchSize);
         this.page = page;
         this.originHasNextPage = originHasNextPage;
-    }
-
-    @Override
-    public int getFetchSize() {
-        return fetchSize;
     }
 
     @Override

@@ -14,14 +14,18 @@ import java.util.Map;
 /**
  * node转为row，该resultSet只能作为结果返回给客户端，不再用于处理相关中间结果计算
  * <p>
- * Created by lyon on 2018/8/22.
+ *
+ * @author lyon
+ * @date 2018/8/22
  */
 public class Node2RowResultSet extends BaseNodeResultSet<SwiftNode> implements NodeResultSet<SwiftNode> {
 
     private NodeResultSet source;
+
     private SwiftMetaData metaData;
 
     public Node2RowResultSet(NodeResultSet source, SwiftMetaData metaData) {
+        super(source.getFetchSize());
         this.source = source;
         this.metaData = metaData;
     }
@@ -34,11 +38,6 @@ public class Node2RowResultSet extends BaseNodeResultSet<SwiftNode> implements N
     @Override
     public boolean hasNextPage() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int getFetchSize() {
-        return source.getFetchSize();
     }
 
     @Override

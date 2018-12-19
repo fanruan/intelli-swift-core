@@ -15,28 +15,25 @@ import java.util.Map;
 /**
  * 对应QueryType.LOCAL_PART（当前节点包含查询的所有segment，并且当前节点处理的是查询节点转发过来的请求）
  * <p>
- * Created by Lyon on 2018/6/14.
+ *
+ * @author Lyon
+ * @date 2018/6/14
  */
 public class LocalPartNodeResultSet extends BaseNodeResultSet<SwiftNode> implements NodeMergeResultSet<SwiftNode>, SerializableResultSet {
 
     private static final long serialVersionUID = -7163285398162627401L;
-    private int fetchSize;
-    private String jsonString;
+
     private Pair<SwiftNode, List<Map<Integer, Object>>> page;
+
     private boolean hasNextPage = true;
+
     private boolean originHasNextPage;
 
     public LocalPartNodeResultSet(int fetchSize, String jsonString, Pair<SwiftNode, List<Map<Integer, Object>>> page,
                                   boolean originHasNextPage) {
-        this.fetchSize = fetchSize;
-        this.jsonString = jsonString;
+        super(fetchSize);
         this.page = page;
         this.originHasNextPage = originHasNextPage;
-    }
-
-    @Override
-    public int getFetchSize() {
-        return fetchSize;
     }
 
     @Override
