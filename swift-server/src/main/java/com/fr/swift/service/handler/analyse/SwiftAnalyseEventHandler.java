@@ -15,8 +15,8 @@ import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author yee
@@ -28,46 +28,44 @@ public class SwiftAnalyseEventHandler extends AbstractHandler<AbstractAnalyseRpc
 
     @Override
     public <S extends Serializable> S handle(AbstractAnalyseRpcEvent event) {
-            switch (event.subEvent()) {
-                case SEGMENT_LOCATION:
-                    Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair = (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>) event.getContent();
-                    SegmentLocationInfoContainer.getContainer().add(pair);
-                    Map<String, ClusterEntity> analyseServices = checkAnalyseServiceEmpty();
-                    Iterator<Map.Entry<String, ClusterEntity>> iterator = analyseServices.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        final long start = System.currentTimeMillis();
-                        Map.Entry<String, ClusterEntity> entity = iterator.next();
-                        String address = entity.getKey();
-                        Class clazz = entity.getValue().getServiceClass();
+        switch (event.subEvent()) {
+            case SEGMENT_LOCATION:
+                Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair = (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>) event.getContent();
+                SegmentLocationInfoContainer.getContainer().add(pair);
+                Map<String, ClusterEntity> analyseServices = checkAnalyseServiceEmpty();
+                for (Entry<String, ClusterEntity> stringClusterEntityEntry : analyseServices.entrySet()) {
+                    final long start = System.currentTimeMillis();
+                    String address = stringClusterEntityEntry.getKey();
+                    Class clazz = stringClusterEntityEntry.getValue().getServiceClass();
 
-                        try {
-                            runAsyncRpc(address, clazz, "updateSegmentInfo", pair.getValue(), pair.getKey())
-                                    .addCallback(new AsyncRpcCallback() {
-                                        @Override
-                                        public void success(Object result) {
-                                            LOGGER.info(String.format("Update segmentInfo cost: %d ms", System.currentTimeMillis() - start));
-                                        }
+                    try {
+                        runAsyncRpc(address, clazz, "updateSegmentInfo", pair.getValue(), pair.getKey())
+                                .addCallback(new AsyncRpcCallback() {
+                                    @Override
+                                    public void success(Object result) {
+                                        LOGGER.info(String.format("Update segmentInfo cost: %d ms", System.currentTimeMillis() - start));
+                                    }
 
-                                        @Override
-                                        public void fail(Exception e) {
-                                            LOGGER.error(e.getMessage(), e);
-                                        }
-                                    });
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
+                                    @Override
+                                    public void fail(Exception e) {
+                                        LOGGER.error(e.getMessage(), e);
+                                    }
+                                });
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error(e);
                     }
-                    break;
-                case REQUEST_SEG_LOCATION:
-                    String clusterId = (String) event.getContent();
-                    Map<String, ClusterEntity> analyseNodeMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
-                    if (analyseNodeMap.containsKey(clusterId)) {
-                        return (S) SegmentLocationInfoContainer.getContainer().getLocationInfo();
-                    }
-                    return (S) Collections.emptyList();
-                default:
-                    break;
-            }
+                }
+                break;
+            case REQUEST_SEG_LOCATION:
+                String clusterId = (String) event.getContent();
+                Map<String, ClusterEntity> analyseNodeMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+                if (analyseNodeMap.containsKey(clusterId)) {
+                    return (S) SegmentLocationInfoContainer.getContainer().getLocationInfo();
+                }
+                return (S) Collections.emptyList();
+            default:
+                break;
+        }
         return null;
     }
 

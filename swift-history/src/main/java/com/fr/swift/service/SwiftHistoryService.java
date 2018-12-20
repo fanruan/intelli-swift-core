@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
@@ -11,6 +10,7 @@ import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -43,7 +43,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -153,29 +152,19 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         if (null == remoteUris || remoteUris.isEmpty()) {
             return;
         }
-        final CountDownLatch latch = new CountDownLatch(remoteUris.size());
         for (final String sourceKey : remoteUris.keySet()) {
             final Set<String> uris = remoteUris.get(sourceKey);
             if (uris.isEmpty()) {
                 return;
             }
+
             try {
-                taskExecutor.submit(new SwiftServiceCallable(new SourceKey(sourceKey), ServiceTaskType.DOWNLOAD) {
-                    @Override
-                    public void doJob() {
-                        try {
-                            download(sourceKey, uris, replace);
-                            SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
-                        } finally {
-                            latch.countDown();
-                        }
-                    }
-                });
-            } catch (InterruptedException e) {
+                download(sourceKey, uris, replace);
+                SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
+            } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
             }
         }
-        latch.await();
     }
 
     private void download(String sourceKey, Set<String> sets, boolean replace) {
@@ -252,7 +241,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                         WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segment);
                         ImmutableBitMap allshow = whereDeleter.delete(where);
                         if (allshow.isEmpty()) {
-                            EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
+                            SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segment);
                         }
                     }
                 }

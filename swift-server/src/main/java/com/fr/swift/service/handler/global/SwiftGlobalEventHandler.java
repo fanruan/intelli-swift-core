@@ -1,6 +1,5 @@
 package com.fr.swift.service.handler.global;
 
-import com.fr.event.EventDispatcher;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.basics.AsyncRpcCallback;
@@ -16,6 +15,7 @@ import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.log.SwiftLogger;
@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author yee
@@ -76,7 +77,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 break;
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
-                EventDispatcher.fire(TaskEvent.DONE, pair);
+                SwiftEventDispatcher.fire(TaskEvent.DONE, pair);
                 break;
             case CLEAN:
                 Map<String, ClusterEntity> analyseMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
@@ -184,21 +185,12 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
     }
 
     private void clean(Map<String, ClusterEntity> map, String[] sourceKeys) throws Exception {
-        Iterator<Map.Entry<String, ClusterEntity>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, ClusterEntity> entry = iterator.next();
-            runAsyncRpc(entry.getKey(), entry.getValue().getServiceClass(), "cleanMetaCache", sourceKeys)
-                    .addCallback(new AsyncRpcCallback() {
-                        @Override
-                        public void success(Object result) {
-
-                        }
-
-                        @Override
-                        public void fail(Exception e) {
-
-                        }
-                    });
+        for (Entry<String, ClusterEntity> entry : map.entrySet()) {
+            try {
+                runAsyncRpc(entry.getKey(), entry.getValue().getServiceClass(), "cleanMetaCache", sourceKeys);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
         }
     }
 }

@@ -6,7 +6,6 @@ import com.fr.swift.cluster.entity.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
@@ -122,30 +121,33 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                         .addCallback(new AsyncRpcCallback() {
                             @Override
                             public void success(Object result) {
-                                Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
-                                segmentTable.put(key, idList);
-                                clusterSegmentService.updateSegmentTable(segmentTable);
                                 try {
-                                    SwiftServiceHandlerManager.getManager().
-                                            handle(new SegmentLocationRpcEvent(updateType, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
-                                } catch (Exception e) {
-                                    fail(e);
-                                }
-                                if (StringUtils.isEmpty(eventResult.getClusterId())) {
-                                    eventResult.setClusterId(key);
-                                }
-                                eventResult.setSuccess(true);
-                                if (null != latch) {
-                                    latch.countDown();
+                                    Map<String, List<Pair<String, String>>> segmentTable = new HashMap<String, List<Pair<String, String>>>();
+                                    segmentTable.put(key, idList);
+                                    clusterSegmentService.updateSegmentTable(segmentTable);
+                                    try {
+                                        SwiftServiceHandlerManager.getManager().
+                                                handle(new SegmentLocationRpcEvent(updateType, new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
+                                    } catch (Exception e) {
+                                        fail(e);
+                                    }
+                                    if (StringUtils.isEmpty(eventResult.getClusterId())) {
+                                        eventResult.setClusterId(key);
+                                    }
+                                    eventResult.setSuccess(true);
+                                } finally {
+                                    if (null != latch) {
+                                        latch.countDown();
+                                    }
                                 }
                             }
 
                             @Override
                             public void fail(Exception e) {
-                                LOGGER.error("Load failed! ", e);
                                 if (null != latch) {
                                     latch.countDown();
                                 }
+                                LOGGER.error("Load failed! ", e);
                             }
                         });
             }

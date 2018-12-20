@@ -1,31 +1,30 @@
 package com.fr.swift.segment.event;
 
-import com.fr.event.Event;
-import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.event.SwiftEvent;
 
 /**
  * @author anchore
  * @date 2018/9/11
  */
-public class SegmentEvent<V> implements Event<V> {
+public enum SegmentEvent implements SwiftEvent {
 
     /**
      * 将realtime块转为history块
      */
-    public static final Event<SegmentKey> TRANSFER_REALTIME = new SegmentEvent<SegmentKey>();
+    TRANSFER_REALTIME,
 
     /**
      * 上传history块到repo
      */
-    public static final Event<SegmentKey> UPLOAD_HISTORY = new SegmentEvent<SegmentKey>();
+    UPLOAD_HISTORY,
 
     /**
      * 删repo的history块
      */
-    public static final Event<SegmentKey> REMOVE_HISTORY = new SegmentEvent<SegmentKey>();
+    REMOVE_HISTORY,
 
     /**
      * 上传history块的all show到repo
      */
-    public static final Event<SegmentKey> MASK_HISTORY = new SegmentEvent<SegmentKey>();
+    MASK_HISTORY
 }

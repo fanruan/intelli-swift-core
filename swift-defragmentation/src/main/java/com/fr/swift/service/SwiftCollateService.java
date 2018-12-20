@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.event.EventDispatcher;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
@@ -12,6 +11,7 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
 import com.fr.swift.repository.SwiftRepositoryManager;
@@ -229,7 +229,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (SegmentKey newSegKey : newKeys) {
             manager.getSegment(newSegKey);
-            EventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
+            SwiftEventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
     }
 
@@ -241,7 +241,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                     swiftSegmentService.removeSegments(Collections.singletonList(collateSegKey));
                     SegmentUtils.clearSegment(collateSegKey);
                     if (collateSegKey.getStoreType().isPersistent()) {
-                        EventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
+                        SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
                     }
                 }
             }

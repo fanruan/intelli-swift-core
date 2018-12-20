@@ -121,7 +121,7 @@ public class ClusterIndexingServiceImpl extends AbstractSwiftService implements 
 
 //    @Override
 //    public boolean shutdown() throws SwiftServiceException {
-//        EventDispatcher.stopListen(listener);
+//        SwiftEventDispatcher.stopListen(listener);
 //        return super.shutdown();
 //    }
 

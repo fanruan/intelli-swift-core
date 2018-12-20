@@ -1,10 +1,9 @@
 package com.fr.swift.service;
 
-import com.fr.event.Event;
-import com.fr.event.EventDispatcher;
-import com.fr.event.Listener;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
@@ -102,9 +101,9 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
     @Override
     protected void initListener() {
         super.initListener();
-        EventDispatcher.listen(TaskEvent.RUN, new Listener<Map<TaskKey, ?>>() {
+        SwiftEventDispatcher.listen(TaskEvent.RUN, new SwiftEventListener<Map<TaskKey, ?>>() {
             @Override
-            public void on(Event event, Map<TaskKey, ?> taskKeyMap) {
+            public void on(Map<TaskKey, ?> taskKeyMap) {
                 if (!SwiftContext.get().getBean("swiftProperty", SwiftProperty.class).isCluster()) {
                     try {
                         indexingService.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
@@ -115,9 +114,9 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
 
             }
         });
-        EventDispatcher.listen(TaskEvent.CANCEL, new Listener<TaskKey>() {
+        SwiftEventDispatcher.listen(TaskEvent.CANCEL, new SwiftEventListener<TaskKey>() {
             @Override
-            public void on(Event event, TaskKey taskKey) {
+            public void on(TaskKey taskKey) {
                 SwiftLoggers.getLogger().info("Local Task cancel");
             }
         });
