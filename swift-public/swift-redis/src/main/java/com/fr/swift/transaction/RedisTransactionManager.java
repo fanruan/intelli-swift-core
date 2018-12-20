@@ -11,23 +11,22 @@ import com.fr.swift.redis.RedisClientPipeline;
  */
 public class RedisTransactionManager extends AbstractTransactionManager {
 
-    private RedisClientPipeline redisPipline;
+    private RedisClientPipeline redisPipeline;
 
     public RedisTransactionManager() {
-        redisPipline = new RedisClientPipeline();
+        redisPipeline = new RedisClientPipeline();
     }
 
     @Override
     public void start() {
         super.start();
-        redisPipline.switchMultiPipeline();
+        redisPipeline.switchMultiPipeline();
     }
 
     @Override
     public void commit() {
-        super.commit();
-        redisPipline.exec();
-        redisPipline.sync();
+        redisPipeline.exec();
+        redisPipeline.sync();
     }
 
     @Override
@@ -37,11 +36,10 @@ public class RedisTransactionManager extends AbstractTransactionManager {
 
     @Override
     public void close() {
-        super.close();
-        redisPipline.close();
+        redisPipeline.close();
     }
 
-    public RedisClientPipeline getRedisPipline() {
-        return redisPipline;
+    public RedisClientPipeline getRedisPipeline() {
+        return redisPipeline;
     }
 }

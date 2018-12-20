@@ -2,6 +2,8 @@ package com.fr.swift.event;
 
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Assert;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author anchore
@@ -17,6 +20,8 @@ import java.util.concurrent.ConcurrentMap;
 public class SwiftEventDispatcher {
 
     private static final ConcurrentMap<SwiftEvent, List<SwiftEventListener>> EVENTS = new ConcurrentHashMap<SwiftEvent, List<SwiftEventListener>>();
+
+    private static final ExecutorService EXEC = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftEventDispatcher.class));
 
     public static void listen(SwiftEvent event, SwiftEventListener<?> listener) {
         Assert.notNull(event);
@@ -52,16 +57,25 @@ public class SwiftEventDispatcher {
     public static <T> void fire(SwiftEvent event, T content) {
         Assert.notNull(event);
 
-        synchronized (EVENTS) {
-            if (EVENTS.containsKey(event)) {
-                for (SwiftEventListener listener : EVENTS.get(event)) {
-                    listener.on(content);
+        asyncFire(event, content);
+    }
+
+    private static <T> void asyncFire(final SwiftEvent event, final T content) {
+        EXEC.execute(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (EVENTS) {
+                    if (EVENTS.containsKey(event)) {
+                        for (SwiftEventListener listener : EVENTS.get(event)) {
+                            listener.on(content);
+                        }
+                    } else {
+                        // warn
+                        SwiftLoggers.getLogger().warn("no listener for event {}", event);
+                    }
                 }
-            } else {
-                // warn
-                SwiftLoggers.getLogger().warn("no listener for event {}", event);
             }
-        }
+        });
     }
 
     public static void fire(SwiftEvent event) {
