@@ -18,7 +18,7 @@ public class MultiStreamResultSet extends BaseStreamResultSet<List<String>> {
     private int currentPathIdx = 0;
 
     public MultiStreamResultSet(SwiftDatabase database, String tableName, List<String> strings, LineParser parser) {
-        super(database, tableName, strings, parser);
+        super(strings, parser);
         this.current = new SingleStreamResultSet(database, tableName, strings.get(0), parser);
     }
 

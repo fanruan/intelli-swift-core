@@ -18,13 +18,12 @@ import java.util.regex.Pattern;
  * @date 2018-12-20
  */
 public abstract class BaseStreamResultSet<Paths> implements SwiftStreamResultSet {
-    public static final String NUMBER_REG = "^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$";
     protected Paths paths;
     protected LineParser parser;
     protected SwiftMetaData metaData;
     private Pattern pattern = Pattern.compile("(http|https)+://");
 
-    public BaseStreamResultSet(SwiftDatabase database, String tableName, Paths paths, LineParser parser) {
+    public BaseStreamResultSet(Paths paths, LineParser parser) {
         this.paths = paths;
         this.parser = parser;
     }

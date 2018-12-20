@@ -28,7 +28,7 @@ public class SingleStreamResultSet extends BaseStreamResultSet<String> {
     private String currentLine;
 
     public SingleStreamResultSet(SwiftDatabase database, String tableName, String s, LineParser parser) {
-        super(database, tableName, s, parser);
+        super(s, parser);
         try {
             inputStream = getInputStream(s);
             dataReader = new BufferedReader(new InputStreamReader(inputStream));

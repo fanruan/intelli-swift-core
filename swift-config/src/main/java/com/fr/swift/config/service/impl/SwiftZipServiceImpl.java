@@ -17,6 +17,7 @@ import java.sql.SQLException;
  * @date 2018/6/27
  */
 @Service("swiftZipService")
+@Deprecated
 public class SwiftZipServiceImpl implements SwiftZipService {
 
     private final SwiftConfigService.ConfigConvert<Boolean> CONVERT = new AbstractSimpleConfigConvert<Boolean>(Boolean.class) {
