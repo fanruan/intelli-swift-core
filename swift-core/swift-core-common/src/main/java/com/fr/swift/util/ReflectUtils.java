@@ -50,6 +50,8 @@ public final class ReflectUtils {
             }
         } else if (ClassUtils.isAssignable(String.class, tClass)) {
             return fieldValue;
+        } else if (ClassUtils.isAssignable(tClass, Enum.class)) {
+            return Enum.valueOf(tClass, fieldValue);
         } else {
             Object obj = MAPPER.readValue(fieldValue, tClass);
             return obj;
@@ -93,6 +95,8 @@ public final class ReflectUtils {
             Class clazz = obj.getClass();
             if (ClassUtils.isPrimitiveOrWrapper(clazz) || ClassUtils.isAssignable(String.class, clazz)) {
                 return obj.toString();
+            } else if (obj instanceof Enum) {
+                return ((Enum) obj).name();
             } else {
                 return MAPPER.writeValueAsString(obj);
             }

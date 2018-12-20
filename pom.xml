@@ -38,6 +38,7 @@
         <module>swift-http-api</module>
         <module>swift-analyse-base</module>
         <module>swift-repository-base</module>
+        <module>swift-cloud-center-adaptor</module>
 
 
     </modules>

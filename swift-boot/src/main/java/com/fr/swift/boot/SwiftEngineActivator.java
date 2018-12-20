@@ -12,6 +12,7 @@ import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.context.SwiftConfigContext;
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
@@ -64,6 +65,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
                     UploadHistoryListener.listen();
                     MaskHistoryListener.listen();
                     RemoveHistoryListener.listen();
+                    ConnectorManager.getInstance().getConnector();
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("swift engine start failed", e);
                 }
