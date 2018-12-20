@@ -19,7 +19,6 @@ import com.fr.swift.source.resultset.IterableResultSet;
 import com.fr.swift.source.resultset.LimitedResultSet;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ import java.util.List;
  * @date 2018/8/1
  */
 public abstract class BaseBlockInserter implements Inserter {
-    protected final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    protected static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
     protected SwiftSourceAlloter alloter;
 
@@ -59,7 +58,7 @@ public abstract class BaseBlockInserter implements Inserter {
                 inserter.insertData(new LimitedResultSet(resultSet, limit, false));
             }
         } catch (Exception e) {
-            clearDirtySeg();
+            clearDirtySegIfNeed();
             throw e;
         } finally {
             resultSet.close();
@@ -68,19 +67,23 @@ public abstract class BaseBlockInserter implements Inserter {
 
     protected abstract Inserter getInserter();
 
+    /**
+     * 是否当前块为新块
+     *
+     * @return 是否当前块为新块
+     */
     protected abstract boolean nextSegment();
+
+    /**
+     * 其实这种善后工作由事务来处理比较好，看导入那边怎么处理了，感觉事务处理比较好
+     */
+    protected abstract void clearDirtySegIfNeed();
 
     private void persistMeta() throws SQLException {
         Database db = SwiftDatabase.getInstance();
         SourceKey tableKey = dataSource.getSourceKey();
         if (!db.existsTable(tableKey)) {
             db.createTable(tableKey, dataSource.getMetadata());
-        }
-    }
-
-    private void clearDirtySeg() {
-        if (currentSegKey != null) {
-            SEG_SVC.removeSegments(Collections.singletonList(currentSegKey));
         }
     }
 

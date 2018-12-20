@@ -1,10 +1,12 @@
-package com.fr.swift.config.hibernate;
+package com.fr.swift.config.convert.hibernate;
 
+import com.fr.data.pool.DBCPConnectionPoolAttr;
 import com.fr.finedb.FineDBProperties;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.db.option.DBOption;
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.third.springframework.stereotype.Service;
+import com.fr.workspace.WorkContext;
 
 import java.util.Properties;
 
@@ -12,22 +14,21 @@ import java.util.Properties;
  * @author yee
  * @date 2018/6/29
  */
-@SwiftBean
+@Service
 public class SwiftConfigProperties {
     private DBOption option;
     private boolean selfStart;
-
-    private SwiftProperty swiftProperty = SwiftProperty.getProperty();
+    private boolean frEnable = false;
 
     public SwiftConfigProperties() {
         this.option = new DBOption().addRawProperty("hibernate.connection.autocommit", false);
         this.option = new DBOption().addRawProperty("hibernate.connection.provider_class", "com.fr.third.alibaba.druid.support.hibernate.DruidConnectionProvider");
-        this.selfStart = swiftProperty.isSelfStart();
-        this.option.setDriverClass(swiftProperty.getConfigDbDriverClass());
-        this.option.setDialectClass(swiftProperty.getConfigDbDialect());
-        this.option.setUrl(swiftProperty.getConfigDbJdbcUrl());
-        this.option.setUsername(swiftProperty.getConfigDbUsername());
-        this.option.setPassword(swiftProperty.getConfigDbPasswd());
+        this.selfStart = SwiftProperty.getProperty().isSelfStart();
+        this.option.setDriverClass(SwiftProperty.getProperty().getConfigDbDriverClass());
+        this.option.setDialectClass(SwiftProperty.getProperty().getConfigDbDialect());
+        this.option.setUrl(SwiftProperty.getProperty().getConfigDbJdbcUrl());
+        this.option.setUsername(SwiftProperty.getProperty().getConfigDbUsername());
+        this.option.setPassword(SwiftProperty.getProperty().getConfigDbPasswd());
     }
 
     public Properties reConfiguration() {
@@ -43,7 +44,36 @@ public class SwiftConfigProperties {
     }
 
     private DBOption getOption() {
-        return selfStart ? this.option : FineDBProperties.getInstance().get();
+        if (selfStart) {
+            return this.option;
+        }
+        try {
+            DBOption option = FineDBProperties.getInstance().get();
+            frEnable = true;
+            return option;
+        } catch (Exception e) {
+            return frEnable ? option : getDefault();
+        }
+    }
+
+    private DBOption getDefault() {
+        final String string = "jdbc:hsqldb:file://" + WorkContext.getCurrent().getPath() + "/" + "embed" + "/finedb/db";
+        final DBCPConnectionPoolAttr dbcpConnectionPoolAttr = new DBCPConnectionPoolAttr();
+        return new DBOption().dialectClass("com.fr.third.org.hibernate.dialect.HSQLDialect")
+                .driverClass("com.fr.third.org.hsqldb.jdbcDriver").url(string).username("sa")
+                .addRawProperty("default_schema", "PUBLIC")
+                .addRawProperty("hibernate.connection.provider_class", "com.fr.third.alibaba.druid.support.hibernate.DruidConnectionProvider")
+                .addRawProperty("initialSize", dbcpConnectionPoolAttr.getInitialSize())
+                .addRawProperty("maxActive", dbcpConnectionPoolAttr.getMaxActive())
+                .addRawProperty("minIdle", dbcpConnectionPoolAttr.getMinIdle())
+                .addRawProperty("maxWait", dbcpConnectionPoolAttr.getMaxWait())
+                .addRawProperty("validationQuery", dbcpConnectionPoolAttr.getValidationQuery())
+                .addRawProperty("testOnBorrow", dbcpConnectionPoolAttr.isTestOnBorrow())
+                .addRawProperty("testOnReturn", dbcpConnectionPoolAttr.isTestOnReturn())
+                .addRawProperty("testWhileIdle", dbcpConnectionPoolAttr.isTestWhileIdle())
+                .addRawProperty("timeBetweenEvictionRunsMillis", dbcpConnectionPoolAttr.getTimeBetweenEvictionRunsMillis())
+                .addRawProperty("numTestsPerEvictionRun", dbcpConnectionPoolAttr.getNumTestsPerEvictionRun())
+                .addRawProperty("minEvictableIdleTimeMillis", dbcpConnectionPoolAttr.getMinEvictableIdleTimeMillis());
     }
 
     public String getDriverClass() {

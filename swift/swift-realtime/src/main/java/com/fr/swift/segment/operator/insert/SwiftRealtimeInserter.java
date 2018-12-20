@@ -13,6 +13,7 @@ import com.fr.swift.segment.backup.SwiftSegmentBackup;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.transaction.Transactional;
+import com.fr.swift.util.IoUtil;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftRealtimeInserter extends SwiftInserter {
+
     private SwiftSegmentBackup swiftBackup;
 
     public SwiftRealtimeInserter(Segment segment) {
@@ -94,7 +96,7 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     @Override
     protected void release() {
         super.release();
-        swiftBackup.release();
+        IoUtil.release(swiftBackup);
     }
 
     public SwiftSegmentBackup getSwiftBackup() {

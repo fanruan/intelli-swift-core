@@ -15,9 +15,9 @@ import java.net.URI;
 public class LongFineIoWriter extends BaseFineIoWriter<LongBuffer> implements LongWriter {
     private LongFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_LONG);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_LONG, true);
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_LONG);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_LONG, true);
         }
     }
 

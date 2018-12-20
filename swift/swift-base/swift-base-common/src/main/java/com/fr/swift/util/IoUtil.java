@@ -37,7 +37,11 @@ public class IoUtil {
 
     public static void release(Releasable releasable) {
         if (releasable != null) {
-            releasable.release();
+            try {
+                releasable.release();
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
         }
     }
 

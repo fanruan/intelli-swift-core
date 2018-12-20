@@ -15,9 +15,9 @@ import java.net.URI;
 public class ByteFineIoWriter extends BaseFineIoWriter<ByteBuffer> implements ByteWriter {
     private ByteFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_BYTE);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_BYTE, true);
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_BYTE);
+            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_BYTE, true);
         }
     }
 

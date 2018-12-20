@@ -47,6 +47,13 @@ public class BitMapColumn extends BaseBitmapColumn {
     }
 
     @Override
+    public void putNullIndex(ImmutableBitMap bitMap) {
+        initIndexWriter();
+        indexWriter.resetContentPosition();
+        indexWriter.put(0, bitMap);
+    }
+
+    @Override
     public ImmutableBitMap getBitMapIndex(int index) {
         initIndexReader();
         return indexReader.get(index);

@@ -3,6 +3,7 @@ package com.fr.swift.boot;
 import com.fineio.FineIO;
 import com.fr.cluster.entry.ClusterTicketKey;
 import com.fr.io.base.WebInfResourceFolders;
+import com.fr.log.impl.MetricInvocationHandler;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
@@ -22,12 +23,14 @@ import com.fr.swift.service.RemoveHistoryListener;
 import com.fr.swift.service.TransferRealtimeListener;
 import com.fr.swift.service.UploadHistoryListener;
 import com.fr.swift.service.local.ServiceManager;
+import com.fr.swift.util.concurrent.CommonExecutor;
 
 /**
  * @author anchore
  * @date 2018/5/24
  */
 public class SwiftEngineActivator extends Activator implements Prepare {
+
     @Override
     public void start() {
         try {
@@ -38,22 +41,36 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         }
     }
 
-    private void startSwift() throws Exception {
-        SwiftLoggers.setLoggerFactory(new SwiftFrLoggers());
-        FineIO.setLogger(SwiftLoggers.getLogger());
+    private void startSwift() {
         upgrade();
 
-        ClusterListenerHandler.addInitialListener(new FRClusterListener());
-        SwiftContext.get().init();
-        ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
-        SwiftConfigContext.getInstance().init();
-        SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
-        ProviderTaskManager.start();
+        SwiftLoggers.setLoggerFactory(new SwiftFrLoggers());
+        FineIO.setLogger(SwiftLoggers.getLogger());
 
-        TransferRealtimeListener.listen();
-        UploadHistoryListener.listen();
-        MaskHistoryListener.listen();
-        RemoveHistoryListener.listen();
+        ClusterListenerHandler.addInitialListener(new FRClusterListener());
+
+        CommonExecutor.get().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    SwiftContext.get().init();
+                    MetricInvocationHandler.getInstance().doAfterSwiftContextInit();
+
+                    ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
+                    SwiftConfigContext.getInstance().init();
+                    SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
+
+                    ProviderTaskManager.start();
+
+                    TransferRealtimeListener.listen();
+                    UploadHistoryListener.listen();
+                    MaskHistoryListener.listen();
+                    RemoveHistoryListener.listen();
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error("swift engine start failed", e);
+                }
+            }
+        });
 
         registerResourceIoPath();
     }

@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
@@ -56,6 +57,10 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
         for (int i = 0; i < sources.size(); i++) {
             if (sources.get(i).hasNextPage()) {
                 Pair<GroupNode, List<Map<Integer, Object>>> pair = sources.get(i).getPage();
+                if (pair == null) {
+                    SwiftLoggers.getLogger().error("NodeResultSetMerger#updateAll: invalid page data!");
+                    continue;
+                }
                 GroupNode node = pair.getKey();
                 resultSets.add(new NodeMergeResultSetImpl<GroupNode>(fetchSize, node, pair.getValue()));
                 lastRowOfPrevPages.set(i, SwiftNodeUtils.getLastRow(node));

@@ -26,6 +26,10 @@ public class SegmentTransfer {
     }
 
     public void transfer() {
+        if (!SEG_SVC.containsSegment(oldSegKey)) {
+            return;
+        }
+
         final Segment oldSeg = newSegment(oldSegKey), newSeg = newSegment(newSegKey);
         Inserter inserter = (Inserter) SwiftContext.get().getBean("inserter", newSeg);
         SegmentResultSet swiftResultSet = null;

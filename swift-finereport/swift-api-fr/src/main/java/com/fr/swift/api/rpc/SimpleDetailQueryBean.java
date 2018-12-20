@@ -3,7 +3,6 @@ package com.fr.swift.api.rpc;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ public class SimpleDetailQueryBean {
         this.columns = columns;
     }
 
-    public QueryBean toQueryBean() throws IOException {
+    public QueryBean toQueryBean() throws Exception {
         return QueryBeanFactory.create(getQueryString());
     }
 

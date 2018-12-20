@@ -2,6 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
+import com.fr.swift.bitmap.impl.EmptyBitmap;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.column.Column;
@@ -52,13 +53,23 @@ public class SegmentResultSet implements SwiftResultSet {
 
         SwiftMetaData meta = seg.getMetaData();
         rowCount = seg.getRowCount();
-        allShowIndex = seg.getAllShowIndex();
+        try {
+            allShowIndex = seg.getAllShowIndex();
+        } catch (Exception e) {
+            allShowIndex = AllShowBitMap.of(rowCount);
+        }
 
         try {
             for (int i = 1; i <= meta.getColumnCount(); i++) {
                 Column<Object> column = seg.getColumn(new ColumnKey(meta.getColumnName(i)));
                 details.add(column.getDetailColumn());
-                nullIndices.add(column.getBitmapIndex().getNullIndex());
+                ImmutableBitMap nullIndex;
+                try {
+                    nullIndex = column.getBitmapIndex().getNullIndex();
+                } catch (Exception e) {
+                    nullIndex = new EmptyBitmap();
+                }
+                nullIndices.add(nullIndex);
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
@@ -106,6 +117,6 @@ public class SegmentResultSet implements SwiftResultSet {
     @Override
     public void close() {
         SegmentUtils.release(seg);
-        SegmentUtils.releaseColumns(seg);
+        SegmentUtils.releaseColumnsOf(seg);
     }
 }

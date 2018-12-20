@@ -1,6 +1,5 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
@@ -39,8 +38,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -183,11 +185,14 @@ public class MetricProxy extends BaseMetric {
     }
 
     class Sync implements Runnable {
+
         static final int FLUSH_SIZE_THRESHOLD = 10000;
 
         private ScheduledExecutorService scheduler = SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(getClass()));
 
         private ConcurrentMap<Class<?>, List<Object>> dataMap = new ConcurrentHashMap<Class<?>, List<Object>>();
+
+        private BufferedInsert bufferedInsert = new BufferedInsert();
 
         Sync() {
             scheduler.scheduleWithFixedDelay(this, 5, 5, TimeUnit.SECONDS);
@@ -210,12 +215,7 @@ public class MetricProxy extends BaseMetric {
                 return;
             }
 
-            Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
-            try {
-                realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
-            }
+            bufferedInsert.submit(entity, data);
         }
 
         private synchronized void stage(List<Object> data) {
@@ -233,9 +233,42 @@ public class MetricProxy extends BaseMetric {
         }
     }
 
-    private static final Metric INSTANCE = new MetricProxy();
+    class BufferedInsert implements Runnable {
 
-    public static Metric getInstance() {
+        private ExecutorService exec = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(getClass()));
+
+        private BlockingQueue<List<Object>> dataQueue = new ArrayBlockingQueue<List<Object>>(1000);
+
+        BufferedInsert() {
+            exec.execute(this);
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    List<Object> data = dataQueue.take();
+
+                    Object first = data.get(0);
+                    Class<?> entity = first.getClass();
+                    Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
+                    realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
+            }
+        }
+
+        void submit(Class<?> entity, List<Object> data) {
+            if (!dataQueue.offer(data)) {
+                SwiftLoggers.getLogger().error("swift rejected {} {}", data.size(), entity.getSimpleName());
+            }
+        }
+    }
+
+    private static final MetricProxy INSTANCE = new MetricProxy();
+
+    public static MetricProxy getInstance() {
         return INSTANCE;
     }
 }

@@ -6,10 +6,10 @@ import com.fr.stable.query.QueryFactory;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.condition.impl.QueryConditionImpl;
 import com.fr.stable.query.restriction.RestrictionFactory;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.adaptor.log.JpaAdaptorTest.A;
 import com.fr.swift.adaptor.log.JpaAdaptorTest.ConvertType;
 import com.fr.swift.adaptor.log.MetricProxy.Sync;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.Segment;
@@ -18,12 +18,13 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.test.Preparer;
 import com.fr.third.javax.persistence.Column;
 import com.fr.third.javax.persistence.Table;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,9 +46,13 @@ public class LogOperatorTest {
 
     @Before
     public void boot() throws Exception {
-        Preparer.prepareCubeBuild(getClass());
         new LocalSwiftServerService().start();
         SwiftContext.get().getBean(AnalyseService.class).start();
+    }
+
+    @Rule
+    public TestRule getRule() throws Exception {
+        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
     }
 
     @Before
