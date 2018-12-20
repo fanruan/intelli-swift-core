@@ -8,8 +8,9 @@ import com.fr.swift.db.Table;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.test.Preparer;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -24,8 +25,12 @@ public class LogDetailTest extends LogBaseTest {
 
     @Override
     public void setUp() throws Exception {
-        Preparer.prepareCubeBuild(getClass());
         super.setUp();
+    }
+
+    @Rule
+    public TestRule getRule() throws Exception {
+        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
     }
 
     @Test

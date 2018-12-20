@@ -1,6 +1,5 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.intelli.record.scene.Metric;
 import com.fr.intelli.record.scene.impl.BaseMetric;
 import com.fr.stable.query.condition.QueryCondition;
 import com.fr.stable.query.data.DataList;
@@ -39,8 +38,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -262,5 +264,11 @@ public class MetricProxy extends BaseMetric {
                 SwiftLoggers.getLogger().error("swift rejected {} {}", data.size(), entity.getSimpleName());
             }
         }
+    }
+
+    private static final MetricProxy INSTANCE = new MetricProxy();
+
+    public static MetricProxy getInstance() {
+        return INSTANCE;
     }
 }

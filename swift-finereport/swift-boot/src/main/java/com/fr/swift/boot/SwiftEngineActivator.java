@@ -7,15 +7,15 @@ import com.fr.log.impl.MetricInvocationHandler;
 import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.boot.upgrade.UpgradeTask;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.context.SwiftConfigContext;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
-import com.fr.swift.log.FineIOLoggerImpl;
+import com.fr.swift.log.SwiftFrLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.service.MaskHistoryListener;
@@ -44,17 +44,19 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     private void startSwift() {
         upgrade();
 
-        FineIO.setLogger(new FineIOLoggerImpl());
-        ClusterListenerHandler.addListener(new FRClusterListener());
+        SwiftLoggers.setLoggerFactory(new SwiftFrLoggers());
+        FineIO.setLogger(SwiftLoggers.getLogger());
+
+        ClusterListenerHandler.addInitialListener(new FRClusterListener());
 
         CommonExecutor.get().execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    SwiftContext.init();
+                    SwiftContext.get().init();
                     MetricInvocationHandler.getInstance().doAfterSwiftContextInit();
 
-                    ClusterListenerHandler.addListener(NodeStartedListener.INSTANCE);
+                    ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
                     SwiftConfigContext.getInstance().init();
                     SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
 

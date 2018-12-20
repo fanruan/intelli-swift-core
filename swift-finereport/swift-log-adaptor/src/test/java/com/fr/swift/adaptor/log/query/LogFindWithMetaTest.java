@@ -12,7 +12,9 @@ import com.fr.swift.db.Table;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.db.QueryDBSource;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -29,8 +31,12 @@ public class LogFindWithMetaTest extends LogBaseTest {
 
     @Override
     public void setUp() throws Exception {
-        Preparer.prepareCubeBuild(getClass());
         super.setUp();
+    }
+
+    @Rule
+    public TestRule getRule() throws Exception {
+        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
     }
 
     @Test

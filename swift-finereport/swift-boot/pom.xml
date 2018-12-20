@@ -49,11 +49,6 @@
             <version>${swift.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-api-private</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.45</version>
@@ -87,6 +82,11 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-common-fr</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-log-adaptor</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>
