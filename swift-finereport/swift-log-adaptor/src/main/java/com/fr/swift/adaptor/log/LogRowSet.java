@@ -1,31 +1,30 @@
 package com.fr.swift.adaptor.log;
 
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.function.Function;
 
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author anchore
  * @date 2018/4/26
  */
 public class LogRowSet implements SwiftResultSet {
+
     private SwiftMetaData meta;
 
-    private List<Object> rows;
+    private Iterator<Object> rowsItr;
 
     /**
      * fr log -> swift row
      */
     private Function<Object, Row> converter;
 
-    private int cursor = 0;
-
-    public LogRowSet(SwiftMetaData meta, List<Object> rows, Class<?> entity) throws Exception {
+    public LogRowSet(SwiftMetaData meta, Iterable<Object> rows, Class<?> entity) throws Exception {
         this.meta = meta;
-        this.rows = rows;
+        this.rowsItr = rows.iterator();
         this.converter = new SwiftRowAdaptor(entity, meta);
     }
 
@@ -41,16 +40,16 @@ public class LogRowSet implements SwiftResultSet {
 
     @Override
     public boolean hasNext() {
-        return cursor < rows.size();
+        return rowsItr.hasNext();
     }
 
     @Override
     public Row getNextRow() {
-        return converter.apply(rows.get(cursor++));
+        return converter.apply(rowsItr.next());
     }
 
     @Override
     public void close() {
-        rows = null;
+        rowsItr = null;
     }
 }

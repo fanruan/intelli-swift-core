@@ -85,6 +85,11 @@ public class Incrementer extends BaseBlockInserter implements Inserter {
         return false;
     }
 
+    @Override
+    protected void clearDirtySegIfNeed() {
+        // 有事务接管，不用处理
+    }
+
     private static List<SegmentKey> filterRealtime(List<SegmentKey> segKeys) {
         if (segKeys == null) {
             return null;

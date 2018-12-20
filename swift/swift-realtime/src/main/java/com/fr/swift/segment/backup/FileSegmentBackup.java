@@ -31,7 +31,7 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
     public FileSegmentBackup(Segment segment, Segment currentSegment, List<String> fields) {
         super(segment, fields);
         transactionManager = (TransactionManager) SwiftContext.get().getBean("transactionManager", segment);
-        transactionManager.setOldAttatch(currentSegment);
+        transactionManager.setOldAttach(currentSegment);
     }
 
     @Override
@@ -52,7 +52,11 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
             BitmapIndexedColumn bitmapIndex = columns.get(i).getBitmapIndex();
             ImmutableBitMap nullIndex;
             if (bitmapIndex.isReadable()) {
-                nullIndex = bitmapIndex.getNullIndex();
+                try {
+                    nullIndex = bitmapIndex.getNullIndex();
+                } catch (Exception e) {
+                    nullIndex = BitMaps.newRoaringMutable();
+                }
             } else if (readable) {
                 nullIndex = BitMaps.newRangeBitmap(0, segment.getRowCount());
             } else {

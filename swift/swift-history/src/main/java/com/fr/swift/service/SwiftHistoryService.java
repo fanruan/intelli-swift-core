@@ -149,28 +149,18 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         if (null == remoteUris || remoteUris.isEmpty()) {
             return;
         }
-        List<Future<?>> futures = new ArrayList<Future<?>>(remoteUris.size());
         for (final SourceKey sourceKey : remoteUris.keySet()) {
             final Set<String> uris = remoteUris.get(sourceKey);
             if (uris.isEmpty()) {
                 return;
             }
-            try {
-                futures.add(taskExecutor.submit(new SwiftServiceCallable<Void>(sourceKey, ServiceTaskType.DOWNLOAD, new Callable<Void>() {
-                    @Override
-                    public Void call() {
-                        SegmentHelper.download(sourceKey.getId(), uris, replace);
-                        SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
-                        return null;
-                    }
-                })));
 
-            } catch (InterruptedException e) {
+            try {
+                SegmentHelper.download(sourceKey.getId(), uris, replace);
+                SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
+            } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
             }
-        }
-        for (Future<?> future : futures) {
-            future.get();
         }
     }
 
