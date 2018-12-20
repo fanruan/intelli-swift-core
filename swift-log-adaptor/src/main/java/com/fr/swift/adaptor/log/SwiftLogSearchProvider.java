@@ -26,6 +26,7 @@ import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.source.Row;
@@ -224,10 +225,14 @@ public class SwiftLogSearchProvider implements LogSearchProvider {
         return size;
     }
 
+    @Override
     public long logTotal() {
         long size = 0;
         if (ResourceModuleContext.getRealCurrentRepo().isAccurateDiskSize()) {
-            return getSizeOf("../" + SwiftDatabase.DECISION_LOG.getDir());
+            if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                return getSizeOf(SwiftDatabase.DECISION_LOG.getDir());
+            }
+            return getSizeOf(String.format("../%s", SwiftDatabase.DECISION_LOG.getDir()));
         }
         return size;
     }
