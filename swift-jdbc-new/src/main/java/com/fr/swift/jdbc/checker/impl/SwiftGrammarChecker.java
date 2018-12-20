@@ -2,11 +2,14 @@ package com.fr.swift.jdbc.checker.impl;
 
 import com.fr.swift.jdbc.checker.GrammarChecker;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
+import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectStatement;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.sql.SwiftPreparedStatement;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -16,14 +19,16 @@ import java.util.List;
  */
 public class SwiftGrammarChecker implements GrammarChecker {
     @Override
-    public SqlRequestInfo check(String sql) {
-        SQLUtils.parseStatements(sql, null);
-        return new SqlRequestInfo(sql);
-    }
-
-    @Override
-    public SqlRequestInfo check(String sql, List paramValues) throws SQLException {
-        return check(getRealSql(sql, paramValues));
+    public SqlRequestInfo check(String sql, Object... paramValues) throws SQLException {
+        if (null != paramValues && paramValues.length > 0) {
+            sql = getRealSql(sql, Arrays.asList(paramValues));
+        }
+        List<SQLStatement> list = SQLUtils.parseStatements(sql, null);
+        if (list.get(0) instanceof SQLSelectStatement) {
+            return new SqlRequestInfo(sql, true);
+        } else {
+            return new SqlRequestInfo(sql, false);
+        }
     }
 
     private String getRealSql(String sql, List values) throws SQLException {

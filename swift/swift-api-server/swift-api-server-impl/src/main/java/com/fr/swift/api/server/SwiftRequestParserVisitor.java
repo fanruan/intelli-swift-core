@@ -5,7 +5,7 @@ import com.fr.swift.api.info.ApiRequestParserVisitor;
 import com.fr.swift.api.info.ApiRequestType;
 import com.fr.swift.api.info.AuthRequestInfo;
 import com.fr.swift.api.info.CreateTableRequestInfo;
-import com.fr.swift.api.info.DeleteTableRequestInfo;
+import com.fr.swift.api.info.DeleteRequestInfo;
 import com.fr.swift.api.info.InsertRequestInfo;
 import com.fr.swift.api.info.QueryRequestInfo;
 import com.fr.swift.api.info.TableRequestInfo;
@@ -85,7 +85,7 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
             }
             case DELETE: {
                 DeletionBean bean = visitor.getDeletionBean();
-                DeleteTableRequestInfo requestInfo = new DeleteTableRequestInfo();
+                DeleteRequestInfo requestInfo = new DeleteRequestInfo();
                 setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
                 try {
                     requestInfo.setWhere(JsonBuilder.writeJsonString(bean.getFilter()));
@@ -156,11 +156,11 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
     }
 
     @Override
-    public ApiInvocation visit(DeleteTableRequestInfo deleteTableRequestInfo) {
+    public ApiInvocation visit(DeleteRequestInfo deleteRequestInfo) {
         try {
-            String filter = deleteTableRequestInfo.getWhere();
+            String filter = deleteRequestInfo.getWhere();
             SwiftWhere where = new SwiftWhere(JsonBuilder.readValue(filter, FilterInfoBean.class));
-            return createApiInvocation("delete", DataMaintenanceService.class, deleteTableRequestInfo.getDatabase(), deleteTableRequestInfo.getTable(), where);
+            return createApiInvocation("delete", DataMaintenanceService.class, deleteRequestInfo.getDatabase(), deleteRequestInfo.getTable(), where);
         } catch (Exception e) {
             return ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
         }
@@ -188,7 +188,7 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
             case TRUNCATE_TABLE:
                 return createApiInvocation("truncateTable", TableService.class, tableRequestInfo.getDatabase(), tableRequestInfo.getTable());
             case DELETE:
-                return visit((DeleteTableRequestInfo) tableRequestInfo);
+                return visit((DeleteRequestInfo) tableRequestInfo);
             case INSERT:
                 return visit((InsertRequestInfo) tableRequestInfo);
             case CREATE_TABLE:

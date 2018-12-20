@@ -2,7 +2,7 @@ package com.fr.swift.api.rpc.session.impl;
 
 import com.fr.swift.api.info.ApiRequestType;
 import com.fr.swift.api.info.CreateTableRequestInfo;
-import com.fr.swift.api.info.DeleteTableRequestInfo;
+import com.fr.swift.api.info.DeleteRequestInfo;
 import com.fr.swift.api.info.InsertRequestInfo;
 import com.fr.swift.api.info.QueryRequestInfo;
 import com.fr.swift.api.info.TableRequestInfo;
@@ -60,7 +60,7 @@ public class SwiftApiSessionImpl implements SwiftApiSession {
 
     @Override
     public int delete(SwiftDatabase schema, String tableName, Where where) throws Exception {
-        DeleteTableRequestInfo info = new DeleteTableRequestInfo();
+        DeleteRequestInfo info = new DeleteRequestInfo();
         info.setDatabase(schema);
         info.setTable(tableName);
         info.setAuthCode(sessionFactory.getAuthCode());

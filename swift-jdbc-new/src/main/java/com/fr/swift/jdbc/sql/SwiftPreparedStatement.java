@@ -4,8 +4,10 @@ import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.jdbc.druid.sql.SQLUtils;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
+import com.fr.swift.jdbc.result.MaintainResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
+import com.fr.swift.source.ListBasedRow;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -23,11 +25,11 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +45,7 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     private String sql;
     private List values;
 
-    public SwiftPreparedStatement(BaseSwiftConnection connection, String sql, JdbcExecutor query, JdbcExecutor maintain) {
+    SwiftPreparedStatement(BaseSwiftConnection connection, String sql, JdbcExecutor query, JdbcExecutor maintain) {
         super(connection, query, maintain);
         SQLUtils.parseStatements(sql, null);
         this.sql = sql;
@@ -63,15 +65,24 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        SqlRequestInfo info = grammarChecker.check(sql, values);
-        SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
-        JdbcSwiftResultSet resultSet = new JdbcSwiftResultSet(info, result, this);
-        return new ResultSetWrapper(resultSet, result.getLabel2Index());
+        SqlRequestInfo info = grammarChecker.check(sql, values.toArray());
+        if (info.isSelect()) {
+            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+            JdbcSwiftResultSet resultSet = new JdbcSwiftResultSet(info, result, this);
+            return new ResultSetWrapper(resultSet, result.getLabel2Index());
+        } else {
+            int result = execute(info, maintainExecutor);
+            return new MaintainResultSet(new ListBasedRow(result), Arrays.asList("affects"));
+        }
     }
 
     @Override
     public int executeUpdate() throws SQLException {
-        SqlRequestInfo info = grammarChecker.check(sql, values);
+        SqlRequestInfo info = grammarChecker.check(sql, values.toArray());
+        if (info.isSelect()) {
+            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+            return result.getRowCount();
+        }
         return execute(info, maintainExecutor);
     }
 
@@ -345,100 +356,6 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
         super.close();
     }
 
-    @Override
-    public int getMaxFieldSize() {
-        return 0;
-    }
-
-    @Override
-    public void setMaxFieldSize(int max) {
-
-    }
-
-    @Override
-    public int getMaxRows() {
-        return 0;
-    }
-
-    @Override
-    public void setMaxRows(int max) {
-
-    }
-
-    @Override
-    public void setEscapeProcessing(boolean enable) {
-
-    }
-
-    @Override
-    public int getQueryTimeout() {
-        return 0;
-    }
-
-    @Override
-    public void setQueryTimeout(int seconds) {
-
-    }
-
-    @Override
-    public void cancel() {
-
-    }
-
-    @Override
-    public SQLWarning getWarnings() {
-        return null;
-    }
-
-    @Override
-    public void clearWarnings() {
-
-    }
-
-    @Override
-    public void setCursorName(String name) {
-
-    }
-
-    @Override
-    public boolean execute(String sql) {
-        return false;
-    }
-
-    @Override
-    public ResultSet getResultSet() {
-        return null;
-    }
-
-    @Override
-    public int getUpdateCount() {
-        return 0;
-    }
-
-    @Override
-    public boolean getMoreResults() {
-        return false;
-    }
-
-    @Override
-    public int getFetchDirection() {
-        return 0;
-    }
-
-    @Override
-    public void setFetchDirection(int direction) {
-
-    }
-
-    @Override
-    public int getFetchSize() {
-        return 0;
-    }
-
-    @Override
-    public void setFetchSize(int rows) {
-
-    }
 
     @Override
     public String getObjId() {
@@ -451,8 +368,19 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
         values.clear();
     }
 
+    /**
+     * Prepared statement parameter value.
+     * Any parameters in the sql would be filled by <code>INSTANCE</code> on initializing.
+     * The parameter will be filled by NULL when set null value to the parameter.
+     */
     public enum NullValue {
+        /**
+         * Initialization Null value
+         */
         INSTANCE,
+        /**
+         * Real Null value
+         */
         NULL;
 
         @Override

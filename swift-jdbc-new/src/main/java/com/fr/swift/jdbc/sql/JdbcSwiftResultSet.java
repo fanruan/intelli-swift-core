@@ -14,7 +14,7 @@ public class JdbcSwiftResultSet extends OnePageApiResultSet<SqlRequestInfo> {
     private static final long serialVersionUID = 5724892335081556009L;
     private SwiftStatementImpl swiftStatement;
 
-    public JdbcSwiftResultSet(SqlRequestInfo info, SwiftApiResultSet resultSet, SwiftStatementImpl swiftStatement) throws SQLException {
+    JdbcSwiftResultSet(SqlRequestInfo info, SwiftApiResultSet resultSet, SwiftStatementImpl swiftStatement) throws SQLException {
         super(info, resultSet.getMetaData(), resultSet.getRows(), resultSet.getRowCount(), resultSet.isOriginHasNextPage());
         this.swiftStatement = swiftStatement;
     }

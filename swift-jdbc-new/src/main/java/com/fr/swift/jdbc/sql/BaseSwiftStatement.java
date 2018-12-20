@@ -14,7 +14,7 @@ public abstract class BaseSwiftStatement implements SwiftStatement {
     protected BaseSwiftConnection connection;
     protected GrammarChecker grammarChecker;
 
-    public BaseSwiftStatement(BaseSwiftConnection connection) {
+    BaseSwiftStatement(BaseSwiftConnection connection) {
         this.connection = connection;
         this.grammarChecker = connection.getConfig().grammarChecker();
     }

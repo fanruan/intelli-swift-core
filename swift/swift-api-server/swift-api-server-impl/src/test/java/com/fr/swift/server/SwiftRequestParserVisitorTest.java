@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 public class SwiftRequestParserVisitorTest extends TestCase {
 
     public void testVisitSelectSqlRequestInfo() throws Exception {
-        SqlRequestInfo select = new SqlRequestInfo("select * from cube.a");
+        SqlRequestInfo select = new SqlRequestInfo("select * from cube.a", true);
         ApiInvocation invocation = select.accept(new SwiftRequestParserVisitor());
         Class<?> aClass = invocation.getTarget();
         Class<?>[] parameterTypes = invocation.getParameterTypes();
@@ -38,7 +38,7 @@ public class SwiftRequestParserVisitorTest extends TestCase {
     }
 
     public void testVisitCreateSqlRequestInfo() throws Exception {
-        SqlRequestInfo create = new SqlRequestInfo("create table cube.tbl_name (a int, b bigint, c double, d timestamp, e date, f varchar)");
+        SqlRequestInfo create = new SqlRequestInfo("create table cube.tbl_name (a int, b bigint, c double, d timestamp, e date, f varchar)", false);
         ApiInvocation invocation = create.accept(new SwiftRequestParserVisitor());
         Class<?> aClass = invocation.getTarget();
         Class<?>[] parameterTypes = invocation.getParameterTypes();
@@ -54,7 +54,7 @@ public class SwiftRequestParserVisitorTest extends TestCase {
     }
 
     public void testVisitInsertSqlRequestInfo() throws Exception {
-        SqlRequestInfo insert = new SqlRequestInfo("insert into cube.tbl_name (a, b, c) values ('a', 'b', 233), ('a1', 'b1', 234)");
+        SqlRequestInfo insert = new SqlRequestInfo("insert into cube.tbl_name (a, b, c) values ('a', 'b', 233), ('a1', 'b1', 234)", false);
         ApiInvocation invocation = insert.accept(new SwiftRequestParserVisitor());
         Class<?> aClass = invocation.getTarget();
         Class<?>[] parameterTypes = invocation.getParameterTypes();
@@ -70,7 +70,7 @@ public class SwiftRequestParserVisitorTest extends TestCase {
     }
 
     public void testVisitDeleteSqlRequestInfo() throws Exception {
-        SqlRequestInfo delete = new SqlRequestInfo("delete from cube.tbl_name where a = 233");
+        SqlRequestInfo delete = new SqlRequestInfo("delete from cube.tbl_name where a = 233", false);
         ApiInvocation invocation = delete.accept(new SwiftRequestParserVisitor());
         Class<?> aClass = invocation.getTarget();
         Class<?>[] parameterTypes = invocation.getParameterTypes();
@@ -86,7 +86,7 @@ public class SwiftRequestParserVisitorTest extends TestCase {
     }
 
     public void testVisitDropSqlRequestInfo() throws Exception {
-        SqlRequestInfo drop = new SqlRequestInfo("drop table cube.tbl_name");
+        SqlRequestInfo drop = new SqlRequestInfo("drop table cube.tbl_name", false);
         ApiInvocation invocation = drop.accept(new SwiftRequestParserVisitor());
         Class<?> aClass = invocation.getTarget();
         Class<?>[] parameterTypes = invocation.getParameterTypes();

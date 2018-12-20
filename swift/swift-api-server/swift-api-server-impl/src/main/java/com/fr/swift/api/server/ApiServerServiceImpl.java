@@ -5,7 +5,7 @@ import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.ApiRequestType;
 import com.fr.swift.api.info.AuthRequestInfo;
 import com.fr.swift.api.info.CreateTableRequestInfo;
-import com.fr.swift.api.info.DeleteTableRequestInfo;
+import com.fr.swift.api.info.DeleteRequestInfo;
 import com.fr.swift.api.info.InsertRequestInfo;
 import com.fr.swift.api.info.QueryRequestInfo;
 import com.fr.swift.api.info.RequestInfo;
@@ -48,7 +48,7 @@ public class ApiServerServiceImpl implements ApiServerService {
         requestTypeMap.put(JdbcRequestType.SQL.name(), SqlRequestInfo.class);
         requestTypeMap.put(ApiRequestType.JSON_QUERY.name(), QueryRequestInfo.class);
         requestTypeMap.put(ApiRequestType.CREATE_TABLE.name(), CreateTableRequestInfo.class);
-        requestTypeMap.put(ApiRequestType.DELETE.name(), DeleteTableRequestInfo.class);
+        requestTypeMap.put(ApiRequestType.DELETE.name(), DeleteRequestInfo.class);
         requestTypeMap.put(ApiRequestType.INSERT.name(), InsertRequestInfo.class);
         requestTypeMap.put(ApiRequestType.DROP_TABLE.name(), TableRequestInfo.class);
         requestTypeMap.put(ApiRequestType.TRUNCATE_TABLE.name(), TableRequestInfo.class);

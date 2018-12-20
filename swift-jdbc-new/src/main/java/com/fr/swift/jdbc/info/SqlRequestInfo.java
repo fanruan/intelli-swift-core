@@ -2,6 +2,7 @@ package com.fr.swift.jdbc.info;
 
 import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.BaseRequestInfo;
+import com.fr.swift.base.json.annotation.JsonIgnore;
 import com.fr.swift.base.json.annotation.JsonProperty;
 
 /**
@@ -15,14 +16,17 @@ public class SqlRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor> {
     protected String authCode;
     @JsonProperty(value = "database")
     protected String database;
+    @JsonIgnore
+    private boolean select;
 
     public SqlRequestInfo() {
         super(JdbcRequestType.SQL);
     }
 
-    public SqlRequestInfo(String sql) {
+    public SqlRequestInfo(String sql, boolean select) {
         super(JdbcRequestType.SQL);
         this.sql = sql;
+        this.select = select;
     }
 
     public void setDatabase(String database) {
@@ -44,6 +48,10 @@ public class SqlRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor> {
 
     public String getDatabase() {
         return database;
+    }
+
+    public boolean isSelect() {
+        return select;
     }
 
     @Override

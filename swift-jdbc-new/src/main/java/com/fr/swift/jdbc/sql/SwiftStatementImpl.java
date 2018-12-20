@@ -2,13 +2,16 @@ package com.fr.swift.jdbc.sql;
 
 import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
+import com.fr.swift.jdbc.result.MaintainResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
+import com.fr.swift.source.ListBasedRow;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -19,23 +22,48 @@ public class SwiftStatementImpl extends BaseSwiftStatement {
     protected JdbcExecutor queryExecutor;
     protected JdbcExecutor maintainExecutor;
 
-    public SwiftStatementImpl(BaseSwiftConnection connection, JdbcExecutor queryExecutor, JdbcExecutor maintainExecutor) {
+    SwiftStatementImpl(BaseSwiftConnection connection, JdbcExecutor queryExecutor, JdbcExecutor maintainExecutor) {
         super(connection);
         this.queryExecutor = queryExecutor;
         this.maintainExecutor = maintainExecutor;
         reset();
     }
 
+    /**
+     * if it is a select statement then return result set
+     * else wrap affected row count to a result set.
+     *
+     * @param sql it is a query statement normally but it can be a maintain statement.
+     * @return return query result set or maintain affected row count
+     * @throws SQLException the method would throw SQLException when got error from server
+     */
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql);
-        SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
-        return new ResultSetWrapper(new JdbcSwiftResultSet(info, result, this), result.getLabel2Index());
+        if (info.isSelect()) {
+            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+            return new ResultSetWrapper(new JdbcSwiftResultSet(info, result, this), result.getLabel2Index());
+        } else {
+            int result = execute(info, maintainExecutor);
+            return new MaintainResultSet(new ListBasedRow(result), Arrays.asList("affects"));
+        }
     }
 
+    /**
+     * if it is a select statement then return the row count of the query
+     * else return update affected row count.
+     * @param sql it is a maintain statement normally but it also can be a query statement.
+     * @return if parameter sql was a query statement the method would return row count of result set.
+     *          if parameter sql was a maintain statement the method would return affected row count.
+     * @throws SQLException the method would throw SQLException when got error from server
+     */
     @Override
     public int executeUpdate(String sql) throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql);
+        if (info.isSelect()) {
+            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
+            return result.getRowCount();
+        }
         return execute(info, maintainExecutor);
     }
 
@@ -128,7 +156,7 @@ public class SwiftStatementImpl extends BaseSwiftStatement {
 
     @Override
     public int getFetchDirection() throws SQLException {
-        return 0;
+        return ResultSet.FETCH_FORWARD;
     }
 
     @Override
@@ -143,12 +171,12 @@ public class SwiftStatementImpl extends BaseSwiftStatement {
 
     @Override
     public int getResultSetConcurrency() throws SQLException {
-        return 0;
+        return ResultSet.CONCUR_READ_ONLY;
     }
 
     @Override
     public int getResultSetType() throws SQLException {
-        return 0;
+        return ResultSet.TYPE_FORWARD_ONLY;
     }
 
     @Override

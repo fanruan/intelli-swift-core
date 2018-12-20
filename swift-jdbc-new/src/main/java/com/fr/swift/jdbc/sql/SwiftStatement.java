@@ -7,7 +7,15 @@ import java.sql.Statement;
  * @date 2018/11/19
  */
 public interface SwiftStatement extends Statement {
+    /**
+     * statement id
+     *
+     * @return statement id
+     */
     String getObjId();
 
+    /**
+     * reset the statement
+     */
     void reset();
 }
