@@ -16,13 +16,10 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runners.MethodSorters;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 
@@ -51,19 +48,6 @@ public class TableTest {
 
         t = db.createTable(sk, new SwiftMetaDataBean(sk.getId(),
                 Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("A", Types.DATE))));
-    }
-
-    @Test
-    public void insert() throws SQLException {
-        t.insert(new RowSet());
-        checkResult();
-    }
-
-    @Ignore
-    @Test
-    public void importFrom() throws SQLException {
-        t.importFrom(new RowSet());
-        checkResult();
     }
 
     private void checkResult() {

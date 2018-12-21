@@ -62,7 +62,7 @@ public class SegmentOperatorTest {
                 }
             };
 
-            Inserter inserter = (Inserter) SwiftContext.get().getBean("historyBlockInserter", dataSource);
+            Insertable inserter = (Insertable) SwiftContext.get().getBean("historyBlockInserter", Insertable.class, dataSource);
             inserter.insertData(set);
         } catch (Exception e) {
             success = false;

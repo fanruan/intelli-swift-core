@@ -5,6 +5,7 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.operator.Insertable;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
@@ -25,7 +26,7 @@ import java.util.Map;
  * @author anchore
  * @date 2018/8/1
  */
-public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>> implements Releasable {
+public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>> implements Releasable, Insertable {
 
     private A alloter;
 
@@ -47,6 +48,7 @@ public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>
         }
     }
 
+    @Override
     public void insertData(SwiftResultSet swiftResultSet) throws Exception {
         try {
             persistMeta();

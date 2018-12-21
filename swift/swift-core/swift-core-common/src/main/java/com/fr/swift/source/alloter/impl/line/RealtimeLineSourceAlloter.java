@@ -10,7 +10,7 @@ import com.fr.swift.source.alloter.impl.BaseSourceAlloter;
  */
 public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, LineRowInfo> {
 
-    protected RealtimeLineSourceAlloter(SourceKey tableKey, LineAllotRule rule) {
+    public RealtimeLineSourceAlloter(SourceKey tableKey, LineAllotRule rule) {
         super(tableKey, rule);
     }
 
