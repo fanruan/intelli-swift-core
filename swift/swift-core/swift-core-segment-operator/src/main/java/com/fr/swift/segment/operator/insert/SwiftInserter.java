@@ -6,7 +6,6 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.resultset.IterableResultSet;
 
 import java.util.List;
 
@@ -20,44 +19,41 @@ import java.util.List;
 @SwiftBean(name = "inserter")
 @SwiftScope("prototype")
 public class SwiftInserter extends BaseInserter implements Inserter {
-    int cursor, lastCursor;
 
-    public SwiftInserter(Segment segment) {
-        super(segment);
-    }
+    int cursor, lastCursor;
 
     public SwiftInserter(Segment segment, List<String> fields) {
         super(segment, fields);
+        initCursors();
+    }
+
+    void initCursors() {
+        lastCursor = cursor = 0;
+    }
+
+    public SwiftInserter(Segment segment) {
+        this(segment, segment.getMetaData().getFieldNames());
     }
 
     @Override
-    public void insertData(List<Row> rowList) throws Exception {
-        insertData(new IterableResultSet(rowList, segment.getMetaData()));
-    }
-
-    /**
-     * 默认从头开始
-     */
-    void initCursors() {
-        cursor = lastCursor = 0;
+    public void insertData(Row rowData) throws Exception {
+        putRow(cursor++, rowData);
     }
 
     @Override
     public void insertData(SwiftResultSet swiftResultSet) throws Exception {
-        initCursors();
+        while (swiftResultSet.hasNext()) {
+            insertData(swiftResultSet.getNextRow());
+        }
+    }
+
+    @Override
+    public void release() {
         try {
-            while (swiftResultSet.hasNext()) {
-                Row rowData = swiftResultSet.getNextRow();
-                putRow(cursor, rowData);
-                cursor++;
-            }
-
             putNullIndex();
-
             putSegmentInfo(lastCursor, cursor);
         } finally {
-            release();
+            super.release();
         }
-
     }
 }

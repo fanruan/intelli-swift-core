@@ -2,6 +2,7 @@ package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.Closable;
 
 import java.sql.SQLException;
 
@@ -10,7 +11,7 @@ import java.sql.SQLException;
  * @date 2017/12/5
  * 为以后适配ResultSet做准备
  */
-public interface SwiftResultSet {
+public interface SwiftResultSet extends Closable {
 
     int getFetchSize();
 
@@ -42,5 +43,6 @@ public interface SwiftResultSet {
      *
      * @throws SQLException 异常
      */
+    @Override
     void close() throws SQLException;
 }

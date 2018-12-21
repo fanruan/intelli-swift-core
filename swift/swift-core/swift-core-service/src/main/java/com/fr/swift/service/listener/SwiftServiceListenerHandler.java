@@ -2,7 +2,6 @@ package com.fr.swift.service.listener;
 
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.SwiftService;
-import com.fr.swift.service.SwiftServiceEvent;
 
 import java.io.Serializable;
 
@@ -13,19 +12,6 @@ import java.io.Serializable;
  * 处理服务事件监听的类
  */
 public interface SwiftServiceListenerHandler {
-    /**
-     * 加listener
-     *
-     * @param listener
-     */
-    void addListener(SwiftServiceListener listener);
-
-    /**
-     * 触发事件
-     *
-     * @param event
-     */
-    void trigger(SwiftServiceEvent event);
 
     /**
      * Rpc

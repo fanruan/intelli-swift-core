@@ -31,8 +31,8 @@ import com.fr.swift.segment.operator.collate.HistoryCollater;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.resultset.CoSwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
@@ -169,11 +169,11 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         }
         Table table = database.getTable(tableKey);
 
-        SwiftSourceAlloter alloter = new LineSourceAlloter(table.getSourceKey());
+        SwiftSourceAlloter alloter = new HistoryLineSourceAlloter(table.getSourceKey(), new LineAllotRule(LineAllotRule.STEP));
         SwiftMetaData metadata = table.getMetadata();
 
         SwiftResultSet swiftResultSet = newCollateResultSet(getSegmentsByKeys(collateSegKeys),
-                ((LineAllotRule) alloter.getAllotRule()).getStep(), table.getMetadata());
+                alloter.getAllotRule().getCapacity(), table.getMetadata());
 
         List<Segment> newSegs = new ArrayList<Segment>();
         final List<SegmentKey> newKeys = new ArrayList<SegmentKey>();
@@ -185,7 +185,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             new HistoryCollater(newSeg).collate(swiftResultSet);
             newSegs.add(newSeg);
             swiftResultSet.close();
-        } while (alloter.isFull(newSeg));
+        } while (isFull(newSeg, alloter));
 
         // todo 暂时同步做索引
         SegmentUtils.indexSegmentIfNeed(newSegs);
@@ -193,6 +193,13 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         fireUploadHistory(newKeys);
 
         clearCollatedSegment(collateSegKeys);
+    }
+
+    private boolean isFull(Segment seg, SwiftSourceAlloter<?, ?> alloter) {
+        if (!seg.isReadable()) {
+            return false;
+        }
+        return seg.getRowCount() >= alloter.getAllotRule().getCapacity();
     }
 
     private SwiftResultSet newCollateResultSet(List<Segment> segs, int alloterCount, SwiftMetaData swiftMetaData) {

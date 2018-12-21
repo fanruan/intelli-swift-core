@@ -134,7 +134,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     @Override
     public ServerCurrentStatus currentStatus() {
-        return new ServerCurrentStatus(getID());
+        return new ServerCurrentStatus(getId());
     }
 
     private void initListener() {
@@ -172,9 +172,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 try {
                     if (null != obj) {
                         if (obj instanceof DataSource) {
-                            SegmentHelper.uploadTable(manager, (DataSource) obj, getID());
+                            SegmentHelper.uploadTable(manager, (DataSource) obj, getId());
                         } else if (obj instanceof RelationSource) {
-                            SegmentHelper.uploadRelation((RelationSource) obj, getID());
+                            SegmentHelper.uploadRelation((RelationSource) obj, getId());
                         }
                         ReadyUploadContainer.instance().remove(key);
                     }

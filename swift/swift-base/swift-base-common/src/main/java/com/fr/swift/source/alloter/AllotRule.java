@@ -15,6 +15,8 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 public interface AllotRule {
     Type getType();
 
+    int getCapacity();
+
     RowAnalyzer analyzer();
 
     interface Type {

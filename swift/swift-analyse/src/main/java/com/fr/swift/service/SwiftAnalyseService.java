@@ -76,7 +76,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
             loadable = false;
         }
         List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
-                (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new RequestSegLocationEvent(getID()));
+                (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new RequestSegLocationEvent(getId()));
         if (!result.isEmpty()) {
             for (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair : result) {
                 updateSegmentInfo(pair.getValue(), pair.getKey());
@@ -108,9 +108,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
                 initSegDestinations(realTime, entry.getKey());
                 for (SegmentKey segmentKey : entry.getValue()) {
                     if (segmentKey.getStoreType().isPersistent()) {
-                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
+                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getId(), segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
                     } else {
-                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getID(), segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery"));
+                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getId(), segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery"));
                     }
                     manager.getSegment(segmentKey);
                 }
@@ -142,7 +142,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
     @Override
     public void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType) {
-        String clusterId = getID();
+        String clusterId = getId();
         for (List<SegmentDestination> value : locationInfo.getDestinations().values()) {
             for (SegmentDestination segmentDestination : value) {
                 ((SegmentDestinationImpl) segmentDestination).setCurrentNode(clusterId);

@@ -3,7 +3,8 @@ package com.fr.swift.service;
 import com.fr.swift.exception.SwiftServiceException;
 
 /**
- * Created by pony on 2017/10/10.
+ * @author pony
+ * @date 2017/10/10
  * swift的服务
  */
 public interface SwiftService {
@@ -12,7 +13,7 @@ public interface SwiftService {
      * 启动服务
      *
      * @return 是否成功
-     * @throws SwiftServiceException
+     * @throws SwiftServiceException ex
      */
     boolean start() throws SwiftServiceException;
 
@@ -20,28 +21,28 @@ public interface SwiftService {
      * 关闭服务
      *
      * @return 是否成功
-     * @throws SwiftServiceException
+     * @throws SwiftServiceException ex
      */
     boolean shutdown() throws SwiftServiceException;
 
     /**
      * 服务的类型。
      *
-     * @return
+     * @return type
      */
     ServiceType getServiceType();
 
     /**
-     * id,unregister的时候要区分下
+     * id, unregister的时候要区分下
      *
-     * @return
+     * @return id
      */
-    String getID();
+    String getId();
 
     /**
      * 设置id
      *
-     * @param id
+     * @param id id
      */
     void setId(String id);
 

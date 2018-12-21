@@ -53,11 +53,6 @@ public class SwiftServiceListenerManager {
         this.handler.unRegisterService(service);
     }
 
-    public void addListener(SwiftServiceListener listener) throws SwiftServiceException {
-        checkIfHandlerRegistered();
-        handler.addListener(listener);
-    }
-
     /**
      * 通知服务，触发事件
      *

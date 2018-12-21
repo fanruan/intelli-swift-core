@@ -17,6 +17,7 @@ import java.security.PrivilegedAction;
  * @date 2018/7/19
  */
 public class IoUtil {
+
     public static void close(Closeable closeable) {
         if (closeable != null) {
             try {
@@ -73,6 +74,16 @@ public class IoUtil {
                     return null;
                 }
             });
+        }
+    }
+
+    public static void close(Closable closable) {
+        if (closable != null) {
+            try {
+                closable.close();
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
         }
     }
 }

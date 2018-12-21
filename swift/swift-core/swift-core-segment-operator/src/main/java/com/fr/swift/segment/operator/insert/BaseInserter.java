@@ -25,9 +25,10 @@ import java.util.Map;
  * @date 2018/6/15
  */
 public abstract class BaseInserter {
+
     protected Segment segment;
 
-    protected List<String> fields;
+    private List<String> fields;
 
     protected Map<Integer, MutableBitMap> nullIndices = new HashMap<Integer, MutableBitMap>();
 
@@ -40,13 +41,14 @@ public abstract class BaseInserter {
     public BaseInserter(Segment segment, List<String> fields) {
         this.fields = fields;
         this.segment = segment;
-        init();
+
+        initColumns();
     }
 
-    protected void init() {
+    private void initColumns() {
         for (int i = 0; i < fields.size(); i++) {
             String field = fields.get(i);
-            Column column = segment.getColumn(new ColumnKey(field));
+            Column<Object> column = segment.getColumn(new ColumnKey(field));
             columns.add(column);
             nullIndices.put(i, BitMaps.newRoaringMutable());
         }
@@ -54,7 +56,7 @@ public abstract class BaseInserter {
 
     protected void putRow(int cursor, Row rowData) {
         for (int i = 0; i < fields.size(); i++) {
-            DetailColumn detail = columns.get(i).getDetailColumn();
+            DetailColumn<Object> detail = columns.get(i).getDetailColumn();
             if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
                 detail.put(cursor, null);
                 nullIndices.get(i).add(cursor);

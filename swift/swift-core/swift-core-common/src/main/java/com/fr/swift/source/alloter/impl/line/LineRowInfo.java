@@ -13,7 +13,6 @@ public class LineRowInfo implements RowInfo {
         this.cursor = cursor;
     }
 
-    @Override
     public long getCursor() {
         return cursor;
     }

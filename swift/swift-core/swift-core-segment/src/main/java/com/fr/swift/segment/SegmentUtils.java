@@ -29,6 +29,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 public class SegmentUtils {
+
     public static Segment newSegment(SegmentKey segKey) {
         SourceKey tableKey = segKey.getTable();
         SwiftMetaData meta = SwiftDatabase.getInstance().getTable(tableKey).getMetadata();
@@ -41,9 +42,9 @@ public class SegmentUtils {
 
     public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {
         if (location.getStoreType().isTransient()) {
-            return (Segment) SwiftContext.get().getBean("realtimeSegment", location, meta);
+            return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, meta);
         }
-        return (Segment) SwiftContext.get().getBean("historySegment", location, meta);
+        return SwiftContext.get().getBean("historySegment", Segment.class, location, meta);
     }
 
     /**
@@ -71,10 +72,10 @@ public class SegmentUtils {
         FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build());
     }
 
-    public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {
-        final List<Segment> hisSegs = new ArrayList<Segment>();
+    public static void indexSegmentIfNeed(Iterable<Segment> segs) throws Exception {
+        List<Segment> hisSegs = new ArrayList<Segment>();
         for (Segment seg : segs) {
-            if (seg.isHistory()) {
+            if (seg != null && seg.isHistory()) {
                 hisSegs.add(seg);
             }
         }
@@ -83,10 +84,15 @@ public class SegmentUtils {
             return;
         }
 
-        final SwiftMetaData metadata = hisSegs.get(0).getMetaData();
+        SwiftMetaData metadata = hisSegs.get(0).getMetaData();
+        // todo 或可多线程加速？
         for (int i = 0; i < metadata.getColumnCount(); i++) {
-            final ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
-            ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", metadata, columnKey, hisSegs)).buildIndex();
+            ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
+            try {
+                SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, metadata, columnKey, hisSegs).buildIndex();
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
         }
     }
 
