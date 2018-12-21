@@ -37,7 +37,7 @@ public abstract class AbstractSwiftService implements SwiftService, Serializable
     }
 
     @Override
-    public String getID() {
+    public String getId() {
         return id;
     }
 

@@ -22,8 +22,6 @@ import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
-import com.fr.swift.service.SwiftServiceEvent;
-import com.fr.swift.service.listener.SwiftServiceListener;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
@@ -143,46 +141,36 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
     }
 
     @Override
-    public void addListener(SwiftServiceListener listener) {
-
-    }
-
-    @Override
-    public void trigger(SwiftServiceEvent event) {
-
-    }
-
-    @Override
     public Serializable trigger(SwiftRpcEvent event) {
         return null;
     }
 
     @Override
     public void registerService(SwiftService service) {
-        Assert.notNull(service.getID(), "Service's clusterId is null! Can't be registered!");
+        Assert.notNull(service.getId(), "Service's clusterId is null! Can't be registered!");
 
-        LOGGER.info("{} register service :{}", service.getID(), service.getServiceType().name());
+        LOGGER.info("{} register service :{}", service.getId(), service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(
-                    service.getServiceType().name(), service.getID(), swiftProperty.getServerAddress(), false));
+                    service.getServiceType().name(), service.getId(), swiftProperty.getServerAddress(), false));
 
-            URL url = UrlSelector.getInstance().getFactory().getURL(service.getID());
+            URL url = UrlSelector.getInstance().getFactory().getURL(service.getId());
             switch (service.getServiceType()) {
                 case ANALYSE:
                     ClusterEntity entity = new ClusterEntity(url, service.getServiceType(), AnalyseService.class);
-                    analyseServiceMap.put(service.getID(), entity);
+                    analyseServiceMap.put(service.getId(), entity);
                     break;
                 case HISTORY:
-                    historyServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), HistoryService.class));
+                    historyServiceMap.put(service.getId(), new ClusterEntity(url, service.getServiceType(), HistoryService.class));
                     break;
                 case INDEXING:
-                    indexingServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), IndexingService.class));
+                    indexingServiceMap.put(service.getId(), new ClusterEntity(url, service.getServiceType(), IndexingService.class));
                     break;
                 case REAL_TIME:
-                    realTimeServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), RealtimeService.class));
+                    realTimeServiceMap.put(service.getId(), new ClusterEntity(url, service.getServiceType(), RealtimeService.class));
                     break;
                 case COLLATE:
-                    collateServiceMap.put(service.getID(), new ClusterEntity(url, service.getServiceType(), CollateService.class));
+                    collateServiceMap.put(service.getId(), new ClusterEntity(url, service.getServiceType(), CollateService.class));
                     break;
                 default:
             }
@@ -209,26 +197,26 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
     @Override
     public void unRegisterService(SwiftService service) {
-        Assert.notNull(service.getID(), "Service's clusterId is null! Can't be removed!");
+        Assert.notNull(service.getId(), "Service's clusterId is null! Can't be removed!");
 
-        LOGGER.debug("{} unregister service :{}", service.getID(), service.getServiceType().name());
+        LOGGER.debug("{} unregister service :{}", service.getId(), service.getServiceType().name());
         synchronized (this) {
-            serviceInfoService.removeServiceInfo(new SwiftServiceInfoBean(service.getServiceType().name(), service.getID(), ""));
+            serviceInfoService.removeServiceInfo(new SwiftServiceInfoBean(service.getServiceType().name(), service.getId(), ""));
             switch (service.getServiceType()) {
                 case ANALYSE:
-                    analyseServiceMap.remove(service.getID());
+                    analyseServiceMap.remove(service.getId());
                     break;
                 case HISTORY:
-                    historyServiceMap.remove(service.getID());
+                    historyServiceMap.remove(service.getId());
                     break;
                 case INDEXING:
-                    indexingServiceMap.remove(service.getID());
+                    indexingServiceMap.remove(service.getId());
                     break;
                 case REAL_TIME:
-                    realTimeServiceMap.remove(service.getID());
+                    realTimeServiceMap.remove(service.getId());
                     break;
                 case COLLATE:
-                    collateServiceMap.remove(service.getID());
+                    collateServiceMap.remove(service.getId());
                     break;
                 default:
             }

@@ -12,8 +12,8 @@ import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.core.Core;
 
 import java.sql.SQLException;
@@ -41,8 +41,8 @@ class SwiftTable implements Table {
     @Override
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
-            LineSourceAlloter alloter = new LineSourceAlloter(getSourceKey(), new LineAllotRule(LineAllotRule.MEM_STEP));
-            Inserter inserter = (Inserter) SwiftContext.get().getBean("incrementer", this, alloter);
+            HistoryLineSourceAlloter alloter = new HistoryLineSourceAlloter(getSourceKey(), new LineAllotRule(LineAllotRule.MEM_STEP));
+            Inserter inserter = SwiftContext.get().getBean("incrementer", Inserter.class, this, alloter);
             inserter.insertData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);
@@ -59,8 +59,8 @@ class SwiftTable implements Table {
             inserter.insertData(rowSet);
             List<Segment> segments = SwiftContext.get().getBean("indexingSegmentManager", SwiftSegmentManager.class).getSegment(key);
             for (String field : inserter.getFields()) {
-                ((SwiftColumnIndexer) SwiftContext.get().getBean("columnIndexer", this, new ColumnKey(field), segments)).buildIndex();
-                ((SwiftColumnDictMerger) SwiftContext.get().getBean("columnDictMerger", this, new ColumnKey(field), segments)).mergeDict();
+                SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, this, new ColumnKey(field), segments).buildIndex();
+                SwiftContext.get().getBean("columnDictMerger", SwiftColumnDictMerger.class, this, new ColumnKey(field), segments).mergeDict();
             }
         } catch (Exception e) {
             throw new SQLException(e);
