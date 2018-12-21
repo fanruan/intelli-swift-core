@@ -12,6 +12,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.test.Preparer;
 import org.junit.Test;
 
 import java.sql.ResultSet;

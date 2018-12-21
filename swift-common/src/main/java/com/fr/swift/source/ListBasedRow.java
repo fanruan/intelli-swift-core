@@ -8,12 +8,12 @@ import java.util.List;
 public class ListBasedRow implements Row {
     private static final long serialVersionUID = -5283575301909309763L;
 
-    private List<Object> values;
+    private List<?> values;
 
     public ListBasedRow() {
     }
 
-    public ListBasedRow(List<Object> values) {
+    public ListBasedRow(List<?> values) {
         this.values = values;
     }
 
