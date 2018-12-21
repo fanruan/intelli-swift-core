@@ -44,21 +44,30 @@ public abstract class BaseFileLineParser implements SwiftStreamResultSet.LinePar
             String col = row.getValue(i);
             try {
                 switch (columns.get(i).getType()) {
+                    case Types.DECIMAL:
+                    case Types.NUMERIC:
+                    case Types.REAL:
                     case Types.DOUBLE:
+                    case Types.FLOAT:
                         data.add(Double.parseDouble(col));
                         break;
-                    case Types.VARCHAR:
-                        data.add(col);
-                        break;
-                    case Types.DATE:
+                    case Types.BIT:
+                    case Types.TINYINT:
+                    case Types.SMALLINT:
+                    case Types.INTEGER:
+                    case Types.BIGINT:
                         data.add(Long.parseLong(col));
                         break;
+                    case Types.DATE:
+                    case Types.TIMESTAMP:
+                    case Types.TIME:
+                        data.add(DateUtils.string2Date(col, true).getTime());
                     default:
-                        data.add(null);
+                        data.add(col);
                         break;
                 }
             } catch (Exception e) {
-                SwiftLoggers.getLogger().warn(e);
+                SwiftLoggers.getLogger().warn(e.getMessage());
                 data.add(null);
             }
         }
@@ -67,7 +76,7 @@ public abstract class BaseFileLineParser implements SwiftStreamResultSet.LinePar
 
     @Override
     public List<SwiftMetaDataColumn> parseColumns(String head, String firstRow) {
-        if (null != columns) {
+        if (null != columns && !columns.isEmpty()) {
             return columns;
         }
         Row columnNameSplit = split(head);
@@ -116,7 +125,9 @@ public abstract class BaseFileLineParser implements SwiftStreamResultSet.LinePar
                 }
             }
         }
-        if (!isSkipFirstLine()) {
+        if (head.equals(firstRow) && !isSkipFirstLine()) {
+            this.firstRow = parseLine(firstRow);
+        } else if (!head.equals(firstRow) && StringUtils.isNotEmpty(firstRow)) {
             this.firstRow = parseLine(firstRow);
         }
         return columns;
