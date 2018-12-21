@@ -40,7 +40,7 @@ public class SwiftIndexingConfService implements IndexingConfService {
                 @Override
                 public TableAllotConf work(ConfigSession session) throws SQLException {
                     FindList<SwiftTableAllotConfBean> list = tableConf.find(session, factory.eq("tableId.tableKey", table.getId()));
-                    SwiftTableAllotConfBean bean = !list.isEmpty() ? list.get(0) : new SwiftTableAllotConfBean(table.getId(), new LineAllotRule());
+                    SwiftTableAllotConfBean bean = !list.isEmpty() ? list.get(0) : new SwiftTableAllotConfBean(table.getId(), new LineAllotRule(LineAllotRule.STEP));
                     return (TableAllotConf) bean.convert();
                 }
             });

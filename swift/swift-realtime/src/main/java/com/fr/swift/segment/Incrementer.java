@@ -1,26 +1,24 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
-import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
-import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockInserter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.alloter.RowInfo;
+import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.transaction.TransactionProxyFactory;
-import com.fr.swift.util.Optional;
+import com.fr.swift.util.IoUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * @author anchore
@@ -28,78 +26,42 @@ import java.util.List;
  */
 @SwiftBean(name = "incrementer")
 @SwiftScope("prototype")
-public class Incrementer extends BaseBlockInserter implements Inserter {
-    private static final SwiftSegmentManager LOCAL_SEGMENTS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockInserter<A> {
 
-    public Incrementer(DataSource dataSource) {
-        super(dataSource);
-    }
-
-    public Incrementer(DataSource dataSource, SwiftSourceAlloter alloter) {
+    public Incrementer(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
     }
 
-    private SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-
     @Override
-    protected Inserter getInserter() {
+    protected Inserter getInserter(Segment seg) {
         // 获得事务代理
-        SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(currentSeg);
+        SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(seg);
         TransactionProxyFactory proxyFactory = new TransactionProxyFactory(swiftRealtimeInserter.getSwiftBackup().getTransactionManager());
         return (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
     }
 
-    private Segment newRealtimeSegment(SegmentKey segKey) {
-        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).build(), StoreType.MEMORY);
-        return new RealTimeSegmentImpl(location, dataSource.getMetadata());
-    }
-
     @Override
-    protected boolean nextSegment() {
-        List<SegmentKey> localSegmentKeys = swiftSegmentService.getOwnSegments().get(dataSource.getSourceKey().getId());
-        Optional<SegmentKey> maxLocalSegmentKey = SegmentUtils.getMaxSegmentKey(filterRealtime(localSegmentKeys));
+    protected void releaseFullIfExists() {
+        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
+            Entry<SegmentInfo, Inserting> entry = itr.next();
+            Inserting inserting = entry.getValue();
+            if (inserting.isFull()) {
+                IoUtil.release(inserting);
+                itr.remove();
 
-        if (!maxLocalSegmentKey.isPresent()) {
-            currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
-
-            SwiftLoggers.getLogger().info("max seg is absent, append new seg {}", currentSegKey);
-
-            currentSeg = newRealtimeSegment(currentSegKey);
-            SegmentContainer.NORMAL.updateSegment(currentSegKey, currentSeg);
-            return true;
-        }
-        Segment maxSegment = LOCAL_SEGMENTS.getSegment(maxLocalSegmentKey.get());
-
-        if (alloter.isFull(maxSegment)) {
-            currentSegKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), StoreType.MEMORY);
-
-            SwiftLoggers.getLogger().info("max seg {} is full, append new seg {}", maxLocalSegmentKey.get(), currentSegKey);
-
-            currentSeg = newRealtimeSegment(currentSegKey);
-            SegmentContainer.NORMAL.updateSegment(currentSegKey, currentSeg);
-            SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, maxLocalSegmentKey.get());
-            return true;
-        }
-        currentSegKey = maxLocalSegmentKey.get();
-        currentSeg = maxSegment;
-        return false;
-    }
-
-    @Override
-    protected void clearDirtySegIfNeed() {
-        // 有事务接管，不用处理
-    }
-
-    private static List<SegmentKey> filterRealtime(List<SegmentKey> segKeys) {
-        if (segKeys == null) {
-            return null;
-        }
-        List<SegmentKey> realtimeSegKeys = new ArrayList<SegmentKey>();
-        for (SegmentKey segKey : segKeys) {
-            if (segKey.getStoreType().isTransient()) {
-                realtimeSegKeys.add(segKey);
+                // 增量块已满，transfer掉
+                SegmentInfo segInfo = entry.getKey();
+                SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
+                SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
             }
         }
-        return realtimeSegKeys;
+    }
+
+    @Override
+    protected Segment newSegment(SegmentInfo segInfo) {
+        // todo seg key的其他信息从哪拿
+        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
+        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).build(), segKey.getStoreType());
+        return SegmentUtils.newSegment(location, dataSource.getMetadata());
     }
 }

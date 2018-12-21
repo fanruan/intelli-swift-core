@@ -1,6 +1,8 @@
 package com.fr.swift.source.alloter.impl;
 
+import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.source.alloter.AllotRule;
+import com.fr.swift.util.Assert;
 
 /**
  * @author anchore
@@ -8,15 +10,20 @@ import com.fr.swift.source.alloter.AllotRule;
  */
 public abstract class BaseAllotRule implements AllotRule {
 
-    private AllotType type;
+    public static final int CAPACITY = 10000000, MEM_CAPACITY = 100000;
 
-    public BaseAllotRule(AllotType type) {
-        this.type = type;
+    @JsonProperty("capacity")
+    private int capacity;
+
+    public BaseAllotRule(int capacity) {
+        Assert.isTrue(capacity > 0);
+
+        this.capacity = capacity;
     }
 
     @Override
-    public AllotType getType() {
-        return type;
+    public int getCapacity() {
+        return capacity;
     }
 
     public enum AllotType implements Type {

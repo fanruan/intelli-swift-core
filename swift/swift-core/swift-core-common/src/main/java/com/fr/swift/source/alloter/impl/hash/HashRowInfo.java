@@ -8,6 +8,7 @@ import com.fr.swift.source.alloter.impl.line.LineRowInfo;
  * @date 2018/6/5
  */
 public class HashRowInfo extends LineRowInfo {
+
     private Row row;
 
     public HashRowInfo(long cursor, Row row) {

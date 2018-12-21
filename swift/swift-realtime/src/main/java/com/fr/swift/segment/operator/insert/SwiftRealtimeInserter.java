@@ -67,7 +67,8 @@ public class SwiftRealtimeInserter extends SwiftInserter {
 
     @Override
     @Transactional(value = RealtimeInsertException.class)
-    public void insertData(List<Row> rowList) throws RealtimeInsertException {
+    public void insertData(Row rowList) throws RealtimeInsertException {
+        // fixme 事务要好好考虑，因为现在都是一行行插入，看事务控制到何种粒度
         try {
             super.insertData(rowList);
         } catch (Exception e) {
@@ -94,7 +95,7 @@ public class SwiftRealtimeInserter extends SwiftInserter {
     }
 
     @Override
-    protected void release() {
+    public void release() {
         super.release();
         IoUtil.release(swiftBackup);
     }

@@ -14,8 +14,8 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.source.alloter.impl.line.LineSourceAlloter;
 import com.fr.swift.source.resultset.LimitedResultSet;
 import com.fr.swift.util.function.Supplier;
 import org.junit.Assert;
@@ -67,7 +67,7 @@ public class DropColumnActionTest {
     public void alter() throws Exception {
         SourceKey tableKey = new SourceKey(meta.getTableName());
         com.fr.swift.db.Table table = SwiftDatabase.getInstance().createTable(tableKey, meta);
-        Inserter inserter = getInserter(table, new LineSourceAlloter(tableKey, new LineAllotRule(10)));
+        Inserter inserter = getInserter(table, new HistoryLineSourceAlloter(tableKey, new LineAllotRule(10)));
         inserter.insertData(new LimitedResultSet(new SupplierResultSet(meta, new Supplier<Row>() {
             @Override
             public Row get() {
@@ -95,7 +95,7 @@ public class DropColumnActionTest {
         Assert.assertEquals(2, table.getMeta().getColumnCount());
     }
 
-    private Inserter getInserter(com.fr.swift.db.Table table, LineSourceAlloter lineSourceAlloter) {
+    private Inserter getInserter(com.fr.swift.db.Table table, HistoryLineSourceAlloter lineSourceAlloter) {
         return alterHistory ? (Inserter) SwiftContext.get().getBean("historyBlockInserter", table, lineSourceAlloter) :
                 (Inserter) SwiftContext.get().getBean("incrementer", table, lineSourceAlloter);
     }
