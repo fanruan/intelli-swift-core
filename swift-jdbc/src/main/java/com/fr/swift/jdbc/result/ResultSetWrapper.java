@@ -89,6 +89,9 @@ public class ResultSetWrapper implements ResultSet {
 
     @Override
     public String getString(int columnIndex) throws SQLException {
+        if (null == current) {
+            throw new SQLException("Illegal operation on empty result set.");
+        }
         Object ob = current.getValue(columnIndex - 1);
         return ob == null ? null : String.valueOf(ob);
     }
@@ -129,11 +132,14 @@ public class ResultSetWrapper implements ResultSet {
     }
 
     private Number getNumber(int columnIndex) throws SQLException {
+        if (null == current) {
+            throw new SQLException("Illegal operation on empty result set.");
+        }
         Object ob = current.getValue(columnIndex - 1);
         if (ob instanceof Number) {
             return (Number) ob;
         }
-        return ob == null ? new Integer(0) : new BigDecimal(ob.toString());
+        return ob == null ? 0 : new BigDecimal(ob.toString());
     }
 
     @Override

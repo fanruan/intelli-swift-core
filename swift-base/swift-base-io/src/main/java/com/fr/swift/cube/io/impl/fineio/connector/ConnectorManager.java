@@ -9,8 +9,9 @@ import com.fr.plugin.observer.PluginEventType;
 import com.fr.plugin.observer.PluginListenerRegistration;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.plugin.ExtraClassManagerProvider;
+import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftZipService;
+import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
@@ -28,7 +29,6 @@ public class ConnectorManager {
     private volatile static ConnectorManager instance;
     private static Connector connector;
     private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
-    private SwiftZipService zipConfig = SwiftContext.get().getBean(SwiftZipService.class);
 
     private ConnectorManager() {
         listenPlugin();
@@ -36,7 +36,7 @@ public class ConnectorManager {
             @Override
             public void changed(String path) {
                 connector = null;
-                connector = createConnector(path);
+                connector = createConnector();
             }
         });
     }
@@ -71,39 +71,36 @@ public class ConnectorManager {
         if (null != connector) {
             return connector;
         }
-        String path = pathService.getSwiftPath();
-        return createConnector(path);
+        return createConnector();
     }
 
-    private Connector createConnector(String basePath) {
+    private Connector createConnector() {
         synchronized (this) {
             if (null != connector) {
                 return connector;
             }
             ExtraClassManagerProvider pluginProvider = StableFactory.getMarkedObject(ExtraClassManagerProvider.XML_TAG, ExtraClassManagerProvider.class);
-            boolean useZip = zipConfig.isZip();
             if (null == pluginProvider) {
-                connector = createConnector(basePath, useZip);
+                connector = createSwiftConnector();
                 return connector;
             }
             ConnectorProcessor connectorProcessor = pluginProvider.getSingle(ConnectorProcessor.MARK_STRING);
             if (null == connectorProcessor) {
-                connector = createConnector(basePath, useZip);
+                connector = createSwiftConnector();
                 return connector;
             }
             connector = connectorProcessor.createConnector();
             if (null == connector) {
-                connector = createConnector(basePath, useZip);
+                connector = createSwiftConnector();
             }
             return connector;
         }
     }
 
-    private Connector createConnector(String path, boolean zip) {
-        if (zip) {
-            return Lz4Connector.newInstance(path);
-        }
-        return FileConnector.newInstance(path);
+    private Connector createSwiftConnector() {
+        SwiftFineIOConnectorService service = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
+        FineIOConnectorConfig config = service.getCurrentConfig();
+        return SwiftConnectorCreator.create(config);
     }
 
     protected class ConnectorPluginListener extends PluginEventListener {

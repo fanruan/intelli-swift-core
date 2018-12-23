@@ -130,13 +130,16 @@ public class FilterInfoBeanVisitor extends BaseExpressionVisitor implements Filt
 
     @Override
     public void visit(IsNullExpression isNullExpression) {
-        filterInfoBean = new NullFilterBean();
-        final Set<String> filterValueBean = new HashSet<String>();
-        filterInfoBean.setFilterValue(filterValueBean);
-        FilterValueBeanVisitor<String> visitor = new FilterValueBeanVisitor<String>((DetailFilterInfoBean) filterInfoBean, new FilterValueSetter<String>() {
+        FilterInfoBean nullFilterBean = new NullFilterBean();
+        if (isNullExpression.isNot()) {
+            filterInfoBean = new NotFilterBean();
+            filterInfoBean.setFilterValue(nullFilterBean);
+        } else {
+            filterInfoBean = nullFilterBean;
+        }
+        FilterValueBeanVisitor<String> visitor = new FilterValueBeanVisitor<String>((DetailFilterInfoBean) nullFilterBean, new FilterValueSetter<String>() {
             @Override
             public void setValue(String value) {
-                filterValueBean.add(value);
             }
         });
         isNullExpression.getLeftExpression().accept(visitor);
