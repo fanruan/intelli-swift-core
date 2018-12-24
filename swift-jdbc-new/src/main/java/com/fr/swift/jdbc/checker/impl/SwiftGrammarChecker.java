@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * @author yee
@@ -20,18 +21,30 @@ import java.util.List;
 public class SwiftGrammarChecker implements GrammarChecker {
     @Override
     public SqlRequestInfo check(String sql, Object... paramValues) throws SQLException {
-        if (null != paramValues && paramValues.length > 0) {
-            sql = getRealSql(sql, Arrays.asList(paramValues));
+        Matcher matcher = SwiftPreparedStatement.VALUE_POS_PATTERN.matcher(sql);
+        int paramCount = 0;
+        while (matcher.find()) {
+            paramCount++;
         }
-        List<SQLStatement> list = SQLUtils.parseStatements(sql, null);
-        if (list.get(0) instanceof SQLSelectStatement) {
-            return new SqlRequestInfo(sql, true);
-        } else {
-            return new SqlRequestInfo(sql, false);
+        if (paramCount > 0) {
+            sql = getRealSql(sql, Arrays.asList(paramValues), paramCount);
+        }
+        try {
+            List<SQLStatement> list = SQLUtils.parseStatements(sql, null);
+            if (list.get(0) instanceof SQLSelectStatement) {
+                return new SqlRequestInfo(sql, true);
+            } else {
+                return new SqlRequestInfo(sql, false);
+            }
+        } catch (Exception e) {
+            throw Exceptions.sqlIncorrect(sql, e);
         }
     }
 
-    private String getRealSql(String sql, List values) throws SQLException {
+    private String getRealSql(String sql, List values, int size) throws SQLException {
+        if (values.size() != size) {
+            throw Exceptions.sql(String.format("Expect parameter count is %d but get %d", size, values.size()));
+        }
         if (values.contains(SwiftPreparedStatement.NullValue.INSTANCE)) {
             throw Exceptions.sql(String.format("Parameter index %d must be set.", values.indexOf(SwiftPreparedStatement.NullValue.INSTANCE) + 1));
         }

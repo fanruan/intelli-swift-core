@@ -9,7 +9,7 @@ import java.util.UUID;
  * @date 2018-12-03
  */
 public abstract class BaseRequestInfo<T extends RequestParserVisitor> implements RequestInfo<T> {
-    @JsonProperty(value = "requestType")
+    @JsonProperty(value = "requestType", serializeMethod = "name")
     protected RequestInfo.Request request;
     @JsonProperty(value = "requestId")
     private String requestId;
