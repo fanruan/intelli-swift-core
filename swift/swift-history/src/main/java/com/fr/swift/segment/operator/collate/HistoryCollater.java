@@ -1,6 +1,7 @@
 package com.fr.swift.segment.operator.collate;
 
-import com.fr.swift.segment.Segment;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 /**
  * This class created on 2018/7/9
@@ -11,8 +12,7 @@ import com.fr.swift.segment.Segment;
  */
 
 public class HistoryCollater extends AbstractCollater {
-
-    public HistoryCollater(Segment segment) {
-        super(segment);
+    public HistoryCollater(DataSource dataSource, SwiftSourceAlloter alloter) {
+        super(dataSource, alloter);
     }
 }

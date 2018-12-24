@@ -4,11 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -17,19 +13,17 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentResultSet;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.collate.CollateResultSet;
 import com.fr.swift.segment.collate.FragmentCollectRule;
 import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
@@ -37,7 +31,6 @@ import com.fr.swift.source.resultset.CoSwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
-import com.fr.swift.util.MonitorUtil;
 import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.util.ArrayList;
@@ -151,63 +144,46 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         return ServiceType.COLLATE;
     }
 
-    private transient FragmentCollectRule collectRule = new SwiftFragmentCollectRule();
-
     private void collateSegments(SourceKey tableKey) throws Exception {
         List<SegmentKey> segKeys = segmentManager.getSegmentKeys(tableKey);
+        SwiftSourceAlloter alloter = new HistoryLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.STEP));
+        FragmentCollectRule collectRule = new SwiftFragmentCollectRule(alloter);
         collateSegments(tableKey, collectRule.collect(segKeys));
     }
 
     private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys) throws Exception {
-        MonitorUtil.start();
+        SwiftSourceAlloter alloter = new HistoryLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.STEP));
+        collateSegments(tableKey, collateSegKeys, alloter);
+    }
+
+    private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys, SwiftSourceAlloter alloter) throws Exception {
         if (collateSegKeys.isEmpty()) {
             return;
         }
-
         if (!database.existsTable(tableKey)) {
             throw new TableNotExistException(tableKey);
         }
         Table table = database.getTable(tableKey);
-
-        SwiftSourceAlloter alloter = new HistoryLineSourceAlloter(table.getSourceKey(), new LineAllotRule(LineAllotRule.STEP));
-        SwiftMetaData metadata = table.getMetadata();
-
-        SwiftResultSet swiftResultSet = newCollateResultSet(getSegmentsByKeys(collateSegKeys),
-                alloter.getAllotRule().getCapacity(), table.getMetadata());
-
-        List<Segment> newSegs = new ArrayList<Segment>();
-        final List<SegmentKey> newKeys = new ArrayList<SegmentKey>();
-        Segment newSeg;
-        do {
-            SegmentKey newSegKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
-            newKeys.add(newSegKey);
-            newSeg = newHistorySegment(newSegKey, metadata);
-            new HistoryCollater(newSeg).collate(swiftResultSet);
-            newSegs.add(newSeg);
-            swiftResultSet.close();
-        } while (isFull(newSeg, alloter));
+        SwiftResultSet swiftResultSet = newCollateResultSet(getSegmentsByKeys(collateSegKeys));
+        Collater collater = new HistoryCollater(table, alloter);
+        collater.collate(swiftResultSet);
+        List<SegmentKey> newSegmentKeys = collater.getNewSegments();
+        List<Segment> newSegs = SegmentUtils.newSegments(newSegmentKeys);
 
         // todo 暂时同步做索引
         SegmentUtils.indexSegmentIfNeed(newSegs);
 
-        fireUploadHistory(newKeys);
+        fireUploadHistory(newSegmentKeys);
 
         clearCollatedSegment(collateSegKeys);
     }
 
-    private boolean isFull(Segment seg, SwiftSourceAlloter<?, ?> alloter) {
-        if (!seg.isReadable()) {
-            return false;
-        }
-        return seg.getRowCount() >= alloter.getAllotRule().getCapacity();
-    }
-
-    private SwiftResultSet newCollateResultSet(List<Segment> segs, int alloterCount, SwiftMetaData swiftMetaData) {
+    private SwiftResultSet newCollateResultSet(List<Segment> segs) {
         List<SwiftResultSet> resultSets = new ArrayList<SwiftResultSet>();
         for (Segment seg : segs) {
             resultSets.add(new SegmentResultSet(seg));
         }
-        return new CollateResultSet(new CoSwiftResultSet(resultSets), alloterCount, swiftMetaData);
+        return new CoSwiftResultSet(resultSets);
     }
 
     /**
@@ -224,11 +200,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 iterator.remove();
             }
         }
-    }
-
-    private Segment newHistorySegment(SegmentKey segKey, SwiftMetaData meta) {
-        String segPath = new CubePathBuilder(segKey).setTempDir(CubeUtil.getCurrentDir(segKey.getTable())).build();
-        return new HistorySegmentImpl(new ResourceLocation(segPath, Types.StoreType.FINE_IO), meta);
     }
 
     private List<Segment> getSegmentsByKeys(List<SegmentKey> segmentKeys) {

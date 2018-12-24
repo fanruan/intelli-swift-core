@@ -41,7 +41,7 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     }
 
     @Override
-    public void insertData(SwiftResultSet swiftResultSet) throws Exception {
+    public void importData(SwiftResultSet swiftResultSet) throws Exception {
         while (swiftResultSet.hasNext()) {
             insertData(swiftResultSet.getNextRow());
         }

@@ -7,7 +7,7 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.column.SwiftColumnDictMerger;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SourceKey;
@@ -42,8 +42,8 @@ class SwiftTable implements Table {
     public void insert(SwiftResultSet rowSet) throws SQLException {
         try {
             HistoryLineSourceAlloter alloter = new HistoryLineSourceAlloter(getSourceKey(), new LineAllotRule(LineAllotRule.MEM_STEP));
-            Inserter inserter = SwiftContext.get().getBean("incrementer", Inserter.class, this, alloter);
-            inserter.insertData(rowSet);
+            Importer realtimeImporter = SwiftContext.get().getBean("incrementer", Importer.class, this, alloter);
+            realtimeImporter.importData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);
         } finally {
@@ -55,10 +55,11 @@ class SwiftTable implements Table {
     public void importFrom(SwiftResultSet rowSet) throws SQLException {
         try {
             // 调流程
-            Inserter inserter = (Inserter) SwiftContext.get().getBean("historyBlockInserter", this);
-            inserter.insertData(rowSet);
+            HistoryLineSourceAlloter alloter = new HistoryLineSourceAlloter(getSourceKey(), new LineAllotRule(LineAllotRule.STEP));
+            Importer historyImporter = SwiftContext.get().getBean("historyBlockImporter", Importer.class, this, alloter);
+            historyImporter.importData(rowSet);
             List<Segment> segments = SwiftContext.get().getBean("indexingSegmentManager", SwiftSegmentManager.class).getSegment(key);
-            for (String field : inserter.getFields()) {
+            for (String field : historyImporter.getFields()) {
                 SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, this, new ColumnKey(field), segments).buildIndex();
                 SwiftContext.get().getBean("columnDictMerger", SwiftColumnDictMerger.class, this, new ColumnKey(field), segments).mergeDict();
             }

@@ -1,7 +1,8 @@
 package com.fr.swift.segment.insert;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.CubePathBuilder;
@@ -10,12 +11,11 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.segment.operator.insert.BaseBlockInserter;
+import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.RowInfo;
-import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.util.IoUtil;
 
@@ -25,13 +25,15 @@ import java.util.Iterator;
  * @author anchore
  * @date 2018/12/21
  */
-public class HistoryBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockInserter<A> {
+@SwiftBean(name = "historyBlockImporter")
+@SwiftScope("prototype")
+public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A> {
 
     private static final SwiftTablePathService TABLE_PATH = SwiftContext.get().getBean(SwiftTablePathService.class);
 
     private int currentDir = 0;
 
-    public HistoryBlockInserter(DataSource dataSource, A alloter) {
+    public HistoryBlockImporter(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
         init();
     }
@@ -66,9 +68,8 @@ public class HistoryBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     }
 
     @Override
-    protected Segment newSegment(SegmentInfo segInfo) {
+    protected Segment newSegment(SegmentKey segKey) {
         // todo seg key的其他信息从哪拿
-        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
         ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
         return SegmentUtils.newSegment(location, dataSource.getMetadata());
     }
