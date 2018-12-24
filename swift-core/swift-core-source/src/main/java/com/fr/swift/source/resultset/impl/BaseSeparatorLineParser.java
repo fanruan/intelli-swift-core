@@ -14,11 +14,16 @@ public abstract class BaseSeparatorLineParser extends BaseFileLineParser {
     private String replaceReg;
     private String replacement;
 
-    public BaseSeparatorLineParser(boolean skipFirstLine) {
+    public BaseSeparatorLineParser(boolean skipFirstLine, LineParserAdaptor adaptor) {
+        super(adaptor);
         this.skipFirstLine = skipFirstLine;
         String separator = getSeparator();
         this.replaceReg = String.format("%s%s", separator, separator);
         this.replacement = String.format("%s %s", separator, separator);
+    }
+
+    public BaseSeparatorLineParser(boolean skipFirstLine) {
+        this(skipFirstLine, null);
     }
 
     @Override

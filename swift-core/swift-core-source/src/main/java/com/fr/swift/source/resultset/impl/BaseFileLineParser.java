@@ -7,7 +7,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.resultset.SwiftStreamResultSet;
+import com.fr.swift.source.resultset.LineParser;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
@@ -19,11 +19,19 @@ import java.util.List;
  * @author yee
  * @date 2018-12-20
  */
-public abstract class BaseFileLineParser implements SwiftStreamResultSet.LineParser {
+public abstract class BaseFileLineParser implements LineParser {
 
     private static final String NUMBER_REG = "^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$";
     private List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
     private Row firstRow;
+    private LineParserAdaptor adaptor;
+
+    public BaseFileLineParser(LineParserAdaptor adaptor) {
+        this.adaptor = adaptor;
+    }
+
+    public BaseFileLineParser() {
+    }
 
     @Override
     public void setColumns(List<SwiftMetaDataColumn> columns) {
@@ -34,13 +42,16 @@ public abstract class BaseFileLineParser implements SwiftStreamResultSet.LinePar
     public Row parseLine(String line) {
         Row row = split(line);
         if (null == columns || columns.isEmpty()) {
+            if (null != adaptor) {
+                return adaptor.adapt(row);
+            }
             return row;
         }
         List data = new ArrayList();
-        if (row.getSize() != columns.size()) {
+        if (row.getSize() > columns.size()) {
             Crasher.crash(String.format("Parser expect column size %d but get %d", columns.size(), row.getSize()));
         }
-        for (int i = 0; i < columns.size(); i++) {
+        for (int i = 0; i < row.getSize(); i++) {
             String col = row.getValue(i);
             try {
                 switch (columns.get(i).getType()) {
@@ -62,8 +73,9 @@ public abstract class BaseFileLineParser implements SwiftStreamResultSet.LinePar
                     case Types.TIMESTAMP:
                     case Types.TIME:
                         data.add(DateUtils.string2Date(col, true).getTime());
+                        break;
                     default:
-                        data.add(col);
+                        data.add(col.trim());
                         break;
                 }
             } catch (Exception e) {
@@ -71,7 +83,11 @@ public abstract class BaseFileLineParser implements SwiftStreamResultSet.LinePar
                 data.add(null);
             }
         }
-        return new ListBasedRow(data);
+        Row listRow = new ListBasedRow(data);
+        if (null != adaptor) {
+            return adaptor.adapt(listRow);
+        }
+        return listRow;
     }
 
     @Override

@@ -9,6 +9,10 @@ public class TabLineParser extends BaseSeparatorLineParser {
         super(skipFirstLine);
     }
 
+    public TabLineParser(boolean skipFirstLine, LineParserAdaptor adaptor) {
+        super(skipFirstLine, adaptor);
+    }
+
     @Override
     protected String getSeparator() {
         return "\t";
