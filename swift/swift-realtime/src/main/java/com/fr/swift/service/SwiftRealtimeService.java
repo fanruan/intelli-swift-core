@@ -19,9 +19,13 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
@@ -80,7 +84,15 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.INSERT, new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                SwiftDatabase.getInstance().getTable(tableKey).insert(resultSet);
+                try {
+                    SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.MEM_STEP));
+                    Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, this, alloter);
+                    importer.importData(resultSet);
+                } catch (Exception e) {
+                    throw new SQLException(e);
+                } finally {
+                    resultSet.close();
+                }
                 return null;
             }
         }));

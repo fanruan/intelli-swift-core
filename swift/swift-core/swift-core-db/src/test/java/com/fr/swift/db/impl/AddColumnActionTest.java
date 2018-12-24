@@ -10,7 +10,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.Insertable;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -72,7 +72,7 @@ public class AddColumnActionTest {
     public void alter() throws Exception {
         SourceKey tableKey = new SourceKey(meta.getTableName());
         com.fr.swift.db.Table table = SwiftDatabase.getInstance().createTable(tableKey, meta);
-        Inserter inserter = getInserter(table, new HistoryLineSourceAlloter(tableKey, new LineAllotRule(10)));
+        Insertable inserter = getInserter(table, new HistoryLineSourceAlloter(tableKey, new LineAllotRule(10)));
         inserter.insertData(new LimitedResultSet(new SupplierResultSet(meta, new Supplier<Row>() {
             @Override
             public Row get() {
@@ -100,9 +100,9 @@ public class AddColumnActionTest {
         Assert.assertEquals(1, table.getMeta().getColumnCount());
     }
 
-    private Inserter getInserter(com.fr.swift.db.Table table, HistoryLineSourceAlloter lineSourceAlloter) {
-        return alterHistory ? (Inserter) SwiftContext.get().getBean("historyBlockInserter", table, lineSourceAlloter) :
-                (Inserter) SwiftContext.get().getBean("incrementer", table, lineSourceAlloter);
+    private Insertable getInserter(com.fr.swift.db.Table table, HistoryLineSourceAlloter lineSourceAlloter) {
+        return alterHistory ? SwiftContext.get().getBean("historyBlockInserter", Insertable.class, table, lineSourceAlloter) :
+                SwiftContext.get().getBean("incrementer", Insertable.class, table, lineSourceAlloter);
     }
 
     private void checkSeg(com.fr.swift.db.Table table) {
