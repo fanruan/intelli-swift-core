@@ -106,7 +106,8 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
                 return 0;
             }
             Table table = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(new SourceKey(metaData.getId()));
-            return table.update(where, resultSet);
+            throw new UnsupportedOperationException();
+//            return table.update(where, resultSet);
         } catch (Exception e) {
             throw new SQLException("Table which named " + tableName + " is not exists", e);
         }

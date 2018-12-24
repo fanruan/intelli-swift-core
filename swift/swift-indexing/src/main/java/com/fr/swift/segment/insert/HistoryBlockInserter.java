@@ -1,6 +1,8 @@
 package com.fr.swift.segment.insert;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftTablePathService;
@@ -25,6 +27,8 @@ import java.util.Iterator;
  * @author anchore
  * @date 2018/12/21
  */
+@SwiftBean(name = "historyBlockInserter")
+@SwiftScope("prototype")
 public class HistoryBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockInserter<A> {
 
     private static final SwiftTablePathService TABLE_PATH = SwiftContext.get().getBean(SwiftTablePathService.class);
