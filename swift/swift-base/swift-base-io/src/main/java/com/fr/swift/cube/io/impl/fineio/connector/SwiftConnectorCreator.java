@@ -1,13 +1,14 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.storage.Connector;
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.impl.fineio.connector.annotation.ConnectorBuilder;
 import com.fr.swift.cube.io.impl.fineio.connector.builder.FineIOConnectorBuilder;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
+import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,7 +21,7 @@ public class SwiftConnectorCreator {
     private Map<String, FineIOConnectorBuilder> builderMap = new ConcurrentHashMap<String, FineIOConnectorBuilder>();
 
     private SwiftConnectorCreator() {
-        Map<String, Object> beans = SwiftContext.get().getBeansWithAnnotation(ConnectorBuilder.class);
+        Map<String, Object> beans = SwiftContext.get().getBeansByAnnotations(ConnectorBuilder.class);
         for (Object value : beans.values()) {
             ConnectorBuilder builder = value.getClass().getAnnotation(ConnectorBuilder.class);
             builderMap.put(builder.value(), (FineIOConnectorBuilder) value);
@@ -33,7 +34,10 @@ public class SwiftConnectorCreator {
             CommonConnectorType type = CommonConnectorType.valueOf(key);
             switch (type) {
                 case LZ4:
-                    return Lz4Connector.newInstance(fineIOConnectorConfig.basePath());
+                    Class clazz = Class.forName("com.fr.swift.cube.io.impl.fineio.connector.Lz4Connector");
+                    Constructor constructor = clazz.getDeclaredConstructor(String.class);
+                    constructor.setAccessible(true);
+                    return (Connector) constructor.newInstance(fineIOConnectorConfig.basePath());
                 case ZIP:
                     return ZipConnector.newInstance(fineIOConnectorConfig.basePath());
                 case IO_STREAM:

@@ -10,9 +10,9 @@ import com.fr.plugin.observer.PluginListenerRegistration;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.plugin.ExtraClassManagerProvider;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 /**
@@ -42,33 +42,27 @@ public class FRConnectorProvider implements ConnectorProvider {
     }
 
     @Override
-    public Connector apply(Pair<String, Boolean> p) {
+    public Connector apply(FineIOConnectorConfig p) {
         if (null != connector) {
             return connector;
         }
         ExtraClassManagerProvider pluginProvider = StableFactory.getMarkedObject(ExtraClassManagerProvider.XML_TAG, ExtraClassManagerProvider.class);
         if (null == pluginProvider) {
-            connector = createConnector(p.getKey(), p.getValue());
+            connector = SwiftConnectorCreator.create(p);
             return connector;
         }
         ConnectorProcessor connectorProcessor = pluginProvider.getSingle(ConnectorProcessor.MARK_STRING);
         if (null == connectorProcessor) {
-            connector = createConnector(p.getKey(), p.getValue());
+            connector = SwiftConnectorCreator.create(p);
             return connector;
         }
         connector = connectorProcessor.createConnector();
         if (null == connector) {
-            connector = createConnector(p.getKey(), p.getValue());
+            connector = SwiftConnectorCreator.create(p);
         }
         return connector;
     }
 
-    private Connector createConnector(String path, boolean zip) {
-        if (zip) {
-            return Lz4Connector.newInstance(path);
-        }
-        return FileConnector.newInstance(path);
-    }
 
     @Override
     public SwiftCubePathService.PathChangeListener change() {

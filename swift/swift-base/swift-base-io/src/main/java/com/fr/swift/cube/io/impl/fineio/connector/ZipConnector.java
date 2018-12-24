@@ -1,7 +1,6 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
-import com.fr.third.org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -142,14 +141,15 @@ public class ZipConnector extends BaseConnector {
 
     @Override
     public boolean copy(FileBlock src, FileBlock dest) throws IOException {
-        if (this.exists(src) && !this.exists(dest)) {
-            File srcFile = this.getPath(src, false);
-            File destFile = this.getPath(dest, false);
-            FileUtils.copyFile(srcFile, destFile);
-            return true;
-        } else {
-            return false;
-        }
+//        if (this.exists(src) && !this.exists(dest)) {
+//            File srcFile = this.getPath(src, false);
+//            File destFile = this.getPath(dest, false);
+//            FileUtils.copyFile(srcFile, destFile);
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return false;
     }
 
     private File getPath(FileBlock block, boolean mkdir) {

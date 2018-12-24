@@ -1,11 +1,12 @@
 package com.fr.swift.config.convert;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.CommonConnectorConfig;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
+import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.entity.key.SwiftTablePathKey;
+import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -13,7 +14,8 @@ import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.third.org.hibernate.Session;
+
+import java.sql.SQLException;
 
 /**
  * @author yee
@@ -21,23 +23,24 @@ import com.fr.third.org.hibernate.Session;
  */
 public class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConnectorConfig> {
     private static final String FINE_IO_CONNECTOR = "FINE_IO_CONNECTOR";
-    private String clusterId = SwiftTablePathKey.LOCALHOST;
+    private String clusterId = SwiftConfigConstants.LOCALHOST;
 
     public FineIOConfigConvert() {
-        ClusterListenerHandler.addListener(new ClusterEventListener() {
+        super(FineIOConnectorConfig.class);
+        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
                 if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
                     clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
                 } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    clusterId = SwiftTablePathKey.LOCALHOST;
+                    clusterId = SwiftConfigConstants.LOCALHOST;
                 }
             }
         });
     }
 
     @Override
-    public FineIOConnectorConfig toBean(SwiftConfigDao<SwiftConfigEntity> dao, Session session, Object... args) {
+    public FineIOConnectorConfig toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
         try {
             return super.toBean(dao, session, args);
         } catch (Exception e) {

@@ -1,8 +1,8 @@
 package com.fr.swift.config.bean;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.annotation.ConfigField;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 
 /**
