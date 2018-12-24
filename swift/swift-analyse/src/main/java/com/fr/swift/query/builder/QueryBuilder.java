@@ -8,6 +8,7 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.post.PostQuery;
+import com.fr.swift.query.post.UpdateNodeDataQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -45,11 +46,19 @@ public final class QueryBuilder {
 
     public static <T extends QueryResultSet> Query<T> buildPostQuery(final QueryResultSet mergeResultSet, QueryBean bean) throws Exception {
         List<PostQueryInfo> postQueryInfoList = QueryInfoParser.parsePostQuery((QueryInfoBean) bean);
-        return (Query<T>) PostQueryBuilder.buildQuery(new PostQuery<QueryResultSet>() {
-            @Override
-            public QueryResultSet getQueryResult() throws SQLException {
-                return mergeResultSet;
-            }
-        }, postQueryInfoList);
+        PostQuery<QueryResultSet> query;
+        switch (bean.getQueryType()) {
+            case GROUP:
+                query = new UpdateNodeDataQuery(mergeResultSet);
+                break;
+            default:
+                query = new PostQuery<QueryResultSet>() {
+                    @Override
+                    public QueryResultSet getQueryResult() throws SQLException {
+                        return mergeResultSet;
+                    }
+                };
+        }
+        return (Query<T>) PostQueryBuilder.buildQuery(query, postQueryInfoList);
     }
 }

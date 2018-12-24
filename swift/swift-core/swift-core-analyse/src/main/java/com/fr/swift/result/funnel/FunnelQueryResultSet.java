@@ -1,8 +1,10 @@
 package com.fr.swift.result.funnel;
 
 import com.fr.swift.result.FunnelResultSet;
-import com.fr.swift.result.qrs.DSType;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.source.SwiftMetaData;
 
 import java.io.Serializable;
 
@@ -17,19 +19,16 @@ public class FunnelQueryResultSet implements QueryResultSet<FunnelResultSet>, Se
     private static final long serialVersionUID = 5730624500314766659L;
 
     private FunnelResultSet funnelResultSet;
+    private QueryResultSetMerger merger;
 
-    public FunnelQueryResultSet(FunnelResultSet funnelResultSet) {
+    public FunnelQueryResultSet(FunnelResultSet funnelResultSet, QueryResultSetMerger merger) {
         this.funnelResultSet = funnelResultSet;
+        this.merger = merger;
     }
 
     @Override
     public int getFetchSize() {
         return 0;
-    }
-
-    @Override
-    public DSType type() {
-        return DSType.ROW;
     }
 
     @Override
@@ -40,5 +39,15 @@ public class FunnelQueryResultSet implements QueryResultSet<FunnelResultSet>, Se
     @Override
     public boolean hasNextPage() {
         return false;
+    }
+
+    @Override
+    public <Q extends QueryResultSet<FunnelResultSet>> QueryResultSetMerger<FunnelResultSet, Q> getMerger() {
+        return merger;
+    }
+
+    @Override
+    public SwiftResultSet convert(SwiftMetaData metaData) {
+        throw new UnsupportedOperationException();
     }
 }

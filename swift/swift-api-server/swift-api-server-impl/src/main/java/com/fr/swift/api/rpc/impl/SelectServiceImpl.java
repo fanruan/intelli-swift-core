@@ -15,9 +15,9 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.result.SwiftResultSetUtils;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.result.SwiftResultSetUtils;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -48,11 +48,13 @@ public class SelectServiceImpl implements SelectService {
                 AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
                 SwiftResultSet resultSet = null;
                 if (null != metaData && metaData.getSwiftDatabase() == database) {
-                    resultSet = SwiftResultSetUtils.toSwiftResultSet(service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)));
+                    resultSet = SwiftResultSetUtils.toSwiftResultSet(
+                            service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
                 } else {
                     metaData = tableService.detectiveMetaData(database, tableName);
                     ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
-                    resultSet = SwiftResultSetUtils.toSwiftResultSet(service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)));
+                    resultSet = SwiftResultSetUtils.toSwiftResultSet(
+                            service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
                 }
                 return getPageResultSet(resultSet);
             }

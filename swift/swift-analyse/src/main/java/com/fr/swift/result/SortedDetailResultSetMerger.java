@@ -2,7 +2,6 @@ package com.fr.swift.result;
 
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
@@ -18,7 +17,29 @@ import java.util.List;
  * @author yee
  * @date 2018-12-17
  */
-public class SortedQueryResultSetMerger implements QueryResultSetMerger<List<Row>, DetailQueryResultSet> {
+public class SortedDetailResultSetMerger implements IDetailQueryResultSetMerger {
+
+    private int fetchSize;
+    private List<Pair<Sort, Comparator>> comparators;
+
+    public SortedDetailResultSetMerger(int fetchSize, List<Pair<Sort, Comparator>> comparators) {
+        this.fetchSize = fetchSize;
+        this.comparators = comparators;
+    }
+
+    @Override
+    public DetailQueryResultSet merge(List<DetailQueryResultSet> queryResultSets) {
+        int rowCount = 0;
+        for (QueryResultSet<List<Row>> queryResultSet : queryResultSets) {
+            rowCount += ((DetailQueryResultSet) queryResultSet).getRowCount();
+        }
+        return new SortMultiSegmentDetailResultSet(
+                queryResultSets.get(0).getFetchSize(), rowCount,
+                new SortedRowIterator(fetchSize,
+                        createRowComparator(comparators),
+                        queryResultSets), this);
+    }
+
     private static Comparator<Row> createRowComparator(final List<Pair<Sort, Comparator>> comparators) {
         Collections.sort(comparators, new Comparator<Pair<Sort, Comparator>>() {
             @Override
@@ -38,20 +59,6 @@ public class SortedQueryResultSetMerger implements QueryResultSetMerger<List<Row
                 return 0;
             }
         };
-    }
-
-    @Override
-    public DetailQueryResultSet merge(List<DetailQueryResultSet> queryResultSets) {
-        int rowCount = 0;
-        for (QueryResultSet<List<Row>> queryResultSet : queryResultSets) {
-            rowCount += ((DetailQueryResultSet) queryResultSet).getRowCount();
-        }
-        // TODO fetch size和 comparators
-        return new SortMultiSegmentDetailResultSet(
-                queryResultSets.get(0).getFetchSize(), rowCount,
-                new SortedRowIterator(queryResultSets.get(0).getFetchSize(),
-                        createRowComparator(Collections.<Pair<Sort, Comparator>>emptyList()),
-                        queryResultSets));
     }
 
     /**

@@ -1,5 +1,8 @@
 package com.fr.swift.result.qrs;
 
+import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.source.SwiftMetaData;
+
 /**
  * @author lyon
  * @date 2018/11/21
@@ -7,14 +10,6 @@ package com.fr.swift.result.qrs;
 public interface QueryResultSet<T> {
 
     int getFetchSize();
-
-    /**
-     * 根据这个type来转换
-     * TODO: 2018/11/28 这个type及这边的泛型不利于处理中间结果过程中在多种实现之间灵活切换
-     *
-     * @return
-     */
-    DSType type();
 
     /**
      * 获取一页数据
@@ -29,4 +24,8 @@ public interface QueryResultSet<T> {
      * @return
      */
     boolean hasNextPage();
+
+    <Q extends QueryResultSet<T>> QueryResultSetMerger<T, Q> getMerger();
+
+    SwiftResultSet convert(SwiftMetaData metaData);
 }

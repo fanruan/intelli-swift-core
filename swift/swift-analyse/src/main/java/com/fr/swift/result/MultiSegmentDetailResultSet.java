@@ -1,5 +1,7 @@
 package com.fr.swift.result;
 
+import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -21,11 +23,14 @@ public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet implem
      */
     private Iterator<Row> mergeIterator;
     private Iterator<Row> rowIterator;
+    private IDetailQueryResultSetMerger merger;
 
-    public MultiSegmentDetailResultSet(int fetchSize, int rowCount, DetailQueryResultSetMerger.DetailRowIterator queries) {
+    public MultiSegmentDetailResultSet(int fetchSize, int rowCount, DetailQueryResultSetMerger.DetailRowIterator queries,
+                                       IDetailQueryResultSetMerger merger) {
         super(fetchSize);
         this.mergeIterator = queries;
         this.rowCount = rowCount;
+        this.merger = merger;
     }
 
     @Override
@@ -44,6 +49,11 @@ public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet implem
     }
 
     @Override
+    public <Q extends QueryResultSet<List<Row>>> QueryResultSetMerger<List<Row>, Q> getMerger() {
+        return (QueryResultSetMerger<List<Row>, Q>) merger;
+    }
+
+    @Override
     public int getRowCount() {
         return rowCount;
     }
@@ -55,19 +65,20 @@ public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet implem
 
     @Override
     public boolean hasNext() {
-        if (rowIterator == null) {
-            rowIterator = new SwiftRowIteratorImpl(this);
-        }
-        return rowIterator.hasNext();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Row getNextRow() {
-        return rowIterator.next();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void close() {
     }
 
+    @Override
+    public SwiftResultSet convert(final SwiftMetaData metaData) {
+        return SortMultiSegmentDetailResultSet.create(fetchSize, metaData, this);
+    }
 }

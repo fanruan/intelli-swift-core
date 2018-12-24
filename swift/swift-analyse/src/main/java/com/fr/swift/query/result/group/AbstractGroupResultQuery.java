@@ -4,6 +4,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.AbstractResultQuery;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.node.resultset.INodeQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.Comparator;
@@ -23,4 +24,6 @@ public abstract class AbstractGroupResultQuery extends AbstractResultQuery<Query
         this.aggregators = aggregators;
         this.comparators = comparators;
     }
+
+    protected abstract INodeQueryResultSetMerger createMerger();
 }
