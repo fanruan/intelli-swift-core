@@ -7,7 +7,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.resultset.SwiftStreamResultSet;
+import com.fr.swift.source.resultset.LineParser;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
@@ -19,11 +19,19 @@ import java.util.List;
  * @author yee
  * @date 2018-12-20
  */
-public abstract class BaseFileLineParser implements SwiftStreamResultSet.LineParser {
+public abstract class BaseFileLineParser implements LineParser {
 
     private static final String NUMBER_REG = "^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$";
     private List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
     private Row firstRow;
+    private LineParserAdaptor adaptor;
+
+    public BaseFileLineParser(LineParserAdaptor adaptor) {
+        this.adaptor = adaptor;
+    }
+
+    public BaseFileLineParser() {
+    }
 
     @Override
     public void setColumns(List<SwiftMetaDataColumn> columns) {
@@ -34,40 +42,57 @@ public abstract class BaseFileLineParser implements SwiftStreamResultSet.LinePar
     public Row parseLine(String line) {
         Row row = split(line);
         if (null == columns || columns.isEmpty()) {
+            if (null != adaptor) {
+                return adaptor.adapt(row);
+            }
             return row;
         }
         List data = new ArrayList();
-        if (row.getSize() != columns.size()) {
+        if (row.getSize() > columns.size()) {
             Crasher.crash(String.format("Parser expect column size %d but get %d", columns.size(), row.getSize()));
         }
-        for (int i = 0; i < columns.size(); i++) {
+        for (int i = 0; i < row.getSize(); i++) {
             String col = row.getValue(i);
             try {
                 switch (columns.get(i).getType()) {
+                    case Types.DECIMAL:
+                    case Types.NUMERIC:
+                    case Types.REAL:
                     case Types.DOUBLE:
+                    case Types.FLOAT:
                         data.add(Double.parseDouble(col));
                         break;
-                    case Types.VARCHAR:
-                        data.add(col);
-                        break;
-                    case Types.DATE:
+                    case Types.BIT:
+                    case Types.TINYINT:
+                    case Types.SMALLINT:
+                    case Types.INTEGER:
+                    case Types.BIGINT:
                         data.add(Long.parseLong(col));
                         break;
+                    case Types.DATE:
+                    case Types.TIMESTAMP:
+                    case Types.TIME:
+                        data.add(DateUtils.string2Date(col, true).getTime());
+                        break;
                     default:
-                        data.add(null);
+                        data.add(col.trim());
                         break;
                 }
             } catch (Exception e) {
-                SwiftLoggers.getLogger().warn(e);
+                SwiftLoggers.getLogger().warn(e.getMessage());
                 data.add(null);
             }
         }
-        return new ListBasedRow(data);
+        Row listRow = new ListBasedRow(data);
+        if (null != adaptor) {
+            return adaptor.adapt(listRow);
+        }
+        return listRow;
     }
 
     @Override
     public List<SwiftMetaDataColumn> parseColumns(String head, String firstRow) {
-        if (null != columns) {
+        if (null != columns && !columns.isEmpty()) {
             return columns;
         }
         Row columnNameSplit = split(head);
@@ -116,7 +141,9 @@ public abstract class BaseFileLineParser implements SwiftStreamResultSet.LinePar
                 }
             }
         }
-        if (!isSkipFirstLine()) {
+        if (head.equals(firstRow) && !isSkipFirstLine()) {
+            this.firstRow = parseLine(firstRow);
+        } else if (!head.equals(firstRow) && StringUtils.isNotEmpty(firstRow)) {
             this.firstRow = parseLine(firstRow);
         }
         return columns;

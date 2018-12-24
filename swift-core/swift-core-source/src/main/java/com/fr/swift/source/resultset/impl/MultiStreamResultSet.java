@@ -4,6 +4,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.resultset.BaseStreamResultSet;
+import com.fr.swift.source.resultset.LineParser;
 
 import java.sql.SQLException;
 import java.util.List;
