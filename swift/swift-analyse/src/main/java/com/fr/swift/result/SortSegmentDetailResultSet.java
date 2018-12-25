@@ -13,7 +13,6 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.HeapIntArray;
 import com.fr.swift.structure.array.IntArray;
@@ -32,13 +31,12 @@ import java.util.List;
  * @author yee
  */
 
-public class SortSegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
+public class SortSegmentDetailResultSet extends BaseDetailQueryResultSet {
 
     private int rowCount;
     private int fetchSize;
     private List<Pair<Column, IndexInfo>> columnList;
     private RowIterator rowNumberIterator;
-    private Iterator<Row> rowIterator;
 
     public SortSegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter,
                                       List<Sort> sorts) {
@@ -107,24 +105,6 @@ public class SortSegmentDetailResultSet extends BaseDetailQueryResultSet impleme
     @Override
     public int getRowCount() {
         return rowCount;
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() {
-        return metaData;
-    }
-
-    @Override
-    public boolean hasNext() {
-        if (rowIterator == null) {
-            rowIterator = new SwiftRowIteratorImpl(this);
-        }
-        return rowIterator.hasNext();
-    }
-
-    @Override
-    public Row getNextRow() {
-        return rowIterator.next();
     }
 
     @Override

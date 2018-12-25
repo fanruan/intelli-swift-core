@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,17 +32,26 @@ public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
 
         private int index = 0;
         private List<DetailQueryResultSet> resultSets;
+        private List<Row> currentPage;
+        private int currentRow = 0;
 
         public DetailRowIterator(List<DetailQueryResultSet> resultSets) {
             this.resultSets = resultSets;
+            this.currentPage = new ArrayList<Row>();
         }
 
         @Override
         public boolean hasNext() {
             while (index < resultSets.size()) {
-                if (resultSets.get(index).hasNext()) {
+                DetailQueryResultSet resultSet = resultSets.get(index);
+                if (currentPage.isEmpty()) {
+                    currentPage = resultSet.getPage();
+                    currentRow = 0;
+                }
+                if (currentRow++ < currentPage.size()) {
                     return true;
                 }
+                resultSet.close();
                 index++;
             }
             return false;
@@ -49,7 +59,8 @@ public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
 
         @Override
         public Row next() {
-            return resultSets.get(index).getNextRow();
+
+            return currentPage.get(currentRow - 1);
         }
 
         @Override

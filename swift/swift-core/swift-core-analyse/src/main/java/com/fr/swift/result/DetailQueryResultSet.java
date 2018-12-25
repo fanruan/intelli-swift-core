@@ -11,8 +11,4 @@ import java.util.List;
  */
 public interface DetailQueryResultSet extends QueryResultSet<List<Row>> {
     int getRowCount();
-
-    boolean hasNext();
-
-    Row getNextRow();
 }

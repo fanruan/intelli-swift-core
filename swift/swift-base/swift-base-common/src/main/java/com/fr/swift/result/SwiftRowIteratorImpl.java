@@ -5,15 +5,16 @@ import com.fr.swift.source.Row;
 import java.util.List;
 
 /**
- * Created by Lyon on 2018/6/19.
+ * @author Lyon
+ * @date 2018/6/19
  */
-public class SwiftRowIteratorImpl implements SwiftRowIterator {
+public class SwiftRowIteratorImpl<T extends Pagination<List<Row>>> implements SwiftRowIterator {
 
-    private DetailResultSet source;
+    private T source;
     private List<Row> rows;
     private int cursor = 0;
 
-    public SwiftRowIteratorImpl(DetailResultSet source) {
+    public SwiftRowIteratorImpl(T source) {
         this.source = source;
         this.rows = source.getPage();
     }
