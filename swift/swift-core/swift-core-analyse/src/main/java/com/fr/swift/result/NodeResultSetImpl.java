@@ -54,9 +54,4 @@ public class NodeResultSetImpl<T extends SwiftNode> extends BaseNodeResultSet<T>
     public Row getNextRow() throws SQLException {
         return iterator.next();
     }
-
-    @Override
-    public void close() {
-
-    }
 }

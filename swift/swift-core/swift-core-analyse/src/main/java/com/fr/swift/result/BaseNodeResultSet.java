@@ -37,6 +37,7 @@ public abstract class BaseNodeResultSet<T extends SwiftNode> implements QueryRes
 
     @Override
     public void close() {
+        // todo
         throw new UnsupportedOperationException();
     }
 }
