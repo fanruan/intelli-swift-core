@@ -14,11 +14,10 @@ import java.util.List;
  * Created by Xiaolei.Liu on 2018/1/24
  * @author yee
  */
-public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
+public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
 
     private int rowCount;
     private Iterator<List<Row>> mergerIterator;
-    private Iterator<Row> rowIterator;
     private IDetailQueryResultSetMerger merger;
 
     public SortMultiSegmentDetailResultSet(int fetchSize, int rowCount,
@@ -54,24 +53,6 @@ public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet im
     }
 
     @Override
-    public SwiftMetaData getMetaData() {
-        return metaData;
-    }
-
-    @Override
-    public boolean hasNext() {
-        if (rowIterator == null) {
-            rowIterator = new SwiftRowIteratorImpl(this);
-        }
-        return rowIterator.hasNext();
-    }
-
-    @Override
-    public Row getNextRow() {
-        return rowIterator.next();
-    }
-
-    @Override
     public void close() {
 
     }
@@ -81,8 +62,8 @@ public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet im
         return create(fetchSize, metaData, this);
     }
 
-    static SwiftResultSet create(final int fetchSize, final SwiftMetaData metaData, DetailResultSet resultSet) {
-        final Iterator<Row> iterator = new SwiftRowIteratorImpl(resultSet);
+    static SwiftResultSet create(final int fetchSize, final SwiftMetaData metaData, DetailQueryResultSet resultSet) {
+        final Iterator<Row> iterator = new SwiftRowIteratorImpl<DetailQueryResultSet>(resultSet);
         return new SwiftResultSet() {
             @Override
             public int getFetchSize() {

@@ -3,8 +3,7 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 import com.fineio.storage.Connector;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftZipService;
-import com.fr.swift.structure.Pair;
+import com.fr.swift.config.service.SwiftFineIOConnectorService;
 
 /**
  * 创建FineIO Connector
@@ -18,8 +17,8 @@ import com.fr.swift.structure.Pair;
 public class ConnectorManager {
     private volatile static ConnectorManager instance;
     private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
-    private SwiftZipService zipConfig = SwiftContext.get().getBean(SwiftZipService.class);
     private ConnectorProvider provider = SwiftContext.get().getBean(ConnectorProvider.class);
+    private SwiftFineIOConnectorService fineIOConnectorService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
 
     private ConnectorManager() {
         pathService.registerPathChangeListener(provider.change());
@@ -41,10 +40,8 @@ public class ConnectorManager {
 
 
     public Connector getConnector() {
-        String path = pathService.getSwiftPath();
         synchronized (this) {
-            boolean useZip = zipConfig.isZip();
-            return provider.apply(Pair.of(path, useZip));
+            return provider.apply(fineIOConnectorService.getCurrentConfig());
         }
     }
 }

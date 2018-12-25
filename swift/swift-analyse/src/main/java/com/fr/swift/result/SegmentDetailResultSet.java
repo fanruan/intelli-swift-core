@@ -8,19 +8,17 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.IntIterable.IntIterator;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Xiaolei.Liu on 2018/1/18
  * @author yee
  */
-public class SegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
+public class SegmentDetailResultSet extends BaseDetailQueryResultSet {
 
     /**
      * 当前块中过滤后的行号
@@ -31,7 +29,6 @@ public class SegmentDetailResultSet extends BaseDetailQueryResultSet implements 
 
     private List<Column> columnList;
 
-    private Iterator<Row> iterator;
 
     public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
         super(fetchSize);
@@ -72,24 +69,6 @@ public class SegmentDetailResultSet extends BaseDetailQueryResultSet implements 
     @Override
     public int getRowCount() {
         return rowCount;
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() {
-        return metaData;
-    }
-
-    @Override
-    public boolean hasNext() {
-        if (iterator == null) {
-            iterator = new SwiftRowIteratorImpl(this);
-        }
-        return iterator.hasNext();
-    }
-
-    @Override
-    public Row getNextRow() {
-        return iterator.next();
     }
 
     @Override

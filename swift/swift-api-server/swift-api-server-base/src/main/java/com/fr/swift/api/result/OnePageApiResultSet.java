@@ -1,5 +1,6 @@
 package com.fr.swift.api.result;
 
+import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SwiftRowIteratorImpl;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -109,7 +110,7 @@ public class OnePageApiResultSet<T> implements SwiftApiResultSet<T> {
     @Override
     public boolean hasNext() throws SQLException {
         if (rowIterator == null) {
-            rowIterator = new SwiftRowIteratorImpl(this);
+            rowIterator = new SwiftRowIteratorImpl<DetailResultSet>(this);
         }
         return rowIterator.hasNext();
     }

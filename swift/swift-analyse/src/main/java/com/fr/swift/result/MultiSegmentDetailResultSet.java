@@ -15,14 +15,13 @@ import java.util.List;
  * @author yee
  */
 
-public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet implements DetailResultSet {
+public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
 
     private int rowCount;
     /**
      * mergeIterator和rowIterator看似相同，其实不然，前者可以理解为内部实现(处理翻页缓存等)，后者为外部实现(对应SwiftResult)
      */
     private Iterator<Row> mergeIterator;
-    private Iterator<Row> rowIterator;
     private IDetailQueryResultSetMerger merger;
 
     public MultiSegmentDetailResultSet(int fetchSize, int rowCount, DetailQueryResultSetMerger.DetailRowIterator queries,
@@ -56,21 +55,6 @@ public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet implem
     @Override
     public int getRowCount() {
         return rowCount;
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() {
-        return metaData;
-    }
-
-    @Override
-    public boolean hasNext() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Row getNextRow() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
