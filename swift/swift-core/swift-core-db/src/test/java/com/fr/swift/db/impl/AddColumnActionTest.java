@@ -10,7 +10,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.operator.Insertable;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -72,8 +72,8 @@ public class AddColumnActionTest {
     public void alter() throws Exception {
         SourceKey tableKey = new SourceKey(meta.getTableName());
         com.fr.swift.db.Table table = SwiftDatabase.getInstance().createTable(tableKey, meta);
-        Insertable inserter = getInserter(table, new HistoryLineSourceAlloter(tableKey, new LineAllotRule(10)));
-        inserter.insertData(new LimitedResultSet(new SupplierResultSet(meta, new Supplier<Row>() {
+        Importer inserter = getInserter(table, new HistoryLineSourceAlloter(tableKey, new LineAllotRule(10)));
+        inserter.importData(new LimitedResultSet(new SupplierResultSet(meta, new Supplier<Row>() {
             @Override
             public Row get() {
                 A a = new A();
@@ -100,9 +100,9 @@ public class AddColumnActionTest {
         Assert.assertEquals(1, table.getMeta().getColumnCount());
     }
 
-    private Insertable getInserter(com.fr.swift.db.Table table, HistoryLineSourceAlloter lineSourceAlloter) {
-        return alterHistory ? SwiftContext.get().getBean("historyBlockInserter", Insertable.class, table, lineSourceAlloter) :
-                SwiftContext.get().getBean("incrementer", Insertable.class, table, lineSourceAlloter);
+    private Importer getInserter(com.fr.swift.db.Table table, HistoryLineSourceAlloter lineSourceAlloter) {
+        return alterHistory ? SwiftContext.get().getBean("historyBlockInserter", Importer.class, table, lineSourceAlloter) :
+                SwiftContext.get().getBean("incrementer", Importer.class, table, lineSourceAlloter);
     }
 
     private void checkSeg(com.fr.swift.db.Table table) {

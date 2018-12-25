@@ -56,7 +56,7 @@ public class NodeResultSetImpl<T extends SwiftNode> extends BaseNodeResultSet<T>
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
 
     }
 }

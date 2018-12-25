@@ -22,11 +22,13 @@
         <powermock.version>1.7.4</powermock.version>
         <fineio.version>2.0-RELEASE-SNAPSHOT</fineio.version>
         <slf4j.version>1.7.25</slf4j.version>
+
+        <target.dir>${user.dir}/target</target.dir>
     </properties>
 
     <build>
-        <outputDirectory>${user.dir}/target/main</outputDirectory>
-        <testOutputDirectory>${user.dir}/target/test</testOutputDirectory>
+        <outputDirectory>${target.dir}/main</outputDirectory>
+        <testOutputDirectory>${target.dir}/test</testOutputDirectory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

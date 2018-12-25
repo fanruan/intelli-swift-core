@@ -109,6 +109,11 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                             }
 
                             @Override
+                            public void close() {
+
+                            }
+
+                            @Override
                             public QueryResultSetMerger getMerger() {
                                 return merger;
                             }

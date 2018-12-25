@@ -62,11 +62,6 @@ public class ChainedNodeResultSet extends BaseNodeResultSet<SwiftNode> implement
     }
 
     @Override
-    public void close() {
-
-    }
-
-    @Override
     public SwiftResultSet convert(final SwiftMetaData metaData) {
         final Iterator<Row> iterator = new SwiftNode2RowIterator(this);
         return new SwiftResultSet() {

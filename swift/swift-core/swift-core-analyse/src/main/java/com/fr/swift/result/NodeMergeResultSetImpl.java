@@ -61,7 +61,7 @@ public class NodeMergeResultSetImpl<T extends GroupNode> extends BaseNodeResultS
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
 
     }
 }

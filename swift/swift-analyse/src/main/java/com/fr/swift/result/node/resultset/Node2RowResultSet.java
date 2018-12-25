@@ -54,9 +54,4 @@ public class Node2RowResultSet extends BaseNodeResultSet<SwiftNode> implements N
     public Row getNextRow() throws SQLException {
         return source.getNextRow();
     }
-
-    @Override
-    public void close() {
-
-    }
 }

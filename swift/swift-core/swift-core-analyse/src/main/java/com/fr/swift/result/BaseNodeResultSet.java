@@ -34,4 +34,9 @@ public abstract class BaseNodeResultSet<T extends SwiftNode> implements QueryRes
     public SwiftResultSet convert(SwiftMetaData metaData) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -66,9 +66,4 @@ public class FakeNodeResultSet extends BaseNodeResultSet<SwiftNode> implements N
     public Row getNextRow() {
         return rowIterator.next();
     }
-
-    @Override
-    public void close() {
-
-    }
 }
