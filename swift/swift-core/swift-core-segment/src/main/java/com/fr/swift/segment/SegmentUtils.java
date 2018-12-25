@@ -30,6 +30,14 @@ import java.util.List;
  */
 public class SegmentUtils {
 
+    public static List<Segment> newSegments(List<SegmentKey> segKeys) {
+        List<Segment> segmentList = new ArrayList<Segment>();
+        for (SegmentKey segKey : segKeys) {
+            segmentList.add(newSegment(segKey));
+        }
+        return segmentList;
+    }
+
     public static Segment newSegment(SegmentKey segKey) {
         SourceKey tableKey = segKey.getTable();
         SwiftMetaData meta = SwiftDatabase.getInstance().getTable(tableKey).getMetadata();

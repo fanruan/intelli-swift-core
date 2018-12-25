@@ -8,7 +8,7 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.segment.operator.insert.BaseBlockInserter;
+import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.RowInfo;
@@ -26,7 +26,7 @@ import java.util.Map.Entry;
  */
 @SwiftBean(name = "incrementer")
 @SwiftScope("prototype")
-public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockInserter<A> {
+public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A> {
 
     public Incrementer(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
@@ -58,9 +58,8 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     }
 
     @Override
-    protected Segment newSegment(SegmentInfo segInfo) {
+    protected Segment newSegment(SegmentKey segKey) {
         // todo seg key的其他信息从哪拿
-        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
         ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).build(), segKey.getStoreType());
         return SegmentUtils.newSegment(location, dataSource.getMetadata());
     }

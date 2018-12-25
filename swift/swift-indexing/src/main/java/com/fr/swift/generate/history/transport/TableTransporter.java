@@ -53,7 +53,7 @@ public class TableTransporter extends BaseWorker implements Transporter {
         SwiftSourceTransfer transfer = SwiftContext.get().getBean(SwiftSourceTransferProvider.class).createSourceTransfer(dataSource);
         SwiftResultSet resultSet = new ProgressResultSet(transfer.createResultSet(), CubeTasks.newTableName(dataSource));
         try {
-            inserter.insertData(resultSet);
+            inserter.importData(resultSet);
         } finally {
             resultSet.close();
         }

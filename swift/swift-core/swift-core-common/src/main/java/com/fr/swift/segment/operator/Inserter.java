@@ -12,9 +12,8 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public interface Inserter extends Insertable, Releasable {
+public interface Inserter extends Releasable, Importer {
 
     void insertData(Row row) throws Exception;
 
-    List<String> getFields();
 }

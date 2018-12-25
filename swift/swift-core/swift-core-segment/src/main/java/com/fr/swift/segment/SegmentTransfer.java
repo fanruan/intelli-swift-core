@@ -37,7 +37,7 @@ public class SegmentTransfer {
             SEG_SVC.addSegments(Collections.singletonList(newSegKey));
 
             swiftResultSet = new SegmentResultSet(oldSeg);
-            inserter.insertData(swiftResultSet);
+            inserter.importData(swiftResultSet);
 
             FineIO.doWhenFinished(new Callable<Void>() {
                 @Override
