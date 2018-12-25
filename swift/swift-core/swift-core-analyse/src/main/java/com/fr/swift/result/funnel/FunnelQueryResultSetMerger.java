@@ -52,7 +52,7 @@ public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelRe
                 }
             }
         }
-        return new FunnelQueryResultSet(new FunnelResultSet(map));
+        return new FunnelQueryResultSet(new FunnelResultSet(map), this);
     }
 
     private List<List<Integer>> createList(int len) {

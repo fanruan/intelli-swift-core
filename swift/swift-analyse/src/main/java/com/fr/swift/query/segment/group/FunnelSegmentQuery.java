@@ -131,7 +131,7 @@ public class FunnelSegmentQuery implements SegmentQuery {
             filter.reset();
         }
         SwiftLoggers.getLogger().debug("segment result: {}", results.toString());
-        return new FunnelQueryResultSet(new FunnelResultSet(results));
+        return new FunnelQueryResultSet(new FunnelResultSet(results), null);
     }
 
     private Column[] createPostGroupColumn() {

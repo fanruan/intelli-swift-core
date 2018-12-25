@@ -5,6 +5,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.node.resultset.INodeQueryResultSetMerger;
 import com.fr.swift.result.node.resultset.NodeQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
 
@@ -38,7 +39,11 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
                 resultSets.add(resultSet);
             }
         }
-        // TODO: 2018/11/27
-        return new NodeQueryResultSetMerger(fetchSize, isGlobalIndexed, aggregators, comparators).merge(resultSets);
+        return createMerger().merge(resultSets);
+    }
+
+    @Override
+    protected INodeQueryResultSetMerger createMerger() {
+        return new NodeQueryResultSetMerger(fetchSize, isGlobalIndexed, aggregators, comparators);
     }
 }

@@ -12,16 +12,16 @@ import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
-import com.fr.swift.query.info.bean.merge.QueryResultSetUtils;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.result.qrs.DSType;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
@@ -73,18 +73,13 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                         final QueryResultSet rs = (QueryResultSet) result;
                         resultSets.add(new QueryResultSet() {
                             private String queryJson = query;
-                            private DSType type = rs.type();
                             private int fetchSize = rs.getFetchSize();
                             private QueryResultSet resultSet = rs;
+                            private QueryResultSetMerger merger = rs.getMerger();
 
                             @Override
                             public int getFetchSize() {
                                 return fetchSize;
-                            }
-
-                            @Override
-                            public DSType type() {
-                                return type;
                             }
 
                             @Override
@@ -107,6 +102,16 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                             public boolean hasNextPage() {
                                 return resultSet != null && resultSet.hasNextPage();
                             }
+
+                            @Override
+                            public SwiftResultSet convert(SwiftMetaData metaData) {
+                                throw new UnsupportedOperationException();
+                            }
+
+                            @Override
+                            public QueryResultSetMerger getMerger() {
+                                return merger;
+                            }
                         });
                     } else {
                         resultSets.add((QueryResultSet) result);
@@ -122,9 +127,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
             });
         }
         latch.await();
-        QueryResultSetMerger merger = QueryResultSetUtils.createMerger(queryBean);
-        // TODO: 2018/11/27 postAggregation
-        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, merger);
+        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.size() > 0 ? resultSets.get(0).getMerger() : null);
         Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
     }

@@ -1,7 +1,8 @@
 package com.fr.swift.result;
 
-import com.fr.swift.result.qrs.DSType;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 
 import java.util.List;
@@ -25,7 +26,12 @@ public abstract class BaseNodeResultSet<T extends SwiftNode> implements QueryRes
     }
 
     @Override
-    public DSType type() {
-        return DSType.NODE;
+    public <Q extends QueryResultSet<Pair<T, List<Map<Integer, Object>>>>> QueryResultSetMerger<Pair<T, List<Map<Integer, Object>>>, Q> getMerger() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SwiftResultSet convert(SwiftMetaData metaData) {
+        throw new UnsupportedOperationException();
     }
 }
