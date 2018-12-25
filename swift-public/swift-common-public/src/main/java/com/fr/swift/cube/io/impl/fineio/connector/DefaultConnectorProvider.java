@@ -2,8 +2,8 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.storage.Connector;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.structure.Pair;
 
 /**
  * @author yee
@@ -25,18 +25,11 @@ public class DefaultConnectorProvider implements ConnectorProvider {
     }
 
     @Override
-    public Connector apply(Pair<String, Boolean> p) {
+    public Connector apply(FineIOConnectorConfig config) {
         if (connector != null) {
             return connector;
         }
-        connector = createConnector(p.getKey(), p.getValue());
+        connector = SwiftConnectorCreator.create(config);
         return connector;
-    }
-
-    private Connector createConnector(String path, boolean zip) {
-        if (zip) {
-            return Lz4Connector.newInstance(path);
-        }
-        return FileConnector.newInstance(path);
     }
 }

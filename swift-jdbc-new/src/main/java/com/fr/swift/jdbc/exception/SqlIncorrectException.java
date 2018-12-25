@@ -9,6 +9,7 @@ import java.sql.SQLException;
 class SqlIncorrectException extends SQLException {
     private static final long serialVersionUID = -750482748195544463L;
 
-    SqlIncorrectException(String sql) {
+    SqlIncorrectException(String sql, Throwable throwable) {
+        super(String.format("Sql %s is incorrect", sql), throwable);
     }
 }

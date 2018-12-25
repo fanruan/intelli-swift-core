@@ -1,6 +1,9 @@
 package com.fr.swift.data.importing.file;
 
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaDataColumn;
+
+import java.util.List;
 
 /**
  * @author yee
@@ -15,4 +18,16 @@ public interface FileLineParser {
      * @return
      */
     Row parseLine(String line);
+
+    List<SwiftMetaDataColumn> parseColumns(String head, String firstRow);
+
+    Row firstRow();
+
+    boolean isSkipFirstLine();
+
+    void setColumns(List<SwiftMetaDataColumn> columns);
+
+    interface LineParserAdaptor {
+        Row adapt(Row row);
+    }
 }

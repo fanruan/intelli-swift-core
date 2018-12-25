@@ -8,6 +8,7 @@ import com.fr.swift.base.json.annotation.JsonTypeInfo;
 import com.fr.swift.util.Strings;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -79,10 +80,20 @@ public class SerializationConfigHolder {
                 if (f.isAnnotationPresent(JsonIgnore.class)) {
                     continue;
                 }
+                Method method = null;
                 if (f.isAnnotationPresent(JsonProperty.class)) {
                     JsonProperty property = f.getAnnotation(JsonProperty.class);
                     if (Strings.isNotEmpty(property.value())) {
                         propertyName = property.value();
+                    }
+                    if (Strings.isNotEmpty(property.serializeMethod())) {
+                        Class fieldClass = getRawType(f.getGenericType());
+                        try {
+                            method = fieldClass.getDeclaredMethod(property.serializeMethod());
+                            method.setAccessible(true);
+                        } catch (NoSuchMethodException e) {
+                            method = null;
+                        }
                     }
                 }
                 if (Modifier.isStatic(f.getModifiers())) {
@@ -90,11 +101,16 @@ public class SerializationConfigHolder {
                 }
                 if (!fields.contains(propertyName)) {
                     fields.add(propertyName);
+                    final Method finalMethod = method;
                     getters.put(propertyName, new SerializationConfig.BeanGetter() {
                         @Override
                         public Object get(Object o) throws Exception {
                             f.setAccessible(true);
-                            return f.get(o);
+                            Object result = f.get(o);
+                            if (null != finalMethod) {
+                                return finalMethod.invoke(result);
+                            }
+                            return result;
                         }
                     });
 

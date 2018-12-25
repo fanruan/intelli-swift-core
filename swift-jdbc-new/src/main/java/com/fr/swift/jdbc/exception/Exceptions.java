@@ -11,8 +11,8 @@ public final class Exceptions {
         return new URLEmptyException();
     }
 
-    public static SQLException sqlIncorrect(String sql) {
-        return new SqlIncorrectException(sql);
+    public static SQLException sqlIncorrect(String sql, Exception e) {
+        return new SqlIncorrectException(sql, e);
     }
 
     public static SQLException urlFormat(String url) {
