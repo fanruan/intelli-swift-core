@@ -33,7 +33,7 @@ public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
         private int index = 0;
         private List<DetailQueryResultSet> resultSets;
         private List<Row> currentPage;
-        private int currentRow = 0;
+        private int currentRow = -1;
 
         public DetailRowIterator(List<DetailQueryResultSet> resultSets) {
             this.resultSets = resultSets;
@@ -46,7 +46,7 @@ public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
                 DetailQueryResultSet resultSet = resultSets.get(index);
                 if (currentPage.isEmpty()) {
                     currentPage = resultSet.getPage();
-                    currentRow = 0;
+                    currentRow = -1;
                 }
                 if (currentRow++ < currentPage.size()) {
                     return true;
@@ -60,7 +60,7 @@ public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
         @Override
         public Row next() {
 
-            return currentPage.get(currentRow - 1);
+            return currentPage.get(currentRow);
         }
 
         @Override
