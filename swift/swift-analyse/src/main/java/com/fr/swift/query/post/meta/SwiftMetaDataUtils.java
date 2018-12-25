@@ -17,6 +17,8 @@ public class SwiftMetaDataUtils {
                 return new GroupMetaDataCreator();
             case DETAIL:
                 return new DetailMetaDataCreator();
+            default:
+                // do nothing
         }
         return Crasher.crash(new UnsupportedOperationException("Unsupported query type!"));
     }
