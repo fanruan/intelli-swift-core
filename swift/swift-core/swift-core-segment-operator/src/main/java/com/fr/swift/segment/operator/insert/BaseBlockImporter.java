@@ -1,11 +1,13 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.operator.Insertable;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
@@ -19,14 +21,16 @@ import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.util.IoUtil;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author anchore
  * @date 2018/8/1
  */
-public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>> implements Releasable, Insertable {
+public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> implements Releasable, Importer {
 
     private A alloter;
 
@@ -34,7 +38,9 @@ public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected Map<SegmentInfo, Inserting> insertings = new HashMap<SegmentInfo, Inserting>();
 
-    public BaseBlockInserter(DataSource dataSource, A alloter) {
+    private List<SegmentKey> importSegKeys = new ArrayList<SegmentKey>();
+
+    public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
         this.alloter = alloter;
     }
@@ -48,8 +54,7 @@ public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>
         }
     }
 
-    @Override
-    public void insertData(SwiftResultSet swiftResultSet) throws Exception {
+    public void importData(SwiftResultSet swiftResultSet) throws Exception {
         try {
             persistMeta();
 
@@ -62,8 +67,10 @@ public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>
                     // 可能有满了的seg
                     // todo 如果增量走这边，要fire upload的
                     releaseFullIfExists();
-                    Segment seg = newSegment(segInfo);
+                    SegmentKey segKey = newSegmentKey(segInfo);
+                    Segment seg = newSegment(segKey);
                     insertings.put(segInfo, new Inserting(getInserter(seg), seg));
+                    importSegKeys.add(segKey);
                 }
                 insertings.get(segInfo).insert(row);
             }
@@ -83,7 +90,12 @@ public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected abstract Inserter getInserter(Segment seg);
 
-    protected abstract Segment newSegment(SegmentInfo segInfo);
+    protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
+        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
+        return segKey;
+    }
+
+    protected abstract Segment newSegment(SegmentKey segmentKey);
 
     protected abstract void releaseFullIfExists();
 
@@ -119,5 +131,14 @@ public abstract class BaseBlockInserter<A extends SwiftSourceAlloter<?, RowInfo>
         public void release() {
             IoUtil.release(inserter);
         }
+    }
+
+    public List<String> getFields() {
+        return dataSource.getMetadata().getFieldNames();
+    }
+
+    @Override
+    public List<SegmentKey> getImportSegments() {
+        return importSegKeys;
     }
 }

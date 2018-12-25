@@ -32,7 +32,7 @@ public class FileSegmentRecovery extends AbstractSegmentRecovery {
             realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
             Inserter inserter = new SwiftInserter(realtimeSeg);
             resultSet = new SegmentBackupResultSet(getBackupSegment(segKey, realtimeSeg.getMetaData()));
-            inserter.insertData(resultSet);
+            inserter.importData(resultSet);
             realtimeSeg.putAllShowIndex(resultSet.getAllShowIndex());
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("{} recover failed, caused by {}", segKey, e);

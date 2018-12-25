@@ -78,9 +78,9 @@ public class SwiftRealtimeInserter extends SwiftInserter {
 
     @Override
     @Transactional(value = RealtimeInsertException.class)
-    public void insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException, SQLException {
+    public void importData(SwiftResultSet swiftResultSet) throws RealtimeInsertException, SQLException {
         try {
-            super.insertData(swiftResultSet);
+            super.importData(swiftResultSet);
         } catch (Exception e) {
             throw new RealtimeInsertException(e);
         } finally {

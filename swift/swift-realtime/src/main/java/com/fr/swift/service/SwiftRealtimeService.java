@@ -19,7 +19,7 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.event.SegmentEvent;
-import com.fr.swift.segment.operator.Insertable;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.source.SourceKey;
@@ -86,8 +86,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             public Void call() throws Exception {
                 try {
                     SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.MEM_STEP));
-                    Insertable inserter = SwiftContext.get().getBean("incrementer", Insertable.class, this, alloter);
-                    inserter.insertData(resultSet);
+                    Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, this, alloter);
+                    importer.importData(resultSet);
                 } catch (Exception e) {
                     throw new SQLException(e);
                 } finally {
