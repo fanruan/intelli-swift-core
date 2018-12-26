@@ -51,7 +51,9 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
             return segState.getSegInfo();
         }
         // 已满，再分配
-        return append(logicOrder).getSegInfo();
+        segState = append(logicOrder);
+        segState.incrementAndGet();
+        return segState.getSegInfo();
     }
 
     protected abstract SegmentState append(int logicOrder);

@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -60,7 +61,7 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
     }
 
     private Segment newRealTimeSeg(SegmentKey key) {
-        ResourceLocation location = new ResourceLocation(new CubePathBuilder(key).asBackup().build(), key.getStoreType());
+        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).asBackup().build(), key.getStoreType());
         SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableKey.getId());
         return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, metaData);
     }
