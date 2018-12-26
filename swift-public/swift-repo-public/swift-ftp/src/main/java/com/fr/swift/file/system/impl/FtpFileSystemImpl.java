@@ -1,12 +1,11 @@
 package com.fr.swift.file.system.impl;
 
-import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.client.SwiftFTPClient;
 import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
-import com.fr.swift.file.system.pool.RemoteFileSystemFactoryCreator;
+import com.fr.swift.file.system.factory.SwiftFtpFileSystemFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
 import com.fr.swift.util.Strings;
@@ -26,7 +25,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
 
     public FtpFileSystemImpl(FtpRepositoryConfig config, String uri, ObjectPool<SwiftFTPClient> clientPool) {
         super(config, uri);
-        this.systemFactory = RemoteFileSystemFactoryCreator.creator().getFactory(SwiftRemoteFileSystemType.FTP);
+        this.systemFactory = new SwiftFtpFileSystemFactory();
         this.clientPool = clientPool;
         rootURI = Strings.trimSeparator(config.getRootPath() + "/", "/");
     }
