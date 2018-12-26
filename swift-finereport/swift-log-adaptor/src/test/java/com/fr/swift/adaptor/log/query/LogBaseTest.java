@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.log.query;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -16,6 +17,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.LocalSwiftServerService;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferProvider;
@@ -48,7 +50,7 @@ public class LogBaseTest {
         SwiftSourceTransfer transfer = SwiftContext.get().getBean(SwiftSourceTransferProvider.class).createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
 
-        table.insert(resultSet);
+        ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class).insert(table.getSourceKey(), resultSet);
 
 //        IConfigSegment configSegment = new SegmentUnique();
 //        configSegment.setSourceKey(table.getSourceKey().getId());

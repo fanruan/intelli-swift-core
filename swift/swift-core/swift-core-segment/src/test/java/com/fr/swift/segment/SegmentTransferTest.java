@@ -83,7 +83,7 @@ public class SegmentTransferTest {
         Segment oldSeg = SegmentUtils.newSegment(oldSegKey);
         Inserter inserter = (Inserter) SwiftContext.get().getBean("inserter", oldSeg);
         int rowCount = 100;
-        inserter.insertData(new LimitedResultSet(new ResultSet(), rowCount));
+        inserter.importData(new LimitedResultSet(new ResultSet(), rowCount));
 
         assertSegUsable(rowCount, oldSegKey);
 

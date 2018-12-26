@@ -50,4 +50,9 @@ public class FunnelQueryResultSet implements QueryResultSet<FunnelResultSet>, Se
     public SwiftResultSet convert(SwiftMetaData metaData) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void close() {
+
+    }
 }

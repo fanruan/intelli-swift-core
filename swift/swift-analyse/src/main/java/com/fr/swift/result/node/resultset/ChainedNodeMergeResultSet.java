@@ -65,9 +65,4 @@ class ChainedNodeMergeResultSet extends BaseNodeResultSet<GroupNode> implements 
     public Row getNextRow() {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public void close() {
-
-    }
 }

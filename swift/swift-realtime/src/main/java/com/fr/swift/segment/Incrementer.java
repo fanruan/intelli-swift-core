@@ -2,7 +2,6 @@ package com.fr.swift.segment;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
-import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
@@ -15,10 +14,6 @@ import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.transaction.TransactionProxyFactory;
-import com.fr.swift.util.IoUtil;
-
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 /**
  * @author anchore
@@ -41,20 +36,10 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     }
 
     @Override
-    protected void releaseFullIfExists() {
-        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
-            Entry<SegmentInfo, Inserting> entry = itr.next();
-            Inserting inserting = entry.getValue();
-            if (inserting.isFull()) {
-                IoUtil.release(inserting);
-                itr.remove();
-
-                // 增量块已满，transfer掉
-                SegmentInfo segInfo = entry.getKey();
-                SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
-                SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
-            }
-        }
+    protected void handleFullSegment(SegmentInfo segInfo) {
+        // 增量块已满，transfer掉
+        SegmentKey segKey = newSegmentKey(segInfo);
+        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
     }
 
     @Override
