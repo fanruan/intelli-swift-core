@@ -34,10 +34,10 @@ public class FtpFileSystemImplTest {
         config.setRootPath("/");
         ftpPool = new FtpFileSystemPool(config);
         FtpRepositoryConfig config1 = new FtpRepositoryConfig();
-        config1.setHost("origin.zyee.me");
+        config1.setHost("192.168.1.67");
         config1.setPort("22");
         config1.setUsername("root");
-        config1.setPassword("Zhy100112");
+        config1.setPassword("root");
         config1.setRootPath("/root");
         config1.setProtocol("SFTP");
         sftpPool = new FtpFileSystemPool(config1);
