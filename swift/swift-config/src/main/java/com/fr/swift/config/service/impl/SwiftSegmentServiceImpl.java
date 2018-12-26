@@ -199,10 +199,11 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Boolean work(final ConfigSession session) throws SQLException {
                     try {
                         for (SegmentKey segmentKey : segmentKeys) {
-                            segmentLocationDao.findBySegmentId(session, segmentKey.toString()).forEach(new FindList.SimpleEach<SegLocationBean>() {
+                            segmentLocationDao.findBySegmentId(session, segmentKey.toString()).justForEach(new FindList.ConvertEach() {
                                 @Override
-                                public void each(int idx, SegLocationBean item) throws Exception {
-                                    segmentLocationDao.delete(session, item);
+                                public Object forEach(int idx, Object item) throws Exception {
+                                    session.delete(item);
+                                    return item;
                                 }
                             });
                             swiftSegmentDao.deleteById(session, segmentKey.toString());
