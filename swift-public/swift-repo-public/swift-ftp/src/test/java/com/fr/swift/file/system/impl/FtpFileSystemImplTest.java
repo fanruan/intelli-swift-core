@@ -6,6 +6,7 @@ import com.fr.swift.file.system.pool.FtpFileSystemPool;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -19,6 +20,7 @@ import static junit.framework.TestCase.assertTrue;
  * @author yee
  * @date 2018-12-26
  */
+@Ignore
 public class FtpFileSystemImplTest {
     private static FtpFileSystemPool ftpPool;
     private static FtpFileSystemPool sftpPool;
