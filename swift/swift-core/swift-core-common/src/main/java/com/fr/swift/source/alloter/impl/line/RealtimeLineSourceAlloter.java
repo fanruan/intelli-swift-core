@@ -40,15 +40,15 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
         List<SegmentKey> keys = keyListMap.get(tableKey);
         keys = keys == null ? new ArrayList<SegmentKey>() : keys;
         SegmentKey segmentKey = null;
-        int cursor = -1;
+        int rows = 0;
         for (SegmentKey key : keys) {
             if (key.getStoreType() == Types.StoreType.MEMORY) {
                 Segment segment = newRealTimeSeg(key);
-                if (segment.getRowCount() < rule.getCapacity()) {
-                    // 这边假设配置中可能存在多个realTimeSegment的情况下，取出没有满的segment进行插入
+                int rowCount = segment.getRowCount();
+                if (rowCount < rule.getCapacity() && rowCount >= rows) {
+                    // 这边假设配置中可能存在多个realTimeSegment的情况下，取出行数最多的segment进行插入
                     segmentKey = key;
-                    cursor = segment.getRowCount() - 1;
-                    break;
+                    rows = rowCount;
                 }
             }
         }
@@ -56,7 +56,7 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
             segmentKey = SEG_SVC.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
         }
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segmentKey.getOrder(), Types.StoreType.MEMORY);
-        return new SegmentState(segInfo, cursor);
+        return new SegmentState(segInfo, rows - 1);
     }
 
     private Segment newRealTimeSeg(SegmentKey key) {
