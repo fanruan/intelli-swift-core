@@ -1,10 +1,13 @@
 package com.fr.swift.file.client.impl;
 
 import com.fr.swift.file.client.SwiftFTPClient;
+import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
+import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 import com.fr.swift.util.Strings;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPFileFilter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,7 +51,33 @@ public class FTPClientImpl implements SwiftFTPClient {
 
     @Override
     public long getSize(String path) throws IOException {
-        return client.mlistFile(path).getSize();
+        FTPFile file = getFtpFile(path);
+        if (null != file) {
+            return file.getSize();
+        }
+        return 0;
+
+    }
+
+    private FTPFile getFtpFile(String path) throws IOException {
+        FTPFile file = client.mlistFile(path);
+        if (null != file) {
+            return file;
+        }
+        String parent = SwiftRepositoryUtils.getParent(path);
+        final String name = SwiftRepositoryUtils.getName(path);
+        if (Strings.isNotEmpty(parent)) {
+            FTPFile[] files = client.listFiles(parent, new FTPFileFilter() {
+                @Override
+                public boolean accept(FTPFile ftpFile) {
+                    return ftpFile.getName().equals(name);
+                }
+            });
+            if (files.length > 0) {
+                return files[0];
+            }
+        }
+        return null;
     }
 
     @Override
@@ -68,14 +97,17 @@ public class FTPClientImpl implements SwiftFTPClient {
 
     @Override
     public boolean exists(String path) throws IOException {
-        FTPFile ftpFile = client.mlistFile(path);
+        FTPFile ftpFile = getFtpFile(path);
         return null != ftpFile;
     }
 
     @Override
     public boolean isDirectory(String path) throws IOException {
-        FTPFile ftpFile = client.mlistFile(path);
-        return ftpFile.isDirectory();
+        FTPFile ftpFile = getFtpFile(path);
+        if (null != ftpFile) {
+            return ftpFile.isDirectory();
+        }
+        throw new SwiftFileException(String.format("%s is not exists", path));
     }
 
     @Override

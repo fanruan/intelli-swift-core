@@ -109,4 +109,16 @@ public class SwiftRepositoryUtils {
     private static boolean isLetter(char testChar) {
         return testChar >= 'a' && testChar <= 'z' || testChar > 'A' && testChar <= 'Z';
     }
+
+    public static String getName(String path) {
+        String separator = getPathSeparator(path);
+        if (Strings.isEmpty(separator)) {
+            return path;
+        } else {
+            path = normalize(path);
+            int start = getPrefixLength(path);
+            int end = path.lastIndexOf(separator);
+            return end < start ? path.substring(start) : path.substring(end + 1);
+        }
+    }
 }

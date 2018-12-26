@@ -2,6 +2,7 @@ package com.fr.swift.file.client.impl;
 
 import com.fr.swift.file.client.SwiftFTPClient;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
+import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 import com.fr.swift.util.Strings;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -38,7 +39,7 @@ public class SFTPClientImpl implements SwiftFTPClient {
         host = config.getHost();
         port = Integer.parseInt(config.getPort());
         username = config.getUsername();
-        pass = config.getPassPhrase();
+        pass = config.getPassword();
         this.connectTimeout = Integer.parseInt(config.getConnectTimeout());
         this.privateKey = config.getPrivateKey();
         this.passPhrase = config.getPassPhrase();
@@ -57,15 +58,18 @@ public class SFTPClientImpl implements SwiftFTPClient {
     @Override
     public long getSize(String path) throws Exception {
         if (!isDirectory(path)) {
-            InputStream is = null;
-            try {
-                is = channelSftp.get(path);
-                return is.available();
-            } finally {
-                if (null != is) {
-                    is.close();
+            String parent = SwiftRepositoryUtils.getParent(path);
+            String name = SwiftRepositoryUtils.getName(path);
+            if (Strings.isNotEmpty(parent)) {
+                Vector<ChannelSftp.LsEntry> entryVector = channelSftp.ls(parent);
+                for (ChannelSftp.LsEntry lsEntry : entryVector) {
+                    if (lsEntry.getFilename().equals(name)) {
+                        return lsEntry.getAttrs().getSize();
+                    }
                 }
+                return 0;
             }
+            return 0;
         } else {
             long size = 0;
             Vector<ChannelSftp.LsEntry> vector = channelSftp.ls(path);
@@ -164,10 +168,11 @@ public class SFTPClientImpl implements SwiftFTPClient {
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");
             session.setConfig(config);
+            session.connect();
             channel = session.openChannel("sftp");
             channel.connect();
             channelSftp = (ChannelSftp) channel;
-            return channelSftp.isClosed();
+            return !channelSftp.isClosed();
         } catch (JSchException e) {
             close();
             throw e;
