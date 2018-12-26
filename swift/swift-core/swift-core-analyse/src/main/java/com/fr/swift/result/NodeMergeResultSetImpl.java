@@ -59,9 +59,4 @@ public class NodeMergeResultSetImpl<T extends GroupNode> extends BaseNodeResultS
     public Row getNextRow() throws SQLException {
         return iterator.next();
     }
-
-    @Override
-    public void close() throws SQLException {
-
-    }
 }

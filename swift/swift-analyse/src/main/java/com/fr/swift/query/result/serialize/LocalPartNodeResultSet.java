@@ -77,9 +77,4 @@ public class LocalPartNodeResultSet extends BaseNodeResultSet<SwiftNode> impleme
     public Row getNextRow() throws SQLException {
         return null;
     }
-
-    @Override
-    public void close() throws SQLException {
-
-    }
 }

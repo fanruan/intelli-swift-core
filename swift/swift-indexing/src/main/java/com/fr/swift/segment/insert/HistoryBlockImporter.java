@@ -7,19 +7,19 @@ import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.RowInfo;
+import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.util.IoUtil;
-
-import java.util.Iterator;
 
 /**
  * @author anchore
@@ -57,14 +57,10 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     }
 
     @Override
-    protected void releaseFullIfExists() {
-        for (Iterator<Inserting> itr = insertings.values().iterator(); itr.hasNext(); ) {
-            Inserting inserting = itr.next();
-            if (inserting.isFull()) {
-                IoUtil.release(inserting);
-                itr.remove();
-            }
-        }
+    protected void handleFullSegment(SegmentInfo segInfo) {
+        // 上传历史块
+        // fixme 有临时路径的坑；另外何时上传也要考虑，这里还在导入过程，导入失败怎么办，生成好一块上传一块？
+        SwiftEventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegmentKey(segInfo));
     }
 
     @Override

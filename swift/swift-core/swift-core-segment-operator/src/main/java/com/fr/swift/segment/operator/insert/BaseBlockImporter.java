@@ -23,8 +23,10 @@ import com.fr.swift.util.IoUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author anchore
@@ -36,7 +38,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected DataSource dataSource;
 
-    protected Map<SegmentInfo, Inserting> insertings = new HashMap<SegmentInfo, Inserting>();
+    private Map<SegmentInfo, Inserting> insertings = new HashMap<SegmentInfo, Inserting>();
 
     private List<SegmentKey> importSegKeys = new ArrayList<SegmentKey>();
 
@@ -54,6 +56,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         }
     }
 
+    @Override
     public void importData(SwiftResultSet swiftResultSet) throws Exception {
         try {
             persistMeta();
@@ -90,14 +93,26 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected abstract Inserter getInserter(Segment seg);
 
-    protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
-        SegmentKey segKey = new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
-        return segKey;
-    }
-
     protected abstract Segment newSegment(SegmentKey segmentKey);
 
-    protected abstract void releaseFullIfExists();
+    protected abstract void handleFullSegment(SegmentInfo segInfo);
+
+    protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
+        return new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
+    }
+
+    private void releaseFullIfExists() {
+        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
+            Entry<SegmentInfo, Inserting> entry = itr.next();
+            if (entry.getValue().isFull()) {
+                IoUtil.release(entry.getValue());
+                itr.remove();
+
+                // 处理满了的块，比如上传历史块或者持久化增量块
+                handleFullSegment(entry.getKey());
+            }
+        }
+    }
 
     @Override
     public void release() {
@@ -133,6 +148,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         }
     }
 
+    @Override
     public List<String> getFields() {
         return dataSource.getMetadata().getFieldNames();
     }

@@ -84,9 +84,4 @@ public class LocalAllNodeResultSet extends BaseNodeResultSet<SwiftNode> implemen
     public Row getNextRow() throws SQLException {
         return iterator.next();
     }
-
-    @Override
-    public void close() throws SQLException {
-
-    }
 }
