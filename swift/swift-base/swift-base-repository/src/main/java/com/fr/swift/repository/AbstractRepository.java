@@ -34,7 +34,7 @@ public abstract class AbstractRepository implements SwiftRepository {
 
     private SwiftFileSystem buildDefaultFileSystem(String uri) {
         try {
-            Class system = this.getClass().getClassLoader().loadClass("com.fr.swift.file.system.impl.DefaultFileSystemImpl");
+            Class system = this.getClass().getClassLoader().loadClass("com.fr.swift.file.impl.DefaultFileSystemImpl");
             return (SwiftFileSystem) system.getDeclaredConstructor(String.class).newInstance(uri);
         } catch (Exception e) {
             throw new DefaultRepoNotFoundException(e);

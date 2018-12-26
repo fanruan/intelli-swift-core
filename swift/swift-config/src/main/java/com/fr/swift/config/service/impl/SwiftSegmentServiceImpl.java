@@ -259,7 +259,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
 
     @Override
     public List<SegmentKey> getSegmentByKey(String sourceKey) {
-        List<SegmentKey> result = getOwnSegments().get(sourceKey);
+        List<SegmentKey> result = getOwnSegments().get(new SourceKey(sourceKey));
         if (null == result) {
             return Collections.emptyList();
         }

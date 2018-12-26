@@ -19,9 +19,15 @@ public class ConnectorManager {
     private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
     private ConnectorProvider provider = SwiftContext.get().getBean(ConnectorProvider.class);
     private SwiftFineIOConnectorService fineIOConnectorService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
+    private volatile Connector connector;
 
     private ConnectorManager() {
-        pathService.registerPathChangeListener(provider.change());
+        pathService.registerPathChangeListener(new SwiftCubePathService.PathChangeListener() {
+            @Override
+            public void changed(String path) {
+                connector = null;
+            }
+        });
     }
 
     public static ConnectorManager getInstance() {
@@ -40,8 +46,13 @@ public class ConnectorManager {
 
 
     public Connector getConnector() {
-        synchronized (this) {
-            return provider.apply(fineIOConnectorService.getCurrentConfig());
+        if (null == connector) {
+            synchronized (this) {
+                if (null == connector) {
+                    connector = provider.apply(fineIOConnectorService.getCurrentConfig());
+                }
+            }
         }
+        return connector;
     }
 }

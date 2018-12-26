@@ -5,7 +5,7 @@ import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.IntIterable.IntIterator;
@@ -54,8 +54,8 @@ public class SegmentDetailResultSet extends BaseDetailQueryResultSet {
     static Row readRow(int row, List<Column> columnList) {
         List<Object> values = new ArrayList<Object>();
         for (Column column : columnList) {
-            DictionaryEncodedColumn dictionary = column.getDictionaryEncodedColumn();
-            Object val = dictionary.getValueByRow(row);
+            DetailColumn dictionary = column.getDetailColumn();
+            Object val = dictionary.get(row);
             values.add(val);
         }
         return new ListBasedRow(values);

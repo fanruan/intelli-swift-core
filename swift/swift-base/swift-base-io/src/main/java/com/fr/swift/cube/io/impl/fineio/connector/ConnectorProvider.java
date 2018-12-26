@@ -2,7 +2,6 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.storage.Connector;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.util.function.Function;
 
 /**
@@ -10,5 +9,5 @@ import com.fr.swift.util.function.Function;
  * @date 2018-12-04
  */
 public interface ConnectorProvider extends Function<FineIOConnectorConfig, Connector> {
-    SwiftCubePathService.PathChangeListener change();
+    void change();
 }

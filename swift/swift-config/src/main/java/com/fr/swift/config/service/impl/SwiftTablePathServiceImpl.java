@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SwiftBean
 public class SwiftTablePathServiceImpl implements SwiftTablePathService {
-    private SwiftTablePathDao swiftTablePathDao;
+    private SwiftTablePathDao swiftTablePathDao = SwiftContext.get().getBean(SwiftTablePathDao.class);
     private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
     private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
     private String clusterId = SwiftConfigConstants.LOCALHOST;

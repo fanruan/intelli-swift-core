@@ -11,7 +11,6 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.plugin.ExtraClassManagerProvider;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
@@ -65,13 +64,8 @@ public class FRConnectorProvider implements ConnectorProvider {
 
 
     @Override
-    public SwiftCubePathService.PathChangeListener change() {
-        return new SwiftCubePathService.PathChangeListener() {
-            @Override
-            public void changed(String path) {
-                connector = null;
-            }
-        };
+    public void change() {
+        connector = null;
     }
 
     protected class ConnectorPluginListener extends PluginEventListener {
