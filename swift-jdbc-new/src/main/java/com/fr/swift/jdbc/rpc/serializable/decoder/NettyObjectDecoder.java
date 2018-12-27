@@ -27,15 +27,17 @@ public class NettyObjectDecoder extends ObjectDecoder {
         ByteBuffer lengthBuffer = ByteBuffer.allocate(4);
         channel.read(lengthBuffer);
         byte[] lengthByte = lengthBuffer.array();
-        int length = lengthByte[0] << 24
+        int length = (lengthByte[0] & 0xFF) << 24
                 | (lengthByte[1] & 0xFF) << 16
-                | lengthByte[2] << 8
-                | lengthByte[3] & 0xFF;
+                | (lengthByte[2] & 0xFF) << 8
+                | (lengthByte[3] & 0xFF);
         if (length <= 0) {
             throw Exceptions.noCodecResponse();
         }
         ByteBuffer contentBuffer = ByteBuffer.allocate(length);
+        Thread.sleep(100);
         channel.read(contentBuffer);
+        contentBuffer.flip();
         return decode(contentBuffer);
     }
 }
