@@ -14,7 +14,7 @@ public class RealtimeHashSourceAlloter extends BaseSourceAlloter<HashAllotRule, 
     }
 
     @Override
-    protected SegmentState append(int logicOrder) {
+    protected SegmentState getInsertableSeg() {
         // TODO: 2018/12/26
         return null;
     }
