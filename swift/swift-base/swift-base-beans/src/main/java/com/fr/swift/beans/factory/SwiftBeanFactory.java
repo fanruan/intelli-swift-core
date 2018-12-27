@@ -4,6 +4,7 @@ import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -87,7 +88,9 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
             return (T) singletonObjects.get(swiftBeanDefinition.getBeanName());
         } else {
             try {
-                return createBean(clazz, params);
+                SwiftBeanDefinition beanDefinition = getBeanDefinition(beanName);
+                Class<T> beanClazz = (Class<T>) beanDefinition.getClazz();
+                return createBean(beanClazz, params);
             } catch (Exception e) {
                 throw new SwiftBeanException(e);
             }
@@ -153,7 +156,27 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         for (int i = 0; i < params.length; i++) {
             parameterTypes[i] = params[i].getClass();
         }
-        Constructor<T> cons = tClass.getDeclaredConstructor(parameterTypes);
+        Constructor[] constructors = tClass.getDeclaredConstructors();
+        Constructor<T> cons = null;
+        for (Constructor constructor : constructors) {
+            Class<?>[] paramTypes = constructor.getParameterTypes();
+            if (paramTypes.length == parameterTypes.length) {
+                boolean matched = true;
+                for (int i = 0; i < paramTypes.length; i++) {
+                    if (!ReflectUtils.isAssignable(parameterTypes[i], paramTypes[i])) {
+                        matched = false;
+                        break;
+                    }
+                }
+                if (matched) {
+                    cons = constructor;
+                    break;
+                }
+            }
+        }
+        if (cons == null) {
+            Crasher.crash("No constructor matched!");
+        }
         cons.setAccessible(true);
         T bean = cons.newInstance(params);
         return bean;

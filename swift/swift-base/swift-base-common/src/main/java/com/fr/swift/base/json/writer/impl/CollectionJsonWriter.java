@@ -20,7 +20,7 @@ public class CollectionJsonWriter implements JsonWriter<Collection> {
 
     private void writeCollection(StringBuffer buffer, Collection list) {
         if (list == null) {
-            buffer.append("null");
+            buffer.append("[]");
             return;
         }
         if (list.isEmpty()) {

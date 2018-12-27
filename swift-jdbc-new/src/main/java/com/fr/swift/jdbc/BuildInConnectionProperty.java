@@ -36,7 +36,7 @@ public enum BuildInConnectionProperty {
     public String getValue(Properties properties) {
         String value = properties.getProperty(this.propertyName, null);
         if (null == value) {
-            return properties.getProperty(name().toLowerCase(), defaultValue.toString());
+            return properties.getProperty(name().toLowerCase(), defaultValue != null ? defaultValue.toString() : null);
         }
         return value;
     }

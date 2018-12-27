@@ -125,6 +125,7 @@ public class Tokenizer {
     }
 
     private Token readBoolean() throws IOException {
+        charReader.back();
         char ch = charReader.next();
         String expected = null;
         if (ch == 't') {
