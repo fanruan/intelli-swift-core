@@ -206,6 +206,9 @@ class FilterInfoParser {
 
     private static Set parseSet(SourceKey table, String columnName, Set values) {
         Set<Object> set = new HashSet<Object>();
+        if (null == values) {
+            return set;
+        }
         ColumnTypeConstants.ClassType type = getClassType(table, columnName);
         for (Object object : values) {
             set.add(convert(object, type));

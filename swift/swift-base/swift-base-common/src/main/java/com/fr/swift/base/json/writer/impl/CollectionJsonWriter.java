@@ -30,12 +30,14 @@ public class CollectionJsonWriter implements JsonWriter<Collection> {
         buffer.append('[');
         boolean isFirst = true;
         for (Object o : list) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                buffer.append(',');
+            if (null != o) {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    buffer.append(',');
+                }
+                buffer.append(OBJECT_JSON_WRITER.write(o));
             }
-            buffer.append(OBJECT_JSON_WRITER.write(o));
         }
         buffer.append(']');
     }

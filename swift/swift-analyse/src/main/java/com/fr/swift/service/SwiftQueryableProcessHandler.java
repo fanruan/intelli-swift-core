@@ -9,7 +9,6 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
@@ -44,6 +43,11 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
 
     public SwiftQueryableProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
+    }
+
+    private static boolean isLocalURL(URL url) {
+        return url == null || url.getDestination().getId() == null
+                || url.getDestination().getId().equals(ClusterSelector.getInstance().getFactory().getCurrentId());
     }
 
     @Override
@@ -126,7 +130,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
 
                 @Override
                 public void fail(Exception e) {
-                    SwiftLoggers.getLogger().error("Remote invoke clusterId{}", pair.getKey().getDestination().getId(), e);
+//                    SwiftLoggers.getLogger().error("Remote invoke clusterId{}", pair.getKey().getDestination(), e);
                     latch.countDown();
                 }
             });
@@ -135,11 +139,6 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.size() > 0 ? resultSets.get(0).getMerger() : null);
         Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
-    }
-
-    private static boolean isLocalURL(URL url) {
-        return url == null || url.getDestination().getId() == null
-                || url.getDestination().getId().equals(ClusterSelector.getInstance().getFactory().getCurrentId());
     }
 
     @Override
@@ -157,7 +156,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                 URL url = UrlSelector.getInstance().getFactory().getURL(clusterId);
                 map.put(clusterId, Pair.<URL, Set<String>>of(url, new HashSet<String>()));
             }
-            map.get(clusterId).getValue().add(destination.getClusterId() == null ? "" : destination.getClusterId());
+            map.get(clusterId).getValue().add(destination.getClusterId());
         }
         return Collections.unmodifiableList(new ArrayList<Pair<URL, Set<String>>>(map.values()));
     }
