@@ -3,7 +3,6 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 import com.fineio.storage.Connector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.service.SwiftCubePathService;
 
 /**
  * @author yee
@@ -15,13 +14,8 @@ public class DefaultConnectorProvider implements ConnectorProvider {
     private static Connector connector;
 
     @Override
-    public SwiftCubePathService.PathChangeListener change() {
-        return new SwiftCubePathService.PathChangeListener() {
-            @Override
-            public void changed(String path) {
-                connector = null;
-            }
-        };
+    public void change() {
+        connector = null;
     }
 
     @Override
