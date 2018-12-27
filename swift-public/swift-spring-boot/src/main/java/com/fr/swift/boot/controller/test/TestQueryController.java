@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(SwiftApiConstants.TEST_ROOT_URL)
 public class TestQueryController {
 
+
     @ResponseBody
     @RequestMapping(value = "/query/{sourceKey}", method = RequestMethod.GET)
     public List<Row> query(@PathVariable("sourceKey") String jsonString) throws Exception {

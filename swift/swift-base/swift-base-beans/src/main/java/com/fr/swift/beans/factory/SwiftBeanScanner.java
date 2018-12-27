@@ -117,42 +117,44 @@ public class SwiftBeanScanner implements BeanScanner {
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
                     findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
                 } else if ("jar".equals(protocol)) {
-                    JarFile jar;
-                    try {
-                        jar = ((JarURLConnection) url.openConnection()).getJarFile();
-                        Enumeration<JarEntry> entries = jar.entries();
-                        while (entries.hasMoreElements()) {
-                            JarEntry entry = entries.nextElement();
-                            String name = entry.getName();
-                            if (name.charAt(0) == '/') {
-                                name = name.substring(1);
-                            }
-                            if (name.startsWith(packageDirName)) {
-                                int idx = name.lastIndexOf('/');
-                                if (idx != -1) {
-                                    packageName = name.substring(0, idx).replace('/', '.');
-                                }
-                                if ((idx != -1) || recursive) {
-                                    if (name.endsWith(".class") && !entry.isDirectory()) {
-                                        String className = name.substring(packageName.length() + 1, name.length() - 6);
-                                        try {
-                                            classes.add(Class.forName(packageName + '.' + className));
-                                        } catch (ClassNotFoundException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } catch (IOException e) {
-                        SwiftLoggers.getLogger().error(e);
-                    }
+                    findAndAddClassesInPackageByJar(url, packageDirName, packageName, recursive, classes);
+
                 }
             }
         } catch (IOException e) {
             SwiftLoggers.getLogger().error(e);
         }
         return classes;
+    }
+
+    private void findAndAddClassesInPackageByJar(URL url, String packageDirName, String packageName, boolean recursive, List<Class<?>> classes) {
+        try {
+            JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
+            Enumeration<JarEntry> entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if (name.charAt(0) == '/') {
+                    name = name.substring(1);
+                }
+                if (name.startsWith(packageDirName)) {
+                    int idx = name.lastIndexOf('/');
+                    if ((idx != -1) || recursive) {
+                        if (name.endsWith(".class") && !entry.isDirectory()) {
+                            try {
+                                String classFile = "jar:" + url.getPath() + name.substring(packageDirName.length() + 1);
+                                ClassAnnotations classAnnotations = ClassReader.read(new URL(classFile).openStream());
+                                calcSwiftBeans(classAnnotations, classes);
+                            } catch (Exception ignore) {
+                                SwiftLoggers.getLogger().error("{} read class file error!{}", name, ignore.getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
     }
 
     /**
@@ -179,25 +181,28 @@ public class SwiftBeanScanner implements BeanScanner {
             for (File file : dirfiles) {
                 if (!file.isDirectory()) {
                     ClassAnnotations classAnnotations = ClassReader.read(file.getPath());
-                    for (String annotation : classAnnotations.getAnnotationNames()) {
-                        try {
-                            if (annotation.equals(SwiftBean.class.getName())) {
-//                                String className = file.getName().substring(0, file.getName().length() - 6);
-                                try {
-                                    classes.add(Class.forName(classAnnotations.getClassName()));
-                                    continue;
-                                } catch (ClassNotFoundException e) {
-                                    SwiftLoggers.getLogger().error(e);
-                                } catch (ExceptionInInitializerError ee) {
-                                    SwiftLoggers.getLogger().error(ee);
-                                } catch (NoClassDefFoundError eee) {
-                                    SwiftLoggers.getLogger().error(eee);
-                                }
-                            }
-                        } catch (Exception ignore) {
-                        }
+                    calcSwiftBeans(classAnnotations, classes);
+                }
+            }
+        }
+    }
+
+    private void calcSwiftBeans(ClassAnnotations classAnnotations, List<Class<?>> classes) {
+        for (String annotation : classAnnotations.getAnnotationNames()) {
+            try {
+                if (annotation.equals(SwiftBean.class.getName())) {
+                    try {
+                        classes.add(Class.forName(classAnnotations.getClassName()));
+                        continue;
+                    } catch (ClassNotFoundException e) {
+                        SwiftLoggers.getLogger().error(e);
+                    } catch (ExceptionInInitializerError ee) {
+                        SwiftLoggers.getLogger().error(ee);
+                    } catch (NoClassDefFoundError eee) {
+                        SwiftLoggers.getLogger().error(eee);
                     }
                 }
+            } catch (Exception ignore) {
             }
         }
     }

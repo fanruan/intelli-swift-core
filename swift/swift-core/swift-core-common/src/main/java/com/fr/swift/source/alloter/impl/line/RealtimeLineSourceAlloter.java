@@ -45,7 +45,10 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
         for (SegmentKey key : keys) {
             if (key.getStoreType() == Types.StoreType.MEMORY) {
                 Segment segment = newRealTimeSeg(key);
-                int rowCount = segment.getRowCount();
+                int rowCount = 0;
+                if (segment.isReadable()) {
+                    rowCount = segment.getRowCount();
+                }
                 if (rowCount < rule.getCapacity() && rowCount >= rows) {
                     // 这边假设配置中可能存在多个realTimeSegment的情况下，取出行数最多的segment进行插入
                     segmentKey = key;

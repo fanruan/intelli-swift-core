@@ -47,7 +47,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private static final long serialVersionUID = 4719723736240190155L;
 
-
     private transient SwiftSegmentManager segmentManager;
 
     private transient ServiceTaskExecutor taskExecutor;
@@ -86,7 +85,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             public Void call() throws Exception {
                 try {
                     SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.MEM_STEP));
-                    Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, this, alloter);
+                    Table table = SwiftDatabase.getInstance().getTable(tableKey);
+                    Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, table, alloter);
                     importer.importData(resultSet);
                 } catch (Exception e) {
                     throw new SQLException(e);
