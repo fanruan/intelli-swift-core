@@ -30,10 +30,13 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
     public NodeResultSet getQueryResult() throws SQLException {
         List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
         for (Query<NodeResultSet> query : queryList) {
-            NodeMergeResultSet<GroupNode> resultSet = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
-            if (resultSet == null) {
-                SwiftLoggers.getLogger().info("failed to get result from query: ", query.toString());
-            } else {
+            NodeMergeResultSet<GroupNode> resultSet = null;
+            try {
+                resultSet = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().info("segment query error: ", query.toString());
+            }
+            if (resultSet != null) {
                 resultSets.add(resultSet);
             }
         }

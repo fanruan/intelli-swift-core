@@ -20,6 +20,7 @@ import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.global.DeleteEvent;
+import com.fr.swift.jdbc.result.EmptyResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.FilterBean;
@@ -114,15 +115,14 @@ public class MetricProxy extends BaseMetric {
 
     @Override
     public <T> ResultSet findWithMetaData(Class<T> aClass, QueryCondition queryCondition, List<DataColumn> list) throws MetricException {
-        ResultSet ret = null;
         try {
             QueryBean queryBean = LogQueryUtils.query(aClass, queryCondition, list);
             SwiftResultSet resultSet = analyseService.getQueryResult(queryBean);
-            ret = new ResultSetWrapper(resultSet);
+            return new ResultSetWrapper(resultSet);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-        return ret;
+        return new ResultSetWrapper(EmptyResultSet.INSTANCE);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.fr.swift.result;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.source.Row;
@@ -35,12 +36,16 @@ public class SortMultiSegmentDetailResultSet extends AbstractDetailResultSet {
     private void init() throws SQLException {
         List<DetailResultSet> resultSets = new ArrayList<DetailResultSet>();
         for (Query query : queries) {
-            DetailResultSet resultSet = (DetailResultSet) query.getQueryResult();
-            if (resultSet == null) {
-                continue;
+            DetailResultSet resultSet = null;
+            try {
+                resultSet = (DetailResultSet) query.getQueryResult();
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().info("segment query error: ", query.toString());
             }
-            rowCount += resultSet.getRowCount();
-            resultSets.add(resultSet);
+            if (resultSet != null) {
+                rowCount += resultSet.getRowCount();
+                resultSets.add(resultSet);
+            }
         }
         mergerIterator = resultSets.isEmpty() ? new ArrayList<List<Row>>().iterator()
                 : new SortedDetailResultSetMerger(fetchSize, createRowComparator(comparators), resultSets);
