@@ -28,11 +28,6 @@
         <fr.version>10.0-FEATURE-SNAPSHOT</fr.version>
     </properties>
 
-    <!--<build>-->
-        <!--<outputDirectory>${target.dir}/fr/main</outputDirectory>-->
-        <!--<testOutputDirectory>${target.dir}/fr/test</testOutputDirectory>-->
-    <!--</build>-->
-
     <dependencies>
         <dependency>
             <groupId>com.fr.datasource</groupId>
