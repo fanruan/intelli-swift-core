@@ -45,7 +45,9 @@ public abstract class BaseSelector<T extends JdbcConnector> implements JdbcSelec
 
     @Override
     public void start() {
-        singleNotifyThread = Executors.newSingleThreadExecutor(new JdbcThreadFactory.Builder().setName("swift-jdbc-notify-thread").build());
+        if (null == singleNotifyThread || singleNotifyThread.isShutdown()) {
+            singleNotifyThread = Executors.newSingleThreadExecutor(new JdbcThreadFactory.Builder().setName("swift-jdbc-notify-thread").build());
+        }
         setUpSelector();
     }
 

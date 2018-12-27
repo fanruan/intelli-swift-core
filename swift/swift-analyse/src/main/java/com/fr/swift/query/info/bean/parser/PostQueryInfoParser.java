@@ -73,10 +73,12 @@ class PostQueryInfoParser {
                                                        Map<String, Integer> fieldIndexMap) {
         List<Sort> sorts = new ArrayList<Sort>();
         List<SortBean> sortBeans = bean.getSortBeans();
-        for (SortBean sortBean : sortBeans) {
-            // TODO: 2018/6/7 这边复用之前排序的代码，所以targetIndex要算上维度
-            int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getName());
-            sorts.add(sortBean.getType() == SortType.ASC ? new AscSort(targetIndex) : new DescSort(targetIndex));
+        if (null != sortBeans) {
+            for (SortBean sortBean : sortBeans) {
+                // TODO: 2018/6/7 这边复用之前排序的代码，所以targetIndex要算上维度
+                int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getName());
+                sorts.add(sortBean.getType() == SortType.ASC ? new AscSort(targetIndex) : new DescSort(targetIndex));
+            }
         }
         return new RowSortQueryInfo(sorts);
     }

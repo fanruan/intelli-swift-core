@@ -1,5 +1,6 @@
 package com.fr.swift.jdbc;
 
+import com.fr.swift.api.info.AuthRequestInfo;
 import com.fr.swift.api.server.response.ApiResponse;
 import com.fr.swift.api.server.response.AuthResponse;
 import com.fr.swift.jdbc.exception.Exceptions;
@@ -49,7 +50,9 @@ public class Driver extends UnregisteredDriver {
             // TODO kerberos 验证
             return;
         }
-        ApiResponse response = holder.getRequestService().applyWithRetry(config.requestExecutor(), config.swiftUser(), config.swiftPassword(), 3);
+        AuthRequestInfo info = new AuthRequestInfo(config.swiftUser(), config.swiftPassword());
+        info.setFrom(holder.getConnectUri().getHost() + ":" + holder.getConnectUri().getPort());
+        ApiResponse response = holder.getRequestService().applyWithRetry(config.requestExecutor(), info, 3);
         if (response.isError()) {
             throw Exceptions.sql(response.statusCode(), response.description());
         }

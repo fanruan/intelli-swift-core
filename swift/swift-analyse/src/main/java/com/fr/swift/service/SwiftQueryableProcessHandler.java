@@ -9,8 +9,6 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
-import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
@@ -20,6 +18,7 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
@@ -46,6 +45,11 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         super(invokerCreator);
     }
 
+    private static boolean isLocalURL(URL url) {
+        return url == null || url.getDestination().getId() == null
+                || url.getDestination().getId().equals(ClusterSelector.getInstance().getFactory().getCurrentId());
+    }
+
     @Override
     public Object processResult(final Method method, Target target, Object... args) throws Throwable {
         String queryJson = (String) args[0];
@@ -60,7 +64,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         final String methodName = method.getName();
         final CountDownLatch latch = new CountDownLatch(pairs.size());
         for (final Pair<URL, Set<String>> pair : pairs) {
-            queryBean.setSegments(pair.getValue());
+            queryBean.setSegments(pair.getValue() == null ? Collections.<String>emptySet() : pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
             final Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
             RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass,
@@ -126,7 +130,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
 
                 @Override
                 public void fail(Exception e) {
-                    SwiftLoggers.getLogger().error("Remote invoke clusterId{}", pair.getKey().getDestination().getId(), e);
+//                    SwiftLoggers.getLogger().error("Remote invoke clusterId{}", pair.getKey().getDestination(), e);
                     latch.countDown();
                 }
             });
@@ -135,10 +139,6 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.size() > 0 ? resultSets.get(0).getMerger() : null);
         Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
-    }
-
-    private static boolean isLocalURL(URL url) {
-        return url == null || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId());
     }
 
     @Override

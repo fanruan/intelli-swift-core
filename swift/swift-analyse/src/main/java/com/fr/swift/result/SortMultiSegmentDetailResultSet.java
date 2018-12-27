@@ -62,9 +62,29 @@ public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
         return create(fetchSize, metaData, this);
     }
 
-    static SwiftResultSet create(final int fetchSize, final SwiftMetaData metaData, DetailQueryResultSet resultSet) {
+    static SwiftResultSet create(final int fetchSize, final SwiftMetaData metaData, final DetailQueryResultSet resultSet) {
         final Iterator<Row> iterator = new SwiftRowIteratorImpl<DetailQueryResultSet>(resultSet);
-        return new SwiftResultSet() {
+        return new DetailResultSet() {
+            @Override
+            public List<Row> getPage() {
+                return null;
+            }
+
+            @Override
+            public boolean hasNextPage() {
+                return false;
+            }
+
+            @Override
+            public int getRowCount() {
+                return resultSet.getRowCount();
+            }
+
+            @Override
+            public void setMetaData(SwiftMetaData metaData) {
+
+            }
+
             @Override
             public int getFetchSize() {
                 return fetchSize;
