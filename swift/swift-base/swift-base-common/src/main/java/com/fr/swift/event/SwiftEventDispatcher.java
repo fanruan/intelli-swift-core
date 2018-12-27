@@ -56,7 +56,6 @@ public class SwiftEventDispatcher {
 
     public static <T> void fire(SwiftEvent event, T content) {
         Assert.notNull(event);
-
         asyncFire(event, content);
     }
 

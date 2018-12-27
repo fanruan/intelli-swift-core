@@ -43,9 +43,9 @@ public class SegmentUtils {
         SwiftMetaData meta = SwiftDatabase.getInstance().getTable(tableKey).getMetadata();
 
         if (segKey.getStoreType().isTransient()) {
-            return newSegment(new ResourceLocation(new CubePathBuilder(segKey).build()), meta);
+            return newSegment(new ResourceLocation(new CubePathBuilder(segKey).build(), segKey.getStoreType()), meta);
         }
-        return newSegment(new ResourceLocation(new CubePathBuilder(segKey).setTempDir(CubeUtil.getCurrentDir(tableKey)).build()), meta);
+        return newSegment(new ResourceLocation(new CubePathBuilder(segKey).setTempDir(CubeUtil.getCurrentDir(tableKey)).build(), segKey.getStoreType()), meta);
     }
 
     public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {

@@ -8,6 +8,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
+import com.fr.swift.util.IoUtil;
 
 import java.util.List;
 
@@ -28,22 +29,23 @@ public class FileSegmentRecovery extends AbstractSegmentRecovery {
     private void recover(SegmentKey segKey) {
         Segment realtimeSeg = null;
         SegmentBackupResultSet resultSet = null;
+        Inserter inserter = null;
         try {
             realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
-            Inserter inserter = new SwiftInserter(realtimeSeg);
+            inserter = new SwiftInserter(realtimeSeg);
             resultSet = new SegmentBackupResultSet(getBackupSegment(segKey, realtimeSeg.getMetaData()));
             inserter.importData(resultSet);
+            IoUtil.release(inserter);
             realtimeSeg.putAllShowIndex(resultSet.getAllShowIndex());
         } catch (Exception e) {
+            IoUtil.release(inserter);
             SwiftLoggers.getLogger().warn("{} recover failed, caused by {}", segKey, e);
             if (realtimeSeg != null) {
                 realtimeSeg.putRowCount(0);
                 realtimeSeg.putAllShowIndex(AllShowBitMap.of(0));
             }
         } finally {
-            if (resultSet != null) {
-                resultSet.close();
-            }
+            IoUtil.close(resultSet);
             SegmentUtils.release(realtimeSeg);
         }
     }

@@ -16,13 +16,12 @@ public abstract class BaseHistorySourceAlloter<A extends AllotRule, R extends Ro
         super(tableKey, rule);
     }
 
-    protected SegmentState append(int logicOrder) {
+    @Override
+    protected SegmentState getInsertableSeg() {
         // todo hash出的seg key可能还要写入此seg key的hash值
         // todo 另外还要处理脏配置
         SegmentKey segKey = SEG_SVC.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), StoreType.FINE_IO);
-        SegmentState segState = new SegmentState(segInfo);
-        logicToReal.put(logicOrder, segState);
-        return segState;
+        return new SegmentState(segInfo);
     }
 }

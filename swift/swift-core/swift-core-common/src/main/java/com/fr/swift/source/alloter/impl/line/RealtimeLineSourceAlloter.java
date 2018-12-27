@@ -30,13 +30,7 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
     }
 
     @Override
-    protected SegmentState append(int logicOrder) {
-        SegmentState segState = createSegmentState();
-        logicToReal.put(logicOrder, segState);
-        return segState;
-    }
-
-    private SegmentState createSegmentState() {
+    protected SegmentState getInsertableSeg() {
         Map<SourceKey, List<SegmentKey>> keyListMap = SEG_SVC.getOwnSegments();
         List<SegmentKey> keys = keyListMap.get(tableKey);
         keys = keys == null ? new ArrayList<SegmentKey>() : keys;
@@ -64,7 +58,7 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
     }
 
     private Segment newRealTimeSeg(SegmentKey key) {
-        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).asBackup().build(), key.getStoreType());
+        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).build(), key.getStoreType());
         SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableKey.getId());
         return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, metaData);
     }

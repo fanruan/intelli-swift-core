@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fineio.FineIO;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
@@ -47,24 +46,19 @@ public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
     }
 
     private static void mask(final SegmentKey segKey) {
-        FineIO.doWhenFinished(new Runnable() {
-            @Override
-            public void run() {
-                if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                    int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-                    String absoluteSegPath = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
-                    String local = String.format("%s/%s", absoluteSegPath, BaseSegment.ALL_SHOW_INDEX);
-                    String remote = String.format("%s/%s", new CubePathBuilder(segKey).build(), BaseSegment.ALL_SHOW_INDEX);
-                    try {
-                        REPO.currentRepo().zipToRemote(local, remote);
-                    } catch (DefaultRepoNotFoundException e) {
-                        SwiftLoggers.getLogger().warn("default repository not fount. ", e);
-                    } catch (IOException e) {
-                        SwiftLoggers.getLogger().error("mask segment {} failed", segKey, e);
-                    }
-                }
+        if (ClusterSelector.getInstance().getFactory().isCluster()) {
+            int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
+            String absoluteSegPath = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
+            String local = String.format("%s/%s", absoluteSegPath, BaseSegment.ALL_SHOW_INDEX);
+            String remote = String.format("%s/%s", new CubePathBuilder(segKey).build(), BaseSegment.ALL_SHOW_INDEX);
+            try {
+                REPO.currentRepo().zipToRemote(local, remote);
+            } catch (DefaultRepoNotFoundException e) {
+                SwiftLoggers.getLogger().warn("default repository not fount. ", e);
+            } catch (IOException e) {
+                SwiftLoggers.getLogger().error("mask segment {} failed", segKey, e);
             }
-        });
+        }
     }
 
     public static final MaskHistoryListener INSTANCE = new MaskHistoryListener();
