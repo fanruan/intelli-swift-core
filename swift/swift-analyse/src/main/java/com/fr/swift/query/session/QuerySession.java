@@ -6,14 +6,11 @@ import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
-import com.fr.swift.query.result.serialize.SwiftResultSetUtils;
 import com.fr.swift.query.session.exception.SessionClosedException;
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.core.MD5Utils;
 
 import java.io.Closeable;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -25,7 +22,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @date 2018/7/17
  */
 public class QuerySession implements Session {
-    private Map<String, Cache<? extends SwiftResultSet>> cache;
+    private Map<String, Cache<? extends QueryResultSet>> cache;
     private Map store = new ConcurrentHashMap();
     private ReentrantReadWriteLock storeLock = new ReentrantReadWriteLock();
     private String sessionId;
@@ -34,7 +31,7 @@ public class QuerySession implements Session {
 
     public QuerySession(long cacheTimeout) {
         this.cacheTimeout = cacheTimeout;
-        cache = new ConcurrentHashMap<String, Cache<? extends SwiftResultSet>>();
+        cache = new ConcurrentHashMap<String, Cache<? extends QueryResultSet>>();
         sessionId = MD5Utils.getMD5String(new String[]{UUID.randomUUID().toString(), String.valueOf(System.currentTimeMillis())});
     }
 
@@ -51,22 +48,24 @@ public class QuerySession implements Session {
         String queryId = queryInfo.getQueryId();
         QueryType type = queryInfo.getQueryType();
         String jsonString = QueryBeanFactory.queryBean2String(queryInfo);
-        Cache<? extends SwiftResultSet> resultSetCache = cache.get(queryId);
+        Cache<? extends QueryResultSet> resultSetCache = cache.get(queryId);
         if (null != resultSetCache) {
             resultSetCache.update();
-            return SwiftResultSetUtils.convert2Serializable(jsonString, queryInfo.getQueryType(), resultSetCache.get());
+//            return SwiftResultSetUtils.convert2Serializable(jsonString, queryInfo.getQueryType(), resultSetCache.get());
+            return resultSetCache.get();
         }
         // 缓存具有本地上下文状态的resultSet
-        SwiftResultSet resultSet = query(jsonString);
-        Cache<SwiftResultSet> cacheObj = new Cache<SwiftResultSet>(resultSet);
+        QueryResultSet resultSet = query(jsonString);
+        Cache<QueryResultSet> cacheObj = new Cache<QueryResultSet>(resultSet);
         cache.put(queryId, cacheObj);
         // 取本地resultSet的一个快照，得到可序列化的resultSet
-        return SwiftResultSetUtils.convert2Serializable(jsonString, type, resultSet);
+//        return SwiftResultSetUtils.convert2Serializable(jsonString, type, resultSet);
+        return resultSet;
     }
 
-    protected SwiftResultSet query(String jsonString) throws Exception {
+    protected QueryResultSet query(String jsonString) throws Exception {
         // TODO: 2018/11/27 结果集类型转换在哪做？
-        return (SwiftResultSet) QueryBuilder.buildQuery(jsonString).getQueryResult();
+        return QueryBuilder.buildQuery(jsonString).getQueryResult();
     }
 
     @Override
@@ -87,17 +86,13 @@ public class QuerySession implements Session {
     @Override
     public void cleanCache(boolean force) {
         if (null != cache) {
-            Iterator<Map.Entry<String, Cache<? extends SwiftResultSet>>> iterator = cache.entrySet().iterator();
+            Iterator<Map.Entry<String, Cache<? extends QueryResultSet>>> iterator = cache.entrySet().iterator();
 
             while (iterator.hasNext()) {
-                try {
-                    Map.Entry<String, Cache<? extends SwiftResultSet>> entry = iterator.next();
-                    if (force || entry.getValue().getIdle() >= cacheTimeout) {
-                        entry.getValue().get().close();
-                        iterator.remove();
-                    }
-                } catch (SQLException e) {
-                    SwiftLoggers.getLogger().error(e);
+                Map.Entry<String, Cache<? extends QueryResultSet>> entry = iterator.next();
+                if (force || entry.getValue().getIdle() >= cacheTimeout) {
+                    entry.getValue().get().close();
+                    iterator.remove();
                 }
             }
         }

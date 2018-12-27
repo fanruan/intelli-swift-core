@@ -21,7 +21,7 @@ public class MapJsonWriter implements JsonWriter<Map> {
 
     private void writeMap(StringBuffer buffer, Map map) {
         if (map == null) {
-            buffer.append("null");
+            buffer.append("{}");
             return;
         }
         if (map.isEmpty()) {

@@ -1,5 +1,7 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.ColumnIndexingConf;
 import com.fr.swift.config.TableAllotConf;
 import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
@@ -24,8 +26,9 @@ import java.sql.SQLException;
  * @author anchore
  * @date 2018/7/2
  */
+@SwiftBean
 public class SwiftIndexingConfService implements IndexingConfService {
-    private TransactionManager tx;
+    private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
 
     private BasicDao<SwiftTableAllotConfBean> tableConf = new BasicDao<SwiftTableAllotConfBean>(SwiftTableAllotConfBean.TYPE, RestrictionFactoryImpl.INSTANCE);
 

@@ -82,10 +82,11 @@ public class ObjectJsonWriter implements JsonWriter {
         }
         buffer.append('{');
         boolean isFirst = true;
+        boolean isNull = false;
         for (String propertyName : getters.keySet()) {
             if (isFirst) {
                 isFirst = false;
-            } else {
+            } else if (!isNull) {
                 buffer.append(',');
             }
             SerializationConfig.BeanGetter pg = getters.get(propertyName);
@@ -96,10 +97,16 @@ public class ObjectJsonWriter implements JsonWriter {
                     buffer.append(propertyName);
                     buffer.append("\":");
                     write(buffer, obj);
+                    isNull = false;
+                } else {
+                    isNull = true;
                 }
             } catch (Exception ignore) {
             }
 
+        }
+        if (buffer.toString().endsWith(",")) {
+            buffer.setLength(buffer.length() - 1);
         }
         buffer.append('}');
     }
