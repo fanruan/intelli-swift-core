@@ -11,7 +11,7 @@
     <modules>
         <module>swift</module>
         <module>swift-finereport</module>
-        <!--<module>swift-public</module>-->
+        <module>swift-public</module>
         <module>swift-jdbc-new</module>
     </modules>
 
