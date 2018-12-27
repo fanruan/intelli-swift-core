@@ -275,7 +275,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Boolean work(ConfigSession session) throws SQLException {
                     if (null != swiftSegmentDao.select(session, segmentKey.toString())) {
                         return !segmentLocationDao.find(session, factory.eq("id.clusterId", clusterId),
-                                factory.eq("id.segmentKey", segmentKey.getId())).isEmpty();
+                                factory.eq("id.segmentId", segmentKey.getId())).isEmpty();
                     }
                     return false;
                 }

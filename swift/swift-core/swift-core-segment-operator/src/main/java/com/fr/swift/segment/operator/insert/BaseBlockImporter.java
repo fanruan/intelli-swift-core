@@ -78,6 +78,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 }
                 insertings.get(segInfo).insert(row);
             }
+
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
@@ -119,8 +120,14 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     @Override
     public void release() {
-        for (Inserting inserting : insertings.values()) {
-            IoUtil.release(inserting);
+        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
+            Entry<SegmentInfo, Inserting> entry = itr.next();
+            IoUtil.release(entry.getValue());
+            itr.remove();
+            if (entry.getValue().isFull()) {
+                // 处理满了的块，比如上传历史块或者持久化增量块
+                handleFullSegment(entry.getKey());
+            }
         }
     }
 

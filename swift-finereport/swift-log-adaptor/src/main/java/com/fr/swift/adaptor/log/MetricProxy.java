@@ -18,7 +18,7 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.result.SwiftResultSetUtils;
-import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.selector.ClusterSelector;
@@ -87,7 +87,7 @@ public class MetricProxy extends BaseMetric {
                 tList.add(adaptor.apply(row));
             }
             dataList.list(tList);
-            dataList.setTotalCount(((DetailResultSet) resultSet).getRowCount());
+            dataList.setTotalCount(((DetailQueryResultSet)queryResultSet).getRowCount());
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }

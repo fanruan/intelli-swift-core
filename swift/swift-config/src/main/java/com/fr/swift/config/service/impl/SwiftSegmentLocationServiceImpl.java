@@ -69,7 +69,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                     try {
                         segmentLocationDao.find(session,
                                 factory.eq("id.clusterId", clusterId),
-                                factory.eq("id.segmentKey", segKey)).justForEach(new FindList.ConvertEach() {
+                                factory.eq("id.segmentId", segKey)).justForEach(new FindList.ConvertEach() {
                             @Override
                             public Object forEach(int idx, Object item) throws Exception {
                                 session.delete(item);

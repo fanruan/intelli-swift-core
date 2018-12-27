@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fineio.FineIO;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
@@ -143,7 +142,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             public void on(final Pair<TaskKey, TaskResult> result) {
                 try {
                     SwiftEventDispatcher.fire(TaskEvent.DONE, result);
-                    FineIO.doWhenFinished(new UploadRunnable(result));
+                    new UploadRunnable(result).run();
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                 }
