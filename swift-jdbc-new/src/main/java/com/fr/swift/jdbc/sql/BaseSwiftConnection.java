@@ -427,7 +427,9 @@ public abstract class BaseSwiftConnection implements Connection {
         public JdbcExecutor requestExecutor() {
             String host = driver.holder.getConnectUri().getHost();
             int port = driver.holder.getConnectUri().getPort();
-            return createJdbcExecutor(host, port);
+            JdbcExecutor executor = createJdbcExecutor(host, port);
+            executor.start();
+            return executor;
         }
     }
 
