@@ -35,6 +35,11 @@ public class SwiftConfigEntity implements Serializable, ObjectConverter<SwiftCon
     public SwiftConfigEntity() {
     }
 
+    public SwiftConfigEntity(SwiftConfigBean swiftConfigBean) {
+        this.configKey = swiftConfigBean.getConfigKey();
+        this.configValue = swiftConfigBean.getConfigValue();
+    }
+
     public String getConfigKey() {
         return configKey;
     }

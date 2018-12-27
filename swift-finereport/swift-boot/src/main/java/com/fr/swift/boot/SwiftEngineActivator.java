@@ -8,8 +8,25 @@ import com.fr.module.Activator;
 import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.api.rpc.DataMaintenanceService;
+import com.fr.swift.api.rpc.SelectService;
+import com.fr.swift.api.rpc.TableService;
+import com.fr.swift.api.rpc.impl.DetectServiceImpl;
+import com.fr.swift.basics.ProcessHandlerRegistry;
+import com.fr.swift.basics.ServiceRegistry;
+import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
+import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
+import com.fr.swift.basics.handler.CommonLoadProcessHandler;
+import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
+import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
+import com.fr.swift.basics.handler.MasterProcessHandler;
+import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.boot.upgrade.UpgradeTask;
 import com.fr.swift.cluster.listener.NodeStartedListener;
+import com.fr.swift.cluster.service.MasterService;
+import com.fr.swift.cluster.service.SlaveService;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.context.SwiftConfigContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
@@ -17,11 +34,23 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftFrLoggers;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.process.handler.NodesProcessHandler;
+import com.fr.swift.process.handler.SwiftNodesProcessHandler;
 import com.fr.swift.segment.container.SegmentContainer;
+import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.MaskHistoryListener;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.RemoveHistoryListener;
+import com.fr.swift.service.SwiftCommonLoadProcessHandler;
+import com.fr.swift.service.SwiftDeleteSegmentProcessHandler;
+import com.fr.swift.service.SwiftInsertSegmentProcessHandler;
+import com.fr.swift.service.SwiftQueryableProcessHandler;
+import com.fr.swift.service.SwiftSyncDataProcessHandler;
 import com.fr.swift.service.TransferRealtimeListener;
 import com.fr.swift.service.UploadHistoryListener;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.util.concurrent.CommonExecutor;
 
@@ -30,6 +59,10 @@ import com.fr.swift.util.concurrent.CommonExecutor;
  * @date 2018/5/24
  */
 public class SwiftEngineActivator extends Activator implements Prepare {
+
+    {
+        SwiftLoggers.setLoggerFactory(new SwiftFrLoggers());
+    }
 
     @Override
     public void start() {
@@ -42,9 +75,9 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     }
 
     private void startSwift() {
+        SwiftContext.get().init();
         upgrade();
 
-        SwiftLoggers.setLoggerFactory(new SwiftFrLoggers());
         FineIO.setLogger(SwiftLoggers.getLogger());
 
         ClusterListenerHandler.addInitialListener(new FRClusterListener());
@@ -53,15 +86,12 @@ public class SwiftEngineActivator extends Activator implements Prepare {
             @Override
             public void run() {
                 try {
-                    SwiftContext.get().init();
                     MetricInvocationHandler.getInstance().doAfterSwiftContextInit();
-
                     ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
                     SwiftConfigContext.getInstance().init();
+                    registerProxy();
                     SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
-
                     ProviderTaskManager.start();
-
                     TransferRealtimeListener.listen();
                     UploadHistoryListener.listen();
                     MaskHistoryListener.listen();
@@ -104,4 +134,29 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         this.addMutable(BaseDBConstant.BASE_ENTITY_KEY, SwiftConfigConstants.ENTITIES);
     }
 
+    private static void registerProxy() {
+        //rpc远端可接收调用的service
+        ServiceRegistry serviceRegistry = ProxyServiceRegistry.get();
+        serviceRegistry.registerService(SwiftContext.get().getBean(HistoryService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(IndexingService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(RealtimeService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(AnalyseService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(RemoteSender.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(TableService.class));
+        serviceRegistry.registerService(new DetectServiceImpl());
+        serviceRegistry.registerService(SwiftContext.get().getBean(DataMaintenanceService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(SelectService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(MasterService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(SlaveService.class));
+
+        //注解接口绑定的实现类
+        ProcessHandlerRegistry processHandlerRegistry = ProxyProcessHandlerRegistry.get();
+        processHandlerRegistry.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
+        processHandlerRegistry.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
+        processHandlerRegistry.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
+        processHandlerRegistry.addHandler(SyncDataProcessHandler.class, SwiftSyncDataProcessHandler.class);
+        processHandlerRegistry.addHandler(DeleteSegmentProcessHandler.class, SwiftDeleteSegmentProcessHandler.class);
+        processHandlerRegistry.addHandler(InsertSegmentProcessHandler.class, SwiftInsertSegmentProcessHandler.class);
+        processHandlerRegistry.addHandler(QueryableProcessHandler.class, SwiftQueryableProcessHandler.class);
+    }
 }

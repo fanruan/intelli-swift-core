@@ -29,7 +29,7 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
 @SwiftScope("prototype")
 public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A> {
 
-    private static final SwiftTablePathService TABLE_PATH = SwiftContext.get().getBean(SwiftTablePathService.class);
+    private final SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
 
     private int currentDir = 0;
 
@@ -41,14 +41,14 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     private void init() {
         // todo 考虑导入后的替换，要把mem的考虑进去
         SourceKey sourceKey = dataSource.getSourceKey();
-        SwiftTablePathBean entity = TABLE_PATH.get(sourceKey.getId());
+        SwiftTablePathBean entity = tablePathService.get(sourceKey.getId());
         if (entity == null) {
             entity = new SwiftTablePathBean(sourceKey.getId(), 0);
         } else {
             currentDir = entity.getTablePath() == null ? 0 : entity.getTablePath() + 1;
             entity.setTmpDir(currentDir);
         }
-        TABLE_PATH.saveOrUpdate(entity);
+        tablePathService.saveOrUpdate(entity);
     }
 
     @Override

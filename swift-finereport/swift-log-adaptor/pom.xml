@@ -19,12 +19,6 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-test</artifactId>
-            <version>${swift.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
             <version>${swift.version}</version>
         </dependency>

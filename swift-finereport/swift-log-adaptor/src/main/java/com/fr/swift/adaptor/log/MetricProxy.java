@@ -14,10 +14,13 @@ import com.fr.swift.db.impl.MetadataDiffer;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.event.global.DeleteEvent;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.result.SwiftResultSetUtils;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.RealtimeService;
@@ -77,8 +80,8 @@ public class MetricProxy extends BaseMetric {
 
             QueryBean queryBean = LogQueryUtils.getDetailQueryBean(entity, queryCondition);
             // TODO: 2018/11/28  QueryResultSet to SwiftResultSet
-            SwiftResultSet resultSet = null;
-//            SwiftResultSet resultSet = analyseService.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+            QueryResultSet queryResultSet = analyseService.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+            SwiftResultSet resultSet = SwiftResultSetUtils.toSwiftResultSet(queryResultSet, queryBean);
             List<Row> page = LogQueryUtils.getPage(resultSet, queryCondition);
             for (Row row : page) {
                 tList.add(adaptor.apply(row));

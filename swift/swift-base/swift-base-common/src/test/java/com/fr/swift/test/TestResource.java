@@ -10,6 +10,6 @@ public class TestResource {
     }
 
     public static String getTmpDir() {
-        return "W:" + "/test_temp";
+        return System.getProperty("user.dir") + "/test_temp";
     }
 }

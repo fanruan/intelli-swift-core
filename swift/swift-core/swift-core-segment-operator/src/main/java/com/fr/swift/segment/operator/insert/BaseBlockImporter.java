@@ -4,6 +4,7 @@ import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -77,6 +78,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 }
                 insertings.get(segInfo).insert(row);
             }
+        } catch (Throwable e) {
+            SwiftLoggers.getLogger().error(e);
         } finally {
             // todo 报错后如何处置，脏数据清掉？
             IoUtil.close(swiftResultSet);

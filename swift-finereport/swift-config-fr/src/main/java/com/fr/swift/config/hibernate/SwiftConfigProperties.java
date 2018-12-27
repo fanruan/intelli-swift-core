@@ -1,11 +1,11 @@
-package com.fr.swift.config.convert.hibernate;
+package com.fr.swift.config.hibernate;
 
 import com.fr.data.pool.DBCPConnectionPoolAttr;
 import com.fr.finedb.FineDBProperties;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.db.option.DBOption;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.third.springframework.stereotype.Service;
 import com.fr.workspace.WorkContext;
 
 import java.util.Properties;
@@ -14,7 +14,7 @@ import java.util.Properties;
  * @author yee
  * @date 2018/6/29
  */
-@Service
+@SwiftBean
 public class SwiftConfigProperties {
     private DBOption option;
     private boolean selfStart;

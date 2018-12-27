@@ -22,7 +22,7 @@ import java.util.Map.Entry;
  * @date 2018/3/28
  */
 public class SwiftDatabase implements Database, Serializable {
-    private static final SwiftMetaDataService CONF_SVC = SwiftContext.get().getBean(SwiftMetaDataService.class);
+    private final SwiftMetaDataService CONF_SVC = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
     @Override
     public synchronized Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
