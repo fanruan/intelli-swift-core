@@ -58,7 +58,7 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
     }
 
     private Segment newRealTimeSeg(SegmentKey key) {
-        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).asBackup().build(), key.getStoreType());
+        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).build(), key.getStoreType());
         SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableKey.getId());
         return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, metaData);
     }

@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fineio.FineIO;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.SegmentKeyBean;
@@ -47,28 +46,22 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
     }
 
     private static void upload(final SegmentKey segKey) {
-        FineIO.doWhenFinished(new Runnable() {
-            @Override
-            public void run() {
-                if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                    int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-                    String local = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
-                    String remote = new CubePathBuilder(segKey).build();
-                    try {
-                        REPO.currentRepo().copyToRemote(local, remote);
+        if (ClusterSelector.getInstance().getFactory().isCluster()) {
+            int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
+            String local = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
+            String remote = new CubePathBuilder(segKey).build();
+            try {
+                REPO.currentRepo().copyToRemote(local, remote);
 
-                        notifyDownload(segKey);
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().error("Cannot upload Segment which path is {}", local, e);
-                    }
-                } else {
-                    SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
-                    SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
-                    SegmentUtils.clearSegment(realtimeSegKey);
-                }
+                notifyDownload(segKey);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error("Cannot upload Segment which path is {}", local, e);
             }
-        });
-
+        } else {
+            SegmentKey realtimeSegKey = getRealtimeSegKey(segKey);
+            SEG_SVC.removeSegments(Collections.singletonList(realtimeSegKey));
+            SegmentUtils.clearSegment(realtimeSegKey);
+        }
     }
 
     private static void notifyDownload(final SegmentKey segKey) {

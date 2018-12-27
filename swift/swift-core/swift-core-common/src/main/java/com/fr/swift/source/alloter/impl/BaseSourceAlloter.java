@@ -45,6 +45,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
         } else {
             // 新分配
             segState = getInsertableSeg();
+            logicToReal.put(logicOrder, segState);
         }
         if (segState.incrementAndGet() < rule.getCapacity()) {
             // 未满
