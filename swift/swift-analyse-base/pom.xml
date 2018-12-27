@@ -25,6 +25,11 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-core-generator</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-db</artifactId>
             <version>${swift.version}</version>
             <scope>compile</scope>
@@ -46,6 +51,11 @@
             <artifactId>swift-sqlparser</artifactId>
             <version>${swift.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-api-server-base</artifactId>
+            <version>${swift.version}</version>
         </dependency>
 
     </dependencies>

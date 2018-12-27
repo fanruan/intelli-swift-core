@@ -1,5 +1,12 @@
 package com.fr.swift.jdbc.adaptor;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.api.server.exception.ApiCrasher;
+import com.fr.swift.api.server.response.error.ServerErrorCode;
+import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.data.importing.file.impl.BaseFileLineParser;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -8,8 +15,13 @@ import com.fr.swift.jdbc.druid.sql.ast.expr.SQLTextLiteralExpr;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLInsertStatement;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +32,11 @@ import java.util.List;
 class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements InsertionBeanParser {
 
     private InsertionBean insertionBean;
+    private String defaultDatabase;
+
+    public InsertionASTVisitorAdapter(String defaultDatabase) {
+        this.defaultDatabase = defaultDatabase;
+    }
 
     @Override
     public boolean visit(SQLInsertStatement x) {
@@ -30,7 +47,28 @@ class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements Inserti
         SQLExprTableSource table = x.getTableSource();
         String[] tableName = SwiftSQLUtils.getTableName(table);
         insertionBean.setTableName(tableName[0]);
-        insertionBean.setSchema(tableName[1]);
+        String database = Strings.isEmpty(tableName[1]) ? defaultDatabase : tableName[1];
+        insertionBean.setSchema(database);
+        SwiftMetaData metaData = null;
+        try {
+            List<SwiftMetaData> metaDataList = SwiftContext.get().getBean(SwiftMetaDataService.class).find(
+                    RestrictionFactoryImpl.INSTANCE.eq("tableName", tableName[0])
+            );
+            if (metaDataList.isEmpty()) {
+                ApiCrasher.crash(ServerErrorCode.SERVER_UNKNOWN_ERROR, String.format("Table %s is not exists", tableName[0]));
+            }
+            for (SwiftMetaData swiftMetaData : metaDataList) {
+                if (swiftMetaData.getSwiftDatabase().equals(SwiftDatabase.fromKey(database))) {
+                    metaData = swiftMetaData;
+                    break;
+                }
+            }
+            if (null == metaData) {
+                ApiCrasher.crash(ServerErrorCode.SERVER_UNKNOWN_ERROR, String.format("Table %s is not exists", tableName[0]));
+            }
+        } catch (Exception e) {
+            ApiCrasher.crash(ServerErrorCode.SERVER_UNKNOWN_ERROR, e);
+        }
         List<SQLExpr> columns = x.getColumns();
         List<String> fields = new ArrayList<String>();
         for (SQLExpr expr : columns) {
@@ -38,18 +76,44 @@ class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements Inserti
                 fields.add(((SQLIdentifierExpr) expr).getName());
             }
         }
+        if (fields.isEmpty()) {
+            fields = metaData.getFieldNames();
+        }
         insertionBean.setFields(fields);
         List<Row> rows = new ArrayList<Row>();
         List<SQLInsertStatement.ValuesClause> valuesClauses = x.getValuesList();
         for (SQLInsertStatement.ValuesClause valuesClause : valuesClauses) {
             List<SQLExpr> exprList = valuesClause.getValues();
             List row = new ArrayList();
-            for (SQLExpr expr : exprList) {
-                if (expr instanceof SQLTextLiteralExpr) {
-                    row.add(((SQLTextLiteralExpr) expr).getText());
-                } else if (expr instanceof SQLNumericLiteralExpr) {
-                    row.add(((SQLNumericLiteralExpr) expr).getNumber());
+            try {
+                for (int i = 0; i < exprList.size(); i++) {
+                    SQLExpr expr = exprList.get(i);
+                    String fieldName = fields.get(i);
+                    SwiftMetaDataColumn column = metaData.getColumn(fieldName);
+                    ColumnTypeConstants.ClassType type = ColumnTypeUtils.getClassType(column);
+                    if (expr instanceof SQLTextLiteralExpr) {
+                        String col = ((SQLTextLiteralExpr) expr).getText();
+                        BaseFileLineParser.addRowDataFromString(row, col, type);
+                    } else if (expr instanceof SQLNumericLiteralExpr) {
+                        Number number = ((SQLNumericLiteralExpr) expr).getNumber();
+                        switch (type) {
+                            case DOUBLE:
+                                row.add(number.doubleValue());
+                                break;
+                            case INTEGER:
+                            case LONG:
+                            case DATE:
+                                row.add(number.longValue());
+                                break;
+                            default:
+                                row.add(number.toString().trim());
+                                break;
+                        }
+                    }
+
                 }
+            } catch (Exception e) {
+                ApiCrasher.crash(ServerErrorCode.SERVER_UNKNOWN_ERROR, e);
             }
             rows.add(new ListBasedRow(row));
         }

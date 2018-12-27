@@ -15,7 +15,7 @@ public class InsertionASTVisitorAdapterTest extends TestCase {
 
     public void test() {
         String sql = "insert into cube.tbl_name (a, b, c) values ('a', 'b', 233), ('a1', 'b1', 234)";
-        InsertionASTVisitorAdapter visitor = new InsertionASTVisitorAdapter();
+        InsertionASTVisitorAdapter visitor = new InsertionASTVisitorAdapter("");
         SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
         stmt.accept(visitor);
         InsertionBean bean = visitor.getInsertionBean();

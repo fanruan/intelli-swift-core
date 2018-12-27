@@ -24,6 +24,11 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Sele
     private InsertionBean insertionBean;
     private DeletionBean deletionBean;
     private DropBean dropBean;
+    private String defaultDatabase;
+
+    public SwiftASTVisitorAdapter(String database) {
+        this.defaultDatabase = database;
+    }
 
     @Override
     public boolean visit(SQLSelectQueryBlock x) {
@@ -46,7 +51,7 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Sele
     @Override
     public boolean visit(SQLInsertStatement x) {
         sqlType = SwiftSQLType.INSERT;
-        InsertionASTVisitorAdapter visitor = new InsertionASTVisitorAdapter();
+        InsertionASTVisitorAdapter visitor = new InsertionASTVisitorAdapter(defaultDatabase);
         visitor.visit(x);
         insertionBean = visitor.getInsertionBean();
         return false;
@@ -57,7 +62,7 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Sele
         sqlType = SwiftSQLType.DROP;
         DeletionASTVisitorAdapter visitor = new DeletionASTVisitorAdapter();
         visitor.visit(x);
-        deletionBean = visitor.getDeletionBean();
+        dropBean = visitor.getDropBean();
         return false;
     }
 
@@ -66,7 +71,7 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Sele
         sqlType = SwiftSQLType.DELETE;
         DeletionASTVisitorAdapter visitor = new DeletionASTVisitorAdapter();
         visitor.visit(x);
-        dropBean = visitor.getDropBean();
+        deletionBean = visitor.getDeletionBean();
         return false;
     }
 

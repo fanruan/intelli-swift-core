@@ -23,7 +23,7 @@ public class SwiftASTVisitorAdapterTest extends TestCase {
     }
 
     private static SwiftSQLType getType(String sql) {
-        SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter();
+        SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter("");
         SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
         stmt.accept(visitor);
         return visitor.getSqlType();

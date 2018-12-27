@@ -1,6 +1,5 @@
 package com.fr.swift.api.server;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.ApiRequestType;
 import com.fr.swift.api.info.AuthRequestInfo;
@@ -18,6 +17,7 @@ import com.fr.swift.api.server.response.error.ParamErrorCode;
 import com.fr.swift.api.server.response.error.ServerErrorCode;
 import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.jdbc.info.ColumnsRequestInfo;
 import com.fr.swift.jdbc.info.JdbcRequestType;
@@ -92,7 +92,7 @@ public class ApiServerServiceImpl implements ApiServerService {
         String methodName = invocation.getMethodName();
         try {
             Method method = aClass.getMethod(methodName, parameterTypes);
-            Object object = method.invoke(SwiftContext.get().getBean(aClass), arguments);
+            Object object = method.invoke(ProxyServiceRegistry.get().getExternalService(aClass), arguments);
             return object;
         } catch (Exception e) {
             return ApiCrasher.crash(ServerErrorCode.SERVER_INVOKE_ERROR, e);
