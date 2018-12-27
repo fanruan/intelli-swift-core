@@ -91,10 +91,12 @@ public class ObjectJsonWriter implements JsonWriter {
             SerializationConfig.BeanGetter pg = getters.get(propertyName);
             try {
                 Object obj = pg.get(bean);
-                buffer.append('\"');
-                buffer.append(propertyName);
-                buffer.append("\":");
-                write(buffer, obj);
+                if (null != obj) {
+                    buffer.append('\"');
+                    buffer.append(propertyName);
+                    buffer.append("\":");
+                    write(buffer, obj);
+                }
             } catch (Exception ignore) {
             }
 
