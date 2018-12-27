@@ -27,7 +27,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
      * 逻辑order到实际order的映射
      * 处理order竞争的
      */
-    protected Map<Integer, SegmentState> logicToReal = new HashMap<Integer, SegmentState>();
+    private Map<Integer, SegmentState> logicToReal = new HashMap<Integer, SegmentState>();
 
     protected BaseSourceAlloter(SourceKey tableKey, A rule) {
         this.tableKey = tableKey;
@@ -44,19 +44,20 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
             segState = logicToReal.get(logicOrder);
         } else {
             // 新分配
-            segState = append(logicOrder);
+            segState = getInsertableSeg();
         }
         if (segState.incrementAndGet() < rule.getCapacity()) {
             // 未满
             return segState.getSegInfo();
         }
         // 已满，再分配
-        segState = append(logicOrder);
+        segState = getInsertableSeg();
+        logicToReal.put(logicOrder, segState);
         segState.incrementAndGet();
         return segState.getSegInfo();
     }
 
-    protected abstract SegmentState append(int logicOrder);
+    protected abstract SegmentState getInsertableSeg();
 
     /**
      * 计算逻辑seg order
@@ -75,9 +76,9 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
 
         private SegmentInfo segInfo;
 
-        int cursor = -1;
+        private int cursor = -1;
 
-        public SegmentState(SegmentInfo segInfo) {
+        SegmentState(SegmentInfo segInfo) {
             this.segInfo = segInfo;
         }
 
