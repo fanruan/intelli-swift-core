@@ -6,6 +6,7 @@ import com.fr.swift.api.server.response.AuthResponse;
 import com.fr.swift.api.server.response.AuthResponseImpl;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.event.global.GetAnalyseAndRealTimeAddrEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 @ProxyService(value = DetectService.class, type = ProxyService.ServiceType.EXTERNAL)
 @SwiftApi
+@SwiftBean
 public class DetectServiceImpl implements DetectService {
     @Override
     @SwiftApi

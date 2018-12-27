@@ -34,6 +34,7 @@ import com.fr.swift.jdbc.info.JdbcRequestParserVisitor;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.info.TablesRequestInfo;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,14 +98,19 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
             case SELECT: {
                 SelectionBean bean = visitor.getSelectionBean();
                 String queryJson = null;
+                String schema = bean.getSchema();
+                if (Strings.isEmpty(schema)) {
+                    schema = sqlRequestInfo.getDatabase();
+                }
                 try {
                     queryJson = JsonBuilder.writeJsonString(bean.getQueryInfoBean());
                 } catch (Exception e) {
                     return ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
                 }
                 return createApiInvocation("query", SelectService.class,
-                        SwiftDatabase.fromKey(bean.getSchema()), queryJson);
+                        SwiftDatabase.fromKey(schema), queryJson);
             }
+            default:
         }
         return null;
     }

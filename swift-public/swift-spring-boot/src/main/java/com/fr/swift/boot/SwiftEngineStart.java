@@ -6,6 +6,7 @@ import com.fr.swift.api.rpc.impl.DataMaintenanceServiceImpl;
 import com.fr.swift.api.rpc.impl.DetectServiceImpl;
 import com.fr.swift.api.rpc.impl.SelectServiceImpl;
 import com.fr.swift.api.rpc.impl.TableServiceImpl;
+import com.fr.swift.api.server.ApiServerServiceImpl;
 import com.fr.swift.basics.ProcessHandlerRegistry;
 import com.fr.swift.basics.ServiceRegistry;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
@@ -120,6 +121,7 @@ public class SwiftEngineStart {
         serviceRegistry.registerService(new SelectServiceImpl());
         serviceRegistry.registerService(new SwiftMasterService());
         serviceRegistry.registerService(new SwiftSlaveService());
+        serviceRegistry.registerService(new ApiServerServiceImpl());
 
         //注解接口绑定的实现类
         ProcessHandlerRegistry processHandlerRegistry = ProxyProcessHandlerRegistry.get();

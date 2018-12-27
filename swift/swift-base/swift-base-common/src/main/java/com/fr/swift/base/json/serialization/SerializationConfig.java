@@ -3,6 +3,7 @@ package com.fr.swift.base.json.serialization;
 import com.fr.swift.base.json.annotation.JsonSubTypes;
 import com.fr.swift.base.json.annotation.JsonTypeInfo;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
@@ -156,12 +157,18 @@ public interface SerializationConfig extends Cloneable {
          */
         Class<?> genericType();
 
+        Class<?> genericType(Type clazz);
+
         /**
          * 属性类型
          *
          * @return
          */
         Class<?> propertyType();
+
+        Class<?> propertyType(Type clazz);
+
+        String getField();
     }
 }
 

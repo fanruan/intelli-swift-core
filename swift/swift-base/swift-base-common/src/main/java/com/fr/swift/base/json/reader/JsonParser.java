@@ -18,8 +18,10 @@ import java.io.StringReader;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * TODO BeanTypeReference 还没加入
@@ -107,27 +109,20 @@ public class JsonParser {
                 String key = entry.getKey();
                 if (map.containsKey(key)) {
                     SerializationConfig.BeanSetter setter = entry.getValue();
-                    Class propertyType = setter.propertyType();
+                    Class propertyType = null;
+                    try {
+                        propertyType = setter.propertyType();
+                    } catch (Exception e) {
+                        propertyType = setter.propertyType(clazz.getGenericSuperclass());
+                    }
                     Object value = map.get(key);
                     if (value instanceof Map) {
                         value = toTargetBean((Map<String, Object>) value, propertyType);
                     } else if (value instanceof List) {
                         if (ReflectUtils.isAssignable(propertyType, List.class) || propertyType.isArray()) {
-                            final Class<?> genericType = setter.genericType();
-                            FindList list = new FindListImpl((List) value);
-                            value = list.forEach(new FindList.ConvertEach() {
-                                @Override
-                                public Object forEach(int idx, Object item) throws Exception {
-                                    Object o = ReflectUtils.parseObject(genericType, item.toString());
-                                    if (null != o) {
-                                        return o;
-                                    }
-                                    if (item instanceof List && Object.class.equals(genericType)) {
-                                        return item;
-                                    }
-                                    return toTargetBean((Map<String, Object>) item, genericType);
-                                }
-                            });
+                            value = buildObjectFromList(clazz, setter, (List) value);
+                        } else if (ReflectUtils.isAssignable(propertyType, Set.class)) {
+                            value = new HashSet(buildObjectFromList(clazz, setter, (List) value));
                         } else {
                             throw new JsonException("Cannot set Json array to property: " + key + "(type: " + propertyType.getName() + ")");
                         }
@@ -137,10 +132,34 @@ public class JsonParser {
                     setter.set(target, value);
                 }
             } catch (Exception ignore) {
-
+                ignore.printStackTrace();
             }
         }
         return target;
+    }
+
+    private <T> List buildObjectFromList(Class<T> clazz, SerializationConfig.BeanSetter setter, List value) throws Exception {
+        Class<?> genericType = null;
+        try {
+            genericType = setter.genericType();
+        } catch (Exception e) {
+            genericType = setter.genericType(clazz.getGenericSuperclass());
+        }
+        FindList list = new FindListImpl(value);
+        final Class<?> finalGenericType = genericType;
+        return list.forEach(new FindList.ConvertEach() {
+            @Override
+            public Object forEach(int idx, Object item) throws Exception {
+                Object o = ReflectUtils.parseObject(finalGenericType, item.toString());
+                if (null != o) {
+                    return o;
+                }
+                if (item instanceof List && Object.class.equals(finalGenericType)) {
+                    return item;
+                }
+                return toTargetBean((Map<String, Object>) item, finalGenericType);
+            }
+        });
     }
 
     private <T> T checkExpectedType(Object obj, Class<T> clazz) {
