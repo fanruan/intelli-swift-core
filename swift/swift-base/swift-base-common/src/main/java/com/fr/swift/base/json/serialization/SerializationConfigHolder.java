@@ -123,12 +123,27 @@ public class SerializationConfigHolder {
 
                         @Override
                         public Class<?> genericType() {
-                            return getGenericType(f.getGenericType());
+                            return getRawType(getGenericType(f.getGenericType()));
+                        }
+
+                        @Override
+                        public Class<?> genericType(Type clazz) {
+                            return getRawType(getGenericType(clazz));
                         }
 
                         @Override
                         public Class<?> propertyType() {
                             return getRawType(f.getGenericType());
+                        }
+
+                        @Override
+                        public Class<?> propertyType(Type clazz) {
+                            return getRawType(getGenericType(clazz));
+                        }
+
+                        @Override
+                        public String getField() {
+                            return f.getName();
                         }
                     });
                 }
@@ -168,17 +183,21 @@ public class SerializationConfigHolder {
         return (Class<?>) type;
     }
 
-    private Class<?> getGenericType(Type type) {
+    private Type getGenericType(Type type) {
         if (type instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) type;
             Type[] ts = pt.getActualTypeArguments();
             if (ts.length == 1) {
-                return (Class<?>) ts[0];
+                return ts[0];
             }
         }
-        Class<?> clazz = (Class<?>) type;
-        if (clazz.isArray()) {
-            return clazz.getComponentType();
+        try {
+            Class<?> clazz = null;
+            clazz = (Class<?>) type;
+            if (clazz.isArray()) {
+                return clazz.getComponentType();
+            }
+        } catch (Exception ignore) {
         }
         return Object.class;
     }

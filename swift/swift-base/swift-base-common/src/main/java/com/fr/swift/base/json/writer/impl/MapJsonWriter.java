@@ -34,21 +34,23 @@ public class MapJsonWriter implements JsonWriter<Map> {
         for (Map.Entry entry : set) {
             Object key = entry.getKey();
             Object value = entry.getValue();
-            String property = null;
-            if (key instanceof Enum) {
-                property = ((Enum) key).name();
-            } else {
-                property = key.toString();
+            if (null != value) {
+                String property = null;
+                if (key instanceof Enum) {
+                    property = ((Enum) key).name();
+                } else {
+                    property = key.toString();
+                }
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    buffer.append(',');
+                }
+                buffer.append('\"');
+                buffer.append(property);
+                buffer.append("\":");
+                buffer.append(OBJECT_JSON_WRITER.write(value));
             }
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                buffer.append(',');
-            }
-            buffer.append('\"');
-            buffer.append(property);
-            buffer.append("\":");
-            buffer.append(OBJECT_JSON_WRITER.write(value));
         }
         buffer.append('}');
     }

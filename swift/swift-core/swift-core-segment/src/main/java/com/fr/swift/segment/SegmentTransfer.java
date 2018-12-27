@@ -1,14 +1,13 @@
 package com.fr.swift.segment;
 
-import com.fineio.FineIO;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.util.IoUtil;
 
 import java.util.Collections;
-import java.util.concurrent.Callable;
 
 /**
  * @author anchore
@@ -38,15 +37,9 @@ public class SegmentTransfer {
 
             swiftResultSet = new SegmentResultSet(oldSeg);
             inserter.importData(swiftResultSet);
-
-            FineIO.doWhenFinished(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    indexSegmentIfNeed(newSeg);
-                    onSucceed();
-                    return null;
-                }
-            }).get();
+            IoUtil.release(inserter);
+            indexSegmentIfNeed(newSeg);
+            onSucceed();
             SegmentContainer.NORMAL.updateSegment(newSegKey, newSeg);
 
             SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);

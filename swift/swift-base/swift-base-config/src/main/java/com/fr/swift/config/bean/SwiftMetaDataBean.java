@@ -199,6 +199,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
 
     public void setFields(List<SwiftMetaDataColumn> fields) {
         this.fields = fields;
+        this.columnCount = fields.size();
     }
 
     public void setSwiftDatabase(SwiftDatabase schema) {

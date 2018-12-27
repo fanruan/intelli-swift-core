@@ -17,6 +17,7 @@ import com.fr.swift.api.server.response.ApiResponseImpl;
 import com.fr.swift.api.server.response.error.ParamErrorCode;
 import com.fr.swift.api.server.response.error.ServerErrorCode;
 import com.fr.swift.base.json.JsonBuilder;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.jdbc.info.ColumnsRequestInfo;
 import com.fr.swift.jdbc.info.JdbcRequestType;
@@ -36,6 +37,7 @@ import java.util.Map;
  * @since Advanced FineBI 5.0
  */
 @SwiftBean
+@ProxyService(value = ApiServerService.class, type = ProxyService.ServiceType.EXTERNAL)
 public class ApiServerServiceImpl implements ApiServerService {
 
     private static final String REQUEST_TYPE = "requestType";
