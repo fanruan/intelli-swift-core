@@ -14,8 +14,8 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.EmptyDetailQueryResultSet;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
@@ -161,7 +161,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                 URL url = UrlSelector.getInstance().getFactory().getURL(clusterId);
                 map.put(clusterId, Pair.<URL, Set<String>>of(url, new HashSet<String>()));
             }
-            map.get(clusterId).getValue().add(destination.getClusterId());
+            map.get(clusterId).getValue().add(destination.getSegmentId());
         }
         return Collections.unmodifiableList(new ArrayList<Pair<URL, Set<String>>>(map.values()));
     }
