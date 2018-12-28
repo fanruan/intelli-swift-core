@@ -1,4 +1,4 @@
-package com.fr.swift.data.importing.file.impl;
+package com.fr.swift.source.resultset.importing.file.impl;
 
 /**
  * @author yee

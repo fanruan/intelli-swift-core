@@ -3,9 +3,9 @@ package com.fr.swift.jdbc.adaptor;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.api.server.exception.ApiCrasher;
 import com.fr.swift.api.server.response.error.ServerErrorCode;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.data.importing.file.impl.BaseFileLineParser;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
@@ -21,6 +21,7 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.resultset.importing.file.impl.BaseFileLineParser;
 import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;
@@ -52,7 +53,8 @@ class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements Inserti
         SwiftMetaData metaData = null;
         try {
             List<SwiftMetaData> metaDataList = SwiftContext.get().getBean(SwiftMetaDataService.class).find(
-                    RestrictionFactoryImpl.INSTANCE.eq("tableName", tableName[0])
+                    RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName[0]),
+                    RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, SwiftDatabase.fromKey(database))
             );
             if (metaDataList.isEmpty()) {
                 ApiCrasher.crash(ServerErrorCode.SERVER_UNKNOWN_ERROR, String.format("Table %s is not exists", tableName[0]));

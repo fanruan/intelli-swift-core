@@ -115,10 +115,13 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi
-    public void dropTable(SwiftDatabase schema, String tableName) throws Exception {
+    public int dropTable(SwiftDatabase schema, String tableName) throws Exception {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         truncateTable(metaData);
-        swiftMetaDataService.removeMetaDatas(new SourceKey(metaData.getId()));
+        if (swiftMetaDataService.removeMetaDatas(new SourceKey(metaData.getId()))) {
+            return 1;
+        }
+        return 0;
     }
 
     @Override
