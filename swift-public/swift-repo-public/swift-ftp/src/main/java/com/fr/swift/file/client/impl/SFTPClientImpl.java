@@ -138,8 +138,13 @@ public class SFTPClientImpl implements SwiftFTPClient {
     }
 
     @Override
-    public void mkdirs(String path) throws SftpException {
-        channelSftp.mkdir(path);
+    public boolean mkdirs(String path) throws SftpException {
+        try {
+            channelSftp.mkdir(path);
+            return true;
+        } catch (SftpException e) {
+            return false;
+        }
     }
 
     @Override

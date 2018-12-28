@@ -113,6 +113,16 @@
             <artifactId>swift-redis</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-ftp</artifactId>
+            <version>2019.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-rpc-netty</artifactId>
+            <version>2019.1</version>
+        </dependency>
     </dependencies>
 
     <build>

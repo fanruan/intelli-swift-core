@@ -126,8 +126,8 @@ public class FTPClientImpl implements SwiftFTPClient {
     }
 
     @Override
-    public void mkdirs(String path) throws IOException {
-        client.makeDirectory(path);
+    public boolean mkdirs(String path) throws IOException {
+        return client.makeDirectory(path);
     }
 
     @Override

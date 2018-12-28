@@ -5,13 +5,15 @@ import com.fr.swift.file.exception.SwiftFileException;
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
-import com.fr.swift.file.system.factory.SwiftFtpFileSystemFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
+import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 import com.fr.swift.util.Strings;
 import org.apache.commons.pool2.ObjectPool;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketException;
 
 /**
  * @author yee
@@ -23,9 +25,9 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     private SwiftFileSystemFactory<FtpFileSystemImpl, FtpRepositoryConfig> systemFactory;
     private String rootURI;
 
-    public FtpFileSystemImpl(FtpRepositoryConfig config, String uri, ObjectPool<SwiftFTPClient> clientPool) {
+    public FtpFileSystemImpl(FtpRepositoryConfig config, String uri, ObjectPool<SwiftFTPClient> clientPool, SwiftFileSystemFactory<FtpFileSystemImpl, FtpRepositoryConfig> systemFactory) {
         super(config, uri);
-        this.systemFactory = new SwiftFtpFileSystemFactory();
+        this.systemFactory = systemFactory;
         this.clientPool = clientPool;
         rootURI = Strings.trimSeparator(config.getRootPath() + "/", "/");
     }
@@ -187,7 +189,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     public void mkdirs() {
         SwiftFTPClient ftp = acquireClient();
         try {
-            ftp.mkdirs(resolve(rootURI, getResourceURI()));
+            createDirectory(ftp, resolve(rootURI, getResourceURI()));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
@@ -211,6 +213,25 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
             ftp.connect();
         } finally {
             returnClient(ftp);
+        }
+    }
+
+    private boolean createDirectory(SwiftFTPClient client, String path) throws Exception {
+        if (client.exists(path)) {
+            return false;
+        }
+        try {
+            boolean result = client.mkdirs(path);
+            if (!result) {
+                result = createDirectory(client, SwiftRepositoryUtils.getParent(path)) && client.mkdirs(path);
+            }
+
+            return result;
+        } catch (SocketException var3) {
+            throw new IOException();
+        } catch (Exception var4) {
+            SwiftLoggers.getLogger().error("Failed to create directory " + path, var4);
+            return false;
         }
     }
 }

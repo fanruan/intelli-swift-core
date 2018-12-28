@@ -24,7 +24,7 @@ public interface SwiftFTPClient {
 
     InputStream toStream(String path) throws Exception;
 
-    void mkdirs(String path) throws Exception;
+    boolean mkdirs(String path) throws Exception;
 
     void close() throws Exception;
 
