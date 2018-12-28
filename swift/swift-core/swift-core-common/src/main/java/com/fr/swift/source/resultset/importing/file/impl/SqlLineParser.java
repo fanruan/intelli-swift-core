@@ -1,8 +1,8 @@
-package com.fr.swift.data.importing.file.impl;
+package com.fr.swift.source.resultset.importing.file.impl;
 
-import com.fr.swift.data.importing.file.FileLineParser;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.resultset.importing.file.FileLineParser;
 
 import java.util.List;
 

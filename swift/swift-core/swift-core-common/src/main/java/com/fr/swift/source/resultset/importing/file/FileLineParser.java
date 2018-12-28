@@ -1,4 +1,4 @@
-package com.fr.swift.data.importing.file;
+package com.fr.swift.source.resultset.importing.file;
 
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaDataColumn;

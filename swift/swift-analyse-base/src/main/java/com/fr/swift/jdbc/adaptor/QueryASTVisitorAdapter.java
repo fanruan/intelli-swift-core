@@ -218,19 +218,21 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements SelectionBe
             bean.setFilter(filterInfoBean);
             // group by items
             SQLSelectGroupByClause groupByClause = x.getGroupBy();
-            List<SQLExpr> dims = groupByClause.getItems();
-            for (SQLExpr dim : dims) {
-                int index = -1;
-                if (dim instanceof SwiftOrderingExpr) {
-                    SQLExpr name = ((SwiftOrderingExpr) dim).getExpr();
-                    if (name instanceof SQLIdentifierExpr) {
-                        index = dimensionHashCodes.indexOf(FnvHash.fnv1a_64_lower(((SQLIdentifierExpr) name).getName()));
+            if (null != groupByClause) {
+                List<SQLExpr> dims = groupByClause.getItems();
+                for (SQLExpr dim : dims) {
+                    int index = -1;
+                    if (dim instanceof SwiftOrderingExpr) {
+                        SQLExpr name = ((SwiftOrderingExpr) dim).getExpr();
+                        if (name instanceof SQLIdentifierExpr) {
+                            index = dimensionHashCodes.indexOf(FnvHash.fnv1a_64_lower(((SQLIdentifierExpr) name).getName()));
+                        }
                     }
-                }
-                if (index != -1) {
-                    SQLOrderingSpecification sp = ((SwiftOrderingExpr) dim).getType();
-                    dimensionBeans.get(index).getSortBean().setType(
-                            sp == SQLOrderingSpecification.DESC ? SortType.DESC : SortType.ASC);
+                    if (index != -1) {
+                        SQLOrderingSpecification sp = ((SwiftOrderingExpr) dim).getType();
+                        dimensionBeans.get(index).getSortBean().setType(
+                                sp == SQLOrderingSpecification.DESC ? SortType.DESC : SortType.ASC);
+                    }
                 }
             }
             // sorts

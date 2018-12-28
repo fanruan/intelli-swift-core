@@ -6,6 +6,8 @@ import com.fr.swift.jdbc.result.MaintainResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
+import com.fr.swift.util.ReflectUtils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,17 +46,18 @@ public class SwiftStatementImpl extends BaseSwiftStatement {
             SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
             return new ResultSetWrapper(new JdbcSwiftResultSet(info, result, this), result.getLabel2Index());
         } else {
-            int result = execute(info, maintainExecutor);
-            return new MaintainResultSet(new ListBasedRow(result), Arrays.asList("affects"));
+            int result = executeUpdate(sql);
+            return new MaintainResultSet(Arrays.<Row>asList(new ListBasedRow(result)).iterator(), Arrays.asList("affects"));
         }
     }
 
     /**
      * if it is a select statement then return the row count of the query
      * else return update affected row count.
+     *
      * @param sql it is a maintain statement normally but it also can be a query statement.
      * @return if parameter sql was a query statement the method would return row count of result set.
-     *          if parameter sql was a maintain statement the method would return affected row count.
+     * if parameter sql was a maintain statement the method would return affected row count.
      * @throws SQLException the method would throw SQLException when got error from server
      */
     @Override
@@ -64,7 +67,12 @@ public class SwiftStatementImpl extends BaseSwiftStatement {
             SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
             return result.getRowCount();
         }
-        return execute(info, maintainExecutor);
+        Object obj = execute(info, maintainExecutor);
+        try {
+            return ReflectUtils.parseNumber(obj).intValue();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override

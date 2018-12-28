@@ -8,6 +8,8 @@ import com.fr.swift.jdbc.result.MaintainResultSet;
 import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
+import com.fr.swift.util.ReflectUtils;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -71,8 +73,8 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
             JdbcSwiftResultSet resultSet = new JdbcSwiftResultSet(info, result, this);
             return new ResultSetWrapper(resultSet, result.getLabel2Index());
         } else {
-            int result = execute(info, maintainExecutor);
-            return new MaintainResultSet(new ListBasedRow(result), Arrays.asList("affects"));
+            int result = executeUpdate();
+            return new MaintainResultSet(Arrays.<Row>asList(new ListBasedRow(result)).iterator(), Arrays.asList("affects"));
         }
     }
 
@@ -83,7 +85,12 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
             SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
             return result.getRowCount();
         }
-        return execute(info, maintainExecutor);
+        Object obj = execute(info, maintainExecutor);
+        try {
+            return ReflectUtils.parseNumber(obj).intValue();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override

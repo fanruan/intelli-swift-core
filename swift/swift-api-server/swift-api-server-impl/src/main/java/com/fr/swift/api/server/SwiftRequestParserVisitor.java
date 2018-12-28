@@ -34,8 +34,11 @@ import com.fr.swift.jdbc.info.JdbcRequestParserVisitor;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.info.TablesRequestInfo;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.util.Crasher;
+import com.fr.swift.util.ReflectUtils;
 import com.fr.swift.util.Strings;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,21 +51,31 @@ import java.util.List;
  */
 public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiRequestParserVisitor {
 
+    private static void setProperties(TableRequestInfo requestInfo, String authCode, String schema, String tableName) {
+        requestInfo.setAuthCode(authCode);
+        requestInfo.setDatabase(SwiftDatabase.fromKey(schema));
+        requestInfo.setTable(tableName);
+    }
+
     @Override
     public ApiInvocation visit(SqlRequestInfo sqlRequestInfo) {
         String sql = sqlRequestInfo.getSql();
-        SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter();
+        SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter(sqlRequestInfo.getDatabase());
         SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
         if (stmt == null) {
             return ApiCrasher.crash(ParamErrorCode.SQL_PARSE_ERROR);
         }
         stmt.accept(visitor);
         SwiftSQLType sqlType = visitor.getSqlType();
+        String schema = sqlRequestInfo.getDatabase();
         switch (sqlType) {
             case CREATE: {
                 CreationBean bean = visitor.getCreationBean();
                 CreateTableRequestInfo requestInfo = new CreateTableRequestInfo();
-                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema = sqlRequestInfo.getDatabase();
+                }
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema, bean.getTableName());
                 List<Column> columns = new ArrayList<Column>();
                 for (ColumnBean columnBean : bean.getFields()) {
                     columns.add(new Column(columnBean.getColumnName(), columnBean.getColumnType()));
@@ -73,21 +86,30 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
             case INSERT: {
                 InsertionBean bean = visitor.getInsertionBean();
                 InsertRequestInfo requestInfo = new InsertRequestInfo();
-                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema = bean.getSchema();
+                }
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema, bean.getTableName());
                 requestInfo.setSelectFields(bean.getFields());
                 requestInfo.setData(bean.getRows());
                 return visit(requestInfo);
             }
             case DROP: {
                 DropBean bean = visitor.getDropBean();
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema = bean.getSchema();
+                }
                 TableRequestInfo requestInfo = new TableRequestInfo(ApiRequestType.DROP_TABLE);
-                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema, bean.getTableName());
                 return visit(requestInfo);
             }
             case DELETE: {
                 DeletionBean bean = visitor.getDeletionBean();
                 DeleteRequestInfo requestInfo = new DeleteRequestInfo();
-                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), bean.getSchema(), bean.getTableName());
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema = bean.getSchema();
+                }
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema, bean.getTableName());
                 try {
                     requestInfo.setWhere(JsonBuilder.writeJsonString(bean.getFilter()));
                 } catch (Exception e) {
@@ -98,9 +120,8 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
             case SELECT: {
                 SelectionBean bean = visitor.getSelectionBean();
                 String queryJson = null;
-                String schema = bean.getSchema();
-                if (Strings.isEmpty(schema)) {
-                    schema = sqlRequestInfo.getDatabase();
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema = bean.getSchema();
                 }
                 try {
                     queryJson = JsonBuilder.writeJsonString(bean.getQueryInfoBean());
@@ -113,12 +134,6 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
             default:
         }
         return null;
-    }
-
-    private static void setProperties(TableRequestInfo requestInfo, String authCode, String schema, String tableName) {
-        requestInfo.setAuthCode(authCode);
-        requestInfo.setDatabase(SwiftDatabase.fromKey(schema));
-        requestInfo.setTable(tableName);
     }
 
     @Override
@@ -137,12 +152,23 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
     }
 
     private ApiInvocation createApiInvocation(String method, Class<?> clazz, Object... arguments) {
-        Class<?>[] parameterTypes = new Class[arguments.length];
-        for (int i = 0; i < arguments.length; i++) {
-            parameterTypes[i] = arguments[i].getClass();
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method1 : methods) {
+            Class<?>[] paramTypes = method1.getParameterTypes();
+            if (method1.getName().equals(method) && paramTypes.length == arguments.length) {
+                boolean match = true;
+                for (int i = 0; i < paramTypes.length; i++) {
+                    if (null != arguments[i] && !ReflectUtils.isAssignable(arguments[i].getClass(), paramTypes[i])) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    return new ApiInvocation(method, clazz, paramTypes, arguments);
+                }
+            }
         }
-        ApiInvocation invocation = new ApiInvocation(method, clazz, parameterTypes, arguments);
-        return invocation;
+        return Crasher.crash(new NoSuchMethodException());
     }
 
     @Override

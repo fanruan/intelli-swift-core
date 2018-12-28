@@ -1,11 +1,13 @@
-package com.fr.swift.data.importing.file.impl;
+package com.fr.swift.source.resultset.importing.file.impl;
 
 import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.data.importing.file.FileLineParser;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.resultset.importing.file.FileLineParser;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.DateUtils;
 import com.fr.swift.util.Strings;
@@ -38,6 +40,24 @@ public abstract class BaseFileLineParser implements FileLineParser {
         this.columns = columns;
     }
 
+    public static void addRowDataFromString(List data, String col, ColumnTypeConstants.ClassType classType) {
+        switch (classType) {
+            case DOUBLE:
+                data.add(Double.parseDouble(col));
+                break;
+            case INTEGER:
+            case LONG:
+                data.add(Long.parseLong(col));
+                break;
+            case DATE:
+                data.add(DateUtils.string2Date(col).getTime());
+                break;
+            default:
+                data.add(col.trim());
+                break;
+        }
+    }
+
     @Override
     public Row parseLine(String line) {
         Row row = split(line);
@@ -47,6 +67,9 @@ public abstract class BaseFileLineParser implements FileLineParser {
             }
             return row;
         }
+        if (null != adaptor) {
+            row = adaptor.adapt(row);
+        }
         List data = new ArrayList();
         if (row.getSize() > columns.size()) {
             Crasher.crash(String.format("Parser expect column size %d but get %d", columns.size(), row.getSize()));
@@ -54,40 +77,15 @@ public abstract class BaseFileLineParser implements FileLineParser {
         for (int i = 0; i < row.getSize(); i++) {
             String col = row.getValue(i);
             try {
-                switch (columns.get(i).getType()) {
-                    case Types.DECIMAL:
-                    case Types.NUMERIC:
-                    case Types.REAL:
-                    case Types.DOUBLE:
-                    case Types.FLOAT:
-                        data.add(Double.parseDouble(col));
-                        break;
-                    case Types.BIT:
-                    case Types.TINYINT:
-                    case Types.SMALLINT:
-                    case Types.INTEGER:
-                    case Types.BIGINT:
-                        data.add(Long.parseLong(col));
-                        break;
-                    case Types.DATE:
-                    case Types.TIMESTAMP:
-                    case Types.TIME:
-                        data.add(DateUtils.string2Date(col).getTime());
-                        break;
-                    default:
-                        data.add(col.trim());
-                        break;
-                }
+                ColumnTypeConstants.ClassType classType = ColumnTypeUtils.getClassType(columns.get(i));
+                addRowDataFromString(data, col, classType);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().warn(e.getMessage());
                 data.add(null);
             }
         }
-        Row listRow = new ListBasedRow(data);
-        if (null != adaptor) {
-            return adaptor.adapt(listRow);
-        }
-        return listRow;
+        return new ListBasedRow(data);
+
     }
 
     @Override
