@@ -2,12 +2,10 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftCubePathService;
@@ -238,25 +236,13 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
      */
     private class HistoryClusterListener implements ClusterEventListener {
 
-        private ProxyFactory proxyFactory;
-        private RemoteSender senderProxy;
-
-        private HistoryClusterListener() {
-            proxyFactory = ProxySelector.getInstance().getFactory();
-            senderProxy = proxyFactory.getProxy(RemoteSender.class);
-        }
-
         @Override
         public void handleEvent(ClusterEvent clusterEvent) {
             if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                NodeStartedListener.INSTANCE.registerTask(new NodeStartedListener.NodeStartedTask() {
-                    @Override
-                    public void run() {
-                        checkSegmentExists();
-                        sendLocalSegmentInfo();
-                        checkLoad();
-                    }
-                });
+                RemoteSender senderProxy = ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class);
+                checkSegmentExists();
+                sendLocalSegmentInfo(senderProxy);
+                checkLoad(senderProxy);
             }
         }
 
@@ -277,7 +263,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             }
         }
 
-        private void sendLocalSegmentInfo() {
+        private void sendLocalSegmentInfo(RemoteSender senderProxy) {
             SegmentLocationInfo info = loadSelfSegmentDestination();
             if (null != info) {
                 try {
@@ -288,7 +274,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             }
         }
 
-        private void checkLoad() {
+        private void checkLoad(RemoteSender senderProxy) {
             try {
                 senderProxy.trigger(new CheckLoadHistoryEvent(getId()));
             } catch (Exception e) {
@@ -305,7 +291,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 for (Map.Entry<SourceKey, List<SegmentKey>> entry : segments.entrySet()) {
                     initSegDestinations(hist, entry.getKey());
                     for (SegmentKey segmentKey : entry.getValue()) {
-                        if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
+                        if (segmentKey.getStoreType().isPersistent()) {
                             hist.get(entry.getKey()).add(createSegmentDestination(segmentKey));
                         }
                     }
