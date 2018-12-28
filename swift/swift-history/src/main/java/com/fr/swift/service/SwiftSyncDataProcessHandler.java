@@ -79,7 +79,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
 //                for (SegmentKey segmentKey : urlSetEntry.getValue()) {
 //                    idList.add(Pair.of(segmentKey.getTable(), segmentKey));
 //                }
-                Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, urlSetEntry.getKey());
+                Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, urlSetEntry.getKey());
                 RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass, method, methodName, parameterTypes, urlSetEntry.getValue(), replace);
 
                 rpcFuture.addCallback(new AsyncRpcCallback() {
