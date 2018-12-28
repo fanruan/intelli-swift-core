@@ -9,18 +9,20 @@ import com.fr.module.extension.Prepare;
 import com.fr.stable.db.constant.BaseDBConstant;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.api.rpc.DataMaintenanceService;
+import com.fr.swift.api.rpc.DetectService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
-import com.fr.swift.api.rpc.impl.DetectServiceImpl;
 import com.fr.swift.basics.ProcessHandlerRegistry;
 import com.fr.swift.basics.ServiceRegistry;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
+import com.fr.swift.basics.handler.AliveNodesProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.basics.handler.MasterProcessHandler;
+import com.fr.swift.basics.handler.NodesProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.boot.upgrade.UpgradeTask;
@@ -34,7 +36,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftFrLoggers;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.process.handler.NodesProcessHandler;
+import com.fr.swift.process.handler.SwiftAliveNodesProcessHandler;
 import com.fr.swift.process.handler.SwiftNodesProcessHandler;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.service.AnalyseService;
@@ -143,7 +145,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         serviceRegistry.registerService(SwiftContext.get().getBean(AnalyseService.class));
         serviceRegistry.registerService(SwiftContext.get().getBean(RemoteSender.class));
         serviceRegistry.registerService(SwiftContext.get().getBean(TableService.class));
-        serviceRegistry.registerService(new DetectServiceImpl());
+        serviceRegistry.registerService(SwiftContext.get().getBean(DetectService.class));
         serviceRegistry.registerService(SwiftContext.get().getBean(DataMaintenanceService.class));
         serviceRegistry.registerService(SwiftContext.get().getBean(SelectService.class));
         serviceRegistry.registerService(SwiftContext.get().getBean(MasterService.class));
@@ -158,5 +160,6 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         processHandlerRegistry.addHandler(DeleteSegmentProcessHandler.class, SwiftDeleteSegmentProcessHandler.class);
         processHandlerRegistry.addHandler(InsertSegmentProcessHandler.class, SwiftInsertSegmentProcessHandler.class);
         processHandlerRegistry.addHandler(QueryableProcessHandler.class, SwiftQueryableProcessHandler.class);
+        processHandlerRegistry.addHandler(AliveNodesProcessHandler.class, SwiftAliveNodesProcessHandler.class);
     }
 }

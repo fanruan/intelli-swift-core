@@ -46,7 +46,17 @@ public class FTPClientImpl implements SwiftFTPClient {
 
     @Override
     public String[] listNames(String path) throws IOException {
-        return client.listNames(path);
+        FTPFile[] files = client.listFiles(path, new FTPFileFilter() {
+            @Override
+            public boolean accept(FTPFile ftpFile) {
+                return !(ftpFile.getName().endsWith(".") || ftpFile.getName().endsWith(".."));
+            }
+        });
+        String[] names = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            names[i] = files[i].getName();
+        }
+        return names;
     }
 
     @Override
@@ -60,7 +70,11 @@ public class FTPClientImpl implements SwiftFTPClient {
     }
 
     private FTPFile getFtpFile(String path) throws IOException {
-        FTPFile file = client.mlistFile(path);
+        FTPFile file = null;
+        try {
+            file = client.mlistFile(path);
+        } catch (Exception ignore) {
+        }
         if (null != file) {
             return file;
         }
@@ -126,8 +140,8 @@ public class FTPClientImpl implements SwiftFTPClient {
     }
 
     @Override
-    public void mkdirs(String path) throws IOException {
-        client.makeDirectory(path);
+    public boolean mkdirs(String path) throws IOException {
+        return client.makeDirectory(path);
     }
 
     @Override

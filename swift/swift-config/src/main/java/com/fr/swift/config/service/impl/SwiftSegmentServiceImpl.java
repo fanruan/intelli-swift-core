@@ -22,6 +22,7 @@ import com.fr.swift.converter.FindList;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
@@ -42,7 +43,6 @@ import java.util.Set;
 @SwiftBean(name = "swiftClusterSegmentService")
 public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, SwiftSegmentService {
     private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
-    private String clusterId = "LOCAL";
     private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
     private SwiftSegmentDao swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
 
@@ -147,12 +147,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     }
 
     @Override
-    public void setClusterId(String clusterId) {
-        this.clusterId = clusterId;
-    }
-
-
-    @Override
     public boolean addSegments(final List<SegmentKey> segments) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
@@ -224,7 +218,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     private boolean addSegmentsWithoutTransaction(ConfigSession session, List<SegmentKey> segments) throws SQLException {
         for (SegmentKey segment : segments) {
             swiftSegmentDao.addOrUpdateSwiftSegment(session, segment);
-            SegLocationBean locationEntity = new SegLocationBean(clusterId, segment.getId(), segment.getTable().getId());
+            SegLocationBean locationEntity = new SegLocationBean(SwiftProperty.getProperty().getClusterId(), segment.getId(), segment.getTable().getId());
             segmentLocationDao.saveOrUpdate(session, locationEntity);
         }
         return true;
@@ -274,7 +268,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     if (null != swiftSegmentDao.select(session, segmentKey.toString())) {
-                        return !segmentLocationDao.find(session, factory.eq("id.clusterId", clusterId),
+                        return !segmentLocationDao.find(session, factory.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
                                 factory.eq("id.segmentId", segmentKey.getId())).isEmpty();
                     }
                     return false;
@@ -318,7 +312,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                             appendOrder++;
                         }
                     } while (true);
-                    SegLocationBean locationEntity = new SegLocationBean(clusterId, segKeyEntity.getId(), segKeyEntity.getSourceKey());
+                    SegLocationBean locationEntity = new SegLocationBean(SwiftProperty.getProperty().getClusterId(), segKeyEntity.getId(), segKeyEntity.getSourceKey());
                     locationEntity.setSourceKey(segKeyEntity.getTable().getId());
                     segmentLocationDao.saveOrUpdate(session, locationEntity);
                     return segKeyEntity;
@@ -332,7 +326,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
 
     @Override
     public Map<SourceKey, List<SegmentKey>> getOwnSegments() {
-        return getOwnSegments(clusterId);
+        return getOwnSegments(SwiftProperty.getProperty().getClusterId());
     }
 
     @Override
@@ -377,7 +371,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (Map.Entry<String, Set<SegmentKey>> entry : segmentTable.entrySet()) {
                         for (SegmentKey segmentKey : entry.getValue()) {
-                            SegLocationBean locationEntity = new SegLocationBean(clusterId, segmentKey.getTable().getId(), segmentKey.getId());
+                            SegLocationBean locationEntity = new SegLocationBean(SwiftProperty.getProperty().getClusterId(), segmentKey.getTable().getId(), segmentKey.getId());
                             segmentLocationDao.saveOrUpdate(session, locationEntity);
                         }
                     }
@@ -400,7 +394,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                         return swiftSegmentDao.find(session, criterion).forEach(new FindList.SimpleEach<SegmentKey>() {
                             @Override
                             public void each(int idx, SegmentKey item) throws Exception {
-                                if (!segmentLocationDao.find(session, factory.eq("id.clusterId", clusterId),
+                                if (!segmentLocationDao.find(session, factory.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
                                         factory.eq("id.segmentId", item.getId())).isEmpty()) {
                                 }
                             }

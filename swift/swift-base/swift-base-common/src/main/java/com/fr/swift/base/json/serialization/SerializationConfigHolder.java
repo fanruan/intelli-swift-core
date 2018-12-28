@@ -128,7 +128,7 @@ public class SerializationConfigHolder {
 
                         @Override
                         public Class<?> genericType(Type clazz) {
-                            return getRawType(getGenericType(clazz));
+                            return getRawType(getGenericType(getGenericType(clazz)));
                         }
 
                         @Override

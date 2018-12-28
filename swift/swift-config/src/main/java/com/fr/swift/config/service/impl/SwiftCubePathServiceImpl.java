@@ -10,11 +10,7 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.ContextProvider;
-import com.fr.swift.event.ClusterEvent;
-import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
-import com.fr.swift.event.ClusterListenerHandler;
-import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Strings;
 
 import java.sql.SQLException;
@@ -28,7 +24,7 @@ import java.util.List;
 @SwiftBean(name = "swiftPathService")
 public class SwiftCubePathServiceImpl implements SwiftCubePathService {
     private List<PathChangeListener> listeners = new ArrayList<PathChangeListener>();
-    private String clusterId = SwiftConfigConstants.LOCALHOST;
+    //    private String clusterId = SwiftConfigConstants.LOCALHOST;
     private final SwiftConfigService.ConfigConvert<String> CONVERT = new AbstractSimpleConfigConvert<String>(String.class) {
 
         @Override
@@ -49,22 +45,22 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
 
         @Override
         protected String getNameSpace() {
-            return SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE + "." + clusterId;
+            return SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE + "." + SwiftProperty.getProperty().getClusterId();
         }
     };
 
-    public SwiftCubePathServiceImpl() {
-        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
-            @Override
-            public void handleEvent(ClusterEvent clusterEvent) {
-                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    clusterId = SwiftConfigConstants.LOCALHOST;
-                }
-            }
-        });
-    }
+//    public SwiftCubePathServiceImpl() {
+//        ClusterListenerHandler.addExtraListener(new ClusterEventListener() {
+//            @Override
+//            public void handleEvent(ClusterEvent clusterEvent) {
+//                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+//                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+//                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+//                    clusterId = SwiftConfigConstants.LOCALHOST;
+//                }
+//            }
+//        });
+//    }
 
     private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
 

@@ -40,7 +40,7 @@ public class SwiftServiceInfoEntity implements ObjectConverter<SwiftServiceInfoB
     public SwiftServiceInfoEntity(SwiftServiceInfoBean value) {
         //单一的服务例如集群master，service就能保证id唯一
         //非单一的服务，需要clusterId+service来保证
-        if (isSingleton) {
+        if (value.isSingleton()) {
             this.setId(value.getService());
         } else {
             this.setId(value.getClusterId() + value.getService());

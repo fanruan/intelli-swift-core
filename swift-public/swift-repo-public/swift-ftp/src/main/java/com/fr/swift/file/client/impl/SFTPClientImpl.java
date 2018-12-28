@@ -12,6 +12,9 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -50,7 +53,11 @@ public class SFTPClientImpl implements SwiftFTPClient {
         Vector<ChannelSftp.LsEntry> vector = channelSftp.ls(path);
         List<String> names = new ArrayList<String>();
         for (ChannelSftp.LsEntry lsEntry : vector) {
-            names.add(lsEntry.getFilename());
+            String fileName = lsEntry.getFilename();
+            if (fileName.equals(".") || fileName.equals("..")) {
+                continue;
+            }
+            names.add(fileName);
         }
         return names.toArray(new String[names.size()]);
     }
@@ -134,12 +141,24 @@ public class SFTPClientImpl implements SwiftFTPClient {
 
     @Override
     public InputStream toStream(String path) throws SftpException {
-        return channelSftp.get(path);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        channelSftp.get(path, bao);
+        ByteArrayInputStream bai = new ByteArrayInputStream(bao.toByteArray());
+        try {
+            bao.close();
+        } catch (IOException ignore) {
+        }
+        return bai;
     }
 
     @Override
-    public void mkdirs(String path) throws SftpException {
-        channelSftp.mkdir(path);
+    public boolean mkdirs(String path) throws SftpException {
+        try {
+            channelSftp.mkdir(path);
+            return true;
+        } catch (SftpException e) {
+            return false;
+        }
     }
 
     @Override

@@ -3,25 +3,38 @@ package com.fr.swift.service;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventListener;
+import com.fr.swift.event.ClusterEventType;
+import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
+import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
@@ -32,7 +45,10 @@ import com.fr.swift.task.service.SwiftServiceCallable;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
@@ -53,7 +69,10 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private transient volatile boolean recoverable = true;
 
+    private transient ClusterEventListener realtimeClusterListener;
+
     public SwiftRealtimeService() {
+        realtimeClusterListener = new RealtimeClusterListener();
     }
 
     @Override
@@ -65,6 +84,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             recover0();
             recoverable = false;
         }
+        ClusterListenerHandler.addExtraListener(realtimeClusterListener);
         return true;
     }
 
@@ -75,6 +95,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         recoverable = true;
         segmentManager = null;
         taskExecutor = null;
+        ClusterListenerHandler.removeExtraListener(realtimeClusterListener);
         return true;
     }
 
@@ -173,5 +194,60 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public ServiceType getServiceType() {
         return ServiceType.REAL_TIME;
+    }
+
+    private class RealtimeClusterListener implements ClusterEventListener {
+
+        @Override
+        public void handleEvent(ClusterEvent clusterEvent) {
+            if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                sendLocalSegmentInfo();
+            }
+        }
+
+        private void sendLocalSegmentInfo() {
+            SegmentLocationInfo info = loadSelfSegmentDestination();
+            if (null != info) {
+                RemoteSender senderProxy = ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class);
+                senderProxy.trigger(new PushSegLocationRpcEvent(info));
+            }
+        }
+
+        protected SegmentLocationInfo loadSelfSegmentDestination() {
+            SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+            Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
+            if (!segments.isEmpty()) {
+                Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();
+                for (Map.Entry<SourceKey, List<SegmentKey>> entry : segments.entrySet()) {
+                    initSegDestinations(hist, entry.getKey());
+                    for (SegmentKey segmentKey : entry.getValue()) {
+                        if (segmentKey.getStoreType().isTransient()) {
+                            hist.get(entry.getKey()).add(createSegmentDestination(segmentKey));
+                        }
+                    }
+                }
+                if (hist.isEmpty()) {
+                    return null;
+                }
+                return new SegmentLocationInfoImpl(ServiceType.REAL_TIME, hist);
+            }
+            return null;
+        }
+
+        private void initSegDestinations(Map<SourceKey, List<SegmentDestination>> map, SourceKey key) {
+            if (null == map.get(key)) {
+                map.put(key, new ArrayList<SegmentDestination>() {
+                    @Override
+                    public boolean add(SegmentDestination segmentDestination) {
+                        return !contains(segmentDestination) && super.add(segmentDestination);
+                    }
+                });
+            }
+        }
+
+        protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
+            String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+            return new RealTimeSegDestImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery");
+        }
     }
 }

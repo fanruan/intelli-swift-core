@@ -25,7 +25,7 @@ public class BaseRemoteFileSystemPool<T extends SwiftFileSystem> extends Generic
     public void returnObject(String key, T obj) {
         try {
             super.returnObject(key, obj);
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
 //            SwiftLoggers.getLogger().warn(e.getMessage());
         }
     }

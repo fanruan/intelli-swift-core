@@ -6,6 +6,10 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventListener;
+import com.fr.swift.event.ClusterEventType;
+import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
@@ -42,22 +46,27 @@ import java.util.Map;
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService, Serializable {
     private static final long serialVersionUID = 841582089735823794L;
 
-    private transient SessionFactory sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
+    private transient SessionFactory sessionFactory;
     private transient boolean loadable = true;
 
+    private transient ClusterEventListener analyseClusterListener;
+
     public SwiftAnalyseService() {
+        analyseClusterListener = new AnalyseClusterListener();
     }
+
 
     @Override
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
+        sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
         cacheSegments();
+        ClusterListenerHandler.addExtraListener(analyseClusterListener);
         return start;
     }
 
     private void cacheSegments() {
         SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-        clusterSegmentService.setClusterId("LOCAL");
         Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         if (!segments.isEmpty()) {
@@ -66,56 +75,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
                     manager.getSegment(segmentKey);
                 }
             }
-        }
-    }
-
-    private void loadSegmentLocationInfo(SwiftClusterSegmentService clusterSegmentService) {
-        if (loadable) {
-            loadSelfSegmentDestination(clusterSegmentService);
-            loadable = false;
-        }
-        List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
-                (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new RequestSegLocationEvent(getId()));
-        if (!result.isEmpty()) {
-            for (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair : result) {
-                updateSegmentInfo(pair.getValue(), pair.getKey());
-            }
-        }
-    }
-
-    private void initSegDestinations(Map<SourceKey, List<SegmentDestination>> map, SourceKey key) {
-        if (null == map.get(key)) {
-            map.put(key, new ArrayList<SegmentDestination>() {
-                @Override
-                public boolean add(SegmentDestination segmentDestination) {
-                    return !contains(segmentDestination) && super.add(segmentDestination);
-                }
-            });
-        }
-    }
-
-    private void loadSelfSegmentDestination(SwiftClusterSegmentService clusterSegmentService) {
-//        SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-//        clusterSegmentService.setClusterId(getID());
-        Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
-        SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-        if (!segments.isEmpty()) {
-            Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();
-            Map<SourceKey, List<SegmentDestination>> realTime = new HashMap<SourceKey, List<SegmentDestination>>();
-            for (Map.Entry<SourceKey, List<SegmentKey>> entry : segments.entrySet()) {
-                initSegDestinations(hist, entry.getKey());
-                initSegDestinations(realTime, entry.getKey());
-                for (SegmentKey segmentKey : entry.getValue()) {
-                    if (segmentKey.getStoreType().isPersistent()) {
-                        hist.get(entry.getKey()).add(new SegmentDestinationImpl(getId(), segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
-                    } else {
-                        realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getId(), segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery"));
-                    }
-                    manager.getSegment(segmentKey);
-                }
-            }
-            updateSegmentInfo(new SegmentLocationInfoImpl(ServiceType.HISTORY, hist), SegmentLocationInfo.UpdateType.PART);
-            updateSegmentInfo(new SegmentLocationInfoImpl(ServiceType.REAL_TIME, realTime), SegmentLocationInfo.UpdateType.PART);
         }
     }
 
@@ -123,6 +82,8 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
         sessionFactory = null;
+        ClusterListenerHandler.removeExtraListener(analyseClusterListener);
+        loadable = true;
         return true;
     }
 
@@ -153,5 +114,65 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys) {
         SegmentLocationProvider.getInstance().removeSegments(clusterId, new SourceKey(sourceKey), segmentKeys);
+    }
+
+    private class AnalyseClusterListener implements ClusterEventListener {
+
+        @Override
+        public void handleEvent(ClusterEvent clusterEvent) {
+            if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+                loadSegmentLocationInfo(clusterSegmentService);
+            }
+        }
+
+        private void loadSegmentLocationInfo(SwiftClusterSegmentService clusterSegmentService) {
+            if (loadable) {
+                loadSelfSegmentDestination(clusterSegmentService);
+                loadable = false;
+            }
+            RemoteSender senderProxy = ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class);
+            List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> result =
+                    (List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>>) senderProxy.trigger(new RequestSegLocationEvent(getId()));
+            if (!result.isEmpty()) {
+                for (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair : result) {
+                    updateSegmentInfo(pair.getValue(), pair.getKey());
+                }
+            }
+        }
+
+        private void loadSelfSegmentDestination(SwiftClusterSegmentService clusterSegmentService) {
+            Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
+            SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+            if (!segments.isEmpty()) {
+                Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();
+                Map<SourceKey, List<SegmentDestination>> realTime = new HashMap<SourceKey, List<SegmentDestination>>();
+                for (Map.Entry<SourceKey, List<SegmentKey>> entry : segments.entrySet()) {
+                    initSegDestinations(hist, entry.getKey());
+                    initSegDestinations(realTime, entry.getKey());
+                    for (SegmentKey segmentKey : entry.getValue()) {
+                        if (segmentKey.getStoreType().isPersistent()) {
+                            hist.get(entry.getKey()).add(new SegmentDestinationImpl(getId(), segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
+                        } else {
+                            realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getId(), segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery"));
+                        }
+                        manager.getSegment(segmentKey);
+                    }
+                }
+                updateSegmentInfo(new SegmentLocationInfoImpl(ServiceType.HISTORY, hist), SegmentLocationInfo.UpdateType.PART);
+                updateSegmentInfo(new SegmentLocationInfoImpl(ServiceType.REAL_TIME, realTime), SegmentLocationInfo.UpdateType.PART);
+            }
+        }
+
+        private void initSegDestinations(Map<SourceKey, List<SegmentDestination>> map, SourceKey key) {
+            if (null == map.get(key)) {
+                map.put(key, new ArrayList<SegmentDestination>() {
+                    @Override
+                    public boolean add(SegmentDestination segmentDestination) {
+                        return !contains(segmentDestination) && super.add(segmentDestination);
+                    }
+                });
+            }
+        }
     }
 }

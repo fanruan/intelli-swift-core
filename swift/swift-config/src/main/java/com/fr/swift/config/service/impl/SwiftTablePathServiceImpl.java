@@ -2,7 +2,6 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.dao.SwiftTablePathDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
@@ -14,10 +13,9 @@ import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.property.SwiftProperty;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -33,19 +31,19 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     private SwiftTablePathDao swiftTablePathDao = SwiftContext.get().getBean(SwiftTablePathDao.class);
     private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
     private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
-    private String clusterId = SwiftConfigConstants.LOCALHOST;
+    //    private String clusterId = SwiftConfigConstants.LOCALHOST;
     private ConcurrentHashMap<String, Integer> tablePath = new ConcurrentHashMap<String, Integer>();
 
     public SwiftTablePathServiceImpl() {
-        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
+        ClusterListenerHandler.addExtraListener(new ClusterEventListener() {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
                 tablePath.clear();
-                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    clusterId = SwiftConfigConstants.LOCALHOST;
-                }
+//                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+//                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+//                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+//                    clusterId = SwiftConfigConstants.LOCALHOST;
+//                }
             }
         });
     }
@@ -70,7 +68,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
             return tx.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
-                    entity.setClusterId(clusterId);
+                    entity.setClusterId(SwiftProperty.getProperty().getClusterId());
                     boolean success = swiftTablePathDao.saveOrUpdate(session, entity);
                     if (success) {
                         if (null != entity.getTablePath()) {
@@ -94,7 +92,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 @Override
                 public Boolean work(final ConfigSession session) throws SQLException {
                     try {
-                        swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).justForEach(new FindList.ConvertEach() {
+                        swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).justForEach(new FindList.ConvertEach() {
                             @Override
                             public Object forEach(int idx, Object item) throws Exception {
                                 try {
@@ -128,7 +126,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                     @Override
                     public Integer work(ConfigSession session) throws SQLException {
                         try {
-                            SwiftTablePathBean entity = swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).get(0);
+                            SwiftTablePathBean entity = swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
                             if (null != entity) {
                                 Integer path = entity.getTablePath();
                                 if (null != path && path.intValue() > -1) {
@@ -158,7 +156,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 @Override
                 public Integer work(ConfigSession session) throws SQLException {
                     try {
-                        SwiftTablePathBean entity = swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).get(0);
+                        SwiftTablePathBean entity = swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
                         if (null != entity) {
                             return entity.getLastPath();
                         }
@@ -181,7 +179,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 @Override
                 public SwiftTablePathBean work(ConfigSession session) throws SQLException {
                     try {
-                        return swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", clusterId)).get(0);
+                        return swiftTablePathDao.find(session, factory.eq("id.tableKey", table), factory.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
                     } catch (Exception e) {
                         if (e instanceof SQLException) {
                             throw (SQLException) e;

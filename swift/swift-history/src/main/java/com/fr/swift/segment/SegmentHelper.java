@@ -58,11 +58,12 @@ public class SegmentHelper {
                         if (segmentKey.getStoreType().isPersistent()) {
                             if (!segmentManager.getSegment(segmentKey).isReadable()) {
                                 String remotePath = new CubePathBuilder(segmentKey).build();
+                                String downLoadPath = String.format("%s/seg%d", segmentKey.getTable().getId(), segmentKey.getOrder());
                                 if (repository.exists(remotePath)) {
                                     if (null == needDownload.get(table)) {
                                         needDownload.put(table, new HashSet<String>());
                                     }
-                                    needDownload.get(table).add(remotePath);
+                                    needDownload.get(table).add(downLoadPath);
                                 } else {
                                     notExists.add(segmentKey);
                                 }
@@ -94,7 +95,7 @@ public class SegmentHelper {
                     tablePathService.saveOrUpdate(entity);
                     replace = true;
                 } else {
-                    tmp = entity.getTablePath() == null ? -1 : entity.getTablePath();
+                    tmp = entity.getTablePath() == null ? 0 : entity.getTablePath();
                     if (replace) {
                         tmp += 1;
                         entity.setTmpDir(tmp);
