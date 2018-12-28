@@ -9,11 +9,13 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.EmptyDetailQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
@@ -130,13 +132,16 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
 
                 @Override
                 public void fail(Exception e) {
-//                    SwiftLoggers.getLogger().error("Remote invoke clusterId{}", pair.getKey().getDestination(), e);
+                    SwiftLoggers.getLogger().error("Remote invoke error:", e);
                     latch.countDown();
                 }
             });
         }
         latch.await();
-        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.size() > 0 ? resultSets.get(0).getMerger() : null);
+        if (resultSets == null || resultSets.isEmpty()) {
+            return new EmptyDetailQueryResultSet();
+        }
+        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.get(0).getMerger());
         Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
     }

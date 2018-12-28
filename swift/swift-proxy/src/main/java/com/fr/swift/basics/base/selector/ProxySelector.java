@@ -39,4 +39,15 @@ public class ProxySelector implements Selector<ProxyFactory> {
             this.proxyFactory = proxyFactory;
         }
     }
+
+    /**
+     * 简化拿代理
+     *
+     * @param proxy
+     * @param <T>
+     * @return
+     */
+    public static <T> T getProxy(Class<T> proxy) {
+        return getInstance().getFactory().getProxy(proxy);
+    }
 }

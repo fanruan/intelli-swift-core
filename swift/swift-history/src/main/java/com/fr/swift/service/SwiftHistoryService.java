@@ -262,7 +262,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
         private void checkSegmentExists() {
             SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-            segmentService.setClusterId(getId());
             final Map<SourceKey, Set<String>> needDownload = SegmentHelper.checkSegmentExists(segmentService, segmentManager);
             if (!needDownload.isEmpty()) {
                 loadDataService.submit(new Runnable() {
@@ -300,7 +299,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
         protected SegmentLocationInfo loadSelfSegmentDestination() {
             SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-            clusterSegmentService.setClusterId(getId());
             Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
             if (!segments.isEmpty()) {
                 Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();

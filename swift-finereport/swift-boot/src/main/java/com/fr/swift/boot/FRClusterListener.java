@@ -61,6 +61,7 @@ public class FRClusterListener implements ClusterEventListener {
                 ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new FRInvokerCreater()));
                 UrlSelector.getInstance().switchFactory(new FRUrlFactory());
                 ClusterSelector.getInstance().switchFactory(FRClusterNodeManager.getInstance());
+                SwiftProperty.getProperty().setClusterId(ClusterSelector.getInstance().getFactory().getCurrentId());
 
                 localManager.shutDown();
                 slaveManager.shutDown();
