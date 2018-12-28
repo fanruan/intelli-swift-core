@@ -8,6 +8,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
@@ -26,6 +27,9 @@ public class DetailMetaDataCreator implements MetaDataCreator<DetailQueryInfoBea
         SwiftDatabase schema = meta.getSwiftDatabase();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = bean.getDimensions();
+        if (dimensionBeans.size() == 1 && dimensionBeans.get(0).getType() == DimensionType.DETAIL_ALL_COLUMN) {
+            return meta;
+        }
         for (DimensionBean dimensionBean : dimensionBeans) {
             String alias = dimensionBean.getAlias();
             String column = dimensionBean.getColumn();

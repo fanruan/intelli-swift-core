@@ -24,8 +24,7 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
     @Override
     public QueryResultSet getQueryResult() {
         Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
-        // TODO: 2018/11/27
-        return (QueryResultSet) (iterator.hasNext() ? iterator.next() : new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(),
+        return (iterator.hasNext() ? iterator.next() : new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(),
                 new GroupNode(-1, null), new ArrayList<Map<Integer, Object>>()));
     }
 }
