@@ -53,7 +53,7 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     protected SwiftFileSystem[] list() throws SwiftFileException {
         SwiftFTPClient ftp = acquireClient();
         try {
-            String[] children = ftp.listNames(resolve(rootURI, getResourceName()));
+            String[] children = ftp.listNames(resolve(rootURI, getResourceURI()));
             if (null != children) {
                 SwiftFileSystem[] childFileSystem = new SwiftFileSystem[children.length];
                 for (int i = 0; i < children.length; i++) {
