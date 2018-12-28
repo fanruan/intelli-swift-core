@@ -110,19 +110,21 @@ public class JsonParser {
                 if (map.containsKey(key)) {
                     SerializationConfig.BeanSetter setter = entry.getValue();
                     Class propertyType = null;
+                    boolean generic = false;
                     try {
                         propertyType = setter.propertyType();
                     } catch (Exception e) {
                         propertyType = setter.propertyType(clazz.getGenericSuperclass());
+                        generic = true;
                     }
                     Object value = map.get(key);
                     if (value instanceof Map) {
                         value = toTargetBean((Map<String, Object>) value, propertyType);
                     } else if (value instanceof List) {
                         if (ReflectUtils.isAssignable(propertyType, List.class) || propertyType.isArray()) {
-                            value = buildObjectFromList(clazz, setter, (List) value);
+                            value = buildObjectFromList(clazz, setter, (List) value, generic);
                         } else if (ReflectUtils.isAssignable(propertyType, Set.class)) {
-                            value = new HashSet(buildObjectFromList(clazz, setter, (List) value));
+                            value = new HashSet(buildObjectFromList(clazz, setter, (List) value, generic));
                         } else {
                             throw new JsonException("Cannot set Json array to property: " + key + "(type: " + propertyType.getName() + ")");
                         }
@@ -138,19 +140,35 @@ public class JsonParser {
         return target;
     }
 
-    private <T> List buildObjectFromList(Class<T> clazz, SerializationConfig.BeanSetter setter, List value) throws Exception {
+    private <T> List buildObjectFromList(Class<T> clazz, SerializationConfig.BeanSetter setter, List value, boolean generic) throws Exception {
         Class<?> genericType = null;
         try {
-            genericType = setter.genericType();
+            if (generic) {
+                genericType = setter.genericType(clazz.getGenericSuperclass());
+            } else {
+                genericType = setter.genericType();
+            }
         } catch (Exception e) {
-            genericType = setter.genericType(clazz.getGenericSuperclass());
+            if (generic) {
+                genericType = setter.genericType();
+            } else {
+                genericType = setter.genericType(clazz.getGenericSuperclass());
+            }
         }
         FindList list = new FindListImpl(value);
         final Class<?> finalGenericType = genericType;
+        final Class<?> finalGenericType1 = genericType;
         return list.forEach(new FindList.ConvertEach() {
             @Override
             public Object forEach(int idx, Object item) throws Exception {
-                Object o = ReflectUtils.parseObject(finalGenericType, item.toString());
+                Object o = null;
+                if (item instanceof Map) {
+                    o = toTargetBean((Map<String, Object>) item, finalGenericType1);
+                }
+                if (null != o) {
+                    return o;
+                }
+                o = ReflectUtils.parseObject(finalGenericType, item.toString());
                 if (null != o) {
                     return o;
                 }
