@@ -2,6 +2,7 @@ package com.fr.swift.db.impl;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Util;
@@ -79,9 +80,7 @@ public class MetadataDiffer {
     }
 
     private static boolean hasSameType(SwiftMetaDataColumn meta1, SwiftMetaDataColumn meta2) {
-        return meta1.getType() == meta2.getType() &&
-                meta1.getPrecision() == meta2.getPrecision() &&
-                meta1.getScale() == meta2.getScale();
+        return ColumnTypeUtils.getClassType(meta1) == ColumnTypeUtils.getClassType(meta2);
     }
 
     public boolean hasDiff() {
