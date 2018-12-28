@@ -42,7 +42,7 @@ import java.util.Map;
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService, Serializable {
     private static final long serialVersionUID = 841582089735823794L;
 
-    private transient SessionFactory sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
+    private transient SessionFactory sessionFactory;
     private transient boolean loadable = true;
 
     public SwiftAnalyseService() {
@@ -51,13 +51,13 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
+        sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
         cacheSegments();
         return start;
     }
 
     private void cacheSegments() {
         SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-        clusterSegmentService.setClusterId("LOCAL");
         Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         if (!segments.isEmpty()) {

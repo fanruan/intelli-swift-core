@@ -5,12 +5,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.event.ClusterEvent;
-import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
-import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
@@ -22,23 +17,23 @@ import java.util.Map;
  */
 @SwiftBean(name = "segmentServiceProvider")
 public class SwiftSegmentServiceProvider implements SwiftSegmentService {
-    private SwiftClusterSegmentService service;
+    private SwiftClusterSegmentService service = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 
-    public SwiftSegmentServiceProvider() {
-        service = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+//    public SwiftSegmentServiceProvider() {
+//        service = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 //        service.checkOldConfig();
-        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
-            @Override
-            public void handleEvent(ClusterEvent clusterEvent) {
-                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-                    service.setClusterId(clusterId);
-                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    service.setClusterId("LOCAL");
-                }
-            }
-        });
-    }
+//        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
+//            @Override
+//            public void handleEvent(ClusterEvent clusterEvent) {
+//                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+//                    String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+//                    service.setClusterId(clusterId);
+//                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+//                    service.setClusterId("LOCAL");
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public boolean addSegments(List<SegmentKey> segments) {

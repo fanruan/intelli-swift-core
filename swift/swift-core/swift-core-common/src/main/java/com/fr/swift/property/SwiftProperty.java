@@ -1,5 +1,6 @@
 package com.fr.swift.property;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.util.Crasher;
 
 import java.io.IOException;
@@ -137,8 +138,17 @@ public class SwiftProperty {
         this.isCluster = cluster;
     }
 
+    //TODO 配置要修改
     private void initClusterId() {
-        this.clusterId = properties.getProperty("swift.clusterId");
+        if (isCluster) {
+            this.clusterId = properties.getProperty("swift.clusterId");
+        } else {
+            this.clusterId = SwiftConfigConstants.LOCALHOST;
+        }
+    }
+
+    public void setClusterId(String clusterId) {
+        this.clusterId = clusterId;
     }
 
     public void setMasterAddress(String masterId) {
