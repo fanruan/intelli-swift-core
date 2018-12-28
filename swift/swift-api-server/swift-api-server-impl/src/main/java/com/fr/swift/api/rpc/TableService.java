@@ -58,7 +58,7 @@ public interface TableService extends ApiService {
      * @param tableName
      * @throws Exception
      */
-    void dropTable(SwiftDatabase schema, String tableName) throws Exception;
+    int dropTable(SwiftDatabase schema, String tableName) throws Exception;
 
     /**
      * 清空数据
