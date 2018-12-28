@@ -64,7 +64,7 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
                     List<SegmentKey> allSegmentKeys = allSegments.get(needLoadSourceKey);
                     List<SegmentKey> target = new ArrayList<SegmentKey>();
                     for (SegmentKey segmentKey : allSegmentKeys) {
-                        if (contentSegmentKeys.contains(segmentKey.toString())) {
+                        if (contentSegmentKeys.contains(segmentKey)) {
                             target.add(segmentKey);
                         }
                     }

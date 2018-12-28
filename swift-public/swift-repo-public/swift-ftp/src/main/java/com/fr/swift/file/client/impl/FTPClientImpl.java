@@ -70,7 +70,11 @@ public class FTPClientImpl implements SwiftFTPClient {
     }
 
     private FTPFile getFtpFile(String path) throws IOException {
-        FTPFile file = client.mlistFile(path);
+        FTPFile file = null;
+        try {
+            file = client.mlistFile(path);
+        } catch (Exception ignore) {
+        }
         if (null != file) {
             return file;
         }

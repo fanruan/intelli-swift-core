@@ -70,7 +70,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
             MonitorUtil.start();
             final Map<SourceKey, List<SegmentDestination>> destinations = new HashMap<SourceKey, List<SegmentDestination>>();
             final boolean replace = (Boolean) args[1];
-            Map<URL, Set<SegmentKey>> urlMap = processUrl(target, args, destinations);
+            Map<URL, Set<SegmentKey>> urlMap = processUrl(target, args[0], destinations);
 
             final List<EventResult> resultList = new ArrayList<EventResult>();
             final CountDownLatch latch = new CountDownLatch(urlMap.size());
@@ -132,7 +132,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
         }
         Set<String> nodeIds = services.keySet();
         Set<SegmentKey> segmentKeys = (Set<SegmentKey>) args[0];
-        Map<SourceKey, List<SegmentDestination>> destinations = (Map<SourceKey, List<SegmentDestination>>) args[2];
+        Map<SourceKey, List<SegmentDestination>> destinations = (Map<SourceKey, List<SegmentDestination>>) args[1];
 
         Map<String, Set<SegmentKey>> segkeyDistribution = dataSyncRuleService.getCurrentRule().getNeedLoadAndUpdateDestinations(nodeIds, segmentKeys, destinations);
 
