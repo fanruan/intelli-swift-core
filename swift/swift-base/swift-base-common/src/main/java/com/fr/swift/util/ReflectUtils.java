@@ -2,6 +2,8 @@ package com.fr.swift.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -80,6 +82,54 @@ public final class ReflectUtils {
 //            return obj;
         }
         return null;
+    }
+
+    public static Number parseNumber(Object o) {
+        if (null == o) {
+            return 0;
+        }
+        Class clazz = o.getClass();
+        if (isPrimitiveOrWrapper(clazz)) {
+            if (isAssignable(clazz, Integer.class)) {
+                return (Integer) o;
+            }
+            if (isAssignable(clazz, Byte.class)) {
+                return (Byte) o;
+            }
+            if (isAssignable(clazz, Short.class)) {
+                return (Short) o;
+            }
+            if (isAssignable(clazz, Character.class)) {
+                char charValue = ((Character) o).charValue();
+                if (charValue >= '0' && charValue <= '9') {
+                    return Integer.parseInt(o.toString());
+                }
+                return (int) charValue;
+            }
+            if (isAssignable(clazz, Double.class)) {
+                return (Double) o;
+            }
+            if (isAssignable(clazz, Float.class)) {
+                return (Float) o;
+            }
+            if (isAssignable(clazz, Long.class)) {
+                return (Long) o;
+            }
+            if (isAssignable(clazz, Boolean.class)) {
+                return (Boolean) o ? 1 : 0;
+            }
+        } else if (o instanceof String) {
+            Date date = DateUtils.string2Date((String) o);
+            if (null != date) {
+                return date.getTime();
+            }
+            return new BigDecimal((String) o);
+        } else if (o instanceof Date) {
+            return ((Date) o).getTime();
+        } else {
+            return 0;
+        }
+        return 0;
     }
 
     public static <T> T newInstance(Class<T> clazz, Object... args) throws Exception {

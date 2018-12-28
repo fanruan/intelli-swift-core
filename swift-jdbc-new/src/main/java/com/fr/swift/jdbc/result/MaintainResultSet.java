@@ -7,6 +7,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -16,15 +17,20 @@ import java.util.List;
 public class MaintainResultSet extends BaseResultSet {
 
     private List<String> columnNames;
+    private Iterator<Row> iterator;
 
-    public MaintainResultSet(Row row, List<String> columnNames) {
-        this.current = row;
+    public MaintainResultSet(Iterator<Row> iterator, List<String> columnNames) {
+        this.iterator = iterator;
         this.columnNames = columnNames;
     }
 
     @Override
     public boolean next() throws SQLException {
-        return null != current;
+        if (iterator.hasNext()) {
+            current = iterator.next();
+            return true;
+        }
+        return false;
     }
 
     @Override
