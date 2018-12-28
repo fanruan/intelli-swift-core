@@ -9,8 +9,14 @@ import com.fr.swift.source.alloter.impl.BaseAllotRule;
  */
 public class HashAllotRule extends BaseAllotRule {
 
-    public HashAllotRule(int capacity) {
+    // TODO: 2018/12/28 realTime导入、属性存入对应表meta
+    private static final int capacity = Integer.MAX_VALUE;
+
+    private RowAnalyzer analyzer;
+
+    public HashAllotRule(int fieldIndex, int segCount) {
         super(capacity);
+        this.analyzer = new HashRowAnalyzer(fieldIndex, segCount);
     }
 
     @Override
@@ -20,6 +26,6 @@ public class HashAllotRule extends BaseAllotRule {
 
     @Override
     public RowAnalyzer analyzer() {
-        return null;
+        return analyzer;
     }
 }

@@ -11,13 +11,18 @@ import com.fr.swift.query.aggregator.funnel.ITimeWindowFilter;
 import com.fr.swift.query.aggregator.funnel.impl.GroupTWFilter;
 import com.fr.swift.query.aggregator.funnel.impl.TimeWindowFilter;
 import com.fr.swift.query.aggregator.funnel.impl.step.Step;
-import com.fr.swift.query.aggregator.funnel.impl.step.VirtualStep;
 import com.fr.swift.query.filter.detail.impl.InFilter;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.by.GroupByResult;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.AssociationFilterBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.DayFilterBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.PostGroupBean;
+import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
+import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.segment.SegmentQuery;
 import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
@@ -50,37 +55,39 @@ import java.util.Set;
  * @description
  */
 public class FunnelSegmentQuery implements SegmentQuery {
+
+    // TODO: 2018/12/28
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+
     private FunnelQueryBean bean;
     private Segment segment;
-    private Column stepName;
-    private DictionaryEncodedColumn stepNameDicColumn;
+    private DictionaryEncodedColumn eventDict;
     private final Map<String, Long> globalDic;
     private String[] dates;
 
     public FunnelSegmentQuery(Segment segment, FunnelQueryBean bean) {
         this.bean = bean;
         this.segment = segment;
-        this.stepName = segment.getColumn(new ColumnKey(bean.getStepName()));
-        this.stepNameDicColumn = stepName.getDictionaryEncodedColumn();
+        Column event = segment.getColumn(new ColumnKey(bean.getAggregation().getColumns().getEvent()));
+        this.eventDict = event.getDictionaryEncodedColumn();
         this.globalDic = new HashMap<String, Long>();
         initGlobalDic();
         initDates();
     }
 
     private void initGlobalDic() {
-        int dicSize = stepNameDicColumn.size();
+        int dicSize = eventDict.size();
         for (long i = 0; i < dicSize; i++) {
-            String dicValue = String.valueOf(stepNameDicColumn.getValue((int) i));
+            String dicValue = String.valueOf(eventDict.getValue((int) i));
             globalDic.put(dicValue, i);
         }
     }
 
     private void initDates() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         dates = new String[45];
         long start = 0;
         try {
-            start = format.parse(bean.getDateStart()).getTime();
+            start = format.parse(bean.getAggregation().getDayFilter().getDayStart()).getTime();
         } catch (ParseException e) {
             Crasher.crash(e);
         }
@@ -92,13 +99,15 @@ public class FunnelSegmentQuery implements SegmentQuery {
 
     @Override
     public QueryResultSet getQueryResult() {
-        Set<Integer> steps = getSteps(bean.getSteps());
-        IStep step = createStep(bean.getSteps(), bean.isVirtualStep());
+        Set<Integer> steps = getSteps(bean.getAggregation().getFunnelEvents());
+        IStep step = createStep(bean.getAggregation().getFunnelEvents());
         ITimeWindowFilter filter = createTimeWindowFilter(step, bean, segment);
-        Column idColumn = segment.getColumn(new ColumnKey(bean.getId()));
-        RowTraversal rowTraversal = getFilerRows(idColumn.getBitmapIndex(), steps, bean, segment);
+        ParameterColumnsBean params = bean.getAggregation().getColumns();
+        Column event = segment.getColumn(new ColumnKey(params.getEvent()));
+        RowTraversal rowTraversal = getFilerRows(event.getBitmapIndex(), steps, bean, segment);
         SwiftLoggers.getLogger().debug("seg rows: {}", rowTraversal.getCardinality());
-        DetailColumn combineColumn = segment.getColumn(new ColumnKey(bean.getCombine())).getDetailColumn();
+        DetailColumn combineColumn = segment.getColumn(new ColumnKey(params.getCombine())).getDetailColumn();
+        Column idColumn = segment.getColumn(new ColumnKey(params.getEvent()));
         Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(idColumn, rowTraversal, true);
         MergeIterator mergeIterator;
         Iterator<GroupByEntry> empty = new GroupByResult() {
@@ -121,7 +130,7 @@ public class FunnelSegmentQuery implements SegmentQuery {
                 new DictionaryEncodedColumn[]{idColumn.getDictionaryEncodedColumn(),
                         null},
                 new DetailColumn[]{combineColumn, null},
-                createAssociatedColumn(), createPostGroupColumn(), bean.getPostGroupStep());
+                createAssociatedColumn(), createPostGroupColumn(), getPostGroupStep());
 
         Map<FunnelGroupKey, FunnelAggValue> results = new HashMap<FunnelGroupKey, FunnelAggValue>();
 
@@ -135,61 +144,82 @@ public class FunnelSegmentQuery implements SegmentQuery {
     }
 
     private Column[] createPostGroupColumn() {
-        if (bean.getPostGroupName() == null) {
+        PostGroupBean groupBean = bean.getAggregation().getPostGroup();
+        if (groupBean == null) {
             return null;
         }
-        Column a0 = segment.getColumn(new ColumnKey(bean.getPostGroupName()));
+        Column a0 = segment.getColumn(new ColumnKey(groupBean.getColumn()));
         return new Column[]{a0};
     }
 
     private DictionaryEncodedColumn[] createAssociatedColumn() {
-        if (bean.getAssociatedProperty() == null) {
+        AssociationFilterBean associationFilterBean = bean.getAggregation().getAssociatedFilter();
+        if (associationFilterBean == null) {
             return null;
         }
-        DictionaryEncodedColumn a0 = segment.getColumn(new ColumnKey(bean.getAssociatedProperty())).getDictionaryEncodedColumn();
+        DictionaryEncodedColumn a0 = segment.getColumn(new ColumnKey(associationFilterBean.getColumn())).getDictionaryEncodedColumn();
         return new DictionaryEncodedColumn[]{a0};
     }
 
-    private FunnelGroupKey createGroupKey(int postGroupStep, int[][] rangePrices, IHead head) {
+    private FunnelGroupKey createGroupKey(int postGroupStep, List<double[]> rangePairs, IHead head) {
         FunnelGroupKey groupKey = null;
         Object groupValue = head.getGroupValue();
         if (postGroupStep != -1) {
-            if (rangePrices.length == 0) {
+            if (rangePairs.size() == 0) {
                 if (groupValue != null) {
-                    groupKey = new FunnelGroupKey(head.getDate(), 0, (String) groupValue);
+                    groupKey = new FunnelGroupKey(dates[head.getDate()], 0, (String) groupValue);
                 } else {
-                    groupKey = new FunnelGroupKey(head.getDate(), 0, null);
+                    groupKey = new FunnelGroupKey(dates[head.getDate()], 0, "");
                 }
             } else {
                 Double price = (Double) groupValue;
                 int priceGroup = -1;
                 if (price != null) {
-                    for (int j = 0; j < rangePrices.length; j++) {
-                        if (price >= rangePrices[j][0] && price < rangePrices[j][1]) {
+                    for (int j = 0; j < rangePairs.size(); j++) {
+                        if (price >= rangePairs.get(j)[0] && price < rangePairs.get(j)[1]) {
                             priceGroup = j;
                             break;
                         }
                     }
                 }
-                groupKey = new FunnelGroupKey(head.getDate(), priceGroup);
+                List<Double> pair = priceGroup == -1 ? new ArrayList<Double>() :
+                        Arrays.asList(rangePairs.get(priceGroup)[0], rangePairs.get(priceGroup)[1]);
+                groupKey = new FunnelGroupKey(dates[head.getDate()], priceGroup, pair);
             }
         } else {
-            groupKey = new FunnelGroupKey(head.getDate());
+            groupKey = new FunnelGroupKey(dates[head.getDate()]);
         }
         return groupKey;
     }
 
+    private boolean isCalMedian() {
+        List<PostQueryInfoBean> beans = bean.getPostAggregations();
+        for (PostQueryInfoBean postQueryInfoBean : beans) {
+            if (postQueryInfoBean.getType() == PostQueryType.FUNNEL_MEDIAN) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int getPostGroupStep() {
+        PostGroupBean groupBean = bean.getAggregation().getPostGroup();
+        return groupBean == null ? -1 : groupBean.getFunnelIndex();
+    }
+
     private void aggregate(Map<FunnelGroupKey, FunnelAggValue> result, FunnelQueryBean bean, List<IHead> heads) {
-        int numberOfSteps = bean.getSteps().length;
-        boolean calMedian = bean.isCalMedian();
-        int postGroupStep = bean.getPostGroupStep();
+        int numberOfSteps = bean.getAggregation().getFunnelEvents().size();
+        boolean calMedian = isCalMedian();
+        int postGroupStep = getPostGroupStep();
+        PostGroupBean groupBean = bean.getAggregation().getPostGroup();
+        List<double[]> rangePairs = groupBean == null ? new ArrayList<double[]>() : groupBean.getRangePairs();
 
         for (IHead head : heads) {
-            FunnelGroupKey groupKey = createGroupKey(postGroupStep, bean.getPostNumberRangeGroups(), head);
+            FunnelGroupKey groupKey = createGroupKey(postGroupStep, rangePairs, head);
             FunnelAggValue contestAggValue = result.get(groupKey);
             if (contestAggValue == null) {
                 int[] counter = new int[numberOfSteps];
-                List<List<Integer>> lists = null;
+                List<List<Integer>> lists = new ArrayList<List<Integer>>();
                 if (calMedian) {
                     lists = createList(numberOfSteps - 1);
                 }
@@ -231,13 +261,14 @@ public class FunnelSegmentQuery implements SegmentQuery {
     }
 
     private ImmutableBitMap createDateBitMap(Segment segment, FunnelQueryBean bean) {
-        Column dateColumn = segment.getColumn(new ColumnKey(bean.getDate()));
+        DayFilterBean dayFilterBean = bean.getAggregation().getDayFilter();
+        Column dateColumn = segment.getColumn(new ColumnKey(dayFilterBean.getColumn()));
         Set<Object> values = new HashSet<Object>();
-        String start = bean.getDateStart();
+        String start = dayFilterBean.getDayStart();
         int i = getDateStart(start);
-        int numberOfDates = bean.getNumberOfDates();
+        int numberOfDates = dayFilterBean.getNumberOfDays();
         for (int j = 0; j < numberOfDates; j++) {
-            values.add((long) (i + j));
+            values.add(dates[i + j]);
         }
         InFilter filter = new InFilter(values, dateColumn);
         return filter.createFilterIndex();
@@ -254,76 +285,53 @@ public class FunnelSegmentQuery implements SegmentQuery {
     }
 
     private ITimeWindowFilter createTimeWindowFilter(IStep step, FunnelQueryBean bean, Segment segment) {
-        boolean[] associatedProperty = getFlags(bean, bean.getAssociatedSteps());
+        AssociationFilterBean association = bean.getAggregation().getAssociatedFilter();
+        boolean[] associatedProperty = getFlags(bean, association == null ? new ArrayList<Integer>() : association.getFunnelIndexes());
         DictionaryEncodedColumn associatedPropertyColumn = null;
-        if (bean.getAssociatedProperty() != null) {
-            associatedPropertyColumn = segment.getColumn(new ColumnKey(bean.getAssociatedProperty())).getDictionaryEncodedColumn();
+        if (association != null && association.getColumn() != null) {
+            associatedPropertyColumn = segment.getColumn(new ColumnKey(association.getColumn())).getDictionaryEncodedColumn();
         }
-        int dateStart = getDateStart(bean.getDateStart());
-        int firstAssociatedIndex = bean.getAssociatedSteps().length == 0 ? -1 : bean.getAssociatedSteps()[0];
+        DayFilterBean dayFilterBean = bean.getAggregation().getDayFilter();
+        int dateStart = getDateStart(dayFilterBean.getDayStart());
+        int firstAssociatedIndex = (association == null || association.getFunnelIndexes().size() == 0) ? -1 : association.getFunnelIndexes().get(0);
         boolean repeated = step.hasRepeatedEvents();
         if (!repeated) {
             step = step.toNoRepeatedStep();
-            return new GroupTWFilter(bean.getTimeWindow(), dateStart, bean.getNumberOfDates(),
+            return new GroupTWFilter(bean.getAggregation().getTimeWindow(), dateStart, dayFilterBean.getNumberOfDays(),
                     step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
         }
-        return new TimeWindowFilter(bean.getTimeWindow(), dateStart, bean.getNumberOfDates(),
+        return new TimeWindowFilter(bean.getAggregation().getTimeWindow(), dateStart, dayFilterBean.getNumberOfDays(),
                 step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
     }
 
-    private boolean[] getFlags(FunnelQueryBean bean, int[] steps) {
-        boolean[] flags = new boolean[bean.getSteps().length];
-        for (int i = 0; i < steps.length; i++) {
-            flags[steps[i]] = true;
+    private boolean[] getFlags(FunnelQueryBean bean, List<Integer> steps) {
+        boolean[] flags = new boolean[bean.getAggregation().getFunnelEvents().size()];
+        for (int i = 0; i < steps.size(); i++) {
+            flags[steps.get(i)] = true;
         }
         return flags;
     }
 
-    private IStep createStep(String[][] stepNames, boolean hasVirtualEvent) {
-        if (!hasVirtualEvent) {
-            Set<String> names = new HashSet<String>();
-            names.add(stepNames[0][0]);
-            boolean isHeadRepeated = false;
-            int[] steps = new int[stepNames.length];
-            for (int i = 0; i < stepNames.length; i++) {
-                if (i > 0 && names.contains(stepNames[i][0])) {
-                    isHeadRepeated = true;
-                }
-                steps[i] = (int) (long) globalDic.get(stepNames[i][0]);
-            }
-            names.clear();
-            for (String[] name : stepNames) {
-                names.add(name[0]);
-            }
-            return new Step(steps, isHeadRepeated, names.size() < stepNames.length);
-        }
-        Set<String> names = new HashSet<String>(Arrays.asList(stepNames[0]));
+    private IStep createStep(List<String> stepNames) {
+        Set<String> names = new HashSet<String>();
+        names.add(stepNames.get(0));
         boolean isHeadRepeated = false;
-        boolean[][] steps = new boolean[stepNames.length][];
-        int total = 0;
-        for (int i = 0; i < stepNames.length; i++) {
-            steps[i] = new boolean[globalDic.size()];
-            for (int j = 0; j < stepNames[i].length; j++) {
-                if (i > 0 && names.contains(stepNames[i][j])) {
-                    isHeadRepeated = true;
-                }
-                steps[i][(int) (long) globalDic.get(stepNames[i][j])] = true;
-                total++;
+        int[] steps = new int[stepNames.size()];
+        for (int i = 0; i < stepNames.size(); i++) {
+            if (i > 0 && names.contains(stepNames.get(i))) {
+                isHeadRepeated = true;
             }
+            steps[i] = (int) (long) globalDic.get(stepNames.get(i));
         }
         names.clear();
-        for (String[] ns : stepNames) {
-            names.addAll(Arrays.asList(ns));
-        }
-        return new VirtualStep(steps, isHeadRepeated, names.size() < total);
+        names.addAll(stepNames);
+        return new Step(steps, isHeadRepeated, names.size() < stepNames.size());
     }
 
-    private Set<Integer> getSteps(String[][] stepNames) {
+    private Set<Integer> getSteps(List<String> stepNames) {
         Set<Integer> steps = new HashSet<Integer>();
-        for (int i = 0; i < stepNames.length; i++) {
-            for (String name : stepNames[i]) {
-                steps.add((int) (long) globalDic.get(name));
-            }
+        for (int i = 0; i < stepNames.size(); i++) {
+            steps.add((int) (long) globalDic.get(stepNames.get(i)));
         }
         return steps;
     }
