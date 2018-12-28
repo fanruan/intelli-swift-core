@@ -3,7 +3,7 @@ package com.fr.swift.cluster.service;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.heart.HeartBeatInfo;
 import com.fr.swift.heart.NodeState;
-import com.fr.swift.process.handler.NodesProcessHandler;
+import com.fr.swift.basics.handler.NodesProcessHandler;
 
 import java.util.Collection;
 

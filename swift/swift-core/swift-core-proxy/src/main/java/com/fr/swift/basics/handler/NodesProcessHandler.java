@@ -1,4 +1,4 @@
-package com.fr.swift.process.handler;
+package com.fr.swift.basics.handler;
 
 import com.fr.swift.basics.ProcessHandler;
 
