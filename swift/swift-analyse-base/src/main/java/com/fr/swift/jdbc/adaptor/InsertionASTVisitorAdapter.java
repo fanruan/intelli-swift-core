@@ -6,7 +6,6 @@ import com.fr.swift.api.server.response.error.ServerErrorCode;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.data.importing.file.impl.BaseFileLineParser;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
@@ -22,6 +21,7 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.resultset.importing.file.impl.BaseFileLineParser;
 import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;

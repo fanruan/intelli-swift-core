@@ -1,4 +1,4 @@
-package com.fr.swift.data.importing.file.impl;
+package com.fr.swift.source.resultset.importing.file.impl;
 
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;

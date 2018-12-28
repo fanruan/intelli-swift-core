@@ -1,13 +1,13 @@
-package com.fr.swift.data.importing.file.impl;
+package com.fr.swift.source.resultset.importing.file.impl;
 
 import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.data.importing.file.FileLineParser;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.resultset.importing.file.FileLineParser;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.DateUtils;
 import com.fr.swift.util.Strings;

@@ -1,4 +1,4 @@
-package com.fr.swift.data.importing;
+package com.fr.swift.source.resultset.importing;
 
 import com.fr.swift.result.SwiftResultSet;
 

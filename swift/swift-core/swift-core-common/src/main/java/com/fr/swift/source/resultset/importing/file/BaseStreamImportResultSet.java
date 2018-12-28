@@ -1,13 +1,13 @@
-package com.fr.swift.data.importing.file;
+package com.fr.swift.source.resultset.importing.file;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.data.importing.BaseImportResultSet;
-import com.fr.swift.data.importing.ImportType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.resultset.importing.BaseImportResultSet;
+import com.fr.swift.source.resultset.importing.ImportType;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
