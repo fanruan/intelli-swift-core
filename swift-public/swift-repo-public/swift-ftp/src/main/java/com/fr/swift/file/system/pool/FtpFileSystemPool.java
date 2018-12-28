@@ -1,5 +1,6 @@
 package com.fr.swift.file.system.pool;
 
+import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.client.SwiftFTPClient;
 import com.fr.swift.file.system.impl.FtpFileSystemImpl;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
@@ -31,7 +32,7 @@ public class FtpFileSystemPool extends BaseRemoteFileSystemPool<FtpFileSystemImp
 
         @Override
         public FtpFileSystemImpl create(String uri) {
-            return new FtpFileSystemImpl(config, uri, clientPool);
+            return new FtpFileSystemImpl(config, uri, clientPool, RemoteFileSystemFactoryCreator.creator().getFactory(SwiftRemoteFileSystemType.FTP));
         }
     }
 }
