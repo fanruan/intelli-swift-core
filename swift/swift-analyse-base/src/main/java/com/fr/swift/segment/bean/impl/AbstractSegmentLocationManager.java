@@ -43,11 +43,11 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
     synchronized
     public List<SegmentDestination> getSegmentLocationURI(SourceKey table) {
         List<SegmentDestination> destinations = new ArrayList<SegmentDestination>();
-        if (localSegments.containsKey(table.getId())) {
-            destinations.addAll(filterNegative(localSegments.get(table.getId()).values()));
+        if (localSegments.containsKey(table)) {
+            destinations.addAll(filterNegative(localSegments.get(table).values()));
         }
-        if (remoteSegments.containsKey(table.getId())) {
-            destinations.addAll(filterNegative(remoteSegments.get(table.getId()).values()));
+        if (remoteSegments.containsKey(table)) {
+            destinations.addAll(filterNegative(remoteSegments.get(table).values()));
         }
         Collections.sort(destinations);
         destinations = rule.selectDestination(destinations);
