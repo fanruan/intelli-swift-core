@@ -32,35 +32,35 @@ public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
 
         private int index = 0;
         private List<DetailQueryResultSet> resultSets;
-        private List<Row> currentPage;
-        private int currentRow = -1;
+        private Iterator<Row> iterator;
 
         public DetailRowIterator(List<DetailQueryResultSet> resultSets) {
             this.resultSets = resultSets;
-            this.currentPage = new ArrayList<Row>();
+            this.iterator = new ArrayList<Row>().iterator();
         }
 
         @Override
         public boolean hasNext() {
+            if (iterator.hasNext()) {
+                return true;
+            }
             while (index < resultSets.size()) {
                 DetailQueryResultSet resultSet = resultSets.get(index);
-                if (currentPage.isEmpty()) {
-                    currentPage = resultSet.getPage();
-                    currentRow = -1;
+                if (resultSet.hasNextPage()) {
+                    List<Row> page = resultSet.getPage();
+                    if (page != null && !page.isEmpty()) {
+                        iterator = page.iterator();
+                        break;
+                    }
                 }
-                if (currentRow++ < currentPage.size()) {
-                    return true;
-                }
-                resultSet.close();
                 index++;
             }
-            return false;
+            return iterator.hasNext();
         }
 
         @Override
         public Row next() {
-
-            return currentPage.get(currentRow);
+            return iterator.next();
         }
 
         @Override

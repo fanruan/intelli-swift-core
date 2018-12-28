@@ -16,7 +16,7 @@ import com.fr.swift.property.SwiftProperty;
 public abstract class AbstractInvokerCreator implements InvokerCreator {
     @Override
     public Invoker createAsyncInvoker(Class clazz, URL url) {
-        if (url == null || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId())) {
+        if (url == null || url.getDestination().getId() == null || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId())) {
             return new LocalInvoker(ProxyServiceRegistry.get().getService(clazz.getName()), clazz, url, false);
         }
         return null;

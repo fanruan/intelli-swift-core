@@ -237,11 +237,13 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements SelectionBe
             }
             // sorts
             visit(x.getOrderBy());
-            RowSortQueryInfoBean rowSort = new RowSortQueryInfoBean();
-            rowSort.setSortBeans(sortBeans);
-            List<PostQueryInfoBean> postQueryInfoBeans = new ArrayList<PostQueryInfoBean>();
-            postQueryInfoBeans.add(rowSort);
-            bean.setPostAggregations(postQueryInfoBeans);
+            if (sortBeans != null) {
+                RowSortQueryInfoBean rowSort = new RowSortQueryInfoBean();
+                rowSort.setSortBeans(sortBeans);
+                List<PostQueryInfoBean> postQueryInfoBeans = new ArrayList<PostQueryInfoBean>();
+                postQueryInfoBeans.add(rowSort);
+                bean.setPostAggregations(postQueryInfoBeans);
+            }
             return false;
         }
 
