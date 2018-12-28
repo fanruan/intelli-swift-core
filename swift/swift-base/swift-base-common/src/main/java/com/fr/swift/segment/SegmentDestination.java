@@ -1,7 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.query.Queryable;
-
 import java.util.List;
 
 /**
@@ -10,16 +8,8 @@ import java.util.List;
  * todo 补javadoc
  */
 public interface SegmentDestination extends Comparable<SegmentDestination> {
+
     boolean isRemote();
-
-    Class<? extends Queryable> getServiceClass();
-
-    /**
-     * todo 这个方法感觉和这个接口不搭配鸭
-     *
-     * @return
-     */
-    String getMethodName();
 
     String getAddress();
 

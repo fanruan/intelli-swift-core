@@ -39,19 +39,21 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.process.handler.SwiftAliveNodesProcessHandler;
 import com.fr.swift.process.handler.SwiftNodesProcessHandler;
 import com.fr.swift.segment.container.SegmentContainer;
+import com.fr.swift.segment.event.MaskHistoryListener;
+import com.fr.swift.segment.event.PushSegmentLocationListener;
+import com.fr.swift.segment.event.RemoveHistoryListener;
+import com.fr.swift.segment.event.RemoveSegmentLocationListener;
+import com.fr.swift.segment.event.TransferRealtimeListener;
+import com.fr.swift.segment.event.UploadHistoryListener;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
-import com.fr.swift.service.MaskHistoryListener;
 import com.fr.swift.service.RealtimeService;
-import com.fr.swift.service.RemoveHistoryListener;
 import com.fr.swift.service.SwiftCommonLoadProcessHandler;
 import com.fr.swift.service.SwiftDeleteSegmentProcessHandler;
 import com.fr.swift.service.SwiftInsertSegmentProcessHandler;
 import com.fr.swift.service.SwiftQueryableProcessHandler;
 import com.fr.swift.service.SwiftSyncDataProcessHandler;
-import com.fr.swift.service.TransferRealtimeListener;
-import com.fr.swift.service.UploadHistoryListener;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.util.concurrent.CommonExecutor;
@@ -98,6 +100,9 @@ public class SwiftEngineActivator extends Activator implements Prepare {
                     UploadHistoryListener.listen();
                     MaskHistoryListener.listen();
                     RemoveHistoryListener.listen();
+
+                    PushSegmentLocationListener.listen();
+                    RemoveSegmentLocationListener.listen();
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("swift engine start failed", e);
                 }

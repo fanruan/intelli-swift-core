@@ -1,4 +1,4 @@
-package com.fr.swift.service;
+package com.fr.swift.segment.event;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
@@ -16,11 +16,9 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.util.Util;
 
 import java.util.Collections;
@@ -33,8 +31,6 @@ import java.util.Collections;
 public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
 
     private static final SwiftRepositoryManager REPO = SwiftContext.get().getBean(SwiftRepositoryManager.class);
-
-    private static final ServiceTaskExecutor SVC_EXEC = SwiftContext.get().getBean(ServiceTaskExecutor.class);
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 

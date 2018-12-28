@@ -1,4 +1,4 @@
-package com.fr.swift.service;
+package com.fr.swift.segment.event;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.CubePathBuilder;
@@ -10,7 +10,6 @@ import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
 import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;

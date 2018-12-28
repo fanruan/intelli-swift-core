@@ -152,9 +152,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
                     initSegDestinations(realTime, entry.getKey());
                     for (SegmentKey segmentKey : entry.getValue()) {
                         if (segmentKey.getStoreType().isPersistent()) {
-                            hist.get(entry.getKey()).add(new SegmentDestinationImpl(getId(), segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery"));
+                            hist.get(entry.getKey()).add(new SegmentDestinationImpl(getId(), segmentKey.toString(), segmentKey.getOrder()));
                         } else {
-                            realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getId(), segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery"));
+                            realTime.get(entry.getKey()).add(new RealTimeSegDestImpl(getId(), segmentKey.toString(), segmentKey.getOrder()));
                         }
                         manager.getSegment(segmentKey);
                     }
