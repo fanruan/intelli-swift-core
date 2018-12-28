@@ -42,7 +42,7 @@ import java.util.Map;
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService, Serializable {
     private static final long serialVersionUID = 841582089735823794L;
 
-    private transient SessionFactory sessionFactory;
+    private transient SessionFactory sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
     private transient boolean loadable = true;
 
     public SwiftAnalyseService() {
@@ -51,7 +51,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
-        this.sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
         cacheSegments();
         return start;
     }

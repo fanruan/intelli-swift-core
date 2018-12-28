@@ -67,6 +67,9 @@ public abstract class BaseFileLineParser implements FileLineParser {
             }
             return row;
         }
+        if (null != adaptor) {
+            row = adaptor.adapt(row);
+        }
         List data = new ArrayList();
         if (row.getSize() > columns.size()) {
             Crasher.crash(String.format("Parser expect column size %d but get %d", columns.size(), row.getSize()));
@@ -81,11 +84,8 @@ public abstract class BaseFileLineParser implements FileLineParser {
                 data.add(null);
             }
         }
-        Row listRow = new ListBasedRow(data);
-        if (null != adaptor) {
-            return adaptor.adapt(listRow);
-        }
-        return listRow;
+        return new ListBasedRow(data);
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.fr.swift.query.info.bean.parser;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.ColumnIndexingConf;
 import com.fr.swift.config.service.IndexingConfService;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
 import com.fr.swift.query.group.info.IndexInfoImpl;
@@ -17,6 +18,7 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
@@ -52,7 +54,15 @@ class DimensionParser {
                             new IndexInfoImpl(conf.requireIndex(), conf.requireGlobalDict())));
                     break;
                 case DETAIL_ALL_COLUMN: {
-                    // TODO: 2018/12/10 select * from table_name
+                    SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(table.getId());
+                    List<String> fields = meta.getFieldNames();
+                    for (int n = 0; n < fields.size(); n++) {
+                        ColumnIndexingConf conf1 = service.getColumnConf(table, fields.get(n));
+                        dimensions.add(new DetailDimension(n, new ColumnKey(fields.get(n)),
+                                Groups.newGroup(new NoGroupRule()), sort,
+                                new IndexInfoImpl(conf1.requireIndex(), conf1.requireGlobalDict())));
+                    }
+                    break;
                 }
                 default:
             }
