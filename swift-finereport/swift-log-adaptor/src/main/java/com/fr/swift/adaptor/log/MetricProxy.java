@@ -58,13 +58,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class MetricProxy extends BaseMetric {
 
-    private RealtimeService realtimeService;
-    private AnalyseService analyseService;
+    //    private RealtimeService realtimeService;
+//    private AnalyseService analyseService;
     private Sync sync;
 
     private MetricProxy() {
-        realtimeService = ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class);
-        analyseService = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+//        realtimeService = ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class);
+//        analyseService = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
         sync = new Sync();
     }
 
@@ -80,14 +80,14 @@ public class MetricProxy extends BaseMetric {
 
             QueryBean queryBean = LogQueryUtils.getDetailQueryBean(entity, queryCondition);
             // TODO: 2018/11/28  QueryResultSet to SwiftResultSet
-            QueryResultSet queryResultSet = analyseService.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
+            QueryResultSet queryResultSet = ProxySelector.getProxy(AnalyseService.class).getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
             SwiftResultSet resultSet = SwiftResultSetUtils.toSwiftResultSet(queryResultSet, queryBean);
             List<Row> page = LogQueryUtils.getPage(resultSet, queryCondition);
             for (Row row : page) {
                 tList.add(adaptor.apply(row));
             }
             dataList.list(tList);
-            dataList.setTotalCount(((DetailQueryResultSet)queryResultSet).getRowCount());
+            dataList.setTotalCount(((DetailQueryResultSet) queryResultSet).getRowCount());
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
@@ -255,7 +255,7 @@ public class MetricProxy extends BaseMetric {
                     Object first = data.get(0);
                     Class<?> entity = first.getClass();
                     Table table = db.getTable(new SourceKey(JpaAdaptor.getTableName(entity)));
-                    realtimeService.insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
+                    ProxySelector.getProxy(RealtimeService.class).insert(table.getSourceKey(), new LogRowSet(table.getMetadata(), data, entity));
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                 }

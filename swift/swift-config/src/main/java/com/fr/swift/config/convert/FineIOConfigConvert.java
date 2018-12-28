@@ -1,6 +1,5 @@
 package com.fr.swift.config.convert;
 
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.CommonConnectorConfig;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.config.bean.SwiftConfigBean;
@@ -8,12 +7,8 @@ import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
-import com.fr.swift.event.ClusterEvent;
-import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
-import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.property.SwiftProperty;
 
 import java.sql.SQLException;
 
@@ -23,20 +18,20 @@ import java.sql.SQLException;
  */
 public class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConnectorConfig> {
     private static final String FINE_IO_CONNECTOR = "FINE_IO_CONNECTOR";
-    private String clusterId = SwiftConfigConstants.LOCALHOST;
+//    private String clusterId = SwiftConfigConstants.LOCALHOST;
 
     public FineIOConfigConvert() {
         super(FineIOConnectorConfig.class);
-        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
-            @Override
-            public void handleEvent(ClusterEvent clusterEvent) {
-                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-                    clusterId = SwiftConfigConstants.LOCALHOST;
-                }
-            }
-        });
+//        ClusterListenerHandler.addExtraListener(new ClusterEventListener() {
+//            @Override
+//            public void handleEvent(ClusterEvent clusterEvent) {
+//                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+//                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+//                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
+//                    clusterId = SwiftConfigConstants.LOCALHOST;
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -56,6 +51,6 @@ public class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConne
 
     @Override
     protected String getNameSpace() {
-        return FINE_IO_CONNECTOR + "." + clusterId;
+        return FINE_IO_CONNECTOR + "." + SwiftProperty.getProperty().getClusterId();
     }
 }

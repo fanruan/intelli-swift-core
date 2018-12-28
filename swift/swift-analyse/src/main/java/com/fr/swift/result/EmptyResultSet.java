@@ -1,4 +1,4 @@
-package com.fr.swift.jdbc.result;
+package com.fr.swift.result;
 
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.result.SwiftResultSet;
