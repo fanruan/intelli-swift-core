@@ -18,6 +18,7 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -67,7 +68,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
         @Override
         protected void onSucceed() {
             SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
-            SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, newSegKey);
+            SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, Arrays.asList(newSegKey));
         }
     }
 }
