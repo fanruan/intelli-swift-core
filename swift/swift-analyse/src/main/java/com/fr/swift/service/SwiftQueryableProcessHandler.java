@@ -10,6 +10,7 @@ import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
@@ -178,6 +179,9 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
             if (Strings.isNotEmpty(segmentId)) {
                 map.get(clusterId).getValue().add(segmentId);
             }
+        }
+        if (map.isEmpty() && !SwiftProperty.getProperty().isCluster()) {
+            map.put(Strings.EMPTY, Pair.<URL, Set<String>>of(null, new HashSet<String>()));
         }
         return Collections.unmodifiableList(new ArrayList<Pair<URL, Set<String>>>(map.values()));
     }
