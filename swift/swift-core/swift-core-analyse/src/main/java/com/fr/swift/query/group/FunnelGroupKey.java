@@ -1,6 +1,7 @@
 package com.fr.swift.query.group;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * This class created on 2018/12/13
@@ -11,31 +12,45 @@ import java.io.Serializable;
 public class FunnelGroupKey implements Serializable {
     private static final long serialVersionUID = -3889379835138230758L;
 
-    private int date;
+    private String date;
     private int priceGroup = -1;
     private int tempStrGroup = -1;
     private String strGroup = null;
+    private List<Double> rangePair = null;
+    private GroupType type;
 
-    public FunnelGroupKey(int date) {
+    public FunnelGroupKey(String date) {
         this.date = date;
+        this.type = GroupType.NONE;
     }
 
-    public FunnelGroupKey(int date, int priceGroup) {
+    public FunnelGroupKey(String date, int priceGroup, List<Double> rangePair) {
         this.date = date;
         this.priceGroup = priceGroup;
+        this.type = GroupType.RANGE;
+        this.rangePair = rangePair;
     }
 
-    public FunnelGroupKey(int date, int tempStrGroup, String strGroup) {
+    public FunnelGroupKey(String date, int tempStrGroup, String strGroup) {
         this.date = date;
         this.tempStrGroup = tempStrGroup;
         this.strGroup = strGroup;
+        this.type = GroupType.NORMAL;
+    }
+
+    public GroupType getType() {
+        return type;
+    }
+
+    public List<Double> getRangePair() {
+        return rangePair;
     }
 
     public int getTempStrGroup() {
         return tempStrGroup;
     }
 
-    public int getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -52,17 +67,17 @@ public class FunnelGroupKey implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FunnelGroupKey groupKey = (FunnelGroupKey) o;
+        FunnelGroupKey key = (FunnelGroupKey) o;
 
-        if (date != groupKey.date) return false;
-        if (priceGroup != groupKey.priceGroup) return false;
-        if (tempStrGroup != groupKey.tempStrGroup) return false;
-        return strGroup != null ? strGroup.equals(groupKey.strGroup) : groupKey.strGroup == null;
+        if (priceGroup != key.priceGroup) return false;
+        if (tempStrGroup != key.tempStrGroup) return false;
+        if (date != null ? !date.equals(key.date) : key.date != null) return false;
+        return strGroup != null ? strGroup.equals(key.strGroup) : key.strGroup == null;
     }
 
     @Override
     public int hashCode() {
-        int result = date;
+        int result = date != null ? date.hashCode() : 0;
         result = 31 * result + priceGroup;
         result = 31 * result + tempStrGroup;
         result = 31 * result + (strGroup != null ? strGroup.hashCode() : 0);
@@ -73,6 +88,12 @@ public class FunnelGroupKey implements Serializable {
     public String toString() {
         return "groupKey[date=" + date + ", priceGroup=" + priceGroup + ", tempStrGroup="
                 + tempStrGroup + ", strGroup=" + strGroup + "]";
+    }
+
+    public enum GroupType {
+        NONE,
+        NORMAL,
+        RANGE
     }
 }
 

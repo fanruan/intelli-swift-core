@@ -35,6 +35,6 @@ public class FunnelQueryBuilder {
             queries.add(new FunnelSegmentQuery(segment, info.getQueryBean()));
         }
         SwiftLoggers.getLogger().debug("number of segment queries: {}", queries.size());
-        return new FunnelResultQuery(bean.getSteps().length, queries);
+        return new FunnelResultQuery(bean.getAggregation().getFunnelEvents().size(), queries);
     }
 }

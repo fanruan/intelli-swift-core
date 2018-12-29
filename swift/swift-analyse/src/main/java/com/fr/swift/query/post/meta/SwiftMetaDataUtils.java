@@ -17,6 +17,8 @@ public class SwiftMetaDataUtils {
                 return new GroupMetaDataCreator();
             case DETAIL:
                 return new DetailMetaDataCreator();
+            case FUNNEL:
+                return new FunnelMetaCreator();
             default:
                 // do nothing
         }

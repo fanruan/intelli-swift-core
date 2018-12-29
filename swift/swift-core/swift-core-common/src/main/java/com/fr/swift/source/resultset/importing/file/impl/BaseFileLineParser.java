@@ -1,7 +1,6 @@
 package com.fr.swift.source.resultset.importing.file.impl;
 
 import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
@@ -80,7 +79,7 @@ public abstract class BaseFileLineParser implements FileLineParser {
                 ColumnTypeConstants.ClassType classType = ColumnTypeUtils.getClassType(columns.get(i));
                 addRowDataFromString(data, col, classType);
             } catch (Exception e) {
-                SwiftLoggers.getLogger().warn(e.getMessage());
+//                SwiftLoggers.getLogger().warn(e.getMessage());
                 data.add(null);
             }
         }

@@ -16,7 +16,8 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
         @JsonSubTypes.Type(value = TreeFilterQueryInfoBean.class, name = "TREE_FILTER"),
         @JsonSubTypes.Type(value = TreeAggregationQueryInfoBean.class, name = "TREE_AGGREGATION"),
         @JsonSubTypes.Type(value = TreeSortQueryInfoBean.class, name = "TREE_SORT"),
-        @JsonSubTypes.Type(value = RowSortQueryInfoBean.class, name = "ROW_SORT")
+        @JsonSubTypes.Type(value = RowSortQueryInfoBean.class, name = "ROW_SORT"),
+        @JsonSubTypes.Type(value = FunnelMedianInfoBean.class, name = "FUNNEL_MEDIAN")
 })
 public interface PostQueryInfoBean {
 

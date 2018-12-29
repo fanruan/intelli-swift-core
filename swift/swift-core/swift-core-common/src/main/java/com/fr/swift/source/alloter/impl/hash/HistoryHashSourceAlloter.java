@@ -15,7 +15,6 @@ public class HistoryHashSourceAlloter extends BaseHistorySourceAlloter<HashAllot
 
     @Override
     protected int getLogicOrder(HashRowInfo rowInfo) {
-        // hash row
-        return 0;
+        return rule.analyzer().analyseHistory(rowInfo);
     }
 }

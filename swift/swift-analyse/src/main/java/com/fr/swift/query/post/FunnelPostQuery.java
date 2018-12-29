@@ -2,7 +2,9 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.group.FunnelGroupKey;
+import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
+import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 
@@ -24,9 +26,19 @@ public class FunnelPostQuery implements PostQuery<QueryResultSet> {
     private PostQuery postQuery;
 
     public FunnelPostQuery(PostQuery<QueryResultSet> postQuery, FunnelQueryBean queryBean) {
-        this.calMedian = queryBean.isCalMedian();
-        this.timeWindow = queryBean.getTimeWindow();
+        this.calMedian = isCalMedian(queryBean);
+        this.timeWindow = queryBean.getAggregation().getTimeWindow();
         this.postQuery = postQuery;
+    }
+
+    private boolean isCalMedian(FunnelQueryBean queryBean) {
+        List<PostQueryInfoBean> beans = queryBean.getPostAggregations();
+        for (PostQueryInfoBean bean : beans) {
+            if (bean.getType() == PostQueryType.FUNNEL_MEDIAN) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
