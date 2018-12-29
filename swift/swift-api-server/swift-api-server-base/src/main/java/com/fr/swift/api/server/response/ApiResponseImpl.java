@@ -14,6 +14,8 @@ import java.io.Serializable;
  */
 public class ApiResponseImpl implements ApiResponse {
 
+    private static final long serialVersionUID = -8293646149558564100L;
+
     private Serializable result;
 
     private Throwable throwable;

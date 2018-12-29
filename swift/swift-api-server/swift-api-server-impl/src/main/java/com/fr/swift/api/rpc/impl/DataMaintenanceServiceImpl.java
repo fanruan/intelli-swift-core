@@ -6,7 +6,6 @@ import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
-import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
@@ -15,8 +14,8 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.DeleteEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
@@ -40,7 +39,7 @@ import java.util.List;
 @SwiftApi
 @SwiftBean
 public class DataMaintenanceServiceImpl implements DataMaintenanceService {
-    private TableService tableService = ProxyServiceRegistry.get().getExternalService(TableService.class);
+    private TableService tableService = SwiftContext.get().getBean(TableService.class);
 
     @Override
     @SwiftApi
@@ -85,7 +84,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
                 return 0;
             }
             DeleteEvent event = new DeleteEvent(Pair.of(new SourceKey(metaData.getId()), where));
-            if (ClusterSelector.getInstance().getFactory().isCluster()) {
+            if (SwiftProperty.getProperty().isCluster()) {
                 ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(event);
             } else {
                 SwiftServiceListenerManager.getInstance().triggerEvent(event);
