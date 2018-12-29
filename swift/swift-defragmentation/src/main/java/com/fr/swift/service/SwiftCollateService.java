@@ -21,6 +21,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.collate.FragmentCollectRule;
 import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
 import com.fr.swift.source.SourceKey;
@@ -231,5 +232,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 }
             }
         });
+
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, collateSegKeys);
     }
 }

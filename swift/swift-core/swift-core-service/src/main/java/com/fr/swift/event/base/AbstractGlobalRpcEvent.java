@@ -16,6 +16,7 @@ public abstract class AbstractGlobalRpcEvent<T> implements SwiftRpcEvent<T, Even
     public abstract Event subEvent();
 
     public enum Event implements SubEvent {
-        CLEAN, TASK_DONE, PUSH_SEG, GET_ANALYSE_REAL_TIME, DELETE, TRUNCATE, CHECK_MASTER
+        //
+        CLEAN, TASK_DONE, PUSH_SEG, REMOVE_SEG, GET_ANALYSE_REAL_TIME, DELETE, TRUNCATE, CHECK_MASTER
     }
 }

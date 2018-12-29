@@ -1,4 +1,4 @@
-package com.fr.swift.service;
+package com.fr.swift.segment.event;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -9,7 +9,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.selector.ClusterSelector;
 
 import java.util.Collections;
@@ -41,6 +40,8 @@ public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
             SEG_SVC.removeSegments(Collections.singletonList(segKey));
             SegmentUtils.clearSegment(segKey);
         }
+
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, Collections.singletonList(segKey));
     }
 
     public static final RemoveHistoryListener INSTANCE = new RemoveHistoryListener();

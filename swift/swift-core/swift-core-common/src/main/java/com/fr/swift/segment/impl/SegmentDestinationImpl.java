@@ -2,7 +2,6 @@ package com.fr.swift.segment.impl;
 
 import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
 import com.fr.swift.base.json.annotation.JsonProperty;
-import com.fr.swift.query.Queryable;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
@@ -17,6 +16,7 @@ import java.util.List;
  */
 @JsonIgnoreProperties(value = {"remote"})
 public class SegmentDestinationImpl implements SegmentDestination, Serializable {
+
     private static final long serialVersionUID = 3016733438741210788L;
     @JsonProperty
     protected String clusterId;
@@ -29,10 +29,6 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
     @JsonProperty
     private int order;
     @JsonProperty
-    protected Class<? extends Queryable> serviceClass;
-    @JsonProperty
-    protected String methodName;
-    @JsonProperty
     private List<String> spareNodes;
 
     public SegmentDestinationImpl() {
@@ -44,14 +40,12 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
         };
     }
 
-    public SegmentDestinationImpl(String clusterId, String segmentId, int order, Class<? extends Queryable> serviceClass, String methodName) {
+    public SegmentDestinationImpl(String clusterId, String segmentId, int order) {
         this.clusterId = clusterId;
         this.address = clusterId;
         this.currentNode = clusterId;
         this.segmentId = segmentId;
         this.order = order;
-        this.serviceClass = serviceClass;
-        this.methodName = methodName;
         this.spareNodes = new ArrayList<String>() {
             @Override
             public boolean add(String s) {
@@ -66,8 +60,6 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
         this.currentNode = destination.getCurrentNode();
         this.segmentId = destination.getSegmentId();
         this.order = destination.getOrder();
-        this.serviceClass = destination.getServiceClass();
-        this.methodName = destination.getMethodName();
         this.spareNodes = destination.getSpareNodes();
     }
 
@@ -87,6 +79,7 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
         return clusterId;
     }
 
+    @Override
     public void setClusterId(String clusterId) {
         this.clusterId = clusterId;
     }
@@ -96,6 +89,7 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
         return spareNodes;
     }
 
+    @Override
     public void setSpareNodes(List<String> spareNodes) {
         this.spareNodes = spareNodes;
     }
@@ -112,16 +106,6 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
     @Override
     public boolean isRemote() {
         return !Strings.isEmpty(clusterId) && !Util.equals(currentNode, clusterId);
-    }
-
-    @Override
-    public Class<? extends Queryable> getServiceClass() {
-        return serviceClass;
-    }
-
-    @Override
-    public String getMethodName() {
-        return methodName;
     }
 
     @Override
@@ -142,14 +126,7 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
         this.order = order;
     }
 
-    public void setServiceClass(Class<? extends Queryable> serviceClass) {
-        this.serviceClass = serviceClass;
-    }
-
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
-
+    @Override
     public String getCurrentNode() {
         return currentNode;
     }
@@ -186,21 +163,13 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
         if (order != that.order) {
             return false;
         }
-        if (segmentId != null ? !segmentId.equals(that.segmentId) : that.segmentId != null) {
-            return false;
-        }
-        if (serviceClass != null ? !serviceClass.equals(that.serviceClass) : that.serviceClass != null) {
-            return false;
-        }
-        return methodName != null ? methodName.equals(that.methodName) : that.methodName == null;
+        return segmentId != null ? segmentId.equals(that.segmentId) : that.segmentId == null;
     }
 
     @Override
     public int hashCode() {
         int result = segmentId != null ? segmentId.hashCode() : 0;
         result = 31 * result + order;
-        result = 31 * result + (serviceClass != null ? serviceClass.hashCode() : 0);
-        result = 31 * result + (methodName != null ? methodName.hashCode() : 0);
         return result;
     }
 }

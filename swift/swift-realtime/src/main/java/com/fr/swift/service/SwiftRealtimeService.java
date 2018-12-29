@@ -42,6 +42,7 @@ import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
+import com.fr.swift.util.IoUtil;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -109,10 +110,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                     Table table = SwiftDatabase.getInstance().getTable(tableKey);
                     Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, table, alloter);
                     importer.importData(resultSet);
-                } catch (Exception e) {
-                    throw new SQLException(e);
                 } finally {
-                    resultSet.close();
+                    IoUtil.close(resultSet);
                 }
                 return null;
             }
@@ -247,7 +246,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
         protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
             String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-            return new RealTimeSegDestImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), RealtimeService.class, "realTimeQuery");
+            return new RealTimeSegDestImpl(clusterId, segmentKey.toString(), segmentKey.getOrder());
         }
     }
 }

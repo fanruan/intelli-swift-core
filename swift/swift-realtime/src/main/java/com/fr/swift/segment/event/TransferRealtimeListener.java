@@ -1,11 +1,10 @@
-package com.fr.swift.service;
+package com.fr.swift.segment.event;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.service.ScheduledRealtimeTransfer.RealtimeToHistoryTransfer;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;

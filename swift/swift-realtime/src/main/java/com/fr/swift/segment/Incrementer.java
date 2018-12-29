@@ -6,6 +6,7 @@ import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftRealtimeInserter;
@@ -14,6 +15,8 @@ import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.transaction.TransactionProxyFactory;
+
+import java.util.Collections;
 
 /**
  * @author anchore
@@ -40,6 +43,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
         // 增量块已满，transfer掉
         SegmentKey segKey = newSegmentKey(segInfo);
         SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(segKey));
     }
 
     @Override

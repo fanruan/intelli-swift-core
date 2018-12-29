@@ -5,7 +5,6 @@ import com.fr.swift.config.DataSyncRule;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.service.HistoryService;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class DefaultDataSyncRule implements DataSyncRule {
                 }
                 result.get(pair.getClusterId()).add(needLoad);
                 destinations.get(sourceKey).add(new SegmentDestinationImpl(pair.getClusterId(),
-                        needLoad.getId(), needLoad.getOrder(), HistoryService.class, "historyQuery"));
+                        needLoad.getId(), needLoad.getOrder()));
             }
         }
 

@@ -11,7 +11,6 @@ import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -317,7 +316,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
         protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
             String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-            return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder(), HistoryService.class, "historyQuery");
+            return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder());
         }
     }
 }

@@ -12,9 +12,12 @@ import com.fr.swift.db.Where;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
+import com.fr.swift.event.global.RemoveSegLocationRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.BaseService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.RealtimeService;
@@ -33,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author yee
@@ -63,11 +67,27 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                     LOGGER.error(e);
                 }
                 break;
-            case PUSH_SEG:
+            case PUSH_SEG: {
                 SegmentLocationInfo info = (SegmentLocationInfo) event.getContent();
                 SwiftServiceHandlerManager.getManager().
                         handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.PART, info));
                 break;
+            }
+            case REMOVE_SEG: {
+                RemoveSegLocationRpcEvent removeEvt = (RemoveSegLocationRpcEvent) event;
+                String clusterId = removeEvt.getClusterId();
+                SegmentLocationInfo info = (SegmentLocationInfo) event.getContent();
+                AnalyseService analyseService = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+
+                for (Entry<SourceKey, List<SegmentDestination>> entry : info.getDestinations().entrySet()) {
+                    ArrayList<String> segIds = new ArrayList<String>();
+                    for (SegmentDestination segDst : entry.getValue()) {
+                        segIds.add(segDst.getSegmentId());
+                    }
+                    analyseService.removeSegments(clusterId, entry.getKey().getId(), segIds);
+                }
+                break;
+            }
             case GET_ANALYSE_REAL_TIME:
                 Map<String, ClusterEntity> realtime = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
                 Map<String, ClusterEntity> analyse = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);

@@ -12,6 +12,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
@@ -20,6 +21,8 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
+
+import java.util.Collections;
 
 /**
  * @author anchore
@@ -60,7 +63,9 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     protected void handleFullSegment(SegmentInfo segInfo) {
         // 上传历史块
         // fixme 有临时路径的坑；另外何时上传也要考虑，这里还在导入过程，导入失败怎么办，生成好一块上传一块？
-        SwiftEventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegmentKey(segInfo));
+        SegmentKey segKey = newSegmentKey(segInfo);
+        SwiftEventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, segKey);
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(segKey));
     }
 
     @Override
