@@ -42,7 +42,6 @@ import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
-import com.fr.swift.util.IoUtil;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -105,14 +104,10 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.INSERT, new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                try {
-                    SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.MEM_STEP));
-                    Table table = SwiftDatabase.getInstance().getTable(tableKey);
-                    Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, table, alloter);
-                    importer.importData(resultSet);
-                } finally {
-                    IoUtil.close(resultSet);
-                }
+                SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.MEM_STEP));
+                Table table = SwiftDatabase.getInstance().getTable(tableKey);
+                Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, table, alloter);
+                importer.importData(resultSet);
                 return null;
             }
         }));

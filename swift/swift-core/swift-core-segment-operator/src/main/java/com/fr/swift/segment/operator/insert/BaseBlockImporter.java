@@ -39,7 +39,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected DataSource dataSource;
 
-    private Map<SegmentInfo, Inserting> insertings = new HashMap<SegmentInfo, Inserting>();
+    protected Map<SegmentInfo, Inserting> insertings = new HashMap<SegmentInfo, Inserting>();
 
     private List<SegmentKey> importSegKeys = new ArrayList<SegmentKey>();
 
@@ -78,7 +78,6 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 }
                 insertings.get(segInfo).insert(row);
             }
-
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
@@ -110,10 +109,11 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (entry.getValue().isFull()) {
                 IoUtil.release(entry.getValue());
-                itr.remove();
 
                 // 处理满了的块，比如上传历史块或者持久化增量块
                 handleFullSegment(entry.getKey());
+
+                itr.remove();
             }
         }
     }
@@ -123,11 +123,14 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             IoUtil.release(entry.getValue());
-            itr.remove();
+
             if (entry.getValue().isFull()) {
                 // 处理满了的块，比如上传历史块或者持久化增量块
                 handleFullSegment(entry.getKey());
             }
+
+            itr.remove();
+
         }
     }
 
@@ -150,6 +153,10 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 return false;
             }
             return seg.getRowCount() >= alloter.getAllotRule().getCapacity();
+        }
+
+        public Segment getSegment() {
+            return seg;
         }
 
         @Override

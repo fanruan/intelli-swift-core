@@ -5,7 +5,6 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.util.IoUtil;
 
 import java.util.Collections;
 
@@ -31,25 +30,20 @@ public class SegmentTransfer {
 
         final Segment oldSeg = newSegment(oldSegKey), newSeg = newSegment(newSegKey);
         Inserter inserter = (Inserter) SwiftContext.get().getBean("inserter", newSeg);
-        SegmentResultSet swiftResultSet = null;
         try {
             SEG_SVC.addSegments(Collections.singletonList(newSegKey));
 
-            swiftResultSet = new SegmentResultSet(oldSeg);
-            inserter.importData(swiftResultSet);
-            IoUtil.release(inserter);
+            inserter.insertData(new SegmentResultSet(oldSeg));
+
             indexSegmentIfNeed(newSeg);
             onSucceed();
+
             SegmentContainer.NORMAL.updateSegment(newSegKey, newSeg);
 
             SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("seg transfer from {} to {} failed", oldSegKey, newSegKey, e);
             remove(newSegKey);
-        } finally {
-            if (swiftResultSet != null) {
-                swiftResultSet.close();
-            }
         }
     }
 

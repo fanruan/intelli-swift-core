@@ -6,6 +6,7 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.Row;
+import com.fr.swift.util.IoUtil;
 
 import java.util.List;
 
@@ -36,14 +37,19 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     }
 
     @Override
-    public void insertData(Row rowData) throws Exception {
+    public void insertData(Row rowData) {
         putRow(cursor++, rowData);
     }
 
     @Override
-    public void importData(SwiftResultSet swiftResultSet) throws Exception {
-        while (swiftResultSet.hasNext()) {
-            insertData(swiftResultSet.getNextRow());
+    public void insertData(SwiftResultSet resultSet) throws Exception {
+        try {
+            while (resultSet.hasNext()) {
+                insertData(resultSet.getNextRow());
+            }
+        } finally {
+            IoUtil.close(resultSet);
+            IoUtil.release(this);
         }
     }
 

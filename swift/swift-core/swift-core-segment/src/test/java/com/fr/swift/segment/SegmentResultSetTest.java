@@ -55,7 +55,7 @@ public class SegmentResultSetTest {
         SwiftResultSet resultSet = new LimitedResultSet(getResultSet(), 5);
         Segment seg = getSegment();
         Inserter inserter = SwiftContext.get().getBean("inserter", Inserter.class, seg);
-        inserter.importData(resultSet);
+        inserter.insertData(resultSet);
         seg.putAllShowIndex(new RangeBitmap(1, 4));
 
         resultSet = new SegmentResultSet(seg);

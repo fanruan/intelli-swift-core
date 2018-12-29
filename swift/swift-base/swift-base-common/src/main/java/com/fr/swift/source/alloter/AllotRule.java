@@ -17,8 +17,6 @@ public interface AllotRule {
 
     int getCapacity();
 
-    RowAnalyzer analyzer();
-
     interface Type {
     }
 }

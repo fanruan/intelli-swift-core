@@ -67,24 +67,12 @@ public class SwiftRealtimeInserter extends SwiftInserter {
 
     @Override
     @Transactional(value = RealtimeInsertException.class)
-    public void insertData(Row rowList) throws RealtimeInsertException {
+    public void insertData(SwiftResultSet swiftResultSet) throws RealtimeInsertException, SQLException {
         // fixme 事务要好好考虑，因为现在都是一行行插入，看事务控制到何种粒度
         try {
-            super.insertData(rowList);
+            super.insertData(swiftResultSet);
         } catch (Exception e) {
             throw new RealtimeInsertException(e);
-        }
-    }
-
-    @Override
-    @Transactional(value = RealtimeInsertException.class)
-    public void importData(SwiftResultSet swiftResultSet) throws RealtimeInsertException, SQLException {
-        try {
-            super.importData(swiftResultSet);
-        } catch (Exception e) {
-            throw new RealtimeInsertException(e);
-        } finally {
-            swiftResultSet.close();
         }
     }
 

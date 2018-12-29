@@ -7,7 +7,6 @@ import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -15,7 +14,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.operator.utils.InserterUtils;
 import com.fr.swift.source.Row;
-import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,9 +108,4 @@ public abstract class BaseInserter {
     public List<String> getFields() {
         return fields;
     }
-
-    public List<SegmentKey> getImportSegments() {
-        return Crasher.crash(new UnsupportedOperationException("getImportSegments() unsupported!"));
-    }
-
 }
