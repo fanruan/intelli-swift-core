@@ -25,6 +25,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Strings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -161,7 +162,10 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                 URL url = UrlSelector.getInstance().getFactory().getURL(clusterId);
                 map.put(clusterId, Pair.<URL, Set<String>>of(url, new HashSet<String>()));
             }
-            map.get(clusterId).getValue().add(destination.getSegmentId());
+            String segmentId = destination.getSegmentId();
+            if (Strings.isNotEmpty(segmentId)) {
+                map.get(clusterId).getValue().add(segmentId);
+            }
         }
         return Collections.unmodifiableList(new ArrayList<Pair<URL, Set<String>>>(map.values()));
     }
