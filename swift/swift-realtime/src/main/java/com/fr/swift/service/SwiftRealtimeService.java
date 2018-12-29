@@ -195,7 +195,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         return ServiceType.REAL_TIME;
     }
 
-    private class RealtimeClusterListener implements ClusterEventListener {
+    private class RealtimeClusterListener implements ClusterEventListener, Serializable {
+
+        private static final long serialVersionUID = 7882776636815591790L;
 
         @Override
         public void handleEvent(ClusterEvent clusterEvent) {

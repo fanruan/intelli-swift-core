@@ -233,7 +233,9 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     /**
      * 加入集群后，historyService做集群相应处理
      */
-    private class HistoryClusterListener implements ClusterEventListener {
+    private class HistoryClusterListener implements ClusterEventListener, Serializable {
+
+        private static final long serialVersionUID = 2365092184237741176L;
 
         @Override
         public void handleEvent(ClusterEvent clusterEvent) {
