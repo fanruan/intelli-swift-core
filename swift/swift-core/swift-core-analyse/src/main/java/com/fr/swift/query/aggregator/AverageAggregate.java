@@ -10,6 +10,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new AverageAggregate();
+    private static final long serialVersionUID = 8294759910803617178L;
 
     @Override
     public DoubleAverageAggregatorValue aggregate(RowTraversal traversal, Column column) {

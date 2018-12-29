@@ -1,11 +1,7 @@
 package com.fr.swift.result;
 
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 
-import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,13 +10,10 @@ import java.util.Map;
  * @author Lyon
  * @date 2018/4/27
  */
-public class NodeMergeResultSetImpl<T extends GroupNode> extends BaseNodeResultSet<T> implements NodeMergeResultSet<T> {
+public class NodeMergeResultSetImpl<T extends GroupNode> extends BaseNodeMergeResultSet<T> {
 
     private T root;
-
     private List<Map<Integer, Object>> rowGlobalDictionaries;
-
-    private Iterator<Row> iterator;
 
     private boolean hasNextPage = true;
 
@@ -40,23 +33,5 @@ public class NodeMergeResultSetImpl<T extends GroupNode> extends BaseNodeResultS
     @Override
     public boolean hasNextPage() {
         return hasNextPage;
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public boolean hasNext() throws SQLException {
-        if (iterator == null) {
-            iterator = SwiftNodeUtils.node2RowIterator(root);
-        }
-        return iterator.hasNext();
-    }
-
-    @Override
-    public Row getNextRow() throws SQLException {
-        return iterator.next();
     }
 }

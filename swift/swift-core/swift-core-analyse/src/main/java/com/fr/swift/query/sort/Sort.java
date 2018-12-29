@@ -2,11 +2,13 @@ package com.fr.swift.query.sort;
 
 import com.fr.swift.segment.column.ColumnKey;
 
+import java.io.Serializable;
+
 /**
  * @author pony
  * @date 2017/12/11
  */
-public interface Sort {
+public interface Sort extends Serializable {
     /**
      * 类型
      *

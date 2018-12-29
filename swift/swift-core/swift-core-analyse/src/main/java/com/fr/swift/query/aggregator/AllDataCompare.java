@@ -16,6 +16,8 @@ import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
  */
 public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggregatorValue> {
 
+    private static final long serialVersionUID = -8853595719196731039L;
+
     @Override
     public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column column) {
 

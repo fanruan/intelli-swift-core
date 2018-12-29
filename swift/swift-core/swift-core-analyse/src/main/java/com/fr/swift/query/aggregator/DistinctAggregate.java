@@ -14,6 +14,7 @@ import java.util.Set;
 public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new DistinctAggregate();
+    private static final long serialVersionUID = -6095081218942328474L;
 
     @Override
     public DistinctCountAggregatorValue aggregate(RowTraversal traversal, final Column column) {

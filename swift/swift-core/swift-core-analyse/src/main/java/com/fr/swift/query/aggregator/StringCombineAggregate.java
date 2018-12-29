@@ -11,6 +11,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 public class StringCombineAggregate implements Aggregator<StringAggregateValue> {
     protected static final Aggregator INSTANCE = new StringCombineAggregate();
     private static final char TAG = '/';
+    private static final long serialVersionUID = -7212555336149634716L;
 
     @Override
     public StringAggregateValue aggregate(RowTraversal traversal, final Column column) {

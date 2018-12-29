@@ -6,7 +6,6 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
@@ -17,7 +16,7 @@ import java.util.List;
  * @author pony
  * @date 2017/12/11
  */
-public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
+public class DetailQueryInfo extends AbstractQueryInfo {
     /**
      * 明细表的指标，目前只支持公式
      */

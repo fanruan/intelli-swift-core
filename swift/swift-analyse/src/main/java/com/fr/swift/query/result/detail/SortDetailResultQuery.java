@@ -6,9 +6,9 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.SortedDetailResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -16,15 +16,15 @@ import java.util.List;
  */
 public class SortDetailResultQuery extends AbstractDetailResultQuery {
 
-    private List<Pair<Sort, Comparator>> comparators;
+    private List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators;
 
-    public SortDetailResultQuery(int fetchSize, List<Query<QueryResultSet>> queries, List<Pair<Sort, Comparator>> comparators) {
+    public SortDetailResultQuery(int fetchSize, List<Query<QueryResultSet>> queries, List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
         super(fetchSize, queries);
         this.comparators = comparators;
     }
 
     public SortDetailResultQuery(int fetchSize, List<Query<QueryResultSet>> queries, List<DetailTarget> targets,
-                                 List<Pair<Sort, Comparator>> comparators) {
+                                 List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
         super(fetchSize, queries, targets);
         this.comparators = comparators;
     }

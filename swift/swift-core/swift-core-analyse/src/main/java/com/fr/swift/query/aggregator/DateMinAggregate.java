@@ -10,6 +10,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public class DateMinAggregate extends AbstractAggregator<DateAmountAggregateValue> {
     protected static final Aggregator INSTANCE = new DateMinAggregate();
+    private static final long serialVersionUID = 385852056373051802L;
 
     @Override
     public DateAmountAggregateValue aggregate(RowTraversal traversal, Column column) {

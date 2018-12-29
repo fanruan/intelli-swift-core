@@ -25,7 +25,7 @@ public class ColumnTypeConstants implements Serializable {
      * 顺序不能变哦，Double>Long>Integer
      * @author frank
      */
-    public enum ClassType {
+    public enum ClassType implements Serializable {
         //
         INTEGER, LONG, DOUBLE, DATE, STRING
     }

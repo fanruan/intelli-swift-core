@@ -12,6 +12,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 public class StandarDeviationAggregate implements Aggregator<StandardAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new StandarDeviationAggregate();
+    private static final long serialVersionUID = -785212630235138823L;
 
     @Override
     public StandardAggregatorValue aggregate(RowTraversal traversal, Column column) {

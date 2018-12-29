@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
 
+    private static final long serialVersionUID = -324445209089300987L;
     private int fetchSize;
 
     public DetailQueryResultSetMerger(int fetchSize) {

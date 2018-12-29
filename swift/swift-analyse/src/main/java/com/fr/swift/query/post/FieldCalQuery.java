@@ -2,18 +2,16 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
 import com.fr.swift.result.node.resultset.ChainedNodeResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,18 +31,16 @@ public class FieldCalQuery implements PostQuery<QueryResultSet> {
     public QueryResultSet getQueryResult() throws SQLException {
         SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
-            public Pair<SwiftNode, List<Map<Integer, Object>>> apply(Pair<? extends SwiftNode, List<Map<Integer, Object>>> p) {
+            public SwiftNode apply(SwiftNode node) {
                 // TODO: 2018/6/13 同比环比依赖的字典去掉了，data已经set进来了，到时适配一下
                 try {
-                    TargetCalculatorUtils.calculate((GroupNode) p.getKey(), p.getValue(), Collections.singletonList(calInfo));
+                    TargetCalculatorUtils.calculate((GroupNode) node, new ArrayList<Map<Integer, Object>>(), Collections.singletonList(calInfo));
                 } catch (SQLException e) {
                     Crasher.crash(e);
                 }
-                return Pair.of(p.getKey(), p.getValue());
+                return node;
             }
         };
-        NodeResultSet<SwiftNode> mergeResult = (NodeResultSet<SwiftNode>) query.getQueryResult();
-        // TODO: 2018/11/27
-        return (QueryResultSet) new ChainedNodeResultSet(operator, mergeResult);
+        return new ChainedNodeResultSet(operator, query.getQueryResult());
     }
 }

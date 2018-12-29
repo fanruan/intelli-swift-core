@@ -9,6 +9,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 public class DummyAggregator implements Aggregator<AggregatorValue> {
 
     protected static final Aggregator INSTANCE = new DummyAggregator();
+    private static final long serialVersionUID = -8029762611968533612L;
 
     @Override
     public AggregatorValue aggregate(RowTraversal traversal, Column column) {
