@@ -13,6 +13,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentTransfer;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
@@ -65,7 +66,8 @@ public class ScheduledRealtimeTransfer implements Runnable {
 
         @Override
         protected void onSucceed() {
-            SwiftEventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
+            SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
+            SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, newSegKey);
         }
     }
 }

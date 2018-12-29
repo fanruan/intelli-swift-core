@@ -84,10 +84,11 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
         return new SegmentKeyBean(hisSegKey.getTable(), hisSegKey.getOrder(), StoreType.MEMORY, hisSegKey.getSwiftSchema());
     }
 
-    private static final UploadHistoryListener INSTANCE = new UploadHistoryListener();
+    static {
+        // todo 何时listen
+        SwiftEventDispatcher.listen(SegmentEvent.UPLOAD_HISTORY, new UploadHistoryListener());
+    }
 
     public static void listen() {
-        // todo 何时listen
-        SwiftEventDispatcher.listen(SegmentEvent.UPLOAD_HISTORY, INSTANCE);
     }
 }

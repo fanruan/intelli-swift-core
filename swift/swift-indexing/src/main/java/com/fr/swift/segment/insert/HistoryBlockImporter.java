@@ -8,6 +8,7 @@ import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -63,9 +64,16 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     protected void handleFullSegment(SegmentInfo segInfo) {
         // 上传历史块
         // fixme 有临时路径的坑；另外何时上传也要考虑，这里还在导入过程，导入失败怎么办，生成好一块上传一块？
-        SegmentKey segKey = newSegmentKey(segInfo);
-        SwiftEventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, segKey);
-        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(segKey));
+        // todo 考虑异步，提升性能
+        try {
+            SegmentUtils.indexSegmentIfNeed(Collections.singletonList(insertings.get(segInfo).getSegment()));
+
+            SegmentKey segKey = newSegmentKey(segInfo);
+            SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, segKey);
+            SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(segKey));
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
     }
 
     @Override
