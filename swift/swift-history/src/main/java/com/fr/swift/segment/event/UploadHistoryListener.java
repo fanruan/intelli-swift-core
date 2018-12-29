@@ -59,10 +59,6 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
             SegmentUtils.clearSegment(realtimeSegKey);
         }
     }
-    static {
-        // todo 何时listen
-        SwiftEventDispatcher.listen(SegmentEvent.UPLOAD_HISTORY, new UploadHistoryListener());
-    }
 
     private static void notifyDownload(final SegmentKey segKey) {
         final String currentClusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
