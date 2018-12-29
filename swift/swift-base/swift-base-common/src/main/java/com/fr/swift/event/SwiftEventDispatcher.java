@@ -54,30 +54,41 @@ public class SwiftEventDispatcher {
         }
     }
 
-    public static <T> void fire(SwiftEvent event, T content) {
+    public static <T> void fire(final SwiftEvent event, final T content) {
         Assert.notNull(event);
-        asyncFire(event, content);
-    }
 
-    private static <T> void asyncFire(final SwiftEvent event, final T content) {
         EXEC.execute(new Runnable() {
             @Override
             public void run() {
-                synchronized (EVENTS) {
-                    if (EVENTS.containsKey(event)) {
-                        for (SwiftEventListener listener : EVENTS.get(event)) {
-                            listener.on(content);
-                        }
-                    } else {
-                        // warn
-                        SwiftLoggers.getLogger().warn("no listener for event {}", event);
-                    }
-                }
+                syncFire(event, content);
             }
         });
     }
 
     public static void fire(SwiftEvent event) {
         fire(event, null);
+    }
+
+    public static <T> void syncFire(final SwiftEvent event, final T content) {
+        Assert.notNull(event);
+
+        synchronized (EVENTS) {
+            if (EVENTS.containsKey(event)) {
+                for (SwiftEventListener listener : EVENTS.get(event)) {
+                    try {
+                        listener.on(content);
+                    } catch (Throwable t) {
+                        SwiftLoggers.getLogger().warn(t);
+                    }
+                }
+            } else {
+                // warn
+                SwiftLoggers.getLogger().warn("no listener for event {}", event);
+            }
+        }
+    }
+
+    public static void syncFire(SwiftEvent event) {
+        syncFire(event, null);
     }
 }

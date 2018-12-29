@@ -44,9 +44,10 @@ public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
         SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, Collections.singletonList(segKey));
     }
 
-    public static final RemoveHistoryListener INSTANCE = new RemoveHistoryListener();
+    static {
+        SwiftEventDispatcher.listen(SegmentEvent.REMOVE_HISTORY, new RemoveHistoryListener());
+    }
 
     public static void listen() {
-        SwiftEventDispatcher.listen(SegmentEvent.REMOVE_HISTORY, INSTANCE);
     }
 }

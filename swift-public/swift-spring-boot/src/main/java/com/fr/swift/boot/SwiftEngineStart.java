@@ -89,6 +89,8 @@ public class SwiftEngineStart {
             PushSegmentLocationListener.listen();
             RemoveSegmentLocationListener.listen();
 
+            PushSegmentLocationListener.listen();
+            RemoveSegmentLocationListener.listen();
 
             SwiftLoggers.getLogger().info("Swift engine start successful");
         } catch (Throwable e) {

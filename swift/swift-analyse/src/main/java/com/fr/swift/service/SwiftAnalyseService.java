@@ -116,7 +116,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
         SegmentLocationProvider.getInstance().removeSegments(clusterId, new SourceKey(sourceKey), segmentKeys);
     }
 
-    private class AnalyseClusterListener implements ClusterEventListener {
+    private class AnalyseClusterListener implements ClusterEventListener, Serializable {
+
+        private static final long serialVersionUID = 782230506049436206L;
 
         @Override
         public void handleEvent(ClusterEvent clusterEvent) {

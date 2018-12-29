@@ -60,9 +60,10 @@ public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
         }
     }
 
-    public static final MaskHistoryListener INSTANCE = new MaskHistoryListener();
+    static {
+        SwiftEventDispatcher.listen(SegmentEvent.MASK_HISTORY, new MaskHistoryListener());
+    }
 
     public static void listen() {
-        SwiftEventDispatcher.listen(SegmentEvent.MASK_HISTORY, INSTANCE);
     }
 }

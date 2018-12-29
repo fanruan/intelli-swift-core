@@ -2,7 +2,6 @@ package com.fr.swift.core.rpc;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
-import com.fr.cluster.engine.ticket.FineClusterToolKit;
 import com.fr.cluster.rpc.base.ClusterInvokeHandler;
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invocation;
@@ -10,6 +9,7 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.Result;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.base.SwiftResult;
+import com.fr.swift.local.LocalResult;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -74,7 +74,7 @@ public class FRInvoker<T> implements Invoker<T> {
     }
 
     protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
-        com.fr.cluster.rpc.base.ClusterInvoker frInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(proxy);
+        com.fr.cluster.rpc.base.ClusterInvoker frInvoker = InvokerCache.getInstance().getInvoker(type);
         Method method = proxy.getClass().getMethod(methodName, parameterTypes);
         com.fr.rpc.Invocation invocation = com.fr.rpc.Invocation.create(method, arguments);
         if (url.getDestination() != null) {
@@ -91,7 +91,7 @@ public class FRInvoker<T> implements Invoker<T> {
                 ClusterInvokeHandler invokeHandler = new ClusterInvokeHandler() {
                     @Override
                     public void done(ClusterNode clusterNode, com.fr.rpc.Invocation invocation, com.fr.rpc.Result result) {
-                        rpcFuture.done(result);
+                        rpcFuture.done(new LocalResult(result.get(), result.getException()));
                     }
 
                     @Override

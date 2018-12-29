@@ -68,6 +68,15 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
      */
     protected abstract int getLogicOrder(R rowInfo);
 
+    protected boolean isSegInserting(SegmentInfo segInfo) {
+        for (SegmentState segState : logicToReal.values()) {
+            if (segInfo.equals(segState.getSegInfo())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public A getAllotRule() {
         return rule;
@@ -79,7 +88,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
 
         private int cursor = -1;
 
-        SegmentState(SegmentInfo segInfo) {
+        public SegmentState(SegmentInfo segInfo) {
             this.segInfo = segInfo;
         }
 
@@ -92,7 +101,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
             return ++cursor;
         }
 
-        SegmentInfo getSegInfo() {
+        public SegmentInfo getSegInfo() {
             return segInfo;
         }
     }

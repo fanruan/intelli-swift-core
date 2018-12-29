@@ -6,7 +6,7 @@ import com.fr.swift.generate.Transporter;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferProvider;
@@ -30,11 +30,11 @@ public class TableTransporter extends BaseWorker implements Transporter {
 
     private DataSource dataSource;
 
-    private Inserter inserter;
+    private Importer importer;
 
     public TableTransporter(DataSource dataSource) {
         this.dataSource = dataSource;
-        inserter = null;
+        importer = null;
     }
 
     @Override
@@ -52,15 +52,12 @@ public class TableTransporter extends BaseWorker implements Transporter {
     public void transport() throws Exception {
         SwiftSourceTransfer transfer = SwiftContext.get().getBean(SwiftSourceTransferProvider.class).createSourceTransfer(dataSource);
         SwiftResultSet resultSet = new ProgressResultSet(transfer.createResultSet(), CubeTasks.newTableName(dataSource));
-        try {
-            inserter.importData(resultSet);
-        } finally {
-            resultSet.close();
-        }
+
+        importer.importData(resultSet);
     }
 
     @Override
     public List<String> getIndexFieldsList() {
-        return inserter.getFields();
+        return importer.getFields();
     }
 }
