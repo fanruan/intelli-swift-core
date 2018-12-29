@@ -22,6 +22,7 @@ import com.fr.swift.service.BaseService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.handler.EventHandlerExecutor;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.service.handler.history.HistoryDataSyncManager;
@@ -51,7 +52,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
 
     @Override
     public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) throws Exception {
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        final ProxyFactory factory = ProxySelector.getInstance().getFactory();
         switch (event.subEvent()) {
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
@@ -68,16 +69,25 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 }
                 break;
             case PUSH_SEG: {
-                SegmentLocationInfo info = (SegmentLocationInfo) event.getContent();
-                SwiftServiceHandlerManager.getManager().
-                        handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.PART, info));
+                final SegmentLocationInfo info = (SegmentLocationInfo) event.getContent();
+                EventHandlerExecutor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            SwiftServiceHandlerManager.getManager().
+                                    handle(new SegmentLocationRpcEvent(SegmentLocationInfo.UpdateType.PART, info));
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
+                    }
+                });
                 break;
             }
             case REMOVE_SEG: {
                 RemoveSegLocationRpcEvent removeEvt = (RemoveSegLocationRpcEvent) event;
                 String clusterId = removeEvt.getClusterId();
                 SegmentLocationInfo info = (SegmentLocationInfo) event.getContent();
-                AnalyseService analyseService = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+                AnalyseService analyseService = ProxySelector.getProxy(AnalyseService.class);
 
                 for (Entry<SourceKey, List<SegmentDestination>> entry : info.getDestinations().entrySet()) {
                     ArrayList<String> segIds = new ArrayList<String>();
@@ -117,7 +127,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 break;
             case TRUNCATE:
                 String truncateSourceKey = (String) event.getContent();
-                ProxySelector.getInstance().getFactory().getProxy(HistoryService.class).truncate(truncateSourceKey);
+                ProxySelector.getProxy(HistoryService.class).truncate(truncateSourceKey);
             default:
                 break;
         }

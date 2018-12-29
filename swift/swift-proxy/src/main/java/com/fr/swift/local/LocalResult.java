@@ -15,6 +15,11 @@ public class LocalResult {
     public LocalResult() {
     }
 
+    public LocalResult(Object result, Throwable exception) {
+        this.result = result;
+        this.exception = exception;
+    }
+
     public Object get() {
         return this.result;
     }
