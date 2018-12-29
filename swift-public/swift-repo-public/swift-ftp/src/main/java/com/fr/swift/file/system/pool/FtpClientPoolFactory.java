@@ -12,10 +12,10 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
  * @author yee
  * @date 2018-12-03
  */
-public class FTPClientPoolFactory implements PooledObjectFactory<SwiftFTPClient> {
+public class FtpClientPoolFactory implements PooledObjectFactory<SwiftFTPClient> {
     private FtpRepositoryConfig config;
 
-    public FTPClientPoolFactory(FtpRepositoryConfig var1) {
+    public FtpClientPoolFactory(FtpRepositoryConfig var1) {
         this.config = var1;
     }
 
