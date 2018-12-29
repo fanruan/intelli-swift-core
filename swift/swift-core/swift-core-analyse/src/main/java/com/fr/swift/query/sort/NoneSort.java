@@ -7,6 +7,8 @@ import com.fr.swift.segment.column.ColumnKey;
  * @date 2018/1/23
  */
 public class NoneSort implements Sort {
+    private static final long serialVersionUID = -4380716350960072064L;
+
     @Override
     public SortType getSortType() {
         return SortType.NONE;

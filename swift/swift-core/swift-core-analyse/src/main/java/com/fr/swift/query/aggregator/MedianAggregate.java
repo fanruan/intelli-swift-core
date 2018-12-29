@@ -18,6 +18,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new MedianAggregate();
+    private static final long serialVersionUID = -3176813043384218661L;
 
     @Override
     public MedianAggregatorValue aggregate(RowTraversal traversal, Column column) {

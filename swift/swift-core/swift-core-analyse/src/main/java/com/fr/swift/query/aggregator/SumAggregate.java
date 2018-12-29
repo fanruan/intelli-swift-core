@@ -15,6 +15,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new SumAggregate();
+    private static final long serialVersionUID = -6996921485360000948L;
 
 
     @Override

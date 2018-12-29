@@ -9,6 +9,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 public class CountAggregator implements Aggregator<DoubleAmountAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new CountAggregator();
+    private static final long serialVersionUID = 4423225450628417261L;
 
     @Override
     public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column column) {

@@ -14,17 +14,20 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.result.serialize.DetailSerializableQRS;
+import com.fr.swift.query.result.serialize.NodeSerializableQRS;
 import com.fr.swift.result.EmptyDetailQueryResultSet;
-import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Strings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -54,8 +57,8 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
 
     @Override
     public Object processResult(final Method method, Target target, Object... args) throws Throwable {
-        String queryJson = (String) args[0];
-        QueryBean queryBean = QueryBeanFactory.create(queryJson);
+        final String queryJson = (String) args[0];
+        final QueryBean queryBean = QueryBeanFactory.create(queryJson);
         queryBean.setQueryId(UUID.randomUUID().toString());
         SourceKey table = new SourceKey(queryBean.getTableName());
         List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
@@ -77,53 +80,63 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                     if (!isLocalURL(pair.getKey())) {
                         // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
                         final QueryResultSet rs = (QueryResultSet) result;
-                        resultSets.add(new QueryResultSet() {
-                            private String queryJson = query;
-                            private int fetchSize = rs.getFetchSize();
-                            private QueryResultSet resultSet = rs;
-                            private QueryResultSetMerger merger = rs.getMerger();
-
-                            @Override
-                            public int getFetchSize() {
-                                return fetchSize;
-                            }
-
-                            @Override
-                            public Object getPage() {
-                                Object ret = resultSet.getPage();
-                                // TODO: 2018/11/27 如何判断远程是否还有下一页？无脑取下一个resultSet判断是否为空？还是通过接口支持？
-                                if (hasNextPage()) {
-                                    Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                                    try {
-                                        resultSet = (QueryResultSet) invoke(invoker, proxyClass,
-                                                method, methodName, parameterTypes, queryJson);
-                                    } catch (Throwable throwable) {
-                                        return Crasher.crash(throwable);
+                        switch (queryBean.getQueryType()) {
+                            case DETAIL_SORT:
+                            case DETAIL: {
+                                final DetailSerializableQRS qrs = (DetailSerializableQRS) rs;
+                                resultSets.add(new DetailSerializableQRS(qrs.getFetchSize(), qrs.getRowCount(),
+                                        qrs.getMerger(), qrs.getPage(), qrs.hasNextPage()) {
+                                    @Override
+                                    public List<Row> getPage() {
+                                        List<Row> ret = page;
+                                        if (hasNextPage()) {
+                                            Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                            try {
+                                                DetailSerializableQRS resultSet = (DetailSerializableQRS) invoke(invoker, proxyClass,
+                                                        method, methodName, parameterTypes, queryJson);
+                                                page = resultSet.getPage();
+                                                originHasNextPage = resultSet.hasNextPage();
+                                            } catch (Throwable throwable) {
+                                                return Crasher.crash(throwable);
+                                            }
+                                        } else {
+                                            page = null;
+                                            originHasNextPage = false;
+                                        }
+                                        return ret;
                                     }
-                                }
-                                return ret;
+                                });
+                                break;
                             }
-
-                            @Override
-                            public boolean hasNextPage() {
-                                return resultSet != null && resultSet.hasNextPage();
+                            case GROUP: {
+                                final NodeSerializableQRS qrs = (NodeSerializableQRS) rs;
+                                resultSets.add(new NodeSerializableQRS(qrs.getFetchSize(),
+                                        qrs.getMerger(), qrs.getPage(), qrs.hasNextPage()) {
+                                    @Override
+                                    public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
+                                        Pair<SwiftNode, List<Map<Integer, Object>>> ret = page;
+                                        if (hasNextPage()) {
+                                            Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                            try {
+                                                NodeSerializableQRS resultSet = (NodeSerializableQRS) invoke(invoker, proxyClass,
+                                                        method, methodName, parameterTypes, queryJson);
+                                                page = resultSet.getPage();
+                                                originHasNextPage = resultSet.hasNextPage();
+                                            } catch (Throwable throwable) {
+                                                return Crasher.crash(throwable);
+                                            }
+                                        } else {
+                                            page = null;
+                                            originHasNextPage = false;
+                                        }
+                                        return ret;
+                                    }
+                                });
+                                break;
                             }
-
-                            @Override
-                            public SwiftResultSet convert(SwiftMetaData metaData) {
-                                throw new UnsupportedOperationException();
-                            }
-
-                            @Override
-                            public void close() {
-
-                            }
-
-                            @Override
-                            public QueryResultSetMerger getMerger() {
-                                return merger;
-                            }
-                        });
+                            default:
+                                resultSets.add(rs);
+                        }
                     } else {
                         resultSets.add((QueryResultSet) result);
                     }
@@ -138,7 +151,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
             });
         }
         latch.await();
-        if (resultSets == null || resultSets.isEmpty()) {
+        if (resultSets.isEmpty()) {
             return new EmptyDetailQueryResultSet();
         }
         QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.get(0).getMerger());
@@ -161,7 +174,10 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                 URL url = UrlSelector.getInstance().getFactory().getURL(clusterId);
                 map.put(clusterId, Pair.<URL, Set<String>>of(url, new HashSet<String>()));
             }
-            map.get(clusterId).getValue().add(destination.getSegmentId());
+            String segmentId = destination.getSegmentId();
+            if (Strings.isNotEmpty(segmentId)) {
+                map.get(clusterId).getValue().add(segmentId);
+            }
         }
         return Collections.unmodifiableList(new ArrayList<Pair<URL, Set<String>>>(map.values()));
     }

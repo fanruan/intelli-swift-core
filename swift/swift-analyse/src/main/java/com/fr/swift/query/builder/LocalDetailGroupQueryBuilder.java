@@ -1,6 +1,5 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.compare.Comparators;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.filter.FilterBuilder;
@@ -15,7 +14,6 @@ import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.SortDetailResultQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -29,7 +27,6 @@ import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,26 +58,12 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
         return new SortDetailResultQuery(info.getFetchSize(), queries, getComparators(info.getTable(), info.getSorts()));
     }
 
-    private static List<Pair<Sort, Comparator>> getComparators(SourceKey table, List<Sort> sorts) {
-        List<Pair<Sort, Comparator>> comparators = new ArrayList<Pair<Sort, Comparator>>();
+    private static List<Pair<Sort, ColumnTypeConstants.ClassType>> getComparators(SourceKey table, List<Sort> sorts) {
+        List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators = new ArrayList<Pair<Sort, ColumnTypeConstants.ClassType>>();
         for (Sort sort : sorts) {
-            comparators.add(Pair.of(sort, getComparator(sort.getSortType(), table, sort.getColumnKey().getName())));
+            comparators.add(Pair.of(sort, getClassType(table, sort.getColumnKey().getName())));
         }
         return comparators;
-    }
-
-    private static Comparator getComparator(SortType sortType, SourceKey table, String columnName) {
-        ColumnTypeConstants.ClassType type = getClassType(table, columnName);
-        switch (type) {
-            case LONG:
-            case INTEGER:
-            case DATE:
-                return sortType == SortType.ASC ? Comparators.<Long>asc() : Comparators.<Long>desc();
-            case DOUBLE:
-                return sortType == SortType.ASC ? Comparators.<Double>asc() : Comparators.<Double>desc();
-            default:
-                return sortType == SortType.ASC ? Comparators.<String>asc() : Comparators.<String>desc();
-        }
     }
 
     private static ColumnTypeConstants.ClassType getClassType(SourceKey table, String columnName) {

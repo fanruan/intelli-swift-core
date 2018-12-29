@@ -1,7 +1,10 @@
 package com.fr.swift.result;
 
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
@@ -19,10 +22,11 @@ import java.util.List;
  */
 public class SortedDetailResultSetMerger implements IDetailQueryResultSetMerger {
 
+    private static final long serialVersionUID = -6390000892109475367L;
     private int fetchSize;
-    private List<Pair<Sort, Comparator>> comparators;
+    private List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators;
 
-    public SortedDetailResultSetMerger(int fetchSize, List<Pair<Sort, Comparator>> comparators) {
+    public SortedDetailResultSetMerger(int fetchSize, List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
         this.fetchSize = fetchSize;
         this.comparators = comparators;
     }
@@ -40,18 +44,19 @@ public class SortedDetailResultSetMerger implements IDetailQueryResultSetMerger 
                         queryResultSets), this);
     }
 
-    private static Comparator<Row> createRowComparator(final List<Pair<Sort, Comparator>> comparators) {
-        Collections.sort(comparators, new Comparator<Pair<Sort, Comparator>>() {
+    private static Comparator<Row> createRowComparator(final List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
+        Collections.sort(comparators, new Comparator<Pair<Sort, ColumnTypeConstants.ClassType>>() {
             @Override
-            public int compare(Pair<Sort, Comparator> o1, Pair<Sort, Comparator> o2) {
+            public int compare(Pair<Sort, ColumnTypeConstants.ClassType> o1, Pair<Sort, ColumnTypeConstants.ClassType> o2) {
                 return o1.getKey().getTargetIndex() - o2.getKey().getTargetIndex();
             }
         });
         return new Comparator<Row>() {
             @Override
             public int compare(Row o1, Row o2) {
-                for (Pair<Sort, Comparator> pair : comparators) {
-                    int result = pair.getValue().compare(o1.getValue(pair.getKey().getTargetIndex()), o2.getValue(pair.getKey().getTargetIndex()));
+                for (Pair<Sort, ColumnTypeConstants.ClassType> pair : comparators) {
+                    Comparator comparator = getComparator(pair);
+                    int result = comparator.compare(o1.getValue(pair.getKey().getTargetIndex()), o2.getValue(pair.getKey().getTargetIndex()));
                     if (result != 0) {
                         return result;
                     }
@@ -59,6 +64,20 @@ public class SortedDetailResultSetMerger implements IDetailQueryResultSetMerger 
                 return 0;
             }
         };
+    }
+
+    private static Comparator getComparator(Pair<Sort, ColumnTypeConstants.ClassType> pair) {
+        SortType sortType = pair.getKey().getSortType();
+        switch (pair.getValue()) {
+            case LONG:
+            case INTEGER:
+            case DATE:
+                return sortType == SortType.ASC ? Comparators.<Long>asc() : Comparators.<Long>desc();
+            case DOUBLE:
+                return sortType == SortType.ASC ? Comparators.<Double>asc() : Comparators.<Double>desc();
+            default:
+                return sortType == SortType.ASC ? Comparators.<String>asc() : Comparators.<String>desc();
+        }
     }
 
     /**

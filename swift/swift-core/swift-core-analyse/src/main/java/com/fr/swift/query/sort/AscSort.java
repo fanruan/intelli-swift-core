@@ -8,6 +8,7 @@ import com.fr.swift.segment.column.ColumnKey;
  */
 public class AscSort extends AbstractSort {
 
+    private static final long serialVersionUID = 1415312400199711984L;
     private SortType sortType = SortType.ASC;
 
     public AscSort(int targetIndex) {

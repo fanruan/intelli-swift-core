@@ -14,6 +14,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.MetricBean;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
@@ -255,6 +256,26 @@ public class TestController {
                 service.getQueryResult(QueryBeanFactory.queryBean2String(bean)), bean);
         List<Row> rows = new ArrayList<Row>();
         while (resultSet.hasNext()) {
+            rows.add(resultSet.getNextRow());
+        }
+        return rows;
+    }
+
+    @RequestMapping("swift/query/detail")
+    @ResponseBody
+    public Object testDetail() throws Exception {
+        DetailQueryInfoBean query = new DetailQueryInfoBean();
+        query.setTableName("test_yiguan");
+        query.setQueryId(UUID.randomUUID().toString());
+        DimensionBean dimensionBean = new DimensionBean();
+        dimensionBean.setType(DimensionType.DETAIL_ALL_COLUMN);
+        query.setDimensions(Arrays.asList(dimensionBean));
+        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+        SwiftResultSet resultSet = SwiftResultSetUtils.toSwiftResultSet(
+                service.getQueryResult(QueryBeanFactory.queryBean2String(query)), query);
+        List<Row> rows = new ArrayList<Row>();
+        int limit = 200;
+        while (resultSet.hasNext() && limit-- > 0) {
             rows.add(resultSet.getNextRow());
         }
         return rows;

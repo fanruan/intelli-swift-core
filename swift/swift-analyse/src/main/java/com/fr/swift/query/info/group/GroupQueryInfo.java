@@ -3,14 +3,14 @@ package com.fr.swift.query.info.group;
 import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
-import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.List;
 
 /**
  * Created by Lyon on 2018/5/29.
  */
-public interface GroupQueryInfo<T extends SwiftResultSet> extends SingleTableQueryInfo<T> {
+public interface GroupQueryInfo<T extends QueryResultSet> extends SingleTableQueryInfo<T> {
 
     /**
      * 明细聚合器

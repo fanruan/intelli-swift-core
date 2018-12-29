@@ -1,5 +1,6 @@
 package com.fr.swift.result.qrs;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * @author lyon
  * @description
  */
-public interface QueryResultSetMerger<T, Q extends QueryResultSet<T>> {
+public interface QueryResultSetMerger<T, Q extends QueryResultSet<T>> extends Serializable {
 
     /**
      * 合并多个结果集

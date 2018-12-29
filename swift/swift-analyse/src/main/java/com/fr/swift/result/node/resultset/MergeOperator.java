@@ -5,7 +5,6 @@ import com.fr.swift.query.result.group.GroupNodeMergeUtils;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.NodeMergeResultSetImpl;
-import com.fr.swift.result.NodeResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
@@ -34,7 +33,7 @@ class MergeOperator implements Function<List<NodeMergeResultSet<GroupNode>>, Nod
     public NodeMergeResultSet<GroupNode> apply(List<NodeMergeResultSet<GroupNode>> groupByResultSets) {
         List<GroupNode> roots = new ArrayList<GroupNode>();
         List<Map<Integer, Object>> totalDictionaries = new ArrayList<Map<Integer, Object>>();
-        for (NodeResultSet<GroupNode> resultSet : groupByResultSets) {
+        for (NodeMergeResultSet<GroupNode> resultSet : groupByResultSets) {
             Pair<GroupNode, List<Map<Integer, Object>>> pair = resultSet.getPage();
             roots.add(pair.getKey());
             addDictionaries(pair.getValue(), totalDictionaries);

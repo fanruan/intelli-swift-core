@@ -18,6 +18,7 @@ import com.fr.swift.util.function.Function;
 public class DistinctDateYMD implements Aggregator<HLLAggregatorValue> {
 
     public static final Aggregator INSTANCE = new DistinctDateYMD();
+    private static final long serialVersionUID = 2185374277400248976L;
 
     private static Function<Long, Long> fn = DateDerivers.newDeriver(GroupType.Y_M_D);
 
