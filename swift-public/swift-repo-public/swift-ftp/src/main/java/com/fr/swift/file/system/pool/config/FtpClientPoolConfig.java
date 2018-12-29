@@ -18,17 +18,17 @@ public class FtpClientPoolConfig {
     private Boolean blockWhenExhausted = true;
 
     public GenericObjectPoolConfig getPoolConfig() {
-        GenericObjectPoolConfig var0 = new GenericObjectPoolConfig();
-        var0.setMaxTotal(getMaxTotal());
-        var0.setMaxIdle(getMaxIdle());
-        var0.setMinIdle(getMinIdle());
-        var0.setTestWhileIdle(getTestWhileIdle());
-        var0.setTestOnReturn(getTestOnReturn());
-        var0.setTestWhileIdle(getTestWhileIdle());
-        var0.setTestOnBorrow(getTestOnBorrow());
-        var0.setMaxWaitMillis(getMaxWaitMillis());
-        var0.setBlockWhenExhausted(getBlockWhenExhausted());
-        return var0;
+        GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+        config.setMaxTotal(getMaxTotal());
+        config.setMaxIdle(getMaxIdle());
+        config.setMinIdle(getMinIdle());
+        config.setTestWhileIdle(getTestWhileIdle());
+        config.setTestOnReturn(getTestOnReturn());
+        config.setTestWhileIdle(getTestWhileIdle());
+        config.setTestOnBorrow(getTestOnBorrow());
+        config.setMaxWaitMillis(getMaxWaitMillis());
+        config.setBlockWhenExhausted(getBlockWhenExhausted());
+        return config;
     }
 
     public Integer getMaxTotal() {
