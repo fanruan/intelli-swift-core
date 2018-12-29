@@ -1,40 +1,34 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.db.SwiftDatabase;
-import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.query.post.utils.ResultJoinUtils;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.structure.Pair;
-import com.fr.swift.structure.iterator.MapperIterator;
-import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
+
+//import com.fr.swift.query.post.utils.ResultJoinUtils;
 
 /**
  * Created by Lyon on 2018/6/4.
  */
 public class PostQueryTestUtils {
 
-    public static GroupNode createNode(int dimensionSize, Pair<Object[], int[]>[] rows) {
-        List<Pair<Object[], int[]>> list = new ArrayList<Pair<Object[], int[]>>(Arrays.asList(rows));
-        Iterator<Pair<List<Object>, AggregatorValue[]>> rowIt = new MapperIterator<Pair<Object[], int[]>, Pair<List<Object>, AggregatorValue[]>>(list.iterator(), new Function<Pair<Object[], int[]>, Pair<List<Object>, AggregatorValue[]>>() {
-            @Override
-            public Pair<List<Object>, AggregatorValue[]> apply(Pair<Object[], int[]> p) {
-                AggregatorValue[] values = new AggregatorValue[p.getValue().length];
-                for (int i = 0; i < values.length; i++) {
-                    values[i] = new DoubleAmountAggregatorValue(p.getValue()[i]);
-                }
-                return Pair.of(Arrays.asList(p.getKey()), values);
-            }
-        });
-        return ResultJoinUtils.createNode(dimensionSize, rowIt);
-    }
+//    public static GroupNode createNode(int dimensionSize, Pair<Object[], int[]>[] rows) {
+//        List<Pair<Object[], int[]>> list = new ArrayList<Pair<Object[], int[]>>(Arrays.asList(rows));
+//        Iterator<Pair<List<Object>, AggregatorValue[]>> rowIt = new MapperIterator<Pair<Object[], int[]>, Pair<List<Object>, AggregatorValue[]>>(list.iterator(), new Function<Pair<Object[], int[]>, Pair<List<Object>, AggregatorValue[]>>() {
+//            @Override
+//            public Pair<List<Object>, AggregatorValue[]> apply(Pair<Object[], int[]> p) {
+//                AggregatorValue[] values = new AggregatorValue[p.getValue().length];
+//                for (int i = 0; i < values.length; i++) {
+//                    values[i] = new DoubleAmountAggregatorValue(p.getValue()[i]);
+//                }
+//                return Pair.of(Arrays.asList(p.getKey()), values);
+//            }
+//        });
+//        return ResultJoinUtils.createNode(dimensionSize, rowIt);
+//    }
 
     public static SwiftMetaData createMetaData(final String tableName, final String[] columnNames) {
         return new SwiftMetaData() {

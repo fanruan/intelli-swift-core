@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelResultSet, FunnelQueryResultSet> {
 
+    private static final long serialVersionUID = -8191094955432120770L;
     private int numberOfSteps;
 
     public FunnelQueryResultSetMerger(int numberOfSteps) {

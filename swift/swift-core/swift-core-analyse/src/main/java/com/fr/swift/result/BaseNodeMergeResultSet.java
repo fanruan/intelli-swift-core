@@ -3,15 +3,20 @@ package com.fr.swift.result;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.structure.Pair;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by lyon on 2018/12/29.
+ * @author anchore
+ * @date 12/11/2018
  */
-public abstract class BaseNodeResultSet implements QueryResultSet<SwiftNode> {
+public abstract class BaseNodeMergeResultSet<T extends SwiftNode> implements NodeMergeResultSet<T> {
 
     private int fetchSize;
 
-    public BaseNodeResultSet(int fetchSize) {
+    public BaseNodeMergeResultSet(int fetchSize) {
         this.fetchSize = fetchSize;
     }
 
@@ -21,7 +26,7 @@ public abstract class BaseNodeResultSet implements QueryResultSet<SwiftNode> {
     }
 
     @Override
-    public <Q extends QueryResultSet<SwiftNode>> QueryResultSetMerger<SwiftNode, Q> getMerger() {
+    public <Q extends QueryResultSet<Pair<T, List<Map<Integer, Object>>>>> QueryResultSetMerger<Pair<T, List<Map<Integer, Object>>>, Q> getMerger() {
         throw new UnsupportedOperationException();
     }
 
@@ -32,6 +37,7 @@ public abstract class BaseNodeResultSet implements QueryResultSet<SwiftNode> {
 
     @Override
     public void close() {
-
+        // todo
+        throw new UnsupportedOperationException();
     }
 }

@@ -3,15 +3,17 @@ package com.fr.swift.query.result.group;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeResultSet;
 import com.fr.swift.result.node.resultset.INodeQueryResultSetMerger;
 import com.fr.swift.result.node.resultset.NodeQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.structure.Pair;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -21,10 +23,12 @@ import java.util.List;
 public class GroupResultQuery extends AbstractGroupResultQuery {
 
     private boolean[] isGlobalIndexed;
+    private List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators;
 
     public GroupResultQuery(int fetchSize, List<Query<QueryResultSet>> queries, List<Aggregator> aggregators,
-                            List<Comparator<GroupNode>> comparators, boolean[] isGlobalIndexed) {
-        super(fetchSize, queries, aggregators, comparators);
+                            List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators, boolean[] isGlobalIndexed) {
+        super(fetchSize, queries, aggregators);
+        this.comparators = comparators;
         this.isGlobalIndexed = isGlobalIndexed;
     }
 

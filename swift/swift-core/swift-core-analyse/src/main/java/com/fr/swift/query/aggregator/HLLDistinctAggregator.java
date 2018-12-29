@@ -16,6 +16,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 public class HLLDistinctAggregator implements Aggregator<HLLAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new HLLDistinctAggregator();
+    private static final long serialVersionUID = 4052363273023659470L;
 
     private static HLLAggregatorValue aggString(RowTraversal traversal, final DetailColumn detailColumn) {
         final HLLAggregatorValue aggregatorValue = new HLLAggregatorValue();

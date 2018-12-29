@@ -9,7 +9,7 @@ import com.fr.swift.segment.column.ColumnKey;
 abstract class AbstractSort implements Sort {
     private int targetIndex;
 
-    private ColumnKey columnKey;
+    private transient ColumnKey columnKey;
 
     AbstractSort(int targetIndex) {
         this.targetIndex = targetIndex;

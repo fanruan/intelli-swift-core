@@ -20,6 +20,7 @@ import java.util.Arrays;
 public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new VarianceAggregate();
+    private static final long serialVersionUID = -2346803621309661900L;
 
     @Override
     public VarianceAggregatorValue aggregate(RowTraversal traversal, Column column) {

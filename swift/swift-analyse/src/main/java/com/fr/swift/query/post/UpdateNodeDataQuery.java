@@ -1,5 +1,6 @@
 package com.fr.swift.query.post;
 
+import com.fr.swift.result.BaseNodeResultSet;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
@@ -25,13 +26,37 @@ public class UpdateNodeDataQuery implements PostQuery<QueryResultSet> {
 
     @Override
     public QueryResultSet getQueryResult() throws SQLException {
-        SwiftNodeOperator operator = new SwiftNodeOperator() {
+        return new ChainedNodeResultSet(new SwiftNodeOperator() {
             @Override
-            public Pair<SwiftNode, List<Map<Integer, Object>>> apply(Pair<? extends SwiftNode, List<Map<Integer, Object>>> p) {
-                GroupNodeUtils.updateNodeData((GroupNode) p.getKey(), p.getValue());
-                return Pair.of(p.getKey(), null);
+            public SwiftNode apply(SwiftNode p) {
+                return p;
             }
-        };
-        return new ChainedNodeResultSet(operator, resultSet);
+        }, new UpdateDataQRS(resultSet));
+    }
+
+    private static class UpdateDataQRS extends BaseNodeResultSet {
+
+        private QueryResultSet<Pair<SwiftNode, List<Map<Integer, Object>>>> resultSet;
+
+        public UpdateDataQRS(QueryResultSet<Pair<SwiftNode, List<Map<Integer, Object>>>> resultSet) {
+            super(resultSet.getFetchSize());
+            this.resultSet = resultSet;
+        }
+
+        @Override
+        public SwiftNode getPage() {
+            SwiftNode ret = null;
+            if (hasNextPage()) {
+                Pair<? extends SwiftNode, List<Map<Integer, Object>>> page = resultSet.getPage();
+                ret = page.getKey();
+                GroupNodeUtils.updateNodeData((GroupNode) page.getKey(), page.getValue());
+            }
+            return ret;
+        }
+
+        @Override
+        public boolean hasNextPage() {
+            return resultSet.hasNextPage();
+        }
     }
 }

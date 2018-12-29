@@ -1,5 +1,6 @@
 package com.fr.swift.result;
 
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
 
@@ -11,13 +12,13 @@ import java.util.List;
  */
 public class SwiftNode2RowIterator implements SwiftRowIterator {
 
-    private NodeResultSet<SwiftNode> source;
+    private QueryResultSet<SwiftNode> source;
     private List<Row> rows;
     private int cursor = 0;
 
-    public SwiftNode2RowIterator(NodeResultSet<SwiftNode> source) {
+    public SwiftNode2RowIterator(QueryResultSet<SwiftNode> source) {
         this.source = source;
-        this.rows = source.hasNextPage() ? createList(source.getPage().getKey()) : new ArrayList<Row>(0);
+        this.rows = source.hasNextPage() ? createList(source.getPage()) : new ArrayList<Row>(0);
     }
 
     private static List<Row> createList(SwiftNode root) {
@@ -27,7 +28,7 @@ public class SwiftNode2RowIterator implements SwiftRowIterator {
     @Override
     public boolean hasNext() {
         if (cursor >= rows.size() && source.hasNextPage()) {
-            rows = createList(source.getPage().getKey());
+            rows = createList(source.getPage());
             cursor = 0;
         }
         return cursor < rows.size();

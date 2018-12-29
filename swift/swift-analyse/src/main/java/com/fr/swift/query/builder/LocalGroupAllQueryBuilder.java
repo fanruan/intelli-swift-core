@@ -1,9 +1,7 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.compare.Comparators;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -22,7 +20,6 @@ import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupAllSegmentQuery;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -33,10 +30,10 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -103,64 +100,28 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         return indexSorts;
     }
 
-    static List<Comparator<GroupNode>> getComparatorsForMerging(SourceKey table, List<Dimension> dimensions) {
+    static List<Pair<SortType, ColumnTypeConstants.ClassType>> getComparatorsForMerging(SourceKey table, List<Dimension> dimensions) {
         SwiftMetaData metaData = SwiftDatabase.getInstance().getTable(table).getMetadata();
-        List<Comparator<GroupNode>> comparators = new ArrayList<Comparator<GroupNode>>(dimensions.size());
+        List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators = new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>();
         for (Dimension dimension : dimensions) {
             Sort sort = dimension.getSort();
+            SortType type = sort == null || sort.getSortType() == SortType.ASC ? SortType.ASC : SortType.DESC;
             if (dimension.getIndexInfo().isGlobalIndexed()) {
-                boolean isAsc = true;
-                if (sort != null && sort.getTargetIndex() == dimension.getIndex()) {
-                    isAsc = sort.getSortType() == SortType.ASC;
-                }
-                comparators.add(createIndexComparator(isAsc ? Comparators.<Integer>asc() : Comparators.<Integer>desc()));
+                comparators.add(Pair.of(type, ColumnTypeConstants.ClassType.INTEGER));
             } else {
-                boolean isAsc = true;
-                if (sort != null && sort.getTargetIndex() == dimension.getIndex()) {
-                    isAsc = sort.getSortType() == SortType.ASC;
-                }
-                comparators.add(createDataComparator(getComparatorByColumn(metaData, dimension.getColumnKey().getName(), isAsc)));
+                comparators.add(Pair.of(type, getComparatorByColumn(metaData, dimension.getColumnKey().getName())));
             }
         }
         return comparators;
     }
 
-    private static Comparator getComparatorByColumn(SwiftMetaData metaData, String columnName, boolean isAsc) {
+    private static ColumnTypeConstants.ClassType getComparatorByColumn(SwiftMetaData metaData, String columnName) {
         SwiftMetaDataColumn column = null;
         try {
             column = metaData.getColumn(columnName);
         } catch (SQLException e) {
-            SwiftLoggers.getLogger().error("failed to read metadata of table: " + metaData.toString());
+            Crasher.crash("failed to read metadata of table: " + metaData.toString());
         }
-        ColumnTypeConstants.ClassType classType = ColumnTypeUtils.getClassType(column);
-        switch (classType) {
-            case DOUBLE:
-                return isAsc ? Comparators.<Double>asc() : Comparators.<Double>desc();
-            case LONG:
-            case DATE:
-                return isAsc ? Comparators.<Long>asc() : Comparators.<Long>desc();
-            case INTEGER:
-                return isAsc ? Comparators.<Integer>asc() : Comparators.<Integer>desc();
-            default:
-                return isAsc ? Comparators.STRING_ASC : Comparators.reverse(Comparators.STRING_ASC);
-        }
-    }
-
-    private static Comparator<GroupNode> createDataComparator(final Comparator comparator) {
-        return new Comparator<GroupNode>() {
-            @Override
-            public int compare(GroupNode o1, GroupNode o2) {
-                return comparator.compare(o1.getData(), o2.getData());
-            }
-        };
-    }
-
-    private static Comparator<GroupNode> createIndexComparator(final Comparator<Integer> comparator) {
-        return new Comparator<GroupNode>() {
-            @Override
-            public int compare(GroupNode o1, GroupNode o2) {
-                return comparator.compare(o1.getDictionaryIndex(), o2.getDictionaryIndex());
-            }
-        };
+        return ColumnTypeUtils.getClassType(column);
     }
 }

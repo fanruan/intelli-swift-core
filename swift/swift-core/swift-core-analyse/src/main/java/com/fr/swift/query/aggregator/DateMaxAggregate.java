@@ -10,6 +10,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public class DateMaxAggregate extends AbstractAggregator<DateAmountAggregateValue> {
     protected static final Aggregator INSTANCE = new DateMaxAggregate();
+    private static final long serialVersionUID = 1119589524768495049L;
 
     @Override
     public DateAmountAggregateValue aggregate(RowTraversal traversal, Column column) {

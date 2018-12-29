@@ -2,7 +2,7 @@ package com.fr.swift.query.info;
 
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.SourceKey;
 
 import java.util.HashSet;
@@ -13,7 +13,7 @@ import java.util.Set;
  * @author pony
  * @date 2017/12/15
  */
-public abstract class AbstractQueryInfo<T extends SwiftResultSet> implements SingleTableQueryInfo<T> {
+public abstract class AbstractQueryInfo<T extends QueryResultSet> implements SingleTableQueryInfo<T> {
 
     private String id;
     private int fetchSize;

@@ -13,9 +13,10 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public class MetricFilterAggregator implements Aggregator {
 
+    private static final long serialVersionUID = 7648446984086973413L;
     private Aggregator aggregator;
     // FIXME: 2018/5/7 Aggregator在结果合并过程中传递是要清理一下这边的索引。每次调用聚合都过滤一次明显有性能问题
-    private ImmutableBitMap bitMap;
+    private transient ImmutableBitMap bitMap;
 
     public MetricFilterAggregator(Aggregator aggregator, DetailFilter filter) {
         this.aggregator = aggregator;

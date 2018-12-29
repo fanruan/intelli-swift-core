@@ -5,7 +5,7 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryType;
+import com.fr.swift.query.result.SwiftResultSetUtils;
 import com.fr.swift.query.session.exception.SessionClosedException;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.core.MD5Utils;
@@ -46,25 +46,21 @@ public class QuerySession implements Session {
             throw new SessionClosedException(sessionId);
         }
         String queryId = queryInfo.getQueryId();
-        QueryType type = queryInfo.getQueryType();
         String jsonString = QueryBeanFactory.queryBean2String(queryInfo);
         Cache<? extends QueryResultSet> resultSetCache = cache.get(queryId);
-        if (null != resultSetCache) {
+        if (null != resultSetCache && resultSetCache.get() != null && resultSetCache.get().hasNextPage()) {
             resultSetCache.update();
-//            return SwiftResultSetUtils.convert2Serializable(jsonString, queryInfo.getQueryType(), resultSetCache.get());
-            return resultSetCache.get();
+            return SwiftResultSetUtils.toSerializable(queryInfo.getQueryType(), resultSetCache.get());
         }
-        // 缓存具有本地上下文状态的resultSet
         QueryResultSet resultSet = query(jsonString);
+        // 缓存具有本地上下文状态的resultSet
         Cache<QueryResultSet> cacheObj = new Cache<QueryResultSet>(resultSet);
         cache.put(queryId, cacheObj);
-        // 取本地resultSet的一个快照，得到可序列化的resultSet
-//        return SwiftResultSetUtils.convert2Serializable(jsonString, type, resultSet);
-        return resultSet;
+        // 取本地resultSet的一页，得到可序列化的resultSet
+        return SwiftResultSetUtils.toSerializable(queryInfo.getQueryType(), resultSet);
     }
 
     protected QueryResultSet query(String jsonString) throws Exception {
-        // TODO: 2018/11/27 结果集类型转换在哪做？
         return QueryBuilder.buildQuery(jsonString).getQueryResult();
     }
 

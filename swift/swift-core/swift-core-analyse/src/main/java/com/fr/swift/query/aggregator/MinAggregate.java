@@ -10,6 +10,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
 public class MinAggregate extends AllDataCompare {
 
     protected static final Aggregator INSTANCE = new MinAggregate();
+    private static final long serialVersionUID = 7518903480444257620L;
 
 
     @Override

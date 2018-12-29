@@ -9,6 +9,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<T> {
 
+    private static final long serialVersionUID = -499945849290982910L;
     private Aggregator metricAgg;
     private Aggregator changedAgg;
 
