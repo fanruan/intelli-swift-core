@@ -35,6 +35,7 @@ import com.fr.swift.process.handler.SwiftNodesProcessHandler;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.event.MaskHistoryListener;
 import com.fr.swift.segment.event.PushSegmentLocationListener;
+import com.fr.swift.segment.event.RemoveHistoryListener;
 import com.fr.swift.segment.event.RemoveSegmentLocationListener;
 import com.fr.swift.segment.event.TransferRealtimeListener;
 import com.fr.swift.segment.event.UploadHistoryListener;
@@ -82,6 +83,7 @@ public class SwiftEngineStart {
             TransferRealtimeListener.listen();
             UploadHistoryListener.listen();
             MaskHistoryListener.listen();
+            RemoveHistoryListener.listen();
             PushSegmentLocationListener.listen();
             RemoveSegmentLocationListener.listen();
             SwiftLoggers.getLogger().info("Swift engine start successful");
