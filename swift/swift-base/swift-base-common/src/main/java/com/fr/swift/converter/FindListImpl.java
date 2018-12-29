@@ -77,6 +77,9 @@ public class FindListImpl<T> implements FindList<T> {
 
     @Override
     public T get(int i) {
+        if (i < 0 || i >= list.size()) {
+            return null;
+        }
         Object obj = list.get(i);
         if (obj instanceof ObjectConverter) {
             return ((ObjectConverter<T>) obj).convert();
