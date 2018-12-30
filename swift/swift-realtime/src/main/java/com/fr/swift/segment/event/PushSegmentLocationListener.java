@@ -15,13 +15,6 @@ import java.io.Serializable;
  */
 public class PushSegmentLocationListener extends BaseSegmentLocationListener {
 
-    static {
-        SwiftEventDispatcher.listen(SyncSegmentLocationEvent.PUSH_SEG, new PushSegmentLocationListener());
-    }
-
-    public static void listen() {
-    }
-
     @Override
     Serializable trigger(SegmentLocationInfo segLocations) {
         try {
@@ -30,5 +23,12 @@ public class PushSegmentLocationListener extends BaseSegmentLocationListener {
             SwiftLoggers.getLogger().error(e);
             return null;
         }
+    }
+
+    static {
+        SwiftEventDispatcher.listen(SyncSegmentLocationEvent.PUSH_SEG, new PushSegmentLocationListener());
+    }
+
+    public static void listen() {
     }
 }
