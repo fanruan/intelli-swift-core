@@ -57,7 +57,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
 
     @Override
     public Object processResult(final Method method, Target target, Object... args) throws Throwable {
-        final String queryJson = (String) args[0];
+        String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
         queryBean.setQueryId(UUID.randomUUID().toString());
         SourceKey table = new SourceKey(queryBean.getTableName());
@@ -89,7 +89,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                                     @Override
                                     public <D, T extends BaseSerializableQRS<D>> T invoke() {
                                         Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                                        Invocation invocation = new SwiftInvocation(method, new Object[]{queryJson});
+                                        Invocation invocation = new SwiftInvocation(method, new Object[]{query});
                                         try {
                                             return (T) invoker.invoke(invocation).recreate();
                                         } catch (Throwable throwable) {
@@ -98,6 +98,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                                     }
                                 };
                                 qrs.setInvoker(syncInvoker);
+                                resultSets.add(qrs);
                                 break;
                             }
                             default:

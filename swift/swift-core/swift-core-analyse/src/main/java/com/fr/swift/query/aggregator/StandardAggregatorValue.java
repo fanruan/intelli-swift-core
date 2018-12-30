@@ -1,14 +1,12 @@
 package com.fr.swift.query.aggregator;
 
 
-import java.io.Serializable;
-
 /**
  * @author Xiaolei.liu
  */
 
 
-public class StandardAggregatorValue extends VarianceAggregatorValue implements Serializable {
+public class StandardAggregatorValue extends VarianceAggregatorValue {
     private static final long serialVersionUID = 3145787090081586765L;
     private VarianceAggregatorValue variance;
 

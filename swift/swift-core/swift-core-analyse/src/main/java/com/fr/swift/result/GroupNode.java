@@ -1,12 +1,11 @@
 package com.fr.swift.result;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/4.
  */
-public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> implements Serializable {
+public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
 
     private static final long serialVersionUID = -538699789884622264L;
     protected int depth;

@@ -46,8 +46,8 @@ public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Seria
         page = null;
         if (hasNextPage() && invoker != null) {
             BaseSerializableQRS qrs = invoker.invoke();
-            page = (T) qrs.getPage();
-            originHasNextPage = qrs.hasNextPage();
+            page = (T) qrs.page;
+            originHasNextPage = qrs.originHasNextPage;
         } else {
             originHasNextPage = false;
         }
