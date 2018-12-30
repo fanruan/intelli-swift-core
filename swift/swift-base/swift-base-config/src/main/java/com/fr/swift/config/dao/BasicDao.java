@@ -52,10 +52,10 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
     public FindList<T> find(ConfigSession session, Order[] order, ConfigWhere... criterions) {
         try {
             ConfigQuery query = session.createEntityQuery(entityClass);
-            if (null != order) {
+            if (null != order && order.length > 0) {
                 query.orderBy(order);
             }
-            if (null != criterions) {
+            if (null != criterions && criterions.length > 0) {
                 query.where(criterions);
             }
 

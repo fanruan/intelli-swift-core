@@ -1,11 +1,9 @@
 package com.fr.swift.config.dao.impl;
 
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.SwiftDatabase;
@@ -32,8 +30,7 @@ public class SwiftSegmentDaoImplTest {
 
     @Before
     public void before() {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        dao = PowerMock.createMock(SwiftSegmentDaoImpl.class, mockRestrictionFactory);
+        dao = PowerMock.createMock(SwiftSegmentDaoImpl.class);
     }
 
     @Test
@@ -74,10 +71,7 @@ public class SwiftSegmentDaoImplTest {
 
     @Test
     public void findBeanByStoreType() throws Exception {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER), EasyMock.anyString())).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE), EasyMock.anyObject(Types.StoreType.class))).andReturn(new Object()).anyTimes();
-        SwiftSegmentDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentDaoImpl.class, mockRestrictionFactory);
+        SwiftSegmentDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         final SegmentKey segmentKey = new SegmentKeyBean("sourceKey", 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
@@ -99,10 +93,7 @@ public class SwiftSegmentDaoImplTest {
 
     @Test
     public void deleteBySourceKey() throws SQLException {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER), EasyMock.isNull())).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
-        SwiftSegmentDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentDaoImpl.class, mockRestrictionFactory);
+        SwiftSegmentDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         final SegmentKey segmentKey = new SegmentKeyBean("sourceKey", 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);

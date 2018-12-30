@@ -4,7 +4,6 @@ import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.converter.ObjectConverter;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -27,16 +26,12 @@ public class SwiftSegmentLocationDaoImplTest {
 
     @Before
     public void before() {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        swiftSegmentLocationDao = PowerMock.createMock(SwiftSegmentLocationDaoImpl.class, mockRestrictionFactory);
+        swiftSegmentLocationDao = PowerMock.createMock(SwiftSegmentLocationDaoImpl.class);
     }
 
     @Test
     public void deleteBySourceKey() throws SQLException {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("sourceKey"), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("sourceKey"), EasyMock.isNull())).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
-        SwiftSegmentLocationDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentLocationDaoImpl.class, mockRestrictionFactory);
+        SwiftSegmentLocationDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentLocationDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         final SegLocationBean segmentKey = new SegLocationBean("clusterId", "segmentKey", "sourceKey");
@@ -61,10 +56,7 @@ public class SwiftSegmentLocationDaoImplTest {
 
     @Test
     public void findByClusterId() {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("id.clusterId"), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("id.clusterId"), EasyMock.isNull(String.class))).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
-        SwiftSegmentLocationDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentLocationDaoImpl.class, mockRestrictionFactory);
+        SwiftSegmentLocationDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentLocationDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         final SegLocationBean segmentKey = new SegLocationBean("clusterId", "segmentKey", "sourceKey");
@@ -86,10 +78,7 @@ public class SwiftSegmentLocationDaoImplTest {
 
     @Test
     public void findBySegmentId() {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("id.segmentId"), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("id.segmentId"), EasyMock.isNull(String.class))).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
-        SwiftSegmentLocationDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentLocationDaoImpl.class, mockRestrictionFactory);
+        SwiftSegmentLocationDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentLocationDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         final SegLocationBean segmentKey = new SegLocationBean("clusterId", "segmentKey", "sourceKey");
