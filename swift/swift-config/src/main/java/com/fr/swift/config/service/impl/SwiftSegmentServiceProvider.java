@@ -2,6 +2,7 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -86,7 +87,7 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     }
 
     @Override
-    public List<SegmentKey> find(Object... criterion) {
+    public List<SegmentKey> find(ConfigWhere... criterion) {
         return service.find(criterion);
     }
 

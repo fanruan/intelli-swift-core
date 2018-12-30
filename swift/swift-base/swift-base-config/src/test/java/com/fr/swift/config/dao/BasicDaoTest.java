@@ -2,7 +2,11 @@ package com.fr.swift.config.dao;
 
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.impl.ConfigWhereImpl;
+import com.fr.swift.config.oper.impl.OrderImpl;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,8 +103,8 @@ public class BasicDaoTest {
         EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception"));
         EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(TestEntity.class))).andReturn(mockConfigCriteria).anyTimes();
         PowerMock.replayAll();
-        assertFalse(mockBasicDao.find(mockConfigSession, new Object[]{new Object()}, new Object()).list().isEmpty());
-        assertTrue(mockBasicDao.find(mockConfigSession, new Object[]{null}, new Object()).isEmpty());
+        assertFalse(mockBasicDao.find(mockConfigSession, new Order[]{OrderImpl.asc("")}, ConfigWhereImpl.eq("", "")).list().isEmpty());
+        assertTrue(mockBasicDao.find(mockConfigSession, new Order[]{null}, ConfigWhereImpl.eq("", "")).isEmpty());
         PowerMock.verifyAll();
     }
 
@@ -114,8 +118,8 @@ public class BasicDaoTest {
         EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception"));
         EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(TestEntity.class))).andReturn(mockConfigCriteria).anyTimes();
         PowerMock.replayAll();
-        assertFalse(mockBasicDao.find(mockConfigSession, new Object()).list().isEmpty());
-        assertTrue(mockBasicDao.find(mockConfigSession, new Object[]{null}).isEmpty());
+        assertFalse(mockBasicDao.find(mockConfigSession, EasyMock.notNull(ConfigWhere.class)).list().isEmpty());
+        assertTrue(mockBasicDao.find(mockConfigSession, new ConfigWhere[]{null}).isEmpty());
         PowerMock.verifyAll();
     }
 

@@ -1,5 +1,6 @@
 package com.fr.swift.config.oper.impl;
 
+import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
@@ -24,25 +25,21 @@ public final class VersionConfigProperty {
     }
 
     private String version;
-    private Class restrictions;
-    private Class matchMode;
-    private Class order;
-    private Class criterion;
+    private Class session;
     private Class nonUniqueObjectException;
     private Class constraintViolationException;
     private Class entityExistsException;
+    private Class<? extends ConfigQuery> query;
 
-    private VersionConfigProperty(String version, String restrictions, String matchMode, String criterion, String order, String nonUniqueObjectException, String constraintViolationException, String entityExistsException) {
+    private VersionConfigProperty(String version, String session, String nonUniqueObjectException, String constraintViolationException, String entityExistsException) {
         this.version = version;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            this.restrictions = loader.loadClass(restrictions);
-            this.matchMode = loader.loadClass(matchMode);
-            this.order = loader.loadClass(order);
-            this.criterion = loader.loadClass(criterion);
+            this.session = loader.loadClass(session);
             this.nonUniqueObjectException = loader.loadClass(nonUniqueObjectException);
             this.constraintViolationException = loader.loadClass(constraintViolationException);
             this.entityExistsException = loader.loadClass(entityExistsException);
+            this.query = (Class<? extends ConfigQuery>) loader.loadClass("com.fr.swift.config.hibernate.HibernateQuery");
         } catch (Exception e) {
             Crasher.crash(e);
         }
@@ -55,14 +52,11 @@ public final class VersionConfigProperty {
                 Properties properties = new Properties();
                 properties.load(is);
                 String version = properties.getProperty("version");
-                String restrictions = properties.getProperty("hibernate.restrictions");
-                String matchMode = properties.getProperty("hibernate.matchMode");
-                String order = properties.getProperty("hibernate.order");
-                String criterion = properties.getProperty("hibernate.criterion");
+                String restrictions = properties.getProperty("hibernate.session");
                 String nonUniqueObjectException = properties.getProperty("hibernate.exp.nonUnique");
                 String constraintViolationException = properties.getProperty("hibernate.exp.constraint");
                 String entityExistsException = properties.getProperty("jpa.exp.exists");
-                property = new VersionConfigProperty(version, restrictions, matchMode, criterion, order, nonUniqueObjectException, constraintViolationException, entityExistsException);
+                property = new VersionConfigProperty(version, restrictions, nonUniqueObjectException, constraintViolationException, entityExistsException);
             }
         } finally {
             if (null != is) {
@@ -79,17 +73,8 @@ public final class VersionConfigProperty {
         return version;
     }
 
-    public Class getRestrictions() {
-        return restrictions;
-    }
-
-
-    public Class getMatchMode() {
-        return matchMode;
-    }
-
-    public Class getOrder() {
-        return order;
+    public Class getSession() {
+        return session;
     }
 
     public Class getConstraintViolationException() {
@@ -100,8 +85,8 @@ public final class VersionConfigProperty {
         return nonUniqueObjectException;
     }
 
-    public Class getCriterion() {
-        return criterion;
+    public Class<? extends ConfigQuery> getQuery() {
+        return query;
     }
 
     public Class getEntityExistsException() {

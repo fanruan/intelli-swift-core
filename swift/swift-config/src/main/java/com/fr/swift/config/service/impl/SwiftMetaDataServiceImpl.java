@@ -8,6 +8,7 @@ import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.converter.FindList;
@@ -223,7 +224,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     }
 
     @Override
-    public List<SwiftMetaData> find(final Object... criterion) {
+    public List<SwiftMetaData> find(final ConfigWhere... criterion) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
                 @Override

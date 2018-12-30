@@ -25,4 +25,6 @@ public interface ConfigSession {
     void close();
 
     void save(Object convert);
+
+    <Entity> ConfigQuery<Entity> createEntityQuery(Class<Entity> entityClass);
 }

@@ -2,6 +2,8 @@ package com.fr.swift.config.dao;
 
 
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.config.oper.Order;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.converter.ObjectConverter;
 
@@ -42,14 +44,14 @@ public interface SwiftConfigDao<T extends ObjectConverter> {
      * @param criterion hibernate sql
      * @return
      */
-    FindList<T> find(ConfigSession session, Object[] order, Object... criterion);
+    FindList<T> find(ConfigSession session, Order[] order, ConfigWhere... criterion);
 
     /**
      * @param session
      * @param criterion
      * @return
      */
-    FindList<T> find(ConfigSession session, Object... criterion);
+    FindList<T> find(ConfigSession session, ConfigWhere... criterion);
 
     /**
      * 根据ID删除
