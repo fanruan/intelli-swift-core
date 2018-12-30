@@ -181,8 +181,8 @@ public class FTPClientImpl implements SwiftFTPClient {
     }
 
     @Override
-    public boolean isConnected() {
-        return client.isConnected();
+    public boolean isConnected() throws IOException {
+        return client.isConnected() && this.client.sendNoOp();
     }
 
     @Override

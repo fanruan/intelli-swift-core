@@ -32,7 +32,7 @@ public interface SwiftFTPClient {
 
     void connect() throws Exception;
 
-    boolean isConnected();
+    boolean isConnected() throws IOException;
 
     void disconnect() throws IOException;
 }
