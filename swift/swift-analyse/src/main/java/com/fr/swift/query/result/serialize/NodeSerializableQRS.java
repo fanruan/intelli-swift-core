@@ -17,7 +17,6 @@ public class NodeSerializableQRS extends BaseSerializableQRS<Pair<SwiftNode, Lis
 
     public NodeSerializableQRS(int fetchSize, QueryResultSetMerger merger,
                                Pair<SwiftNode, List<Map<Integer, Object>>> page, boolean originHasNextPage) {
-        super(fetchSize, merger, originHasNextPage);
-        this.page = page;
+        super(fetchSize, merger, page, originHasNextPage);
     }
 }
