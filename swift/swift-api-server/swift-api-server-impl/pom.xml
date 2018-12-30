@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-jdbc-new</artifactId>
+            <artifactId>swift-jdbc</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>

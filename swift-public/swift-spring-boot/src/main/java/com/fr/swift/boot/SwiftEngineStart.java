@@ -84,10 +84,8 @@ public class SwiftEngineStart {
             UploadHistoryListener.listen();
             MaskHistoryListener.listen();
             RemoveHistoryListener.listen();
-
             PushSegmentLocationListener.listen();
             RemoveSegmentLocationListener.listen();
-
             SwiftLoggers.getLogger().info("Swift engine start successful");
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);

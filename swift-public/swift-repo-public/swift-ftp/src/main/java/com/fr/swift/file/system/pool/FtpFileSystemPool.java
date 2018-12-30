@@ -3,6 +3,7 @@ package com.fr.swift.file.system.pool;
 import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.client.SwiftFTPClient;
 import com.fr.swift.file.system.impl.FtpFileSystemImpl;
+import com.fr.swift.file.system.pool.config.FtpClientPoolConfig;
 import com.fr.swift.repository.config.FtpRepositoryConfig;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
@@ -23,9 +24,9 @@ public class FtpFileSystemPool extends BaseRemoteFileSystemPool<FtpFileSystemImp
         private ObjectPool<SwiftFTPClient> clientPool;
 
         public FtpFileSystemPoolFactory(FtpRepositoryConfig config) {
-            GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
+            GenericObjectPoolConfig poolConfig = new FtpClientPoolConfig().getPoolConfig();
             poolConfig.setTestOnBorrow(true);
-            FTPClientPoolFactory factory = new FTPClientPoolFactory(config);
+            FtpClientPoolFactory factory = new FtpClientPoolFactory(config);
             clientPool = new GenericObjectPool<SwiftFTPClient>(factory, poolConfig);
             this.config = config;
         }

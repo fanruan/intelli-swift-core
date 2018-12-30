@@ -26,15 +26,15 @@ public class FtpRepositoryConfig implements SwiftFileSystemConfig {
     @ConfigField
     private String passPhrase = "";
     @ConfigField
-    private String connectTimeout = "10000";
+    private String connectTimeout = "30000";
     @ConfigField
     private String charset = "UTF-8";
     @ConfigField
     private String passive = "true";
     @ConfigField
-    private String soTimeout = "10000";
+    private String soTimeout = "30000";
     @ConfigField
-    private String dataTimeout = "10000";
+    private String dataTimeout = "30000";
     @ConfigField
     private String rootPath = "/";
 

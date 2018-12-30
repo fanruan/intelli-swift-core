@@ -9,7 +9,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.event.global.GetAnalyseAndRealTimeAddrEvent;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.core.MD5Utils;
@@ -34,7 +34,7 @@ public class DetectServiceImpl implements DetectService {
         AuthResponseImpl response = new AuthResponseImpl();
         response.setAuthCode(authCode);
         try {
-            if (ClusterSelector.getInstance().getFactory().isCluster()) {
+            if (SwiftProperty.getProperty().isCluster()) {
                 Map<ServiceType, List<String>> map = (Map<ServiceType, List<String>>) ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new GetAnalyseAndRealTimeAddrEvent());
                 response.setAnalyseAddress(map.get(ServiceType.ANALYSE));
                 response.setRealTimeAddress(map.get(ServiceType.REAL_TIME));

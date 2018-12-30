@@ -28,13 +28,8 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-api-base</artifactId>
+            <artifactId>swift-jdbc</artifactId>
             <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-jdbc-new</artifactId>
-            <version>2019.1</version>
         </dependency>
     </dependencies>
 
