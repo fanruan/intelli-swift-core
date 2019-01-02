@@ -37,4 +37,8 @@ public abstract class BaseDetailQueryResultSet implements DetailQueryResultSet {
     public SwiftResultSet convert(SwiftMetaData metaData) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void close() {
+    }
 }

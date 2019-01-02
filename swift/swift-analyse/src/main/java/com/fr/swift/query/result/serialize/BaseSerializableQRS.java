@@ -10,18 +10,24 @@ import java.io.Serializable;
 /**
  * Created by lyon on 2018/12/29.
  */
-abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Serializable {
+public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Serializable {
     private static final long serialVersionUID = 3284100787389755050L;
 
     private int fetchSize;
     private QueryResultSetMerger merger;
     protected T page;
     protected boolean originHasNextPage;
+    private transient SyncInvoker invoker;
 
-    public BaseSerializableQRS(int fetchSize, QueryResultSetMerger merger, boolean originHasNextPage) {
+    public BaseSerializableQRS(int fetchSize, QueryResultSetMerger merger, T page, boolean originHasNextPage) {
         this.fetchSize = fetchSize;
         this.merger = merger;
+        this.page = page;
         this.originHasNextPage = originHasNextPage;
+    }
+
+    public void setInvoker(SyncInvoker invoker) {
+        this.invoker = invoker;
     }
 
     @Override
@@ -38,6 +44,13 @@ abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Serializable
     public T getPage() {
         T ret = page;
         page = null;
+        if (hasNextPage() && invoker != null) {
+            BaseSerializableQRS qrs = invoker.invoke();
+            page = (T) qrs.page;
+            originHasNextPage = qrs.originHasNextPage;
+        } else {
+            originHasNextPage = false;
+        }
         return ret;
     }
 
@@ -54,5 +67,10 @@ abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Serializable
     @Override
     public boolean hasNextPage() {
         return page != null || originHasNextPage;
+    }
+
+    public interface SyncInvoker {
+
+        <D, T extends BaseSerializableQRS<D>> T invoke();
     }
 }

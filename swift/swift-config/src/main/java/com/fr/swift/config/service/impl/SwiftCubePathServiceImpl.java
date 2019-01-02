@@ -65,7 +65,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
     private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
 
     private static boolean isValidPath(String path) {
-        return path != null && !Strings.isEmpty(path) && !path.equals("__EMPTY__");
+        return path != null && !Strings.isEmpty(path) && !"__EMPTY__".equals(path);
     }
 
     @Override

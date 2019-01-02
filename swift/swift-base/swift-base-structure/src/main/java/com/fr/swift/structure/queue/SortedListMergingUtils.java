@@ -109,7 +109,7 @@ public class SortedListMergingUtils {
         private Iterator<E> iterator;
         private Comparator<E> comparator;
         private Combiner<E> combiner;
-        private E next = null;
+        private E next;
 
         public StreamCombinerIterator(Iterator<E> iterator, Comparator<E> comparator, Combiner<E> combiner) {
             this.iterator = iterator;
@@ -126,28 +126,16 @@ public class SortedListMergingUtils {
         @Override
         public E next() {
             E e4Return = next;
-            // 
-            E lastE = next;
-            if (!iterator.hasNext()) {
-                // 最后一个元素
-                next = null;
-                return e4Return;
-            }
+            next = null;
             while (iterator.hasNext()) {
                 E item = iterator.next();
                 // 判断item是否和lastE相同，相同则要合并并e4Return继续检查下一个
-                if (comparator.compare(lastE, item) == 0) {
+                if (comparator.compare(e4Return, item) == 0) {
                     combiner.combine(e4Return, item);
-                    // 合并导致e4Return已经变了，lastE保存item的引用，用于判断下一个元素是否相同
-                    lastE = item;
-                    // 如果迭代器迭代完了，这个if分支也会跳出while，因为当前item也被合并了，这时要设置next为null
-                    next = iterator.hasNext() ? next : null;
-                    continue;
+                } else {
+                    next = item;
+                    break;
                 }
-                // item不等于lastE，说明可以返回e4Return
-                // 下一次的next设置为item
-                next = item;
-                break;
             }
             return e4Return;
         }
@@ -248,7 +236,7 @@ public class SortedListMergingUtils {
         @Override
         public int compareTo(IteratorComparator<E> o) {
             // 优先队列里面的元素(IteratorComparator<E>)之间的比较，只需比较有序列表的"栈顶"元素(E)
-            return peekElement == null ? 1 : comparator.compare(peekElement, o.peekElement);
+            return comparator.compare(peekElement, o.peekElement);
         }
     }
 }

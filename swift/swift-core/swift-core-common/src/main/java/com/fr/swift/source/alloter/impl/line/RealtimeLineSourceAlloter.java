@@ -10,7 +10,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.alloter.impl.BaseSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.Collections;
@@ -21,7 +20,7 @@ import java.util.Map;
  * @author anchore
  * @date 2018/12/21
  */
-public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, LineRowInfo> {
+public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
 
     private static final SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
@@ -57,7 +56,7 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
         if (maxSegKey == null) {
             maxSegKey = SEG_SVC.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
         }
-        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(maxSegKey.getOrder(), Types.StoreType.MEMORY);
+        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(maxSegKey.getOrder(), maxSegKey.getStoreType());
         return new SegmentState(segInfo, maxRowCount - 1);
     }
 
@@ -65,10 +64,5 @@ public class RealtimeLineSourceAlloter extends BaseSourceAlloter<LineAllotRule, 
         IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).build(), key.getStoreType());
         SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableKey.getId());
         return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, metaData);
-    }
-
-    @Override
-    protected int getLogicOrder(LineRowInfo rowInfo) {
-        return 0;
     }
 }

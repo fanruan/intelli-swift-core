@@ -1,14 +1,14 @@
 package com.fr.swift.query.aggregator;
 
 
-import java.io.Serializable;
 import java.util.TreeMap;
 
 /**
  * @author Xiaolei.liu
  */
 
-public class MedianAggregatorValue implements AggregatorValue<Number>, Serializable {
+public class MedianAggregatorValue implements AggregatorValue<Number> {
+
     private static final long serialVersionUID = 2208307766852392287L;
     private double median;
     private int count = 0;

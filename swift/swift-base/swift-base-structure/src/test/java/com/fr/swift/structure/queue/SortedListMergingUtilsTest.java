@@ -1,7 +1,14 @@
 package com.fr.swift.structure.queue;
 
+import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.aggregator.Combiner;
+import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
 import org.junit.Ignore;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/3/30.
@@ -10,46 +17,34 @@ public class SortedListMergingUtilsTest extends TestCase {
 
     @Ignore
     public void testMerge() {
-//        int listCount = 6;
-//        int listSize = 10;
-//        List<List<AtomicInteger>> lists = new ArrayList<List<AtomicInteger>>();
-//        for (int i = 0; i < listCount; i++) {
-//            lists.add(new ArrayList<AtomicInteger>());
-//        }
-//        for (int i = 0; i < listCount; i++) {
-//            for (int j = 0; j < listSize; j++) {
-//                lists.get(i).add(new AtomicInteger(i + j + 1));
-//            }
-//        }
-//        TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>(Comparators.<Integer>asc());
-//        for (int i = 0; i < listCount; i++) {
-//            for (int j = 0; j < listSize; j++) {
-//                int key = lists.get(i).get(j).intValue();
-//                int value = key;
-//                if (map.containsKey(key)) {
-//                    // 相同值加起来
-//                    value += map.get(key);
-//                }
-//                map.put(key, value);
-//            }
-//        }
-//        List<Integer> expected = new ArrayList<Integer>(map.values());
-//        Comparator<AtomicInteger> comparator = new Comparator<AtomicInteger>() {
-//            @Override
-//            public int compare(AtomicInteger o1, AtomicInteger o2) {
-//                Integer a = o1.intValue();
-//                Integer b = o2.intValue();
-//                return a.compareTo(b);
-//            }
-//        };
-//        Combiner<AtomicInteger> combiner = new Combiner<AtomicInteger>() {
-//            @Override
-//            public void combine(AtomicInteger current, AtomicInteger other) {
-//                current.getAndAdd(other.intValue());
-//            }
-//        };
-//        List<AtomicInteger> actual = SortedListMergingUtils.merge(lists, comparator, combiner);
-//        assertEquals(expected.size(), actual.size());
-//        IntStream.range(0, expected.size()).forEach(i -> assertTrue(expected.get(i) == actual.get(i).intValue()));
+        int size = 10;
+        int numberOfList = 3;
+        List<List<Pair<Integer, Integer>>> sortedLists = new ArrayList<List<Pair<Integer, Integer>>>();
+        for (int i = 0; i < numberOfList; i++) {
+            List<Pair<Integer, Integer>> list = new ArrayList<Pair<Integer, Integer>>();
+            for (int j = 0; j < size; j++) {
+                list.add(Pair.of(j, j));
+            }
+            sortedLists.add(list);
+        }
+        Comparator<Pair<Integer, Integer>> comparator = new Comparator<Pair<Integer, Integer>>() {
+            @Override
+            public int compare(Pair<Integer, Integer> o1, Pair<Integer, Integer> o2) {
+                return Comparators.<Integer>asc().compare(o1.getKey(), o2.getKey());
+            }
+        };
+        Combiner<Pair<Integer, Integer>> combiner = new Combiner<Pair<Integer, Integer>>() {
+            @Override
+            public void combine(Pair<Integer, Integer> current, Pair<Integer, Integer> other) {
+                current.setValue(current.getValue() + other.getValue());
+            }
+        };
+        List<Pair<Integer, Integer>> result = SortedListMergingUtils.merge(sortedLists, comparator, combiner);
+        assertEquals(size, result.size());
+        for (int i = 0; i < size; i++) {
+            int expected = i * numberOfList;
+            int actual = result.get(i).getValue();
+            assertEquals(expected, actual);
+        }
     }
 }
