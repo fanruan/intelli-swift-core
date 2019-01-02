@@ -1,7 +1,6 @@
 package com.fr.swift.result;
 
-import com.fr.swift.config.bean.SwiftMetaDataBean;
-import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
