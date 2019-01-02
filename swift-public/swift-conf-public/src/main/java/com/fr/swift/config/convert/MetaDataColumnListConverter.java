@@ -2,7 +2,7 @@ package com.fr.swift.config.convert;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.config.convert.hibernate.LongStringTypeConverter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Strings;
