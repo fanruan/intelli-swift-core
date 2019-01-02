@@ -14,8 +14,6 @@ public interface ConfigSession {
 
     <T> T get(Class<T> entityClass, Serializable id);
 
-    <T> ConfigCriteria createCriteria(Class<T> entityClass);
-
     void delete(Object entity);
 
     ConfigQuery createQuery(String format);
