@@ -1,5 +1,6 @@
 package com.fr.swift.api.server;
 
+import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.ApiRequestType;
 import com.fr.swift.api.info.AuthRequestInfo;
@@ -57,6 +58,7 @@ public class ApiServerServiceImpl implements ApiServerService {
     }
 
     @Override
+    @SwiftApi
     public ApiResponse dispatchRequest(String request) {
         ApiResponse response = new ApiResponseImpl();
         try {
