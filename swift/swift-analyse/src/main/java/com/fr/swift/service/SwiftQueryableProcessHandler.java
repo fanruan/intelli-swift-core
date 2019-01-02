@@ -2,10 +2,12 @@ package com.fr.swift.service;
 
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
+import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.annotation.Target;
+import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
@@ -15,16 +17,13 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.serialize.DetailSerializableQRS;
-import com.fr.swift.query.result.serialize.NodeSerializableQRS;
+import com.fr.swift.query.result.serialize.BaseSerializableQRS;
 import com.fr.swift.result.EmptyDetailQueryResultSet;
-import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
@@ -58,7 +57,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
 
     @Override
     public Object processResult(final Method method, Target target, Object... args) throws Throwable {
-        final String queryJson = (String) args[0];
+        String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
         queryBean.setQueryId(UUID.randomUUID().toString());
         SourceKey table = new SourceKey(queryBean.getTableName());
@@ -83,56 +82,23 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                         final QueryResultSet rs = (QueryResultSet) result;
                         switch (queryBean.getQueryType()) {
                             case DETAIL_SORT:
-                            case DETAIL: {
-                                final DetailSerializableQRS qrs = (DetailSerializableQRS) rs;
-                                resultSets.add(new DetailSerializableQRS(qrs.getFetchSize(), qrs.getRowCount(),
-                                        qrs.getMerger(), qrs.getPage(), qrs.hasNextPage()) {
-                                    @Override
-                                    public List<Row> getPage() {
-                                        List<Row> ret = page;
-                                        if (hasNextPage()) {
-                                            Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                                            try {
-                                                DetailSerializableQRS resultSet = (DetailSerializableQRS) invoke(invoker, proxyClass,
-                                                        method, methodName, parameterTypes, queryJson);
-                                                page = resultSet.getPage();
-                                                originHasNextPage = resultSet.hasNextPage();
-                                            } catch (Throwable throwable) {
-                                                return Crasher.crash(throwable);
-                                            }
-                                        } else {
-                                            page = null;
-                                            originHasNextPage = false;
-                                        }
-                                        return ret;
-                                    }
-                                });
-                                break;
-                            }
+                            case DETAIL:
                             case GROUP: {
-                                final NodeSerializableQRS qrs = (NodeSerializableQRS) rs;
-                                resultSets.add(new NodeSerializableQRS(qrs.getFetchSize(),
-                                        qrs.getMerger(), qrs.getPage(), qrs.hasNextPage()) {
+                                BaseSerializableQRS qrs = (BaseSerializableQRS) rs;
+                                BaseSerializableQRS.SyncInvoker syncInvoker = new BaseSerializableQRS.SyncInvoker() {
                                     @Override
-                                    public Pair<SwiftNode, List<Map<Integer, Object>>> getPage() {
-                                        Pair<SwiftNode, List<Map<Integer, Object>>> ret = page;
-                                        if (hasNextPage()) {
-                                            Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                                            try {
-                                                NodeSerializableQRS resultSet = (NodeSerializableQRS) invoke(invoker, proxyClass,
-                                                        method, methodName, parameterTypes, queryJson);
-                                                page = resultSet.getPage();
-                                                originHasNextPage = resultSet.hasNextPage();
-                                            } catch (Throwable throwable) {
-                                                return Crasher.crash(throwable);
-                                            }
-                                        } else {
-                                            page = null;
-                                            originHasNextPage = false;
+                                    public <D, T extends BaseSerializableQRS<D>> T invoke() {
+                                        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                        Invocation invocation = new SwiftInvocation(method, new Object[]{query});
+                                        try {
+                                            return (T) invoker.invoke(invocation).recreate();
+                                        } catch (Throwable throwable) {
+                                            return Crasher.crash(throwable);
                                         }
-                                        return ret;
                                     }
-                                });
+                                };
+                                qrs.setInvoker(syncInvoker);
+                                resultSets.add(qrs);
                                 break;
                             }
                             default:

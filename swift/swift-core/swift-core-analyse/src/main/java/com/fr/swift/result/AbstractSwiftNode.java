@@ -6,6 +6,7 @@ import com.fr.swift.query.aggregator.AggregatorValue;
  * Created by pony on 2017/12/8.
  */
 public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNode<T> {
+    private static final long serialVersionUID = -1451247093003530849L;
     protected T parent;
     protected T sibling;
     protected AggregatorValue[] aggregatorValues;

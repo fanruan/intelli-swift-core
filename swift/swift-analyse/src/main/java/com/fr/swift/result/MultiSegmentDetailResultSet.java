@@ -58,10 +58,6 @@ public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
     }
 
     @Override
-    public void close() {
-    }
-
-    @Override
     public SwiftResultSet convert(final SwiftMetaData metaData) {
         return SortMultiSegmentDetailResultSet.create(fetchSize, metaData, this);
     }

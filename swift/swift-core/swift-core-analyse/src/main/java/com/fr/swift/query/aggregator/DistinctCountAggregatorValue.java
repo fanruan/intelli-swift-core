@@ -1,6 +1,5 @@
 package com.fr.swift.query.aggregator;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,9 +7,9 @@ import java.util.Set;
  * @author Xiaolei.liu
  */
 
-public class DistinctCountAggregatorValue implements AggregatorValue<Double>, Serializable {
+public class DistinctCountAggregatorValue implements AggregatorValue<Double> {
 
-    private static final long serialVersionUID = -6054571707233716739L;
+    private static final long serialVersionUID = -688533902689550756L;
     private Set set = new HashSet();
 
     public Set getBitMap() {
