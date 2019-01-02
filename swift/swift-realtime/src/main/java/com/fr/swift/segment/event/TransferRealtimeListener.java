@@ -36,10 +36,10 @@ public class TransferRealtimeListener implements SwiftEventListener<SegmentKey> 
         }
     }
 
-    private static final TransferRealtimeListener INSTANCE = new TransferRealtimeListener();
+    static {
+        SwiftEventDispatcher.listen(SegmentEvent.TRANSFER_REALTIME, new TransferRealtimeListener());
+    }
 
     public static void listen() {
-        // todo 何时listen
-        SwiftEventDispatcher.listen(SegmentEvent.TRANSFER_REALTIME, INSTANCE);
     }
 }

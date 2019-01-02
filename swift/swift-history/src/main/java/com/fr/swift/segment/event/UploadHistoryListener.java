@@ -13,6 +13,7 @@ import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.TransCollateLoadEvent;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -42,7 +43,7 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
     }
 
     private static void upload(final SegmentKey segKey) {
-        if (ClusterSelector.getInstance().getFactory().isCluster()) {
+        if (SwiftProperty.getProperty().isCluster()) {
             int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
             String local = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
             String remote = new CubePathBuilder(segKey).build();
@@ -85,7 +86,6 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
     }
 
     static {
-        // todo 何时listen
         SwiftEventDispatcher.listen(SegmentEvent.UPLOAD_HISTORY, new UploadHistoryListener());
     }
 

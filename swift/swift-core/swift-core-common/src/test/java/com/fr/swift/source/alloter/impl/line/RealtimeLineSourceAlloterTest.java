@@ -54,8 +54,10 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
         keyListMap.put(new SourceKey(""), keys);
 
         Segment seg1 = PowerMock.createMock(Segment.class);
+        EasyMock.expect(seg1.isReadable()).andReturn(true).anyTimes();
         EasyMock.expect(seg1.getRowCount()).andReturn(998).times(1);
         Segment seg2 = PowerMock.createMock(Segment.class);
+        EasyMock.expect(seg2.isReadable()).andReturn(true).anyTimes();
         EasyMock.expect(seg2.getRowCount()).andReturn(999).times(1);
 
         EasyMock.expect(seg1.getRowCount()).andReturn(998).times(1);

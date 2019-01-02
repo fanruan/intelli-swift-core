@@ -101,7 +101,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
             return ++cursor;
         }
 
-        public SegmentInfo getSegInfo() {
+        SegmentInfo getSegInfo() {
             return segInfo;
         }
     }
