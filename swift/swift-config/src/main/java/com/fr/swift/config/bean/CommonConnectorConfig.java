@@ -29,4 +29,23 @@ public class CommonConnectorConfig implements FineIOConnectorConfig {
     public String basePath() {
         return SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CommonConnectorConfig that = (CommonConnectorConfig) o;
+
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return type != null ? type.hashCode() : 0;
+    }
 }
