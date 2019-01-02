@@ -1,9 +1,10 @@
 package com.fr.swift.config.oper.proxy;
 
-import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigTransaction;
+import com.fr.swift.config.oper.impl.VersionConfigProperty;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -24,12 +25,14 @@ public class SessionInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (method.getName().equals("createEntityQuery")) {
+            Constructor constructor = VersionConfigProperty.get().getQuery().getDeclaredConstructor(Class.class, VersionConfigProperty.get().getSession());
+            constructor.setAccessible(true);
+            return constructor.newInstance(args[0], object);
+        }
         Method invokeMethod = proxyClass.getMethod(method.getName(), method.getParameterTypes());
         try {
             Object obj = invokeMethod.invoke(object, args);
-            if (method.getName().equals("createCriteria")) {
-                return Proxy.newProxyInstance(object.getClass().getClassLoader(), new Class[]{ConfigCriteria.class}, new CriteriaInvocationHandler(obj));
-            }
             if (method.getName().equals("createQuery")) {
                 return Proxy.newProxyInstance(object.getClass().getClassLoader(), new Class[]{ConfigQuery.class}, new DirectInvocationHandler(obj));
             }

@@ -6,6 +6,7 @@ import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLoggers;
@@ -120,7 +121,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     }
 
     @Override
-    public List<SwiftServiceInfoBean> find(final Object... criterion) {
+    public List<SwiftServiceInfoBean> find(final ConfigWhere... criterion) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftServiceInfoBean>>() {
                 @Override

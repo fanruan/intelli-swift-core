@@ -2,9 +2,8 @@ package com.fr.swift.config.dao.impl;
 
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
-import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.converter.FindListImpl;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
@@ -23,19 +22,14 @@ public class SwiftServiceInfoDaoImplTest {
 
     @Test
     public void getServiceInfoByService() {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("service"), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("service"), EasyMock.isNull(String.class))).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
-        SwiftServiceInfoDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftServiceInfoDaoImpl.class, mockRestrictionFactory);
+        SwiftServiceInfoDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftServiceInfoDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
-        final SwiftServiceInfoBean segmentKey = new SwiftServiceInfoBean("service", "clusterId", "serviceInfo");
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
-        mockConfigCriteria.add(EasyMock.notNull());
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(SwiftServiceInfoBean.TYPE))).andReturn(mockConfigCriteria).anyTimes();
+        EasyMock.expect(mockSwiftMetaDataDaoImpl.getServiceInfoByService(EasyMock.eq(mockConfigSession), EasyMock.eq("clusterId")))
+                .andReturn(new FindListImpl<SwiftServiceInfoBean>(Arrays.asList(EasyMock.anyObject()))).once();
+        EasyMock.expect(mockSwiftMetaDataDaoImpl.getServiceInfoByService(EasyMock.eq(mockConfigSession), null))
+                .andThrow(new RuntimeException()).once();
         PowerMock.replayAll();
-        assertFalse(mockSwiftMetaDataDaoImpl.getServiceInfoByService(mockConfigSession, "clusterId").list().isEmpty());
+        assertFalse(mockSwiftMetaDataDaoImpl.getServiceInfoByService(mockConfigSession, "clusterId").isEmpty());
         boolean exception = false;
         try {
             mockSwiftMetaDataDaoImpl.getServiceInfoByService(mockConfigSession, null);
@@ -48,18 +42,13 @@ public class SwiftServiceInfoDaoImplTest {
 
     @Test
     public void getServiceInfoBySelective() {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("clusterId"), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("service"), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("serviceInfo"), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        SwiftServiceInfoDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftServiceInfoDaoImpl.class, mockRestrictionFactory);
-        ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         final SwiftServiceInfoBean segmentKey = new SwiftServiceInfoBean("service", "clusterId", "serviceInfo");
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
-        mockConfigCriteria.add(EasyMock.notNull());
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(SwiftServiceInfoBean.TYPE))).andReturn(mockConfigCriteria).anyTimes();
+        SwiftServiceInfoDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftServiceInfoDaoImpl.class);
+        ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
+        EasyMock.expect(mockSwiftMetaDataDaoImpl.getServiceInfoBySelective(EasyMock.eq(mockConfigSession), EasyMock.notNull(SwiftServiceInfoBean.class)))
+                .andReturn(new FindListImpl<SwiftServiceInfoBean>(Arrays.asList(segmentKey))).once();
+        EasyMock.expect(mockSwiftMetaDataDaoImpl.getServiceInfoBySelective(EasyMock.eq(mockConfigSession), EasyMock.isNull(SwiftServiceInfoBean.class)))
+                .andThrow(new RuntimeException()).once();
         PowerMock.replayAll();
         assertFalse(mockSwiftMetaDataDaoImpl.getServiceInfoBySelective(mockConfigSession, segmentKey).list().isEmpty());
         boolean exception = false;
@@ -74,18 +63,10 @@ public class SwiftServiceInfoDaoImplTest {
 
     @Test
     public void deleteByServiceInfo() throws SQLException {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("serviceInfo"), EasyMock.notNull(String.class))).andReturn(new Object()).anyTimes();
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq("serviceInfo"), EasyMock.isNull())).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
-        SwiftServiceInfoDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftServiceInfoDaoImpl.class, mockRestrictionFactory);
+        SwiftServiceInfoDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftServiceInfoDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
-        final SwiftServiceInfoBean segmentKey = new SwiftServiceInfoBean("service", "clusterId", "serviceInfo");
-
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
-        mockConfigCriteria.add(EasyMock.notNull());
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(SwiftServiceInfoBean.TYPE))).andReturn(mockConfigCriteria).anyTimes();
+        EasyMock.expect(mockSwiftMetaDataDaoImpl.deleteByServiceInfo(EasyMock.eq(mockConfigSession), EasyMock.eq("serviceInfo"))).andReturn(true).once();
+        EasyMock.expect(mockSwiftMetaDataDaoImpl.deleteByServiceInfo(EasyMock.eq(mockConfigSession), EasyMock.isNull(String.class))).andThrow(new SQLException()).once();
         mockConfigSession.delete(EasyMock.anyObject(SwiftServiceInfoBean.TYPE));
         EasyMock.expectLastCall().anyTimes();
         PowerMock.replayAll();

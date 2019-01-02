@@ -6,8 +6,7 @@ import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
-import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.converter.FindList;
 
 import java.sql.SQLException;
@@ -19,18 +18,8 @@ import java.sql.SQLException;
  */
 @SwiftBean
 public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataBean> implements SwiftMetaDataDao {
-
-    /**
-     * for test
-     *
-     * @param factory
-     */
-    public SwiftMetaDataDaoImpl(RestrictionFactory factory) {
-        super(SwiftMetaDataBean.TYPE, factory);
-    }
-
     public SwiftMetaDataDaoImpl() {
-        super(SwiftMetaDataBean.TYPE, RestrictionFactoryImpl.INSTANCE);
+        super(SwiftMetaDataBean.TYPE);
     }
 
     @Override
@@ -40,7 +29,7 @@ public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataBean> implements
 
     @Override
     public SwiftMetaDataBean findByTableName(ConfigSession session, String tableName) {
-        FindList<SwiftMetaDataBean> list = find(session, factory.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName));
+        FindList<SwiftMetaDataBean> list = find(session, ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName));
         if (null == list || list.isEmpty()) {
             throw new RuntimeException(String.format("Find meta data error! Table named '%s' not exists!", tableName));
         }

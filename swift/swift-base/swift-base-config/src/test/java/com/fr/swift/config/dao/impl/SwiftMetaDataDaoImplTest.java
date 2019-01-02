@@ -1,11 +1,9 @@
 package com.fr.swift.config.dao.impl;
 
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.ConfigCriteria;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
 import com.fr.swift.converter.ObjectConverter;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -31,8 +29,7 @@ public class SwiftMetaDataDaoImplTest {
 
     @Before
     public void before() {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftMetaDataDaoImpl.class, mockRestrictionFactory);
+        mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftMetaDataDaoImpl.class);
     }
 
     @Test
@@ -54,9 +51,7 @@ public class SwiftMetaDataDaoImplTest {
 
     @Test
     public void findByTableName() throws Exception {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        EasyMock.expect(mockRestrictionFactory.eq(EasyMock.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME), EasyMock.anyString())).andReturn(new Object()).anyTimes();
-        SwiftMetaDataDaoImpl mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftMetaDataDaoImpl.class, mockRestrictionFactory);
+        SwiftMetaDataDaoImpl mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftMetaDataDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(SwiftMetaDataBean.TYPE))).andReturn(mockConfigCriteria).anyTimes();

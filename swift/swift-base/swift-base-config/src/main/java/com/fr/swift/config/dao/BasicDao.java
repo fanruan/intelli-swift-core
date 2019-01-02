@@ -1,8 +1,9 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.oper.ConfigCriteria;
+import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.config.oper.Order;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.converter.ObjectConverter;
@@ -18,11 +19,9 @@ import java.util.List;
  */
 public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
     protected Class entityClass;
-    protected RestrictionFactory factory;
 
-    public BasicDao(Class entityClass, RestrictionFactory factory) {
+    public BasicDao(Class entityClass) {
         this.entityClass = entityClass;
-        this.factory = factory;
     }
 
     @Override
@@ -50,21 +49,17 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
     }
 
     @Override
-    public FindList<T> find(ConfigSession session, Object[] order, Object... criterions) {
+    public FindList<T> find(ConfigSession session, Order[] order, ConfigWhere... criterions) {
         try {
-            ConfigCriteria criteria = session.createCriteria(entityClass);
-            if (null != order) {
-                for (Object order1 : order) {
-                    criteria.addOrder(order1);
-                }
+            ConfigQuery query = session.createEntityQuery(entityClass);
+            if (null != order && order.length > 0) {
+                query.orderBy(order);
             }
-            if (null != criteria) {
-                for (Object criterion : criterions) {
-                    criteria.add(criterion);
-                }
+            if (null != criterions && criterions.length > 0) {
+                query.where(criterions);
             }
 
-            final List list = criteria.list();
+            final List list = query.executeQuery();
 
             return new FindListImpl<T>(list, new FindList.Through<T>() {
 
@@ -84,7 +79,7 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
     }
 
     @Override
-    public FindList<T> find(ConfigSession session, Object... criteria) {
+    public FindList<T> find(ConfigSession session, ConfigWhere... criteria) {
         return find(session, null, criteria);
     }
 
