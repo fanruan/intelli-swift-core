@@ -45,6 +45,7 @@ public abstract class AbstractRepository implements SwiftRepository {
         if (null != fileSystem) {
             if (null == configuration) {
                 fileSystem.close();
+                return;
             }
             SwiftFileSystemType type = configuration.getType();
             if (SwiftRemoteFileSystemType.FR.equals(type)) {

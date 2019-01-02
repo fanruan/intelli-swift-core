@@ -134,7 +134,6 @@ public class JsonParser {
                     setter.set(target, value);
                 }
             } catch (Exception ignore) {
-                ignore.printStackTrace();
             }
         }
         return target;
