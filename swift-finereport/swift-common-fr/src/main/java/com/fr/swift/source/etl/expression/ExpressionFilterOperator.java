@@ -1,6 +1,6 @@
 package com.fr.swift.source.etl.expression;
 
-import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
