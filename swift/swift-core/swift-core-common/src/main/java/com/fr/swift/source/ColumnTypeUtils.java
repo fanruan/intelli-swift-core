@@ -1,6 +1,6 @@
 package com.fr.swift.source;
 
-import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;

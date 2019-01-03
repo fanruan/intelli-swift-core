@@ -2,7 +2,7 @@ package com.fr.swift.config.dao.impl;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.ConfigSession;

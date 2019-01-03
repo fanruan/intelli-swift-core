@@ -3,6 +3,7 @@ package com.fr.swift.config.hibernate;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.util.Assert;
 import com.fr.third.org.hibernate.SessionFactory;
 import com.fr.third.org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import com.fr.third.org.hibernate.cfg.Configuration;
@@ -26,6 +27,7 @@ public class HibernateManager {
     public Configuration getConfiguration(Properties properties) {
         Configuration configuration = new Configuration();
         for (Class<?> entity : SwiftConfigConstants.ENTITIES) {
+            Assert.notNull(entity);
             configuration.addAnnotatedClass(entity);
         }
         configuration.setProperties(properties);

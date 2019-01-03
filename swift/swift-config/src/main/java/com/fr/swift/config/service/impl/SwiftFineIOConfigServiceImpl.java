@@ -23,8 +23,11 @@ public class SwiftFineIOConfigServiceImpl implements SwiftFineIOConnectorService
 
     @Override
     public void setCurrentConfig(FineIOConnectorConfig config) {
-        configService.deleteConfigBean(CONFIG_CONVERT, getCurrentConfig());
-        configService.updateConfigBean(CONFIG_CONVERT, config);
+        FineIOConnectorConfig current = getCurrentConfig();
+        if (null != config && !config.equals(current)) {
+            configService.deleteConfigBean(CONFIG_CONVERT, current);
+            configService.updateConfigBean(CONFIG_CONVERT, config);
+        }
     }
 
 }

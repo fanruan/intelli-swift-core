@@ -4,7 +4,7 @@ import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
 import com.fr.swift.config.bean.SwiftConfigBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.bean.SwiftTableAllotConfBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
