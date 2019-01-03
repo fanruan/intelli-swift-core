@@ -2,7 +2,6 @@ package com.fr.swift.core.rpc;
 
 import com.fr.cluster.ClusterBridge;
 import com.fr.cluster.core.ClusterNode;
-import com.fr.cluster.engine.ticket.FineClusterToolKit;
 import com.fr.cluster.rpc.base.ClusterInvokeHandler;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
@@ -74,7 +73,7 @@ public class FRInvoker<T> implements Invoker<T> {
     }
 
     protected Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable {
-        com.fr.cluster.rpc.base.ClusterInvoker frInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(proxy);
+        com.fr.cluster.rpc.base.ClusterInvoker frInvoker = InvokerCache.getInstance().getInvoker(type);
         Method method = proxy.getClass().getMethod(methodName, parameterTypes);
         com.fr.rpc.Invocation invocation = com.fr.rpc.Invocation.create(method, arguments);
         if (url.getDestination() != null) {

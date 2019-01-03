@@ -21,11 +21,20 @@ public abstract class BaseStreamResultSet<Paths> implements SwiftStreamResultSet
     protected Paths paths;
     protected LineParser parser;
     protected SwiftMetaData metaData;
-    private Pattern pattern = Pattern.compile("(http|https)+://");
+    private static final Pattern PATTERN = Pattern.compile("(http|https)+://");
 
     public BaseStreamResultSet(Paths paths, LineParser parser) {
         this.paths = paths;
         this.parser = parser;
+    }
+
+    public BaseStreamResultSet(LineParser parser) {
+        this.parser = parser;
+    }
+
+    public BaseStreamResultSet(SwiftMetaData metaData, LineParser parser) {
+        this.parser = parser;
+        this.metaData = metaData;
     }
 
     public BaseStreamResultSet(SwiftMetaData metaData, Paths paths, LineParser parser) {
@@ -35,7 +44,7 @@ public abstract class BaseStreamResultSet<Paths> implements SwiftStreamResultSet
     }
 
     protected InputStream getInputStream(String path) throws Exception {
-        if (pattern.matcher(path.toLowerCase()).matches()) {
+        if (PATTERN.matcher(path.toLowerCase()).matches()) {
             return new URL(path).openStream();
         }
         return new FileInputStream(path);

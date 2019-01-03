@@ -2,8 +2,10 @@ package com.fr.swift.boot;
 
 import com.fr.cluster.core.ClusterNode;
 import com.fr.cluster.core.event.ClusterViewEvent;
+import com.fr.cluster.engine.ticket.FineClusterToolKit;
 import com.fr.cluster.entry.ClusterTicketAdaptor;
 import com.fr.cluster.entry.ClusterToolKit;
+import com.fr.cluster.rpc.base.ClusterInvoker;
 import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
@@ -17,6 +19,7 @@ import com.fr.swift.cluster.service.SegmentLocationInfoContainer;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.core.cluster.FRClusterNodeManager;
 import com.fr.swift.core.cluster.FRClusterNodeService;
+import com.fr.swift.core.rpc.InvokerCache;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
@@ -30,10 +33,14 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
+import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
+import com.fr.swift.service.cluster.ClusterHistoryService;
+import com.fr.swift.service.cluster.ClusterIndexingService;
 import com.fr.swift.service.cluster.ClusterRealTimeService;
 import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
@@ -83,11 +90,25 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
     @Override
     public void approach(ClusterToolKit clusterToolKit) {
         //注册rpc服务
-        remoteServiceSender = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(RemoteServiceSender.class)).build();
-        clusterAnalyseService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(ClusterAnalyseServiceImpl.class)).build();
-        clusterRealTimeService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(ClusterRealTimeServiceImpl.class)).build();
-        clusterIndexingService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(ClusterIndexingServiceImpl.class)).build();
-        clusterHistoryService = clusterToolKit.getRPCProxyFactory().newBuilder(SwiftContext.get().getBean(ClusterHistoryServiceImpl.class)).build();
+        ClusterInvoker remoteServiceSenderInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(RemoteServiceSender.class));
+        InvokerCache.getInstance().bindInvoker(RemoteServiceSender.class, remoteServiceSenderInvoker);
+        InvokerCache.getInstance().bindInvoker(SwiftServiceListenerHandler.class, remoteServiceSenderInvoker);
+
+        ClusterInvoker analyseServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(AnalyseService.class));
+        InvokerCache.getInstance().bindInvoker(ClusterAnalyseServiceImpl.class, analyseServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(ClusterAnalyseService.class, analyseServiceInvoker);
+
+        ClusterInvoker realTimeServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(RealtimeService.class));
+        InvokerCache.getInstance().bindInvoker(ClusterRealTimeServiceImpl.class, realTimeServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(ClusterRealTimeService.class, analyseServiceInvoker);
+
+        ClusterInvoker indexingServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(IndexingService.class));
+        InvokerCache.getInstance().bindInvoker(ClusterIndexingServiceImpl.class, indexingServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(ClusterIndexingService.class, indexingServiceInvoker);
+
+        ClusterInvoker historyServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(HistoryService.class));
+        InvokerCache.getInstance().bindInvoker(ClusterHistoryServiceImpl.class, historyServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(ClusterHistoryService.class, historyServiceInvoker);
 
         EventDispatcher.listen(ClusterViewEvent.NODE_JOINED, new Listener<ClusterNode>() {
             @Override

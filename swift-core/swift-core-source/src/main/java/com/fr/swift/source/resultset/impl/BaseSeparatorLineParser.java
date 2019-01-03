@@ -11,18 +11,30 @@ import java.util.Arrays;
  */
 public abstract class BaseSeparatorLineParser extends BaseFileLineParser {
     private boolean skipFirstLine;
+    private String replaceReg;
+    private String replacement;
 
+    public BaseSeparatorLineParser(boolean skipFirstLine, LineParserAdaptor adaptor) {
+        super(adaptor);
+        this.skipFirstLine = skipFirstLine;
+        String separator = getSeparator();
+        this.replaceReg = String.format("%s%s", separator, separator);
+        this.replacement = String.format("%s %s", separator, separator);
+    }
 
     public BaseSeparatorLineParser(boolean skipFirstLine) {
-        this.skipFirstLine = skipFirstLine;
+        this(skipFirstLine, null);
     }
 
     @Override
     protected Row split(String line) {
-        if (line.trim().endsWith(getSeparator())) {
-            line = line.substring(0, line.lastIndexOf(getSeparator()));
+        String separator = getSeparator();
+        String calLine = line;
+        String tmp;
+        while (!calLine.equals((tmp = calLine.replaceAll(replaceReg, replacement)))) {
+            calLine = tmp;
         }
-        String[] strings = line.split(getSeparator());
+        String[] strings = calLine.split(separator);
         return new ListBasedRow(Arrays.asList(strings));
     }
 
