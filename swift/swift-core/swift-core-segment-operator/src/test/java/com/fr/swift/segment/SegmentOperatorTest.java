@@ -2,7 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -38,7 +38,7 @@ public class SegmentOperatorTest {
         dateKey = new SourceKey("date_table");
     }
 
-    private void transport(SourceKey key, SwiftResultSet set) {
+    private void transport(final SourceKey key, final SwiftResultSet set) {
         boolean success = true;
         try {
             DataSource dataSource = new DataSource() {
@@ -62,8 +62,8 @@ public class SegmentOperatorTest {
                 }
             };
 
-            Insertable inserter = (Insertable) SwiftContext.get().getBean("historyBlockInserter", Insertable.class, dataSource);
-            inserter.insertData(set);
+            Importer inserter = SwiftContext.get().getBean("historyBlockInserter", Importer.class, dataSource);
+            inserter.importData(set);
         } catch (Exception e) {
             success = false;
             e.printStackTrace();

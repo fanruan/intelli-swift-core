@@ -1,6 +1,7 @@
 package com.fr.swift.log;
 
 import com.fr.log.FineLoggerFactory;
+import com.fr.swift.log.impl.BaseSwiftLogger;
 import org.slf4j.helpers.FormattingTuple;
 
 /**
