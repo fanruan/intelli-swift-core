@@ -4,6 +4,7 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Assert;
+import com.fr.swift.util.IoUtil;
 
 import java.sql.SQLException;
 
@@ -12,6 +13,7 @@ import java.sql.SQLException;
  * @date 2018/6/5
  */
 public class LimitedResultSet implements SwiftResultSet {
+
     private SwiftResultSet origin;
 
     private boolean closeOrigin;
@@ -55,7 +57,7 @@ public class LimitedResultSet implements SwiftResultSet {
     @Override
     public void close() throws SQLException {
         if (closeOrigin) {
-            origin.close();
+            IoUtil.close(origin);
         }
     }
 }
