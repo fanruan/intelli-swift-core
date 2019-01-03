@@ -9,13 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-api-fr-bean</artifactId>
+    <artifactId>swift-api-bean</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-api-server-base</artifactId>
             <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-analyse-base</artifactId>
+            <version>${swift.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

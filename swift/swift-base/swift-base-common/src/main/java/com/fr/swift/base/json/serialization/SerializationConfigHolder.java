@@ -7,6 +7,7 @@ import com.fr.swift.base.json.annotation.JsonSubTypes;
 import com.fr.swift.base.json.annotation.JsonTypeInfo;
 import com.fr.swift.util.Strings;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -73,21 +74,29 @@ public class SerializationConfigHolder {
             this.getters.put(clazz, getters);
             this.setters.put(clazz, setters);
             for (Class anInterface : clazz.getInterfaces()) {
+                if (Serializable.class.equals(anInterface)) {
+                    continue;
+                }
                 initSerializationConfig(config, anInterface);
             }
             for (final Field f : clazz.getDeclaredFields()) {
                 String propertyName = f.getName();
-                if (f.isAnnotationPresent(JsonIgnore.class)) {
+                if (f.isAnnotationPresent(JsonIgnore.class) || Modifier.isStatic(f.getModifiers())) {
                     continue;
                 }
                 Method method = null;
+                Class fieldClass = null;
+                try {
+                    fieldClass = getRawType(f.getGenericType());
+                } catch (Exception e) {
+                    fieldClass = getRawType(f.getType());
+                }
                 if (f.isAnnotationPresent(JsonProperty.class)) {
                     JsonProperty property = f.getAnnotation(JsonProperty.class);
                     if (Strings.isNotEmpty(property.value())) {
                         propertyName = property.value();
                     }
                     if (Strings.isNotEmpty(property.serializeMethod())) {
-                        Class fieldClass = getRawType(f.getGenericType());
                         try {
                             method = fieldClass.getDeclaredMethod(property.serializeMethod());
                             method.setAccessible(true);
@@ -95,9 +104,6 @@ public class SerializationConfigHolder {
                             method = null;
                         }
                     }
-                }
-                if (Modifier.isStatic(f.getModifiers())) {
-                    continue;
                 }
                 if (!fields.contains(propertyName)) {
                     fields.add(propertyName);
