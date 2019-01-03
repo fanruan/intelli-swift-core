@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * @author anchore
- * @date 2018/12/28
+ * @date 2018/12/285
  */
 abstract class BaseSegmentLocationListener implements SwiftEventListener<List<SegmentKey>> {
 
@@ -34,24 +34,29 @@ abstract class BaseSegmentLocationListener implements SwiftEventListener<List<Se
 
         for (SegmentKey segKey : segKeys) {
             SourceKey tableKey = segKey.getTable();
-            if (!realtimeSegDsts.containsKey(tableKey)) {
-                realtimeSegDsts.put(tableKey, new ArrayList<SegmentDestination>());
-            }
-            if (!historySegDsts.containsKey(tableKey)) {
-                historySegDsts.put(tableKey, new ArrayList<SegmentDestination>());
-            }
 
             if (segKey.getStoreType().isTransient()) {
                 SegmentDestination segDst = new RealTimeSegDestImpl(SwiftProperty.getProperty().getClusterId(), segKey.getId(), segKey.getOrder());
+                if (!realtimeSegDsts.containsKey(tableKey)) {
+                    realtimeSegDsts.put(tableKey, new ArrayList<SegmentDestination>());
+                }
                 realtimeSegDsts.get(tableKey).add(segDst);
             } else {
                 SegmentDestination segDst = new SegmentDestinationImpl(SwiftProperty.getProperty().getClusterId(), segKey.getId(), segKey.getOrder());
+                if (!historySegDsts.containsKey(tableKey)) {
+                    historySegDsts.put(tableKey, new ArrayList<SegmentDestination>());
+                }
                 historySegDsts.get(tableKey).add(segDst);
             }
         }
 
-        trigger(new SegmentLocationInfoImpl(ServiceType.HISTORY, historySegDsts));
-        trigger(new SegmentLocationInfoImpl(ServiceType.REAL_TIME, realtimeSegDsts));
+        // 传空会删所有
+        if (!historySegDsts.values().isEmpty()) {
+            trigger(new SegmentLocationInfoImpl(ServiceType.HISTORY, historySegDsts));
+        }
+        if (!realtimeSegDsts.isEmpty()) {
+            trigger(new SegmentLocationInfoImpl(ServiceType.REAL_TIME, realtimeSegDsts));
+        }
     }
 
     abstract Serializable trigger(SegmentLocationInfo segLocations);
