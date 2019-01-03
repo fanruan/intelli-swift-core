@@ -1,10 +1,10 @@
 package com.fr.swift.source.etl.columnformula;
 
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
-import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
