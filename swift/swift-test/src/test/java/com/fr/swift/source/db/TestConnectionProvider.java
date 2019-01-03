@@ -6,7 +6,6 @@ import com.fr.swift.resource.ResourceUtils;
 
 /**
  * Created by pony on 2017/12/29.
- *
  */
 public class TestConnectionProvider {
     public static SwiftConnectionInfo createConnection() {

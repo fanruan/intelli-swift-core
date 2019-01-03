@@ -14,9 +14,8 @@ public class QueryDBSourceTest extends TestCase {
     private QueryDBSource source;
     private QueryDBSource partSource;
     public void setUp() throws Exception{
-        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
         source = new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN", "demo");
-        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
+        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<String, ColumnType>();
         fields.put("合同ID", ColumnType.NUMBER);
         partSource = new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN", "demo", fields);
     }

@@ -1,11 +1,13 @@
 package com.fr.swift.log;
 
+import com.fr.swift.log.impl.NoopLoggers;
+
 /**
  * @author anchore
  */
 public final class SwiftLoggers {
 
-    private static SwiftLoggerFactory<?> loggerFactory;
+    private static SwiftLoggerFactory<?> loggerFactory = new NoopLoggers();
 
     /**
      * 不用static final SwiftLogger = SwiftLoggers.getLogger();的方式了

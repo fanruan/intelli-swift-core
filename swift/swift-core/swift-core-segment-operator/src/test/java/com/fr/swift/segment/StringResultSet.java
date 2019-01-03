@@ -4,17 +4,18 @@ import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2018/1/9
  */
-public class DateResultSet extends SingleColumnResultSet {
+public class StringResultSet extends SingleColumnResultSet {
 
     int count;
 
@@ -25,8 +26,8 @@ public class DateResultSet extends SingleColumnResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return new SwiftMetaDataBean("DATE_TABLE",
-                Arrays.asList(new MetaDataColumnBean("date", Types.BIGINT)));
+        return new SwiftMetaDataBean("STR_TABLE",
+                Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("string", Types.VARCHAR)));
     }
 
 
@@ -34,11 +35,11 @@ public class DateResultSet extends SingleColumnResultSet {
     protected void initData() {
         count = (int) (Math.random() * 1000000);
         for (int i = 0; i < count; i++) {
-            List data = new ArrayList<Long>();
-            data.add((long) (System.currentTimeMillis() + Math.random() * 1000000));
+            List data = new ArrayList<String>();
+            data.add("String" + i);
             datas.add(new ListBasedRow(data));
         }
-        List data = new ArrayList<Long>();
+        List data = new ArrayList<String>();
         data.add(null);
         datas.add(new ListBasedRow(data));
     }
