@@ -1,4 +1,4 @@
-package com.fr.swift.config.bean;
+package com.fr.swift.base.meta;
 
 import com.fr.swift.source.SwiftMetaDataColumn;
 

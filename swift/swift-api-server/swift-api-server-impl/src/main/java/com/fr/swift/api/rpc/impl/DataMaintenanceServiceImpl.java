@@ -8,7 +8,7 @@ import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;

@@ -1,4 +1,4 @@
-package com.fr.swift.config.bean;
+package com.fr.swift.base.meta;
 
 import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.db.SwiftDatabase;
@@ -7,7 +7,6 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
@@ -40,7 +39,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
         try {
             return Class.forName("com.fr.swift.config.entity.SwiftMetaDataEntity");
         } catch (ClassNotFoundException e) {
-            return Crasher.crash(e);
+            return null;
         }
     }
 

@@ -57,8 +57,8 @@ public class BasicDaoTest {
     @Test
     public void persist() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        mockConfigSession.persist(EasyMock.notNull(TestEntity.class));
-        mockConfigSession.persist(EasyMock.isNull(TestEntity.class));
+        mockConfigSession.save(EasyMock.notNull(TestEntity.class));
+        mockConfigSession.save(EasyMock.isNull(TestEntity.class));
         EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception"));
         TestBean mockTestBean = PowerMock.createMock(TestBean.class);
         EasyMock.expect(mockTestBean.convert()).andReturn(null).anyTimes();

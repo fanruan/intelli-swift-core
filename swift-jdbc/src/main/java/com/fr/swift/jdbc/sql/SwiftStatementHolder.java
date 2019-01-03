@@ -4,6 +4,7 @@ import com.fr.swift.jdbc.JdbcProperty;
 import com.fr.swift.jdbc.exception.Exceptions;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,5 +68,18 @@ public class SwiftStatementHolder {
             }
         }
         return null;
+    }
+
+    synchronized void closeAll() throws SQLException {
+        SwiftStatement statement = null;
+        while (null != (statement = idle.poll())) {
+            statement.close();
+        }
+        for (SwiftStatement value : using.values()) {
+            if (null != value) {
+                value.close();
+            }
+        }
+        using.clear();
     }
 }

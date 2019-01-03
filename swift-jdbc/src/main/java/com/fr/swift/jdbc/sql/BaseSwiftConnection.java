@@ -132,8 +132,8 @@ public abstract class BaseSwiftConnection implements Connection {
     }
 
     @Override
-    public void close() {
-
+    public void close() throws SQLException {
+        this.holder.closeAll();
     }
 
     @Override

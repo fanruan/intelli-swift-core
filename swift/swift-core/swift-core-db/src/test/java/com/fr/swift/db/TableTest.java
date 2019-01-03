@@ -1,8 +1,8 @@
 package com.fr.swift.db;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SwiftSegmentManager;

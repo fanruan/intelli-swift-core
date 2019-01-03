@@ -1,7 +1,7 @@
 package com.fr.swift.config.entity;
 
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
 import com.fr.swift.config.convert.FRMetaDataColumnListConverter;
 import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.db.SwiftDatabase;

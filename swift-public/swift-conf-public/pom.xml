@@ -50,6 +50,12 @@
             <artifactId>druid</artifactId>
             <version>1.1.10</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-config</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

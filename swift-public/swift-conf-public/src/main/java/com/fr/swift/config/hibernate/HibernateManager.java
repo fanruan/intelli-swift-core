@@ -1,6 +1,7 @@
 package com.fr.swift.config.hibernate;
 
 import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.util.Assert;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -19,6 +20,7 @@ public enum HibernateManager {
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
         for (Class<?> entity : SwiftConfigConstants.ENTITIES) {
+            Assert.notNull(entity);
             configuration.addAnnotatedClass(entity);
         }
         return configuration;
