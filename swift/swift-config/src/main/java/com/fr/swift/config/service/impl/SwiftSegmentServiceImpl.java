@@ -9,13 +9,14 @@ import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
 import com.fr.swift.config.oper.exception.SwiftEntityExistsException;
 import com.fr.swift.config.oper.exception.SwiftNonUniqueObjectException;
-import com.fr.swift.config.oper.impl.ConfigOrder;
-import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.config.oper.impl.ConfigWhereImpl;
+import com.fr.swift.config.oper.impl.OrderImpl;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.converter.FindList;
@@ -45,8 +46,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
     private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
     private SwiftSegmentDao swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
-
-    private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
     public Map<SourceKey, List<SegmentKey>> getAllSegments(final SwiftSegmentDao swiftSegmentDao) {
         try {
@@ -88,7 +87,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Map<SourceKey, List<SegmentKey>> work(ConfigSession session) {
                     final Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
                     try {
-                        swiftSegmentDao.find(session, factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, StoreType.MEMORY)).forEach(new FindList.SimpleEach<SegmentKey>() {
+                        swiftSegmentDao.find(session, ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, StoreType.MEMORY)).forEach(new FindList.SimpleEach<SegmentKey>() {
                             @Override
                             public void each(int idx, SegmentKey bean) {
                                 if (!result.containsKey(bean.getTable())) {
@@ -268,8 +267,8 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     if (null != swiftSegmentDao.select(session, segmentKey.toString())) {
-                        return !segmentLocationDao.find(session, factory.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
-                                factory.eq("id.segmentId", segmentKey.getId())).isEmpty();
+                        return !segmentLocationDao.find(session, ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
+                                ConfigWhereImpl.eq("id.segmentId", segmentKey.getId())).isEmpty();
                     }
                     return false;
                 }
@@ -288,8 +287,8 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public SegmentKey work(ConfigSession session) throws SQLException {
 
                     List<SegmentKey> entities = swiftSegmentDao.find(session,
-                            new Object[]{ConfigOrder.desc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)},
-                            factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId())).list();
+                            new Order[]{OrderImpl.desc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)},
+                            ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId())).list();
 
                     int appendOrder;
                     if (entities.isEmpty()) {
@@ -371,7 +370,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (Map.Entry<String, Set<SegmentKey>> entry : segmentTable.entrySet()) {
                         for (SegmentKey segmentKey : entry.getValue()) {
-                            SegLocationBean locationEntity = new SegLocationBean(SwiftProperty.getProperty().getClusterId(), segmentKey.getId(), segmentKey.getTable().getId());
+                            SegLocationBean locationEntity = new SegLocationBean(entry.getKey(), segmentKey.getId(), segmentKey.getTable().getId());
                             segmentLocationDao.saveOrUpdate(session, locationEntity);
                         }
                     }
@@ -385,7 +384,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     }
 
     @Override
-    public List<SegmentKey> find(final Object... criterion) {
+    public List<SegmentKey> find(final ConfigWhere... criterion) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SegmentKey>>() {
                 @Override
@@ -394,8 +393,8 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                         return swiftSegmentDao.find(session, criterion).forEach(new FindList.SimpleEach<SegmentKey>() {
                             @Override
                             public void each(int idx, SegmentKey item) throws Exception {
-                                if (!segmentLocationDao.find(session, factory.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
-                                        factory.eq("id.segmentId", item.getId())).isEmpty()) {
+                                if (!segmentLocationDao.find(session, ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
+                                        ConfigWhereImpl.eq("id.segmentId", item.getId())).isEmpty()) {
                                 }
                             }
                         });

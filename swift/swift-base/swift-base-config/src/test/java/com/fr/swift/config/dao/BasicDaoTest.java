@@ -1,8 +1,11 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.oper.ConfigCriteria;
+import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.config.oper.Order;
+import com.fr.swift.config.oper.impl.ConfigWhereImpl;
+import com.fr.swift.config.oper.impl.OrderImpl;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +14,7 @@ import org.powermock.api.easymock.PowerMock;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,12 +26,11 @@ import static org.junit.Assert.assertTrue;
  */
 public class BasicDaoTest {
 
-    private BasicDao<TestBean> mockBasicDao;
+    private BasicDao mockBasicDao;
 
     @Before
     public void before() {
-        RestrictionFactory mockRestrictionFactory = PowerMock.createMock(RestrictionFactory.class);
-        mockBasicDao = PowerMock.createMock(BasicDao.class, TestEntity.class, mockRestrictionFactory);
+        mockBasicDao = new BasicDao(TestEntity.class);
     }
 
     @Test
@@ -54,8 +57,8 @@ public class BasicDaoTest {
     @Test
     public void persist() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        mockConfigSession.persist(EasyMock.notNull(TestEntity.class));
-        mockConfigSession.persist(EasyMock.isNull(TestEntity.class));
+        mockConfigSession.save(EasyMock.notNull(TestEntity.class));
+        mockConfigSession.save(EasyMock.isNull(TestEntity.class));
         EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception"));
         TestBean mockTestBean = PowerMock.createMock(TestBean.class);
         EasyMock.expect(mockTestBean.convert()).andReturn(null).anyTimes();
@@ -91,31 +94,32 @@ public class BasicDaoTest {
     @Test
     public void findWithOrder() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.<Object>asList(new TestEntity())).anyTimes();
-        mockConfigCriteria.add(EasyMock.anyObject());
-        mockConfigCriteria.addOrder(EasyMock.notNull());
-        mockConfigCriteria.addOrder(EasyMock.isNull());
-        EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception"));
-        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(TestEntity.class))).andReturn(mockConfigCriteria).anyTimes();
+        ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(new TestEntity())).once();
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Collections.emptyList()).once();
+        mockConfigQuery.orderBy(EasyMock.anyObject(Order.class));
+        EasyMock.expectLastCall().anyTimes();
+        mockConfigQuery.where(EasyMock.anyObject(ConfigWhere.class));
+        EasyMock.expectLastCall().anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(TestEntity.class))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
-        assertFalse(mockBasicDao.find(mockConfigSession, new Object[]{new Object()}, new Object()).list().isEmpty());
-        assertTrue(mockBasicDao.find(mockConfigSession, new Object[]{null}, new Object()).isEmpty());
+        assertFalse(mockBasicDao.find(mockConfigSession, new Order[]{OrderImpl.asc("")}).list().isEmpty());
+        assertTrue(mockBasicDao.find(mockConfigSession, new Order[]{OrderImpl.asc("")}, ConfigWhereImpl.eq("", "")).isEmpty());
         PowerMock.verifyAll();
     }
 
     @Test
     public void find1() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.<Object>asList(new TestEntity())).anyTimes();
-        mockConfigCriteria.add(EasyMock.notNull());
-        mockConfigCriteria.add(EasyMock.isNull());
-        EasyMock.expectLastCall().andThrow(new RuntimeException("Just Test Exception"));
-        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(TestEntity.class))).andReturn(mockConfigCriteria).anyTimes();
+        ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(new TestEntity())).once();
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Collections.emptyList()).once();
+        mockConfigQuery.where(EasyMock.anyObject(ConfigWhere.class));
+        EasyMock.expectLastCall().anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(TestEntity.class))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
-        assertFalse(mockBasicDao.find(mockConfigSession, new Object()).list().isEmpty());
-        assertTrue(mockBasicDao.find(mockConfigSession, new Object[]{null}).isEmpty());
+        assertFalse(mockBasicDao.find(mockConfigSession).list().isEmpty());
+        assertTrue(mockBasicDao.find(mockConfigSession, ConfigWhereImpl.eq("", "")).isEmpty());
         PowerMock.verifyAll();
     }
 

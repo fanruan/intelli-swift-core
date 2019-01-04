@@ -6,7 +6,6 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Crasher;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -31,7 +30,7 @@ public class SegmentKeyBean implements Serializable, SegmentKey {
         try {
             return Class.forName("com.fr.swift.config.entity.SwiftSegmentEntity");
         } catch (ClassNotFoundException e) {
-            return Crasher.crash(e);
+            return null;
         }
     }
 

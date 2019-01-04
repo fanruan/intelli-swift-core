@@ -1,6 +1,6 @@
 package com.fr.swift.db.impl;
 
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;

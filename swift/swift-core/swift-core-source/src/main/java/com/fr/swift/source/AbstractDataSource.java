@@ -1,8 +1,8 @@
 package com.fr.swift.source;
 
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.util.Util;

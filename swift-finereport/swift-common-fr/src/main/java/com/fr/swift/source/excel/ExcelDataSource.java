@@ -1,7 +1,7 @@
 package com.fr.swift.source.excel;
 
-import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.AbstractOuterDataSource;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;

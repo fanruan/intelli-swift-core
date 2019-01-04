@@ -3,7 +3,7 @@ package com.fr.swift.source.db;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.stable.StringUtils;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 

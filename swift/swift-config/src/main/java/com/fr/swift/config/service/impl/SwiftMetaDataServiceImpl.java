@@ -4,10 +4,11 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.converter.FindList;
@@ -223,7 +224,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     }
 
     @Override
-    public List<SwiftMetaData> find(final Object... criterion) {
+    public List<SwiftMetaData> find(final ConfigWhere... criterion) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
                 @Override
