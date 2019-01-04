@@ -7,9 +7,5 @@ package com.fr.swift.config.service;
 public interface IRuleService<T> {
     T getCurrentRule();
 
-    void setCurrentRule(Class<? extends T> clazz);
-
     void setCurrentRule(T rule);
-
-    void setCurrentRule(String className);
 }

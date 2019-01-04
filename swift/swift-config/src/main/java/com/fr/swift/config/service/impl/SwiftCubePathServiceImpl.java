@@ -24,7 +24,6 @@ import java.util.List;
 @SwiftBean(name = "swiftPathService")
 public class SwiftCubePathServiceImpl implements SwiftCubePathService {
     private List<PathChangeListener> listeners = new ArrayList<PathChangeListener>();
-    //    private String clusterId = SwiftConfigConstants.LOCALHOST;
     private final SwiftConfigService.ConfigConvert<String> CONVERT = new AbstractSimpleConfigConvert<String>(String.class) {
 
         @Override
@@ -48,19 +47,6 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
             return SwiftConfigConstants.FRConfiguration.CUBE_PATH_NAMESPACE + "." + SwiftProperty.getProperty().getClusterId();
         }
     };
-
-//    public SwiftCubePathServiceImpl() {
-//        ClusterListenerHandler.addExtraListener(new ClusterEventListener() {
-//            @Override
-//            public void handleEvent(ClusterEvent clusterEvent) {
-//                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-//                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-//                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-//                    clusterId = SwiftConfigConstants.LOCALHOST;
-//                }
-//            }
-//        });
-//    }
 
     private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
 

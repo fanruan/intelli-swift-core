@@ -21,6 +21,7 @@ import java.util.List;
  * @date 2018/6/27
  */
 @SwiftBean(name = "swiftServiceAddressService")
+@Deprecated
 public class SwiftServiceAddressServiceImpl implements SwiftServiceAddressService {
     private final SwiftConfigService.ConfigConvert<RpcServiceAddressBean> CONVERT = new SwiftConfigService.ConfigConvert<RpcServiceAddressBean>() {
         @Override

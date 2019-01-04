@@ -1,9 +1,8 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.IRuleService;
 import com.fr.swift.config.service.SwiftConfigService;
-import com.fr.swift.SwiftContext;
-import com.fr.swift.log.SwiftLoggers;
 
 /**
  * @author yee
@@ -31,22 +30,4 @@ public class BasicRuleService<T> implements IRuleService<T> {
         configService.updateConfigBean(convert, rule);
     }
 
-    @Override
-    public void setCurrentRule(String className) {
-        try {
-            Class<? extends T> clazz = (Class<? extends T>) Class.forName(className);
-            setCurrentRule(clazz);
-        } catch (ClassNotFoundException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-    }
-
-    @Override
-    public void setCurrentRule(Class<? extends T> clazz) {
-        try {
-            setCurrentRule(clazz.newInstance());
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-    }
 }
