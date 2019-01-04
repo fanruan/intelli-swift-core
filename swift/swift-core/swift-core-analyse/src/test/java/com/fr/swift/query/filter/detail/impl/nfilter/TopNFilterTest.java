@@ -1,43 +1,32 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
-import com.fr.swift.query.filter.detail.impl.number.BaseNumberFilterTest;
 
-import java.util.List;
+import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.MutableBitMap;
+import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.query.filter.detail.DetailFilter;
 
 /**
  * Created by Lyon on 2017/12/5.
  */
-public class TopNFilterTest extends BaseNumberFilterTest {
+public class TopNFilterTest extends BottomNFilterTest {
 
-    private int topN;
-    private List<Double> groups;
-
-//    public TopNFilterTest() {
-//        this.column = doubleColumn;
-//        this.details = doubleDetails;
-//        this.groups = new ArrayList<>(((BaseColumnImplTest) column).getGroups());
-//        topN = groups.size() / 2;
-//        this.filter = new TopNFilter(topN, column);
-//    }
-//
-//    public void testFilter() {
-//        expectedIndexes = getExpectedIndexes();
-//        ImmutableBitMap bitMap = filter.createFilterIndex();
-//        assertEquals(bitMap.getCardinality(), expectedIndexes.size());
-//        IntStream.range(0, expectedIndexes.size()).forEach(i -> assertTrue(bitMap.contains(expectedIndexes.get(i))));
-//    }
-//
-//    public void testMatch() {
-//        assertTrue(filter.matches(createNode(groups.size() - random.nextInt(topN), groups.size()), -1, new ToStringConverter()));
-//        assertTrue(!filter.matches(createNode(groups.size() - topN - 1, groups.size()), -1, new ToStringConverter()));
-//        assertTrue(filter.matches(createNode(groups.size() - topN, groups.size()), -1, new ToStringConverter()));
-//    }
-
-    @Override
-    protected List<Integer> getExpectedIndexes() {
-//        Set<Double> topNGroups = new HashSet<>(groups.subList(topN + 1, groups.size()));
-//        return IntStream.range(0, details.size()).filter(i -> topNGroups.contains(details.get(i)))
-//                .mapToObj(Integer::new).collect(Collectors.toList());
-        return null;
+    public void test() {
+        int n = 10;
+        DetailFilter filter = new TopNFilter(n, column);
+        final MutableBitMap expected = BitMaps.newRoaringMutable();
+        int size = column.getDictionaryEncodedColumn().size();
+        for (int i = size - n; i < size; i++) {
+            expected.or(column.getBitmapIndex().getBitMapIndex(i));
+        }
+        ImmutableBitMap actual = filter.createFilterIndex();
+        assertEquals(expected.getCardinality(), actual.getCardinality());
+        actual.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                expected.contains(row);
+            }
+        });
     }
 }

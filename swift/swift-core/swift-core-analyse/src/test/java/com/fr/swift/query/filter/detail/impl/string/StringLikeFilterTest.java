@@ -1,7 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.string;
 
-import com.fr.swift.bitmap.ImmutableBitMap;
-import org.junit.Ignore;
+import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.BaseFilterTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,32 +9,30 @@ import java.util.List;
 /**
  * Created by Lyon on 2017/11/30.
  */
-@Ignore
-public class StringLikeFilterTest extends BaseStringFilterTest {
+public class StringLikeFilterTest extends BaseFilterTest {
 
-    protected String like;
-
-    public StringLikeFilterTest() {
-        init();
-        this.filter = new StringLikeFilter(like, column);
+    public void test() {
+        String like = chooseStartWith();
+        DetailFilter filter = new StringLikeFilter(like, strColumn);
+        check(getRows(like), filter.createFilterIndex());
     }
 
-    private void init() {
-        String word = getRandomDetail(details);
-        like = word.split("")[random.nextInt(word.length())];
+    private List<Integer> getRows(String like) {
+        List<Integer> rows = new ArrayList<Integer>();
+        for (int i = 0; i < rowCount; i++) {
+            if (strDetails.get(i) != null && strDetails.get(i).contains(like)) {
+                rows.add(i);
+            }
+        }
+        return rows;
     }
 
-    @Override
-    protected List<Integer> getExpectedIndexes() {
-//        return IntStream.range(0, details.size()).filter(i -> details.get(i).contains(like))
-//                .mapToObj(Integer::new).collect(Collectors.toList());
-        return new ArrayList<Integer>();
-    }
-
-    public void testNotExistGroup() {
-        String like = "afdagdghdsgdfss";
-        StringLikeFilter filter = new StringLikeFilter(like, column);
-        ImmutableBitMap bitMap = filter.createFilterIndex();
-        assertTrue(bitMap.isEmpty());
+    private String chooseStartWith() {
+        String word = null;
+        while (word == null || word.isEmpty()) {
+            word = strDetails.get(random.nextInt(rowCount));
+        }
+        int start = random.nextInt(word.length());
+        return word.substring(start, start + 1);
     }
 }
