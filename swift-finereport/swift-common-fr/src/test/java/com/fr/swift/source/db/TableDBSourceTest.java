@@ -1,12 +1,9 @@
 package com.fr.swift.source.db;
 
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftMetaData;
 import junit.framework.TestCase;
 
 import java.sql.Types;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by pony on 2017/12/29.
@@ -14,13 +11,13 @@ import java.util.Map;
 public class TableDBSourceTest extends TestCase {
     private TableDBSource source;
     private TableDBSource partSource;
-    public void setUp() throws Exception{
-        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
-        source = new TableDBSource("DEMO_CAPITAL_RETURN", "demo");
-        Map<String, ColumnType> fields = new HashMap<>();
-        fields.put("合同ID", ColumnType.NUMBER);
-        partSource = new TableDBSource("DEMO_CAPITAL_RETURN", "demo", fields);
-    }
+//    public void setUp() throws Exception{
+//        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
+//        source = new TableDBSource("DEMO_CAPITAL_RETURN", "demo");
+//        Map<String, ColumnType> fields = new HashMap<String, ColumnType>();
+//        fields.put("合同ID", ColumnType.NUMBER);
+//        partSource = new TableDBSource("DEMO_CAPITAL_RETURN", "demo", fields);
+//    }
 
     public void testGetSourceKey() {
         assertEquals("824f42d6", source.getSourceKey().getId());

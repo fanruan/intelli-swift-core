@@ -7,7 +7,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.fr.engine.utils.StringUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
-import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;

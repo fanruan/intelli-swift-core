@@ -14,7 +14,7 @@ public class LoggerResource extends ExternalResource {
 
     @Override
     protected void before() {
-//        loggerFactory = SwiftLoggers.getLoggerFactory();
+        loggerFactory = SwiftLoggers.getLoggerFactory();
 //        SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
     }
 

@@ -16,7 +16,7 @@ public class ExcelDataSourceTest extends TestCase {
 
     public void setUp() throws Exception {
         dataSource = new ExcelDataSource(ExcelInfo.getUrl2007(), ExcelInfo.getColumnNames(), ExcelInfo.getColumnTypes());
-        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
+        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<String, ColumnType>();
         fields.put("zssalegp", ColumnType.STRING);
         partSource = new ExcelDataSource(ExcelInfo.getUrl2007(), ExcelInfo.getColumnNames(), ExcelInfo.getColumnTypes(), fields);
     }
@@ -25,7 +25,7 @@ public class ExcelDataSourceTest extends TestCase {
         SwiftMetaData metaData = dataSource.getMetadata();
         assertEquals(metaData.getColumnCount(), 9);
         String[] columnNames = ExcelInfo.getColumnNames();
-        int sqlType[] = ExcelInfo.getSqlType();
+        int[] sqlType = ExcelInfo.getSqlType();
         for (int i = 1; i <= columnNames.length; i++) {
             assertEquals(metaData.getColumnName(i), columnNames[i - 1]);
             assertEquals(metaData.getColumnType(i), sqlType[i - 1]);

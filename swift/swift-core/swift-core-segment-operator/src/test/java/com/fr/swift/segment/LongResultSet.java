@@ -1,13 +1,14 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class LongResultSet extends SingleColumnResultSet {
     @Override
     public SwiftMetaData getMetaData() {
         return new SwiftMetaDataBean("LONG_TABLE",
-                Arrays.asList(new MetaDataColumnBean("long", Types.BIGINT)));
+                Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("long", Types.BIGINT)));
     }
 
 

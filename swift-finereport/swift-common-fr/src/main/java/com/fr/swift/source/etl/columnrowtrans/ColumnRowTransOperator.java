@@ -1,7 +1,7 @@
 package com.fr.swift.source.etl.columnrowtrans;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;

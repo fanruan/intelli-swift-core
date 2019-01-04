@@ -1,5 +1,6 @@
-package com.fr.swift.log;
+package com.fr.swift.log.impl;
 
+import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.util.Strings;
 import org.slf4j.Marker;
 import org.slf4j.helpers.FormattingTuple;
@@ -9,9 +10,9 @@ import org.slf4j.helpers.MessageFormatter;
  * @author anchore
  * @date 2018/7/4
  */
-abstract class BaseSwiftLogger implements SwiftLogger {
+public abstract class BaseSwiftLogger implements SwiftLogger {
 
-    static FormattingTuple format(String s, Object... objects) {
+    protected static FormattingTuple format(String s, Object... objects) {
         return MessageFormatter.arrayFormat(s, objects);
     }
 
