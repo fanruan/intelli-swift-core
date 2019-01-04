@@ -13,9 +13,11 @@ import java.util.Collections;
  * @date 2018/8/20
  */
 public class SegmentTransfer {
+
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
-    private SegmentKey oldSegKey;
+    protected SegmentKey oldSegKey;
+
     protected SegmentKey newSegKey;
 
     public SegmentTransfer(SegmentKey oldSegKey, SegmentKey newSegKey) {

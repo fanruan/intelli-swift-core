@@ -13,7 +13,7 @@ import com.finebi.conf.algorithm.rcompile.RExecute;
 import com.finebi.conf.internalimp.service.datamining.RConnectionFactory;
 import com.finebi.conf.service.datamining.DMCommonLogService;
 import com.finebi.conf.structure.datamining.DMLogEntity;
-import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;

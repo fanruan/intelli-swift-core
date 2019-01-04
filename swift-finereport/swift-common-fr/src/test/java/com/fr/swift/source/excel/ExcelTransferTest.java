@@ -33,7 +33,7 @@ public class ExcelTransferTest extends TestCase {
         }
         resultSet.close();
         assertEquals(list.size(), 20000);
-        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
+        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<String, ColumnType>();
         fields.put("zssalegp", ColumnType.STRING);
         ExcelDataSource partSource = new ExcelDataSource(ExcelInfo.getUrl2003(), names, types, fields);
         ExcelTransfer excelPartTransfer = new ExcelTransfer(paths, partSource.getMetadata(), partSource.getOuterMetadata());
