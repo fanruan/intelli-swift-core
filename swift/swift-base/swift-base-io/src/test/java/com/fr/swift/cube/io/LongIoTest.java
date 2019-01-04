@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class LongIoTest extends BaseIoTest {
     long val = r.nextLong();
-    String basePath = CUBES_PATH + "/long/";
+    String basePath = cubesPath + "/long/";
 
     @Override
     public void testOverwritePutThenGet() {

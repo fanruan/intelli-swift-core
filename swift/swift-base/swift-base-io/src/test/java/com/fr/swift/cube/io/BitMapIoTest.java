@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
 public class BitMapIoTest extends BaseIoTest {
     final MutableBitMap val = BitMaps.newRoaringMutable();
     int[] ints;
-    String basePath = CUBES_PATH + "/bitmap/";
+    String basePath = cubesPath + "/bitmap/";
 
     @Before
     public void setUp() throws Exception {

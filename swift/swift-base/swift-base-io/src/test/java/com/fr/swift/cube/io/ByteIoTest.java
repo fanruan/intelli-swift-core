@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ByteIoTest extends BaseIoTest {
     byte val = (byte) r.nextInt(BOUND);
-    String basePath = CUBES_PATH + "/byte/";
+    String basePath = cubesPath + "/byte/";
 
     @Override
     public void testOverwritePutThenGet() {

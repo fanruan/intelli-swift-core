@@ -8,6 +8,7 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.io.IntIo;
+import com.fr.swift.test.TestResource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -22,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static com.fr.swift.cube.io.BaseIoTest.CUBES_PATH;
 import static org.junit.Assert.fail;
 
 /**
@@ -31,6 +31,9 @@ import static org.junit.Assert.fail;
  */
 public class IResourceDiscoveryTest {
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
+
+    public String cubesPath = TestResource.getRunPath(getClass()) + "cubes/table/seg0/column";
+    
     private ExecutorService exec = Executors.newFixedThreadPool(8);
 
     @Rule
@@ -41,7 +44,7 @@ public class IResourceDiscoveryTest {
     @Test
     public void testGetReader() throws ExecutionException, InterruptedException {
         List<Future<Reader>> readers = new ArrayList<Future<Reader>>();
-        final IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/seg0/c1", StoreType.MEMORY);
+        final IResourceLocation location = new ResourceLocation(cubesPath + "/int/seg0/c1", StoreType.MEMORY);
         for (int i = 0; i < 16; i++) {
             readers.add(exec.submit(new Callable<Reader>() {
                 @Override
@@ -61,7 +64,7 @@ public class IResourceDiscoveryTest {
     @Test
     public void testGetWriter() throws ExecutionException, InterruptedException {
         List<Future<Writer>> writers = new ArrayList<Future<Writer>>();
-        final IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/seg0/c1", StoreType.MEMORY);
+        final IResourceLocation location = new ResourceLocation(cubesPath + "/int/seg0/c1", StoreType.MEMORY);
         for (int i = 0; i < 16; i++) {
             writers.add(exec.submit(new Callable<Writer>() {
                 @Override

@@ -28,11 +28,6 @@ public class StringNio extends BaseNio implements StringWriter, StringReader, Ob
     }
 
     @Override
-    public long getLastPosition(long pos) {
-        return 0;
-    }
-
-    @Override
     public boolean isReadable() {
         return obj != null && obj.isReadable();
     }

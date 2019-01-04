@@ -2,6 +2,7 @@ package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.input.StringReader;
+import com.fr.swift.util.IoUtil;
 
 import java.net.URI;
 
@@ -34,16 +35,12 @@ public class StringFineIoReader implements StringReader {
     }
 
     @Override
-    public long getLastPosition(long pos) {
-        return bar.getLastPosition(pos);
-    }
-
-    @Override
     public boolean isReadable() {
         return bar.isReadable();
     }
 
     @Override
     public void release() {
+        IoUtil.release(bar);
     }
 }
