@@ -8,6 +8,7 @@ import com.fr.swift.base.json.stack.Stack;
 import com.fr.swift.base.json.stack.StackValue;
 import com.fr.swift.base.json.token.Token;
 import com.fr.swift.base.json.token.Tokenizer;
+import com.fr.swift.base.json.writer.impl.ObjectJsonWriter;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.util.ReflectUtils;
@@ -77,18 +78,42 @@ public class JsonParser {
     private Tokenizer tokenizer;
     private Stack stack;
     private int status;
+    private String json;
 
     public JsonParser(String json) {
+        this.json = json;
         tokenizer = new Tokenizer(new CharReader(new StringReader(json)));
     }
 
     @SuppressWarnings("unchecked")
     public <T> T parse(Class<T> clazz) throws Exception {
-        Object obj = parse();
-        if (obj instanceof Map && !ReflectUtils.isAssignable(clazz, Map.class)) {
-            return toTargetBean((Map<String, Object>) obj, clazz);
+        try {
+            Object obj = parse();
+            if (obj instanceof Map && !ReflectUtils.isAssignable(clazz, Map.class)) {
+                return toTargetBean((Map<String, Object>) obj, clazz);
+            }
+            return checkExpectedType(obj, clazz);
+        } catch (JsonParseException e) {
+            return (T) fromInvalidJson(json, clazz);
         }
-        return checkExpectedType(obj, clazz);
+    }
+
+    private Object fromInvalidJson(String json, Class clazz) {
+        SerializationConfig config = SerializationConfigHolder.getInstance().getSerializationConfig(clazz);
+        Map<String, Class> map = config.getInstanceMap();
+        if (map.containsKey(json)) {
+            Class instanceClass = map.get(json);
+            try {
+                return ReflectUtils.parseObject(instanceClass, json);
+            } catch (Exception e) {
+                try {
+                    return ReflectUtils.newInstance(instanceClass);
+                } catch (Exception e1) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     private <T> T toTargetBean(Map<String, Object> map, Class<T> clazz) throws Exception {
@@ -123,6 +148,9 @@ public class JsonParser {
                     } else if (value instanceof List) {
                         if (ReflectUtils.isAssignable(propertyType, List.class) || propertyType.isArray()) {
                             value = buildObjectFromList(clazz, setter, (List) value, generic);
+                            if (propertyType.isArray()) {
+                                value = ((List) value).toArray();
+                            }
                         } else if (ReflectUtils.isAssignable(propertyType, Set.class)) {
                             value = new HashSet(buildObjectFromList(clazz, setter, (List) value, generic));
                         } else {
@@ -166,6 +194,9 @@ public class JsonParser {
                 }
                 if (null != o) {
                     return o;
+                }
+                if (ReflectUtils.isPrimitiveOrWrapper(item.getClass())) {
+                    return item;
                 }
                 o = ReflectUtils.parseObject(finalGenericType, item.toString());
                 if (null != o) {
@@ -287,23 +318,27 @@ public class JsonParser {
         if (hasStatus(STATUS_EXPECT_SINGLE_VALUE)) {
             // single string:
             String str = (String) currentToken.getValue();
+            str = str.replace(ObjectJsonWriter.QUOTATION_REPLACEMENT, "\"");
             stack.push(StackValue.newJsonSingle(str));
             status = STATUS_EXPECT_END_DOCUMENT;
             return;
         }
         if (hasStatus(STATUS_EXPECT_OBJECT_KEY)) {
             String str = (String) currentToken.getValue();
+            str = str.replace(ObjectJsonWriter.QUOTATION_REPLACEMENT, "\"");
             stack.push(StackValue.newJsonObjectKey(str));
             status = STATUS_EXPECT_COLON;
             return;
         }
         if (hasStatus(STATUS_EXPECT_OBJECT_VALUE)) {
             String str = (String) currentToken.getValue();
+            str = str.replace(ObjectJsonWriter.QUOTATION_REPLACEMENT, "\"");
             dealObjectValue(str);
             return;
         }
         if (hasStatus(STATUS_EXPECT_ARRAY_VALUE)) {
             String str = (String) currentToken.getValue();
+            str = str.replace(ObjectJsonWriter.QUOTATION_REPLACEMENT, "\"");
             stack.peek(StackValue.TYPE_ARRAY).valueAsArray().add(str);
             status = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY;
             return;
