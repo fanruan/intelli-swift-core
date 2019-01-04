@@ -8,6 +8,7 @@ import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.IoUtil;
 
 import java.net.URI;
 
@@ -26,7 +27,7 @@ public class BitMapFineIoReader implements BitMapReader {
         return new BitMapFineIoReader(ByteArrayFineIoReader.build(location));
     }
 
-    private static ImmutableBitMap getByHead(byte[] bytes) {
+    public static ImmutableBitMap getByHead(byte[] bytes) {
         byte head = bytes[0];
         // mutable，immutable底层都是同一结构，暂时先统一生成mutable
         if (head == BitMapType.ROARING_IMMUTABLE.getHead() || head == BitMapType.ROARING_MUTABLE.getHead()) {
@@ -48,16 +49,12 @@ public class BitMapFineIoReader implements BitMapReader {
     }
 
     @Override
-    public long getLastPosition(long pos) {
-        return bar.getLastPosition(pos);
-    }
-
-    @Override
     public boolean isReadable() {
         return bar.isReadable();
     }
 
     @Override
     public void release() {
+        IoUtil.release(bar);
     }
 }

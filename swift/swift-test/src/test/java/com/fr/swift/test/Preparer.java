@@ -31,7 +31,7 @@ public class Preparer {
     }
 
     public static void prepareFrEnv() {
-        SimpleWork.checkIn(TestResource.getTmpDir());
+        SimpleWork.checkIn(TestResource.getTestDir());
     }
 
     public static void prepareCubeBuild(Class<?> test) {

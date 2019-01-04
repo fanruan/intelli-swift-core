@@ -4,6 +4,7 @@ import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.input.ByteReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;
+import com.fr.swift.util.IoUtil;
 
 import java.net.URI;
 
@@ -43,16 +44,6 @@ public class ByteArrayFineIoReader implements ByteArrayReader {
     }
 
     @Override
-    public long getLastPosition(long pos) {
-        if (pos == 0) {
-            return 0;
-        }
-        long start = positionReader.get(pos - 1);
-        int len = lengthReader.get(pos - 1);
-        return start + len;
-    }
-
-    @Override
     public byte[] get(long pos) {
         long start = positionReader.get(pos);
         int size = lengthReader.get(pos);
@@ -68,5 +59,6 @@ public class ByteArrayFineIoReader implements ByteArrayReader {
 
     @Override
     public void release() {
+        IoUtil.release(contentReader, lengthReader, positionReader);
     }
 }

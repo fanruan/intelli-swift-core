@@ -46,16 +46,6 @@ public class LongArrayFineIoReader implements LongArrayReader {
     }
 
     @Override
-    public long getLastPosition(long pos) {
-        if (pos == 0) {
-            return 0;
-        }
-        long start = positionReader.get(pos - 1);
-        int len = lengthReader.get(pos - 1);
-        return start + len;
-    }
-
-    @Override
     public LongArray get(long pos) {
         long start = positionReader.get(pos);
         int size = lengthReader.get(pos);
