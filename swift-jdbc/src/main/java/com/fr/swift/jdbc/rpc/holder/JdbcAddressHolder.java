@@ -5,11 +5,10 @@ import com.fr.swift.api.rpc.holder.AbstractServiceAddressHolder;
 import com.fr.swift.jdbc.mode.Mode;
 import com.fr.swift.jdbc.proxy.invoke.ClientProxy;
 import com.fr.swift.jdbc.proxy.invoke.ClientProxyPool;
+import com.fr.swift.jdbc.proxy.invoke.SimpleExecutor;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceType;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,9 +52,10 @@ public class JdbcAddressHolder extends AbstractServiceAddressHolder {
     @Override
     protected Map<ServiceType, List<String>> detectiveAddress(String address) throws Exception {
         if (mode.equals(Mode.EMB)) {
-            Map<ServiceType, List<String>> result = new HashMap<ServiceType, List<String>>();
-            result.put(ServiceType.ANALYSE, Collections.singletonList(address));
-            result.put(ServiceType.REAL_TIME, Collections.singletonList(address));
+            ClientProxy proxy = new ClientProxy(new SimpleExecutor(mode.createConnector(address)));
+            proxy.start();
+            Map<ServiceType, List<String>> result = proxy.getProxy(DetectService.class).detectiveAnalyseAndRealTime(address);
+            proxy.stop();
             return result;
         }
         ClientProxy proxy = null;
