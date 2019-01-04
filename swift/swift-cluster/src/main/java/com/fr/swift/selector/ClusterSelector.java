@@ -15,7 +15,6 @@ public class ClusterSelector implements Selector<ClusterNodeManager> {
     private ClusterNodeManager clusterNodeManager;
 
     private ClusterSelector() {
-//        clusterNodeManager = SwiftClusterNodeManager.getInstance();
     }
 
     private static final ClusterSelector INSTANCE = new ClusterSelector();

@@ -30,10 +30,6 @@ public class EventResult implements Serializable {
         return result;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
     public String getClusterId() {
         return clusterId;
     }
