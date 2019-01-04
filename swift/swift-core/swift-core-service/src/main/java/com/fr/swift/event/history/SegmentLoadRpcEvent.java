@@ -10,7 +10,4 @@ public abstract class SegmentLoadRpcEvent<T> extends AbstractHistoryRpcEvent<T> 
     public SegmentLoadRpcEvent(String sourceClusterId) {
         this.sourceClusterId = sourceClusterId;
     }
-
-    public SegmentLoadRpcEvent() {
-    }
 }
