@@ -76,6 +76,11 @@ public class SelectServiceImpl implements SelectService {
         if (resultSet instanceof DetailResultSet) {
             rowCount = ((DetailResultSet) resultSet).getRowCount();
         }
-        return new OnePageApiResultSet(null, resultSet.getMetaData(), rows, rowCount, resultSet.hasNext());
+        return new OnePageApiResultSet(null, resultSet.getMetaData(), rows, rowCount, resultSet.hasNext()) {
+            @Override
+            public SwiftApiResultSet queryNextPage(Object queryInfo) throws SQLException {
+                return null;
+            }
+        };
     }
 }

@@ -19,6 +19,9 @@ public class TableRequestInfo extends BaseRequestInfo<ApiRequestParserVisitor> {
         super(request);
     }
 
+    public TableRequestInfo() {
+        super(null);
+    }
 
     @Override
     public String getAuthCode() {

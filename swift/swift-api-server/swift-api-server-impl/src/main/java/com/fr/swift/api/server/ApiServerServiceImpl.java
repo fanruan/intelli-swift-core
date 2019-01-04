@@ -7,6 +7,7 @@ import com.fr.swift.api.info.AuthRequestInfo;
 import com.fr.swift.api.info.CreateTableRequestInfo;
 import com.fr.swift.api.info.DeleteRequestInfo;
 import com.fr.swift.api.info.InsertRequestInfo;
+import com.fr.swift.api.info.JdbcRequestType;
 import com.fr.swift.api.info.QueryRequestInfo;
 import com.fr.swift.api.info.RequestInfo;
 import com.fr.swift.api.info.TableRequestInfo;
@@ -21,7 +22,6 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.jdbc.info.ColumnsRequestInfo;
-import com.fr.swift.jdbc.info.JdbcRequestType;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.info.TablesRequestInfo;
 
