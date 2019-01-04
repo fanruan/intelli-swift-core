@@ -2,8 +2,8 @@ package com.fr.swift.source.db;
 
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.dialect.Dialect;
-import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;

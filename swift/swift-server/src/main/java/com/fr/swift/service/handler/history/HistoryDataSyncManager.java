@@ -6,7 +6,6 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -28,8 +27,6 @@ import java.util.Set;
  */
 @SwiftBean
 public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent> {
-
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HistoryDataSyncManager.class);
 
     private SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 
@@ -88,8 +85,9 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
             eventResult.setClusterId(sourceClusterId);
             HistoryService service = ProxySelector.getInstance().getFactory().getProxy(HistoryService.class);
             service.load(needLoadSegments, updateType == SegmentLocationInfo.UpdateType.ALL);
+            eventResult.setSuccess(true);
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            SwiftLoggers.getLogger().error(e.getMessage(), e);
             eventResult.setError(e.getMessage());
         }
         return eventResult;

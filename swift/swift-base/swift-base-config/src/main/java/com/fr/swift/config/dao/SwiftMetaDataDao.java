@@ -1,6 +1,6 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.converter.FindList;
 

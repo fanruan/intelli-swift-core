@@ -1,7 +1,7 @@
 package com.fr.swift.config.convert;
 
 import com.fr.stable.db.entity.converter.BaseConverter;
-import com.fr.swift.config.bean.MetaDataColumnBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.util.Strings;
 import com.fr.third.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.third.fasterxml.jackson.core.type.TypeReference;

@@ -8,10 +8,10 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
-import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -54,8 +54,8 @@ public class TableServiceImpl implements TableService {
     @Override
     @SwiftApi
     public SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
-        List<SwiftMetaData> metaDataList = swiftMetaDataService.find(RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName),
-                RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
+        List<SwiftMetaData> metaDataList = swiftMetaDataService.find(ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName),
+                ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
         if (metaDataList.isEmpty()) {
             throw new SwiftMetaDataAbsentException(tableName);
         }
@@ -65,7 +65,7 @@ public class TableServiceImpl implements TableService {
     @Override
     @SwiftApi
     public List<SwiftMetaData> detectiveAllTable(SwiftDatabase schema) {
-        List<SwiftMetaData> metaDataList = swiftMetaDataService.find(RestrictionFactoryImpl.INSTANCE.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
+        List<SwiftMetaData> metaDataList = swiftMetaDataService.find(ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
         if (metaDataList.isEmpty()) {
             return Collections.emptyList();
         } else {

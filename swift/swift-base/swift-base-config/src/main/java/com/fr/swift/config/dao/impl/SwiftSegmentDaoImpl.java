@@ -6,8 +6,7 @@ import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
-import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
@@ -25,16 +24,7 @@ import java.util.List;
 public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSegmentDao {
 
     public SwiftSegmentDaoImpl() {
-        super(SegmentKeyBean.TYPE, RestrictionFactoryImpl.INSTANCE);
-    }
-
-    /**
-     * for test
-     *
-     * @param factory
-     */
-    public SwiftSegmentDaoImpl(RestrictionFactory factory) {
-        super(SegmentKeyBean.TYPE, factory);
+        super(SegmentKeyBean.TYPE);
     }
 
     @Override
@@ -47,14 +37,14 @@ public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSe
         if (Strings.isEmpty(sourceKey) || null == type) {
             throw new SQLException();
         }
-        return find(session, factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey),
-                factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, type)).list();
+        return find(session, ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey),
+                ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, type)).list();
     }
 
     @Override
     public boolean deleteBySourceKey(final ConfigSession session, final String sourceKey) throws SQLException {
         try {
-            find(session, factory.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey)).justForEach(new FindList.ConvertEach() {
+            find(session, ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey)).justForEach(new FindList.ConvertEach() {
                 @Override
                 public Object forEach(int idx, Object item) {
                     session.delete(item);

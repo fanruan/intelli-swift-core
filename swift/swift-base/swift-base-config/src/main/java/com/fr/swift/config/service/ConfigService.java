@@ -1,5 +1,7 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.config.oper.ConfigWhere;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ public interface ConfigService<T> {
      * @param criterion
      * @return
      */
-    List<T> find(Object... criterion);
+    List<T> find(ConfigWhere... criterion);
 
     /**
      * 保存

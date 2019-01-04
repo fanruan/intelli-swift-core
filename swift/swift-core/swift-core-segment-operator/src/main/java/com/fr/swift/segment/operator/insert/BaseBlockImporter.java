@@ -4,10 +4,12 @@ import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
@@ -89,7 +91,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     private SegmentInfo allot(int cursor, Row row) {
         if (alloter.getAllotRule().getType() == AllotType.HASH) {
-            return alloter.allot(new HashRowInfo(cursor, row));
+            return alloter.allot(new HashRowInfo(row));
         }
         return alloter.allot(new LineRowInfo(cursor));
     }
@@ -128,10 +130,10 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 // 处理满了的块，比如上传历史块或者持久化增量块
                 handleFullSegment(entry.getKey());
             }
-
             itr.remove();
-
         }
+
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
     }
 
     protected class Inserting implements Releasable {

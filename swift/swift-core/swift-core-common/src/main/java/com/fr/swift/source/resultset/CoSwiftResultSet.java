@@ -4,6 +4,7 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Assert;
+import com.fr.swift.util.IoUtil;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -43,7 +44,7 @@ public class CoSwiftResultSet implements SwiftResultSet {
             return true;
         }
         do {
-            resultSets.get(cursor).close();
+            IoUtil.close(resultSets.get(cursor));
             cursor++;
         } while (cursor < resultSets.size() && !resultSets.get(cursor).hasNext());
 
@@ -58,7 +59,7 @@ public class CoSwiftResultSet implements SwiftResultSet {
     @Override
     public void close() throws SQLException {
         for (int i = cursor; i < resultSets.size(); i++) {
-            resultSets.get(i).close();
+            IoUtil.close(resultSets.get(i));
         }
     }
 }

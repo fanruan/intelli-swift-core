@@ -16,13 +16,6 @@ import java.io.Serializable;
  */
 public class RemoveSegmentLocationListener extends BaseSegmentLocationListener {
 
-    static {
-        SwiftEventDispatcher.listen(SyncSegmentLocationEvent.REMOVE_SEG, new RemoveSegmentLocationListener());
-    }
-
-    public static void listen() {
-    }
-
     @Override
     Serializable trigger(SegmentLocationInfo segLocations) {
         try {
@@ -31,5 +24,12 @@ public class RemoveSegmentLocationListener extends BaseSegmentLocationListener {
             SwiftLoggers.getLogger().error(e);
             return null;
         }
+    }
+
+    static {
+        SwiftEventDispatcher.listen(SyncSegmentLocationEvent.REMOVE_SEG, new RemoveSegmentLocationListener());
+    }
+
+    public static void listen() {
     }
 }

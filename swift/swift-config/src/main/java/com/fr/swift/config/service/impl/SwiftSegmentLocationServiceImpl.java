@@ -6,9 +6,9 @@ import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.RestrictionFactory;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.TransactionManager;
-import com.fr.swift.config.oper.impl.RestrictionFactoryImpl;
+import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.log.SwiftLoggers;
@@ -29,7 +29,6 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
 
     private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
     private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
-    private RestrictionFactory factory = RestrictionFactoryImpl.INSTANCE;
 
     @Override
     public boolean delete(final String table, final String clusterId) {
@@ -39,8 +38,8 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                 public Boolean work(final ConfigSession session) {
                     try {
                         segmentLocationDao.find(session,
-                                factory.eq("id.clusterId", clusterId),
-                                factory.eq("sourceKey", table)).justForEach(new FindList.ConvertEach() {
+                                ConfigWhereImpl.eq("id.clusterId", clusterId),
+                                ConfigWhereImpl.eq("sourceKey", table)).justForEach(new FindList.ConvertEach() {
                             @Override
                             public Object forEach(int idx, Object item) throws Exception {
                                 session.delete(item);
@@ -68,8 +67,8 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                 public Boolean work(final ConfigSession session) throws SQLException {
                     try {
                         segmentLocationDao.find(session,
-                                factory.eq("id.clusterId", clusterId),
-                                factory.eq("id.segmentId", segKey)).justForEach(new FindList.ConvertEach() {
+                                ConfigWhereImpl.eq("id.clusterId", clusterId),
+                                ConfigWhereImpl.eq("id.segmentId", segKey)).justForEach(new FindList.ConvertEach() {
                             @Override
                             public Object forEach(int idx, Object item) throws Exception {
                                 session.delete(item);
@@ -124,7 +123,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
-    public List<SegLocationBean> find(final Object... criterion) {
+    public List<SegLocationBean> find(final ConfigWhere... criterion) {
         try {
             return tx.doTransactionIfNeed(new BaseTransactionWorker<List<SegLocationBean>>(false) {
                 @Override

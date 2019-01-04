@@ -1,7 +1,7 @@
 package com.fr.swift.source.resultset.importing.file;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaData;
