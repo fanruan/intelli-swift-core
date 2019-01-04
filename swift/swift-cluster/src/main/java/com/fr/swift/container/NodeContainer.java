@@ -60,6 +60,9 @@ public class NodeContainer extends ClusterContainer<NodeState> {
 
     public static boolean isAvailable(String id) {
         NodeState nodeState = getInstance().get(id);
+        if (nodeState == null) {
+            return false;
+        }
         if (nodeState.getNodeType() == NodeType.ONLINE) {
             return true;
         }

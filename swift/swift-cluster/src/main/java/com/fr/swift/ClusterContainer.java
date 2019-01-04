@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class ClusterContainer<T> {
+public abstract class ClusterContainer<T> {
 
     protected Map<String, T> container = new ConcurrentHashMap<String, T>();
 

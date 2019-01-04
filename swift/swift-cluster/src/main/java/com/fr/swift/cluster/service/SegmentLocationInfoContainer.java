@@ -29,10 +29,6 @@ public final class SegmentLocationInfoContainer {
         return locationInfo;
     }
 
-    public void setLocationInfo(List<Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>> locationInfo) {
-        this.locationInfo = locationInfo;
-    }
-
     public void add(Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> infoPair) {
         this.locationInfo.add(infoPair);
     }

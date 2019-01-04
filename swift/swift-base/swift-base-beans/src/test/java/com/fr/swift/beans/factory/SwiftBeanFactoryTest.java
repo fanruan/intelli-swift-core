@@ -73,15 +73,15 @@ public class SwiftBeanFactoryTest extends TestCase {
         assertTrue(bean3 instanceof TestWithoutBeanPrototype);
         try {
             ITestWithoutBeanPrototype bean4 = beanFactory.getBean("test_custom", ITestWithoutBeanPrototype.class);
-            assertTrue(false);
+            assertNotNull(bean4);
         } catch (SwiftBeanException e) {
-            assertTrue(true);
+            assertTrue(false);
         }
         try {
             IBean bean5 = beanFactory.getBean("test_custom", IBean.class);
-            assertTrue(false);
+            assertNotNull(bean5);
         } catch (SwiftBeanException e) {
-            assertTrue(true);
+            assertTrue(false);
         }
     }
 
@@ -97,9 +97,9 @@ public class SwiftBeanFactoryTest extends TestCase {
         assertTrue(bean3 instanceof TestWithoutBeanPrototype);
         try {
             ITestWithoutBeanPrototype bean4 = beanFactory.getBean(ITestWithoutBeanPrototype.class);
-            assertTrue(false);
+            assertNotNull(false);
         } catch (SwiftBeanException e) {
-            assertTrue(true);
+            assertTrue(false);
         }
         try {
             IBean bean5 = beanFactory.getBean(IBean.class);
