@@ -20,22 +20,6 @@ import java.util.Map;
 public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     private SwiftClusterSegmentService service = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 
-//    public SwiftSegmentServiceProvider() {
-//        service = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-//        service.checkOldConfig();
-//        ClusterListenerHandler.addInitialListener(new ClusterEventListener() {
-//            @Override
-//            public void handleEvent(ClusterEvent clusterEvent) {
-//                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-//                    String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-//                    service.setClusterId(clusterId);
-//                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-//                    service.setClusterId("LOCAL");
-//                }
-//            }
-//        });
-//    }
-
     @Override
     public boolean addSegments(List<SegmentKey> segments) {
         return service.addSegments(segments);
