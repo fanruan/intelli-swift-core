@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class DoubleIoTest extends BaseIoTest {
     double val = r.nextDouble();
-    String basePath = CUBES_PATH + "/double/";
+    String basePath = cubesPath + "/double/";
 
     @Override
     public void testOverwritePutThenGet() {

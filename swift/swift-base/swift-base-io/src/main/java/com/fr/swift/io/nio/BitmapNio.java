@@ -46,11 +46,6 @@ public class BitmapNio extends BaseNio implements BitMapReader, BitMapWriter, Ob
     }
 
     @Override
-    public long getLastPosition(long pos) {
-        return 0;
-    }
-
-    @Override
     public boolean isReadable() {
         return obj != null && obj.isReadable();
     }

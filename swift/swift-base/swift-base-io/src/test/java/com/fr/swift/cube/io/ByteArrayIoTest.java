@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
  */
 public class ByteArrayIoTest extends BaseIoTest {
     final byte[] val = new byte[r.nextInt(BOUND)];
-    String basePath = CUBES_PATH + "/bytearray/";
+    String basePath = cubesPath + "/bytearray/";
 
     {
         r.nextBytes(val);

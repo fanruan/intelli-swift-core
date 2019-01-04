@@ -6,10 +6,10 @@ package com.fr.swift.test;
  */
 public class TestResource {
     public static String getRunPath(Class<?> c) {
-        return getTmpDir() + "/" + c.getSimpleName();
+        return getTestDir() + "/" + c.getSimpleName();
     }
 
-    public static String getTmpDir() {
-        return System.getProperty("user.dir") + "/test_temp";
+    public static String getTestDir() {
+        return System.getProperty("test.dir", System.getProperty("user.dir")) + "/test_temp";
     }
 }
