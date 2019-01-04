@@ -48,11 +48,6 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]>, ByteArray
     }
 
     @Override
-    public long getLastPosition(long pos) {
-        return -1;
-    }
-
-    @Override
     public void put(long pos, byte[] val) {
         position.put(pos, currentPos);
         length.put(pos, val.length);

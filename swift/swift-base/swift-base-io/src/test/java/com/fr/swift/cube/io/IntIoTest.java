@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class IntIoTest extends BaseIoTest {
     int val = r.nextInt(BOUND);
-    String basePath = CUBES_PATH + "/int/";
+    String basePath = cubesPath + "/int/";
 
     @Override
     public void testOverwritePutThenGet() {

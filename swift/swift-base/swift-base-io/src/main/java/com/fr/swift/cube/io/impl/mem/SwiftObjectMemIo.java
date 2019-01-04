@@ -26,11 +26,6 @@ public class SwiftObjectMemIo<T> extends BaseMemIo implements ObjectMemIo<T> {
     }
 
     @Override
-    public long getLastPosition(long pos) {
-        return lastPos;
-    }
-
-    @Override
     public boolean isReadable() {
         return mem != null && lastPos > -1;
     }

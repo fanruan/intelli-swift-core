@@ -12,7 +12,7 @@ public class FrEnvResource extends ExternalResource {
 
     @Override
     protected void before() {
-        SimpleWork.checkIn(TestResource.getTmpDir());
+        SimpleWork.checkIn(TestResource.getTestDir());
     }
 
     @Override
