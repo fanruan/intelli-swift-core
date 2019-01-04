@@ -27,7 +27,7 @@ public class BitMapFineIoReader implements BitMapReader {
         return new BitMapFineIoReader(ByteArrayFineIoReader.build(location));
     }
 
-    public static ImmutableBitMap getByHead(byte[] bytes) {
+    private static ImmutableBitMap getByHead(byte[] bytes) {
         byte head = bytes[0];
         // mutable，immutable底层都是同一结构，暂时先统一生成mutable
         if (head == BitMapType.ROARING_IMMUTABLE.getHead() || head == BitMapType.ROARING_MUTABLE.getHead()) {
