@@ -12,6 +12,7 @@ import java.util.Iterator;
  * @date 2018/6/4
  */
 public class IterableResultSet implements SwiftResultSet {
+
     private SwiftMetaData meta;
 
     private Iterator<Row> rows;

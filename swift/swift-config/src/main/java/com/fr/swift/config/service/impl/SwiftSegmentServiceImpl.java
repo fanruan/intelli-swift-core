@@ -370,7 +370,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (Map.Entry<String, Set<SegmentKey>> entry : segmentTable.entrySet()) {
                         for (SegmentKey segmentKey : entry.getValue()) {
-                            SegLocationBean locationEntity = new SegLocationBean(SwiftProperty.getProperty().getClusterId(), segmentKey.getId(), segmentKey.getTable().getId());
+                            SegLocationBean locationEntity = new SegLocationBean(entry.getKey(), segmentKey.getId(), segmentKey.getTable().getId());
                             segmentLocationDao.saveOrUpdate(session, locationEntity);
                         }
                     }
