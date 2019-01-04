@@ -3,7 +3,6 @@ package com.fr.swift.config.bean;
 import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.alloter.AllotRule;
-import com.fr.swift.util.Crasher;
 
 import java.lang.reflect.Constructor;
 
@@ -28,7 +27,7 @@ public class SwiftTableAllotConfBean implements ObjectConverter {
         try {
             return Class.forName("com.fr.swift.config.entity.SwiftTableAllotConf");
         } catch (ClassNotFoundException e) {
-            return Crasher.crash(e);
+            return null;
         }
     }
 

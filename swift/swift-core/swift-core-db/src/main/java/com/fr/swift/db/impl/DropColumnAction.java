@@ -1,7 +1,7 @@
 package com.fr.swift.db.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;

@@ -1,7 +1,7 @@
 package com.fr.swift.source.alloter;
 
-import com.fr.swift.config.bean.MetaDataColumnBean;
-import com.fr.swift.config.bean.SwiftMetaDataBean;
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;

@@ -13,7 +13,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
-import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
@@ -70,7 +69,6 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
 
             SegmentKey segKey = newSegmentKey(segInfo);
             SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, segKey);
-            SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(segKey));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }

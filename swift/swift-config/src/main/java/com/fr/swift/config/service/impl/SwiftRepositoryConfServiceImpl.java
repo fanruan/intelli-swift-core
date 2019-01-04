@@ -30,6 +30,9 @@ public class SwiftRepositoryConfServiceImpl implements SwiftRepositoryConfServic
 
     @Override
     public boolean setCurrentRepository(SwiftFileSystemConfig config) {
+        if (null == config) {
+            return false;
+        }
         SwiftFileSystemConfig current = null;
         try {
             current = getCurrentRepository();

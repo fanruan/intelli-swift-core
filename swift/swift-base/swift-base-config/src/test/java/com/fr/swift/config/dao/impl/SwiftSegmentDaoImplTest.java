@@ -2,8 +2,9 @@ package com.fr.swift.config.dao.impl;
 
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.SwiftSegmentDao;
-import com.fr.swift.config.oper.ConfigCriteria;
+import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.SwiftDatabase;
@@ -30,7 +31,7 @@ public class SwiftSegmentDaoImplTest {
 
     @Before
     public void before() {
-        dao = PowerMock.createMock(SwiftSegmentDaoImpl.class);
+        dao = new SwiftSegmentDaoImpl();
     }
 
     @Test
@@ -71,59 +72,44 @@ public class SwiftSegmentDaoImplTest {
 
     @Test
     public void findBeanByStoreType() throws Exception {
-        SwiftSegmentDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         final SegmentKey segmentKey = new SegmentKeyBean("sourceKey", 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
-        mockConfigCriteria.add(EasyMock.notNull());
+        ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
+        mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class), EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(SegmentKeyBean.TYPE))).andReturn(mockConfigCriteria).anyTimes();
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SegmentKeyBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
-        assertFalse(mockSwiftMetaDataDaoImpl.findBeanByStoreType(mockConfigSession, "sourceKey", Types.StoreType.MEMORY).isEmpty());
-        boolean exception = false;
-        try {
-            assertTrue(mockSwiftMetaDataDaoImpl.findBeanByStoreType(mockConfigSession, null, Types.StoreType.MEMORY).isEmpty());
-        } catch (SQLException e) {
-            exception = true;
-        }
-        assertTrue(exception);
+        assertFalse(dao.findBeanByStoreType(mockConfigSession, "sourceKey", Types.StoreType.MEMORY).isEmpty());
         PowerMock.verifyAll();
     }
 
     @Test
     public void deleteBySourceKey() throws SQLException {
-        SwiftSegmentDao mockSwiftMetaDataDaoImpl = PowerMock.createMock(SwiftSegmentDaoImpl.class);
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         final SegmentKey segmentKey = new SegmentKeyBean("sourceKey", 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
-
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
-        mockConfigCriteria.add(EasyMock.notNull());
+        ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
+        mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(SegmentKeyBean.TYPE))).andReturn(mockConfigCriteria).anyTimes();
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SegmentKeyBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
         mockConfigSession.delete(EasyMock.anyObject(SegmentKeyBean.TYPE));
         EasyMock.expectLastCall().anyTimes();
         PowerMock.replayAll();
-        assertTrue(mockSwiftMetaDataDaoImpl.deleteBySourceKey(mockConfigSession, "sourceKey"));
-        boolean exception = false;
-        try {
-            mockSwiftMetaDataDaoImpl.deleteBySourceKey(mockConfigSession, null);
-        } catch (SQLException e) {
-            exception = true;
-        }
-        assertTrue(exception);
+        assertTrue(dao.deleteBySourceKey(mockConfigSession, "sourceKey"));
         PowerMock.verifyAll();
     }
 
     @Test
     public void findAll() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigCriteria mockConfigCriteria = PowerMock.createMock(ConfigCriteria.class);
         ObjectConverter<SegmentKeyBean> mockEntity = (ObjectConverter<SegmentKeyBean>) PowerMock.createMock(SegmentKeyBean.TYPE);
         EasyMock.expect(mockEntity.convert()).andReturn(new SegmentKeyBean()).anyTimes();
-        EasyMock.expect(mockConfigSession.createCriteria(EasyMock.eq(SegmentKeyBean.TYPE))).andReturn(mockConfigCriteria).anyTimes();
-        EasyMock.expect(mockConfigCriteria.list()).andReturn(Arrays.<Object>asList(mockEntity)).anyTimes();
+        ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
+        mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
+        EasyMock.expectLastCall().anyTimes();
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(mockEntity)).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SegmentKeyBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
         assertFalse(dao.findAll(mockConfigSession).list().isEmpty());
         PowerMock.verifyAll();

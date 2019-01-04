@@ -30,8 +30,9 @@ public final class VersionConfigProperty {
     private Class constraintViolationException;
     private Class entityExistsException;
     private Class<? extends ConfigQuery> query;
+    private String defaultRepository;
 
-    private VersionConfigProperty(String version, String session, String nonUniqueObjectException, String constraintViolationException, String entityExistsException) {
+    private VersionConfigProperty(String version, String session, String nonUniqueObjectException, String constraintViolationException, String entityExistsException, String defaultRepository) {
         this.version = version;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
@@ -40,6 +41,7 @@ public final class VersionConfigProperty {
             this.constraintViolationException = loader.loadClass(constraintViolationException);
             this.entityExistsException = loader.loadClass(entityExistsException);
             this.query = (Class<? extends ConfigQuery>) loader.loadClass("com.fr.swift.config.hibernate.HibernateQuery");
+            this.defaultRepository = defaultRepository;
         } catch (Exception e) {
             Crasher.crash(e);
         }
@@ -56,7 +58,8 @@ public final class VersionConfigProperty {
                 String nonUniqueObjectException = properties.getProperty("hibernate.exp.nonUnique");
                 String constraintViolationException = properties.getProperty("hibernate.exp.constraint");
                 String entityExistsException = properties.getProperty("jpa.exp.exists");
-                property = new VersionConfigProperty(version, restrictions, nonUniqueObjectException, constraintViolationException, entityExistsException);
+                String defaultRepo = properties.getProperty("default.repo");
+                property = new VersionConfigProperty(version, restrictions, nonUniqueObjectException, constraintViolationException, entityExistsException, defaultRepo);
             }
         } finally {
             if (null != is) {
@@ -91,5 +94,9 @@ public final class VersionConfigProperty {
 
     public Class getEntityExistsException() {
         return entityExistsException;
+    }
+
+    public String getDefaultRepository() {
+        return defaultRepository;
     }
 }

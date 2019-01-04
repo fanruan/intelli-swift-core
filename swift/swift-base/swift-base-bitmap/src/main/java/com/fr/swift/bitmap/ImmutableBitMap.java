@@ -11,12 +11,34 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public interface ImmutableBitMap extends RowTraversal, BytesGetter, IntIterable {
 
+    /**
+     * 位与
+     *
+     * @param index bitmap
+     * @return 结果
+     */
     ImmutableBitMap getAnd(ImmutableBitMap index);
 
+    /**
+     * 位或
+     * @param index bitmap
+     * @return 结果
+     */
     ImmutableBitMap getOr(ImmutableBitMap index);
 
+    /**
+     * 取最大位较大的为边界
+     * index先位反，然后与this位与
+     * @param index bitmap
+     * @return 结果
+     */
     ImmutableBitMap getAndNot(ImmutableBitMap index);
 
+    /**
+     * 0~bound内全部取位反
+     * @param bound 边界
+     * @return 结果
+     */
     ImmutableBitMap getNot(int bound);
 
     /**

@@ -8,7 +8,6 @@ import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.util.Optional;
 
 import java.lang.reflect.Method;
@@ -26,7 +25,7 @@ public class SwiftInsertSegmentProcessHandler extends AbstractProcessHandler<Opt
     @Override
     protected Optional<URL> processUrl(Target target, Object... args) {
         if (SwiftProperty.getProperty().isCluster()) {
-            String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+            String clusterId = SwiftProperty.getProperty().getClusterId();
             URL url = UrlSelector.getInstance().getFactory().getURL(clusterId);
             return Optional.of(url);
         }
