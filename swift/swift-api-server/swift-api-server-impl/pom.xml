@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-api-fr-bean</artifactId>
+            <artifactId>swift-api-bean</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>

@@ -2,6 +2,7 @@ package com.fr.swift.jdbc.info;
 
 import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.BaseRequestInfo;
+import com.fr.swift.api.info.JdbcRequestType;
 import com.fr.swift.base.json.annotation.JsonIgnore;
 import com.fr.swift.base.json.annotation.JsonProperty;
 

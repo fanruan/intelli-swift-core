@@ -16,7 +16,7 @@ import java.util.Map;
  * @author yee
  * @date 2018-12-12
  */
-public class OnePageApiResultSet<T> implements SwiftApiResultSet<T> {
+public abstract class OnePageApiResultSet<T> implements SwiftApiResultSet<T> {
     private static final long serialVersionUID = -4562401863852149125L;
     private SwiftMetaData metaData;
     protected List<Row> rows;
@@ -44,11 +44,6 @@ public class OnePageApiResultSet<T> implements SwiftApiResultSet<T> {
             }
         }
         return label2Index;
-    }
-
-    @Override
-    public SwiftApiResultSet queryNextPage(T queryInfo) throws SQLException {
-        return null;
     }
 
     @Override

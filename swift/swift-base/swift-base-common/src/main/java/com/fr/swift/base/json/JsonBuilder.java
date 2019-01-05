@@ -4,6 +4,7 @@ import com.fr.swift.base.json.annotation.JsonMapper;
 import com.fr.swift.base.json.mapper.BeanMapper;
 import com.fr.swift.base.json.mapper.SwiftBeanMapper;
 import com.fr.swift.util.ReflectUtils;
+import com.fr.swift.util.Strings;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -33,6 +34,9 @@ public class JsonBuilder {
     }
 
     public static String writeJsonString(Object o) throws Exception {
+        if (null == o) {
+            return Strings.EMPTY;
+        }
         Class reference = o.getClass();
         BeanMapper mapper = calculateMapper(reference);
         if (null == mapper) {
