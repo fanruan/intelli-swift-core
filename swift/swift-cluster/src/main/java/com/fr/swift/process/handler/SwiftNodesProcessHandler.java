@@ -58,17 +58,23 @@ public class SwiftNodesProcessHandler extends AbstractProcessHandler implements 
                 rpcFuture.addCallback(new AsyncRpcCallback() {
                     @Override
                     public void success(Object result) {
-                        EventResult eventResult = new EventResult(url.getDestination().getId(), true);
-                        resultList.add(eventResult);
-                        latch.countDown();
+                        try {
+                            EventResult eventResult = new EventResult(url.getDestination().getId(), true);
+                            resultList.add(eventResult);
+                        } finally {
+                            latch.countDown();
+                        }
                     }
 
                     @Override
                     public void fail(Exception e) {
-                        EventResult eventResult = new EventResult(url.getDestination().getId(), false);
-                        eventResult.setError(e.getMessage());
-                        resultList.add(eventResult);
-                        latch.countDown();
+                        try {
+                            EventResult eventResult = new EventResult(url.getDestination().getId(), false);
+                            eventResult.setError(e.getMessage());
+                            resultList.add(eventResult);
+                        } finally {
+                            latch.countDown();
+                        }
                     }
                 });
             }

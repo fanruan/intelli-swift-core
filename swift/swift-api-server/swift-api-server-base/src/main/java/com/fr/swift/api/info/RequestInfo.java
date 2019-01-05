@@ -1,12 +1,14 @@
 package com.fr.swift.api.info;
 
 import com.fr.swift.base.json.JsonBuilder;
+import com.fr.swift.base.json.annotation.JsonSubTypes;
 
 /**
  * basic interface of request info for api and jdbc
- * @see JsonBuilder#writeJsonString(Object)
+ *
  * @author yee
  * @date 2018/11/16
+ * @see JsonBuilder#writeJsonString(Object)
  * @see BaseRequestInfo
  */
 public interface RequestInfo<T extends RequestParserVisitor> extends Accepter<T> {
@@ -39,6 +41,18 @@ public interface RequestInfo<T extends RequestParserVisitor> extends Accepter<T>
     /**
      * basic interface for request type
      */
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = ApiRequestType.class, name = "JSON_QUERY"),
+            @JsonSubTypes.Type(value = ApiRequestType.class, name = "INSERT"),
+            @JsonSubTypes.Type(value = ApiRequestType.class, name = "DELETE"),
+            @JsonSubTypes.Type(value = ApiRequestType.class, name = "CREATE_TABLE"),
+            @JsonSubTypes.Type(value = ApiRequestType.class, name = "DROP_TABLE"),
+            @JsonSubTypes.Type(value = ApiRequestType.class, name = "TRUNCATE_TABLE"),
+            @JsonSubTypes.Type(value = JdbcRequestType.class, name = "SQL"),
+            @JsonSubTypes.Type(value = JdbcRequestType.class, name = "TABLES"),
+            @JsonSubTypes.Type(value = JdbcRequestType.class, name = "COLUMNS")
+    }
+    )
     interface Request {
         /**
          * return request type name

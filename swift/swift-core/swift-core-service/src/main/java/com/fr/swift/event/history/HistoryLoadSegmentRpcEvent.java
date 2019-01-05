@@ -19,9 +19,6 @@ public class HistoryLoadSegmentRpcEvent extends SegmentLoadRpcEvent<SourceKey> i
         this.sourceKey = sourceKey;
     }
 
-    public HistoryLoadSegmentRpcEvent() {
-    }
-
     @Override
     public Event subEvent() {
         return Event.LOAD_SEGMENT;
