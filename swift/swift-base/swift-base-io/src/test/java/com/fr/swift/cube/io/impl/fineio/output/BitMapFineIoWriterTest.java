@@ -13,7 +13,9 @@ import java.net.URI;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Matchers.notNull;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -28,13 +30,12 @@ public class BitMapFineIoWriterTest {
 
     private final URI location = URI.create("/cubes/table/seg0/column/detail");
 
+    private final ByteArrayWriter byteArrayWriter = mock(ByteArrayWriter.class);
+
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteArrayFineIoWriter.class);
-        ByteArrayWriter byteArrayWriter = mock(ByteArrayWriter.class);
         when(ByteArrayFineIoWriter.build(Matchers.<URI>any(), anyBoolean())).thenReturn(byteArrayWriter);
-
-        doNothing().when(byteArrayWriter).put(anyLong(), Matchers.<byte[]>any());
     }
 
     @Test
@@ -43,13 +44,18 @@ public class BitMapFineIoWriterTest {
     }
 
     @Test
-    public void get() {
+    public void put() {
         BitMapFineIoWriter.build(location, true).put(0, new EmptyBitmap());
         BitMapFineIoWriter.build(location, true).put(1, null);
+
+        verify(byteArrayWriter).put(anyLong(), notNull(byte[].class));
+        verify(byteArrayWriter).put(anyLong(), isNull(byte[].class));
     }
 
     @Test
     public void release() {
         BitMapFineIoWriter.build(location, true).release();
+
+        verify(byteArrayWriter).release();
     }
 }
