@@ -1,8 +1,9 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.result.row.RowIndexKey;
+import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.structure.Pair;
 
 import java.util.List;
 
@@ -11,16 +12,19 @@ import java.util.List;
  */
 public class MultiGroupByValues extends MultiGroupBy<Object[]> {
 
-    public MultiGroupByValues(List<Column> dimensions, DetailFilter detailFilter, int[] cursor, boolean[] asc) {
-        super(dimensions, detailFilter, cursor, asc);
+    private List<Pair<Column, IndexInfo>> dimensions;
+
+    public MultiGroupByValues(GroupByInfo groupByInfo) {
+        super(groupByInfo);
+        this.dimensions = groupByInfo.getDimensions();
     }
 
     @Override
-    protected RowIndexKey<Object[]> createKey(int[] indexes) {
+    protected Object[] createKey(int[] indexes) {
         Object[] values = new Object[indexes.length];
         for (int i = 0; i < indexes.length; i++) {
-            values[i] = dimensions.get(i).getDictionaryEncodedColumn().getValue(indexes[i]);
+            values[i] = dimensions.get(i).getKey().getDictionaryEncodedColumn().getValue(indexes[i]);
         }
-        return new RowIndexKey<Object[]>(values);
+        return values;
     }
 }

@@ -1,5 +1,8 @@
 package com.fr.swift.test;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.segment.column.BitmapIndexedColumn;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 
@@ -98,31 +101,87 @@ public final class Temps {
         public boolean isReadable() {
             return false;
         }
+    }
 
-        public class TempPutter implements Putter<T> {
-            @Override
-            public void putSize(int size) {
-            }
+    public static class TempBitmapIndexedColumn implements BitmapIndexedColumn {
 
-            @Override
-            public void putGlobalSize(int globalSize) {
-            }
+        @Override
+        public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
 
-            @Override
-            public void putValue(int index, T val) {
-            }
+        }
 
-            @Override
-            public void putIndex(int row, int index) {
-            }
+        @Override
+        public ImmutableBitMap getBitMapIndex(int index) {
+            return null;
+        }
 
-            @Override
-            public void putGlobalIndex(int index, int globalIndex) {
-            }
+        @Override
+        public void putNullIndex(ImmutableBitMap bitMap) {
 
-            @Override
-            public void release() {
-            }
+        }
+
+        @Override
+        public ImmutableBitMap getNullIndex() {
+            return null;
+        }
+
+        @Override
+        public void flush() {
+
+        }
+
+        @Override
+        public void release() {
+
+        }
+
+        @Override
+        public boolean isReadable() {
+            return false;
         }
     }
+
+    public static class TempDetailColumn implements DetailColumn {
+
+        @Override
+        public int getInt(int pos) {
+            return 0;
+        }
+
+        @Override
+        public long getLong(int pos) {
+            return 0;
+        }
+
+        @Override
+        public double getDouble(int pos) {
+            return 0;
+        }
+
+        @Override
+        public void put(int pos, Object val) {
+
+        }
+
+        @Override
+        public Object get(int pos) {
+            return null;
+        }
+
+        @Override
+        public void flush() {
+
+        }
+
+        @Override
+        public void release() {
+
+        }
+
+        @Override
+        public boolean isReadable() {
+            return false;
+        }
+    }
+
 }

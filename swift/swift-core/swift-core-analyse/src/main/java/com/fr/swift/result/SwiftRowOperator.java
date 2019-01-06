@@ -10,8 +10,5 @@ import java.util.List;
  */
 public interface SwiftRowOperator<T extends Row> {
 
-    /**
-     * TODO: 2018/6/13 这边的相关接口待调整，因为配置计算那块都是依赖node结构处理的
-     */
-    List<T> operate(SwiftNode... node);
+    List<T> operate(SwiftNode node);
 }
