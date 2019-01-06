@@ -1,7 +1,7 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.row.RowIndexKey;
+import com.fr.swift.query.aggregator.Combiner;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
@@ -9,7 +9,7 @@ import com.fr.swift.util.Util;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -18,14 +18,12 @@ import java.util.List;
  * Created by pony on 2018/3/29.
  * 返回多个segment合并之后的结果，按传入的segment的MultiGroupBy的顺序返回
  */
-public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<T>, List<RowTraversal[]>>> {
+public abstract class MergerGroupBy<T> implements Iterator<Pair<T, List<RowTraversal[]>>> {
 
     //升序还是降序
     protected final boolean[] asc;
     private MultiGroupBy<T>[] iterators;
-    private Iterator<KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>> mergeIt;
-    private KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>> current = null;
-
+    private Iterator<Pair<T, List<RowTraversal[]>>> mergeIt;
 
     public MergerGroupBy(MultiGroupBy<T>[] iterators, boolean[] asc) {
         Util.requireNonNull(iterators);
@@ -34,83 +32,57 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
         this.asc = asc;
     }
 
+    protected abstract Comparator<Pair<T, List<RowTraversal[]>>> getComparator();
+
     /**
      * 初始化迭代器，给子类调用
      */
     protected void init() {
-        mergeIt = SortedListMergingUtils.mergeIterator(array2List(iterators),
-                this.<KeyValue<Integer, RowTraversal[]>>getComparator());
+        mergeIt = SortedListMergingUtils.mergeIterator(mapIterator(),
+                this.getComparator(), new PairCombiner<T>());
     }
 
-    protected abstract <V> Comparator<KeyValue<RowIndexKey<T>, V>> getComparator();
+    private static class PairCombiner<T> implements Combiner<Pair<T, List<RowTraversal[]>>> {
+
+        @Override
+        public void combine(Pair<T, List<RowTraversal[]>> current, Pair<T, List<RowTraversal[]>> other) {
+            if (current.getValue().size() <= 1) {
+                List<RowTraversal[]> list = new ArrayList<RowTraversal[]>();
+                list.addAll(current.getValue());
+                list.addAll(other.getValue());
+                current.setValue(list);
+            } else {
+                current.getValue().addAll(other.getValue());
+            }
+        }
+    }
+
+    private List<Iterator<Pair<T, List<RowTraversal[]>>>> mapIterator() {
+        List<Iterator<Pair<T, List<RowTraversal[]>>>> list = new ArrayList<Iterator<Pair<T, List<RowTraversal[]>>>>();
+        Function<Pair<T, RowTraversal[]>, Pair<T, List<RowTraversal[]>>> fn = new Function<Pair<T, RowTraversal[]>, Pair<T, List<RowTraversal[]>>>() {
+            @Override
+            public Pair<T, List<RowTraversal[]>> apply(Pair<T, RowTraversal[]> p) {
+                return Pair.of(p.getKey(), Collections.singletonList(p.getValue()));
+            }
+        };
+        for (MultiGroupBy<T> it : iterators) {
+            list.add(new MapperIterator(it, fn));
+        }
+        return list;
+    }
 
     @Override
     public boolean hasNext() {
-        return mergeIt.hasNext() || current != null;
+        return mergeIt.hasNext();
     }
 
     @Override
-    public KeyValue<RowIndexKey<T>, List<RowTraversal[]>> next() {
-        RowTraversal[][] values = new RowTraversal[iterators.length][];
-        RowIndexKey<T> key = current != null ? current.getKey() : null;
-        if (current != null) {
-            values[current.getValue().getKey()] = current.getValue().getValue();
-        }
-        // 重置current
-        current = null;
-        while (mergeIt.hasNext()) {
-            KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>> kv = mergeIt.next();
-            if (key == null) {
-                key = kv.getKey();
-                values[kv.getValue().getKey()] = kv.getValue().getValue();
-                continue;
-            }
-            int c = getComparator().compare(new KeyValue<RowIndexKey<T>, Object>(key, null),
-                    new KeyValue<RowIndexKey<T>, Object>(kv.getKey(), null));
-            if (c == 0) {
-                // key相同，收集value
-                values[kv.getValue().getKey()] = kv.getValue().getValue();
-                continue;
-            }
-            // key != null且key != kv.getKey()，这个时候返回当前key对应的值，并设置kv为下一次的current
-            current = kv;
-            break;
-        }
-        return new KeyValue<RowIndexKey<T>, List<RowTraversal[]>>(key, Arrays.asList(values));
-    }
-
-    /**
-     * 进行mapper之后的value保持了初始迭代器迭代器数组中的索引（对应哪个segment）
-     */
-    private List<Iterator<KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>>> array2List(MultiGroupBy<T>[] its) {
-        List<Iterator<KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>>> iterators = new ArrayList<Iterator<KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>>>();
-        for (int i = 0; i < its.length; i++) {
-            iterators.add(new MapperIterator<KeyValue<RowIndexKey<T>, RowTraversal[]>,
-                    KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>>(its[i], new KVMapper<T>(i)));
-        }
-        return iterators;
+    public Pair<T, List<RowTraversal[]>> next() {
+        return null;
     }
 
     @Override
     public void remove() {
         throw new UnsupportedOperationException();
-    }
-
-    private static class KVMapper<T> implements
-            Function<KeyValue<RowIndexKey<T>, RowTraversal[]>, KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>> {
-
-        private int iteratorIndex;
-
-        public KVMapper(int iteratorIndex) {
-            this.iteratorIndex = iteratorIndex;
-        }
-
-        @Override
-        public KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>> apply(KeyValue<RowIndexKey<T>, RowTraversal[]> p) {
-            return new KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>(
-                    p.getKey(),
-                    new KeyValue<Integer, RowTraversal[]>(iteratorIndex, p.getValue())
-            );
-        }
     }
 }

@@ -39,10 +39,10 @@ public class RowSortQuery implements PostQuery<QueryResultSet> {
         QueryResultSet resultSet = query.getQueryResult();
         SwiftRowOperator<Row> operator = new SwiftRowOperator<Row>() {
             @Override
-            public List<Row> operate(SwiftNode... node) {
-                int dimensionSize = SwiftNodeUtils.getDimensionSize(node[0]);
+            public List<Row> operate(SwiftNode node) {
+                int dimensionSize = SwiftNodeUtils.getDimensionSize(node);
                 Iterator<List<SwiftNode>> rowIt = new Tree2RowIterator<SwiftNode>(dimensionSize,
-                        node[0].getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
+                        node.getChildren().iterator(), new Function<SwiftNode, Iterator<SwiftNode>>() {
                     @Override
                     public Iterator<SwiftNode> apply(SwiftNode p) {
                         return p.getChildren().iterator();

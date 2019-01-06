@@ -8,11 +8,11 @@ import java.util.List;
 public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
 
     private static final long serialVersionUID = -538699789884622264L;
-    protected int depth;
-    protected int nodeIndex = 0;
+    private int depth;
+    int nodeIndex = 0;
     protected Object data;
-    protected ChildMap<T> childMap = new ChildMap<T>();
-    protected int dictionaryIndex = -1;
+    private ChildMap<T> childMap = new ChildMap<T>();
+    private int dictionaryIndex = -1;
     private boolean isGlobalIndexUpdated = false;
 
     public GroupNode(int depth, Object data) {
