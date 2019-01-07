@@ -1,5 +1,8 @@
 package com.fr.swift.cube.io;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -7,13 +10,14 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.io.IntIo;
 import com.fr.swift.test.TestResource;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +28,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static org.junit.Assert.fail;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author anchore
  * @date 2017/11/21
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({SwiftContext.class})
 public class IResourceDiscoveryTest {
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
@@ -36,9 +45,16 @@ public class IResourceDiscoveryTest {
     
     private ExecutorService exec = Executors.newFixedThreadPool(8);
 
-    @Rule
-    public TestRule getExternalResource() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
+    @Before
+    public void setUp() throws Exception {
+        mockStatic(SwiftContext.class);
+        BeanFactory beanFactory = mock(BeanFactory.class);
+        when(SwiftContext.get()).thenReturn(beanFactory);
+
+        SwiftCubePathService service = mock(SwiftCubePathService.class);
+        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(service);
+
+        when(service.getSwiftPath()).thenReturn(TestResource.getRunPath(getClass()));
     }
 
     @Test

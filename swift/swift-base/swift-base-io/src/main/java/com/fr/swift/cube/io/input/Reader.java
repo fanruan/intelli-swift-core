@@ -1,7 +1,7 @@
 package com.fr.swift.cube.io.input;
 
+import com.fr.swift.cube.io.IfReadable;
 import com.fr.swift.cube.io.Releasable;
-import com.fr.swift.io.IfReadable;
 
 /**
  * @author anchore
