@@ -1,55 +1,130 @@
 package com.fr.swift.segment.column.impl.base;
 
-import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.bitmap.impl.BitmapAssert;
+import com.fr.swift.bitmap.impl.EmptyBitmap;
+import com.fr.swift.bitmap.impl.RangeBitmap;
+import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.cube.io.BuildConf;
+import com.fr.swift.cube.io.IResourceDiscovery;
+import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.cube.io.input.BitMapReader;
+import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import org.junit.Assert;
-import org.junit.Rule;
+import com.fr.swift.cube.io.output.BitMapWriter;
+import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.test.TestResource;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Random;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author anchore
  * @date 2017/11/10
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ResourceDiscovery.class, SwiftContext.class})
 public class BitMapColumnTest {
-    static final String BASE_PATH = "cubes/table/seg0/column";
-    Random r = new Random();
-    int size = 1000000;
 
-    @Rule
-    public TestRule getExternalResource() throws Exception {
-        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
+    @Mock
+    private BitMapWriter bitmapWriter;
+    @Mock
+    private BitMapReader bitmapReader;
+
+    @Before
+    public void setUp() throws Exception {
+        initMocks(this);
+
+        mockStatic(ResourceDiscovery.class);
+        IResourceDiscovery resourceDiscovery = mock(IResourceDiscovery.class);
+        when(ResourceDiscovery.getInstance()).thenReturn(resourceDiscovery);
+
+        when(bitmapReader.isReadable()).thenReturn(true);
+        when(bitmapReader.get(anyLong())).thenReturn(new RangeBitmap(1, 3));
+        when(resourceDiscovery.getReader(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Reader>() {
+            @Override
+            public Reader answer(InvocationOnMock invocation) throws Throwable {
+                return bitmapReader;
+            }
+        });
+
+        when(resourceDiscovery.getWriter(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Writer>() {
+            @Override
+            public Writer answer(InvocationOnMock invocation) throws Throwable {
+                return bitmapWriter;
+            }
+        });
+
+        mockStatic(SwiftContext.class);
+        BeanFactory beanFactory = mock(BeanFactory.class);
+        when(SwiftContext.get()).thenReturn(beanFactory);
+
+        SwiftCubePathService swiftCubePathService = mock(SwiftCubePathService.class);
+        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
+        when(swiftCubePathService.getSwiftPath()).thenReturn(TestResource.getRunPath(getClass()));
     }
 
     @Test
-    public void testPutThenGet() {
-        MutableBitMap m = BitMaps.newRoaringMutable();
-        for (int i = 0; i < size; i++) {
-            m.add(r.nextInt(size << 1));
-        }
+    public void putNullIndex() {
+        new BitMapColumn(new ResourceLocation("")).putNullIndex(new EmptyBitmap());
 
-        BitMapColumn bc = new BitMapColumn(new ResourceLocation(BASE_PATH + "/index/child"));
+        verify(bitmapWriter).resetContentPosition();
+        verify(bitmapWriter).put(anyLong(), Matchers.<ImmutableBitMap>any());
+    }
 
-        int pos = 0;
-        bc.putBitMapIndex(pos, m);
-        bc.putNullIndex(m);
-        bc.release();
+    @Test
+    public void getNullIndex() {
+        BitmapAssert.equals(new RangeBitmap(1, 3), new BitMapColumn(new ResourceLocation("")).getNullIndex());
+    }
 
-        bc = new BitMapColumn(new ResourceLocation(BASE_PATH + "/index/child"));
-        final ImmutableBitMap im = bc.getBitMapIndex(pos);
-        final ImmutableBitMap nullIm = bc.getNullIndex();
-        m.traversal(new TraversalAction() {
-            @Override
-            public void actionPerformed(int row) {
-                if (!im.contains(row) || !nullIm.contains(row)) {
-                    Assert.fail();
-                }
-            }
-        });
+    @Test
+    public void putBitMapIndex() {
+        new BitMapColumn(new ResourceLocation("")).putNullIndex(new EmptyBitmap());
+
+        verify(bitmapWriter).put(anyLong(), Matchers.<ImmutableBitMap>any());
+    }
+
+    @Test
+    public void getBitMapIndex() {
+        BitmapAssert.equals(new RangeBitmap(1, 3), new BitMapColumn(new ResourceLocation("")).getBitMapIndex(0));
+    }
+
+    @Test
+    public void isReadable() {
+        new BitMapColumn(new ResourceLocation("")).isReadable();
+
+        verify(bitmapReader).isReadable();
+        verify(bitmapReader).release();
+    }
+
+    @Test
+    public void release() {
+        BitMapColumn bitMapColumn = new BitMapColumn(new ResourceLocation(""));
+        bitMapColumn.release();
+
+        verifyZeroInteractions(bitmapReader, bitmapWriter);
+
+        bitMapColumn.putNullIndex(new EmptyBitmap());
+        bitMapColumn.getNullIndex();
+        bitMapColumn.release();
+
+        verify(bitmapWriter).release();
+        verify(bitmapReader).release();
     }
 }
