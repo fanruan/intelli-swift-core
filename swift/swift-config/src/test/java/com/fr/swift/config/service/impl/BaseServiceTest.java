@@ -1,6 +1,5 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigTransaction;
@@ -8,11 +7,7 @@ import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -22,8 +17,6 @@ import java.util.Arrays;
  * @author yee
  * @date 2019-01-04
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(SwiftContext.class)
 public class BaseServiceTest {
 
     ConfigSession mockSession(Class entityClass, Object... objs) throws SQLException {
@@ -94,7 +87,4 @@ public class BaseServiceTest {
         return mockConfigQuery;
     }
 
-    @Test
-    public void emptyTest() {
-    }
 }

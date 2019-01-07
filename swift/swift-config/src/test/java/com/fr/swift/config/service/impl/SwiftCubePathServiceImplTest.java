@@ -31,7 +31,7 @@ import static junit.framework.TestCase.assertTrue;
  * @date 2019-01-04
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(PathChangeListener.class)
+@PrepareForTest({SwiftContext.class, PathChangeListener.class})
 public class SwiftCubePathServiceImplTest extends BaseServiceTest {
     private SwiftCubePathService service;
 

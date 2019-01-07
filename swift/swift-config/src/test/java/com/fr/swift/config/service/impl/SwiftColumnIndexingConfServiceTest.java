@@ -10,7 +10,10 @@ import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static junit.framework.TestCase.assertNotNull;
 
@@ -18,6 +21,8 @@ import static junit.framework.TestCase.assertNotNull;
  * @author yee
  * @date 2019-01-04
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(SwiftContext.class)
 public class SwiftColumnIndexingConfServiceTest extends BaseServiceTest {
     private IndexingConfService service;
 
