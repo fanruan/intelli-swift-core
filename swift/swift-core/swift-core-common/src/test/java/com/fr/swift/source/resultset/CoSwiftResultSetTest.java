@@ -1,10 +1,8 @@
-package com.fr.swift.segment.merge;
+package com.fr.swift.source.resultset;
 
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.resultset.CoSwiftResultSet;
-import com.fr.swift.source.resultset.IterableResultSet;
 import org.junit.Assert;
 import org.junit.Test;
 
