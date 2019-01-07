@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.info;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.AndFilter;
 import com.fr.swift.query.filter.detail.impl.OrFilter;
 import com.fr.swift.query.filter.match.GeneralAndMatchFilter;
@@ -51,7 +52,19 @@ public class GeneralFilterInfo extends AbstractFilterInfo {
 
     @Override
     public DetailFilter createDetailFilter(Segment segment) {
-        return type == OR ? new OrFilter(children, segment) : new AndFilter(children, segment);
+        return type == OR ? new OrFilter(toDetailFilter(children, segment)) : new AndFilter(toDetailFilter(children, segment));
+    }
+
+    private List<DetailFilter> toDetailFilter(List<FilterInfo> filterInfoList, Segment segment) {
+        List<DetailFilter> detailFilters = new ArrayList<DetailFilter>();
+        if (filterInfoList.size() == 0) {
+            detailFilters.add(new AllShowDetailFilter(segment));
+            return detailFilters;
+        }
+        for (FilterInfo filterInfo : filterInfoList) {
+            detailFilters.add(filterInfo.createDetailFilter(segment));
+        }
+        return detailFilters;
     }
 
     @Override

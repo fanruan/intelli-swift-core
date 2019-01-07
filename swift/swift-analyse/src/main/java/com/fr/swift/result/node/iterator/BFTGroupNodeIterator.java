@@ -1,10 +1,9 @@
 package com.fr.swift.result.node.iterator;
 
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.node.FIFOQueue;
-import com.fr.swift.result.node.LinkedListFIFOQueue;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,7 +12,7 @@ import java.util.List;
  */
 public class BFTGroupNodeIterator implements Iterator<GroupNode> {
 
-    FIFOQueue<GroupNode> queue = new LinkedListFIFOQueue<GroupNode>();
+    private LinkedList<GroupNode> queue = new LinkedList<GroupNode>();
 
     public BFTGroupNodeIterator(GroupNode root) {
         queue.add(root);

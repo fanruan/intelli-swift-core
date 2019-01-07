@@ -1,44 +1,22 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.result.row.RowIndexKey;
-import com.fr.swift.segment.column.Column;
-
-import java.util.Arrays;
-import java.util.List;
+import com.fr.swift.query.group.info.GroupByInfo;
 
 /**
  * Created by Lyon on 2018/3/28.
  */
 public class MultiGroupByIndex extends MultiGroupBy<int[]> {
 
-    private boolean isGlobalKey = false;
-
     /**
      * 单个segment使用的迭代器
      */
-    public MultiGroupByIndex(List<Column> dimensions, DetailFilter detailFilter, int[] cursor, boolean[] asc) {
-        super(dimensions, detailFilter, cursor, asc);
-    }
-
-    /**
-     * 如果迭代器用于多个segment之间的合并，isGlobalKey要设为true
-     */
-    public MultiGroupByIndex(List<Column> dimensions, DetailFilter detailFilter,
-                             int[] cursor, boolean[] asc, boolean isGlobalKey) {
-        super(dimensions, detailFilter, cursor, asc);
-        this.isGlobalKey = isGlobalKey;
+    public MultiGroupByIndex(GroupByInfo groupByInfo) {
+        super(groupByInfo);
     }
 
     @Override
-    protected RowIndexKey<int[]> createKey(int[] indexes) {
-        if (isGlobalKey) {
-            int[] globalIndex = new int[indexes.length];
-            for (int i = 0; i < indexes.length; i++) {
-                globalIndex[i] = dimensions.get(i).getDictionaryEncodedColumn().getGlobalIndexByIndex(indexes[i]);
-            }
-            return new RowIndexKey<int[]>(globalIndex);
-        }
-        return new RowIndexKey<int[]>(Arrays.copyOf(indexes, indexes.length));
+    protected int[] createKey(int[] indexes) {
+        // TODO: 2019/1/3 如果列做了全局字典，可以转成全局字典
+        return indexes;
     }
 }
