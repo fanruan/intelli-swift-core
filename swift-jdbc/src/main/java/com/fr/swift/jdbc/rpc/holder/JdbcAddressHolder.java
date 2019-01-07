@@ -5,7 +5,6 @@ import com.fr.swift.api.rpc.holder.AbstractServiceAddressHolder;
 import com.fr.swift.jdbc.mode.Mode;
 import com.fr.swift.jdbc.proxy.invoke.ClientProxy;
 import com.fr.swift.jdbc.proxy.invoke.ClientProxyPool;
-import com.fr.swift.jdbc.proxy.invoke.SimpleExecutor;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceType;
 
@@ -33,13 +32,6 @@ public class JdbcAddressHolder extends AbstractServiceAddressHolder {
         this(host + ":" + port, mode);
     }
 
-    public static JdbcAddressHolder getHolder(String address, Mode mode) {
-        if (null == instances.get(address)) {
-            instances.put(address, new JdbcAddressHolder(address, mode));
-        }
-        return instances.get(address);
-    }
-
     public static JdbcAddressHolder getHolder(String host, int port, Mode mode) {
         port = port == -1 ? 7000 : port;
         String address = host + ":" + port;
@@ -51,13 +43,6 @@ public class JdbcAddressHolder extends AbstractServiceAddressHolder {
 
     @Override
     protected Map<ServiceType, List<String>> detectiveAddress(String address) throws Exception {
-        if (mode.equals(Mode.EMB)) {
-            ClientProxy proxy = new ClientProxy(new SimpleExecutor(mode.createConnector(address)));
-            proxy.start();
-            Map<ServiceType, List<String>> result = proxy.getProxy(DetectService.class).detectiveAnalyseAndRealTime(address);
-            proxy.stop();
-            return result;
-        }
         ClientProxy proxy = null;
         try {
             proxy = ClientProxyPool.getInstance(mode).borrowObject(address);

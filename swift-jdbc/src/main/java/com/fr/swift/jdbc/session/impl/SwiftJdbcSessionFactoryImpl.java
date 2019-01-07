@@ -13,7 +13,7 @@ import com.fr.swift.jdbc.session.SwiftJdbcSessionFactory;
  */
 public class SwiftJdbcSessionFactoryImpl implements SwiftJdbcSessionFactory {
 
-    protected JdbcAddressHolder holder;
+    private JdbcAddressHolder holder;
     private SwiftDatabase schema;
     private static final String DEFAULT_ADDRESS = "localhost:7000";
     private Mode mode;
@@ -26,13 +26,19 @@ public class SwiftJdbcSessionFactoryImpl implements SwiftJdbcSessionFactory {
 
     public SwiftJdbcSessionFactoryImpl(SwiftDatabase schema) {
         this.schema = schema;
-        holder = JdbcAddressHolder.getHolder(DEFAULT_ADDRESS, Mode.EMB);
         mode = Mode.EMB;
     }
 
     @Override
     public SwiftJdbcSession openSession() {
-        return new SwiftJdbcSessionImpl(schema, JdbcCaller.connectSelectService(holder.nextAnalyseAddress(), mode), JdbcCaller.connectMaintenanceService(holder.nextRealTimeAddress(), mode));
+        if (mode == Mode.SERVER) {
+            return new SwiftJdbcSessionImpl(schema,
+                    JdbcCaller.connectSelectService(holder.nextAnalyseAddress(), mode),
+                    JdbcCaller.connectMaintenanceService(holder.nextRealTimeAddress(), mode));
+        }
+        return new SwiftJdbcSessionImpl(schema,
+                JdbcCaller.connectSelectService(DEFAULT_ADDRESS, mode),
+                JdbcCaller.connectMaintenanceService(DEFAULT_ADDRESS, mode));
     }
 
     @Override
