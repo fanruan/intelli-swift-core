@@ -18,20 +18,9 @@ import java.sql.SQLException;
  */
 public class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConnectorConfig> {
     private static final String FINE_IO_CONNECTOR = "FINE_IO_CONNECTOR";
-//    private String clusterId = SwiftConfigConstants.LOCALHOST;
 
     public FineIOConfigConvert() {
         super(FineIOConnectorConfig.class);
-//        ClusterListenerHandler.addExtraListener(new ClusterEventListener() {
-//            @Override
-//            public void handleEvent(ClusterEvent clusterEvent) {
-//                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-//                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-//                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-//                    clusterId = SwiftConfigConstants.LOCALHOST;
-//                }
-//            }
-//        });
     }
 
     @Override

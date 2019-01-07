@@ -1,7 +1,7 @@
 package com.fr.swift.config.service;
 
-import com.fr.swift.config.ColumnIndexingConf;
-import com.fr.swift.config.TableAllotConf;
+import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
+import com.fr.swift.config.bean.SwiftTableAllotConfBean;
 import com.fr.swift.source.SourceKey;
 
 /**
@@ -9,11 +9,11 @@ import com.fr.swift.source.SourceKey;
  * @date 2018/7/2
  */
 public interface IndexingConfService {
-    TableAllotConf getTableConf(SourceKey table);
+    SwiftTableAllotConfBean getTableConf(SourceKey table);
 
-    ColumnIndexingConf getColumnConf(SourceKey table, String columnName);
+    SwiftColumnIdxConfBean getColumnConf(SourceKey table, String columnName);
 
-    void setTableConf(TableAllotConf conf);
+    void setTableConf(SwiftTableAllotConfBean conf);
 
-    void setColumnConf(ColumnIndexingConf conf);
+    void setColumnConf(SwiftColumnIdxConfBean conf);
 }

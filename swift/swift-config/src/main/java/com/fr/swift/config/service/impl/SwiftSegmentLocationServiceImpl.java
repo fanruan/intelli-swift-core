@@ -60,35 +60,6 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
-    public boolean delete(final String table, final String clusterId, final String segKey) {
-        try {
-            return tx.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(final ConfigSession session) throws SQLException {
-                    try {
-                        segmentLocationDao.find(session,
-                                ConfigWhereImpl.eq("id.clusterId", clusterId),
-                                ConfigWhereImpl.eq("id.segmentId", segKey)).justForEach(new FindList.ConvertEach() {
-                            @Override
-                            public Object forEach(int idx, Object item) throws Exception {
-                                session.delete(item);
-                                return null;
-                            }
-                        });
-                    } catch (Throwable e) {
-                        SwiftLoggers.getLogger().warn(e);
-                        return false;
-                    }
-                    return true;
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn(e);
-            return false;
-        }
-    }
-
-    @Override
     public Map<String, List<SegLocationBean>> findAll() {
         try {
             return tx.doTransactionIfNeed(new BaseTransactionWorker<Map<String, List<SegLocationBean>>>(false) {

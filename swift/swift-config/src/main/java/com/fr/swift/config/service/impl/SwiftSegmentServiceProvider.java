@@ -46,11 +46,6 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     }
 
     @Override
-    public Map<SourceKey, List<SegmentKey>> getAllRealTimeSegments() {
-        return service.getAllRealTimeSegments();
-    }
-
-    @Override
     public Map<SourceKey, List<SegmentKey>> getOwnSegments() {
         return service.getOwnSegments();
     }

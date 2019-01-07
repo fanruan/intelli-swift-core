@@ -80,36 +80,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
         return Collections.emptyMap();
     }
 
-    public Map<SourceKey, List<SegmentKey>> getAllRealTimeSegments(final SwiftSegmentDao swiftSegmentDao) {
-        try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
-                @Override
-                public Map<SourceKey, List<SegmentKey>> work(ConfigSession session) {
-                    final Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
-                    try {
-                        swiftSegmentDao.find(session,
-                                ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, StoreType.MEMORY)).forEach(new FindList.SimpleEach<SegmentKey>() {
-                            @Override
-                            public void each(int idx, SegmentKey bean) {
-                                if (!result.containsKey(bean.getTable())) {
-                                    result.put(bean.getTable(), new ArrayList<SegmentKey>());
-                                }
-                                result.get(bean.getTable()).add(bean);
-                            }
-                        });
-                    } catch (Throwable e) {
-                        SwiftLoggers.getLogger().warn("Select segments error!", e);
-                    }
-                    return result;
-                }
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Select segments error!", e);
-        }
-        return Collections.emptyMap();
-    }
-
     @Override
     public boolean saveOrUpdate(SegmentKey obj) {
         return addSegments(Collections.singletonList(obj));
@@ -245,11 +215,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public Map<SourceKey, List<SegmentKey>> getAllSegments() {
         return getAllSegments(swiftSegmentDao);
-    }
-
-    @Override
-    public Map<SourceKey, List<SegmentKey>> getAllRealTimeSegments() {
-        return getAllRealTimeSegments(swiftSegmentDao);
     }
 
     @Override

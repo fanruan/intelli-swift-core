@@ -28,10 +28,6 @@ import static junit.framework.TestCase.assertNotNull;
 public class DataSyncRuleServiceImplTest extends BaseServiceTest {
     private DataSyncRuleService service;
 
-    public DataSyncRuleServiceImplTest() {
-        super(SwiftConfigBean.TYPE);
-    }
-
     @Before
     public void setUp() throws Exception {
         // Generate by Mock Plugin
@@ -41,11 +37,11 @@ public class DataSyncRuleServiceImplTest extends BaseServiceTest {
         PowerMock.replay(SwiftContext.class);
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession();
+        final ConfigSession mockConfigSession = mockSession(SwiftConfigBean.TYPE);
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
-            protected Object createSession() {
+            protected ConfigSession createSession() {
                 return mockConfigSession;
             }
         };
