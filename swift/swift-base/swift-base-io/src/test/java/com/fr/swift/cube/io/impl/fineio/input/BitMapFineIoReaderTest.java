@@ -20,6 +20,7 @@ import java.net.URI;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -33,11 +34,11 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class BitMapFineIoReaderTest {
 
     private final URI location = URI.create("/cubes/table/seg0/column/detail");
+    private ByteArrayReader byteArrayReader = mock(ByteArrayReader.class);
 
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteArrayFineIoReader.class);
-        ByteArrayReader byteArrayReader = mock(ByteArrayReader.class);
         when(ByteArrayFineIoReader.build(Matchers.<URI>any())).thenReturn(byteArrayReader);
 
         when(byteArrayReader.get(anyLong())).thenReturn(
@@ -83,10 +84,14 @@ public class BitMapFineIoReaderTest {
     @Test
     public void isReadable() {
         BitMapFineIoReader.build(location).isReadable();
+
+        verify(byteArrayReader).isReadable();
     }
 
     @Test
     public void release() {
         BitMapFineIoReader.build(location).release();
+
+        verify(byteArrayReader).release();
     }
 }
