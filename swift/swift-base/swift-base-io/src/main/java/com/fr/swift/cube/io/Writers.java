@@ -3,10 +3,10 @@ package com.fr.swift.cube.io;
 import com.fr.swift.cube.io.Types.WriteType;
 import com.fr.swift.cube.io.impl.fineio.FineIoWriters;
 import com.fr.swift.cube.io.impl.mem.MemIoBuilder;
+import com.fr.swift.cube.io.impl.nio.NioConf;
+import com.fr.swift.cube.io.impl.nio.Nios;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.io.nio.NioConf;
-import com.fr.swift.io.nio.Nios;
 import com.fr.swift.util.Crasher;
 
 /**
