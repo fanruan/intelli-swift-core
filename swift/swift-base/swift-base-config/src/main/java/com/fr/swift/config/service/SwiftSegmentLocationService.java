@@ -12,7 +12,5 @@ import java.util.Map;
 public interface SwiftSegmentLocationService extends ConfigService<SegLocationBean> {
     boolean delete(String table, String clusterId);
 
-    boolean delete(String table, String clusterId, String segKey);
-
     Map<String, List<SegLocationBean>> findAll();
 }

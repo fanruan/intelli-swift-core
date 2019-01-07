@@ -178,9 +178,6 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                     try {
                         return swiftTablePathDao.find(session, ConfigWhereImpl.eq("id.tableKey", table), ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
                     } catch (Exception e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
                         throw new SQLException(e);
                     }
                 }

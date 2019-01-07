@@ -1,10 +1,10 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
@@ -13,9 +13,8 @@ import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
@@ -106,8 +105,8 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                     }
                     // 集群情况下才去发rpc
                     // 现在日志这边没必要
-                    boolean isCluster = ClusterSelector.getInstance().getFactory().isCluster();
-                    if (null != sourceKeys && isCluster) {
+                    boolean isCluster = SwiftProperty.getProperty().isCluster();
+                    if (sourceKeys.length > 0 && isCluster) {
                         ProxyFactory factory = ProxySelector.getInstance().getFactory();
                         SwiftServiceListenerHandler handler = factory.getProxy(RemoteSender.class);
                         handler.trigger(new CleanMetaDataCacheEvent(sourceKeys));
@@ -240,10 +239,6 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     @Override
     public boolean saveOrUpdate(SwiftMetaData obj) {
-        try {
-            return addMetaData(obj.getTableName(), obj);
-        } catch (SwiftMetaDataException e) {
-            return false;
-        }
+        return addMetaData(obj.getId(), obj);
     }
 }

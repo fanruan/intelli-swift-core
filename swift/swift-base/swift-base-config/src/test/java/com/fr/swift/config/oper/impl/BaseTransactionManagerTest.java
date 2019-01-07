@@ -42,7 +42,7 @@ public class BaseTransactionManagerTest {
         PowerMock.replayAll();
         BaseTransactionManager manager = new BaseTransactionManager() {
             @Override
-            protected Object createSession() {
+            protected ConfigSession createSession() {
                 return mockConfigSession;
             }
         };

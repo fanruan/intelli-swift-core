@@ -27,10 +27,6 @@ import static junit.framework.TestCase.assertNotNull;
 public class SegDestSelectRuleServiceImplTest extends BaseServiceTest {
     private SegmentDestSelectRuleService service;
 
-    public SegDestSelectRuleServiceImplTest() {
-        super(SwiftConfigBean.TYPE);
-    }
-
     @Before
     public void setUp() throws Exception {
         // Generate by Mock Plugin
@@ -40,11 +36,11 @@ public class SegDestSelectRuleServiceImplTest extends BaseServiceTest {
         PowerMock.replay(SwiftContext.class);
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession();
+        final ConfigSession mockConfigSession = mockSession(SwiftConfigBean.TYPE);
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
-            protected Object createSession() {
+            protected ConfigSession createSession() {
                 return mockConfigSession;
             }
         };
@@ -55,7 +51,7 @@ public class SegDestSelectRuleServiceImplTest extends BaseServiceTest {
 
         EasyMock.expect(mockSwiftContext.getBean("defaultSegmentDestSelectRule", SegmentDestSelectRule.class)).andReturn(mockDataSyncRule).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(SwiftConfigService.class)).andReturn(
-                (SwiftConfigService) Proxy.newProxyInstance(DataSyncRuleServiceImplTest.class.getClassLoader(),
+                (SwiftConfigService) Proxy.newProxyInstance(SegDestSelectRuleServiceImplTest.class.getClassLoader(),
                         new Class[]{SwiftConfigService.class}, new InvocationHandler() {
                             private SwiftConfigService service;
 
