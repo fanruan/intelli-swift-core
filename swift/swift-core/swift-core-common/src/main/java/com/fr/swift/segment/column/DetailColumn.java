@@ -1,8 +1,8 @@
 package com.fr.swift.segment.column;
 
 import com.fr.swift.cube.io.Flushable;
+import com.fr.swift.cube.io.IfReadable;
 import com.fr.swift.cube.io.Releasable;
-import com.fr.swift.io.IfReadable;
 
 /**
  * @author pony

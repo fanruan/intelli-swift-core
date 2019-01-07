@@ -1,6 +1,6 @@
 package com.fr.swift.cube.io.impl.mem;
 
-import com.fr.swift.io.LongIo;
+import com.fr.swift.cube.io.LongIo;
 
 import java.util.Arrays;
 

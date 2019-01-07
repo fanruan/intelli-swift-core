@@ -1,4 +1,4 @@
-package com.fr.swift.io.nio;
+package com.fr.swift.cube.io.impl.nio;
 
 /**
  * @author anchore

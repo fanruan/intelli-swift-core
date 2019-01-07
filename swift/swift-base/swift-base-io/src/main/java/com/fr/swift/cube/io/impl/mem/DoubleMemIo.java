@@ -1,6 +1,6 @@
 package com.fr.swift.cube.io.impl.mem;
 
-import com.fr.swift.io.DoubleIo;
+import com.fr.swift.cube.io.DoubleIo;
 
 import java.util.Arrays;
 
