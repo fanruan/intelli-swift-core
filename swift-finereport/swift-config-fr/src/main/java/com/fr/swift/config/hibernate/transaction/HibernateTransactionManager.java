@@ -6,7 +6,6 @@ import com.fr.swift.config.hibernate.HibernateManager;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
 import com.fr.swift.config.oper.proxy.SessionInvocationHandler;
-
 import com.fr.third.org.hibernate.Session;
 
 /**

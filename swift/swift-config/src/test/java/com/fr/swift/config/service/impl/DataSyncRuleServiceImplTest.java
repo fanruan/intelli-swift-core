@@ -12,7 +12,10 @@ import com.fr.swift.config.service.SwiftConfigService;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -24,7 +27,8 @@ import static junit.framework.TestCase.assertNotNull;
  * @author yee
  * @date 2019-01-04
  */
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(SwiftContext.class)
 public class DataSyncRuleServiceImplTest extends BaseServiceTest {
     private DataSyncRuleService service;
 

@@ -31,7 +31,7 @@ import static junit.framework.TestCase.assertNull;
  * @date 2019-01-04
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(ConfChangeListener.class)
+@PrepareForTest({ConfChangeListener.class, SwiftContext.class})
 public class SwiftRepositoryConfServiceImplTest extends BaseServiceTest {
     private SwiftRepositoryConfService service;
 
