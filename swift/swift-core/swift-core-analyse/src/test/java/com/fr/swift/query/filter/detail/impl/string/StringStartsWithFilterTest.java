@@ -1,37 +1,37 @@
 package com.fr.swift.query.filter.detail.impl.string;
 
-import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.BaseFilterTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Lyon on 2017/11/30.
  */
-public class StringStartsWithFilterTest extends BaseStringFilterTest {
+public class StringStartsWithFilterTest extends BaseFilterTest {
 
-    protected String startsWith;
-
-    public StringStartsWithFilterTest() {
-        init();
-        this.filter = new StringStartsWithFilter(startsWith, column);
+    public void test() {
+        String start = chooseStartWith();
+        DetailFilter filter = new StringStartsWithFilter(start, strColumn);
+        check(getRows(start), filter.createFilterIndex());
     }
 
-    private void init() {
-        String word = getRandomDetail(details);
-        startsWith = word.split("")[0];
+    private List<Integer> getRows(String start) {
+        List<Integer> rows = new ArrayList<Integer>();
+        for (int i = 0; i < rowCount; i++) {
+            if (strDetails.get(i) != null && strDetails.get(i).startsWith(start)) {
+                rows.add(i);
+            }
+        }
+        return rows;
     }
 
-    @Override
-    protected List<Integer> getExpectedIndexes() {
-//        return IntStream.range(0, details.size()).filter(i -> details.get(i).startsWith(startsWith))
-//                .mapToObj(Integer::new).collect(Collectors.toList());
-        return null;
-    }
-
-    public void testNotExistGroup() {
-        String startsWith = "dsafdsagdsafd";
-        StringStartsWithFilter filter = new StringStartsWithFilter(startsWith, column);
-        ImmutableBitMap bitMap = filter.createFilterIndex();
-        assertTrue(bitMap.isEmpty());
+    private String chooseStartWith() {
+        String word = null;
+        while (word == null || word.isEmpty()) {
+            word = strDetails.get(random.nextInt(rowCount));
+        }
+        return word.substring(0, 1);
     }
 }

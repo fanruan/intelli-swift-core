@@ -30,7 +30,6 @@ public class TopNFilter extends AbstractNFilter {
         int globalStart = globalSize > topN ? globalSize - topN : DictionaryEncodedColumn.NOT_NULL_START_INDEX;
         int localEnd = dict.size() - 1;
         int localStart = getLocalIndex(dict, DictionaryEncodedColumn.NOT_NULL_START_INDEX, localEnd, globalStart);
-        // TODO: 2018/3/26 当前只能保证单块计算准确。要根据是否有全局字典来决定如何计算topN
         return new IntListRowTraversal(IntListFactory.createRangeIntList(localStart, localEnd));
     }
 
