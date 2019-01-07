@@ -1,8 +1,8 @@
-package com.fr.swift.io.nio;
+package com.fr.swift.cube.io.impl.nio;
 
+import com.fr.swift.cube.io.ObjectIo;
 import com.fr.swift.cube.io.input.StringReader;
 import com.fr.swift.cube.io.output.StringWriter;
-import com.fr.swift.io.ObjectIo;
 import com.fr.swift.util.IoUtil;
 
 /**

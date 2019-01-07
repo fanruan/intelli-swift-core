@@ -1,13 +1,13 @@
-package com.fr.swift.io.nio;
+package com.fr.swift.cube.io.impl.nio;
 
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
+import com.fr.swift.cube.io.ObjectIo;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.output.BitMapWriter;
-import com.fr.swift.io.ObjectIo;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
 

@@ -1,4 +1,4 @@
-package com.fr.swift.io;
+package com.fr.swift.cube.io;
 
 /**
  * @author anchore

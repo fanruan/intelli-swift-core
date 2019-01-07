@@ -1,4 +1,4 @@
-package com.fr.swift.io;
+package com.fr.swift.cube.io;
 
 import com.fr.swift.cube.io.input.LongReader;
 import com.fr.swift.cube.io.output.LongWriter;

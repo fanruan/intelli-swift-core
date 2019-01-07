@@ -1,6 +1,6 @@
-package com.fr.swift.io.nio;
+package com.fr.swift.cube.io.impl.nio;
 
-import com.fr.swift.io.Io;
+import com.fr.swift.cube.io.Io;
 import com.fr.swift.util.Util;
 
 import java.io.File;
