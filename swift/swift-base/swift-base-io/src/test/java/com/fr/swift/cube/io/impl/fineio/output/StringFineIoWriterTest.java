@@ -1,6 +1,7 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fr.swift.cube.io.output.ByteArrayWriter;
+import com.fr.swift.cube.io.output.StringWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,8 +12,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.net.URI;
 
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyLong;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Matchers.notNull;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -25,15 +28,12 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({ByteArrayFineIoWriter.class})
 public class StringFineIoWriterTest {
 
+    private ByteArrayWriter byteArrayWriter = mock(ByteArrayWriter.class);
+
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteArrayFineIoWriter.class);
-        ByteArrayWriter byteArrayWriter = mock(ByteArrayWriter.class);
         when(ByteArrayFineIoWriter.build(Matchers.<URI>any(), anyBoolean())).thenReturn(byteArrayWriter);
-
-        doNothing().when(byteArrayWriter).put(anyLong(), Matchers.<byte[]>any());
-
-        doNothing().when(byteArrayWriter).release();
     }
 
     @Test
@@ -42,12 +42,18 @@ public class StringFineIoWriterTest {
     }
 
     @Test
-    public void get() {
-        StringFineIoWriter.build(URI.create(""), true).put(0, "\1\2\3");
+    public void put() {
+        StringWriter stringWriter = StringFineIoWriter.build(URI.create(""), true);
+        stringWriter.put(0, "\1\2\3");
+        stringWriter.put(1, null);
+
+        verify(byteArrayWriter).put(eq(0L), notNull(byte[].class));
+        verify(byteArrayWriter).put(eq(1L), isNull(byte[].class));
     }
 
     @Test
     public void release() {
         StringFineIoWriter.build(URI.create(""), true).release();
+        verify(byteArrayWriter).release();
     }
 }

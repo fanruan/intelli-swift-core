@@ -12,7 +12,7 @@ import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -25,17 +25,16 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({ByteArrayFineIoReader.class})
 public class StringFineIoReaderTest {
 
+    private final ByteArrayReader byteArrayReader = mock(ByteArrayReader.class);
+
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteArrayFineIoReader.class);
-        ByteArrayReader byteArrayReader = mock(ByteArrayReader.class);
         when(ByteArrayFineIoReader.build(Matchers.<URI>any())).thenReturn(byteArrayReader);
 
         when(byteArrayReader.get(0)).thenReturn(new byte[]{1, 2, 3});
 
         when(byteArrayReader.isReadable()).thenReturn(true);
-
-        doNothing().when(byteArrayReader).release();
     }
 
     @Test
@@ -56,5 +55,7 @@ public class StringFineIoReaderTest {
     @Test
     public void release() {
         StringFineIoReader.build(URI.create("")).release();
+
+        verify(byteArrayReader).release();
     }
 }

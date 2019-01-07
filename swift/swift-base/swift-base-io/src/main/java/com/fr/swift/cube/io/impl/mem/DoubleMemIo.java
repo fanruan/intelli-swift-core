@@ -1,7 +1,6 @@
 package com.fr.swift.cube.io.impl.mem;
 
 import com.fr.swift.io.DoubleIo;
-import com.fr.swift.util.Crasher;
 
 import java.util.Arrays;
 
@@ -36,9 +35,8 @@ public class DoubleMemIo extends BaseMemIo implements DoubleIo {
         if (pos < mem.length) {
             return;
         }
-        if (pos > Integer.MAX_VALUE) {
-            Crasher.crash(String.format("pos > Integer.MAX_VALUE, pos: %d", pos));
-            return;
+        if (pos > MAX_ARRAY_SIZE) {
+            throw new IllegalArgumentException(String.format("pos >= MAX_ARRAY_SIZE, pos: %d", pos));
         }
         mem = Arrays.copyOf(mem, expand(mem.length, pos));
     }

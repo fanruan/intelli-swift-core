@@ -2,10 +2,6 @@ package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fineio.FineIO;
 import com.fineio.FineIO.MODEL;
-import com.fineio.io.ByteBuffer;
-import com.fineio.io.DoubleBuffer;
-import com.fineio.io.IntBuffer;
-import com.fineio.io.LongBuffer;
 import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
@@ -18,13 +14,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
-import static org.mockito.Matchers.anyByte;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -37,6 +32,7 @@ public class PrimitiveFineIoWriterTest {
 
     private final URI location = URI.create("/cubes/table/seg0/column/detail");
 
+    private final IOFile ioFile = mock(IOFile.class);
 
     @Before
     public void setUp() throws Exception {
@@ -48,13 +44,7 @@ public class PrimitiveFineIoWriterTest {
         when(connectorManager.getConnector()).thenReturn(connector);
 
         mockStatic(FineIO.class);
-        IOFile ioFile = mock(IOFile.class);
-        when(FineIO.createIOFile(Matchers.<Connector>any(), Matchers.<URI>any(), Matchers.<MODEL>any())).thenReturn(ioFile);
-
-        doNothing().when(FineIO.class, "put", Matchers.<IOFile<ByteBuffer>>any(), anyLong(), anyByte());
-        doNothing().when(FineIO.class, "put", Matchers.<IOFile<IntBuffer>>any(), anyLong(), anyInt());
-        doNothing().when(FineIO.class, "put", Matchers.<IOFile<LongBuffer>>any(), anyLong(), anyLong());
-        doNothing().when(FineIO.class, "put", Matchers.<IOFile<DoubleBuffer>>any(), anyLong(), anyDouble());
+        when(FineIO.createIOFile(Matchers.<Connector>any(), Matchers.<URI>any(), Matchers.<MODEL>any(), anyBoolean())).thenReturn(ioFile);
 
         when(ioFile.exists()).thenReturn(true);
     }
@@ -65,6 +55,8 @@ public class PrimitiveFineIoWriterTest {
         IntFineIoWriter.build(location, true).release();
         LongFineIoWriter.build(location, true).release();
         DoubleFineIoWriter.build(location, true).release();
+
+        verify(ioFile, times(4)).close();
     }
 
     @Test
@@ -86,5 +78,7 @@ public class PrimitiveFineIoWriterTest {
         IntFineIoWriter.build(location, true).put(0, 1);
         LongFineIoWriter.build(location, true).put(0, 1);
         DoubleFineIoWriter.build(location, true).put(0, 1);
+
+        verifyStatic(FineIO.class, times(4));
     }
 }

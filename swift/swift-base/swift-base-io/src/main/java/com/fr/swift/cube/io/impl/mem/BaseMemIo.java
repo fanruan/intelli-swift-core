@@ -8,8 +8,12 @@ package com.fr.swift.cube.io.impl.mem;
  * @date 2017/11/23
  */
 abstract class BaseMemIo implements MemIo {
+
     static final int DEFAULT_CAPACITY = 16;
+
     private static final int EXPAND_SCALE = 1;
+
+    static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 
     long lastPos = -1;
 
@@ -17,7 +21,7 @@ abstract class BaseMemIo implements MemIo {
         int newLen = oldLen;
         for (int tmp; newLen <= pos; newLen = tmp) {
             if ((tmp = newLen << EXPAND_SCALE) < newLen) {
-                newLen = Integer.MAX_VALUE;
+                newLen = MAX_ARRAY_SIZE;
                 break;
             }
         }
