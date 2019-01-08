@@ -30,7 +30,6 @@ public class BottomNFilter extends AbstractNFilter {
         int globalEnd = globalSize > bottomN ? bottomN : globalSize - 1;
         int localStart = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
         int localEnd = getLocalIndex(dict, localStart, dict.size() - 1, globalEnd);
-        // TODO: 2018/3/26 同topN
         return new IntListRowTraversal(
                 IntListFactory.createRangeIntList(localStart, localEnd));
     }

@@ -22,6 +22,7 @@ import java.net.URI;
 import static org.mockito.Matchers.anyLong;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -33,6 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class PrimitiveFineIoReaderTest {
 
     private final URI location = URI.create("/cubes/table/seg0/column/detail");
+    private final IOFile ioFile = mock(IOFile.class);
 
 
     @Before
@@ -45,7 +47,6 @@ public class PrimitiveFineIoReaderTest {
         when(connectorManager.getConnector()).thenReturn(connector);
 
         mockStatic(FineIO.class);
-        IOFile ioFile = mock(IOFile.class);
         when(FineIO.createIOFile(Matchers.<Connector>any(), Matchers.<URI>any(), Matchers.<MODEL>any())).thenReturn(ioFile);
 
         when(FineIO.getByte(Matchers.<IOFile<ByteBuffer>>any(), anyLong())).thenReturn((byte) 1);
@@ -70,6 +71,8 @@ public class PrimitiveFineIoReaderTest {
         IntFineIoReader.build(location).release();
         LongFineIoReader.build(location).release();
         DoubleFineIoReader.build(location).release();
+
+        verifyZeroInteractions(ioFile);
     }
 
     @Test

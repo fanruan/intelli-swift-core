@@ -1,59 +1,52 @@
 package com.fr.swift.cube.io;
 
-import com.fr.swift.cube.io.Types.WriteType;
-import com.fr.swift.cube.io.input.ByteReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.cube.io.output.ByteWriter;
-
-import static org.junit.Assert.assertEquals;
+import com.fr.swift.cube.io.impl.nio.ByteNio;
+import com.fr.swift.cube.io.impl.nio.NioConf;
+import com.fr.swift.cube.io.impl.nio.NioConf.IoType;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author anchore
- * @date 2017/11/3
+ * @date 2018/7/21
  */
 public class ByteIoTest extends BaseIoTest {
-    byte val = (byte) r.nextInt(BOUND);
-    String basePath = cubesPath + "/byte/";
 
-    @Override
-    public void testOverwritePutThenGet() {
-        IResourceLocation location = new ResourceLocation(basePath + "child_overwrite");
-
-        ByteWriter writer = (ByteWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.BYTE, WriteType.OVERWRITE));
-        writer.put(pos, val);
-        writer.release();
-
-        ByteReader reader = (ByteReader) Readers.build(location, new BuildConf(Types.IoType.READ, Types.DataType.BYTE));
-
-        assertEquals(val, reader.get(pos));
-        reader.release();
+    @Before
+    public void setUp() throws Exception {
+        pageSize = 2;
     }
 
-    @Override
-    public void testPutThenGet() {
-        IResourceLocation location = new ResourceLocation(basePath + "child");
+    @Test
+    public void test() {
+        ByteIo io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, pageSize, false));
+        for (int i = 0; i < data.length; i++) {
+            io.put(i, data[i]);
+        }
+        io.release();
+        io = new ByteNio(new NioConf(path, IoType.READ, pageSize, pageSize, false));
+        for (int i = 0; i < data.length; i++) {
+            Assert.assertEquals(data[i], io.get(i));
+        }
+        io.release();
 
-        ByteWriter bw = (ByteWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.BYTE, WriteType.APPEND));
-        bw.put(pos, val);
-        bw.release();
-
-        bw = (ByteWriter) Writers.build(location, new BuildConf(Types.IoType.WRITE, Types.DataType.BYTE, WriteType.APPEND));
-        bw.put(pos + 1, val);
-        bw.release();
-
-        ByteReader br = (ByteReader) Readers.build(location, new BuildConf(Types.IoType.READ, Types.DataType.BYTE));
-
-        assertEquals(val, br.get(pos));
-        assertEquals(val, br.get(pos + 1));
-        br.release();
+        io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, pageSize, false));
+        io.put(2, (byte) 5);
+        io.put(9, (byte) 4);
+        io.release();
+        io = new ByteNio(new NioConf(path, IoType.OVERWRITE, pageSize, pageSize, false));
+        for (int i = 0; i < data.length; i++) {
+            if (i == 2) {
+                Assert.assertEquals(5, io.get(i));
+                continue;
+            }
+            if (i == 9) {
+                Assert.assertEquals(4, io.get(i));
+                continue;
+            }
+            Assert.assertEquals(data[i], io.get(i));
+        }
+        io.release();
     }
-
-    /**
-     * 木有byte的内存rw
-     */
-    @Override
-    public void testMemPutThenGet() {
-    }
-
 }

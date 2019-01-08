@@ -1,72 +1,43 @@
 package com.fr.swift.cube.io;
 
-import com.fr.swift.cube.io.Types.DataType;
-import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.Types.WriteType;
-import com.fr.swift.cube.io.impl.mem.StringMemIo;
-import com.fr.swift.cube.io.input.StringReader;
-import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.cube.io.output.StringWriter;
-
-import static org.junit.Assert.assertEquals;
+import com.fr.swift.cube.io.impl.nio.NioConf;
+import com.fr.swift.cube.io.impl.nio.NioConf.IoType;
+import com.fr.swift.cube.io.impl.nio.StringNio;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author anchore
- * @date 2017/11/6
+ * @date 2018/7/21
  */
 public class StringIoTest extends BaseIoTest {
-    final byte[] bytes = new byte[r.nextInt(BOUND)];
-    final String val;
-    String basePath = cubesPath + "/string/";
 
-    {
-        r.nextBytes(bytes);
-        val = new String(bytes);
+    @Before
+    public void setUp() throws Exception {
+        pageSize = 3;
     }
 
-    @Override
-    public void testOverwritePutThenGet() {
-        IResourceLocation location = new ResourceLocation(basePath + "child-overwrite");
+    @Test
+    public void test() {
+        String[] strings = {"1234567890", "0987654321"};
 
-        StringWriter writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING, WriteType.OVERWRITE));
-        writer.put(pos, val);
-        writer.release();
+        ObjectIo<String> io = new StringNio(new NioConf(path, IoType.APPEND, pageSize, pageSize, false));
+        for (int i = 0; i < strings.length; i++) {
+            io.put(i, strings[i]);
+        }
+        io.release();
 
-        StringReader reader = (StringReader) Readers.build(location, new BuildConf(IoType.READ, DataType.STRING));
-        String actual = reader.get(pos);
+        io = new StringNio(new NioConf(path, IoType.APPEND, pageSize, pageSize, false));
+        String third = "0987654321";
+        io.put(2, third);
+        io.release();
 
-        assertEquals(val, actual);
-        reader.release();
-    }
-
-    @Override
-    public void testPutThenGet() {
-        IResourceLocation location = new ResourceLocation(basePath + "child");
-
-        StringWriter writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING, WriteType.APPEND));
-        writer.put(pos, val);
-        writer.release();
-
-        writer = (StringWriter) Writers.build(location, new BuildConf(IoType.WRITE, DataType.STRING, WriteType.APPEND));
-        writer.put(pos + 1, val);
-        writer.release();
-
-        StringReader reader = (StringReader) Readers.build(location, new BuildConf(IoType.READ, DataType.STRING));
-        String actual = reader.get(pos);
-        String actual1 = reader.get(pos + 1);
-
-        assertEquals(val, actual);
-        assertEquals(val, actual1);
-        reader.release();
-    }
-
-    @Override
-    public void testMemPutThenGet() {
-        StringMemIo stringMemIo = new StringMemIo();
-        stringMemIo.put(pos, val);
-
-        assertEquals(val, stringMemIo.get(pos));
-        stringMemIo.release();
+        io = new StringNio(new NioConf(path, IoType.READ, pageSize, pageSize, false));
+        for (int i = 0; i < strings.length; i++) {
+            Assert.assertEquals(strings[i], io.get(i));
+        }
+        Assert.assertEquals(third, io.get(2));
+        io.release();
     }
 }

@@ -1,28 +1,21 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.result.KeyValue;
-import com.fr.swift.result.row.RowIndexKey;
-import com.fr.swift.segment.column.Column;
+import com.fr.swift.query.group.by2.row.MultiGroupByRowIterator;
+import com.fr.swift.query.group.info.GroupByInfo;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.RowTraversal;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by Lyon on 2018/3/28.
  */
-abstract class MultiGroupBy<T> implements Iterator<KeyValue<RowIndexKey<T>, RowTraversal[]>> {
+abstract class MultiGroupBy<T> implements Iterator<Pair<T, RowTraversal[]>> {
 
-    protected List<Column> dimensions;
-    private Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> iterator;
-    private RowTraversal[] traversals;
+    private Iterator<GroupByEntry[]> iterator;
 
-    public MultiGroupBy(List<Column> dimensions, DetailFilter detailFilter, int[] cursor, boolean[] asc) {
-        this.dimensions = dimensions;
-        this.iterator = new MultiDimensionGroupBy(dimensions, detailFilter, cursor, asc);
-        this.traversals = new RowTraversal[dimensions.size() + 1];
+    public MultiGroupBy(GroupByInfo groupByInfo) {
+        this.iterator = new MultiGroupByRowIterator(groupByInfo);
     }
 
     /**
@@ -31,7 +24,7 @@ abstract class MultiGroupBy<T> implements Iterator<KeyValue<RowIndexKey<T>, RowT
      * @param indexes
      * @return
      */
-    protected abstract RowIndexKey<T> createKey(int[] indexes);
+    protected abstract T createKey(int[] indexes);
 
     @Override
     public boolean hasNext() {
@@ -39,41 +32,21 @@ abstract class MultiGroupBy<T> implements Iterator<KeyValue<RowIndexKey<T>, RowT
     }
 
     @Override
-    public KeyValue<RowIndexKey<T>, RowTraversal[]> next() {
-        int[] key = new int[0];
-        while (iterator.hasNext()) {
-            KeyValue<RowIndexKey<int[]>, RowTraversal> kv = iterator.next();
-            int[] indexes = kv.getKey().getKey();
-            int index = currentIndex(indexes);
-            updateTraversal(index, kv.getValue());
-            if (isRow(indexes)) {
-                key = indexes;
-                break;
-            }
+    public Pair<T, RowTraversal[]> next() {
+        GroupByEntry[] row = iterator.next();
+        int[] indexes = new int[row.length];
+        for (int i = 0; i < row.length; i++) {
+            indexes[i] = row[i].getIndex();
         }
-        // traversal数组被迭代器复用的，所以返回的时候要拷贝一个引用数组
-        return new KeyValue<RowIndexKey<T>, RowTraversal[]>(createKey(key), Arrays.copyOf(traversals, traversals.length));
+        return Pair.of(createKey(indexes), create(row));
     }
 
-    private boolean isRow(int[] key) {
-        if (key.length == 0) {
-            return true;
+    private RowTraversal[] create(GroupByEntry[] row) {
+        RowTraversal[] traversals = new RowTraversal[row.length];
+        for (int i = 0; i < row.length; i++) {
+            traversals[i] = row[i].getTraversal();
         }
-        return key[key.length - 1] != -1;
-    }
-
-    private int currentIndex(int[] indexes) {
-        for (int i = indexes.length - 1; i >= 0; i--) {
-            if (indexes[i] != -1) {
-                // 因为RowTraversal[]第0个位置保存了汇总行索引
-                return i + 1;
-            }
-        }
-        return 0;
-    }
-
-    private void updateTraversal(int index, RowTraversal traversal) {
-        traversals[index] = traversal;
+        return traversals;
     }
 
     @Override

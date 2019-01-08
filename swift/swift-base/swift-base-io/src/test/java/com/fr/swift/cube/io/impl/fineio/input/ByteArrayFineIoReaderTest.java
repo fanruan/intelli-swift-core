@@ -13,7 +13,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
-import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -28,19 +28,19 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class ByteArrayFineIoReaderTest {
 
     private final URI location = URI.create("/cubes/table/seg0/column/detail");
+    private final ByteReader byteReader = mock(ByteReader.class);
+    private final IntReader intReader = mock(IntReader.class);
+    private final LongReader longReader = mock(LongReader.class);
 
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteFineIoReader.class);
-        ByteReader byteReader = mock(ByteReader.class);
         when(ByteFineIoReader.build(Matchers.<URI>any())).thenReturn(byteReader);
 
         mockStatic(IntFineIoReader.class);
-        IntReader intReader = mock(IntReader.class);
         when(IntFineIoReader.build(Matchers.<URI>any())).thenReturn(intReader);
 
         mockStatic(LongFineIoReader.class);
-        LongReader longReader = mock(LongReader.class);
         when(LongFineIoReader.build(Matchers.<URI>any())).thenReturn(longReader);
 
         when(byteReader.isReadable()).thenReturn(true);
@@ -50,10 +50,6 @@ public class ByteArrayFineIoReaderTest {
         when(byteReader.get(1)).thenReturn((byte) 1);
         when(intReader.get(0)).thenReturn(1);
         when(longReader.get(0)).thenReturn(1L);
-
-        doNothing().when(byteReader).release();
-        doNothing().when(intReader).release();
-        doNothing().when(longReader).release();
     }
 
     @Test
@@ -74,5 +70,9 @@ public class ByteArrayFineIoReaderTest {
     @Test
     public void release() {
         ByteArrayFineIoReader.build(location).release();
+
+        verify(byteReader).release();
+        verify(intReader).release();
+        verify(longReader).release();
     }
 }
