@@ -2,45 +2,15 @@ package com.fr.swift.repository.utils;
 
 import com.fr.swift.util.Strings;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 /**
  * @author yee
  * @date 2018-12-04
  */
 public class SwiftRepositoryUtils {
-    public static void copyBinaryTo(InputStream inputStream, OutputStream outputStream) throws IOException {
-        byte[] data = new byte[10240];
-        int len;
-        while ((len = inputStream.read(data)) > 0) {
-            outputStream.write(data, 0, len);
-        }
-
-        outputStream.flush();
-    }
-
-    public static void close(OutputStream os) {
-        if (null != os) {
-            try {
-                os.close();
-            } catch (IOException ignore) {
-            }
-        }
-
-    }
-
-    public static void close(InputStream is) {
-        if (null != is) {
-            try {
-                is.close();
-            } catch (IOException ignore) {
-            }
-        }
-    }
-
     public static String getParent(String path) {
+        if (Strings.isEmpty(path)) {
+            return "/";
+        }
         String separator = getPathSeparator(path);
         if (separator == null) {
             return null;
@@ -61,7 +31,7 @@ public class SwiftRepositoryUtils {
         }
     }
 
-    public static String getPathSeparator(String path) {
+    private static String getPathSeparator(String path) {
         String seperator = "/";
         int idx = path.lastIndexOf(seperator);
         if (idx != -1) {
@@ -111,6 +81,9 @@ public class SwiftRepositoryUtils {
     }
 
     public static String getName(String path) {
+        if (Strings.isEmpty(path)) {
+            return "/";
+        }
         String separator = getPathSeparator(path);
         if (Strings.isEmpty(separator)) {
             return path;

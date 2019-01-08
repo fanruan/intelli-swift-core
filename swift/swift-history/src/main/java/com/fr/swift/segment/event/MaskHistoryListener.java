@@ -6,8 +6,8 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
+import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
@@ -25,7 +25,6 @@ import java.util.concurrent.Callable;
  */
 public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
 
-    private static final SwiftRepositoryManager REPO = SwiftContext.get().getBean(SwiftRepositoryManager.class);
 
     private static final ServiceTaskExecutor SVC_EXEC = SwiftContext.get().getBean(ServiceTaskExecutor.class);
 
@@ -51,7 +50,7 @@ public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
             String local = String.format("%s/%s", absoluteSegPath, BaseSegment.ALL_SHOW_INDEX);
             String remote = String.format("%s/%s", new CubePathBuilder(segKey).build(), BaseSegment.ALL_SHOW_INDEX);
             try {
-                REPO.currentRepo().zipToRemote(local, remote);
+                SwiftRepositoryManager.getManager().currentRepo().zipToRemote(local, remote);
             } catch (DefaultRepoNotFoundException e) {
                 SwiftLoggers.getLogger().warn("default repository not fount. ", e);
             } catch (IOException e) {
