@@ -30,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     private SwiftTablePathDao swiftTablePathDao = SwiftContext.get().getBean(SwiftTablePathDao.class);
     private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
-    //    private String clusterId = SwiftConfigConstants.LOCALHOST;
     private ConcurrentHashMap<String, Integer> tablePath = new ConcurrentHashMap<String, Integer>();
 
     public SwiftTablePathServiceImpl() {
@@ -38,11 +37,6 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
             @Override
             public void handleEvent(ClusterEvent clusterEvent) {
                 tablePath.clear();
-//                if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-//                    clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
-//                } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
-//                    clusterId = SwiftConfigConstants.LOCALHOST;
-//                }
             }
         });
     }
@@ -91,7 +85,9 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 @Override
                 public Boolean work(final ConfigSession session) throws SQLException {
                     try {
-                        swiftTablePathDao.find(session, ConfigWhereImpl.eq("id.tableKey", table), ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).justForEach(new FindList.ConvertEach() {
+                        swiftTablePathDao.find(session,
+                                ConfigWhereImpl.eq("id.tableKey", table),
+                                ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).justForEach(new FindList.ConvertEach() {
                             @Override
                             public Object forEach(int idx, Object item) throws Exception {
                                 try {
@@ -125,7 +121,9 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                     @Override
                     public Integer work(ConfigSession session) throws SQLException {
                         try {
-                            SwiftTablePathBean entity = swiftTablePathDao.find(session, ConfigWhereImpl.eq("id.tableKey", table), ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
+                            SwiftTablePathBean entity = swiftTablePathDao.find(session,
+                                    ConfigWhereImpl.eq("id.tableKey", table),
+                                    ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
                             if (null != entity) {
                                 Integer path = entity.getTablePath();
                                 if (null != path && path.intValue() > -1) {
@@ -180,9 +178,6 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                     try {
                         return swiftTablePathDao.find(session, ConfigWhereImpl.eq("id.tableKey", table), ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
                     } catch (Exception e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
                         throw new SQLException(e);
                     }
                 }
