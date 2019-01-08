@@ -22,8 +22,6 @@ public class ServerCurrentStatus implements Serializable, Comparable<ServerCurre
         this.systemCpuLoad = mb.getSystemCpuLoad();
         this.processors = mb.getAvailableProcessors();
         this.clusterId = clusterId;
-
-
     }
 
     public double getSystemCpuLoad() {

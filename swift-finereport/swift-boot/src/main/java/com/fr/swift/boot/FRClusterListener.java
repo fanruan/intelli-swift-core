@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.JdkProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.boot.synchronizer.MasterSynchronizer;
 import com.fr.swift.cluster.core.cluster.FRClusterNodeManager;
 import com.fr.swift.core.rpc.FRInvokerCreater;
 import com.fr.swift.core.rpc.FRUrlFactory;
@@ -38,6 +39,8 @@ public class FRClusterListener implements ClusterEventListener {
 
     private LocalManager localManager;
 
+    private MasterSynchronizer masterSyncRunnable = new MasterSynchronizer();
+
     public FRClusterListener() {
     }
 
@@ -62,16 +65,17 @@ public class FRClusterListener implements ClusterEventListener {
                 UrlSelector.getInstance().switchFactory(new FRUrlFactory());
                 ClusterSelector.getInstance().switchFactory(FRClusterNodeManager.getInstance());
                 SwiftProperty.getProperty().setClusterId(ClusterSelector.getInstance().getFactory().getCurrentId());
-
                 localManager.shutDown();
                 slaveManager.shutDown();
                 masterManager.shutDown();
                 if (ClusterSelector.getInstance().getFactory().isMaster()) {
                     LOGGER.info("=====FR cluster master start up!=====");
                     masterManager.startUp();
+                    masterSyncRunnable.start();
                 } else {
                     LOGGER.info("=====FR cluster slaver start up!=====");
                     slaveManager.startUp();
+                    masterSyncRunnable.stop();
                 }
 
             } else if (clusterEvent.getEventType() == ClusterEventType.LEFT_CLUSTER) {
@@ -82,6 +86,7 @@ public class FRClusterListener implements ClusterEventListener {
                 localManager.startUp();
                 masterManager.shutDown();
                 slaveManager.shutDown();
+                masterSyncRunnable.stop();
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
