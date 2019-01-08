@@ -8,6 +8,7 @@ import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 import com.fr.swift.repository.utils.ZipUtils;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.IoUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +38,7 @@ public class SwiftRepositoryImpl extends AbstractRepository {
     @Override
     public String copyFromRemote(String remote, String local) throws IOException {
         SwiftFileSystem from = createFileSystem(remote);
-        File directory = new File(local).getParentFile();
+        File directory = new File(local).getAbsoluteFile().getParentFile();
         if (!directory.exists()) {
             directory.mkdirs();
         }
@@ -59,12 +60,12 @@ public class SwiftRepositoryImpl extends AbstractRepository {
                     inputStream = from.toStream();
                     fileOutputStream = new FileOutputStream(new File(local));
                     try {
-                        SwiftRepositoryUtils.copyBinaryTo(inputStream, fileOutputStream);
+                        IoUtil.copyBinaryTo(inputStream, fileOutputStream);
                     } catch (Exception e) {
                         throw new SwiftFileException(e);
                     } finally {
-                        SwiftRepositoryUtils.close(inputStream);
-                        SwiftRepositoryUtils.close(fileOutputStream);
+                        IoUtil.close(inputStream);
+                        IoUtil.close(fileOutputStream);
                         closeFileSystem(from);
                     }
                 }

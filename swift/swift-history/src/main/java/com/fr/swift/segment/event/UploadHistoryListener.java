@@ -1,6 +1,5 @@
 package com.fr.swift.segment.event;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
@@ -9,7 +8,7 @@ import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.history.TransCollateLoadEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
@@ -24,7 +23,6 @@ import java.util.Collections;
  */
 public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
 
-    private static final SwiftRepositoryManager REPO = SwiftContext.get().getBean(SwiftRepositoryManager.class);
 
     @Override
     public void on(final SegmentKey segKey) {
@@ -37,7 +35,7 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
             String local = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
             String remote = new CubePathBuilder(segKey).build();
             try {
-                REPO.currentRepo().copyToRemote(local, remote);
+                SwiftRepositoryManager.getManager().currentRepo().copyToRemote(local, remote);
 
                 notifyDownload(segKey);
             } catch (Exception e) {
