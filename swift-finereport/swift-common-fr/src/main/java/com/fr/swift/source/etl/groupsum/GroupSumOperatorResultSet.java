@@ -2,15 +2,14 @@ package com.fr.swift.source.etl.groupsum;
 
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.by.MergerGroupByValues;
-import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.etl.utils.MergerGroupByValuesFactory;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.function.Function;
 
@@ -76,9 +75,9 @@ public class GroupSumOperatorResultSet implements SwiftResultSet {
 
     @Override
     public Row getNextRow() throws SQLException {
-        KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> kv = mergerGroupByValues.next();
+        Pair<Object[], List<RowTraversal[]>> kv = mergerGroupByValues.next();
         List<Object> values = new ArrayList<Object>();
-        Object[] dimensionsValues = kv.getKey().getKey();
+        Object[] dimensionsValues = kv.getKey();
         for (int i = 0; i < dimensionsValues.length; i++) {
             values.add(convertors[i].apply(dimensionsValues[i]));
         }

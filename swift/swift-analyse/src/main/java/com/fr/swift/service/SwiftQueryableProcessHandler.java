@@ -147,6 +147,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
             }
         }
         if (map.isEmpty() && !SwiftProperty.getProperty().isCluster()) {
+            // 单机
             map.put(Strings.EMPTY, Pair.<URL, Set<String>>of(null, new HashSet<String>()));
         }
         return Collections.unmodifiableList(new ArrayList<Pair<URL, Set<String>>>(map.values()));
