@@ -13,6 +13,13 @@ public class LineAllotRule extends BaseAllotRule {
         super(capacity);
     }
 
+    /**
+     * json 反序列化用
+     */
+    public LineAllotRule() {
+        super(CAPACITY);
+    }
+
     @Override
     public Type getType() {
         return AllotType.LINE;
