@@ -5,7 +5,6 @@ import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.EmptyDetailFilter;
 import com.fr.swift.query.filter.detail.impl.InFilter;
 import com.fr.swift.query.filter.detail.impl.NullFilter;
-import com.fr.swift.query.filter.detail.impl.date.DateInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.BottomNFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.TopNFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
@@ -15,7 +14,6 @@ import com.fr.swift.query.filter.detail.impl.string.StringKeyWordFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringLikeFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringStartsWithFilter;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
-import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -62,10 +60,6 @@ public class DetailFilterFactory {
                 return new NumberAverageFilter(new NumberInRangeFilter(value.getMin(), value.getMax(),
                         value.isMinIncluded(), value.isMaxIncluded(), column, rowCount));
             }
-
-            case DATE_IN_RANGE:
-                SwiftDateInRangeFilterValue value2 = (SwiftDateInRangeFilterValue) filterInfo.getFilterValue();
-                return new DateInRangeFilter(value2.getStart(), value2.getEnd(), column);
             case TOP_N:
                 return new TopNFilter((Integer) filterInfo.getFilterValue(), column);
             case BOTTOM_N:

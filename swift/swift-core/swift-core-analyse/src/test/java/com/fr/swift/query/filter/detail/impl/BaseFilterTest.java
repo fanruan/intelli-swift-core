@@ -1,318 +1,117 @@
 package com.fr.swift.query.filter.detail.impl;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.query.aggregator.StringAggregateValue;
-import com.fr.swift.result.AbstractSwiftNode;
-import com.fr.swift.result.SwiftNode;
+import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.compare.Comparators;
+import com.fr.swift.segment.column.Column;
 import junit.framework.TestCase;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Created by Lyon on 2017/12/1.
+ */
 public abstract class BaseFilterTest extends TestCase {
 
-    public final static String NULL_VALUE = "NULL";
+    protected static int rowCount = 10000;
+    protected static int keySize = 100;
     protected static Random random = new Random(23854);
+    protected static List<Integer> intDetails;
+    protected static List<Double> doubleDetails;
+    protected static List<Long> longDetails;
+    protected static List<String> strDetails;
 
-    protected static <T> T getRandomDetail(List<T> details) {
-        while (true) {
-            T s = details.get(random.nextInt(details.size()));
-            if (!s.equals(NULL_VALUE)) {
-                return s;
+    protected static Column intColumn;
+    protected static Column doubleColumn;
+    protected static Column longColumn;
+    protected static Column strColumn;
+
+    private static List<Number> numberKeys;
+
+    static {
+        initNumberKeys();
+        initDetails();
+        initColumn();
+    }
+
+    protected void check(final List<Integer> expected, ImmutableBitMap actual) {
+        assertEquals(expected.size(), actual.getCardinality());
+        actual.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                assertTrue(expected.contains(row));
             }
+        });
+    }
+
+    private static void initColumn() {
+        intColumn = new BaseColumnImplTest<Integer>(intDetails, Comparators.<Integer>asc());
+        doubleColumn = new BaseColumnImplTest<Double>(doubleDetails, Comparators.<Double>asc());
+        longColumn = new BaseColumnImplTest<Long>(longDetails, Comparators.<Long>asc());
+        strColumn = new BaseColumnImplTest<String>(strDetails, Comparators.STRING_ASC);
+    }
+
+    private static void initNumberKeys() {
+        numberKeys = new ArrayList<Number>();
+        numberKeys.add(null);
+        for (int i = 1; i < keySize; i++) {
+            numberKeys.add(i);
         }
     }
 
-    protected static <T> T getRandomMatchedDetail(List<T> details, List<Integer> expectedIndexes) {
-        if (expectedIndexes.size() == details.size()) {
-            return null;
-        }
-        while (true) {
-            int i = random.nextInt(details.size());
-            if (expectedIndexes.size() == 0 || expectedIndexes.contains(i)) {
-                return details.get(i);
-            }
-        }
+    private static void initDetails() {
+        intDetails = intDetails(rowCount);
+        doubleDetails = doubleDetails(rowCount);
+        longDetails = longDetails(rowCount);
+        strDetails = createStrDetail(rowCount);
     }
 
-    protected <T> T getRandomNotMatchedDetail(List<T> details, List<Integer> expectedIndexes) {
-        if (expectedIndexes.size() == details.size()) {
-            return null;
+    public static List<Integer> intDetails(int rowCount) {
+        List<Integer> intDetails = new ArrayList<Integer>();
+        for (int i = 0; i < rowCount; i++) {
+            Number val = numberKeys.get(random.nextInt(keySize));
+            intDetails.add(val == null ? null : val.intValue());
         }
-        while (true) {
-            int i = random.nextInt(details.size());
-            if (!expectedIndexes.contains(i)) {
-                return details.get(i);
-            }
+        return intDetails;
+    }
+
+    public static List<Double> doubleDetails(int rowCount) {
+        List<Double> doubleDetails = new ArrayList<Double>();
+        for (int i = 0; i < rowCount; i++) {
+            Number val = numberKeys.get(random.nextInt(keySize));
+            doubleDetails.add(val == null ? null : val.doubleValue());
         }
+        return doubleDetails;
     }
 
-    protected static SwiftNode createNode(final int index, final int groupSize) {
-        return new AbstractSwiftNode() {
-            @Override
-            public Object getData() {
-                return null;
-            }
-
-            @Override
-            public void setData(Object data) {
-
-            }
-
-            @Override
-            public SwiftNode getChild(int index) {
-                return null;
-            }
-
-            @Override
-            public void addChild(SwiftNode child) {
-
-            }
-
-            @Override
-            public SwiftNode getSibling() {
-                return null;
-            }
-
-            @Override
-            public void setSibling(SwiftNode sibling) {
-
-            }
-
-            @Override
-            public SwiftNode getParent() {
-                return new AbstractSwiftNode() {
-                    @Override
-                    public Object getData() {
-                        return null;
-                    }
-
-                    @Override
-                    public void setData(Object data) {
-
-                    }
-
-                    @Override
-                    public SwiftNode getChild(int index) {
-                        return null;
-                    }
-
-                    @Override
-                    public void addChild(SwiftNode child) {
-
-                    }
-
-                    @Override
-                    public SwiftNode getSibling() {
-                        return null;
-                    }
-
-                    @Override
-                    public void setSibling(SwiftNode sibling) {
-
-                    }
-
-                    @Override
-                    public SwiftNode getParent() {
-                        return null;
-                    }
-
-                    @Override
-                    public void setParent(SwiftNode parent) {
-
-                    }
-
-                    @Override
-                    public int getChildrenSize() {
-                        return groupSize;
-                    }
-
-                    @Override
-                    public int getIndex() {
-                        return 0;
-                    }
-
-                    @Override
-                    public int getDepth() {
-                        return 0;
-                    }
-
-                    @Override
-                    public void clearChildren() {
-
-                    }
-
-                    @Override
-                    public List getChildren() {
-                        return null;
-                    }
-
-                    @Override
-                    public void setAggregatorValue(int key, AggregatorValue value) {
-
-                    }
-
-                    @Override
-                    public AggregatorValue getAggregatorValue(int key) {
-                        return null;
-                    }
-
-                    @Override
-                    public AggregatorValue[] getAggregatorValue() {
-                        return new AggregatorValue[0];
-                    }
-
-                    @Override
-                    public void setAggregatorValue(AggregatorValue[] aggregatorValues) {
-
-                    }
-                };
-            }
-
-            @Override
-            public void setParent(SwiftNode parent) {
-
-            }
-
-            @Override
-            public int getChildrenSize() {
-                return 0;
-            }
-
-            @Override
-            public int getIndex() {
-                return index;
-            }
-
-            @Override
-            public int getDepth() {
-                return 0;
-            }
-
-            @Override
-            public void clearChildren() {
-
-            }
-
-            @Override
-            public List getChildren() {
-                return null;
-            }
-
-            @Override
-            public void setAggregatorValue(int key, AggregatorValue value) {
-
-            }
-
-            @Override
-            public AggregatorValue getAggregatorValue(int key) {
-                return null;
-            }
-
-            @Override
-            public AggregatorValue[] getAggregatorValue() {
-                return new AggregatorValue[0];
-            }
-
-            @Override
-            public void setAggregatorValue(AggregatorValue[] aggregatorValues) {
-
-            }
-        };
+    public static List<Long> longDetails(int rowCount) {
+        List<Long> longDetails = new ArrayList<Long>();
+        for (int i = 0; i < rowCount; i++) {
+            Number val = numberKeys.get(random.nextInt(keySize));
+            longDetails.add(val == null ? null : val.longValue());
+        }
+        return longDetails;
     }
 
-    protected static SwiftNode createNode(Object data) {
-        return createNode(data, null);
-    }
-
-    protected static SwiftNode createNode(final Object data, Comparator comparator) {
-        return new AbstractSwiftNode() {
-            @Override
-            public Object getData() {
-                return data;
+    public static List<String> createStrDetail(int rowCount) {
+        List<String> strKeys = new ArrayList<String>();
+        strKeys.add(null);
+        String alphabet = "abcdefghijklmnopqrstuvwxyz";
+        StringBuilder builder = new StringBuilder();
+        int maxLen = 10;
+        for (int i = 1; i < keySize; i++) {
+            for (int j = 0, size = random.nextInt(maxLen); j < size; j++) {
+                builder.append(alphabet.charAt(random.nextInt(26)));
             }
-
-            @Override
-            public void setData(Object data) {
-
-            }
-
-            @Override
-            public SwiftNode getChild(int index) {
-                return null;
-            }
-
-            @Override
-            public void addChild(SwiftNode child) {
-
-            }
-
-            @Override
-            public SwiftNode getSibling() {
-                return null;
-            }
-
-            @Override
-            public void setSibling(SwiftNode sibling) {
-
-            }
-
-            @Override
-            public SwiftNode getParent() {
-                return null;
-            }
-
-            @Override
-            public void setParent(SwiftNode parent) {
-
-            }
-
-            @Override
-            public int getChildrenSize() {
-                return 0;
-            }
-
-            @Override
-            public void setAggregatorValue(int key, AggregatorValue value) {
-
-            }
-
-            @Override
-            public AggregatorValue getAggregatorValue(int key) {
-                return data == null ? new StringAggregateValue() : new DoubleAmountAggregatorValue(((Number)data).doubleValue());
-            }
-
-            @Override
-            public AggregatorValue[] getAggregatorValue() {
-                return new AggregatorValue[0];
-            }
-
-            @Override
-            public void setAggregatorValue(AggregatorValue[] aggregatorValues) {
-
-            }
-
-            @Override
-            public int getIndex() {
-                return 0;
-            }
-
-            @Override
-            public int getDepth() {
-                return 0;
-            }
-
-            @Override
-            public void clearChildren() {
-
-            }
-
-            @Override
-            public List getChildren() {
-                return null;
-            }
-        };
+            strKeys.add(builder.toString());
+            builder.delete(0, builder.length());
+        }
+        List<String> strDetails = new ArrayList<String>();
+        for (int i = 0; i < rowCount; i++) {
+            strDetails.add(strKeys.get(random.nextInt(keySize)));
+        }
+        return strDetails;
     }
 }

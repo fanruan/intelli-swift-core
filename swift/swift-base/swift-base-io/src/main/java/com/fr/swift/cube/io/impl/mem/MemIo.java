@@ -1,6 +1,6 @@
 package com.fr.swift.cube.io.impl.mem;
 
-import com.fr.swift.io.Io;
+import com.fr.swift.cube.io.Io;
 
 /**
  * @author anchore
