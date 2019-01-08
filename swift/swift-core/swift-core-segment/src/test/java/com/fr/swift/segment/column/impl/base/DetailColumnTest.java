@@ -5,7 +5,6 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.IResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.input.DoubleReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;
@@ -27,6 +26,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +42,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  * @date 2017/11/10
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ResourceDiscovery.class, SwiftContext.class})
+@PrepareForTest({SwiftContext.class})
 public class DetailColumnTest {
 
     @Mock
@@ -67,18 +67,9 @@ public class DetailColumnTest {
     public void setUp() throws Exception {
         initMocks(this);
 
-        mockStatic(ResourceDiscovery.class);
         IResourceDiscovery resourceDiscovery = mock(IResourceDiscovery.class);
-        when(ResourceDiscovery.getInstance()).thenReturn(resourceDiscovery);
+        Whitebox.setInternalState(BaseDetailColumn.class, "DISCOVERY", resourceDiscovery);
 
-        when(intReader.isReadable()).thenReturn(true);
-        when(intReader.get(anyLong())).thenReturn(1);
-        when(longReader.isReadable()).thenReturn(true);
-        when(longReader.get(anyLong())).thenReturn(1L);
-        when(doubleReader.isReadable()).thenReturn(true);
-        when(doubleReader.get(anyLong())).thenReturn(1D);
-        when(stringReader.isReadable()).thenReturn(true);
-        when(stringReader.get(anyLong())).thenReturn("1");
         when(resourceDiscovery.getReader(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Reader>() {
             @Override
             public Reader answer(InvocationOnMock invocation) throws Throwable {
@@ -114,6 +105,15 @@ public class DetailColumnTest {
                 }
             }
         });
+
+        when(intReader.isReadable()).thenReturn(true);
+        when(intReader.get(anyLong())).thenReturn(1);
+        when(longReader.isReadable()).thenReturn(true);
+        when(longReader.get(anyLong())).thenReturn(1L);
+        when(doubleReader.isReadable()).thenReturn(true);
+        when(doubleReader.get(anyLong())).thenReturn(1D);
+        when(stringReader.isReadable()).thenReturn(true);
+        when(stringReader.get(anyLong())).thenReturn("1");
 
         mockStatic(SwiftContext.class);
         BeanFactory beanFactory = mock(BeanFactory.class);
