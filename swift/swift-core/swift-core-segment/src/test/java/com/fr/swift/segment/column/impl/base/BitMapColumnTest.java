@@ -22,13 +22,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.powermock.reflect.Whitebox;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
@@ -39,6 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  * @date 2017/11/10
  */
 @RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @PrepareForTest({ResourceDiscovery.class, SwiftContext.class})
 public class BitMapColumnTest {
 
@@ -49,11 +52,8 @@ public class BitMapColumnTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
-
-        mockStatic(ResourceDiscovery.class);
         IResourceDiscovery resourceDiscovery = mock(IResourceDiscovery.class);
-        when(ResourceDiscovery.getInstance()).thenReturn(resourceDiscovery);
+        Whitebox.setInternalState(BitMapColumn.class, "DISCOVERY", resourceDiscovery);
 
         when(bitmapReader.isReadable()).thenReturn(true);
         when(bitmapReader.get(anyLong())).thenReturn(new RangeBitmap(1, 3));
@@ -95,7 +95,7 @@ public class BitMapColumnTest {
 
     @Test
     public void putBitMapIndex() {
-        new BitMapColumn(new ResourceLocation("")).putNullIndex(new EmptyBitmap());
+        new BitMapColumn(new ResourceLocation("")).putBitMapIndex(0, new EmptyBitmap());
 
         verify(bitmapWriter).put(anyLong(), Matchers.<ImmutableBitMap>any());
     }
