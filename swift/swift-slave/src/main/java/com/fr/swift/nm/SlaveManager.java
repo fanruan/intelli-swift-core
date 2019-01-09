@@ -5,7 +5,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cluster.manager.ClusterManager;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.nm.collector.SalveHeartBeatCollect;
+import com.fr.swift.nm.collector.SlaveHeartBeatCollect;
 import com.fr.swift.node.SwiftClusterNodeManager;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftManager;
@@ -22,7 +22,7 @@ import com.fr.swift.util.ServiceBeanFactory;
 @SwiftBean(name = "slaveManager")
 public class SlaveManager extends AbstractSwiftManager implements ClusterManager {
 
-    private Collect heartBeatCollect = new SalveHeartBeatCollect();
+    private Collect heartBeatCollect = new SlaveHeartBeatCollect();
 
     private ClusterServiceManager clusterServiceManager = SwiftContext.get().getBean(ClusterServiceManager.class);
 
