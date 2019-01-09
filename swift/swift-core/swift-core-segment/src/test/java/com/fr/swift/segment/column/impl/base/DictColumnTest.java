@@ -6,7 +6,6 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.IResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.input.DoubleReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;
@@ -27,18 +26,21 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.powermock.reflect.Whitebox;
 
 import java.util.Comparator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -48,7 +50,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
  * @date 2019/1/6
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ResourceDiscovery.class, SwiftContext.class, ArrayLookupHelper.class})
+@PowerMockRunnerDelegate(MockitoJUnitRunner.class)
+@PrepareForTest({SwiftContext.class, ArrayLookupHelper.class})
 public class DictColumnTest {
 
     @Mock
@@ -71,11 +74,8 @@ public class DictColumnTest {
 
     @Before
     public void setUp() throws Exception {
-        initMocks(this);
-
-        mockStatic(ResourceDiscovery.class);
         IResourceDiscovery resourceDiscovery = mock(IResourceDiscovery.class);
-        when(ResourceDiscovery.getInstance()).thenReturn(resourceDiscovery);
+        Whitebox.setInternalState(BaseDictColumn.class, "DISCOVERY", resourceDiscovery);
 
         when(resourceDiscovery.getReader(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Reader>() {
             @Override
@@ -146,6 +146,7 @@ public class DictColumnTest {
     public void getIndex() {
         ResourceLocation location = new ResourceLocation("");
         assertEquals(0, new IntDictColumn(location, Comparators.<Integer>asc()).getIndex(null));
+        assertEquals(0, new StringDictColumn(location, Comparators.<String>asc()).getIndex(""));
 
         assertEquals(1, new IntDictColumn(location, Comparators.<Integer>asc()).getIndex(1));
     }
@@ -200,12 +201,35 @@ public class DictColumnTest {
     }
 
     @Test
+    public void putValue() {
+        ResourceLocation location = new ResourceLocation("");
+        new IntDictColumn(location, Comparators.<Integer>asc()).putter().putValue(1, 1);
+        new LongDictColumn(location, Comparators.<Long>asc()).putter().putValue(1, 1L);
+        new DoubleDictColumn(location, Comparators.<Double>asc()).putter().putValue(1, 1D);
+        new StringDictColumn(location, Comparators.<String>asc()).putter().putValue(1, "1");
+
+        verify(intWriter).put(1, 1);
+        verify(longWriter).put(1, 1);
+        verify(doubleWriter).put(1, 1);
+        verify(stringWriter).put(1, "1");
+    }
+
+    @Test
     public void getValue() {
         ResourceLocation location = new ResourceLocation("");
+        IntDictColumn intDictColumn = new IntDictColumn(location, Comparators.<Integer>asc());
+        LongDictColumn longDictColumn = new LongDictColumn(location, Comparators.<Long>asc());
+        DoubleDictColumn doubleDictColumn = new DoubleDictColumn(location, Comparators.<Double>asc());
+        StringDictColumn stringDictColumn = new StringDictColumn(location, Comparators.<String>asc());
 
-        assertEquals(1, new IntDictColumn(location, Comparators.<Integer>asc()).getValueByRow(0).intValue());
-        assertEquals(1, new LongDictColumn(location, Comparators.<Long>asc()).getValueByRow(0).longValue());
-        assertEquals(1, new DoubleDictColumn(location, Comparators.<Double>asc()).getValueByRow(0), 0);
-        assertEquals("1", new StringDictColumn(location, Comparators.<String>asc()).getValueByRow(0));
+        assertNull(intDictColumn.getValue(0));
+        assertNull(longDictColumn.getValue(0));
+        assertNull(doubleDictColumn.getValue(0));
+        assertNull(stringDictColumn.getValue(0));
+
+        assertEquals(1, intDictColumn.getValue(1).intValue());
+        assertEquals(1, longDictColumn.getValue(1).longValue());
+        assertEquals(1, doubleDictColumn.getValue(1), 0);
+        assertEquals("1", stringDictColumn.getValue(1));
     }
 }
