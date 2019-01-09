@@ -1,9 +1,9 @@
 package com.fr.swift.core.rpc;
 
 import com.fr.cluster.rpc.base.ClusterInvoker;
-import com.fr.swift.structure.lru.ConcurrentCacheHashMap;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2018/12/29
@@ -18,7 +18,7 @@ public class InvokerCache {
     private Map<Class, ClusterInvoker> invokerMap;
 
     private InvokerCache() {
-        this.invokerMap = new ConcurrentCacheHashMap<Class, ClusterInvoker>();
+        this.invokerMap = new ConcurrentHashMap<Class, ClusterInvoker>();
     }
 
     public static InvokerCache getInstance() {
