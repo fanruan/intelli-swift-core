@@ -40,7 +40,6 @@ public class SortSegmentDetailResultSet extends BaseDetailQueryResultSet {
 
     public SortSegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter,
                                       List<Sort> sorts) {
-        // TODO: 2018/6/19 为了计算总行数过滤了两次，待优化
         super(fetchSize);
         this.rowCount = filter.createFilterIndex().getCardinality();
         this.fetchSize = fetchSize;

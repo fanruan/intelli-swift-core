@@ -1,92 +1,122 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.bitmap.impl.RangeBitmap;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.segment.column.BitmapIndexedColumn;
+import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.DetailColumn;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.resultset.LimitedResultSet;
 import com.fr.swift.test.TestResource;
-import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+
 /**
  * @author anchore
  * @date 2018/8/1
  */
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(MockitoJUnitRunner.class)
+@PrepareForTest({SwiftContext.class})
 public class SegmentResultSetTest {
 
-    static class DemoContract {
+    private final SwiftMetaData meta = new SwiftMetaDataBean("DEMO_CONTRACT",
+            Collections.<SwiftMetaDataColumn>singletonList(
+                    new MetaDataColumnBean("合同ID", Types.VARCHAR)));
 
-        String contractId;
+    @Mock
+    private Segment seg;
 
-        static SwiftMetaData getMeta() {
-            return new SwiftMetaDataBean("DEMO_CONTRACT",
-                    Collections.<SwiftMetaDataColumn>singletonList(
-                            new MetaDataColumnBean("合同ID", Types.VARCHAR)));
-        }
-    }
+    @Before
+    public void setUp() throws Exception {
+        mockStatic(SwiftContext.class);
+        BeanFactory beanFactory = mock(BeanFactory.class);
+        when(SwiftContext.get()).thenReturn(beanFactory);
 
-    private final SwiftMetaData meta = DemoContract.getMeta();
+        SwiftCubePathService swiftCubePathService = mock(SwiftCubePathService.class);
+        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
+        when(swiftCubePathService.getSwiftPath()).thenReturn(TestResource.getRunPath(getClass()));
 
-    @Rule
-    public TestRule getExternalResource() throws Exception {
-        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
+        when(seg.isHistory()).thenReturn(true);
+        when(seg.isReadable()).thenReturn(true);
+        when(seg.getMetaData()).thenReturn(meta);
+        when(seg.getRowCount()).thenReturn(4);
+        when(seg.getAllShowIndex()).thenReturn(new RangeBitmap(1, 4));
+
+        Column column = mock(Column.class);
+        when(seg.getColumn(new ColumnKey("合同ID"))).thenReturn(column);
+
+        IResourceLocation location = mock(IResourceLocation.class);
+        when(column.getLocation()).thenReturn(location);
+        when(location.getStoreType()).thenReturn(StoreType.FINE_IO);
+
+        DetailColumn detailColumn = mock(DetailColumn.class);
+        when(column.getDetailColumn()).thenReturn(detailColumn);
+        when(column.getDictionaryEncodedColumn()).thenReturn(mock(DictionaryEncodedColumn.class));
+
+        when(detailColumn.get(0)).thenReturn("0");
+        when(detailColumn.get(1)).thenReturn("1");
+        when(detailColumn.get(2)).thenReturn("2");
+        when(detailColumn.get(3)).thenReturn("\0");
+
+        BitmapIndexedColumn bitmapIndex = mock(BitmapIndexedColumn.class);
+        when(column.getBitmapIndex()).thenReturn(bitmapIndex);
+        when(bitmapIndex.getNullIndex()).thenReturn(new RangeBitmap(3, 4));
     }
 
     @Test
     public void test() throws Exception {
-        SwiftResultSet resultSet = new LimitedResultSet(getResultSet(), 5);
-        Segment seg = getSegment();
-        Inserter inserter = SwiftContext.get().getBean("inserter", Inserter.class, seg);
-        inserter.insertData(resultSet);
-        seg.putAllShowIndex(new RangeBitmap(1, 4));
+        SegmentResultSet resultSet = new SegmentResultSet(seg);
 
-        resultSet = new SegmentResultSet(seg);
+        assertEquals(seg.getMetaData(), resultSet.getMetaData());
+
         List<Row> rows = new ArrayList<Row>();
         while (resultSet.hasNext()) {
             rows.add(resultSet.getNextRow());
         }
+        resultSet.close();
 
-        Assert.assertEquals(3, rows.size());
-        Assert.assertEquals("00c7b96a-bf9e-423f-9246-3898c6ac3150", rows.get(0).getValue(0));
-        Assert.assertEquals("013b1dd8-1493-4c5b-8501-c0a78096d86a", rows.get(1).getValue(0));
-        Assert.assertEquals("026e9c86-1af5-4d25-99b1-42e1a6c610d1", rows.get(2).getValue(0));
-    }
+        verify(seg).release();
 
-    private Segment getSegment() {
-        return SegmentUtils.newSegment(new ResourceLocation(String.format("%s/seg0", TestResource.getRunPath(getClass())), StoreType.MEMORY), meta);
-    }
+        Column<Object> column = seg.getColumn(new ColumnKey("合同ID"));
+        DetailColumn<Object> detailColumn = column.getDetailColumn();
+        DictionaryEncodedColumn<Object> dictionaryEncodedColumn = column.getDictionaryEncodedColumn();
+        BitmapIndexedColumn bitmapIndex = column.getBitmapIndex();
 
-    private SwiftResultSet getResultSet() throws SQLException {
-        SwiftResultSet resultSet = EasyMock.mock(SwiftResultSet.class);
-        EasyMock.expect(resultSet.getMetaData()).andReturn(meta).anyTimes();
+        verify(detailColumn).release();
+        verify(dictionaryEncodedColumn).release();
+        verify(bitmapIndex).release();
 
-        EasyMock.expect(resultSet.hasNext()).andReturn(true).times(3).andReturn(false).anyTimes();
-
-        EasyMock.expect(resultSet.getNextRow()).
-                andReturn(new ListBasedRow("00c7b96a-bf9e-423f-9246-3898c6ac3150")).
-                andReturn(new ListBasedRow("013b1dd8-1493-4c5b-8501-c0a78096d86a")).
-                andReturn(new ListBasedRow("026e9c86-1af5-4d25-99b1-42e1a6c610d1")).
-                andThrow(new IndexOutOfBoundsException());
-
-        EasyMock.replay(resultSet);
-        return resultSet;
+        assertEquals(3, rows.size());
+        assertEquals("1", rows.get(0).getValue(0));
+        assertEquals("2", rows.get(1).getValue(0));
+        assertNull(rows.get(2).getValue(0));
     }
 }
