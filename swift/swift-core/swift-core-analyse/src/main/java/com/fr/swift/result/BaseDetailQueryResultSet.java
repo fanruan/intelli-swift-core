@@ -13,14 +13,9 @@ import java.util.List;
  */
 public abstract class BaseDetailQueryResultSet implements DetailQueryResultSet {
     protected int fetchSize;
-    protected SwiftMetaData metaData;
 
     public BaseDetailQueryResultSet(int fetchSize) {
         this.fetchSize = fetchSize;
-    }
-
-    public void setMetaData(SwiftMetaData metaData) {
-        this.metaData = metaData;
     }
 
     @Override
