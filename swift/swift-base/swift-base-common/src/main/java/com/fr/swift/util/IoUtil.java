@@ -7,6 +7,8 @@ import sun.nio.ch.DirectBuffer;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.security.AccessController;
@@ -85,5 +87,15 @@ public class IoUtil {
                 SwiftLoggers.getLogger().error(e);
             }
         }
+    }
+
+    public static void copyBinaryTo(InputStream inputStream, OutputStream outputStream) throws IOException {
+        byte[] data = new byte[10240];
+        int len;
+        while ((len = inputStream.read(data)) > 0) {
+            outputStream.write(data, 0, len);
+        }
+
+        outputStream.flush();
     }
 }

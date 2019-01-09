@@ -1,7 +1,6 @@
 package com.fr.swift.repository.manager;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.repository.SwiftRepository;
@@ -13,12 +12,11 @@ import com.fr.swift.service.SwiftRepositoryConfService;
  * @author yee
  * @date 2018/5/28
  */
-@SwiftBean(name = "swiftRepositoryManager")
-public class SwiftRepositoryManager implements com.fr.swift.repository.SwiftRepositoryManager {
+public class SwiftRepositoryManager {
     private static SwiftRepository currentRepository = null;
     private SwiftRepositoryConfService service;
 
-    public SwiftRepositoryManager() {
+    private SwiftRepositoryManager() {
         service = SwiftContext.get().getBean(SwiftRepositoryConfService.class);
         service.registerListener(new SwiftRepositoryConfService.ConfChangeListener() {
             @Override
@@ -42,7 +40,6 @@ public class SwiftRepositoryManager implements com.fr.swift.repository.SwiftRepo
         return SingletonHolder.manager;
     }
 
-    @Override
     public SwiftRepository currentRepo() {
         if (null == currentRepository) {
             synchronized (SwiftRepositoryManager.class) {

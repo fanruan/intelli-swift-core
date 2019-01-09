@@ -13,7 +13,6 @@ import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.queue.StuffProviderQueue;
 import com.fr.swift.cube.queue.SwiftImportStuff;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.event.indexing.IndexRpcEvent;
 import com.fr.swift.netty.rpc.server.RpcServer;
 import com.fr.swift.property.SwiftProperty;
@@ -83,8 +82,8 @@ public class TestIndexingController {
 
     @RequestMapping(value = "/load", method = RequestMethod.GET)
     public void load() {
-        HistoryLoadSegmentRpcEvent event = new HistoryLoadSegmentRpcEvent();
-        ProxyFactory factory = ProxySelector.getInstance().getFactory();
+//        HistoryLoadSegmentRpcEvent event = new HistoryLoadSegmentRpcEvent();
+//        ProxyFactory factory = ProxySelector.getInstance().getFactory();
 //        Invoker invoker = factory.getInvoker(null, SwiftServiceListenerHandler.class, getMasterURL(), true);
 //        invoker.invoke(new SwiftInvocation(ServiceMethodRegistry.INSTANCE.getMethodByName("rpcTrigger"), new Object[]{event}));
     }

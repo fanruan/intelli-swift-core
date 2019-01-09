@@ -6,7 +6,7 @@ import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.selector.ClusterSelector;
@@ -20,7 +20,6 @@ import java.util.Collections;
  */
 public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
 
-    private static final SwiftRepositoryManager REPO = SwiftContext.get().getBean(SwiftRepositoryManager.class);
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
@@ -29,7 +28,7 @@ public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
         if (ClusterSelector.getInstance().getFactory().isCluster()) {
             String remote = new CubePathBuilder(segKey).build();
             try {
-                REPO.currentRepo().delete(remote);
+                SwiftRepositoryManager.getManager().currentRepo().delete(remote);
 
                 SEG_SVC.removeSegments(Collections.singletonList(segKey));
                 SegmentUtils.clearSegment(segKey);
