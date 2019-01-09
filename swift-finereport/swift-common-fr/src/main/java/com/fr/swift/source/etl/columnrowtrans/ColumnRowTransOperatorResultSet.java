@@ -2,9 +2,7 @@ package com.fr.swift.source.etl.columnrowtrans;
 
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.query.group.by.MergerGroupByValues;
-import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.result.row.RowIndexKey;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -82,8 +80,8 @@ public class ColumnRowTransOperatorResultSet implements SwiftResultSet {
     @Override
     public Row getNextRow() throws SQLException {
         final List list = new ArrayList(Arrays.asList(new Object[getMetaData().getColumnCount()]));
-        KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> kv = valueIter.next();
-        Object[] groupName = kv.getKey().getKey();
+        Pair<Object[], List<RowTraversal[]>> kv = valueIter.next();
+        Object[] groupName = kv.getKey();
         list.set(0, groupName[0]);
         List<RowTraversal[]> rowTraversals = kv.getValue();
         for (int i = 0; i < rowTraversals.size(); i++) {
