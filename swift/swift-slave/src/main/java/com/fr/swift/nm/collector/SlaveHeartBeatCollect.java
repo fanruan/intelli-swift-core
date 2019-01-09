@@ -15,15 +15,15 @@ import com.fr.swift.util.concurrent.SwiftExecutors;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SalveHeartBeatCollect implements Collect {
+public class SlaveHeartBeatCollect implements Collect {
 
     private SlaveService slaveService;
 
     private Thread thread;
 
-    private final static long HEART_BEAT_TIME = 10000l;
+    private final static long HEART_BEAT_TIME = 10000L;
 
-    public SalveHeartBeatCollect() {
+    public SlaveHeartBeatCollect() {
         this.slaveService = SwiftContext.get().getBean("swiftSlaveService", SwiftSlaveService.class);
     }
 
