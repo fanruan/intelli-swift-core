@@ -33,10 +33,6 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
-import com.fr.swift.service.AnalyseService;
-import com.fr.swift.service.HistoryService;
-import com.fr.swift.service.IndexingService;
-import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.service.cluster.ClusterHistoryService;
@@ -63,12 +59,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
 
-    private SwiftServiceListenerHandler remoteServiceSender;
-
-    private ClusterAnalyseService clusterAnalyseService;
-    private ClusterRealTimeService clusterRealTimeService;
-    private IndexingService clusterIndexingService;
-    private HistoryService clusterHistoryService;
+    private static final long TIMEOUT = 30000L;
 
     private MasterManager masterManager;
 
@@ -90,23 +81,23 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
     @Override
     public void approach(ClusterToolKit clusterToolKit) {
         //注册rpc服务
-        ClusterInvoker remoteServiceSenderInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(RemoteServiceSender.class));
+        ClusterInvoker remoteServiceSenderInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(RemoteServiceSender.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(RemoteServiceSender.class, remoteServiceSenderInvoker);
         InvokerCache.getInstance().bindInvoker(SwiftServiceListenerHandler.class, remoteServiceSenderInvoker);
 
-        ClusterInvoker analyseServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(AnalyseService.class));
+        ClusterInvoker analyseServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(ClusterAnalyseService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(ClusterAnalyseServiceImpl.class, analyseServiceInvoker);
         InvokerCache.getInstance().bindInvoker(ClusterAnalyseService.class, analyseServiceInvoker);
 
-        ClusterInvoker realTimeServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(RealtimeService.class));
+        ClusterInvoker realTimeServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(ClusterRealTimeService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(ClusterRealTimeServiceImpl.class, realTimeServiceInvoker);
-        InvokerCache.getInstance().bindInvoker(ClusterRealTimeService.class, analyseServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(ClusterRealTimeService.class, realTimeServiceInvoker);
 
-        ClusterInvoker indexingServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(IndexingService.class));
+        ClusterInvoker indexingServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(ClusterIndexingService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(ClusterIndexingServiceImpl.class, indexingServiceInvoker);
         InvokerCache.getInstance().bindInvoker(ClusterIndexingService.class, indexingServiceInvoker);
 
-        ClusterInvoker historyServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(HistoryService.class));
+        ClusterInvoker historyServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(ClusterHistoryService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(ClusterHistoryServiceImpl.class, historyServiceInvoker);
         InvokerCache.getInstance().bindInvoker(ClusterHistoryService.class, historyServiceInvoker);
 
