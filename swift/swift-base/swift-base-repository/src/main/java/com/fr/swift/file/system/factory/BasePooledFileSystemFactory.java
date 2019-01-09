@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2018/8/21
  */
 public abstract class BasePooledFileSystemFactory<S extends SwiftFileSystem, C extends SwiftFileSystemConfig> implements SwiftFileSystemFactory<S, C> {
-    protected ConcurrentHashMap<SwiftFileSystemConfig, RemoteFileSystemPool<S>> poolContainer;
+    private ConcurrentHashMap<SwiftFileSystemConfig, RemoteFileSystemPool<S>> poolContainer;
 
     public BasePooledFileSystemFactory() {
         poolContainer = new ConcurrentHashMap<SwiftFileSystemConfig, RemoteFileSystemPool<S>>();

@@ -11,7 +11,6 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
-import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -60,7 +59,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     private transient ServiceTaskExecutor taskExecutor;
 
     private transient SwiftSegmentService swiftSegmentService;
-    private transient SwiftRepositoryManager repositoryManager;
 
 
     public void setTaskExecutor(ServiceTaskExecutor taskExecutor) {
@@ -77,7 +75,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         database = SwiftDatabase.getInstance();
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
         swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-        repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
         return true;
     }
 
@@ -88,7 +85,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         database = null;
         taskExecutor = null;
         swiftSegmentService = null;
-        repositoryManager = null;
         return true;
     }
 
