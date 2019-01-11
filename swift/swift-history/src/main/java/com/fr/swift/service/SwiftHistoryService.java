@@ -7,7 +7,6 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.bean.SwiftTablePathBean;
-import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
@@ -21,10 +20,6 @@ import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.event.history.CheckLoadHistoryEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.info.bean.query.QueryBeanFactory;
-import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.session.factory.SessionFactory;
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SegmentKey;
@@ -44,9 +39,7 @@ import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -161,19 +154,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         }
     }
 
-
-    @Override
-    public SwiftResultSet query(final String queryDescription) throws Exception {
-        try {
-            final QueryInfoBean bean = QueryBeanFactory.create(queryDescription);
-            SessionFactory factory = SwiftContext.get().getBean(SessionFactory.class);
-            // TODO: 2018/11/28
-            return (SwiftResultSet) factory.openSession(bean.getQueryId()).executeQuery(bean);
-        } catch (IOException e) {
-            throw new SQLException(e);
-        }
-    }
-
     @Override
     public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
         Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
@@ -211,7 +191,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             path = entity.getTablePath() == null ? 0 : entity.getTablePath();
             tablePathService.removePath(sourceKey);
         }
-        SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+//        SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         segmentService.removeSegments(sourceKey);
 
         String localPath = String.format("%s/%d/%s", cubePathService.getSwiftPath(), path, sourceKey);
@@ -248,7 +228,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         }
 
         private void checkSegmentExists() {
-            SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+//            SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
             final Map<SourceKey, Set<String>> needDownload = SegmentHelper.checkSegmentExists(segmentService, segmentManager);
             if (!needDownload.isEmpty()) {
                 loadDataService.submit(new Runnable() {
@@ -285,8 +265,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
 
         protected SegmentLocationInfo loadSelfSegmentDestination() {
-            SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-            Map<SourceKey, List<SegmentKey>> segments = clusterSegmentService.getOwnSegments();
+//            SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+            Map<SourceKey, List<SegmentKey>> segments = segmentService.getOwnSegments();
             if (!segments.isEmpty()) {
                 Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();
                 for (Map.Entry<SourceKey, List<SegmentKey>> entry : segments.entrySet()) {

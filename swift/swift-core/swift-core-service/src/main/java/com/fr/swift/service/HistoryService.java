@@ -7,8 +7,6 @@ import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.db.Where;
-import com.fr.swift.query.Queryable;
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -21,15 +19,7 @@ import java.util.Set;
  * @author yee
  * @date 2018/6/5
  */
-public interface HistoryService extends SwiftService, Queryable, DeleteService {
-    /**
-     * 查询
-     *
-     * @param queryInfo 查询描述
-     * @return 数据
-     */
-    @Override
-    SwiftResultSet query(String queryInfo) throws Exception;
+public interface HistoryService extends SwiftService, DeleteService {
 
     @InvokeMethod(value = SyncDataProcessHandler.class, target = Target.HISTORY)
     void load(Set<SegmentKey> sourceSegKeys, boolean replace) throws Exception;
