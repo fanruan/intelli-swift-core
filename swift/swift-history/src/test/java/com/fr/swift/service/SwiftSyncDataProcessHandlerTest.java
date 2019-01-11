@@ -12,11 +12,4 @@ public class SwiftSyncDataProcessHandlerTest {
     public void processResult() {
     }
 
-    @Test
-    public void processUrl() {
-    }
-
-    @Test
-    public void mergeResult() {
-    }
 }
