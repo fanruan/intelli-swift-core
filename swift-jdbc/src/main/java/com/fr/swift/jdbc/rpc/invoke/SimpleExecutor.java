@@ -46,7 +46,7 @@ public class SimpleExecutor implements JdbcExecutor {
             throw Exceptions.runtime("null rpc response");
         }
         if (response.getException() != null) {
-            throw Exceptions.runtime("", response.getException());
+            throw Exceptions.runtime(response.getException().getMessage(), response.getException());
         }
         return response;
     }

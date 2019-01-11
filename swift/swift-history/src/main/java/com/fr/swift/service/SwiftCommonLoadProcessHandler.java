@@ -54,7 +54,7 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
         String methodName = method.getName();
         try {
             MonitorUtil.start();
-            String sourceKey = (String) args[0];
+            SourceKey sourceKey = (SourceKey) args[0];
             Map<URL, Map<SourceKey, List<String>>> urlMap = processUrl(target, args);
 
             final List<EventResult> resultList = new ArrayList<EventResult>();

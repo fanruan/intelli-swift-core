@@ -56,6 +56,7 @@ public abstract class UnregisteredDriver implements Driver {
         Mode mode;
         try {
             mode = Mode.fromKey(schema);
+            holder.mode = mode;
         } catch (Exception e) {
             throw Exceptions.urlFormat(url);
         }
@@ -128,6 +129,7 @@ public abstract class UnregisteredDriver implements Driver {
     public static class Holder {
         private URI connectUri;
         private JdbcRequestService requestService;
+        private Mode mode;
         /**
          * TODO: 2018/12/03 校验码 暂时不做先保留
          */
@@ -161,6 +163,9 @@ public abstract class UnregisteredDriver implements Driver {
 
         synchronized
         public String nextRealTime() {
+            if (mode.equals(Mode.EMB)) {
+                return "default";
+            }
             String address = realtimeAddresses.poll();
             if (null == address) {
                 throw Exceptions.addressNotFound("Insert service");
@@ -171,6 +176,9 @@ public abstract class UnregisteredDriver implements Driver {
 
         synchronized
         public String nextAnalyse() {
+            if (mode.equals(Mode.EMB)) {
+                return "default";
+            }
             String address = analyseAddresses.poll();
             if (null == address) {
                 throw Exceptions.addressNotFound("Analyse service");
