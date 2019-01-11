@@ -9,5 +9,5 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/4/27.
  */
-public interface NodeMergeResultSet<T extends SwiftNode> extends QueryResultSet<Pair<T, List<Map<Integer, Object>>>> {
+public interface NodeMergeQRS<T extends SwiftNode> extends QueryResultSet<Pair<T, List<Map<Integer, Object>>>> {
 }

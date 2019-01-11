@@ -1,9 +1,13 @@
 package com.fr.swift.query.info.bean.parser;
 
+import com.fr.swift.query.filter.FilterBuilder;
+import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.info.bean.element.CalculatedFieldBean;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.SortBean;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.post.CalculatedFieldQueryInfoBean;
+import com.fr.swift.query.info.bean.post.HavingFilterQueryInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
@@ -12,12 +16,14 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
+import com.fr.swift.query.info.group.post.HavingFilterQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.info.group.post.RowSortQueryInfo;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
+import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +35,12 @@ import java.util.Map;
  */
 class PostQueryInfoParser {
 
-    static List<PostQueryInfo> parse(List<PostQueryInfoBean> postQueryInfoBeans,
+    static List<PostQueryInfo> parse(SourceKey table, List<PostQueryInfoBean> postQueryInfoBeans,
                                      List<Dimension> dimensions, List<MetricBean> metrics) {
         Map<String, Integer> fieldIndexMap = getFieldIndexMap(postQueryInfoBeans, metrics);
         List<PostQueryInfo> postQueryInfoList = new ArrayList<PostQueryInfo>();
         for (PostQueryInfoBean bean : postQueryInfoBeans) {
-            postQueryInfoList.add(parse(dimensions.size(), bean, fieldIndexMap));
+            postQueryInfoList.add(parse(table, dimensions.size(), bean, fieldIndexMap));
         }
         return postQueryInfoList;
     }
@@ -51,13 +57,15 @@ class PostQueryInfoParser {
             if (postQueryInfoBean.getType() != PostQueryType.CAL_FIELD) {
                 continue;
             }
+            // 新增列
             CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
             fieldIndexMap.put(calculatedFieldBean.getName(), fieldIndexMap.size());
         }
         return fieldIndexMap;
     }
 
-    private static PostQueryInfo parse(int dimensionSize, PostQueryInfoBean bean, Map<String, Integer> fieldIndexMap) {
+    private static PostQueryInfo parse(SourceKey table, int dimensionSize,
+                                       PostQueryInfoBean bean, Map<String, Integer> fieldIndexMap) {
         PostQueryType type = bean.getType();
         switch (type) {
             case CAL_FIELD:
@@ -65,6 +73,18 @@ class PostQueryInfoParser {
                 return new CalculatedFieldQueryInfo(targets);
             case ROW_SORT:
                 return parseRowSortQueryInfo(dimensionSize, (RowSortQueryInfoBean) bean, fieldIndexMap);
+            case HAVING_FILTER: {
+                List<MatchFilter> filters = new ArrayList<MatchFilter>();
+                for (int i = 0; i < dimensionSize; i++) {
+                    filters.add(null);
+                }
+                FilterInfoBean filterInfoBean = ((HavingFilterQueryInfoBean) bean).getFilter();
+                MatchFilter filter = FilterBuilder.buildMatchFilter(FilterInfoParser.parse(table, filterInfoBean));
+                if (!filters.isEmpty()) {
+                    filters.set(filters.size() - 1, filter);
+                }
+                return new HavingFilterQueryInfo(filters);
+            }
         }
         return null;
     }
@@ -75,7 +95,7 @@ class PostQueryInfoParser {
         List<SortBean> sortBeans = bean.getSortBeans();
         if (null != sortBeans) {
             for (SortBean sortBean : sortBeans) {
-                // TODO: 2018/6/7 这边复用之前排序的代码，所以targetIndex要算上维度
+                // 这边复用之前排序的代码，所以targetIndex要算上维度
                 int targetIndex = dimensionSize + fieldIndexMap.get(sortBean.getName());
                 sorts.add(sortBean.getType() == SortType.ASC ? new AscSort(targetIndex) : new DescSort(targetIndex));
             }
@@ -96,7 +116,7 @@ class PostQueryInfoParser {
         Map<String, Integer> fieldIndexMap = getFieldIndexMapOfResultJoinQueryInfo(postQueryInfoBeans, queryInfoBeans);
         List<PostQueryInfo> postQueryInfoList = new ArrayList<PostQueryInfo>();
         for (PostQueryInfoBean bean : postQueryInfoBeans) {
-            postQueryInfoList.add(parse(dimensions.size(), bean, fieldIndexMap));
+            postQueryInfoList.add(parse(null, dimensions.size(), bean, fieldIndexMap));
         }
         return postQueryInfoList;
     }

@@ -5,7 +5,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.node.resultset.INodeQueryResultSetMerger;
 import com.fr.swift.result.node.resultset.NodeQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -34,9 +34,9 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
 
     @Override
     public QueryResultSet getQueryResult() throws SQLException {
-        List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
+        List<NodeMergeQRS<GroupNode>> resultSets = new ArrayList<NodeMergeQRS<GroupNode>>();
         for (Query<QueryResultSet> query : queryList) {
-            NodeMergeResultSet<GroupNode> resultSet = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
+            NodeMergeQRS<GroupNode> resultSet = (NodeMergeQRS<GroupNode>) query.getQueryResult();
             if (resultSet == null) {
                 SwiftLoggers.getLogger().info("failed to get result from query: ", query.toString());
             } else {

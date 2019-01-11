@@ -3,8 +3,8 @@ package com.fr.swift.result.node.resultset;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeMergeResultSetImpl;
+import com.fr.swift.result.NodeMergeQRS;
+import com.fr.swift.result.NodeMergeQRSImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.structure.Pair;
@@ -21,21 +21,21 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/7/26.
  */
-class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
+class NodeResultSetMerger implements Iterator<NodeMergeQRS<GroupNode>> {
 
     private int fetchSize;
     private boolean[] isGlobalIndexed;
-    private List<NodeMergeResultSet<GroupNode>> sources;
+    private List<NodeMergeQRS<GroupNode>> sources;
     private List<Comparator<GroupNode>> comparators;
-    private Function<List<NodeMergeResultSet<GroupNode>>, NodeMergeResultSet<GroupNode>> operator;
-    private NodeMergeResultSet<GroupNode> remainResultSet;
+    private Function<List<NodeMergeQRS<GroupNode>>, NodeMergeQRS<GroupNode>> operator;
+    private NodeMergeQRS<GroupNode> remainResultSet;
     /**
      * 用于判断是否从源resultSet中更新数据。remainRowCount >= fetchSize不为空，否则为空
      */
     private List<GroupNode> theRowOfRemainNode;
     private List<List<GroupNode>> lastRowOfPrevPages;
 
-    NodeResultSetMerger(int fetchSize, boolean[] isGlobalIndexed, List<NodeMergeResultSet<GroupNode>> sources,
+    NodeResultSetMerger(int fetchSize, boolean[] isGlobalIndexed, List<NodeMergeQRS<GroupNode>> sources,
                         List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
         this.fetchSize = fetchSize;
         this.isGlobalIndexed = isGlobalIndexed;
@@ -52,8 +52,8 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
         }
     }
 
-    private NodeMergeResultSet<GroupNode> updateAll() {
-        List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
+    private NodeMergeQRS<GroupNode> updateAll() {
+        List<NodeMergeQRS<GroupNode>> resultSets = new ArrayList<NodeMergeQRS<GroupNode>>();
         for (int i = 0; i < sources.size(); i++) {
             if (sources.get(i).hasNextPage()) {
                 Pair<GroupNode, List<Map<Integer, Object>>> pair = sources.get(i).getPage();
@@ -62,42 +62,42 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
                     continue;
                 }
                 GroupNode node = pair.getKey();
-                resultSets.add(new NodeMergeResultSetImpl<GroupNode>(fetchSize, node, pair.getValue()));
+                resultSets.add(new NodeMergeQRSImpl<GroupNode>(fetchSize, node, pair.getValue()));
                 lastRowOfPrevPages.set(i, SwiftNodeUtils.getLastRow(node));
             }
         }
         if (remainResultSet != null) {
             resultSets.add(remainResultSet);
         }
-        NodeMergeResultSet<GroupNode> mergeResultSet = operator.apply(resultSets);
+        NodeMergeQRS<GroupNode> mergeResultSet = operator.apply(resultSets);
         return getPage(mergeResultSet);
     }
 
-    private NodeMergeResultSet<GroupNode> getNext() {
+    private NodeMergeQRS<GroupNode> getNext() {
         if (theRowOfRemainNode == null) {
             return updateAll();
         }
-        List<NodeMergeResultSet<GroupNode>> newPages = new ArrayList<NodeMergeResultSet<GroupNode>>();
+        List<NodeMergeQRS<GroupNode>> newPages = new ArrayList<NodeMergeQRS<GroupNode>>();
         for (int i = 0; i < sources.size(); i++) {
             if (sources.get(i).hasNextPage()) {
                 if (shouldUpdate(lastRowOfPrevPages.get(i))) {
                     Pair<GroupNode, List<Map<Integer, Object>>> pair = sources.get(i).getPage();
                     GroupNode node = pair.getKey();
                     List<Map<Integer, Object>> dict = pair.getValue();
-                    newPages.add(new NodeMergeResultSetImpl<GroupNode>(fetchSize, node, dict));
+                    newPages.add(new NodeMergeQRSImpl<GroupNode>(fetchSize, node, dict));
                     List<GroupNode> lastRow = SwiftNodeUtils.getLastRow(node);
                     lastRowOfPrevPages.set(i, lastRow);
                 }
             }
         }
-        NodeMergeResultSet<GroupNode> mergeResultSet;
+        NodeMergeQRS<GroupNode> mergeResultSet;
         if (!newPages.isEmpty()) {
             newPages.add(remainResultSet);
             mergeResultSet = operator.apply(newPages);
         } else {
             mergeResultSet = remainResultSet;
         }
-        NodeMergeResultSet<GroupNode> page = getPage(mergeResultSet);
+        NodeMergeQRS<GroupNode> page = getPage(mergeResultSet);
         if (SwiftNodeUtils.countRows(page.getPage().getKey()) < fetchSize && hasNext()) {
             // 按照前面的规则更新了，但是不满一页，并且源结果集还有剩余，继续取下一页
             remainResultSet = page;
@@ -121,7 +121,7 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
      * @param mergeResultSet
      * @return
      */
-    private NodeMergeResultSet<GroupNode> getPage(NodeMergeResultSet<GroupNode> mergeResultSet) {
+    private NodeMergeQRS<GroupNode> getPage(NodeMergeQRS<GroupNode> mergeResultSet) {
         Pair<GroupNode, List<Map<Integer, Object>>> pair = mergeResultSet.getPage();
         GroupNode root = pair.getKey();
         GroupNode[] nodes = SwiftNodeUtils.splitNode(root, 2, fetchSize);
@@ -136,13 +136,13 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
         List<Map<Integer, Object>> oldDictionary = pair.getValue();
         remainResultSet = null;
         if (remainNode != null) {
-            remainResultSet = new NodeMergeResultSetImpl<GroupNode>(fetchSize, remainNode, getDictionary(remainNode, oldDictionary));
+            remainResultSet = new NodeMergeQRSImpl<GroupNode>(fetchSize, remainNode, getDictionary(remainNode, oldDictionary));
         }
         GroupNode page = nodes[0];
         if (root.getChildrenSize() == 0) {
             page = root;
         }
-        return new NodeMergeResultSetImpl<GroupNode>(fetchSize, page, getDictionary(page, oldDictionary));
+        return new NodeMergeQRSImpl<GroupNode>(fetchSize, page, getDictionary(page, oldDictionary));
     }
 
     private List<Map<Integer, Object>> getDictionary(GroupNode root, List<Map<Integer, Object>> oldDictionary) {
@@ -175,7 +175,7 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
         if (remainResultSet != null) {
             return true;
         }
-        for (NodeMergeResultSet resultSet : sources) {
+        for (NodeMergeQRS resultSet : sources) {
             if (resultSet.hasNextPage()) {
                 return true;
             }
@@ -184,7 +184,7 @@ class NodeResultSetMerger implements Iterator<NodeMergeResultSet<GroupNode>> {
     }
 
     @Override
-    public NodeMergeResultSet<GroupNode> next() {
+    public NodeMergeQRS<GroupNode> next() {
         return getNext();
     }
 

@@ -1,9 +1,9 @@
 package com.fr.swift.result.node.resultset;
 
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.result.BaseNodeMergeResultSet;
+import com.fr.swift.result.BaseNodeMergeQRS;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.structure.Pair;
@@ -17,14 +17,14 @@ import java.util.Map;
  * @author Lyon
  * @date 2018/6/14
  */
-class ChainedNodeMergeResultSet extends BaseNodeMergeResultSet<GroupNode> {
+class ChainedNodeMergeQRS extends BaseNodeMergeQRS<GroupNode> {
 
-    private Iterator<NodeMergeResultSet<GroupNode>> iterator;
+    private Iterator<NodeMergeQRS<GroupNode>> iterator;
     private INodeQueryResultSetMerger merger;
 
-    ChainedNodeMergeResultSet(int fetchSize, boolean[] isGlobalIndexed, List<NodeMergeResultSet<GroupNode>> sources,
-                              List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators,
-                              INodeQueryResultSetMerger merger) {
+    ChainedNodeMergeQRS(int fetchSize, boolean[] isGlobalIndexed, List<NodeMergeQRS<GroupNode>> sources,
+                        List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators,
+                        INodeQueryResultSetMerger merger) {
         super(fetchSize);
         this.iterator = new NodeResultSetMerger(fetchSize, isGlobalIndexed, sources, aggregators, comparators);
         this.merger = merger;
@@ -35,7 +35,7 @@ class ChainedNodeMergeResultSet extends BaseNodeMergeResultSet<GroupNode> {
         if (!iterator.hasNext()) {
             return null;
         }
-        NodeMergeResultSet<GroupNode> resultSet = iterator.next();
+        NodeMergeQRS<GroupNode> resultSet = iterator.next();
         return resultSet.getPage();
     }
 
