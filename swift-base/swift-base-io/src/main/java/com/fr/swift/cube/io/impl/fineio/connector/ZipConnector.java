@@ -1,6 +1,8 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.IoUtil;
 import com.fr.third.org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
@@ -29,47 +31,49 @@ public class ZipConnector extends BaseConnector {
 
     @Override
     public InputStream read(FileBlock block) throws IOException {
-        FileInputStream fis = new FileInputStream(this.getPath(block, false));
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] bytes = new byte[1024];
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(this.getPath(block, false));
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] bytes = new byte[1024];
 
-        int len;
-        while ((len = fis.read(bytes, 0, 1024)) > 0) {
-            bos.write(bytes, 0, len);
+            int len;
+            while ((len = fis.read(bytes)) > 0) {
+                bos.write(bytes, 0, len);
+            }
+
+            return new ByteArrayInputStream(this.decompress(bos.toByteArray()));
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+            throw e;
+        } finally {
+            IoUtil.close(fis);
         }
-
-        byte[] data = this.decompress(bos.toByteArray());
-        if (fis != null) {
-            fis.close();
-        }
-
-        return new ByteArrayInputStream(data);
     }
 
     @Override
     public void write(FileBlock block, InputStream is) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] bytes = new byte[1024];
+        FileOutputStream fos = null;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] bytes = new byte[1024];
+            int len;
+            while ((len = is.read(bytes)) > 0) {
+                bos.write(bytes, 0, len);
+            }
 
-        int len;
-        while ((len = is.read(bytes, 0, 1024)) > 0) {
-            bos.write(bytes, 0, len);
+            byte[] data = this.compress(bos.toByteArray());
+            fos = new FileOutputStream(this.getPath(block, true));
+            fos.write(data);
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+            throw e;
+        } finally {
+            IoUtil.close(fos, is);
         }
-
-        byte[] data = this.compress(bos.toByteArray());
-        FileOutputStream fos = new FileOutputStream(this.getPath(block, true));
-        fos.write(data);
-        if (is != null) {
-            is.close();
-        }
-
-        if (fos != null) {
-            fos.close();
-        }
-
     }
 
-    public byte[] decompress(byte[] ready4Decompress) {
+    private byte[] decompress(byte[] ready4Decompress) {
         byte[] data;
         Inflater inflater = new Inflater();
         inflater.reset();
@@ -97,7 +101,7 @@ public class ZipConnector extends BaseConnector {
         return data;
     }
 
-    public byte[] compress(byte[] ready4Compress) {
+    private byte[] compress(byte[] ready4Compress) {
         byte[] data;
         Deflater deflater = new Deflater();
         deflater.reset();
