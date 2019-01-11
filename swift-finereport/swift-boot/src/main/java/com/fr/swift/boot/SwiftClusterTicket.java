@@ -89,7 +89,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
         InvokerCache.getInstance().bindInvoker(AnalyseService.class, analyseServiceInvoker);
         ClusterInvoker realTimeServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(RealtimeService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(SwiftRealtimeService.class, realTimeServiceInvoker);
-        InvokerCache.getInstance().bindInvoker(RealtimeService.class, analyseServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(RealtimeService.class, realTimeServiceInvoker);
         ClusterInvoker indexingServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(IndexingService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(SwiftIndexingService.class, indexingServiceInvoker);
         InvokerCache.getInstance().bindInvoker(IndexingService.class, indexingServiceInvoker);

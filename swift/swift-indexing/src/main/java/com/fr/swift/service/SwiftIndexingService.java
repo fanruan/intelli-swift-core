@@ -15,7 +15,7 @@ import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.SwiftRepositoryManager;
+import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.service.listener.RemoteSender;
@@ -62,7 +62,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     private transient boolean initable = true;
 
-    private transient SwiftRepositoryManager repositoryManager = SwiftContext.get().getBean(SwiftRepositoryManager.class);
 
     public SwiftIndexingService() {
     }
@@ -212,7 +211,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         }
 
         protected void upload(String src, String dest) throws IOException {
-            repositoryManager.currentRepo().copyToRemote(src, dest);
+            SwiftRepositoryManager.getManager().currentRepo().copyToRemote(src, dest);
         }
 
         public void doAfterUpload(SwiftRpcEvent event) {

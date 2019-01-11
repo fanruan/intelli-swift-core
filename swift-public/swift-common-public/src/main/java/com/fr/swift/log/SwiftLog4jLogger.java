@@ -1,5 +1,6 @@
 package com.fr.swift.log;
 
+import com.fr.swift.log.impl.BaseSwiftLogger;
 import com.fr.swift.util.Strings;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

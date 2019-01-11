@@ -31,7 +31,7 @@ public class SegmentTransfer {
         }
 
         final Segment oldSeg = newSegment(oldSegKey), newSeg = newSegment(newSegKey);
-        Inserter inserter = (Inserter) SwiftContext.get().getBean("inserter", newSeg);
+        Inserter inserter = SwiftContext.get().getBean("inserter", Inserter.class, newSeg);
         try {
             SEG_SVC.addSegments(Collections.singletonList(newSegKey));
 
