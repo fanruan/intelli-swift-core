@@ -57,6 +57,8 @@ import com.fr.swift.service.SwiftSyncDataProcessHandler;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.util.concurrent.CommonExecutor;
+import com.fr.swift.process.handler.SwiftCommonProcessHandler;
+import com.fr.swift.basics.handler.CommonProcessHandler;
 
 /**
  * @author anchore
@@ -166,5 +168,6 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         processHandlerRegistry.addHandler(InsertSegmentProcessHandler.class, SwiftInsertSegmentProcessHandler.class);
         processHandlerRegistry.addHandler(QueryableProcessHandler.class, SwiftQueryableProcessHandler.class);
         processHandlerRegistry.addHandler(AliveNodesProcessHandler.class, SwiftAliveNodesProcessHandler.class);
+        processHandlerRegistry.addHandler(CommonProcessHandler.class, SwiftCommonProcessHandler.class);
     }
 }
