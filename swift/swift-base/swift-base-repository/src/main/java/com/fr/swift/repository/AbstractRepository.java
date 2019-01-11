@@ -41,7 +41,7 @@ public abstract class AbstractRepository implements SwiftRepository {
         }
     }
 
-    public void closeFileSystem(SwiftFileSystem fileSystem) throws SwiftFileException {
+    protected void closeFileSystem(SwiftFileSystem fileSystem) throws SwiftFileException {
         if (null != fileSystem) {
             if (null == configuration) {
                 fileSystem.close();

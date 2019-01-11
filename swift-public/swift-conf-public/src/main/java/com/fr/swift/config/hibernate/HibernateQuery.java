@@ -47,7 +47,7 @@ public class HibernateQuery<T> implements ConfigQuery<T> {
                     list.add(builder.like(path, (String) where.getValue()));
                     break;
                 case IN:
-                    Predicate predicate = builder.in(path).getExpression().in(((Collection<?>) where.getValue()).toArray());
+                    Predicate predicate = builder.in(path).getExpression().in((Collection<?>) where.getValue());
                     list.add(predicate);
                     break;
                 case EQ:

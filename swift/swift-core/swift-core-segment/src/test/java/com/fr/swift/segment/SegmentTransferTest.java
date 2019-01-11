@@ -1,174 +1,135 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
-import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DetailColumn;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.operator.Inserter;
-import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.resultset.LimitedResultSet;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.powermock.reflect.Whitebox;
 
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * @author anchore
  * @date 2018/8/23
  */
-@RunWith(Parameterized.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(MockitoJUnitRunner.class)
+@PrepareForTest({SwiftContext.class, SegmentUtils.class})
 public class SegmentTransferTest {
-
-    private final SwiftMetaData meta = A.getMeta();
-    private final A a = new A();
-
-    private StoreType from, to;
-
-    public SegmentTransferTest(StoreType from, StoreType to) {
-        this.from = from;
-        this.to = to;
-    }
-
-    @Parameters
-    public static Collection<StoreType[]> data() {
-        return Arrays.<StoreType[]>asList(
-                new StoreType[]{StoreType.MEMORY, StoreType.FINE_IO});
-    }
-
-    @Rule
-    public TestRule getExternalResource() throws Exception {
-        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
-    }
+    @Mock
+    private Inserter inserter;
+    @Mock
+    private SegmentKey oldSegKey;
+    @Mock
+    private SwiftSegmentService swiftSegmentService;
 
     @Before
     public void setUp() throws Exception {
-        SourceKey tableKey = new SourceKey(meta.getTableName());
-        if (com.fr.swift.db.impl.SwiftDatabase.getInstance().existsTable(tableKey)) {
-            com.fr.swift.db.impl.SwiftDatabase.getInstance().dropTable(tableKey);
-        }
-    }
+        mockStatic(SwiftContext.class);
+        BeanFactory beanFactory = mock(BeanFactory.class);
+        when(SwiftContext.get()).thenReturn(beanFactory);
 
-    @Rule
-    public TestRule getReleasableLeakVerifier() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        return (TestRule) Class.forName("com.fr.swift.test.ReleasableLeakVerifier").newInstance();
+        Whitebox.setInternalState(SegmentTransfer.class, "SEG_SVC", swiftSegmentService);
+        when(beanFactory.getBean(eq("inserter"), eq(Inserter.class), Matchers.<Segment>any())).thenReturn(inserter);
+
+        when(swiftSegmentService.containsSegment(oldSegKey)).thenReturn(true);
+
+        mockStatic(SegmentUtils.class);
+        when(SegmentUtils.newSegment(Matchers.<SegmentKey>any())).thenReturn(mock(Segment.class));
+
+        whenNew(SegmentResultSet.class).withAnyArguments().thenReturn(mock(SegmentResultSet.class));
     }
 
     @Test
     public void transfer() throws Exception {
-        SourceKey tableKey = new SourceKey(meta.getTableName());
-        com.fr.swift.db.impl.SwiftDatabase.getInstance().createTable(tableKey, meta);
+        SegmentKey newSegKey = mock(SegmentKey.class);
+        SegmentTransfer transfer = new SegmentTransfer(oldSegKey, newSegKey);
 
-        SegmentKey oldSegKey = new SegmentKeyBean(tableKey, 0, from, SwiftDatabase.CUBE),
-                newSegKey = new SegmentKeyBean(tableKey, 0, to, SwiftDatabase.CUBE);
+        transfer.transfer();
 
-        Segment oldSeg = SegmentUtils.newSegment(oldSegKey);
-        Inserter inserter = (Inserter) SwiftContext.get().getBean("inserter", oldSeg);
-        int rowCount = 100;
-        inserter.insertData(new LimitedResultSet(new ResultSet(), rowCount));
+        // add seg conf
+        verify(swiftSegmentService).addSegments(eq(Collections.singletonList(newSegKey)));
 
-        assertSegUsable(rowCount, oldSegKey);
+        // insert
+        verify(inserter).insertData(Matchers.<SwiftResultSet>any());
 
-        new SegmentTransfer(oldSegKey, newSegKey).transfer();
+        // index
+        verifyStatic(SegmentUtils.class);
+        SegmentUtils.indexSegmentIfNeed(Matchers.<Iterable<Segment>>any());
 
-        assertSegUsable(rowCount, newSegKey);
-
-        assertConfUpdated(tableKey);
-
-        assertOldSegRemoved(oldSegKey);
+        // remove old seg
+        verify(swiftSegmentService).removeSegments(eq(Collections.singletonList(oldSegKey)));
+        verifyStatic(SegmentUtils.class);
+        SegmentUtils.clearSegment(oldSegKey);
     }
 
-    private void assertOldSegRemoved(SegmentKey oldSegKey) {
-        Segment oldSeg = SegmentUtils.newSegment(oldSegKey);
-        Assert.assertFalse(oldSeg.isReadable());
-        com.fr.swift.segment.column.Column<Object> column = oldSeg.getColumn(new ColumnKey("s"));
-        Assert.assertFalse(column.getDetailColumn().isReadable());
-        Assert.assertFalse(column.getDictionaryEncodedColumn().isReadable());
+    @Test
+    public void transferFailed() throws Exception {
+        doThrow(new Exception()).when(inserter).insertData(Matchers.<SwiftResultSet>any());
+
+        SegmentKey newSegKey = mock(SegmentKey.class);
+        SegmentTransfer transfer = new SegmentTransfer(oldSegKey, newSegKey);
+
+        transfer.transfer();
+
+        // add seg conf
+        verify(swiftSegmentService).addSegments(eq(Collections.singletonList(newSegKey)));
+
+        // insert failed
+        verify(inserter).insertData(Matchers.<SwiftResultSet>any());
+
+        // won't index
+        verifyStatic(SegmentUtils.class, times(0));
+        SegmentUtils.indexSegmentIfNeed(Matchers.<Iterable<Segment>>any());
+
+        // remove dirty seg
+        verify(swiftSegmentService).removeSegments(eq(Collections.singletonList(newSegKey)));
+        verifyStatic(SegmentUtils.class);
+        SegmentUtils.clearSegment(newSegKey);
     }
 
-    private void assertConfUpdated(SourceKey tableKey) {
-        List<SegmentKey> segKeys = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegmentKeys(tableKey);
-        Assert.assertEquals(1, segKeys.size());
-        Assert.assertEquals(to, segKeys.get(0).getStoreType());
-    }
+    @Test
+    public void transferNothing() throws Exception {
+        when(swiftSegmentService.containsSegment(oldSegKey)).thenReturn(false);
 
-    private void assertSegUsable(int rowCount, SegmentKey segKey) {
-        Segment seg = SegmentUtils.newSegment(segKey);
-        Assert.assertEquals(rowCount, seg.getRowCount());
+        SegmentKey newSegKey = mock(SegmentKey.class);
+        SegmentTransfer transfer = new SegmentTransfer(oldSegKey, newSegKey);
 
-        com.fr.swift.segment.column.Column<Object> column = seg.getColumn(new ColumnKey("l"));
-        DetailColumn<Object> detail = column.getDetailColumn();
+        transfer.transfer();
 
-        for (int i = 0; i < rowCount; i++) {
-            Assert.assertEquals(a.l, detail.get(i));
-        }
+        // won't add seg conf, insert
+        verify(swiftSegmentService).containsSegment(oldSegKey);
+        verifyNoMoreInteractions(swiftSegmentService);
+        verifyZeroInteractions(inserter);
 
-        if (!seg.isHistory()) {
-            DictionaryEncodedColumn<Object> dict = column.getDictionaryEncodedColumn();
-            Assert.assertEquals(2, dict.size());
-            for (int i = 0; i < rowCount; i++) {
-                Assert.assertEquals(a.l, dict.getValue(dict.getIndexByRow(i)));
-            }
-        }
-    }
+        // won't index
+        verifyStatic(SegmentUtils.class, times(0));
+        SegmentUtils.indexSegmentIfNeed(Matchers.<Iterable<Segment>>any());
 
-    class ResultSet implements SwiftResultSet {
-        @Override
-        public int getFetchSize() {
-            return 0;
-        }
-
-        @Override
-        public SwiftMetaData getMetaData() {
-            return meta;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return true;
-        }
-
-        @Override
-        public Row getNextRow() {
-            return new ListBasedRow(Arrays.<Object>asList(a.l, a.d, a.s));
-        }
-
-        @Override
-        public void close() {
-        }
-    }
-
-    static class A {
-        long l = 2;
-
-        double d = 0.76;
-
-        String s = "string";
-
-        static SwiftMetaData getMeta() {
-            return new SwiftMetaDataBean("A",
-                    Arrays.<SwiftMetaDataColumn>asList(
-                            new MetaDataColumnBean("l", Types.BIGINT),
-                            new MetaDataColumnBean("d", Types.DOUBLE),
-                            new MetaDataColumnBean("s", Types.VARCHAR)));
-        }
+        // won't remove old seg
+        verifyStatic(SegmentUtils.class, times(0));
+        SegmentUtils.clearSegment(oldSegKey);
     }
 }

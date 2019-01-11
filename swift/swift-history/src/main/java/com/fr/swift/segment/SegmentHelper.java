@@ -148,7 +148,7 @@ public class SegmentHelper {
                 SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
                 SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
                 final SourceKey sourceKey = dataSource.getSourceKey();
-                SwiftTablePathBean entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+                SwiftTablePathBean entity = tablePathService.get(sourceKey.getId());
                 Integer path = entity.getTablePath();
                 path = null == path ? -1 : path;
                 Integer tmpPath = entity.getTmpDir();
@@ -190,7 +190,6 @@ public class SegmentHelper {
         try {
             SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
             if (null != repository) {
-                SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
                 SourceKey sourceKey = relation.getForeignSource();
                 SourceKey primary = relation.getPrimarySource();
                 Map<SegmentKey, List<String>> segNeedUpload = new HashMap<SegmentKey, List<String>>();

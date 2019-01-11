@@ -19,7 +19,6 @@
         <module>swift-rpc-fr</module>
         <module>swift-config-fr</module>
         <module>swift-repo-fr</module>
-        <module>swift-jdbc-emb</module>
         <module>swift-common-fr</module>
         <module>swift-api-fr</module>
     </modules>

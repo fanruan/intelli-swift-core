@@ -30,10 +30,6 @@
                     <artifactId>hibernate-jpa-2.1-api</artifactId>
                     <groupId>org.hibernate.javax.persistence</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>jboss-logging</artifactId>
-                    <groupId>org.jboss.logging</groupId>
-                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -56,7 +52,12 @@
             <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.197</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
