@@ -8,7 +8,7 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
-import com.fr.swift.result.node.resultset.ChainedNodeResultSet;
+import com.fr.swift.result.node.resultset.ChainedNodeQRS;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
@@ -41,6 +41,6 @@ public class TreeFilterQuery implements PostQuery<QueryResultSet> {
                 return node;
             }
         };
-        return new ChainedNodeResultSet(operator, query.getQueryResult());
+        return new ChainedNodeQRS(operator, query.getQueryResult());
     }
 }

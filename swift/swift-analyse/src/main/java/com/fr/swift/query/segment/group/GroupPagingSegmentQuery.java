@@ -3,9 +3,9 @@ package com.fr.swift.query.segment.group;
 import com.fr.swift.query.group.by2.node.NodeGroupByUtils;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
-import com.fr.swift.result.BaseNodeMergeResultSet;
+import com.fr.swift.result.BaseNodeMergeQRS;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.Pair;
 
@@ -24,11 +24,11 @@ public class GroupPagingSegmentQuery extends AbstractGroupSegmentQuery {
 
     @Override
     public QueryResultSet getQueryResult() {
-        final Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
-        return new BaseNodeMergeResultSet<GroupNode>(groupByInfo.getFetchSize()) {
+        final Iterator<NodeMergeQRS<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
+        return new BaseNodeMergeQRS<GroupNode>(groupByInfo.getFetchSize()) {
             @Override
             public Pair<GroupNode, List<Map<Integer, Object>>> getPage() {
-                NodeMergeResultSet<GroupNode> resultSet = iterator.next();
+                NodeMergeQRS<GroupNode> resultSet = iterator.next();
                 return resultSet.getPage();
             }
 

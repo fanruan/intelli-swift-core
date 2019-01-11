@@ -37,7 +37,7 @@ import java.util.Set;
 /**
  * Created by Lyon on 2018/6/7.
  */
-class FilterInfoParser {
+public class FilterInfoParser {
 
     static FilterInfo parse(SourceKey table, FilterInfoBean bean) {
         // TODO: 2018/7/11 化简过滤条件，这边的使用策略可以结合具体场景更智能一点

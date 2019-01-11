@@ -32,7 +32,7 @@ public class DetailFilterFactory {
 
     public static DetailFilter createFilter(Segment segment, SwiftDetailFilterInfo filterInfo) {
         // 通用过滤器没有fieldName
-        int rowCount = segment.getRowCount();
+        int rowCount = segment == null ? 0 : segment.getRowCount();
         ColumnKey columnKey = filterInfo.getColumnKey();
         Column column;
         if (null == columnKey || Strings.isEmpty(columnKey.getName())) {

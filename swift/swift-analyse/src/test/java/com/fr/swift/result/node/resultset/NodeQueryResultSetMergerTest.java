@@ -5,9 +5,9 @@ import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.BaseNodeMergeResultSet;
+import com.fr.swift.result.BaseNodeMergeQRS;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.Row;
@@ -32,7 +32,7 @@ public class NodeQueryResultSetMergerTest extends TestCase {
         List<Map<Integer, Object>> map = new ArrayList<Map<Integer, Object>>();
         double value = 5;
         int numberOfNodeQRS = 3;
-        List<NodeMergeResultSet<GroupNode>> resultSets = new ArrayList<NodeMergeResultSet<GroupNode>>();
+        List<NodeMergeQRS<GroupNode>> resultSets = new ArrayList<NodeMergeQRS<GroupNode>>();
         for (int n = 0; n < numberOfNodeQRS; n++) {
             String k = "";
             List<Pair<GroupNode, List<Map<Integer, Object>>>> pages = new ArrayList<Pair<GroupNode, List<Map<Integer, Object>>>>();
@@ -51,7 +51,7 @@ public class NodeQueryResultSetMergerTest extends TestCase {
         NodeQueryResultSetMerger merger = new NodeQueryResultSetMerger(fetchSize, new boolean[]{false},
                 Arrays.asList(AggregatorFactory.createAggregator(AggregatorType.COUNT)),
                 Arrays.asList(Pair.of(SortType.ASC, ColumnTypeConstants.ClassType.STRING)));
-        NodeMergeResultSet<GroupNode> resultSet = merger.merge(resultSets);
+        NodeMergeQRS<GroupNode> resultSet = merger.merge(resultSets);
         List<Row> rows = new ArrayList<Row>();
         while (resultSet.hasNextPage()) {
             Pair<GroupNode, List<Map<Integer, Object>>> page = resultSet.getPage();
@@ -78,7 +78,7 @@ public class NodeQueryResultSetMergerTest extends TestCase {
         return root;
     }
 
-    private static class TestNodeQRS extends BaseNodeMergeResultSet<GroupNode> {
+    private static class TestNodeQRS extends BaseNodeMergeQRS<GroupNode> {
 
         Iterator<Pair<GroupNode, List<Map<Integer, Object>>>> iterator;
 

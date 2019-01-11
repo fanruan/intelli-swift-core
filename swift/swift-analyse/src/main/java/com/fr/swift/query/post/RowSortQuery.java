@@ -6,7 +6,7 @@ import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.SwiftRowOperator;
-import com.fr.swift.result.node.resultset.FakeNodeResultSet;
+import com.fr.swift.result.node.resultset.FakeNodeQRS;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
@@ -58,7 +58,7 @@ public class RowSortQuery implements PostQuery<QueryResultSet> {
                 }));
             }
         };
-        return new FakeNodeResultSet(operator, resultSet);
+        return new FakeNodeQRS(operator, resultSet);
     }
 
     private static void sortRow(final int dimensionSize, List<List<SwiftNode>> rows, final List<Sort> sorts) {

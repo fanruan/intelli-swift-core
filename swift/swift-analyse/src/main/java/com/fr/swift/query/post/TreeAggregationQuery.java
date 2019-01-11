@@ -2,7 +2,7 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.node.GroupNodeAggregateUtils;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.Pair;
@@ -26,7 +26,7 @@ public class TreeAggregationQuery implements PostQuery<QueryResultSet> {
 
     @Override
     public QueryResultSet getQueryResult() throws SQLException {
-        NodeMergeResultSet<GroupNode> mergeResult = (NodeMergeResultSet<GroupNode>) query.getQueryResult();
+        NodeMergeQRS<GroupNode> mergeResult = (NodeMergeQRS<GroupNode>) query.getQueryResult();
         Pair<GroupNode, List<Map<Integer, Object>>> pair = mergeResult.getPage();
         GroupNodeAggregateUtils.aggregateMetric(pair.getValue().size(), pair.getKey(), aggregators);
         // TODO: 2018/11/27

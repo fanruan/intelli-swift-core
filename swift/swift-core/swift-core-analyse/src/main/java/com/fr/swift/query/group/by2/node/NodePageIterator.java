@@ -6,8 +6,8 @@ import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeMergeResultSetImpl;
+import com.fr.swift.result.NodeMergeQRS;
+import com.fr.swift.result.NodeMergeQRSImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.segment.column.Column;
@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/7/25.
  */
-class NodePageIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
+class NodePageIterator implements Iterator<NodeMergeQRS<GroupNode>> {
 
     private int dimensionSize;
     private GroupByInfo groupByInfo;
@@ -38,9 +38,9 @@ class NodePageIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
                 new ItemMapper(groupByInfo.getDimensions()), new RowMapper(metricInfo));
     }
 
-    private NodeMergeResultSet<GroupNode> getNext() {
+    private NodeMergeQRS<GroupNode> getNext() {
         GroupNode root = iterator.next();
-        return new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(), root, getGlobalDictionaries(root));
+        return new NodeMergeQRSImpl<GroupNode>(groupByInfo.getFetchSize(), root, getGlobalDictionaries(root));
     }
 
     @Override
@@ -49,7 +49,7 @@ class NodePageIterator implements Iterator<NodeMergeResultSet<GroupNode>> {
     }
 
     @Override
-    public NodeMergeResultSet<GroupNode> next() {
+    public NodeMergeQRS<GroupNode> next() {
         return getNext();
     }
 

@@ -66,7 +66,7 @@ public class QueryInfoParser {
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilter());
         List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensions(), bean.getSorts());
         List<Metric> metrics = MetricParser.parse(table, bean.getAggregations());
-        List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(bean.getPostAggregations(), dimensions, bean.getAggregations());
+        List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(table, bean.getPostAggregations(), dimensions, bean.getAggregations());
         if (!isPageable(postQueryInfoList)) {
             // 全部计算
             bean.setFetchSize(Integer.MAX_VALUE);
