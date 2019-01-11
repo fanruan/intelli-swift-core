@@ -14,6 +14,7 @@ import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.basics.handler.AliveNodesProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
+import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.basics.handler.MasterProcessHandler;
@@ -31,6 +32,7 @@ import com.fr.swift.event.ClusterType;
 import com.fr.swift.log.SwiftLog4jLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.process.handler.SwiftAliveNodesProcessHandler;
+import com.fr.swift.process.handler.SwiftCommonProcessHandler;
 import com.fr.swift.process.handler.SwiftNodesProcessHandler;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.event.MaskHistoryListener;
@@ -137,5 +139,6 @@ public class SwiftEngineStart {
         processHandlerRegistry.addHandler(InsertSegmentProcessHandler.class, SwiftInsertSegmentProcessHandler.class);
         processHandlerRegistry.addHandler(QueryableProcessHandler.class, SwiftQueryableProcessHandler.class);
         processHandlerRegistry.addHandler(AliveNodesProcessHandler.class, SwiftAliveNodesProcessHandler.class);
+        processHandlerRegistry.addHandler(CommonProcessHandler.class, SwiftCommonProcessHandler.class);
     }
 }
