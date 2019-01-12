@@ -1,12 +1,14 @@
 package com.fr.swift.structure;
 
 import java.io.Serializable;
+import java.util.Map.Entry;
 
 /**
  * @author anchore
  * @date 2018/1/2
  */
-public class Pair<K, V> implements Serializable {
+public class Pair<K, V> implements Entry<K, V>, Serializable {
+
     private static final long serialVersionUID = 4248136150831910862L;
 
     private K key;
@@ -22,20 +24,17 @@ public class Pair<K, V> implements Serializable {
         return new Pair<K, V>(key, val);
     }
 
+    @Override
     public K getKey() {
         return key;
     }
 
+    @Override
     public V getValue() {
         return value;
     }
 
-    public K setKey(K key) {
-        K oldKey = this.key;
-        this.key = key;
-        return oldKey;
-    }
-
+    @Override
     public V setValue(V value) {
         V oldValue = this.value;
         this.value = value;

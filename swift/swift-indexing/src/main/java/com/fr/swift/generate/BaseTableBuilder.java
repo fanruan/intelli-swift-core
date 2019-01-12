@@ -99,7 +99,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                     try {
                         LocalTask indexTask = new LocalTaskImpl(
                                 CubeTasks.newIndexColumnTaskKey(round, dataSource, columnName),
-                                new ColumnIndexer(dataSource, new ColumnKey(columnName), segments));
+                                new ColumnIndexer(new ColumnKey(columnName), segments));
                         transportTask.addNext(indexTask);
 
                         if (!columnConf.isRequireGlobalDict()) {

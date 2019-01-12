@@ -97,7 +97,7 @@ public class SegmentUtils {
         for (int i = 0; i < metadata.getColumnCount(); i++) {
             ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
             try {
-                SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, metadata, columnKey, hisSegs).buildIndex();
+                SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, columnKey, hisSegs).buildIndex();
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }

@@ -6,7 +6,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.SubDateColumn;
-import com.fr.swift.source.DataSource;
 
 import java.util.List;
 
@@ -17,8 +16,8 @@ import java.util.List;
 public class SubDateColumnIndexer<Derive> extends ColumnIndexer<Derive> {
     protected GroupType type;
 
-    public SubDateColumnIndexer(DataSource dataSource, ColumnKey key, GroupType type, List<Segment> segments) {
-        super(dataSource, key, segments);
+    public SubDateColumnIndexer(ColumnKey key, GroupType type, List<Segment> segments) {
+        super(key, segments);
         this.type = type;
     }
 
