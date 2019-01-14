@@ -20,7 +20,6 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.intlist.BaseIntListExternalMap;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
-import com.fr.swift.test.TestResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,7 +93,7 @@ public class ColumnIndexerTest {
 
         // location
         when(location.getStoreType()).thenReturn(StoreType.FINE_IO);
-        when(location.getAbsolutePath()).thenReturn(TestResource.getRunPath(getClass()) + "/cubes/table/0/seg0/column");
+        when(location.getAbsolutePath()).thenReturn("/cubes/table/0/seg0/column");
         when(location.buildChildLocation(anyString())).thenReturn(location);
 
         // meta

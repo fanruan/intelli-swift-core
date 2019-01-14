@@ -12,9 +12,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.net.URI;
 
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -47,8 +44,8 @@ public class StringFineIoWriterTest {
         stringWriter.put(0, "\1\2\3");
         stringWriter.put(1, null);
 
-        verify(byteArrayWriter).put(eq(0L), notNull(byte[].class));
-        verify(byteArrayWriter).put(eq(1L), isNull(byte[].class));
+        verify(byteArrayWriter).put(0L, "\1\2\3".getBytes(StringWriter.CHARSET));
+        verify(byteArrayWriter).put(1L, null);
     }
 
     @Test
