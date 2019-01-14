@@ -3,10 +3,13 @@ package com.fr.swift.db.impl;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.QueryRunnerProvider;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.IndexQuery;
-import com.fr.swift.query.query.QueryRunnerProvider;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
 import java.net.URI;

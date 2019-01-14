@@ -1,9 +1,11 @@
-package com.fr.swift.query.query;
+package com.fr.swift.query;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
+import com.fr.swift.query.query.IndexQuery;
+import com.fr.swift.query.query.QueryIndexRunner;
 import com.fr.swift.segment.Segment;
 
 import java.net.URI;
@@ -23,6 +25,10 @@ public class QueryRunnerProvider {
     public static QueryRunnerProvider getInstance() {
         return ourInstance;
     }
+
+//    public static SwiftResultSet query(String queryJson) {
+//
+//    }
 
     public Map<URI, IndexQuery<ImmutableBitMap>> executeIndexQuery(Table table, Where where) throws Exception {
         return getIndexRunner().getBitMap(table, where);
