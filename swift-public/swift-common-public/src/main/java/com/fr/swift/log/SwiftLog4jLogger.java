@@ -5,8 +5,6 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Optional;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.slf4j.helpers.FormattingTuple;
-import org.slf4j.helpers.MessageFormatter;
 
 /**
  * @author anchore

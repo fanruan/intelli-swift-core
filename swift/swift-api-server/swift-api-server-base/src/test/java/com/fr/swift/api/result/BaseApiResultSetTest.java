@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
  * @author yee
  * @date 2019-01-03
  */
-public class OnePageApiResultSetTest {
+public class BaseApiResultSetTest {
 
     @Test
     public void getPage() throws SQLException {
@@ -26,13 +26,13 @@ public class OnePageApiResultSetTest {
         final SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
         final List<Row> rows = Arrays.<Row>asList(new ListBasedRow(1L), new ListBasedRow(2L), new ListBasedRow(3L));
         // Generate by Mock Plugin
-        OnePageApiResultSet mockOnePageApiResultSet = PowerMock.createMock(OnePageApiResultSet.class, null, mockSwiftMetaData, rows, rows.size(), true);
-        SwiftApiResultSet nextPage = PowerMock.createMock(OnePageApiResultSet.class, null, mockSwiftMetaData, rows, rows.size(), false);
-        EasyMock.expect(mockOnePageApiResultSet.queryNextPage(EasyMock.anyObject())).andReturn(nextPage).once();
+        BaseApiResultSet mockBaseApiResultSet = PowerMock.createMock(BaseApiResultSet.class, null, mockSwiftMetaData, rows, rows.size(), true);
+        SwiftApiResultSet nextPage = PowerMock.createMock(BaseApiResultSet.class, null, mockSwiftMetaData, rows, rows.size(), false);
+        EasyMock.expect(mockBaseApiResultSet.queryNextPage(EasyMock.anyObject())).andReturn(nextPage).once();
         PowerMock.replayAll();
         int count = 0;
-        while (mockOnePageApiResultSet.hasNext()) {
-            Row row = mockOnePageApiResultSet.getNextRow();
+        while (mockBaseApiResultSet.hasNext()) {
+            Row row = mockBaseApiResultSet.getNextRow();
             assertNotNull(row);
             count++;
         }
