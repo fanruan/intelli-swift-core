@@ -1,5 +1,6 @@
 package com.fr.swift.db.impl;
 
+import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
@@ -26,14 +27,28 @@ import java.util.Map;
 public class SwiftWhere implements Where, Serializable {
 
     private static final long serialVersionUID = 1116521843669790563L;
-    private FilterBean filterBean;
+    private transient FilterBean filterBean;
+    private String filterBeanJson;
 
     public SwiftWhere(FilterBean filterBean) {
         this.filterBean = filterBean;
+        try {
+            this.filterBeanJson = JsonBuilder.writeJsonString(filterBean);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("build filter bean json failed", e);
+        }
+
     }
 
     @Override
     public FilterBean getFilterBean() {
+        if (null == filterBean && Strings.isNotEmpty(filterBeanJson)) {
+            try {
+                filterBean = JsonBuilder.readValue(filterBeanJson, FilterInfoBean.class);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error("build filter bean failed", e);
+            }
+        }
         return filterBean;
     }
 
