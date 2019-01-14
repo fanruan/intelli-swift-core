@@ -19,6 +19,7 @@ import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.basics.handler.AliveNodesProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
+import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.basics.handler.MasterProcessHandler;
@@ -37,6 +38,7 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.log.SwiftFrLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.process.handler.SwiftAliveNodesProcessHandler;
+import com.fr.swift.process.handler.SwiftCommonProcessHandler;
 import com.fr.swift.process.handler.SwiftNodesProcessHandler;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.MaskHistoryListener;
@@ -166,5 +168,6 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         processHandlerRegistry.addHandler(InsertSegmentProcessHandler.class, SwiftInsertSegmentProcessHandler.class);
         processHandlerRegistry.addHandler(QueryableProcessHandler.class, SwiftQueryableProcessHandler.class);
         processHandlerRegistry.addHandler(AliveNodesProcessHandler.class, SwiftAliveNodesProcessHandler.class);
+        processHandlerRegistry.addHandler(CommonProcessHandler.class, SwiftCommonProcessHandler.class);
     }
 }

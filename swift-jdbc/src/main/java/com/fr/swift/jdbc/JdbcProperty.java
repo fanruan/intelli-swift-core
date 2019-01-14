@@ -1,8 +1,13 @@
 package com.fr.swift.jdbc;
 
+import com.fr.swift.jdbc.rpc.serializable.clazz.CachingClassResolver;
+import com.fr.swift.jdbc.rpc.serializable.clazz.ClassLoaderClassResolver;
+import com.fr.swift.jdbc.rpc.serializable.clazz.ClassResolver;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author yee
@@ -21,6 +26,7 @@ public final class JdbcProperty {
     private long connectionTimeout;
     private int statementMaxIdle;
     private boolean compliant;
+    private ClassResolver resolver;
 
     public JdbcProperty(
             String connectionSchema,
@@ -35,6 +41,8 @@ public final class JdbcProperty {
         this.connectionTimeout = connectionTimeout;
         this.statementMaxIdle = statementMaxIdle;
         this.compliant = compliant;
+        ClassResolver resolver = new ClassLoaderClassResolver(Thread.currentThread().getContextClassLoader());
+        this.resolver = new CachingClassResolver(resolver, new ConcurrentHashMap<String, Class<?>>());
     }
 
     public static JdbcProperty get() {
@@ -109,5 +117,10 @@ public final class JdbcProperty {
 
     public Integer getStatementMaxIdle() {
         return statementMaxIdle;
+    }
+
+
+    public ClassResolver getClassResolver() {
+        return resolver;
     }
 }

@@ -1,5 +1,7 @@
 package com.fr.swift.jdbc.rpc.serializable.stream;
 
+import com.fr.swift.jdbc.rpc.serializable.clazz.ClassResolver;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,10 +14,10 @@ import java.io.StreamCorruptedException;
  * @date 2018/8/26
  */
 public class CompactObjectInputStream extends ObjectInputStream {
-    private final ClassLoader classResolver;
-    private final int VERSION = 5;
+    private static final int VERSION = 5;
+    private final ClassResolver classResolver;
 
-    public CompactObjectInputStream(InputStream in, ClassLoader classResolver) throws IOException {
+    public CompactObjectInputStream(InputStream in, ClassResolver classResolver) throws IOException {
         super(in);
         this.classResolver = classResolver;
     }
@@ -39,7 +41,7 @@ public class CompactObjectInputStream extends ObjectInputStream {
                     return super.readClassDescriptor();
                 case 1:
                     String className = this.readUTF();
-                    Class<?> clazz = this.classResolver.loadClass(className);
+                    Class<?> clazz = this.classResolver.resolve(className);
                     return ObjectStreamClass.lookupAny(clazz);
                 default:
                     throw new StreamCorruptedException("Unexpected class descriptor type: " + type);
@@ -51,7 +53,7 @@ public class CompactObjectInputStream extends ObjectInputStream {
     protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
         Class clazz;
         try {
-            clazz = this.classResolver.loadClass(desc.getName());
+            clazz = this.classResolver.resolve(desc.getName());
         } catch (ClassNotFoundException var4) {
             clazz = super.resolveClass(desc);
         }

@@ -19,9 +19,6 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.info.bean.query.QueryBeanFactory;
-import com.fr.swift.query.info.bean.query.QueryInfoBean;
-import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
@@ -44,7 +41,6 @@ import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -137,20 +133,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         SwiftLoggers.getLogger().info("recover");
     }
 
-    /**
-     * todo SwiftHistoryService
-     */
-    @Override
-    public SwiftResultSet query(final String queryDescription) throws SQLException {
-        try {
-            final QueryInfoBean bean = QueryBeanFactory.create(queryDescription);
-            SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
-            // TODO: 2018/11/28  
-            return (SwiftResultSet) sessionFactory.openSession(bean.getQueryId()).executeQuery(bean);
-        } catch (Exception e) {
-            throw new SQLException(e);
-        }
-    }
 
     /**
      * todo 公用实现，SwiftHistoryService

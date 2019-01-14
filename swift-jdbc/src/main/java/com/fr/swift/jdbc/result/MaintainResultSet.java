@@ -103,7 +103,7 @@ public class MaintainResultSet extends BaseResultSet {
                         return Types.BIGINT;
                     }
                 }
-                return Types.VARBINARY;
+                return Types.VARCHAR;
             }
         };
     }
