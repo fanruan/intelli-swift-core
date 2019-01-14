@@ -318,27 +318,31 @@ public class JsonParser {
         if (hasStatus(STATUS_EXPECT_SINGLE_VALUE)) {
             // single string:
             String str = (String) currentToken.getValue();
-            str = str.replace(ObjectJsonWriter.QUOTATION_REPLACEMENT, "\"");
+            str = str.replace(ObjectJsonWriter.D_QUOTA_REPLACEMENT, "\"");
+            str = str.replace(ObjectJsonWriter.S_QUOTA_REPLACEMENT, "'");
             stack.push(StackValue.newJsonSingle(str));
             status = STATUS_EXPECT_END_DOCUMENT;
             return;
         }
         if (hasStatus(STATUS_EXPECT_OBJECT_KEY)) {
             String str = (String) currentToken.getValue();
-            str = str.replace(ObjectJsonWriter.QUOTATION_REPLACEMENT, "\"");
+            str = str.replace(ObjectJsonWriter.D_QUOTA_REPLACEMENT, "\"");
+            str = str.replace(ObjectJsonWriter.S_QUOTA_REPLACEMENT, "'");
             stack.push(StackValue.newJsonObjectKey(str));
             status = STATUS_EXPECT_COLON;
             return;
         }
         if (hasStatus(STATUS_EXPECT_OBJECT_VALUE)) {
             String str = (String) currentToken.getValue();
-            str = str.replace(ObjectJsonWriter.QUOTATION_REPLACEMENT, "\"");
+            str = str.replace(ObjectJsonWriter.D_QUOTA_REPLACEMENT, "\"");
+            str = str.replace(ObjectJsonWriter.S_QUOTA_REPLACEMENT, "'");
             dealObjectValue(str);
             return;
         }
         if (hasStatus(STATUS_EXPECT_ARRAY_VALUE)) {
             String str = (String) currentToken.getValue();
-            str = str.replace(ObjectJsonWriter.QUOTATION_REPLACEMENT, "\"");
+            str = str.replace(ObjectJsonWriter.D_QUOTA_REPLACEMENT, "\"");
+            str = str.replace(ObjectJsonWriter.S_QUOTA_REPLACEMENT, "'");
             stack.peek(StackValue.TYPE_ARRAY).valueAsArray().add(str);
             status = STATUS_EXPECT_COMMA | STATUS_EXPECT_END_ARRAY;
             return;
