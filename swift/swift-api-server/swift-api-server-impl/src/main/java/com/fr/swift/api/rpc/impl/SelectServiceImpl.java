@@ -7,19 +7,15 @@ import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
-import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.SwiftResultSetUtils;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,7 +29,6 @@ import java.util.List;
 @SwiftApi
 @SwiftBean
 public class SelectServiceImpl implements SelectService {
-    private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
     private TableService tableService = SwiftContext.get().getBean(TableService.class);
 
     @Override
@@ -43,18 +38,9 @@ public class SelectServiceImpl implements SelectService {
             QueryBean queryBean = QueryBeanFactory.create(queryJson);
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {
                 String tableName = queryBean.getTableName();
-                SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableName);
-                AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-                SwiftResultSet resultSet = null;
-                if (null != metaData && metaData.getSwiftDatabase() == database) {
-                    resultSet = SwiftResultSetUtils.toSwiftResultSet(
-                            service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
-                } else {
-                    metaData = tableService.detectiveMetaData(database, tableName);
-                    ((AbstractSingleTableQueryInfoBean) queryBean).setTableName(metaData.getId());
-                    resultSet = SwiftResultSetUtils.toSwiftResultSet(
-                            service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
-                }
+                // 检查当前数据库下是否有这张表
+                tableService.detectiveMetaData(database, tableName);
+                SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(queryJson);
                 return getPageResultSet(resultSet);
             }
             throw new UnsupportedOperationException();
