@@ -1,7 +1,7 @@
 package com.fr.swift.result.node.resultset;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
-import com.fr.swift.result.BaseNodeResultSet;
+import com.fr.swift.result.BaseNodeQRS;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
@@ -18,12 +18,12 @@ import static org.junit.Assert.fail;
 /**
  * Created by lyon on 2019/1/8.
  */
-public class ChainedNodeResultSetTest {
+public class ChainedNodeQRSTest {
 
     static int fetchSize = 10;
 
     static QueryResultSet<SwiftNode> create() {
-        return new BaseNodeResultSet(fetchSize) {
+        return new BaseNodeQRS(fetchSize) {
 
             private boolean hasNextPage = true;
 
@@ -43,11 +43,11 @@ public class ChainedNodeResultSetTest {
         };
     }
 
-    private ChainedNodeResultSet rs;
+    private ChainedNodeQRS rs;
 
     @Before
     public void setUp() throws Exception {
-        rs = new ChainedNodeResultSet(new SwiftNodeOperator() {
+        rs = new ChainedNodeQRS(new SwiftNodeOperator() {
             @Override
             public SwiftNode apply(SwiftNode p) {
                 return p;
@@ -57,7 +57,7 @@ public class ChainedNodeResultSetTest {
 
     @Test
     public void getPage() {
-        rs = new ChainedNodeResultSet(new SwiftNodeOperator() {
+        rs = new ChainedNodeQRS(new SwiftNodeOperator() {
             @Override
             public SwiftNode apply(SwiftNode p) {
                 return p;
@@ -70,7 +70,7 @@ public class ChainedNodeResultSetTest {
 
     @Test
     public void convert() {
-        rs = new ChainedNodeResultSet(new SwiftNodeOperator() {
+        rs = new ChainedNodeQRS(new SwiftNodeOperator() {
             @Override
             public SwiftNode apply(SwiftNode p) {
                 return p;

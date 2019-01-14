@@ -7,11 +7,11 @@ import com.fr.swift.source.SwiftMetaData;
 /**
  * Created by lyon on 2018/12/29.
  */
-public abstract class BaseNodeResultSet implements QueryResultSet<SwiftNode> {
+public abstract class BaseNodeQRS implements NodeQRS {
 
     private int fetchSize;
 
-    public BaseNodeResultSet(int fetchSize) {
+    public BaseNodeQRS(int fetchSize) {
         this.fetchSize = fetchSize;
     }
 

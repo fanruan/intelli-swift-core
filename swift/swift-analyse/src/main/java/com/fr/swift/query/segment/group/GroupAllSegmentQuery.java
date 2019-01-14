@@ -4,8 +4,8 @@ import com.fr.swift.query.group.by2.node.NodeGroupByUtils;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
-import com.fr.swift.result.NodeMergeResultSetImpl;
+import com.fr.swift.result.NodeMergeQRS;
+import com.fr.swift.result.NodeMergeQRSImpl;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
 
     @Override
     public QueryResultSet getQueryResult() {
-        Iterator<NodeMergeResultSet<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
-        return (iterator.hasNext() ? iterator.next() : new NodeMergeResultSetImpl<GroupNode>(groupByInfo.getFetchSize(),
+        Iterator<NodeMergeQRS<GroupNode>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
+        return (iterator.hasNext() ? iterator.next() : new NodeMergeQRSImpl<GroupNode>(groupByInfo.getFetchSize(),
                 new GroupNode(-1, null), new ArrayList<Map<Integer, Object>>()));
     }
 }

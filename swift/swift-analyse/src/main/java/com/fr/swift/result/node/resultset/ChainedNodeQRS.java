@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
-import com.fr.swift.result.BaseNodeResultSet;
+import com.fr.swift.result.BaseNodeQRS;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNode2RowIterator;
 import com.fr.swift.result.SwiftNodeOperator;
@@ -16,12 +16,12 @@ import java.util.Iterator;
  * @author Lyon
  * @date 2018/6/12
  */
-public class ChainedNodeResultSet extends BaseNodeResultSet {
+public class ChainedNodeQRS extends BaseNodeQRS {
 
     private SwiftNodeOperator operator;
     private QueryResultSet<SwiftNode> source;
 
-    public ChainedNodeResultSet(SwiftNodeOperator operator, QueryResultSet<SwiftNode> source) {
+    public ChainedNodeQRS(SwiftNodeOperator operator, QueryResultSet<SwiftNode> source) {
         super(source.getFetchSize());
         this.operator = operator;
         this.source = source;

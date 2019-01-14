@@ -10,14 +10,14 @@ import java.util.Map;
  * @author Lyon
  * @date 2018/4/27
  */
-public class NodeMergeResultSetImpl<T extends GroupNode> extends BaseNodeMergeResultSet<T> {
+public class NodeMergeQRSImpl<T extends GroupNode> extends BaseNodeMergeQRS<T> {
 
     private T root;
     private List<Map<Integer, Object>> rowGlobalDictionaries;
 
     private boolean hasNextPage = true;
 
-    public NodeMergeResultSetImpl(int fetchSize, T root, List<Map<Integer, Object>> rowGlobalDictionaries) {
+    public NodeMergeQRSImpl(int fetchSize, T root, List<Map<Integer, Object>> rowGlobalDictionaries) {
         super(fetchSize);
         this.root = root;
         this.rowGlobalDictionaries = rowGlobalDictionaries;

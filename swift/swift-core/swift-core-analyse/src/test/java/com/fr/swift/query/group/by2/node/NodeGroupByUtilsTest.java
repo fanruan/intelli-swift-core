@@ -12,7 +12,7 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.segment.column.Column;
@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class NodeGroupByUtilsTest extends TestCase {
 
-    private Iterator<NodeMergeResultSet<GroupNode>> iterator;
+    private Iterator<NodeMergeQRS<GroupNode>> iterator;
     private List<Pair<Column, IndexInfo>> dimensions;
     private Column metric;
     private Map<List<String>, Double> expected;

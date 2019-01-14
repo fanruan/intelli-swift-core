@@ -4,7 +4,7 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeResultSet;
+import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
 
@@ -33,8 +33,8 @@ public class NodeQueryResultSetMerger implements INodeQueryResultSetMerger<Group
     }
 
     @Override
-    public NodeMergeResultSet<GroupNode> merge(List<NodeMergeResultSet<GroupNode>> resultSets) {
-        return new ChainedNodeMergeResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, getComparators(), this);
+    public NodeMergeQRS<GroupNode> merge(List<NodeMergeQRS<GroupNode>> resultSets) {
+        return new ChainedNodeMergeQRS(fetchSize, isGlobalIndexed, resultSets, aggregators, getComparators(), this);
     }
 
     private List<Comparator<GroupNode>> getComparators() {
