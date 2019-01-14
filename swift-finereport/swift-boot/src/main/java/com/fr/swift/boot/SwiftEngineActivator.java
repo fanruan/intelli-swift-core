@@ -64,7 +64,7 @@ import com.fr.swift.util.concurrent.CommonExecutor;
  */
 public class SwiftEngineActivator extends Activator implements Prepare {
 
-    {
+    static {
         SwiftLoggers.setLoggerFactory(new SwiftFrLoggers());
     }
 

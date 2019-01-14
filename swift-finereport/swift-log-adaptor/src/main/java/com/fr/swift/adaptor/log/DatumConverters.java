@@ -50,7 +50,7 @@ class DatumConverters {
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
-                        return ((Date) p).getTime();
+                        return p == null ? null : ((Date) p).getTime();
                     }
                 };
             default:
@@ -61,7 +61,6 @@ class DatumConverters {
     static UnaryOperator<Object> getReverseConverter(final Class<?> field) {
         switch (JpaAdaptor.getSqlType(field)) {
             case Types.BIT:
-            case Types.BOOLEAN:
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
@@ -71,12 +70,22 @@ class DatumConverters {
                         return ((Number) p).longValue() != 0L;
                     }
                 };
+            case Types.BOOLEAN:
+                return new UnaryOperator<Object>() {
+                    @Override
+                    public Object apply(Object p) {
+                        if (p == null) {
+                            return null;
+                        }
+                        return ((Number) p).longValue() != 0L;
+                    }
+                };
             case Types.TINYINT:
                 return new UnaryOperator<Object>() {
                     @Override
                     public Object apply(Object p) {
                         if (p == null) {
-                            return ((byte) 0);
+                            return field.isPrimitive() ? ((byte) 0) : null;
                         }
                         return ((Number) p).byteValue();
                     }
@@ -86,7 +95,7 @@ class DatumConverters {
                     @Override
                     public Object apply(Object p) {
                         if (p == null) {
-                            return ((short) 0);
+                            return field.isPrimitive() ? ((short) 0) : null;
                         }
                         return ((Number) p).shortValue();
                     }
@@ -96,7 +105,7 @@ class DatumConverters {
                     @Override
                     public Object apply(Object p) {
                         if (p == null) {
-                            return 0;
+                            return field.isPrimitive() ? 0 : null;
                         }
                         return ((Number) p).intValue();
                     }
@@ -107,7 +116,7 @@ class DatumConverters {
                     @Override
                     public Object apply(Object p) {
                         if (p == null) {
-                            return 0L;
+                            return field.isPrimitive() ? 0L : null;
                         }
                         return ((Number) p).longValue();
                     }
@@ -117,7 +126,7 @@ class DatumConverters {
                     @Override
                     public Object apply(Object p) {
                         if (p == null) {
-                            return 0F;
+                            return field.isPrimitive() ? 0F : null;
                         }
                         return ((Number) p).floatValue();
                     }
@@ -127,7 +136,7 @@ class DatumConverters {
                     @Override
                     public Object apply(Object p) {
                         if (p == null) {
-                            return 0D;
+                            return field.isPrimitive() ? 0D : null;
                         }
                         return ((Number) p).doubleValue();
                     }
@@ -137,7 +146,7 @@ class DatumConverters {
                     @Override
                     public Object apply(Object p) {
                         if (p == null) {
-                            return '\0';
+                            return field.isPrimitive() ? '\0' : null;
                         }
                         return p.toString().charAt(0);
                     }

@@ -1,6 +1,4 @@
-package com.fr.swift.cube.io;
-
-import com.fr.swift.test.TestResource;
+package com.fr.swift.cube.io.impl.nio;
 
 /**
  * @author anchore
@@ -9,7 +7,7 @@ import com.fr.swift.test.TestResource;
 public class BaseIoTest {
     final byte[] data = new byte[]{-1, 3, 4, 2, 6, 8, 7, 9, 0, 5};
 
-    final String path = TestResource.getRunPath(getClass());
+    final String path = "/";
 
     int pageSize;
 }

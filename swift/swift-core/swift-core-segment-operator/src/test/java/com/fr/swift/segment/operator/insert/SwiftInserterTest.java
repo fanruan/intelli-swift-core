@@ -68,7 +68,7 @@ public class SwiftInserterTest {
         when(resultSet.hasNext()).thenReturn(true, true, true, false);
         when(resultSet.getNextRow()).thenReturn(new ListBasedRow(1),
                 new ListBasedRow(new Object[]{null}),
-                new ListBasedRow(7)).thenThrow(new IllegalStateException());
+                new ListBasedRow(7)).thenThrow(IllegalStateException.class);
         when(resultSet.getMetaData()).thenReturn(meta);
 
         new SwiftInserter(segment).insertData(resultSet);
