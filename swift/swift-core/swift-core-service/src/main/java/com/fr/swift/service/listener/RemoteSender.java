@@ -1,11 +1,13 @@
 package com.fr.swift.service.listener;
 
 import com.fr.swift.basics.annotation.InvokeMethod;
+import com.fr.swift.basics.handler.AppointProcessHandler;
 import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.service.SwiftService;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * This class created on 2018/11/1
@@ -15,6 +17,10 @@ import java.io.Serializable;
  * @since Advanced FineBI 5.0
  */
 public interface RemoteSender extends SwiftServiceListenerHandler {
+
+    // TODO: 2019/1/14 by lucifer ：暂时先用分析的handler，之后要改
+    @InvokeMethod(AppointProcessHandler.class)
+    Serializable appointTrigger(Collection<String> urls, SwiftRpcEvent event);
 
     @Override
     @InvokeMethod(MasterProcessHandler.class)

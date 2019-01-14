@@ -16,8 +16,10 @@ import com.fr.swift.basics.ProcessHandlerRegistry;
 import com.fr.swift.basics.ServiceRegistry;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.basics.base.handler.SwiftAppointProcessHandler;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.basics.handler.AliveNodesProcessHandler;
+import com.fr.swift.basics.handler.AppointProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
@@ -57,6 +59,7 @@ import com.fr.swift.service.SwiftInsertSegmentProcessHandler;
 import com.fr.swift.service.SwiftQueryableProcessHandler;
 import com.fr.swift.service.SwiftSyncDataProcessHandler;
 import com.fr.swift.service.listener.RemoteSender;
+import com.fr.swift.service.local.LocalManager;
 import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.util.concurrent.CommonExecutor;
 
@@ -96,7 +99,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
                     ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
                     SwiftConfigContext.getInstance().init();
                     registerProxy();
-                    SwiftContext.get().getBean("localManager", ServiceManager.class).startUp();
+                    SwiftContext.get().getBean(LocalManager.class).startUp();
                     ProviderTaskManager.start();
                     TransferRealtimeListener.listen();
                     UploadHistoryListener.listen();
@@ -127,7 +130,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
     @Override
     public void stop() {
         try {
-            SwiftContext.get().getBean("localManager", ServiceManager.class).shutDown();
+            SwiftContext.get().getBean(ServiceManager.class).shutDown();
             for (SegmentContainer container : SegmentContainer.values()) {
                 container.clear();
             }
@@ -169,5 +172,6 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         processHandlerRegistry.addHandler(QueryableProcessHandler.class, SwiftQueryableProcessHandler.class);
         processHandlerRegistry.addHandler(AliveNodesProcessHandler.class, SwiftAliveNodesProcessHandler.class);
         processHandlerRegistry.addHandler(CommonProcessHandler.class, SwiftCommonProcessHandler.class);
+        processHandlerRegistry.addHandler(AppointProcessHandler.class, SwiftAppointProcessHandler.class);
     }
 }

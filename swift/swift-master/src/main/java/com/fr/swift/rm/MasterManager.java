@@ -4,7 +4,6 @@ import com.fr.swift.ClusterNodeService;
 import com.fr.swift.Collect;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.cluster.manager.ClusterManager;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
@@ -12,18 +11,25 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rm.collector.MasterHeartbeatCollect;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftManager;
+import com.fr.swift.service.SwiftManager;
 import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.listener.SwiftServiceListenerManager;
+import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
+
+import java.util.List;
 
 /**
  * This class created on 2018/7/17
  *
  * @author Lucifer
- * @description
+ * @description 控制集群情况下，service启动和service register和unregister，master只会向本地注册和注销。
  * @since Advanced FineBI 5.0
  */
 @SwiftBean(name = "masterManager")
-public class MasterManager extends AbstractSwiftManager implements ClusterManager {
+public class MasterManager extends AbstractSwiftManager implements SwiftManager {
+
+    private ServiceManager serviceManager = SwiftContext.get().getBean(ServiceManager.class);
 
     private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
@@ -34,11 +40,10 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
         lock.lock();
         try {
             if (!running) {
-                ClusterSwiftServerService.getInstance().start();
                 heartBeatCollect.startCollect();
+                super.startUp();
                 String masterAddress = swiftProperty.getMasterAddress();
                 serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(ClusterNodeService.SERVICE, masterAddress, masterAddress, true));
-                super.startUp();
             }
         } finally {
             lock.unlock();
@@ -61,9 +66,12 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
     @Override
     protected void installService() {
         try {
-            for (SwiftService swiftService : ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames())) {
+            ClusterSwiftServerService.getInstance().start();
+            serviceManager.startUp();
+            List<SwiftService> swiftServices = ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames());
+            for (SwiftService swiftService : swiftServices) {
                 swiftService.setId(ClusterSelector.getInstance().getFactory().getCurrentId());
-                swiftService.start();
+                SwiftServiceListenerManager.getInstance().registerService(swiftService);
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
@@ -72,6 +80,14 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
 
     @Override
     protected void uninstallService() {
-
+        try {
+            List<SwiftService> swiftServices = ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames());
+            for (SwiftService swiftService : swiftServices) {
+                swiftService.setId(ClusterSelector.getInstance().getFactory().getCurrentId());
+                SwiftServiceListenerManager.getInstance().unRegisterService(swiftService);
+            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
     }
 }

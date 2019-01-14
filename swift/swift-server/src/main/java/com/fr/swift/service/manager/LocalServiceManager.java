@@ -4,6 +4,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.listener.SwiftServiceListenerManager;
 
 import java.util.List;
 
@@ -25,8 +26,9 @@ public class LocalServiceManager extends AbstractServiceManager<SwiftService> {
         lock.lock();
         try {
             for (SwiftService swiftService : swiftServiceList) {
-                SwiftLoggers.getLogger().debug("Swift service:" + swiftService.getServiceType() + " start!");
-                swiftService.start();
+                SwiftLoggers.getLogger().debug("begin to register " + swiftService.getServiceType() + "!");
+                SwiftServiceListenerManager.getInstance().registerService(swiftService);
+                SwiftLoggers.getLogger().debug("register " + swiftService.getServiceType() + " to local succeed!");
             }
         } finally {
             lock.unlock();
@@ -38,8 +40,9 @@ public class LocalServiceManager extends AbstractServiceManager<SwiftService> {
         lock.lock();
         try {
             for (SwiftService swiftService : swiftServiceList) {
-                SwiftLoggers.getLogger().debug("Swift service:" + swiftService.getServiceType() + " shutdown!");
-                swiftService.shutdown();
+                SwiftLoggers.getLogger().debug("begain to unregister " + swiftService.getServiceType() + "!");
+                SwiftServiceListenerManager.getInstance().unRegisterService(swiftService);
+                SwiftLoggers.getLogger().debug("unregister " + swiftService.getServiceType() + " from local succeed!");
             }
         } finally {
             lock.unlock();
