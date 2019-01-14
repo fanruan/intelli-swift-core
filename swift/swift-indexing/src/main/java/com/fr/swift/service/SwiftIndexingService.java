@@ -8,7 +8,6 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
@@ -32,7 +31,6 @@ import com.fr.swift.task.cube.CubeTaskGenerator;
 import com.fr.swift.task.cube.CubeTaskManager;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.task.impl.WorkerTaskPool;
-import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.util.FileUtil;
 
 import java.io.File;
@@ -49,19 +47,10 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
 @ProxyService(IndexingService.class)
 @SwiftBean(name = "indexing")
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
+
     private static final long serialVersionUID = -7430843337225891194L;
 
-    private transient SwiftCubePathService pathService;
-
-    private transient SwiftTablePathService tablePathService;
-
-    private transient SwiftSegmentLocationService locationService;
-
-
-    private transient ServiceTaskExecutor taskExecutor;
-
     private transient boolean initable = true;
-
 
     public SwiftIndexingService() {
     }
@@ -73,20 +62,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             initListener();
             initable = false;
         }
-        pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
-        tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
-        locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
-        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
-        return true;
-    }
-
-    @Override
-    public boolean shutdown() throws SwiftServiceException {
-        super.shutdown();
-        pathService = null;
-        tablePathService = null;
-        locationService = null;
-        taskExecutor = null;
         return true;
     }
 
@@ -124,7 +99,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
         SwiftEventDispatcher.fire(TaskEvent.LOCAL_RUN, stuff.getRelationPaths());
     }
 
-    public void initTaskGenerator() {
+    private void initTaskGenerator() {
         WorkerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().setTaskGenerator(new CubeTaskGenerator());
         CubeTaskManager.getInstance().initListener();
@@ -154,7 +129,9 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     private class UploadRunnable implements Runnable {
 
-        protected Pair<TaskKey, TaskResult> result;
+        Pair<TaskKey, TaskResult> result;
+        private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+
         private SwiftSegmentManager manager;
 
         public UploadRunnable(Pair<TaskKey, TaskResult> result) {
@@ -207,7 +184,6 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }
-
         }
 
         protected void upload(String src, String dest) throws IOException {

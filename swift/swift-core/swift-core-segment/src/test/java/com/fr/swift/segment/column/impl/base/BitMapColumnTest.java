@@ -15,7 +15,6 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.test.TestResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +76,7 @@ public class BitMapColumnTest {
 
         SwiftCubePathService swiftCubePathService = mock(SwiftCubePathService.class);
         when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
-        when(swiftCubePathService.getSwiftPath()).thenReturn(TestResource.getRunPath(getClass()));
+        when(swiftCubePathService.getSwiftPath()).thenReturn("/");
     }
 
     @Test
