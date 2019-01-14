@@ -20,7 +20,6 @@ import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.array.IntList;
@@ -31,6 +30,7 @@ import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.task.TaskResult.Type;
 import com.fr.swift.task.impl.BaseWorker;
 import com.fr.swift.task.impl.TaskResultImpl;
+import com.fr.swift.util.Assert;
 
 import java.util.Comparator;
 import java.util.List;
@@ -55,16 +55,14 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
     /**
      * segments通过外部传入
      *
-     * @param dataSource
-     * @param key
-     * @param segments
+     * @param key column key
+     * @param segments segs
      */
-    public ColumnIndexer(DataSource dataSource, ColumnKey key, List<Segment> segments) {
-        this(dataSource.getMetadata(), key, segments);
-    }
+    public ColumnIndexer(ColumnKey key, List<Segment> segments) {
+        Assert.notNull(key);
+        Assert.notEmpty(segments);
 
-    public ColumnIndexer(SwiftMetaData meta, ColumnKey key, List<Segment> segments) {
-        this.meta = meta;
+        this.meta = segments.get(0).getMetaData();
         this.key = key;
         this.segments = segments;
     }
@@ -152,10 +150,10 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
         } else {
             map = new TreeMap<T, IntList>(c);
             for (int i = 0; i < rowCount; i++) {
-                T val = detailColumn.get(i);
                 if (nullIndex.contains(i)) {
                     continue;
                 }
+                T val = detailColumn.get(i);
                 if (map.containsKey(val)) {
                     map.get(val).add(i);
                 } else {
