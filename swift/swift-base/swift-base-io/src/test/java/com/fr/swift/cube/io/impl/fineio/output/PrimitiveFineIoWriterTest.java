@@ -2,6 +2,10 @@ package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fineio.FineIO;
 import com.fineio.FineIO.MODEL;
+import com.fineio.io.ByteBuffer;
+import com.fineio.io.DoubleBuffer;
+import com.fineio.io.IntBuffer;
+import com.fineio.io.LongBuffer;
 import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
@@ -15,7 +19,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.net.URI;
 
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -52,11 +56,16 @@ public class PrimitiveFineIoWriterTest {
     @Test
     public void release() {
         ByteFineIoWriter.build(location, true).release();
-        IntFineIoWriter.build(location, true).release();
-        LongFineIoWriter.build(location, true).release();
-        DoubleFineIoWriter.build(location, true).release();
+        verify(ioFile, atLeastOnce()).close();
 
-        verify(ioFile, times(4)).close();
+        IntFineIoWriter.build(location, true).release();
+        verify(ioFile, atLeastOnce()).close();
+
+        LongFineIoWriter.build(location, true).release();
+        verify(ioFile, atLeastOnce()).close();
+
+        DoubleFineIoWriter.build(location, true).release();
+        verify(ioFile, atLeastOnce()).close();
     }
 
     @Test
@@ -79,6 +88,10 @@ public class PrimitiveFineIoWriterTest {
         LongFineIoWriter.build(location, true).put(0, 1);
         DoubleFineIoWriter.build(location, true).put(0, 1);
 
-        verifyStatic(FineIO.class, times(4));
+        verifyStatic(FineIO.class);
+        FineIO.put((IOFile<ByteBuffer>) ioFile, 0, (byte) 1);
+        FineIO.put((IOFile<IntBuffer>) ioFile, 0, 1);
+        FineIO.put((IOFile<LongBuffer>) ioFile, 0, 1);
+        FineIO.put((IOFile<DoubleBuffer>) ioFile, 0, 1);
     }
 }

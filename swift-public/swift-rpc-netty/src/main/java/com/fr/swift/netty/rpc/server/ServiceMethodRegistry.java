@@ -1,10 +1,9 @@
 package com.fr.swift.netty.rpc.server;
 
-import com.fr.swift.structure.lru.ConcurrentCacheHashMap;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author yee
@@ -15,7 +14,7 @@ public enum ServiceMethodRegistry {
      * 单例
      */
     INSTANCE;
-    private Map<String, Method> methodMap = new ConcurrentCacheHashMap<String, Method>();
+    private Map<String, Method> methodMap = new ConcurrentHashMap<String, Method>();
 
     public void registerMethod(String methodName, Method method) {
         methodMap.put(methodName, method);
