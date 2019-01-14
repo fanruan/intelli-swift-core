@@ -1,11 +1,11 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.result.BaseNodeResultSet;
+import com.fr.swift.result.BaseNodeQRS;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.GroupNodeUtils;
-import com.fr.swift.result.node.resultset.ChainedNodeResultSet;
+import com.fr.swift.result.node.resultset.ChainedNodeQRS;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.Pair;
 
@@ -26,7 +26,7 @@ public class UpdateNodeDataQuery implements PostQuery<QueryResultSet> {
 
     @Override
     public QueryResultSet getQueryResult() throws SQLException {
-        return new ChainedNodeResultSet(new SwiftNodeOperator() {
+        return new ChainedNodeQRS(new SwiftNodeOperator() {
             @Override
             public SwiftNode apply(SwiftNode p) {
                 return p;
@@ -34,7 +34,7 @@ public class UpdateNodeDataQuery implements PostQuery<QueryResultSet> {
         }, new UpdateDataQRS(resultSet));
     }
 
-    private static class UpdateDataQRS extends BaseNodeResultSet {
+    private static class UpdateDataQRS extends BaseNodeQRS {
 
         private QueryResultSet<Pair<SwiftNode, List<Map<Integer, Object>>>> resultSet;
 

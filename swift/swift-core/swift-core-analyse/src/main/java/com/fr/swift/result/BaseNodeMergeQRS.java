@@ -12,11 +12,11 @@ import java.util.Map;
  * @author anchore
  * @date 12/11/2018
  */
-public abstract class BaseNodeMergeResultSet<T extends SwiftNode> implements NodeMergeResultSet<T> {
+public abstract class BaseNodeMergeQRS<T extends SwiftNode> implements NodeMergeQRS<T> {
 
     private int fetchSize;
 
-    public BaseNodeMergeResultSet(int fetchSize) {
+    public BaseNodeMergeQRS(int fetchSize) {
         this.fetchSize = fetchSize;
     }
 

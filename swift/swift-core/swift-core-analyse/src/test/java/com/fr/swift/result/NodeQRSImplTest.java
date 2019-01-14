@@ -3,9 +3,6 @@ package com.fr.swift.result;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -13,16 +10,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Created by lyon on 2019/1/8.
+ * Created by lyon on 2019/1/11.
  */
-public class NodeMergeResultSetImplTest {
+public class NodeQRSImplTest {
 
     private int fetchSize = 200;
-    private NodeMergeResultSetImpl rs;
+    private NodeQRS rs;
 
     @Before
     public void setUp() throws Exception {
-        rs = new NodeMergeResultSetImpl(fetchSize, new GroupNode(), new ArrayList<Map<Integer, Object>>());
+        rs = new NodeQRSImpl(fetchSize, new GroupNode());
     }
 
     @Test

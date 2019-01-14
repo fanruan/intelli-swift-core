@@ -19,18 +19,18 @@ import static org.junit.Assert.fail;
 /**
  * Created by lyon on 2019/1/8.
  */
-public class FakeNodeResultSetTest {
+public class FakeNodeQRSTest {
 
-    private FakeNodeResultSet rs;
+    private FakeNodeQRS rs;
 
     @Before
     public void setUp() throws Exception {
-        rs = new FakeNodeResultSet(new SwiftRowOperator<Row>() {
+        rs = new FakeNodeQRS(new SwiftRowOperator<Row>() {
             @Override
             public List<Row> operate(SwiftNode node) {
                 return IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(node));
             }
-        }, ChainedNodeResultSetTest.create());
+        }, ChainedNodeQRSTest.create());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class FakeNodeResultSetTest {
 
     @Test
     public void getFetchSize() {
-        assertEquals(ChainedNodeResultSetTest.fetchSize, rs.getFetchSize());
+        assertEquals(ChainedNodeQRSTest.fetchSize, rs.getFetchSize());
     }
 
     @Test
