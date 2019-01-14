@@ -20,8 +20,8 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.query.result.serialize.BaseSerializableQRS;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.node.resultset.INodeQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentDestination;
@@ -108,7 +108,7 @@ public class SwiftQueryableProcessHandlerTest extends TestCase {
 
         SwiftQueryableProcessHandler handler = new SwiftQueryableProcessHandler(invokerCreator);
         try {
-            NodeMergeQRS result = (NodeMergeQRS) handler.processResult(
+            BaseSerializableQRS result = (BaseSerializableQRS) handler.processResult(
                     SwiftQueryableProcessHandlerTest.class.getMethod("getLocalRS", String.class), Target.ANALYSE, queryString);
             assertNotNull(result);
         } catch (Throwable throwable) {
@@ -116,10 +116,12 @@ public class SwiftQueryableProcessHandlerTest extends TestCase {
         }
     }
 
-    public NodeMergeQRS getLocalRS(String quertString) {
-        NodeMergeQRS<GroupNode> rs = EasyMock.createMock(NodeMergeQRS.class);
+    public BaseSerializableQRS getLocalRS(String quertString) {
+        BaseSerializableQRS rs = EasyMock.createMock(BaseSerializableQRS.class);
         List<Map<Integer, Object>> map = new ArrayList<Map<Integer, Object>>();
         EasyMock.expect(rs.getPage()).andReturn(Pair.of(new GroupNode(), map)).anyTimes();
+        rs.setInvoker(EasyMock.anyObject(BaseSerializableQRS.SyncInvoker.class));
+        EasyMock.expectLastCall().anyTimes();
         INodeQueryResultSetMerger merger = EasyMock.createMock(INodeQueryResultSetMerger.class);
         EasyMock.expect(merger.merge(EasyMock.anyObject(List.class))).andReturn(rs);
         EasyMock.expect(rs.getMerger()).andReturn(merger);
@@ -141,7 +143,5 @@ public class SwiftQueryableProcessHandlerTest extends TestCase {
         assertEquals(1, pairs.size());
         assertNotNull(pairs.get(0).getKey());
         assertEquals(1, pairs.get(0).getValue().size());
-
-
     }
 }
