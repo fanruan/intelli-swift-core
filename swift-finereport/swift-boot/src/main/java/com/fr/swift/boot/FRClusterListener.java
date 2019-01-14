@@ -20,7 +20,6 @@ import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.rm.MasterManager;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.local.LocalManager;
-import com.fr.swift.service.local.ServiceManager;
 
 /**
  * This class created on 2018/6/12
@@ -39,7 +38,7 @@ public class FRClusterListener implements ClusterEventListener {
 
     private LocalManager localManager;
 
-    private MasterSynchronizer masterSyncRunnable = new MasterSynchronizer();
+    private MasterSynchronizer masterSyncRunnable = MasterSynchronizer.getInstance();
 
     public FRClusterListener() {
     }
@@ -52,7 +51,7 @@ public class FRClusterListener implements ClusterEventListener {
             slaveManager = SwiftContext.get().getBean(SlaveManager.class);
         }
         if (null == localManager) {
-            localManager = SwiftContext.get().getBean(ServiceManager.class);
+            localManager = SwiftContext.get().getBean(LocalManager.class);
         }
     }
 
@@ -65,9 +64,8 @@ public class FRClusterListener implements ClusterEventListener {
                 UrlSelector.getInstance().switchFactory(new FRUrlFactory());
                 ClusterSelector.getInstance().switchFactory(FRClusterNodeManager.getInstance());
                 SwiftProperty.getProperty().setClusterId(ClusterSelector.getInstance().getFactory().getCurrentId());
+
                 localManager.shutDown();
-                slaveManager.shutDown();
-                masterManager.shutDown();
                 if (ClusterSelector.getInstance().getFactory().isMaster()) {
                     LOGGER.info("=====FR cluster master start up!=====");
                     masterManager.startUp();
@@ -83,10 +81,10 @@ public class FRClusterListener implements ClusterEventListener {
                 ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new LocalInvokerCreator()));
                 UrlSelector.getInstance().switchFactory(new LocalUrlFactory());
 
-                localManager.startUp();
                 masterManager.shutDown();
                 slaveManager.shutDown();
                 masterSyncRunnable.stop();
+                localManager.startUp();
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
