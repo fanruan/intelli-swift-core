@@ -18,7 +18,6 @@ import java.util.Collection;
  */
 public interface RemoteSender extends SwiftServiceListenerHandler {
 
-    // TODO: 2019/1/14 by lucifer ：暂时先用分析的handler，之后要改
     @InvokeMethod(AppointProcessHandler.class)
     Serializable appointTrigger(Collection<String> urls, SwiftRpcEvent event);
 
