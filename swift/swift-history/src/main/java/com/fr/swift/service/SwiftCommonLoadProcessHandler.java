@@ -117,9 +117,8 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
             Set<String> needLoad = new HashSet<String>();
             if (!list.isEmpty()) {
                 for (SegmentKey segmentKey : list) {
-                    String segKey = segmentKey.toString();
-                    if (uris.containsKey(segKey)) {
-                        needLoad.addAll(uris.get(segKey));
+                    if (uris.containsKey(segmentKey)) {
+                        needLoad.addAll(uris.get(segmentKey));
                     }
                 }
             }

@@ -4,7 +4,7 @@ import com.fr.swift.query.filter.match.NodeSorter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
-import com.fr.swift.result.node.resultset.ChainedNodeResultSet;
+import com.fr.swift.result.node.resultset.ChainedNodeQRS;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
@@ -32,6 +32,6 @@ public class TreeSortQuery implements PostQuery<QueryResultSet> {
                 return node;
             }
         };
-        return new ChainedNodeResultSet(operator, query.getQueryResult());
+        return new ChainedNodeQRS(operator, query.getQueryResult());
     }
 }
