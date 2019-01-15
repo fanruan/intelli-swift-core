@@ -14,6 +14,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Deprecated
 public class RpcDecoder extends ByteToMessageDecoder {
 
     private Class<?> genericClass;
