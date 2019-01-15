@@ -11,6 +11,7 @@ import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
@@ -19,6 +20,7 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.info.bean.element.filter.impl.AllShowFilterBean;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
@@ -42,6 +44,7 @@ import com.fr.swift.task.service.SwiftServiceCallable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,6 +168,15 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             }
         }));
         return future.get();
+    }
+
+    @Override
+    public void truncate(SourceKey sourceKey) {
+        try {
+            delete(sourceKey, new SwiftWhere(new AllShowFilterBean()), Collections.<String>emptyList());
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("truncate realtime failed", e);
+        }
     }
 
     @Override

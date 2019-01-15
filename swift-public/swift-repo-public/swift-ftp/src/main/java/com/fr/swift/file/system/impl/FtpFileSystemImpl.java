@@ -118,12 +118,21 @@ public class FtpFileSystemImpl extends AbstractFileSystem<FtpRepositoryConfig> {
     public boolean remove(String remote) throws SwiftFileException {
         SwiftFTPClient ftp = acquireClient();
         try {
-            return ftp.delete(resolve(rootURI, remote));
+            return remove(ftp, resolve(rootURI, remote));
         } catch (Exception e) {
             throw new SwiftFileException(e);
         } finally {
             returnClient(ftp);
         }
+    }
+
+    private boolean remove(SwiftFTPClient ftp, String path) throws Exception {
+        if (ftp.isDirectory(path)) {
+            for (String name : ftp.listNames(path)) {
+                remove(ftp, resolve(path, name));
+            }
+        }
+        return ftp.delete(path);
     }
 
     @Override

@@ -10,12 +10,8 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
-import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.db.AlterTableAction;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
@@ -24,12 +20,13 @@ import com.fr.swift.db.impl.DropColumnAction;
 import com.fr.swift.event.global.TruncateEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.FileUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -45,9 +42,6 @@ import java.util.List;
 @SwiftBean
 public class TableServiceImpl implements TableService {
     private SwiftMetaDataService swiftMetaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
-    private SwiftCubePathService cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
-    private SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
-    private SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
     @Override
     @SwiftApi
@@ -128,20 +122,17 @@ public class TableServiceImpl implements TableService {
         truncateTable(metaData);
     }
 
-    private void truncateTable(SwiftMetaData metaData) {
+    private void truncateTable(SwiftMetaData metaData) throws Exception {
         String sourceKey = metaData.getId();
+        // 如果是集群，需要让master转发到所有节点删除，因为调用truncate的不一定是master，非master无法调用其他节点进行删除
         if (ClusterSelector.getInstance().getFactory().isCluster()) {
             ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new TruncateEvent(sourceKey));
         } else {
-            SwiftTablePathBean entity = tablePathService.get(sourceKey);
-            int path = 0;
-            if (null != entity) {
-                path = entity.getTablePath() == null ? 0 : entity.getTablePath();
-                tablePathService.removePath(sourceKey);
-            }
-            segmentService.removeSegments(sourceKey);
-            String localPath = String.format("%s/%d/%s", cubePathService.getSwiftPath(), path, sourceKey);
-            FileUtil.delete(localPath);
+            // 单机直接调用history的truncate
+            // truncate也应该删除realtime的数据
+            SourceKey source = new SourceKey(sourceKey);
+            ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class).truncate(source);
+            ProxySelector.getInstance().getFactory().getProxy(HistoryService.class).truncate(source);
         }
     }
 

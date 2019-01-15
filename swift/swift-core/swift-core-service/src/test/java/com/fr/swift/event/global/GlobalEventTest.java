@@ -77,9 +77,10 @@ public class GlobalEventTest extends TestCase {
     }
 
     public void testTruncateEvent() {
+
         TruncateEvent event = new TruncateEvent("tableA");
         assertEquals(event.type(), SwiftRpcEvent.EventType.GLOBAL);
         assertEquals(event.subEvent(), AbstractGlobalRpcEvent.Event.TRUNCATE);
-        assertEquals(event.getContent(), "tableA");
+        assertEquals(event.getContent(), new SourceKey("tableA"));
     }
 }

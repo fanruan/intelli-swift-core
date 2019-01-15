@@ -9,5 +9,6 @@ public enum SwiftSQLType {
     CREATE,
     INSERT,
     DELETE,
-    DROP
+    DROP,
+    TRUNCATE
 }

@@ -12,4 +12,6 @@ import java.util.List;
 interface DeleteService {
 
     boolean delete(SourceKey sourceKey, Where where, List<String> segKeys) throws Exception;
+
+    void truncate(SourceKey sourceKey);
 }

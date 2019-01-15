@@ -3,7 +3,6 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.bean.SwiftTablePathBean;
-import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -83,10 +82,8 @@ public class SegmentHelper {
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
         try {
             if (null != repository) {
-                SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
                 SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
                 SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
-                String path = pathService.getSwiftPath();
                 SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
                 int tmp = 0;
                 SwiftTablePathBean entity = tablePathService.get(sourceKey);
@@ -105,7 +102,8 @@ public class SegmentHelper {
 
                 boolean downloadSuccess = true;
                 for (String uri : sets) {
-                    String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), tmp, uri);
+                    CubePathBuilder builder = new CubePathBuilder().asAbsolute().setSwiftSchema(metaData.getSwiftDatabase()).setTempDir(tmp);
+                    String cubePath = String.format("%s/%s", builder.build(), uri);
                     String remotePath = String.format("%s/%s", metaData.getSwiftDatabase().getDir(), uri);
                     try {
                         repository.copyFromRemote(remotePath, cubePath);
@@ -122,7 +120,12 @@ public class SegmentHelper {
                     entity.setLastPath(current);
                     entity.setTablePath(tmp);
                     tablePathService.saveOrUpdate(entity);
-                    String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftDatabase().getDir(), current, sourceKey);
+                    CubePathBuilder builder = new CubePathBuilder()
+                            .asAbsolute()
+                            .setSwiftSchema(metaData.getSwiftDatabase())
+                            .setTempDir(current)
+                            .setTableKey(new SourceKey(sourceKey));
+                    String cubePath = builder.build();
                     FileUtil.delete(cubePath);
                     new File(cubePath).getParentFile().delete();
                 }
