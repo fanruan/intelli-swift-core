@@ -38,4 +38,7 @@ public interface RealtimeService extends SwiftService, DeleteService {
     @Override
     @InvokeMethod(value = DeleteSegmentProcessHandler.class, target = Target.REAL_TIME)
     boolean delete(SourceKey sourceKey, Where where, List<String> segKeys) throws Exception;
+
+    @InvokeMethod(value = CommonProcessHandler.class, target = Target.REAL_TIME)
+    void truncate(SourceKey sourceKey);
 }

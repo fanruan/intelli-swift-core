@@ -189,25 +189,25 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void truncate(String sourceKey) {
-        SwiftTablePathBean entity = tablePathService.get(sourceKey);
+    public void truncate(SourceKey sourceKey) {
+        SwiftTablePathBean entity = tablePathService.get(sourceKey.getId());
         int path = 0;
         if (null != entity) {
             path = entity.getTablePath() == null ? 0 : entity.getTablePath();
-            tablePathService.removePath(sourceKey);
+            tablePathService.removePath(sourceKey.getId());
         }
-        segmentService.removeSegments(sourceKey);
+        segmentService.removeSegments(sourceKey.getId());
 
 
-        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey);
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
         String localPath = new CubePathBuilder()
                 .asAbsolute()
                 .setSwiftSchema(metaData.getSwiftDatabase())
                 .setTempDir(path)
-                .setTableKey(new SourceKey(sourceKey)).build();
+                .setTableKey(new SourceKey(sourceKey.getId())).build();
         FileUtil.delete(localPath);
         CubePathBuilder builder = new CubePathBuilder();
-        builder.setSwiftSchema(metaData.getSwiftDatabase()).setTableKey(new SourceKey(sourceKey));
+        builder.setSwiftSchema(metaData.getSwiftDatabase()).setTableKey(sourceKey);
         try {
             SwiftRepositoryManager.getManager().currentRepo().delete(builder.build());
         } catch (IOException e) {
