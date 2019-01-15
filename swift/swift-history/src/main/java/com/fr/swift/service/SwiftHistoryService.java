@@ -191,7 +191,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             path = entity.getTablePath() == null ? 0 : entity.getTablePath();
             tablePathService.removePath(sourceKey);
         }
-//        SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         segmentService.removeSegments(sourceKey);
 
         String localPath = String.format("%s/%d/%s", cubePathService.getSwiftPath(), path, sourceKey);
@@ -265,7 +264,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
 
         protected SegmentLocationInfo loadSelfSegmentDestination() {
-//            SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
             Map<SourceKey, List<SegmentKey>> segments = segmentService.getOwnSegments();
             if (!segments.isEmpty()) {
                 Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();

@@ -45,6 +45,7 @@ import com.fr.swift.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,8 +156,9 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
 //                dealDelete(sourceKey, where, historyServices, "historyDelete");
                 break;
             case TRUNCATE:
-                String truncateSourceKey = (String) event.getContent();
-                ProxySelector.getProxy(HistoryService.class).truncate(truncateSourceKey);
+                Pair<SourceKey, Where> truncateContent = (Pair<SourceKey, Where>) event.getContent();
+                ProxySelector.getProxy(RealtimeService.class).delete(truncateContent.getKey(), truncateContent.getValue(), Collections.<String>emptyList());
+                ProxySelector.getProxy(HistoryService.class).truncate(truncateContent.getKey().getId());
             default:
                 break;
         }
