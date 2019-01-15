@@ -9,9 +9,10 @@ import com.fr.event.Event;
 import com.fr.event.EventDispatcher;
 import com.fr.event.Listener;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.boot.synchronizer.MasterSynchronizer;
 import com.fr.swift.cluster.core.cluster.FRClusterNodeManager;
-import com.fr.swift.cluster.core.cluster.FRClusterNodeService;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.cluster.service.SegmentLocationInfoContainer;
 import com.fr.swift.core.rpc.InvokerCache;
@@ -113,7 +114,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
                 LOGGER.info(String.format("%s left cluster!Master is %s", clusterNode.getID(), FRClusterNodeManager.getInstance().getMasterId()));
                 NodeJoinedView.getInstance().nodeLeft(clusterNode.getID());
                 if (FRClusterNodeManager.getInstance().getMasterId() == null || ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), clusterNode.getID())) {
-                    FRClusterNodeService.getInstance().competeMaster(clusterNode);
+                    SwiftContext.get().getBean(ClusterNodeService.class).competeMaster(clusterNode);
                     //只有重新选举master时候，才需要重新部署manager
                     try {
                         if (ComparatorUtils.equals(FRClusterNodeManager.getInstance().getMasterId(), FRClusterNodeManager.getInstance().getCurrentId())) {
@@ -127,6 +128,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
                             SegmentLocationInfoContainer.getContainer().add(Pair.of(SegmentLocationInfo.UpdateType.ALL, histInfo));
                             SegmentLocationInfoContainer.getContainer().add(Pair.of(SegmentLocationInfo.UpdateType.ALL, realInfo));
                             masterManager.startUp();
+                            MasterSynchronizer.getInstance().start();
                             ClusterSwiftServerService.getInstance().initService();
                         }
                     } catch (Exception e) {
@@ -151,7 +153,7 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
      */
     @Override
     public void afterJoin() {
-        FRClusterNodeService.getInstance().competeMaster();
+        SwiftContext.get().getBean(ClusterNodeService.class).competeMaster();
         ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.FR));
         FRClusterNodeManager.getInstance().setCluster(true);
     }

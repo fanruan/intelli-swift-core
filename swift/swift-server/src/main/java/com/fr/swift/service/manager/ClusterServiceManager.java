@@ -1,13 +1,9 @@
 package com.fr.swift.service.manager;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.SwiftService;
@@ -25,15 +21,9 @@ import java.util.List;
 @SwiftBean(name = "clusterServiceManager")
 public class ClusterServiceManager extends AbstractServiceManager<SwiftService> {
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
-
     private SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
-    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
-
     private RemoteSender senderProxy;
-
-    private SwiftServiceInfoBean swiftServiceInfoBean;
 
     private ClusterServiceManager() {
 
@@ -46,10 +36,9 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
             refreshInfo();
             for (SwiftService swiftService : swiftServiceList) {
                 swiftService.setId(swiftProperty.getServerAddress());
-                LOGGER.debug("begin to register " + swiftService.getServiceType() + "!");
+                SwiftLoggers.getLogger().debug("begin to register " + swiftService.getServiceType() + "!");
                 senderProxy.registerService(swiftService);
-                swiftService.start();
-                LOGGER.debug("register " + swiftService.getServiceType() + " to succeed!");
+                SwiftLoggers.getLogger().debug("register " + swiftService.getServiceType() + " to succeed!");
             }
         } finally {
             lock.unlock();
@@ -60,16 +49,16 @@ public class ClusterServiceManager extends AbstractServiceManager<SwiftService> 
     public void unregisterService(List<SwiftService> swiftServiceList) throws SwiftServiceException {
         lock.lock();
         try {
+            refreshInfo();
             for (SwiftService swiftService : swiftServiceList) {
                 swiftService.setId(swiftProperty.getServerAddress());
-                LOGGER.debug("begain to unregister " + swiftService.getServiceType() + "!");
+                SwiftLoggers.getLogger().debug("begain to unregister " + swiftService.getServiceType() + "!");
                 try {
                     senderProxy.unRegisterService(swiftService);
                 } catch (Exception ignore) {
-                    LOGGER.warn(ignore);
+                    SwiftLoggers.getLogger().warn(ignore);
                 }
-                swiftService.shutdown();
-                LOGGER.debug("unregister " + swiftService.getServiceType() + " succeed!");
+                SwiftLoggers.getLogger().debug("unregister " + swiftService.getServiceType() + " succeed!");
             }
         } finally {
             lock.unlock();

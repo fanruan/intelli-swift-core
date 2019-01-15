@@ -3,6 +3,7 @@ package com.fr.swift.service.local;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.service.AbstractSwiftManager;
+import com.fr.swift.service.SwiftManager;
 import com.fr.swift.service.manager.ServerServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
 
@@ -14,7 +15,7 @@ import com.fr.swift.util.ServiceBeanFactory;
  * @since Advanced FineBI 5.0
  */
 @SwiftBean(name = "serverManager")
-public class ServerManager extends AbstractSwiftManager implements LocalManager {
+public class ServerManager extends AbstractSwiftManager implements SwiftManager {
 
     private ServerServiceManager serverServiceManager = SwiftContext.get().getBean(ServerServiceManager.class);
 

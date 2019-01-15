@@ -20,7 +20,6 @@ import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.rm.MasterManager;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.local.LocalManager;
-import com.fr.swift.service.local.ServiceManager;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -42,7 +41,6 @@ public class SwiftClusterListener implements ClusterEventListener {
 
     private LocalManager localManager;
 
-
     public SwiftClusterListener() {
     }
 
@@ -54,7 +52,7 @@ public class SwiftClusterListener implements ClusterEventListener {
             slaveManager = SwiftContext.get().getBean(SlaveManager.class);
         }
         if (null == localManager) {
-            localManager = SwiftContext.get().getBean(ServiceManager.class);
+            localManager = SwiftContext.get().getBean(LocalManager.class);
         }
     }
 
@@ -85,9 +83,9 @@ public class SwiftClusterListener implements ClusterEventListener {
 
                 destroyClusterPluginService();
 
-                localManager.startUp();
                 masterManager.shutDown();
                 slaveManager.shutDown();
+                localManager.startUp();
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
@@ -113,6 +111,7 @@ public class SwiftClusterListener implements ClusterEventListener {
     }
 
     /**
+     *
      */
     private static void destroyClusterPluginService() {
         Map<String, Object> map = SwiftContext.get().getBeansByAnnotations(ClusterService.class);
