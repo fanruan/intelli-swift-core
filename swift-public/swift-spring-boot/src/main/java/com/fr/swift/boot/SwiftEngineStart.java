@@ -68,11 +68,9 @@ public class SwiftEngineStart {
     public static void start(String[] args) {
         try {
             SwiftLoggers.setLoggerFactory(new SwiftLog4jLoggers());
-//            SimpleWork.checkIn(System.getProperty("user.dir"));
             ClusterListenerHandler.addInitialListener(new SwiftClusterListener());
             SwiftContext.get().init();
 
-//            registerTmpConnectionProvider();
             ClusterListenerHandler.addInitialListener(NodeStartedListener.INSTANCE);
             FineIO.setLogger(SwiftLoggers.getLogger());
             ProviderTaskManager.start();
@@ -96,24 +94,6 @@ public class SwiftEngineStart {
             SwiftLoggers.getLogger().error(e);
             System.exit(1);
         }
-    }
-
-    private static void registerTmpConnectionProvider() {
-//        SwiftProperty property = SwiftProperty.getProperty();
-//
-//        DaoContext.setEntityDao(new LocalEntityDao());
-//        DaoContext.setClassHelperDao(new LocalClassHelperDao());
-//        DaoContext.setXmlEntityDao(new LocalXmlEntityDao());
-//
-//        Connection frConnection = new JDBCDatabaseConnection(property.getConfigDbDriverClass(),
-//                property.getConfigDbJdbcUrl(), property.getConfigDbUsername(), property.getConfigDbPasswd());
-//        final SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);
-//        ConnectionManager.getInstance().registerProvider(new IConnectionProvider() {
-//            @Override
-//            public ConnectionInfo getConnection(String connectionName) {
-//                return connectionInfo;
-//            }
-//        });
     }
 
     private static void registerProxy() {
