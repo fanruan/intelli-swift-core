@@ -1,6 +1,8 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.IoUtil;
 import com.fr.third.net.jpountz.lz4.LZ4BlockInputStream;
 import com.fr.third.net.jpountz.lz4.LZ4BlockOutputStream;
 import com.fr.third.net.jpountz.lz4.LZ4Compressor;
@@ -39,23 +41,21 @@ public class Lz4Connector extends BaseConnector {
     }
 
     @Override
-    public void write(FileBlock block, InputStream is)
-            throws IOException {
-        LZ4Compressor compressor = LZ4Factory.nativeInstance().fastCompressor();
-        FileOutputStream fos = new FileOutputStream(getPath(block, true));
-        BufferedOutputStream bos = new BufferedOutputStream(fos);
-        LZ4BlockOutputStream zos = new LZ4BlockOutputStream(bos, BLOCK_SIZE, compressor);
-//        LZ4FrameOutputStream zos = new LZ4FrameOutputStream(bos);
-        IOUtils.copy(is, zos);
-        zos.finish();
-        if (is != null) {
-            is.close();
-        }
-        if (null != bos) {
-            bos.close();
-        }
-        if (fos != null) {
-            fos.close();
+    public void write(FileBlock block, InputStream is) throws IOException {
+        BufferedOutputStream bos = null;
+        FileOutputStream fos = null;
+        try {
+            LZ4Compressor compressor = LZ4Factory.fastestInstance().fastCompressor();
+            fos = new FileOutputStream(getPath(block, true));
+            bos = new BufferedOutputStream(fos);
+            LZ4BlockOutputStream zos = new LZ4BlockOutputStream(bos, BLOCK_SIZE, compressor);
+            IOUtils.copy(is, zos);
+            zos.finish();
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+            throw e;
+        } finally {
+            IoUtil.close(is, bos, fos);
         }
     }
 
