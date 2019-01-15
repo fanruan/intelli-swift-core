@@ -34,6 +34,7 @@ import com.fr.swift.jdbc.info.JdbcRequestParserVisitor;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
 import com.fr.swift.jdbc.info.TablesRequestInfo;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.ReflectUtils;
 import com.fr.swift.util.Strings;
@@ -124,7 +125,9 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
                     schema = bean.getSchema();
                 }
                 try {
-                    queryJson = JsonBuilder.writeJsonString(bean.getQueryInfoBean());
+                    QueryInfoBean queryInfoBean = bean.getQueryInfoBean();
+                    queryInfoBean.setQueryId(sqlRequestInfo.getRequestId());
+                    queryJson = JsonBuilder.writeJsonString(queryInfoBean);
                 } catch (Exception e) {
                     return ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
                 }
