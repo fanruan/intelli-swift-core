@@ -1,7 +1,6 @@
 package com.fr.swift.netty.rpc.server;
 
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.netty.rpc.registry.ServiceRegistry;
@@ -20,7 +19,6 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,10 +49,6 @@ public class RpcServer {
     public RpcServer() {
         swiftProperty = SwiftProperty.getProperty();
         this.serviceAddress = swiftProperty.getServerAddress();
-    }
-
-    @PostConstruct
-    public void initService() throws SwiftBeanException {
     }
 
     public void start() throws Exception {
