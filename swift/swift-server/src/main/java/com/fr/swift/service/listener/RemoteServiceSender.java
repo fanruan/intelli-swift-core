@@ -7,6 +7,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.SwiftService;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * @author pony
@@ -16,6 +17,11 @@ import java.io.Serializable;
 @SwiftBean
 @ProxyService(value = RemoteSender.class)
 public class RemoteServiceSender implements RemoteSender {
+
+    @Override
+    public Serializable appointTrigger(Collection<String> urls, SwiftRpcEvent event) {
+        return RemoteServiceReceiver.getInstance().trigger(event);
+    }
 
     @Override
     public Serializable trigger(SwiftRpcEvent event) {

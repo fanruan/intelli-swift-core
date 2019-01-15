@@ -17,7 +17,8 @@ import java.util.Map;
 public class ObjectJsonWriter implements JsonWriter {
     private static final CollectionJsonWriter COLLECTION_JSON_WRITER = new CollectionJsonWriter();
     private static final MapJsonWriter MAP_JSON_WRITER = new MapJsonWriter();
-    public static final String QUOTATION_REPLACEMENT = "__QUOTA__";
+    public static final String D_QUOTA_REPLACEMENT = "__D_QUOTA__";
+    public static final String S_QUOTA_REPLACEMENT = "__S_QUOTA__";
 
     @Override
     public String write(Object o) {
@@ -30,8 +31,8 @@ public class ObjectJsonWriter implements JsonWriter {
         }
         if (o instanceof String) {
             String tmp = (String) o;
-            tmp = tmp.replace("'", "\"");
-            return String.format("\"%s\"", tmp.replace("\"", QUOTATION_REPLACEMENT));
+            tmp = tmp.replace("'", S_QUOTA_REPLACEMENT);
+            return String.format("\"%s\"", tmp.replace("\"", D_QUOTA_REPLACEMENT));
         }
         if (o instanceof Enum) {
             return String.format("\"%s\"", ((Enum) o).name());
@@ -134,8 +135,8 @@ public class ObjectJsonWriter implements JsonWriter {
         }
         if (obj instanceof String) {
             String tmp = (String) obj;
-            tmp = tmp.replace("'", "\"");
-            buffer.append(String.format("\"%s\"", tmp.replace("\"", QUOTATION_REPLACEMENT)));
+            tmp = tmp.replace("'", S_QUOTA_REPLACEMENT);
+            buffer.append(String.format("\"%s\"", tmp.replace("\"", D_QUOTA_REPLACEMENT)));
             return;
         }
         if (reference.isEnum()) {

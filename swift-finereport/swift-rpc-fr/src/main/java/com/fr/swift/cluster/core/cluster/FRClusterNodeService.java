@@ -8,6 +8,7 @@ import com.fr.cluster.lock.ClusterLockFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLogger;
@@ -23,6 +24,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean
 public class FRClusterNodeService implements ClusterNodeService<ClusterNode> {
 
     private ClusterLockFactory factory = ClusterBridge.getLockFactory();
@@ -36,12 +38,6 @@ public class FRClusterNodeService implements ClusterNodeService<ClusterNode> {
 
     private FRClusterNodeService() {
         swiftProperty.setRpcAddress(FRClusterNodeManager.getInstance().getCurrentId());
-    }
-
-    private static final ClusterNodeService INSTANCE = new FRClusterNodeService();
-
-    public static ClusterNodeService getInstance() {
-        return INSTANCE;
     }
 
     @Override

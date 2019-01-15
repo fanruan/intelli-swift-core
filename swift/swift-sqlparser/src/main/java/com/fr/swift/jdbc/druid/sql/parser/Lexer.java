@@ -1735,7 +1735,7 @@ public class Lexer {
             }
 
 //            stringVal = MySqlLexer.quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash);
-            //stringVal = text.substring(mark, pos);
+            stringVal = text.substring(pos + 1, quoteIndex);
             pos = quoteIndex + 1;
             this.ch = charAt(pos);
             token = Token.IDENTIFIER;

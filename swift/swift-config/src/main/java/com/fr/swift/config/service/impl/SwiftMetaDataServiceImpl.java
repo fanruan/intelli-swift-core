@@ -175,7 +175,9 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                     @Override
                     public SwiftMetaData work(ConfigSession session) throws SQLException {
                         SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey);
-                        metaDataCache.put(sourceKey, metaData);
+                        if (null != metaData) {
+                            metaDataCache.put(sourceKey, metaData);
+                        }
                         return metaData;
                     }
                 });
