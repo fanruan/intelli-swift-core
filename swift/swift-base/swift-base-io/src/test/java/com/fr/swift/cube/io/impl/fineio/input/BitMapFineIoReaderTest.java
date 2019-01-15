@@ -1,6 +1,7 @@
 package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fr.swift.bitmap.BitMapType;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
@@ -70,13 +71,15 @@ public class BitMapFineIoReaderTest {
     public void get() {
         Assert.assertTrue(BitMapFineIoReader.build(location).get(0).isEmpty());
         Assert.assertTrue(BitMapFineIoReader.build(location).get(1).isEmpty());
-        Assert.assertTrue(BitMapFineIoReader.build(location).get(2).contains(0));
-        Assert.assertTrue(BitMapFineIoReader.build(location).get(3).contains(0));
+        ImmutableBitMap bitmap = BitMapFineIoReader.build(location).get(2);
+        Assert.assertTrue(bitmap.getCardinality() == 1 && bitmap.contains(0));
+        bitmap = BitMapFineIoReader.build(location).get(3);
+        Assert.assertTrue(bitmap.getCardinality() == 1 && bitmap.contains(0));
 
         try {
             BitMapFineIoReader.build(location).get(4);
             fail();
-        } catch (Exception ig) {
+        } catch (Exception ignore) {
             // 应该抛错
         }
     }

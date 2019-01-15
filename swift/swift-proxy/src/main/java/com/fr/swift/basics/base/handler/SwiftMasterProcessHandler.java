@@ -42,8 +42,7 @@ public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> imple
             MonitorUtil.start();
             URL masterUrl = processUrl(target, args);
             Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, masterUrl);
-            Object object = invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
-            return object;
+            return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
         } finally {
             MonitorUtil.finish(methodName);
         }
@@ -61,7 +60,6 @@ public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> imple
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class)
                 .getServiceInfoByService(SwiftServiceInfoService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
-        URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
-        return url;
+        return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 }

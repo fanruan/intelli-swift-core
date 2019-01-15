@@ -1,4 +1,4 @@
-package com.fr.swift.cube.io;
+package com.fr.swift.cube.io.impl.nio;
 
 import com.fr.swift.test.TestResource;
 

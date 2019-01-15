@@ -48,8 +48,6 @@ public interface Session extends Closeable {
      */
     void cleanCache(boolean force);
 
-    void cleanStore();
-
     void putObject(Object key, Object value);
 
     Object getObject(Object key);

@@ -77,35 +77,31 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
             rpcFuture.addCallback(new AsyncRpcCallback() {
                 @Override
                 public void success(final Object result) {
-                    if (!isLocalURL(pair.getKey())) {
-                        // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
-                        final QueryResultSet rs = (QueryResultSet) result;
-                        switch (queryBean.getQueryType()) {
-                            case DETAIL_SORT:
-                            case DETAIL:
-                            case GROUP: {
-                                BaseSerializableQRS qrs = (BaseSerializableQRS) rs;
-                                BaseSerializableQRS.SyncInvoker syncInvoker = new BaseSerializableQRS.SyncInvoker() {
-                                    @Override
-                                    public <D, T extends BaseSerializableQRS<D>> T invoke() {
-                                        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                                        Invocation invocation = new SwiftInvocation(method, new Object[]{query});
-                                        try {
-                                            return (T) invoker.invoke(invocation).recreate();
-                                        } catch (Throwable throwable) {
-                                            return Crasher.crash(throwable);
-                                        }
+                    // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
+                    final QueryResultSet rs = (QueryResultSet) result;
+                    switch (queryBean.getQueryType()) {
+                        case DETAIL_SORT:
+                        case DETAIL:
+                        case GROUP: {
+                            BaseSerializableQRS qrs = (BaseSerializableQRS) rs;
+                            BaseSerializableQRS.SyncInvoker syncInvoker = new BaseSerializableQRS.SyncInvoker() {
+                                @Override
+                                public <D, T extends BaseSerializableQRS<D>> T invoke() {
+                                    Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                    Invocation invocation = new SwiftInvocation(method, new Object[]{query});
+                                    try {
+                                        return (T) invoker.invoke(invocation).recreate();
+                                    } catch (Throwable throwable) {
+                                        return Crasher.crash(throwable);
                                     }
-                                };
-                                qrs.setInvoker(syncInvoker);
-                                resultSets.add(qrs);
-                                break;
-                            }
-                            default:
-                                resultSets.add(rs);
+                                }
+                            };
+                            qrs.setInvoker(syncInvoker);
+                            resultSets.add(qrs);
+                            break;
                         }
-                    } else {
-                        resultSets.add((QueryResultSet) result);
+                        default:
+                            resultSets.add(rs);
                     }
                     latch.countDown();
                 }

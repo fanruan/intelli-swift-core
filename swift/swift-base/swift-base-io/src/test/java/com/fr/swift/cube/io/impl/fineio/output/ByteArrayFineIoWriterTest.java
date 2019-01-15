@@ -15,9 +15,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.net.URI;
 
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyByte;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -71,14 +69,16 @@ public class ByteArrayFineIoWriterTest {
     public void put() {
         ByteArrayFineIoWriter.build(location, true).put(0, new byte[]{1, 2, 3});
 
-        verify(longWriter).put(anyLong(), anyLong());
-        verify(intWriter).put(anyLong(), anyInt());
-        verify(byteWriter, times(3)).put(anyLong(), anyByte());
-        
+        verify(longWriter).put(0, 0);
+        verify(intWriter).put(0, 3);
+        verify(byteWriter).put(0, (byte) 1);
+        verify(byteWriter).put(1, (byte) 2);
+        verify(byteWriter).put(2, (byte) 3);
+
         ByteArrayFineIoWriter.build(location, true).put(0, null);
 
-        verify(longWriter, times(2)).put(anyLong(), anyLong());
-        verify(intWriter, times(2)).put(anyLong(), anyInt());
+        verify(longWriter, atLeastOnce()).put(0, 0);
+        verify(intWriter).put(0, 0);
         verifyNoMoreInteractions(byteWriter);
     }
 

@@ -1,8 +1,7 @@
-package com.fr.swift.cube.io;
+package com.fr.swift.cube.io.impl.nio;
 
-import com.fr.swift.cube.io.impl.nio.NioConf;
+import com.fr.swift.cube.io.ObjectIo;
 import com.fr.swift.cube.io.impl.nio.NioConf.IoType;
-import com.fr.swift.cube.io.impl.nio.StringNio;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
