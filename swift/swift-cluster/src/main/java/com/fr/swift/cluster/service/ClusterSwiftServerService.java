@@ -128,7 +128,6 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
     }
 
     @Override
-    @PostConstruct
     public boolean start() {
         SwiftServiceListenerManager.getInstance().registerHandler(this);
         initListener();
