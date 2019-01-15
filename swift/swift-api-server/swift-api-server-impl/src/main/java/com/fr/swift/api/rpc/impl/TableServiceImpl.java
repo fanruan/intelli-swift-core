@@ -17,10 +17,8 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.AddColumnAction;
 import com.fr.swift.db.impl.DropColumnAction;
-import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.event.global.TruncateEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
-import com.fr.swift.query.info.bean.element.filter.impl.AllShowFilterBean;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.RealtimeService;
@@ -128,12 +126,13 @@ public class TableServiceImpl implements TableService {
         String sourceKey = metaData.getId();
         // 如果是集群，需要让master转发到所有节点删除，因为调用truncate的不一定是master，非master无法调用其他节点进行删除
         if (ClusterSelector.getInstance().getFactory().isCluster()) {
-            ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new TruncateEvent(sourceKey, new SwiftWhere(new AllShowFilterBean())));
+            ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new TruncateEvent(sourceKey));
         } else {
             // 单机直接调用history的truncate
             // truncate也应该删除realtime的数据
-            ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class).delete(new SourceKey(sourceKey), new SwiftWhere(new AllShowFilterBean()), Collections.<String>emptyList());
-            ProxySelector.getInstance().getFactory().getProxy(HistoryService.class).truncate(sourceKey);
+            SourceKey source = new SourceKey(sourceKey);
+            ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class).truncate(source);
+            ProxySelector.getInstance().getFactory().getProxy(HistoryService.class).truncate(source);
         }
     }
 

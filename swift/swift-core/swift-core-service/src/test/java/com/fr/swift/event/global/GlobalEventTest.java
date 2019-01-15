@@ -10,7 +10,6 @@ import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.powermock.api.easymock.PowerMock;
 
 /**
  * This class created on 2019/1/4
@@ -78,14 +77,10 @@ public class GlobalEventTest extends TestCase {
     }
 
     public void testTruncateEvent() {
-        // Generate by Mock Plugin
-        Where mockWhere = PowerMock.createMock(Where.class);
-        PowerMock.replayAll();
 
-        TruncateEvent event = new TruncateEvent("tableA", mockWhere);
+        TruncateEvent event = new TruncateEvent("tableA");
         assertEquals(event.type(), SwiftRpcEvent.EventType.GLOBAL);
         assertEquals(event.subEvent(), AbstractGlobalRpcEvent.Event.TRUNCATE);
-        assertEquals(event.getContent().getKey(), new SourceKey("tableA"));
-        assertEquals(event.getContent().getValue(), mockWhere);
+        assertEquals(event.getContent(), new SourceKey("tableA"));
     }
 }
