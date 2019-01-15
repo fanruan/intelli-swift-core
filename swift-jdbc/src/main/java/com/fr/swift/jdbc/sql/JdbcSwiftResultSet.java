@@ -1,6 +1,6 @@
 package com.fr.swift.jdbc.sql;
 
-import com.fr.swift.api.result.OnePageApiResultSet;
+import com.fr.swift.api.result.BaseApiResultSet;
 import com.fr.swift.api.result.SwiftApiResultSet;
 import com.fr.swift.jdbc.info.SqlRequestInfo;
 
@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018-12-12
  */
-public class JdbcSwiftResultSet extends OnePageApiResultSet<SqlRequestInfo> {
+public class JdbcSwiftResultSet extends BaseApiResultSet<SqlRequestInfo> {
     private static final long serialVersionUID = 5724892335081556009L;
     private SwiftStatementImpl swiftStatement;
 

@@ -87,7 +87,7 @@ public class SegmentTransferTest {
 
     @Test
     public void transferFailed() throws Exception {
-        doThrow(new Exception()).when(inserter).insertData(Matchers.<SwiftResultSet>any());
+        doThrow(Exception.class).when(inserter).insertData(Matchers.<SwiftResultSet>any());
 
         SegmentKey newSegKey = mock(SegmentKey.class);
         SegmentTransfer transfer = new SegmentTransfer(oldSegKey, newSegKey);

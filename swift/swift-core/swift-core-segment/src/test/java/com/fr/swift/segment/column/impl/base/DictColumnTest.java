@@ -17,7 +17,6 @@ import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.cube.io.output.LongWriter;
 import com.fr.swift.cube.io.output.StringWriter;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.test.TestResource;
 import com.fr.swift.util.ArrayLookupHelper;
 import com.fr.swift.util.ArrayLookupHelper.Lookup;
 import org.junit.Before;
@@ -124,7 +123,7 @@ public class DictColumnTest {
 
         SwiftCubePathService swiftCubePathService = mock(SwiftCubePathService.class);
         when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
-        when(swiftCubePathService.getSwiftPath()).thenReturn(TestResource.getRunPath(getClass()));
+        when(swiftCubePathService.getSwiftPath()).thenReturn("/");
 
         mockStatic(ArrayLookupHelper.class);
         when(ArrayLookupHelper.lookup(Matchers.<Object[]>any(), Matchers.<Lookup<Object>>any())).thenReturn(new int[]{1});

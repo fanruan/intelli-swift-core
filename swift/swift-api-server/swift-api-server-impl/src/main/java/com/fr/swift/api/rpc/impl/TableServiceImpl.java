@@ -4,12 +4,12 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
+import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftCubePathService;
@@ -28,7 +28,6 @@ import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.FileUtil;
 
@@ -36,7 +35,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author yee
@@ -96,8 +94,7 @@ public class TableServiceImpl implements TableService {
         SwiftMetaDataBean swiftMetaDataBean = new SwiftMetaDataBean();
         swiftMetaDataBean.setSwiftDatabase(schema);
         swiftMetaDataBean.setTableName(tableName);
-        String uniqueKey = MD5Utils.getMD5String(new String[]{UUID.randomUUID().toString(), tableName});
-        swiftMetaDataBean.setId(uniqueKey);
+        swiftMetaDataBean.setId(tableName);
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         for (Column column : columns) {
             String columnName = column.getColumnName();
@@ -107,7 +104,7 @@ public class TableServiceImpl implements TableService {
             columnList.add(new MetaDataColumnBean(column.getColumnName(), column.getColumnType()));
         }
         swiftMetaDataBean.setFields(columnList);
-        if (swiftMetaDataService.addMetaData(uniqueKey, swiftMetaDataBean)) {
+        if (swiftMetaDataService.addMetaData(tableName, swiftMetaDataBean)) {
             return 1;
         }
         return -1;

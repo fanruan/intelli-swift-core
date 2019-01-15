@@ -10,7 +10,6 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.test.TestResource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,7 +40,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class IResourceDiscoveryTest {
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
-    public String cubesPath = TestResource.getRunPath(getClass()) + "cubes/table/seg0/column";
+    public String cubesPath = "/cubes/table/seg0/column";
     
     private ExecutorService exec = Executors.newFixedThreadPool(8);
 
@@ -54,7 +53,7 @@ public class IResourceDiscoveryTest {
         SwiftCubePathService service = mock(SwiftCubePathService.class);
         when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(service);
 
-        when(service.getSwiftPath()).thenReturn(TestResource.getRunPath(getClass()));
+        when(service.getSwiftPath()).thenReturn("/");
     }
 
     @Test

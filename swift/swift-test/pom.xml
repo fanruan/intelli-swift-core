@@ -59,23 +59,6 @@
             <version>${swift.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-common</artifactId>
-            <version>${swift.version}</version>
-            <classifier>tests</classifier>
-            <type>test-jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-common</artifactId>
-            <version>${swift.version}</version>
-            <scope>test</scope>
-            <classifier>tests</classifier>
-            <type>test-jar</type>
-        </dependency>
-
-        <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
             <version>${byte-buddy.version}</version>

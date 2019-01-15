@@ -16,7 +16,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.test.TestResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +61,7 @@ public class SegmentResultSetTest {
 
         SwiftCubePathService swiftCubePathService = mock(SwiftCubePathService.class);
         when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
-        when(swiftCubePathService.getSwiftPath()).thenReturn(TestResource.getRunPath(getClass()));
+        when(swiftCubePathService.getSwiftPath()).thenReturn("/");
 
         when(seg.isHistory()).thenReturn(true);
         when(seg.isReadable()).thenReturn(true);
