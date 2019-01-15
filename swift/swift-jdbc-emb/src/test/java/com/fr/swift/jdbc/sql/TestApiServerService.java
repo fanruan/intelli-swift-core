@@ -1,7 +1,7 @@
 package com.fr.swift.jdbc.sql;
 
 import com.fr.swift.annotation.SwiftApi;
-import com.fr.swift.api.result.OnePageApiResultSet;
+import com.fr.swift.api.result.BaseApiResultSet;
 import com.fr.swift.api.server.ApiServerService;
 import com.fr.swift.api.server.response.ApiResponse;
 import com.fr.swift.api.server.response.ApiResponseImpl;
@@ -21,16 +21,16 @@ public class TestApiServerService implements ApiServerService {
     @SwiftApi
     public ApiResponse dispatchRequest(String request) {
         // Generate by Mock Plugin
-        OnePageApiResultSet mockOnePageApiResultSet = PowerMock.createMock(OnePageApiResultSet.class);
-        EasyMock.expect(mockOnePageApiResultSet.isOriginHasNextPage()).andReturn(false).anyTimes();
-        EasyMock.expect(mockOnePageApiResultSet.getRows()).andReturn(Collections.emptyList()).anyTimes();
-        EasyMock.expect(mockOnePageApiResultSet.getRowCount()).andReturn(0).anyTimes();
+        BaseApiResultSet mockBaseApiResultSet = PowerMock.createMock(BaseApiResultSet.class);
+        EasyMock.expect(mockBaseApiResultSet.isOriginHasNextPage()).andReturn(false).anyTimes();
+        EasyMock.expect(mockBaseApiResultSet.getRows()).andReturn(Collections.emptyList()).anyTimes();
+        EasyMock.expect(mockBaseApiResultSet.getRowCount()).andReturn(0).anyTimes();
         try {
-            EasyMock.expect(mockOnePageApiResultSet.getMetaData()).andReturn(null).anyTimes();
-            EasyMock.expect(mockOnePageApiResultSet.getLabel2Index()).andReturn(Collections.emptyMap()).anyTimes();
+            EasyMock.expect(mockBaseApiResultSet.getMetaData()).andReturn(null).anyTimes();
+            EasyMock.expect(mockBaseApiResultSet.getLabel2Index()).andReturn(Collections.emptyMap()).anyTimes();
         } catch (SQLException ignore) {
         }
-        PowerMock.replay(mockOnePageApiResultSet);
-        return new ApiResponseImpl(mockOnePageApiResultSet);
+        PowerMock.replay(mockBaseApiResultSet);
+        return new ApiResponseImpl(mockBaseApiResultSet);
     }
 }

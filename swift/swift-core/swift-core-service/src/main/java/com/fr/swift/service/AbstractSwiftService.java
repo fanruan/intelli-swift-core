@@ -3,7 +3,6 @@ package com.fr.swift.service;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.service.listener.SwiftServiceListenerManager;
 
 import java.io.Serializable;
 
@@ -26,14 +25,14 @@ public abstract class AbstractSwiftService implements SwiftService, Serializable
 
     @Override
     public boolean start() throws SwiftServiceException {
-        SwiftServiceListenerManager.getInstance().registerService(this);
+//        SwiftServiceListenerManager.getInstance().registerService(this);
         return true;
     }
 
     @Override
     public boolean shutdown() throws SwiftServiceException {
-        SwiftServiceListenerManager.getInstance().unRegisterService(this);
-        return false;
+//        SwiftServiceListenerManager.getInstance().unRegisterService(this);
+        return true;
     }
 
     @Override

@@ -1,14 +1,22 @@
 package com.fr.swift.service.handler.global;
 
+import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.ClusterEvent;
+import com.fr.swift.event.ClusterEventType;
+import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.event.ClusterType;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
@@ -17,6 +25,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.BaseService;
 import com.fr.swift.service.HistoryService;
@@ -31,6 +40,8 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 import com.fr.swift.task.impl.TaskEvent;
+import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -49,11 +60,29 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
     private SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
     private SwiftMetaDataService swiftMetaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
     private HistoryDataSyncManager historyDataSyncManager = SwiftContext.get().getBean(HistoryDataSyncManager.class);
+    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
     @Override
     public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) throws Exception {
         final ProxyFactory factory = ProxySelector.getInstance().getFactory();
         switch (event.subEvent()) {
+            case CHECK_MASTER:
+                List<SwiftServiceInfoBean> masterServiceInfoBeanList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
+                if (masterServiceInfoBeanList.isEmpty()) {
+                    Crasher.crash("Master is null!");
+                }
+                SwiftServiceInfoBean masterBean = masterServiceInfoBeanList.get(0);
+                if (!Util.equals(ClusterSelector.getInstance().getFactory().getMasterId(), masterBean.getClusterId())) {
+                    LOGGER.info("Master is not synchronized!");
+                    try {
+                        ClusterNodeService clusterNodeService = SwiftContext.get().getBean(ClusterNodeService.class);
+                        clusterNodeService.competeMaster();
+                    } catch (SwiftBeanException e) {
+                        SwiftLoggers.getLogger().error(e);
+                    }
+                    ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.FR));
+                }
+                return (S) ClusterSelector.getInstance().getFactory().getCurrentId();
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
                 SwiftEventDispatcher.fire(TaskEvent.DONE, pair);

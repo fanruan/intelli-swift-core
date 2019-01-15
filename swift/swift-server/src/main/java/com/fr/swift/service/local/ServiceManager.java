@@ -1,23 +1,22 @@
 package com.fr.swift.service.local;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.service.AbstractSwiftManager;
-import com.fr.swift.service.LocalSwiftServerService;
-import com.fr.swift.service.manager.LocalServiceManager;
+import com.fr.swift.service.SwiftManager;
+import com.fr.swift.service.SwiftService;
 import com.fr.swift.util.ServiceBeanFactory;
+
+import java.util.List;
 
 /**
  * This class created on 2018/8/21
  *
  * @author Lucifer
- * @description
+ * @description 统一控制service的start和shutdown，并且记录running状态，避免重复start和shutdown
  * @since Advanced FineBI 5.0
  */
-@SwiftBean(name = "localManager")
-public class ServiceManager extends AbstractSwiftManager implements LocalManager {
-
-    private LocalServiceManager localServiceManager = SwiftContext.get().getBean(LocalServiceManager.class);
+@SwiftBean(name = "serviceManager")
+public class ServiceManager extends AbstractSwiftManager implements SwiftManager {
 
     @Override
     public void startUp() throws Exception {
@@ -45,12 +44,17 @@ public class ServiceManager extends AbstractSwiftManager implements LocalManager
 
     @Override
     protected void installService() throws Exception {
-        new LocalSwiftServerService().start();
-        localServiceManager.registerService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+        List<SwiftService> swiftServices = ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames());
+        for (SwiftService swiftService : swiftServices) {
+            swiftService.start();
+        }
     }
 
     @Override
     protected void uninstallService() throws Exception {
-        localServiceManager.unregisterService(ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames()));
+        List<SwiftService> swiftServices = ServiceBeanFactory.getSwiftServiceByNames(swiftProperty.getSwiftServiceNames());
+        for (SwiftService swiftService : swiftServices) {
+            swiftService.shutdown();
+        }
     }
 }

@@ -179,6 +179,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         @Override
         public void handleEvent(ClusterEvent clusterEvent) {
             if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+                ResourceDiscovery.getInstance().releaseAll();
+                recover0();
                 sendLocalSegmentInfo();
             }
         }
