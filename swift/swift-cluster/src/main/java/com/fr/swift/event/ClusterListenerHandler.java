@@ -47,7 +47,9 @@ public class ClusterListenerHandler {
     public static void addInitialListener(ClusterEventListener clusterEventListener) {
         lock.lock();
         try {
-            INSTANCE.initialEventListeners.add(clusterEventListener);
+            if (!INSTANCE.initialEventListeners.contains(clusterEventListener)) {
+                INSTANCE.initialEventListeners.add(clusterEventListener);
+            }
         } finally {
             lock.unlock();
         }
@@ -56,7 +58,9 @@ public class ClusterListenerHandler {
     public static void addExtraListener(ClusterEventListener clusterEventListener) {
         lock.lock();
         try {
-            INSTANCE.extraEventListeners.add(clusterEventListener);
+            if (!INSTANCE.extraEventListeners.contains(clusterEventListener)) {
+                INSTANCE.extraEventListeners.add(clusterEventListener);
+            }
         } finally {
             lock.unlock();
         }
