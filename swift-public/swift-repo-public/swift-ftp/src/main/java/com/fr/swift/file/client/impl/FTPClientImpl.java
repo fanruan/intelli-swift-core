@@ -101,6 +101,9 @@ public class FTPClientImpl implements SwiftFTPClient {
 
     @Override
     public boolean delete(String path) throws IOException {
+        if (isDirectory(path)) {
+            return client.removeDirectory(path);
+        }
         return client.deleteFile(path);
     }
 

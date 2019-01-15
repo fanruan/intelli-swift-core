@@ -28,6 +28,7 @@ import com.fr.swift.jdbc.adaptor.bean.DeletionBean;
 import com.fr.swift.jdbc.adaptor.bean.DropBean;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.adaptor.bean.SelectionBean;
+import com.fr.swift.jdbc.adaptor.bean.TruncateBean;
 import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
 import com.fr.swift.jdbc.info.ColumnsRequestInfo;
 import com.fr.swift.jdbc.info.JdbcRequestParserVisitor;
@@ -133,6 +134,13 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
                 }
                 return createApiInvocation("query", SelectService.class,
                         SwiftDatabase.fromKey(schema), queryJson);
+            }
+            case TRUNCATE: {
+                TruncateBean bean = visitor.getTruncateBean();
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema = bean.getSchema();
+                }
+                return createApiInvocation("truncateTable", TableService.class, SwiftDatabase.fromKey(schema), bean.getTableName());
             }
             default:
         }
