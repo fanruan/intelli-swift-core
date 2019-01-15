@@ -209,7 +209,7 @@ public class SwiftHistoryServiceTest {
 
     @Test
     public void truncate() throws Exception {
-        service.truncate("table");
+        service.truncate(new SourceKey("table"));
         PowerMock.verifyAll();
     }
 

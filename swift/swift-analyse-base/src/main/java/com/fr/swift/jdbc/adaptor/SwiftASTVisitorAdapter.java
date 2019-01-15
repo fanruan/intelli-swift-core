@@ -5,18 +5,23 @@ import com.fr.swift.jdbc.adaptor.bean.DeletionBean;
 import com.fr.swift.jdbc.adaptor.bean.DropBean;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.adaptor.bean.SelectionBean;
+import com.fr.swift.jdbc.adaptor.bean.TruncateBean;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDeleteStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLDropTableStatement;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLExprTableSource;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLInsertStatement;
 import com.fr.swift.jdbc.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.fr.swift.jdbc.druid.sql.ast.statement.SQLTruncateStatement;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
+
+import java.util.List;
 
 /**
  * Created by lyon on 2018/12/10.
  */
 public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements SelectionBeanParser, CreationBeanParser,
-        InsertionBeanParser, DeletionBeanParser, DropBeanParser {
+        InsertionBeanParser, DeletionBeanParser, DropBeanParser, TruncateBeanParser {
 
     private SwiftSQLType sqlType;
     private SelectionBean queryInfoBean;
@@ -24,6 +29,7 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Sele
     private InsertionBean insertionBean;
     private DeletionBean deletionBean;
     private DropBean dropBean;
+    private TruncateBean truncateBean;
     private String defaultDatabase;
 
     public SwiftASTVisitorAdapter(String database) {
@@ -76,6 +82,16 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Sele
     }
 
     @Override
+    public boolean visit(SQLTruncateStatement x) {
+        sqlType = SwiftSQLType.TRUNCATE;
+        List<SQLExprTableSource> sources = x.getTableSources();
+        String[] tableNames = SwiftSQLUtils.getTableName(sources.get(0));
+        truncateBean = new TruncateBean(tableNames[1], tableNames[0]);
+
+        return false;
+    }
+
+    @Override
     public SelectionBean getSelectionBean() {
         return queryInfoBean;
     }
@@ -102,5 +118,10 @@ public class SwiftASTVisitorAdapter extends SQLASTVisitorAdapter implements Sele
 
     public SwiftSQLType getSqlType() {
         return sqlType;
+    }
+
+    @Override
+    public TruncateBean getTruncateBean() {
+        return truncateBean;
     }
 }

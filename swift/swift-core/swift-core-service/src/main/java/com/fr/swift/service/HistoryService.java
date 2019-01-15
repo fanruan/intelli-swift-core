@@ -36,7 +36,7 @@ public interface HistoryService extends SwiftService, DeleteService {
     void commonLoad(SourceKey sourceKey, Map<SegmentKey, List<String>> needLoad) throws Exception;
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.HISTORY)
-    void truncate(String sourceKey) throws Exception;
+    void truncate(SourceKey sourceKey);
 
     @Override
     @InvokeMethod(value = DeleteSegmentProcessHandler.class, target = Target.HISTORY)

@@ -8,8 +8,10 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -20,6 +22,7 @@ import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.event.history.CheckLoadHistoryEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SegmentKey;
@@ -32,6 +35,7 @@ import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
@@ -39,6 +43,7 @@ import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,18 +189,30 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void truncate(String sourceKey) {
-        SwiftTablePathBean entity = tablePathService.get(sourceKey);
+    public void truncate(SourceKey sourceKey) {
+        SwiftTablePathBean entity = tablePathService.get(sourceKey.getId());
         int path = 0;
         if (null != entity) {
             path = entity.getTablePath() == null ? 0 : entity.getTablePath();
-            tablePathService.removePath(sourceKey);
+            tablePathService.removePath(sourceKey.getId());
         }
-//        SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-        segmentService.removeSegments(sourceKey);
+        segmentService.removeSegments(sourceKey.getId());
 
-        String localPath = String.format("%s/%d/%s", cubePathService.getSwiftPath(), path, sourceKey);
+
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
+        String localPath = new CubePathBuilder()
+                .asAbsolute()
+                .setSwiftSchema(metaData.getSwiftDatabase())
+                .setTempDir(path)
+                .setTableKey(new SourceKey(sourceKey.getId())).build();
         FileUtil.delete(localPath);
+        CubePathBuilder builder = new CubePathBuilder();
+        builder.setSwiftSchema(metaData.getSwiftDatabase()).setTableKey(sourceKey);
+        try {
+            SwiftRepositoryManager.getManager().currentRepo().delete(builder.build());
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().warn("truncate remote data failed", e);
+        }
     }
 
     @Override
@@ -265,7 +282,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
 
         protected SegmentLocationInfo loadSelfSegmentDestination() {
-//            SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
             Map<SourceKey, List<SegmentKey>> segments = segmentService.getOwnSegments();
             if (!segments.isEmpty()) {
                 Map<SourceKey, List<SegmentDestination>> hist = new HashMap<SourceKey, List<SegmentDestination>>();

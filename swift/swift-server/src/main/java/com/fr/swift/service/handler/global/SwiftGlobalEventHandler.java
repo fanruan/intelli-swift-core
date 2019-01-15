@@ -9,8 +9,6 @@ import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.ClusterEvent;
@@ -34,7 +32,6 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.EventHandlerExecutor;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
-import com.fr.swift.service.handler.history.HistoryDataSyncManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
@@ -57,9 +54,6 @@ import java.util.Map.Entry;
 @SwiftBean
 public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEvent> {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftGlobalEventHandler.class);
-    private SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-    private SwiftMetaDataService swiftMetaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
-    private HistoryDataSyncManager historyDataSyncManager = SwiftContext.get().getBean(HistoryDataSyncManager.class);
     private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
     @Override
@@ -155,8 +149,9 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
 //                dealDelete(sourceKey, where, historyServices, "historyDelete");
                 break;
             case TRUNCATE:
-                String truncateSourceKey = (String) event.getContent();
-                ProxySelector.getProxy(HistoryService.class).truncate(truncateSourceKey);
+                SourceKey truncateContent = (SourceKey) event.getContent();
+                ProxySelector.getProxy(RealtimeService.class).truncate(truncateContent);
+                ProxySelector.getProxy(HistoryService.class).truncate(truncateContent);
             default:
                 break;
         }
