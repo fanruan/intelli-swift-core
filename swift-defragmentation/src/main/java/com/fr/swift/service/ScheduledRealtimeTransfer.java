@@ -17,6 +17,9 @@ import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.third.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,13 +40,30 @@ public class ScheduledRealtimeTransfer implements Runnable {
     @Override
     public void run() {
         for (final Table table : SwiftDatabase.getInstance().getAllTables()) {
-            for (final SegmentKey segKey : localSegments.getSegmentKeys(table.getSourceKey())) {
+            List<SegmentKey> list = localSegments.getSegmentKeys(table.getSourceKey());
+            if (null == list || list.isEmpty()) {
+                return;
+            }
+            Collections.sort(list, new Comparator<SegmentKey>() {
+                @Override
+                public int compare(SegmentKey o1, SegmentKey o2) {
+                    return o2.getOrder() - o1.getOrder();
+                }
+            });
+
+            // 过滤order最大的
+            boolean firstRealtime = false;
+            for (final SegmentKey segKey : list) {
                 try {
                     if (segKey.getStoreType().isPersistent()) {
                         continue;
                     }
+                    if (!firstRealtime) {
+                        firstRealtime = true;
+                        continue;
+                    }
                     Segment realtimeSeg = localSegments.getSegment(segKey);
-                    if (realtimeSeg.isReadable() && realtimeSeg.getAllShowIndex().getCardinality() >= MIN_PUT_THRESHOLD) {
+                    if (realtimeSeg.isReadable()) {
                         SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
                     }
                 } catch (Exception e) {
