@@ -44,7 +44,7 @@ public class SegmentUtils {
         return newSegment(segKey, CubeUtil.getCurrentDir(segKey.getTable()));
     }
 
-    public static Segment newSegment(SegmentKey segmentKey, Integer tmpPath) {
+    public static Segment newSegment(SegmentKey segmentKey, int tmpPath) {
         Util.requireNonNull(segmentKey);
         String cubePath;
         if (segmentKey.getStoreType().isTransient()) {
