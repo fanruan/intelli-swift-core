@@ -1,13 +1,14 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -17,6 +18,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.Optional;
+import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +41,23 @@ public class SegmentUtils {
     }
 
     public static Segment newSegment(SegmentKey segKey) {
-        SourceKey tableKey = segKey.getTable();
-        SwiftMetaData meta = SwiftDatabase.getInstance().getTable(tableKey).getMetadata();
+        return newSegment(segKey, CubeUtil.getCurrentDir(segKey.getTable()));
+    }
 
-        if (segKey.getStoreType().isTransient()) {
-            return newSegment(new ResourceLocation(new CubePathBuilder(segKey).build(), segKey.getStoreType()), meta);
+    public static Segment newSegment(SegmentKey segmentKey, Integer tmpPath) {
+        Util.requireNonNull(segmentKey);
+        String cubePath;
+        if (segmentKey.getStoreType().isTransient()) {
+            cubePath = new CubePathBuilder(segmentKey).build();
+        } else {
+            cubePath = new CubePathBuilder(segmentKey).setTempDir(tmpPath).build();
         }
-        return newSegment(new ResourceLocation(new CubePathBuilder(segKey).setTempDir(CubeUtil.getCurrentDir(tableKey)).build(), segKey.getStoreType()), meta);
+        Types.StoreType storeType = segmentKey.getStoreType();
+        ResourceLocation location = new ResourceLocation(cubePath, storeType);
+        SourceKey sourceKey = segmentKey.getTable();
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
+        Util.requireNonNull(metaData);
+        return SegmentUtils.newSegment(location, metaData);
     }
 
     public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {
