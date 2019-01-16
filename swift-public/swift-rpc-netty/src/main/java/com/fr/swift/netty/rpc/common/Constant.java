@@ -7,6 +7,7 @@ package com.fr.swift.netty.rpc.common;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Deprecated
 public interface Constant {
     int ZK_SESSION_TIMEOUT = 5000;
     int ZK_CONNECTION_TIMEOUT = 1000;

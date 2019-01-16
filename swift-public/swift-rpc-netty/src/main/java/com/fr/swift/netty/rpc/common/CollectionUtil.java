@@ -10,6 +10,7 @@ import java.util.Map;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Deprecated
 public class CollectionUtil {
     /**
      * 判断 Collection 是否为空
