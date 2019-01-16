@@ -22,6 +22,7 @@ import com.fr.third.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -337,7 +338,10 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
                     for (SwiftSegmentLocationEntity entity : list) {
                         segmentIds.add(entity.getSegmentId());
                     }
-                    return swiftSegmentDao.findSegmentKey(session, Restrictions.in("id", segmentIds));
+                    List<Criterion> criterionList = new ArrayList<Criterion>();
+                    criterionList.addAll(Arrays.asList(criterion));
+                    criterionList.add(Restrictions.in("id", segmentIds));
+                    return swiftSegmentDao.findSegmentKey(session, criterionList.toArray(new Criterion[0]));
                 }
 
                 @Override
