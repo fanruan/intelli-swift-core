@@ -80,6 +80,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 }
                 insertings.get(segInfo).insert(row);
             }
+
+            SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
@@ -132,8 +134,6 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             }
             itr.remove();
         }
-
-        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
     }
 
     protected class Inserting implements Releasable {
