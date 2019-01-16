@@ -25,8 +25,8 @@ import com.fr.swift.util.Crasher;
  */
 @SwiftBean(name = "realtimeSegment")
 @SwiftScope("prototype")
-public class RealTimeSegmentImpl extends BaseSegment implements RealTimeSegment {
-    public RealTimeSegmentImpl(IResourceLocation parent, SwiftMetaData meta) {
+public class RealtimeSegmentImpl extends BaseSegment implements RealtimeSegment {
+    public RealtimeSegmentImpl(IResourceLocation parent, SwiftMetaData meta) {
         super(parent, meta);
     }
 
