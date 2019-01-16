@@ -99,12 +99,13 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             for (SegmentKey segmentKey : value) {
                 if (segmentKey.getStoreType().isPersistent()) {
                     if (!segmentManager.getSegment(segmentKey).isReadable()) {
-                        String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), segmentKey.getUri().getPath());
+                        String downloadPath = segmentKey.getUri().getPath();
+                        String remotePath = String.format("%s/%s", segmentKey.getSwiftSchema().getDir(), downloadPath);
                         if (repository.exists(remotePath)) {
                             if (null == needDownload.get(table)) {
                                 needDownload.put(table, new HashSet<String>());
                             }
-                            needDownload.get(table).add(remotePath);
+                            needDownload.get(table).add(downloadPath);
                         } else {
                             notExists.add(segmentKey);
                         }
