@@ -291,7 +291,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public Map<SourceKey, List<SegmentKey>> getOwnSegments(final String clusterId) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
                 @Override
                 public Map<SourceKey, List<SegmentKey>> work(final ConfigSession session) throws SQLException {
                     final Set<String> segmentIds = new HashSet<String>();
@@ -302,6 +302,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                                 segmentIds.add(item.getSegmentId());
                             }
                         });
+                        if (segmentIds.isEmpty()) {
+                            return Collections.emptyMap();
+                        }
                         Map<SourceKey, List<SegmentKey>> result = swiftSegmentDao.findSegmentKeyWithSourceKey(session, ConfigWhereImpl.in("id", segmentIds));
                         for (SegmentContainer value : SegmentContainer.values()) {
                             value.register(result);
@@ -316,7 +319,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 }
             });
         } catch (SQLException e) {
-            return Crasher.crash(e);
+            return Collections.emptyMap();
         }
     }
 
