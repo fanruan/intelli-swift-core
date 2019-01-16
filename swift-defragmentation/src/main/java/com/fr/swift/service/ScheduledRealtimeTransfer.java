@@ -58,11 +58,14 @@ public class ScheduledRealtimeTransfer implements Runnable {
                     if (segKey.getStoreType().isPersistent()) {
                         continue;
                     }
+                    Segment realtimeSeg = localSegments.getSegment(segKey);
                     if (!firstRealtime) {
                         firstRealtime = true;
+                        if (realtimeSeg.isReadable() && realtimeSeg.getAllShowIndex().getCardinality() >= MIN_PUT_THRESHOLD) {
+                            SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
+                        }
                         continue;
                     }
-                    Segment realtimeSeg = localSegments.getSegment(segKey);
                     if (realtimeSeg.isReadable()) {
                         SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
                     }
