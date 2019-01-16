@@ -31,8 +31,10 @@ import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -301,27 +303,21 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>() {
                 @Override
                 public Map<SourceKey, List<SegmentKey>> work(final ConfigSession session) throws SQLException {
-                    final Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
+                    final Set<String> segmentIds = new HashSet<String>();
                     try {
                         segmentLocationDao.findByClusterId(session, clusterId).forEach(new FindList.SimpleEach<SegLocationBean>() {
                             @Override
                             public void each(int idx, SegLocationBean item) throws Exception {
-                                SegmentKey segmentEntity = swiftSegmentDao.select(session, item.getSegmentId());
-                                if (null != segmentEntity) {
-                                    if (!result.containsKey(segmentEntity.getTable())) {
-                                        result.put(segmentEntity.getTable(), new ArrayList<SegmentKey>());
-                                    }
-                                    result.get(segmentEntity.getTable()).add(segmentEntity);
-                                }
+                                segmentIds.add(item.getSegmentId());
                             }
                         });
+                        return swiftSegmentDao.findSegmentKeyWithSourceKey(session, ConfigWhereImpl.in("id", segmentIds));
                     } catch (Throwable e) {
                         if (e instanceof SQLException) {
                             throw (SQLException) e;
                         }
                         throw new SQLException(e);
                     }
-                    return result;
                 }
             });
         } catch (SQLException e) {
@@ -356,16 +352,20 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SegmentKey>>() {
                 @Override
                 public List<SegmentKey> work(final ConfigSession session) throws SQLException {
+
                     try {
-                        return swiftSegmentDao.find(session, criterion).forEach(new FindList.SimpleEach<SegmentKey>() {
+                        final Set<String> segmentIds = new HashSet<String>();
+                        segmentLocationDao.find(session,
+                                ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).forEach(new FindList.SimpleEach<SegLocationBean>() {
                             @Override
-                            public void each(int idx, SegmentKey item) throws Exception {
-                                if (!segmentLocationDao.find(session,
-                                        ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
-                                        ConfigWhereImpl.eq("id.segmentId", item.getId())).isEmpty()) {
-                                }
+                            protected void each(int idx, SegLocationBean bean) throws Exception {
+                                segmentIds.add(bean.getSegmentId());
                             }
                         });
+                        List<ConfigWhere> criterionList = new ArrayList<ConfigWhere>();
+                        criterionList.addAll(Arrays.asList(criterion));
+                        criterionList.add(ConfigWhereImpl.in("id", segmentIds));
+                        return swiftSegmentDao.find(session, criterionList.toArray(new ConfigWhere[0])).list();
                     } catch (Throwable e) {
                         if (e instanceof SQLException) {
                             throw (SQLException) e;
