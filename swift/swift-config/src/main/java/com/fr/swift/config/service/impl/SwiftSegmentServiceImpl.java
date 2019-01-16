@@ -33,7 +33,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,39 +47,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
     private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
     private SwiftSegmentDao swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
-
-    public Map<SourceKey, List<SegmentKey>> getAllSegments(final SwiftSegmentDao swiftSegmentDao) {
-        try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
-                @Override
-                public Map<SourceKey, List<SegmentKey>> work(ConfigSession session) throws SQLException {
-
-                    final Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
-                    try {
-                        swiftSegmentDao.findAll(session).forEach(new FindList.SimpleEach<SegmentKey>() {
-                            @Override
-                            public void each(int idx, SegmentKey keyBean) throws Exception {
-                                if (!result.containsKey(keyBean.getTable())) {
-                                    result.put(keyBean.getTable(), new ArrayList<SegmentKey>());
-                                }
-                                result.get(keyBean.getTable()).add(keyBean);
-                            }
-                        });
-                    } catch (Exception e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
-                        throw new SQLException(e);
-                    }
-                    return result;
-                }
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Select segments error!", e);
-        }
-        return Collections.emptyMap();
-    }
 
     @Override
     public boolean saveOrUpdate(SegmentKey obj) {
@@ -216,7 +182,18 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
 
     @Override
     public Map<SourceKey, List<SegmentKey>> getAllSegments() {
-        return getAllSegments(swiftSegmentDao);
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
+                @Override
+                public Map<SourceKey, List<SegmentKey>> work(ConfigSession session) throws SQLException {
+                    return swiftSegmentDao.findSegmentKeyWithSourceKey(session);
+                }
+            });
+
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
+        }
+        return Collections.emptyMap();
     }
 
     @Override
