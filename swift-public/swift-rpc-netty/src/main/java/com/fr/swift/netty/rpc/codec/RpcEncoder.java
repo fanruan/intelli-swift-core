@@ -12,6 +12,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * @description
  * @since Advanced FineBI 5.0
  */
+@Deprecated
 public class RpcEncoder extends MessageToByteEncoder {
     private Class<?> genericClass;
 

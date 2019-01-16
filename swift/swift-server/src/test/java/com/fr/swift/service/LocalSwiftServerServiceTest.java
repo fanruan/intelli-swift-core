@@ -1,40 +1,116 @@
 package com.fr.swift.service;
 
-import com.fr.swift.SwiftContext;
-import org.junit.Assert;
+import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.base.AbstractGlobalRpcEvent;
+import com.fr.swift.event.base.SwiftRpcEvent;
+import com.fr.swift.event.global.DeleteEvent;
+import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.service.listener.SwiftServiceListenerManager;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.stuff.IndexingStuff;
+import com.fr.swift.task.TaskKey;
+import com.fr.swift.task.impl.SchedulerTaskPool;
+import com.fr.swift.task.impl.TaskEvent;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.lang.reflect.Field;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by pony on 2017/11/14.
  */
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(MockitoJUnitRunner.class)
+@PrepareForTest({SwiftServiceListenerManager.class, SchedulerTaskPool.class, SwiftProperty.class})
 public class LocalSwiftServerServiceTest {
-    private LocalSwiftServerService localSwiftServerService;
-
-    @Rule
-    public void prepareContext() throws Exception {
-        Class.forName("com.fr.swift.test.external.ContextResource").newInstance();
-    }
+    @Mock
+    IndexingService indexingService;
+    @Mock
+    RealtimeService realTimeService;
+    @Mock
+    HistoryService historyService;
+    @Mock
+    AnalyseService analyseService;
+    @Mock
+    CollateService collateService;
+    @Mock
+    SwiftServiceListenerManager swiftServiceListenerManager;
+    @Mock
+    SchedulerTaskPool schedulerTaskPool;
+    @Mock
+    DeleteEvent event;
+    @Mock
+    SwiftProperty swiftProperty;
 
     @Before
     public void setUp() throws Exception {
-        localSwiftServerService = new LocalSwiftServerService();
-        localSwiftServerService.start();
-        SwiftContext.get().getBean("swiftAnalyseService", AnalyseService.class).start();
+        PowerMockito.mockStatic(SwiftServiceListenerManager.class, SchedulerTaskPool.class, SwiftProperty.class);
+        Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
+        Mockito.when(swiftProperty.isCluster()).thenReturn(false);
+        Mockito.when(SwiftServiceListenerManager.getInstance()).thenReturn(swiftServiceListenerManager);
+        Mockito.when(SchedulerTaskPool.getInstance()).thenReturn(schedulerTaskPool);
+        Mockito.when(indexingService.getServiceType()).thenReturn(ServiceType.INDEXING);
+        Mockito.when(realTimeService.getServiceType()).thenReturn(ServiceType.REAL_TIME);
+        Mockito.when(historyService.getServiceType()).thenReturn(ServiceType.HISTORY);
+        Mockito.when(analyseService.getServiceType()).thenReturn(ServiceType.ANALYSE);
+        Mockito.when(collateService.getServiceType()).thenReturn(ServiceType.COLLATE);
+        Mockito.when(event.type()).thenReturn(SwiftRpcEvent.EventType.GLOBAL);
+        Mockito.when(event.subEvent()).thenReturn(AbstractGlobalRpcEvent.Event.DELETE);
+        Pair<SourceKey, Where> content = Mockito.mock(Pair.class);
+        Mockito.when(event.getContent()).thenReturn(content);
+
     }
 
     @Test
-    public void testRegisterService() throws Exception {
-        Class c = LocalSwiftServerService.class;
-        Field indexingService = c.getDeclaredField("indexingService");
-        indexingService.setAccessible(true);
-        Field analyseService = c.getDeclaredField("analyseService");
-        analyseService.setAccessible(true);
-        Assert.assertNotNull(analyseService.get(localSwiftServerService));
-        Assert.assertNull(indexingService.get(localSwiftServerService));
-    }
+    public void testLocalSwiftServerService() throws Exception {
+        LocalSwiftServerService swiftServerService = new LocalSwiftServerService();
+        swiftServerService.start();
+        assertEquals(swiftServerService.getServiceType(), ServiceType.SERVER);
 
+        Mockito.verify(schedulerTaskPool).initListener();
+        Mockito.verify(swiftServiceListenerManager).registerHandler(swiftServerService);
+        swiftServerService.registerService(indexingService);
+        swiftServerService.registerService(realTimeService);
+        swiftServerService.registerService(historyService);
+        swiftServerService.registerService(analyseService);
+        swiftServerService.registerService(collateService);
+        Mockito.verify(indexingService, Mockito.times(1)).getServiceType();
+        Mockito.verify(realTimeService, Mockito.times(1)).getServiceType();
+        Mockito.verify(historyService, Mockito.times(1)).getServiceType();
+        Mockito.verify(analyseService, Mockito.times(1)).getServiceType();
+        Mockito.verify(collateService, Mockito.times(1)).getServiceType();
+
+        swiftServerService.trigger(event);
+        Mockito.verify(realTimeService).delete(Mockito.any(SourceKey.class), Mockito.any(Where.class), Mockito.anyList());
+        Mockito.verify(historyService).delete(Mockito.any(SourceKey.class), Mockito.any(Where.class), Mockito.anyList());
+
+        SwiftEventDispatcher.syncFire(TaskEvent.RUN, new HashMap<TaskKey, DataSource>());
+        Mockito.verify(swiftProperty).isCluster();
+        Mockito.verify(indexingService).index(Mockito.any(IndexingStuff.class));
+        SwiftEventDispatcher.syncFire(TaskEvent.CANCEL);
+
+        swiftServerService.unRegisterService(indexingService);
+        swiftServerService.unRegisterService(realTimeService);
+        swiftServerService.unRegisterService(historyService);
+        swiftServerService.unRegisterService(analyseService);
+        swiftServerService.unRegisterService(collateService);
+        Mockito.verify(indexingService, Mockito.times(2)).getServiceType();
+        Mockito.verify(realTimeService, Mockito.times(2)).getServiceType();
+        Mockito.verify(historyService, Mockito.times(2)).getServiceType();
+        Mockito.verify(analyseService, Mockito.times(2)).getServiceType();
+        Mockito.verify(collateService, Mockito.times(2)).getServiceType();
+    }
 }
