@@ -192,4 +192,9 @@ public class SwiftSegmentServiceImpl extends AbstractSegmentService {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public Map<String, Map<String, List<SegmentKey>>> getAllSegLocations() {
+        return null;
+    }
 }

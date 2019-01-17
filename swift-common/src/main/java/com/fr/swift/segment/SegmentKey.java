@@ -11,6 +11,8 @@ import java.net.URI;
  * @date 2018/5/23
  */
 public interface SegmentKey {
+    String getId();
+
     SourceKey getTable();
 
     URI getUri();

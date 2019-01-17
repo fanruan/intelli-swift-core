@@ -19,6 +19,7 @@ import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.event.SegmentEvent;
@@ -163,6 +164,15 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
+            }
+        }
+    }
+
+    @Override
+    public void removeHistory(List<SegmentKey> needRemoveList) {
+        for (SegmentKey segmentKey : needRemoveList) {
+            if (segmentKey.getStoreType().isPersistent()) {
+                SegmentUtils.clearSegment(segmentKey);
             }
         }
     }

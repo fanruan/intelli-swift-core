@@ -7,6 +7,7 @@ import com.fr.third.org.hibernate.Session;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yee
@@ -56,4 +57,12 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
      * @return
      */
     List<SegmentKey> findAll(Session session);
+
+    /**
+     * key:segmentId
+     * value:segmentKey
+     * @param session
+     * @return
+     */
+    Map<String,SegmentKey> findAllWithId(Session session);
 }

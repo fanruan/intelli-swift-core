@@ -17,7 +17,9 @@ import com.fr.third.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -124,4 +126,13 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
         return Collections.unmodifiableList(result);
     }
 
+    @Override
+    public Map<String, SegmentKey> findAllWithId(Session session) {
+        List<SwiftSegmentEntity> list = find(session, new Conjunction[]{});
+        Map<String, SegmentKey> result = new HashMap<String, SegmentKey>();
+        for (SwiftSegmentEntity swiftSegmentEntity : list) {
+            result.put(swiftSegmentEntity.getId(), swiftSegmentEntity.convert());
+        }
+        return Collections.unmodifiableMap(result);
+    }
 }

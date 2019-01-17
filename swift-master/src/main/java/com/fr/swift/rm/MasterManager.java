@@ -11,6 +11,7 @@ import com.fr.swift.rm.collector.MasterHeartbeatCollect;
 import com.fr.swift.rm.collector.MasterSynchronizer;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AbstractSwiftManager;
+import com.fr.swift.service.CollateExecutor;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.manager.ClusterServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
@@ -33,7 +34,11 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
     @Autowired
     private ClusterServiceManager clusterServiceManager;
 
+    @Autowired
+    private CollateExecutor collateExecutor;
+
     private Collect heartBeatCollect = new MasterHeartbeatCollect();
+
 
     private MasterSynchronizer masterSyncRunnable = new MasterSynchronizer();
 
@@ -45,6 +50,7 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
                 ClusterSwiftServerService.getInstance().start();
                 heartBeatCollect.startCollect();
                 masterSyncRunnable.start();
+                collateExecutor.start();
                 String masterAddress = swiftProperty.getMasterAddress();
                 serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(ClusterNodeService.SERVICE, masterAddress, masterAddress, true));
                 super.startUp();
@@ -61,6 +67,7 @@ public class MasterManager extends AbstractSwiftManager implements ClusterManage
             if (running) {
                 heartBeatCollect.stopCollect();
                 masterSyncRunnable.stop();
+                collateExecutor.stop();
                 super.shutDown();
             }
         } finally {

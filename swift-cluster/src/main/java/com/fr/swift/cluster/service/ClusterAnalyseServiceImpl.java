@@ -20,6 +20,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
@@ -29,6 +30,7 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.service.cluster.ClusterHistoryService;
 import com.fr.swift.service.cluster.ClusterRealTimeService;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Assert;
@@ -188,6 +190,7 @@ public class ClusterAnalyseServiceImpl extends AbstractSwiftService implements C
     @RpcMethod(methodName = "removeSegments")
     public void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys) {
         SegmentLocationProvider.getInstance().removeSegments(clusterId, sourceKey, segmentKeys);
+        SegmentContainer.NORMAL.remove(new SourceKey(sourceKey));
     }
 
 

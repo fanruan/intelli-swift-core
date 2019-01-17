@@ -6,17 +6,21 @@ import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.EventResult;
+import com.fr.swift.event.history.HistoryRemoveEvent;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.netty.rpc.server.ServiceMethodRegistry;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.utils.ClusterCommonUtils;
 import com.fr.third.springframework.beans.factory.annotation.Autowired;
 import com.fr.third.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,6 +64,31 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                     }
                 case CHECK_LOAD:
                     checkLoad(event.getSourceClusterId());
+                    break;
+                case HISTORY_REMOVE:
+                    HistoryRemoveEvent removeEvent = (HistoryRemoveEvent) event;
+                    Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+                    Map<String, ClusterEntity> analyseServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+                    for (Map.Entry<String, ClusterEntity> serviceEntry : historyServices.entrySet()) {
+                        if (!removeEvent.getSourceClusterId().equals(serviceEntry.getKey())) {
+                            ClusterCommonUtils.runAsyncRpc(serviceEntry.getKey(), serviceEntry.getValue().getServiceClass()
+                                    , ServiceMethodRegistry.INSTANCE.getMethodByName("removeHistory"), removeEvent.getContent().getValue());
+                        }
+                    }
+
+                    for (Map.Entry<String, ClusterEntity> serviceEntry : analyseServices.entrySet()) {
+                        if (!removeEvent.getSourceClusterId().equals(serviceEntry.getKey())) {
+                            List<SegmentKey> segmentKeyList = removeEvent.getContent().getValue();
+                            List<String> segmentIdList = new ArrayList<String>();
+                            for (SegmentKey segmentKey : segmentKeyList) {
+                                segmentIdList.add(segmentKey.getId());
+                            }
+                            ClusterCommonUtils.runAsyncRpc(serviceEntry.getKey(), serviceEntry.getValue().getServiceClass()
+                                    , ServiceMethodRegistry.INSTANCE.getMethodByName("removeSegments"),
+                                    serviceEntry.getKey(),
+                                    removeEvent.getContent().getKey().getId(), segmentIdList);
+                        }
+                    }
                     break;
                 default:
                     return null;

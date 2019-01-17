@@ -100,4 +100,9 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     public boolean saveOrUpdate(SegmentKey obj) {
         return service.saveOrUpdate(obj);
     }
+
+    @Override
+    public Map<String, Map<String, List<SegmentKey>>> getAllSegLocations() {
+        return service.getAllSegLocations();
+    }
 }
