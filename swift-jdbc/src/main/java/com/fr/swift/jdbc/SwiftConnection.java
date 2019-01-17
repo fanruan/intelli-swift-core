@@ -33,7 +33,7 @@ public class SwiftConnection extends BaseSwiftConnection {
     private Properties properties;
     private boolean close;
 
-    public SwiftConnection(String url, Properties properties) throws SQLException {
+    SwiftConnection(String url, Properties properties) throws SQLException {
         if (null != url) {
             if (url.toLowerCase().startsWith(JDBC_HEAD)) {
                 this.properties = properties;
@@ -61,7 +61,7 @@ public class SwiftConnection extends BaseSwiftConnection {
         }
     }
 
-    protected void connectServerMode(URI uri) {
+    private void connectServerMode(URI uri) {
         host = uri.getHost();
         port = uri.getPort();
         port = port == -1 ? 7000 : port;

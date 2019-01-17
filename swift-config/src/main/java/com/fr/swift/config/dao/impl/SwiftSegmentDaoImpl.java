@@ -127,6 +127,37 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
     }
 
     @Override
+    public List<SegmentKey> findSegmentKey(Session session, Criterion... criterions) {
+        try {
+            List<SwiftSegmentEntity> list = find(session, criterions);
+            List<SegmentKey> result = new ArrayList<SegmentKey>();
+            for (SwiftSegmentEntity entity : list) {
+                result.add(entity.convert());
+            }
+            return result;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public Map<String, List<SegmentKey>> findSegmentKeyWithSourceKey(Session session, Criterion... criterions) {
+        try {
+            List<SwiftSegmentEntity> list = find(session, criterions);
+            Map<String, List<SegmentKey>> result = new HashMap<String, List<SegmentKey>>();
+            for (SwiftSegmentEntity entity : list) {
+                String sourceKey = entity.getSegmentOwner();
+                if (!result.containsKey(sourceKey)) {
+                    result.put(sourceKey, new ArrayList<SegmentKey>());
+                }
+                result.get(sourceKey).add(entity.convert());
+            }
+            return result;
+        } catch (Exception e) {
+            return Collections.emptyMap();
+        }
+    }
+    @Override
     public Map<String, SegmentKey> findAllWithId(Session session) {
         List<SwiftSegmentEntity> list = find(session, new Conjunction[]{});
         Map<String, SegmentKey> result = new HashMap<String, SegmentKey>();

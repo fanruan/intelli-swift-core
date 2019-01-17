@@ -4,6 +4,7 @@ import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.third.org.hibernate.Session;
+import com.fr.third.org.hibernate.criterion.Criterion;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -65,4 +66,8 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
      * @return
      */
     Map<String,SegmentKey> findAllWithId(Session session);
+
+    List<SegmentKey> findSegmentKey(Session session, Criterion... criteria);
+
+    Map<String, List<SegmentKey>> findSegmentKeyWithSourceKey(Session session, Criterion... criteria);
 }
