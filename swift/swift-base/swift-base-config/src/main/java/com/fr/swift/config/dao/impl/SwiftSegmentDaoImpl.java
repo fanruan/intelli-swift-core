@@ -6,14 +6,20 @@ import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Strings;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -60,6 +66,26 @@ public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSe
     @Override
     public FindList<SegmentKey> findAll(ConfigSession session) {
         return find(session);
+    }
+
+    @Override
+    public Map<SourceKey, List<SegmentKey>> findSegmentKeyWithSourceKey(ConfigSession session, ConfigWhere... criteria) {
+        final Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
+        try {
+            find(session, criteria).forEach(new FindList.SimpleEach<SegmentKey>() {
+                @Override
+                protected void each(int idx, SegmentKey bean) throws Exception {
+                    SourceKey sourceKey = bean.getTable();
+                    if (!result.containsKey(sourceKey)) {
+                        result.put(sourceKey, new ArrayList<SegmentKey>());
+                    }
+                    result.get(sourceKey).add(bean);
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("find segments failed", e);
+        }
+        return result;
     }
 
 }

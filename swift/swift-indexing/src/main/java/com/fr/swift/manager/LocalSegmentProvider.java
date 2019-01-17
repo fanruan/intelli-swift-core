@@ -52,7 +52,7 @@ public class LocalSegmentProvider implements SwiftSegmentManager {
     }
 
     @Override
-    public List<Segment> remove(SourceKey sourceKey) {
-        return manager.remove(sourceKey);
+    public void remove(SourceKey sourceKey) {
+        manager.remove(sourceKey);
     }
 }
