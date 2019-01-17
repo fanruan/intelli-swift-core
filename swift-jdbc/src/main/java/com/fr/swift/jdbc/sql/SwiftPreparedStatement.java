@@ -372,7 +372,9 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     @Override
     public void reset() {
         super.reset();
-        values.clear();
+        if (null != values) {
+            values.clear();
+        }
     }
 
     /**
