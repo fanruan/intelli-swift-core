@@ -39,7 +39,7 @@ import java.util.Set;
  */
 public class FilterInfoParser {
 
-    static FilterInfo parse(SourceKey table, FilterInfoBean bean) {
+    public static FilterInfo parse(SourceKey table, FilterInfoBean bean) {
         // TODO: 2018/7/11 化简过滤条件，这边的使用策略可以结合具体场景更智能一点
         if (null == bean) {
             return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
