@@ -157,4 +157,13 @@ public class SwiftSegmentDaoImpl extends BasicDao<SwiftSegmentEntity> implements
             return Collections.emptyMap();
         }
     }
+    @Override
+    public Map<String, SegmentKey> findAllWithId(Session session) {
+        List<SwiftSegmentEntity> list = find(session, new Conjunction[]{});
+        Map<String, SegmentKey> result = new HashMap<String, SegmentKey>();
+        for (SwiftSegmentEntity swiftSegmentEntity : list) {
+            result.put(swiftSegmentEntity.getId(), swiftSegmentEntity.convert());
+        }
+        return Collections.unmodifiableMap(result);
+    }
 }

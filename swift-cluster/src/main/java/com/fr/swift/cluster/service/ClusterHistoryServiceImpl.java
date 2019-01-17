@@ -213,6 +213,13 @@ public class ClusterHistoryServiceImpl extends AbstractSwiftService implements C
     }
 
     @Override
+    @RpcMethod(methodName = "removeHistory")
+    public void removeHistory(List<SegmentKey> needRemoveList) {
+        historyService.removeHistory(needRemoveList);
+    }
+
+
+    @Override
     public boolean delete(SourceKey sourceKey, Where where) throws Exception {
         return historyService.delete(sourceKey, where);
     }

@@ -353,4 +353,38 @@ public class SwiftClusterSegmentServiceImpl extends AbstractSegmentService imple
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public Map<String, Map<String, List<SegmentKey>>> getAllSegLocations() {
+        try {
+            return transactionManager.doTransactionIfNeed(new AbstractTransactionWorker<Map<String, Map<String, List<SegmentKey>>>>() {
+                @Override
+                public Map<String, Map<String, List<SegmentKey>>> work(Session session) throws SQLException {
+                    Map<String, Map<String, List<SegmentKey>>> result = new HashMap<String, Map<String, List<SegmentKey>>>();
+
+                    List<SwiftSegmentLocationEntity> list = segmentLocationDao.findAll(session);
+                    Map<String, SegmentKey> allSementKeys = swiftSegmentDao.findAllWithId(session);
+
+                    for (SwiftSegmentLocationEntity entity : list) {
+                        String clusterId = entity.getClusterId();
+                        String segmentId = entity.getSegmentId();
+                        String sourceKey = entity.getSourceKey();
+                        SegmentKey segmentKey = allSementKeys.get(segmentId);
+                        if (!result.containsKey(clusterId)) {
+                            result.put(clusterId, new HashMap<String, List<SegmentKey>>());
+                        }
+                        Map<String, List<SegmentKey>> segMap = result.get(clusterId);
+                        if (!segMap.containsKey(sourceKey)) {
+                            segMap.put(sourceKey, new ArrayList<SegmentKey>());
+                        }
+                        segMap.get(sourceKey).add(segmentKey);
+                    }
+                    return result;
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("Select segments error!", e);
+            return Collections.EMPTY_MAP;
+        }
+    }
 }

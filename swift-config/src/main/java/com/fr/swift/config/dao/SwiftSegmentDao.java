@@ -59,6 +59,14 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SwiftSegmentEntity> {
      */
     List<SegmentKey> findAll(Session session);
 
+    /**
+     * key:segmentId
+     * value:segmentKey
+     * @param session
+     * @return
+     */
+    Map<String,SegmentKey> findAllWithId(Session session);
+
     List<SegmentKey> findSegmentKey(Session session, Criterion... criteria);
 
     Map<String, List<SegmentKey>> findSegmentKeyWithSourceKey(Session session, Criterion... criteria);

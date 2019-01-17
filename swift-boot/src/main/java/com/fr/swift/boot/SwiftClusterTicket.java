@@ -33,7 +33,9 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentLocationInfoImpl;
+import com.fr.swift.service.CollateService;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.SwiftCollateService;
 import com.fr.swift.service.cluster.ClusterAnalyseService;
 import com.fr.swift.service.cluster.ClusterHistoryService;
 import com.fr.swift.service.cluster.ClusterIndexingService;
@@ -100,6 +102,10 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
         ClusterInvoker historyServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(ClusterHistoryService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(ClusterHistoryServiceImpl.class, historyServiceInvoker);
         InvokerCache.getInstance().bindInvoker(ClusterHistoryService.class, historyServiceInvoker);
+
+        ClusterInvoker collateServiceInvoker = FineClusterToolKit.getInstance().getInvokerFactory().create(SwiftContext.get().getBean(CollateService.class), TIMEOUT);
+        InvokerCache.getInstance().bindInvoker(CollateService.class, collateServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(SwiftCollateService.class, collateServiceInvoker);
 
         EventDispatcher.listen(ClusterViewEvent.NODE_JOINED, new Listener<ClusterNode>() {
             @Override

@@ -1,5 +1,7 @@
 package com.fr.swift.service;
 
+import com.fr.swift.annotation.RpcMethod;
+import com.fr.swift.annotation.RpcService;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
@@ -12,8 +14,11 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.base.SwiftRpcEvent;
+import com.fr.swift.event.history.HistoryRemoveEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepositoryManager;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
@@ -26,6 +31,7 @@ import com.fr.swift.segment.collate.FragmentCollectRule;
 import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -36,8 +42,8 @@ import com.fr.swift.source.resultset.CoSwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
-import com.fr.swift.util.MonitorUtil;
 import com.fr.swift.util.concurrent.CommonExecutor;
+import com.fr.swift.utils.ClusterCommonUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +58,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 @SwiftService(name = "collate")
+@RpcService(value = CollateService.class, type = RpcService.RpcServiceType.INTERNAL)
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
     private static final long serialVersionUID = 7259915342007294244L;
@@ -64,7 +71,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private transient SwiftSegmentService swiftSegmentService;
     private transient SwiftRepositoryManager repositoryManager;
-
 
     public void setTaskExecutor(ServiceTaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
@@ -120,6 +126,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
+    @RpcMethod(methodName = "appointCollate")
     public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeyList) throws Exception {
         taskExecutor.submit(new SwiftServiceCallable(tableKey, ServiceTaskType.COLLATE) {
             @Override
@@ -148,11 +155,11 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private void collateSegments(SourceKey tableKey) throws Exception {
         List<SegmentKey> segKeys = segmentManager.getSegmentKeys(tableKey);
-        collateSegments(tableKey, collectRule.collect(segKeys));
+        collateSegments(tableKey, segKeys);
     }
 
-    private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys) throws Exception {
-        MonitorUtil.start();
+    private void collateSegments(SourceKey tableKey, final List<SegmentKey> allCollateSegKeys) throws Exception {
+        List<SegmentKey> collateSegKeys = collectRule.collect(allCollateSegKeys);
         if (collateSegKeys.isEmpty()) {
             return;
         }
@@ -185,7 +192,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
         fireUploadHistory(newKeys);
 
-        clearCollatedSegment(collateSegKeys);
+        clearCollatedSegment(collateSegKeys, tableKey);
     }
 
     private SwiftResultSet newCollateResultSet(List<Segment> segs, int alloterCount, SwiftMetaData swiftMetaData) {
@@ -233,15 +240,25 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         }
     }
 
-    private void clearCollatedSegment(final List<SegmentKey> collateSegKeys) {
+    private void clearCollatedSegment(final List<SegmentKey> collateSegKeys, final SourceKey tableKey) {
         CommonExecutor.get().execute(new Runnable() {
             @Override
             public void run() {
+                //删本地和ftp的块
                 for (SegmentKey collateSegKey : collateSegKeys) {
                     swiftSegmentService.removeSegments(Collections.singletonList(collateSegKey));
                     SegmentUtils.clearSegment(collateSegKey);
                     if (collateSegKey.getStoreType().isPersistent()) {
                         SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
+                    }
+                }
+                //通知master删collate的块
+                if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                    try {
+                        SwiftRpcEvent event = new HistoryRemoveEvent(collateSegKeys, tableKey, getID());
+                        ClusterCommonUtils.asyncCallMaster(event);
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error(e);
                     }
                 }
             }
