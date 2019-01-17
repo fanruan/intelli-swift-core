@@ -5,7 +5,6 @@ import com.fr.swift.structure.Pair;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author yee
@@ -14,7 +13,6 @@ import java.util.Set;
 public interface SwiftClusterSegmentService extends SwiftSegmentService {
     Map<String, List<SegmentKey>> getOwnSegments(String clusterId);
 
-    Map<String, List<SegmentKey>> getOwnRealTimeSegments(String clusterId);
 
     Map<String, List<SegmentKey>> getClusterSegments();
 
@@ -24,5 +22,4 @@ public interface SwiftClusterSegmentService extends SwiftSegmentService {
 
     void setClusterId(String clusterId);
 
-    Map<String, List<SegmentKey>> getNotEnoughSegments(Set<String> clusterIds, int lessCount);
 }
