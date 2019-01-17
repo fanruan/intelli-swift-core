@@ -71,23 +71,31 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                     Map<String, ClusterEntity> analyseServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
                     //找所有history节点删seg文件
                     for (Map.Entry<String, ClusterEntity> serviceEntry : historyServices.entrySet()) {
-                        if (!removeEvent.getSourceClusterId().equals(serviceEntry.getKey())) {
-                            ClusterCommonUtils.runAsyncRpc(serviceEntry.getKey(), serviceEntry.getValue().getServiceClass()
-                                    , ServiceMethodRegistry.INSTANCE.getMethodByName("removeHistory"), removeEvent.getContent().getValue());
+                        try {
+                            if (!removeEvent.getSourceClusterId().equals(serviceEntry.getKey())) {
+                                ClusterCommonUtils.runAsyncRpc(serviceEntry.getKey(), serviceEntry.getValue().getServiceClass()
+                                        , ServiceMethodRegistry.INSTANCE.getMethodByName("removeHistory"), removeEvent.getContent().getValue());
+                            }
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
                         }
                     }
                     //找所有analyse节点删内存中segkey和location配置
                     for (Map.Entry<String, ClusterEntity> serviceEntry : analyseServices.entrySet()) {
-                        if (!removeEvent.getSourceClusterId().equals(serviceEntry.getKey())) {
-                            List<SegmentKey> segmentKeyList = removeEvent.getContent().getValue();
-                            List<String> segmentIdList = new ArrayList<String>();
-                            for (SegmentKey segmentKey : segmentKeyList) {
-                                segmentIdList.add(segmentKey.getId());
+                        try {
+                            if (!removeEvent.getSourceClusterId().equals(serviceEntry.getKey())) {
+                                List<SegmentKey> segmentKeyList = removeEvent.getContent().getValue();
+                                List<String> segmentIdList = new ArrayList<String>();
+                                for (SegmentKey segmentKey : segmentKeyList) {
+                                    segmentIdList.add(segmentKey.getId());
+                                }
+                                ClusterCommonUtils.runAsyncRpc(serviceEntry.getKey(), serviceEntry.getValue().getServiceClass()
+                                        , ServiceMethodRegistry.INSTANCE.getMethodByName("removeSegments"),
+                                        serviceEntry.getKey(),
+                                        removeEvent.getContent().getKey().getId(), segmentIdList);
                             }
-                            ClusterCommonUtils.runAsyncRpc(serviceEntry.getKey(), serviceEntry.getValue().getServiceClass()
-                                    , ServiceMethodRegistry.INSTANCE.getMethodByName("removeSegments"),
-                                    serviceEntry.getKey(),
-                                    removeEvent.getContent().getKey().getId(), segmentIdList);
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
                         }
                     }
                     break;
