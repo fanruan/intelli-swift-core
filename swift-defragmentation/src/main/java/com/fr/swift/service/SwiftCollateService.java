@@ -244,6 +244,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         CommonExecutor.get().execute(new Runnable() {
             @Override
             public void run() {
+                //删本地和ftp的块
                 for (SegmentKey collateSegKey : collateSegKeys) {
                     swiftSegmentService.removeSegments(Collections.singletonList(collateSegKey));
                     SegmentUtils.clearSegment(collateSegKey);
@@ -251,6 +252,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                         SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
                     }
                 }
+                //通知master删collate的块
                 if (ClusterSelector.getInstance().getFactory().isCluster()) {
                     try {
                         SwiftRpcEvent event = new HistoryRemoveEvent(collateSegKeys, tableKey, getID());

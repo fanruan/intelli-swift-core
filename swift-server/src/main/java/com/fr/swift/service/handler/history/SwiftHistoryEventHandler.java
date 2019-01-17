@@ -69,13 +69,14 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                     HistoryRemoveEvent removeEvent = (HistoryRemoveEvent) event;
                     Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
                     Map<String, ClusterEntity> analyseServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
+                    //找所有history节点删seg文件
                     for (Map.Entry<String, ClusterEntity> serviceEntry : historyServices.entrySet()) {
                         if (!removeEvent.getSourceClusterId().equals(serviceEntry.getKey())) {
                             ClusterCommonUtils.runAsyncRpc(serviceEntry.getKey(), serviceEntry.getValue().getServiceClass()
                                     , ServiceMethodRegistry.INSTANCE.getMethodByName("removeHistory"), removeEvent.getContent().getValue());
                         }
                     }
-
+                    //找所有analyse节点删内存中segkey和location配置
                     for (Map.Entry<String, ClusterEntity> serviceEntry : analyseServices.entrySet()) {
                         if (!removeEvent.getSourceClusterId().equals(serviceEntry.getKey())) {
                             List<SegmentKey> segmentKeyList = removeEvent.getContent().getValue();
