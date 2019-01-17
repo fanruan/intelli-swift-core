@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     private SwiftTablePathDao swiftTablePathDao = SwiftContext.get().getBean(SwiftTablePathDao.class);
     private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
-    private ConcurrentHashMap<String, Integer> tablePath = new ConcurrentHashMap<String, Integer>();
+    private ConcurrentHashMap<String, SwiftTablePathBean> tablePath = new ConcurrentHashMap<String, SwiftTablePathBean>();
 
     public SwiftTablePathServiceImpl() {
         ClusterListenerHandler.addExtraListener(new ClusterEventListener() {
@@ -64,9 +64,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                     entity.setClusterId(SwiftProperty.getProperty().getClusterId());
                     boolean success = swiftTablePathDao.saveOrUpdate(session, entity);
                     if (success) {
-                        if (null != entity.getTablePath()) {
-                            tablePath.put(entity.getTableKey(), entity.getTablePath());
-                        }
+                        tablePath.put(entity.getTableKey(), entity);
                         return true;
                     }
                     return false;
@@ -115,9 +113,9 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     @Override
     public Integer getTablePath(final String table) {
         try {
-            Integer path = tablePath.get(table);
+            SwiftTablePathBean path = tablePath.get(table);
             if (null == path) {
-                path = tx.doTransactionIfNeed(new BaseTransactionWorker<Integer>() {
+                return tx.doTransactionIfNeed(new BaseTransactionWorker<Integer>() {
                     @Override
                     public Integer work(ConfigSession session) throws SQLException {
                         try {
@@ -127,7 +125,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                             if (null != entity) {
                                 Integer path = entity.getTablePath();
                                 if (null != path && path.intValue() > -1) {
-                                    tablePath.put(table, path);
+                                    tablePath.put(table, entity);
                                     return path;
                                 }
                                 return 0;
@@ -140,7 +138,7 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                     }
                 });
             }
-            return path;
+            return path.getTablePath() == null ? 0 : path.getTablePath();
         } catch (SQLException e) {
             return 0;
         }
@@ -176,7 +174,11 @@ public class SwiftTablePathServiceImpl implements SwiftTablePathService {
                 @Override
                 public SwiftTablePathBean work(ConfigSession session) throws SQLException {
                     try {
-                        return swiftTablePathDao.find(session, ConfigWhereImpl.eq("id.tableKey", table), ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
+                        SwiftTablePathBean bean = swiftTablePathDao.find(session, ConfigWhereImpl.eq("id.tableKey", table), ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).get(0);
+                        if (null != bean) {
+                            tablePath.put(table, bean);
+                        }
+                        return bean;
                     } catch (Exception e) {
                         throw new SQLException(e);
                     }

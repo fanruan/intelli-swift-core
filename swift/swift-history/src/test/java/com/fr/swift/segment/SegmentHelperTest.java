@@ -184,7 +184,8 @@ public class SegmentHelperTest {
 
         // Generate by Mock Plugin
         SwiftSegmentManager mockSwiftSegmentManager = PowerMock.createMock(SwiftSegmentManager.class);
-        EasyMock.expect(mockSwiftSegmentManager.remove(EasyMock.anyObject(SourceKey.class))).andReturn(null).anyTimes();
+        mockSwiftSegmentManager.remove(EasyMock.anyObject(SourceKey.class));
+        EasyMock.expectLastCall().anyTimes();
         EasyMock.expect(mockSwiftSegmentManager.getSegment(EasyMock.anyObject(SourceKey.class))).andReturn(null).anyTimes();
 
 
