@@ -3,7 +3,6 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.operator.Inserter;
 
 import java.util.Collections;
@@ -39,8 +38,6 @@ public class SegmentTransfer {
 
             indexSegmentIfNeed(newSeg);
             onSucceed();
-
-            SegmentContainer.NORMAL.updateSegment(newSegKey, newSeg);
 
             SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);
         } catch (Exception e) {
