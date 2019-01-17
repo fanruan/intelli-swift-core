@@ -1,5 +1,6 @@
 package com.fr.swift.result;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -33,9 +34,16 @@ public class MultiSegmentDetailResultSet extends AbstractDetailResultSet {
     private void init() throws SQLException {
         List<DetailResultSet> resultSets = new ArrayList<DetailResultSet>();
         for (Query query : queries) {
-            DetailResultSet resultSet = (DetailResultSet) query.getQueryResult();
-            rowCount += resultSet.getRowCount();
-            resultSets.add(resultSet);
+            DetailResultSet resultSet = null;
+            try {
+                resultSet = (DetailResultSet) query.getQueryResult();
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().info("segment query error: ", query.toString());
+            }
+            if (resultSet != null) {
+                rowCount += resultSet.getRowCount();
+                resultSets.add(resultSet);
+            }
         }
         mergeIterator = new DetailMergerIterator(resultSets);
     }
