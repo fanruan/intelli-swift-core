@@ -48,7 +48,7 @@ public class GroupTWFilter implements ITimeWindowFilter {
         this.step = step;
         this.firstAssociatedIndex = firstAssociatedIndex;
         this.associatedEvents = associatedEvents;
-//        this.associatedColumnSize = associatedPropertyColumn == null ? 0 : associatedPropertyColumn.size();
+        this.associatedColumnSize = associatedPropertyColumn == null ? 0 : associatedPropertyColumn.size();
     }
 
     private void initIterableEvents() {

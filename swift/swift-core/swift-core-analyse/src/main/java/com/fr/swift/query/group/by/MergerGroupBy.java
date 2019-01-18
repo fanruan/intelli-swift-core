@@ -78,7 +78,7 @@ public abstract class MergerGroupBy<T> implements Iterator<Pair<T, List<RowTrave
 
     @Override
     public Pair<T, List<RowTraversal[]>> next() {
-        return null;
+        return mergeIt.next();
     }
 
     @Override
