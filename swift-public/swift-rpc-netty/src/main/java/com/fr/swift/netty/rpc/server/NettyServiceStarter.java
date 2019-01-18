@@ -1,4 +1,4 @@
-package com.fr.swift.netty;
+package com.fr.swift.netty.rpc.server;
 
 /**
  * This class created on 2018/6/8

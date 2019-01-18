@@ -130,7 +130,7 @@ public class HistoryBlockImporterTest {
         verify(inserter, times(3)).release();
         // ensure index full history seg and upload
         verifyStatic(SegmentUtils.class, times(3));
-        SegmentUtils.indexSegmentIfNeed(Matchers.<Iterable<Segment>>any());
+        SegmentUtils.indexSegmentIfNeed(Matchers.<List<Segment>>any());
         for (SegmentKey segKey : historyBlockImporter.getImportSegments()) {
             verifyStatic(SwiftEventDispatcher.class);
             SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, segKey);
