@@ -1,4 +1,4 @@
-package com.fr.swift.exception;
+package com.fr.swift.segment.operator.insert;
 
 /**
  * This class created on 2018/6/26

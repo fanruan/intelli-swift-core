@@ -17,6 +17,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.powermock.reflect.Whitebox;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -77,7 +78,7 @@ public class SegmentTransferTest {
 
         // index
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.indexSegmentIfNeed(Matchers.<Iterable<Segment>>any());
+        SegmentUtils.indexSegmentIfNeed(Matchers.<List<Segment>>any());
 
         // remove old seg
         verify(swiftSegmentService).removeSegments(eq(Collections.singletonList(oldSegKey)));
@@ -102,7 +103,7 @@ public class SegmentTransferTest {
 
         // won't index
         verifyStatic(SegmentUtils.class, times(0));
-        SegmentUtils.indexSegmentIfNeed(Matchers.<Iterable<Segment>>any());
+        SegmentUtils.indexSegmentIfNeed(Matchers.<List<Segment>>any());
 
         // remove dirty seg
         verify(swiftSegmentService).removeSegments(eq(Collections.singletonList(newSegKey)));
@@ -126,7 +127,7 @@ public class SegmentTransferTest {
 
         // won't index
         verifyStatic(SegmentUtils.class, times(0));
-        SegmentUtils.indexSegmentIfNeed(Matchers.<Iterable<Segment>>any());
+        SegmentUtils.indexSegmentIfNeed(Matchers.<List<Segment>>any());
 
         // won't remove old seg
         verifyStatic(SegmentUtils.class, times(0));
