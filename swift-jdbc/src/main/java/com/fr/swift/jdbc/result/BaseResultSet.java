@@ -3,7 +3,6 @@ package com.fr.swift.jdbc.result;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.source.Row;
 
-import javax.naming.OperationNotSupportedException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -94,13 +93,13 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public BigDecimal getBigDecimal(int columnIndex, int scale) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public byte[] getBytes(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public byte[] getBytes(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -119,18 +118,18 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public InputStream getAsciiStream(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public InputStream getAsciiStream(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public InputStream getUnicodeStream(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public InputStream getUnicodeStream(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public InputStream getBinaryStream(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public InputStream getBinaryStream(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -174,48 +173,48 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public BigDecimal getBigDecimal(String columnLabel, int scale) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public byte[] getBytes(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public byte[] getBytes(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Date getDate(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Date getDate(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Time getTime(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Time getTime(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Timestamp getTimestamp(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Timestamp getTimestamp(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public InputStream getAsciiStream(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public InputStream getAsciiStream(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public InputStream getUnicodeStream(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public InputStream getUnicodeStream(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public InputStream getBinaryStream(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public InputStream getBinaryStream(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public SQLWarning getWarnings() {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public SQLWarning getWarnings() throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -224,8 +223,8 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public String getCursorName() {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public String getCursorName() throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -234,28 +233,28 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public Object getObject(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Object getObject(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Reader getCharacterStream(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Reader getCharacterStream(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Reader getCharacterStream(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Reader getCharacterStream(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public BigDecimal getBigDecimal(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public BigDecimal getBigDecimal(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -589,98 +588,98 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public Statement getStatement() {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Statement getStatement() throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Object getObject(int columnIndex, Map<String, Class<?>> map) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Ref getRef(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Ref getRef(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Blob getBlob(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Blob getBlob(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Clob getClob(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Clob getClob(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Array getArray(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Array getArray(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Object getObject(String columnLabel, Map<String, Class<?>> map) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Object getObject(String columnLabel, Map<String, Class<?>> map) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Ref getRef(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Ref getRef(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Blob getBlob(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Blob getBlob(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Clob getClob(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Clob getClob(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Array getArray(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Array getArray(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Date getDate(int columnIndex, Calendar cal) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Date getDate(int columnIndex, Calendar cal) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Date getDate(String columnLabel, Calendar cal) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Date getDate(String columnLabel, Calendar cal) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Time getTime(int columnIndex, Calendar cal) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Time getTime(int columnIndex, Calendar cal) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Time getTime(String columnLabel, Calendar cal) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Time getTime(String columnLabel, Calendar cal) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Timestamp getTimestamp(int columnIndex, Calendar cal) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Timestamp getTimestamp(String columnLabel, Calendar cal) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Timestamp getTimestamp(String columnLabel, Calendar cal) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public URL getURL(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public URL getURL(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public URL getURL(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public URL getURL(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -724,13 +723,13 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public RowId getRowId(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public RowId getRowId(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public RowId getRowId(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public RowId getRowId(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -774,23 +773,23 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public NClob getNClob(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public NClob getNClob(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public NClob getNClob(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public NClob getNClob(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public SQLXML getSQLXML(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public SQLXML getSQLXML(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public SQLXML getSQLXML(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public SQLXML getSQLXML(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -804,23 +803,23 @@ public abstract class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public String getNString(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public String getNString(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public String getNString(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public String getNString(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Reader getNCharacterStream(int columnIndex) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Reader getNCharacterStream(int columnIndex) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public Reader getNCharacterStream(String columnLabel) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public Reader getNCharacterStream(String columnLabel) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
@@ -963,17 +962,17 @@ public abstract class BaseResultSet implements ResultSet {
 
     }
 
-    public <T> T getObject(int columnIndex, Class<T> type) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
-    public <T> T getObject(String columnLabel, Class<T> type) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) {
-        throw Exceptions.runtime(new OperationNotSupportedException());
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        throw Exceptions.sql(new UnsupportedOperationException());
     }
 
     @Override
