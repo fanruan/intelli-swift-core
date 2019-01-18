@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018/8/27
  */
-public class SwiftApiResultSetImpl extends OnePageApiResultSet<String> {
+public class SwiftApiResultSetImpl extends OnePageApiResultSet {
     private static final long serialVersionUID = 6857337351317783867L;
     private SwiftApiSessionImpl session;
     private SwiftDatabase database;
@@ -21,9 +21,9 @@ public class SwiftApiResultSetImpl extends OnePageApiResultSet<String> {
     }
 
     @Override
-    public SwiftApiResultSet queryNextPage(String queryJson) throws SQLException {
+    public SwiftApiResultSet queryNextPage(Object queryJson) throws SQLException {
         try {
-            return session.query(database, queryJson);
+            return session.query(database, (String) queryJson);
         } catch (Exception e) {
             throw new SQLException(e);
         }
