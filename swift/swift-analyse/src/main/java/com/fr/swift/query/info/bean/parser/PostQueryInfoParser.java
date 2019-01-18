@@ -1,6 +1,7 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.query.filter.FilterBuilder;
+import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.info.bean.element.CalculatedFieldBean;
 import com.fr.swift.query.info.bean.element.MetricBean;
@@ -79,7 +80,8 @@ class PostQueryInfoParser {
                     filters.add(null);
                 }
                 FilterInfoBean filterInfoBean = ((HavingFilterQueryInfoBean) bean).getFilter();
-                MatchFilter filter = FilterBuilder.buildMatchFilter(FilterInfoParser.parse(table, filterInfoBean));
+                MatchFilter filter = new DetailBasedMatchFilter(fieldIndexMap.get(((HavingFilterQueryInfoBean) bean).getColumn()),
+                        FilterBuilder.buildDetailFilter(null, FilterInfoParser.parse(table, filterInfoBean)));
                 if (!filters.isEmpty()) {
                     filters.set(filters.size() - 1, filter);
                 }
