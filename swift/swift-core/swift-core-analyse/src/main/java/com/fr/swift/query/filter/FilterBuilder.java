@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 public class FilterBuilder {
     public static DetailFilter buildDetailFilter(Segment segment, FilterInfo info) {
-        FilterInfo allShow = new SwiftDetailFilterInfo(null, null, SwiftDetailFilterType.ALL_SHOW);
+        FilterInfo allShow = new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
         FilterInfo filterInfo = new GeneralFilterInfo(Arrays.asList(info, allShow), GeneralFilterInfo.AND);
         return filterInfo.createDetailFilter(segment);
     }

@@ -10,7 +10,21 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
 public class HavingFilterQueryInfoBean extends AbstractPostQueryInfoBean {
 
     @JsonProperty
-    FilterInfoBean filter;
+    private String column;
+    @JsonProperty
+    private FilterInfoBean filter;
+
+    {
+        type = PostQueryType.HAVING_FILTER;
+    }
+
+    public String getColumn() {
+        return column;
+    }
+
+    public void setColumn(String column) {
+        this.column = column;
+    }
 
     public FilterInfoBean getFilter() {
         return filter;
