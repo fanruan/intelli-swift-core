@@ -22,7 +22,6 @@ import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.global.RemoveSegLocationRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
@@ -43,14 +42,10 @@ import com.fr.swift.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * @author yee
@@ -140,14 +135,22 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
                 SourceKey sourceKey = content.getKey();
                 Where where = content.getValue();
+                // fixme 和collate一样，master指定节点upload哪些块
+//                Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
 
-                Map<String, ClusterEntity> realtimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
-                RealtimeService realtimeService = factory.getProxy(RealtimeService.class);
-                realtimeService.delete(sourceKey, where, new ArrayList<SegmentKey>(getNeedUploadSegKeys(sourceKey, realtimeServices.keySet())));
-
-                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-                HistoryService historyService = factory.getProxy(HistoryService.class);
-                historyService.delete(sourceKey, where, new ArrayList<SegmentKey>(getNeedUploadSegKeys(sourceKey, historyServices.keySet())));
+//                RealtimeService realtimeService = factory.getProxy(RealtimeService.class);
+//                realtimeService.delete(sourceKey, where, new ArrayList<String>());
+//                HistoryService historyService = factory.getProxy(HistoryService.class);
+//                historyService.delete(sourceKey, where, new ArrayList<String>());
+//                dealDelete(sourceKey, where, realTimeServices, "realtimeDelete");
+//                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+//                Iterator<Map.Entry<String, ClusterEntity>> iterator = historyServices.entrySet().iterator();
+//                while (iterator.hasNext()) {
+//                    if (realTimeServices.containsKey(iterator.next().getKey())) {
+//                        iterator.remove();
+//                    }
+//                }
+//                dealDelete(sourceKey, where, historyServices, "historyDelete");
                 break;
             case TRUNCATE:
                 SourceKey truncateContent = (SourceKey) event.getContent();
@@ -160,27 +163,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         return null;
     }
 
-    private Set<SegmentKey> getNeedUploadSegKeys(SourceKey sourceKey, Collection<String> clusterIds) throws Exception {
-        if (null == clusterIds || clusterIds.isEmpty()) {
-            SwiftLoggers.getLogger().warn("Cannot find services");
-            return Collections.emptySet();
-        }
 
-        Set<SegmentKey> needUploadSegKeys = new HashSet<SegmentKey>();
-        for (String clusterId : clusterIds) {
-            List<SegmentKey> segmentKeys = segmentService.getOwnSegments(clusterId).get(sourceKey);
-            if (null == segmentKeys) {
-                continue;
-            }
-            for (SegmentKey segKey : segmentKeys) {
-                if (segKey.getStoreType().isPersistent()) {
-                    needUploadSegKeys.add(segKey);
-                }
-            }
-        }
-
-        return needUploadSegKeys;
-    }
 
     private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {
         for (String id : realtime.keySet()) {
