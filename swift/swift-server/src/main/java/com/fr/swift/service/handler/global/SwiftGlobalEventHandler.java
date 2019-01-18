@@ -9,6 +9,7 @@ import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.ClusterEvent;
@@ -19,9 +20,9 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.global.RemoveSegLocationRpcEvent;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
@@ -42,10 +43,14 @@ import com.fr.swift.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * @author yee
@@ -53,12 +58,15 @@ import java.util.Map.Entry;
  */
 @SwiftBean
 public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEvent> {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftGlobalEventHandler.class);
+
     private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
+
+    private SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 
     @Override
     public <S extends Serializable> S handle(AbstractGlobalRpcEvent event) throws Exception {
         final ProxyFactory factory = ProxySelector.getInstance().getFactory();
+        // todo 用表驱动法，分离switch匹配，和具体的处理逻辑
         switch (event.subEvent()) {
             case CHECK_MASTER:
                 List<SwiftServiceInfoBean> masterServiceInfoBeanList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
@@ -67,7 +75,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 }
                 SwiftServiceInfoBean masterBean = masterServiceInfoBeanList.get(0);
                 if (!Util.equals(ClusterSelector.getInstance().getFactory().getMasterId(), masterBean.getClusterId())) {
-                    LOGGER.info("Master is not synchronized!");
+                    SwiftLoggers.getLogger().info("Master is not synchronized!");
                     try {
                         ClusterNodeService clusterNodeService = SwiftContext.get().getBean(ClusterNodeService.class);
                         clusterNodeService.competeMaster();
@@ -88,7 +96,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                         factory.getProxy(BaseService.class).cleanMetaCache(sourceKeys);
                     }
                 } catch (Exception e) {
-                    LOGGER.error(e);
+                    SwiftLoggers.getLogger().error(e);
                 }
                 break;
             case PUSH_SEG: {
@@ -132,57 +140,47 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
                 SourceKey sourceKey = content.getKey();
                 Where where = content.getValue();
-//                Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
 
+                Map<String, ClusterEntity> realtimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
                 RealtimeService realtimeService = factory.getProxy(RealtimeService.class);
-                realtimeService.delete(sourceKey, where, new ArrayList<String>());
+                realtimeService.delete(sourceKey, where, new ArrayList<SegmentKey>(getNeedUploadSegKeys(sourceKey, realtimeServices.keySet())));
+
+                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
                 HistoryService historyService = factory.getProxy(HistoryService.class);
-                historyService.delete(sourceKey, where, new ArrayList<String>());
-//                dealDelete(sourceKey, where, realTimeServices, "realtimeDelete");
-//                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-//                Iterator<Map.Entry<String, ClusterEntity>> iterator = historyServices.entrySet().iterator();
-//                while (iterator.hasNext()) {
-//                    if (realTimeServices.containsKey(iterator.next().getKey())) {
-//                        iterator.remove();
-//                    }
-//                }
-//                dealDelete(sourceKey, where, historyServices, "historyDelete");
+                historyService.delete(sourceKey, where, new ArrayList<SegmentKey>(getNeedUploadSegKeys(sourceKey, historyServices.keySet())));
                 break;
             case TRUNCATE:
                 SourceKey truncateContent = (SourceKey) event.getContent();
-                ProxySelector.getProxy(RealtimeService.class).truncate(truncateContent);
-                ProxySelector.getProxy(HistoryService.class).truncate(truncateContent);
+                factory.getProxy(RealtimeService.class).truncate(truncateContent);
+                factory.getProxy(HistoryService.class).truncate(truncateContent);
+                break;
             default:
                 break;
         }
         return null;
     }
 
-//    private void dealDelete(SourceKey sourceKey, Where where, Map<String, ClusterEntity> services, String method) throws Exception {
-//        if (null == services || services.isEmpty()) {
-//            SwiftLoggers.getLogger().warn("Cannot find services");
-//            return;
-//        }
-//        List<String> uploadedSegments = new ArrayList<String>();
-//        for (Map.Entry<String, ClusterEntity> entry : services.entrySet()) {
-//            String clusterId = entry.getKey();
-//            List<SegmentKey> segmentKeys = segmentService.getOwnSegments(clusterId).get(sourceKey.getId());
-//            List<String> needUploadSegs = new ArrayList<String>();
-//            if (null != segmentKeys) {
-//                for (SegmentKey segmentKey : segmentKeys) {
-//                    if (segmentKey.getStoreType() == Types.StoreType.FINE_IO) {
-//                        String segKey = segmentKey.toString();
-//                        // 如果不包含就放到需要上传的list
-//                        if (!uploadedSegments.contains(segKey)) {
-//                            needUploadSegs.add(segKey);
-//                            uploadedSegments.add(segKey);
-//                        }
-//                    }
-//                }
-//                runAsyncRpc(clusterId, entry.getValue().getServiceClass(), method, sourceKey, where, needUploadSegs);
-//            }
-//        }
-//    }
+    private Set<SegmentKey> getNeedUploadSegKeys(SourceKey sourceKey, Collection<String> clusterIds) throws Exception {
+        if (null == clusterIds || clusterIds.isEmpty()) {
+            SwiftLoggers.getLogger().warn("Cannot find services");
+            return Collections.emptySet();
+        }
+
+        Set<SegmentKey> needUploadSegKeys = new HashSet<SegmentKey>();
+        for (String clusterId : clusterIds) {
+            List<SegmentKey> segmentKeys = segmentService.getOwnSegments(clusterId).get(sourceKey);
+            if (null == segmentKeys) {
+                continue;
+            }
+            for (SegmentKey segKey : segmentKeys) {
+                if (segKey.getStoreType().isPersistent()) {
+                    needUploadSegKeys.add(segKey);
+                }
+            }
+        }
+
+        return needUploadSegKeys;
+    }
 
     private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {
         for (String id : realtime.keySet()) {

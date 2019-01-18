@@ -7,6 +7,7 @@ import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
@@ -15,7 +16,7 @@ import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.impl.TaskEvent;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -39,8 +40,8 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                 switch (((AbstractGlobalRpcEvent) event).subEvent()) {
                     case DELETE:
                         Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
-                        realTimeService.delete(content.getKey(), content.getValue(), new ArrayList<String>());
-                        historyService.delete(content.getKey(), content.getValue(), new ArrayList<String>());
+                        realTimeService.delete(content.getKey(), content.getValue(), Collections.<SegmentKey>emptyList());
+                        historyService.delete(content.getKey(), content.getValue(), Collections.<SegmentKey>emptyList());
                         return null;
                     default:
                 }
