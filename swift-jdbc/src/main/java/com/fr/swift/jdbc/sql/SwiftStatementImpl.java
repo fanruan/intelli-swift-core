@@ -63,6 +63,10 @@ public class SwiftStatementImpl extends BaseSwiftStatement {
     @Override
     public int executeUpdate(String sql) throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql);
+        return executeUpdate(info);
+    }
+
+    int executeUpdate(SqlRequestInfo info) throws SQLException {
         if (info.isSelect()) {
             SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
             return result.getRowCount();

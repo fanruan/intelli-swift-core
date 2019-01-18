@@ -9,7 +9,6 @@ import com.fr.swift.jdbc.result.ResultSetWrapper;
 import com.fr.swift.jdbc.rpc.JdbcExecutor;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
-import com.fr.swift.util.ReflectUtils;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -81,16 +80,7 @@ public class SwiftPreparedStatement extends SwiftStatementImpl implements Prepar
     @Override
     public int executeUpdate() throws SQLException {
         SqlRequestInfo info = grammarChecker.check(sql, values.toArray());
-        if (info.isSelect()) {
-            SwiftApiResultSet<SqlRequestInfo> result = execute(info, queryExecutor);
-            return result.getRowCount();
-        }
-        Object obj = execute(info, maintainExecutor);
-        try {
-            return ReflectUtils.parseNumber(obj).intValue();
-        } catch (Exception e) {
-            return 0;
-        }
+        return executeUpdate(info);
     }
 
     @Override
