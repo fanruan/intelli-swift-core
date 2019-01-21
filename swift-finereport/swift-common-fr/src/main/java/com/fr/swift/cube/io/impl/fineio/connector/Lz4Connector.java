@@ -41,20 +41,17 @@ public class Lz4Connector extends BaseConnector {
     @Override
     public void write(FileBlock block, InputStream is)
             throws IOException {
-        LZ4Compressor compressor = LZ4Factory.nativeInstance().fastCompressor();
-        FileOutputStream fos = new FileOutputStream(getPath(block, true));
-        BufferedOutputStream bos = new BufferedOutputStream(fos);
-        LZ4BlockOutputStream zos = new LZ4BlockOutputStream(bos, BLOCK_SIZE, compressor);
-        IOUtils.copy(is, zos);
-        zos.finish();
-        if (is != null) {
-            is.close();
-        }
-        if (null != bos) {
-            bos.close();
-        }
-        if (fos != null) {
-            fos.close();
+        BufferedOutputStream bos = null;
+        FileOutputStream fos = null;
+        try {
+            LZ4Compressor compressor = LZ4Factory.nativeInstance().fastCompressor();
+            fos = new FileOutputStream(getPath(block, true));
+            bos = new BufferedOutputStream(fos);
+            LZ4BlockOutputStream zos = new LZ4BlockOutputStream(bos, BLOCK_SIZE, compressor);
+            IOUtils.copy(is, zos);
+            zos.finish();
+        } finally {
+            IoUtil.close(is, bos, fos);
         }
     }
 
