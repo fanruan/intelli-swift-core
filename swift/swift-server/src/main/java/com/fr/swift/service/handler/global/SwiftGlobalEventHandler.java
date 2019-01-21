@@ -22,7 +22,6 @@ import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.global.RemoveSegLocationRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
@@ -136,18 +135,16 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
                 SourceKey sourceKey = content.getKey();
                 Where where = content.getValue();
-                Map<SourceKey, List<SegmentKey>> allSegKeys = segmentService.getAllSegments();
-                if (!allSegKeys.containsKey(sourceKey)) {
-                    return null;
-                }
 
                 try {
-                    factory.getProxy(RealtimeService.class).delete(sourceKey, where, allSegKeys.get(sourceKey));
+                    // 在process handler里面计算哪些节点上传哪些seg
+                    factory.getProxy(RealtimeService.class).delete(sourceKey, where, null);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                 }
                 try {
-                    factory.getProxy(HistoryService.class).delete(sourceKey, where, allSegKeys.get(sourceKey));
+                    // 在process handler里面计算哪些节点上传哪些seg
+                    factory.getProxy(HistoryService.class).delete(sourceKey, where, null);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                 }
