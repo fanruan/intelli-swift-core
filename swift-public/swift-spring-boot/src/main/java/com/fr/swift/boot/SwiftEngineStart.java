@@ -15,6 +15,7 @@ import com.fr.swift.basics.base.handler.SwiftAppointProcessHandler;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.basics.handler.AliveNodesProcessHandler;
 import com.fr.swift.basics.handler.AppointProcessHandler;
+import com.fr.swift.basics.handler.CollateProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
@@ -47,6 +48,7 @@ import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
+import com.fr.swift.service.SwiftCollateProcessHandler;
 import com.fr.swift.service.SwiftCommonLoadProcessHandler;
 import com.fr.swift.service.SwiftDeleteSegmentProcessHandler;
 import com.fr.swift.service.SwiftInsertSegmentProcessHandler;
@@ -124,5 +126,6 @@ public class SwiftEngineStart {
         processHandlerRegistry.addHandler(AliveNodesProcessHandler.class, SwiftAliveNodesProcessHandler.class);
         processHandlerRegistry.addHandler(CommonProcessHandler.class, SwiftCommonProcessHandler.class);
         processHandlerRegistry.addHandler(AppointProcessHandler.class, SwiftAppointProcessHandler.class);
+        processHandlerRegistry.addHandler(CollateProcessHandler.class, SwiftCollateProcessHandler.class);
     }
 }
