@@ -1,5 +1,7 @@
 package com.fr.swift.util;
 
+import com.fr.swift.log.SwiftLoggers;
+
 /**
  * This class created on 2018/5/26
  *
@@ -16,9 +18,7 @@ public class MonitorUtil {
     }
 
     public static void finish(String methodName) {
-        long finishTime = System.currentTimeMillis();
-        // 这里会NPE
-//        SwiftLoggers.getLogger().debug("Invoke {} costs {} ms", methodName, finishTime - tl.get());
+        SwiftLoggers.getLogger().debug("Invoke {} costs {} ms", methodName, System.currentTimeMillis() - tl.get());
         tl.remove();
     }
 }

@@ -1,4 +1,4 @@
-package com.fr.swift.controller;
+package com.fr.swift.boot.controller;
 
 /**
  * This class created on 2018/8/8

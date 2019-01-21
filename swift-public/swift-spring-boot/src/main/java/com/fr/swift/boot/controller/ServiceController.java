@@ -1,7 +1,6 @@
 package com.fr.swift.boot.controller;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.controller.BaseController;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.manager.ClusterServiceManager;
 import com.fr.swift.service.manager.LocalServiceManager;

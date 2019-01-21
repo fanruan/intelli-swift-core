@@ -161,7 +161,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
+    public boolean delete(final SourceKey sourceKey, final Where where, final List<SegmentKey> needUpload) throws Exception {
         Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -175,7 +175,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     }
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
-                    if (needUpload.contains(segKey.toString())) {
+                    if (needUpload.contains(segKey)) {
                         if (allShowBitmap.isEmpty()) {
                             SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
@@ -207,7 +207,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             tablePathService.removePath(sourceKey.getId());
         }
         segmentService.removeSegments(sourceKey.getId());
-
 
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
         String localPath = new CubePathBuilder()
