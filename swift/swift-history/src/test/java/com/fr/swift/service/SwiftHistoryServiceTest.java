@@ -11,6 +11,7 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
@@ -203,7 +204,8 @@ public class SwiftHistoryServiceTest {
 
     @Test
     public void delete() throws Exception {
-        service.delete(new SourceKey("table"), new SwiftWhere(new AllShowFilterBean()), Arrays.asList("table@FINE_IO@0"));
+        SourceKey tableKey = new SourceKey("table");
+        service.delete(tableKey, new SwiftWhere(new AllShowFilterBean()), Collections.<SegmentKey>singletonList(new SegmentKeyBean(tableKey, 0, StoreType.FINE_IO, SwiftDatabase.CUBE)));
         PowerMock.verifyAll();
     }
 

@@ -5,7 +5,6 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.SwiftDatabase;
-import com.fr.swift.exception.RealtimeInsertException;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.MutableHistorySegment;
 import com.fr.swift.segment.Segment;
