@@ -9,6 +9,7 @@ import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.service.SwiftRepositoryConfService;
@@ -40,29 +41,37 @@ public class PublicConfig {
             if (null != is) {
                 Properties properties = new Properties();
                 properties.load(is);
-                if (SwiftProperty.getProperty().isCluster()) {
-                    String repoType = properties.getProperty("repo.type", VersionConfigProperty.get().getDefaultRepository());
-                    if (!SwiftRemoteFileSystemType.FR.name().equals(repoType) && Strings.isNotEmpty(repoType)) {
-                        SwiftFileSystemFactory factory = SwiftContext.get().getBean(repoType, SwiftFileSystemFactory.class);
-                        if (null != factory) {
-                            SwiftFileSystemConfig config = (SwiftFileSystemConfig) factory.loadFromProperties(properties);
-                            repositoryConfService.setCurrentRepository(config);
+                try {
+                    if (SwiftProperty.getProperty().isCluster()) {
+                        String repoType = properties.getProperty("repo.type", VersionConfigProperty.get().getDefaultRepository());
+                        if (!SwiftRemoteFileSystemType.FR.name().equals(repoType) && Strings.isNotEmpty(repoType)) {
+                            SwiftFileSystemFactory factory = SwiftContext.get().getBean(repoType, SwiftFileSystemFactory.class);
+                            if (null != factory) {
+                                SwiftFileSystemConfig config = (SwiftFileSystemConfig) factory.loadFromProperties(properties);
+                                repositoryConfService.setCurrentRepository(config);
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error("load repo config failed!", e);
                 }
-                String fineIoType = properties.getProperty("fineio.type", "LZ4");
-                FineIOConnectorConfig config = null;
                 try {
-                    CommonConnectorType type = CommonConnectorType.valueOf(fineIoType.toUpperCase());
-                    config = new CommonConnectorConfig(type);
-                } catch (Exception ignore) {
-                    ConfigLoader<FineIOConnectorConfig> loader = SwiftContext.get().getBean(fineIoType, ConfigLoader.class);
-                    if (null != loader) {
-                        config = loader.loadFromProperties(properties);
+                    String fineIoType = properties.getProperty("fineio.type", "LZ4");
+                    FineIOConnectorConfig config = null;
+                    try {
+                        CommonConnectorType type = CommonConnectorType.valueOf(fineIoType.toUpperCase());
+                        config = new CommonConnectorConfig(type);
+                    } catch (Exception ignore) {
+                        ConfigLoader<FineIOConnectorConfig> loader = SwiftContext.get().getBean(fineIoType, ConfigLoader.class);
+                        if (null != loader) {
+                            config = loader.loadFromProperties(properties);
+                        }
                     }
-                }
-                if (null != config) {
-                    fineIoService.setCurrentConfig(config);
+                    if (null != config) {
+                        fineIoService.setCurrentConfig(config);
+                    }
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error("load fineio config failed!", e);
                 }
             }
         } catch (Exception ignore) {

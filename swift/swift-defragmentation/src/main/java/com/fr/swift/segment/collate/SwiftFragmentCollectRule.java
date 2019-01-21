@@ -21,7 +21,7 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
     /**
      * 碎片块数 》= 10
      */
-    private static final int FRAGMENT_NUMBER = 10;
+    public static final int FRAGMENT_NUMBER = 10;
 
     private final SwiftSegmentManager localSegments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 

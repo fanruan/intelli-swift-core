@@ -120,7 +120,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                     for (SegmentDestination segDst : entry.getValue()) {
                         segIds.add(segDst.getSegmentId());
                     }
-                    analyseService.removeSegments(clusterId, entry.getKey().getId(), segIds);
+                    analyseService.removeSegments(clusterId, entry.getKey(), segIds);
                 }
                 break;
             }
@@ -162,7 +162,6 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         }
         return null;
     }
-
 
 
     private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {

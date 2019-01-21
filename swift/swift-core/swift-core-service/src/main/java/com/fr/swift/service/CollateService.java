@@ -1,5 +1,7 @@
 package com.fr.swift.service;
 
+import com.fr.swift.basics.annotation.InvokeMethod;
+import com.fr.swift.basics.handler.CollateProcessHandler;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -37,6 +39,7 @@ public interface CollateService extends SwiftService {
      * @param segmentKeyList
      * @throws Exception
      */
+    @InvokeMethod(value = CollateProcessHandler.class)
     void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception;
 
     /**
