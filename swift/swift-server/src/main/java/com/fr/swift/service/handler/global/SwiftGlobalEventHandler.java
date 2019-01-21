@@ -22,6 +22,7 @@ import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.global.RemoveSegLocationRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
@@ -135,27 +136,34 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
                 SourceKey sourceKey = content.getKey();
                 Where where = content.getValue();
-                // fixme 和collate一样，master指定节点upload哪些块
-//                Map<String, ClusterEntity> realTimeServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
+                Map<SourceKey, List<SegmentKey>> allSegKeys = segmentService.getAllSegments();
+                if (!allSegKeys.containsKey(sourceKey)) {
+                    return null;
+                }
 
-//                RealtimeService realtimeService = factory.getProxy(RealtimeService.class);
-//                realtimeService.delete(sourceKey, where, new ArrayList<String>());
-//                HistoryService historyService = factory.getProxy(HistoryService.class);
-//                historyService.delete(sourceKey, where, new ArrayList<String>());
-//                dealDelete(sourceKey, where, realTimeServices, "realtimeDelete");
-//                Map<String, ClusterEntity> historyServices = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
-//                Iterator<Map.Entry<String, ClusterEntity>> iterator = historyServices.entrySet().iterator();
-//                while (iterator.hasNext()) {
-//                    if (realTimeServices.containsKey(iterator.next().getKey())) {
-//                        iterator.remove();
-//                    }
-//                }
-//                dealDelete(sourceKey, where, historyServices, "historyDelete");
+                try {
+                    factory.getProxy(RealtimeService.class).delete(sourceKey, where, allSegKeys.get(sourceKey));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
+                try {
+                    factory.getProxy(HistoryService.class).delete(sourceKey, where, allSegKeys.get(sourceKey));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
                 break;
             case TRUNCATE:
                 SourceKey truncateContent = (SourceKey) event.getContent();
-                factory.getProxy(RealtimeService.class).truncate(truncateContent);
-                factory.getProxy(HistoryService.class).truncate(truncateContent);
+                try {
+                    factory.getProxy(RealtimeService.class).truncate(truncateContent);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
+                try {
+                    factory.getProxy(HistoryService.class).truncate(truncateContent);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
                 break;
             default:
                 break;
