@@ -71,6 +71,7 @@ public class PostQueryInfoParserTest {
     @Test
     public void testHavingFilter() {
         HavingFilterQueryInfoBean bean = new HavingFilterQueryInfoBean();
+        bean.setColumn("a");
         FilterInfoBean filterInfoBean = new InFilterBean();
         filterInfoBean.setFilterValue(Collections.singleton("1"));
         bean.setFilter(filterInfoBean);
