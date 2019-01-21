@@ -19,8 +19,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface InvokeMethod {
+    /**
+     * todo 可考虑返回string，Class.forName拿，然后可以去掉很多只有标记作用的ProcessHandler
+     *
+     * @return process handler
+     */
     Class<? extends ProcessHandler> value();
 
     com.fr.swift.basics.annotation.Target target() default com.fr.swift.basics.annotation.Target.NONE;
-
 }

@@ -17,10 +17,10 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
-import com.fr.swift.util.Optional;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,6 +33,10 @@ import java.util.List;
 public class SegmentUtils {
 
     public static List<Segment> newSegments(List<SegmentKey> segKeys) {
+        if (segKeys == null || segKeys.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<Segment> segmentList = new ArrayList<Segment>();
         for (SegmentKey segKey : segKeys) {
             segmentList.add(newSegment(segKey));
@@ -78,7 +82,6 @@ public class SegmentUtils {
         } else {
             clearHistorySegment(segKey);
         }
-
     }
 
     private static void clearRealtimeSegment(SegmentKey segKey) {
@@ -92,7 +95,11 @@ public class SegmentUtils {
         FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build());
     }
 
-    public static void indexSegmentIfNeed(Iterable<Segment> segs) throws Exception {
+    public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {
+        if (segs == null || segs.isEmpty()) {
+            return;
+        }
+
         List<Segment> hisSegs = new ArrayList<Segment>();
         for (Segment seg : segs) {
             if (seg != null && seg.isHistory()) {
@@ -116,19 +123,6 @@ public class SegmentUtils {
         }
     }
 
-    public static Optional<SegmentKey> getMaxSegmentKey(List<SegmentKey> segmentKeys) {
-        if (segmentKeys == null || segmentKeys.isEmpty()) {
-            return Optional.empty();
-        }
-        SegmentKey maxSegmentKey = segmentKeys.get(0);
-        for (SegmentKey segmentKey : segmentKeys) {
-            if (segmentKey.getOrder() > maxSegmentKey.getOrder()) {
-                maxSegmentKey = segmentKey;
-            }
-        }
-        return Optional.of(maxSegmentKey);
-    }
-
     /**
      * 只release非内存seg todo 可能需要更明确的方法名
      *
@@ -140,7 +134,7 @@ public class SegmentUtils {
         }
     }
 
-    public static void release(Iterable<Segment> segs) {
+    public static void release(List<Segment> segs) {
         if (segs == null) {
             return;
         }
@@ -163,7 +157,7 @@ public class SegmentUtils {
         }
     }
 
-    public static <T> void releaseColumns(Iterable<Column<T>> columns) {
+    public static <T> void releaseColumns(List<Column<T>> columns) {
         if (columns == null) {
             return;
         }
