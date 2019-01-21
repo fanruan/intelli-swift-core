@@ -24,6 +24,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
@@ -68,7 +69,7 @@ public class SwiftInserterTest {
         when(resultSet.hasNext()).thenReturn(true, true, true, false);
         when(resultSet.getNextRow()).thenReturn(new ListBasedRow(1),
                 new ListBasedRow(new Object[]{null}),
-                new ListBasedRow(7)).thenThrow(IllegalStateException.class);
+                new ListBasedRow(7));
         when(resultSet.getMetaData()).thenReturn(meta);
 
         new SwiftInserter(segment).insertData(resultSet);
@@ -114,7 +115,7 @@ public class SwiftInserterTest {
 
         // release all
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.releaseColumns(Matchers.<Iterable<Column<Object>>>any());
+        SegmentUtils.releaseColumns(Matchers.<List<Column<Object>>>any());
         verifyStatic(SegmentUtils.class);
         SegmentUtils.release(segment);
     }

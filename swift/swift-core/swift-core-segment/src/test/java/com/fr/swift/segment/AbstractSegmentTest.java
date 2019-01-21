@@ -15,7 +15,7 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.segment.BasisSegmentTest.Seg;
+import com.fr.swift.segment.AbstractSegmentTest.Seg;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
@@ -54,7 +54,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @PrepareForTest({ColumnTypeUtils.class, SwiftContext.class, Seg.class})
-public class BasisSegmentTest {
+public class AbstractSegmentTest {
 
     private final String path = "/";
     @Mock

@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018/8/27
  */
-public class SwiftApiResultSetImpl extends OnePageApiResultSet<String> {
+public class SwiftApiResultSetImpl extends BaseApiResultSet<String> {
     private static final long serialVersionUID = 6857337351317783867L;
     private SwiftApiSessionImpl session;
     private SwiftDatabase database;
