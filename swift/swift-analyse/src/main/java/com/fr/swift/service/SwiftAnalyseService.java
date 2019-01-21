@@ -112,8 +112,8 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     }
 
     @Override
-    public void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys) {
-        SegmentLocationProvider.getInstance().removeSegments(clusterId, new SourceKey(sourceKey), segmentKeys);
+    public void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys) {
+        SegmentLocationProvider.getInstance().removeSegments(clusterId, sourceKey, segmentKeys);
     }
 
     private class AnalyseClusterListener implements ClusterEventListener, Serializable {

@@ -41,4 +41,7 @@ public interface HistoryService extends SwiftService, DeleteService {
     @Override
     @InvokeMethod(value = DeleteSegmentProcessHandler.class, target = Target.HISTORY)
     boolean delete(SourceKey sourceKey, Where where, List<String> segKeys) throws Exception;
+
+    @InvokeMethod(value = CommonProcessHandler.class, target = Target.HISTORY)
+    void removeHistory(List<SegmentKey> needRemoveList);
 }

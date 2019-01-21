@@ -17,6 +17,7 @@ import com.fr.swift.util.Strings;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,4 +89,20 @@ public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSe
         return result;
     }
 
+    @Override
+    public Map<String, SegmentKey> findAllWithId(ConfigSession session) {
+        final Map<String, SegmentKey> result = new HashMap<String, SegmentKey>();
+        try {
+            find(session).forEach(new FindList.SimpleEach<SegmentKey>() {
+                @Override
+                protected void each(int idx, SegmentKey bean) throws Exception {
+                    result.put(bean.getId(), bean);
+                }
+            });
+            return result;
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("find segments failed", e);
+        }
+        return Collections.unmodifiableMap(result);
+    }
 }
