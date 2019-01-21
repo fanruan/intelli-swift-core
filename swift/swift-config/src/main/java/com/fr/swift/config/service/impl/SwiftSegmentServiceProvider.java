@@ -66,6 +66,11 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     }
 
     @Override
+    public Map<String, Map<String, List<SegmentKey>>> getAllSegLocations() {
+        return service.getAllSegLocations();
+    }
+
+    @Override
     public List<SegmentKey> find(ConfigWhere... criterion) {
         return service.find(criterion);
     }

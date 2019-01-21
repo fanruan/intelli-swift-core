@@ -64,4 +64,13 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
      * @return
      */
     SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
+
+    /**
+     * clusterId
+     * sourceKey
+     * segmentKey
+     *
+     * @return
+     */
+    Map<String, Map<String, List<SegmentKey>>> getAllSegLocations();
 }

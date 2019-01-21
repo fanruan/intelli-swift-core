@@ -2,6 +2,8 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
 import com.fineio.storage.Connector;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.IoUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,13 +42,19 @@ public class FileConnector extends BaseConnector {
     @Override
     public void write(FileBlock block, InputStream is) throws IOException {
         File f = toFile(block, true);
-        FileOutputStream fos = new FileOutputStream(f);
-        byte[] bytes = new byte[1024];
-        for (int len; (len = is.read(bytes)) != -1; ) {
-            fos.write(bytes, 0, len);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(f);
+            byte[] bytes = new byte[1024];
+            for (int len; (len = is.read(bytes)) != -1; ) {
+                fos.write(bytes, 0, len);
+            }
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+            throw e;
+        } finally {
+            IoUtil.close(fos, is);
         }
-        fos.close();
-        is.close();
     }
 
     @Override
