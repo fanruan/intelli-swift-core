@@ -11,6 +11,7 @@ import com.fr.swift.query.aggregator.funnel.ITimeWindowFilter;
 import com.fr.swift.query.aggregator.funnel.impl.GroupTWFilter;
 import com.fr.swift.query.aggregator.funnel.impl.TimeWindowFilter;
 import com.fr.swift.query.aggregator.funnel.impl.step.Step;
+import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.impl.InFilter;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.group.by.GroupBy;
@@ -20,6 +21,7 @@ import com.fr.swift.query.info.bean.element.aggregation.funnel.AssociationFilter
 import com.fr.swift.query.info.bean.element.aggregation.funnel.DayFilterBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.PostGroupBean;
+import com.fr.swift.query.info.bean.parser.FilterInfoParser;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
@@ -33,6 +35,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.Crasher;
 
@@ -77,9 +80,10 @@ public class FunnelSegmentQuery implements SegmentQuery {
 
     private void initGlobalDic() {
         int dicSize = eventDict.size();
-        for (long i = 0; i < dicSize; i++) {
+        // eventType不为空
+        for (long i = 1; i < dicSize; i++) {
             String dicValue = String.valueOf(eventDict.getValue((int) i));
-            globalDic.put(dicValue, i);
+            globalDic.put(dicValue, i - 1);
         }
     }
 
@@ -107,7 +111,7 @@ public class FunnelSegmentQuery implements SegmentQuery {
         RowTraversal rowTraversal = getFilerRows(event.getBitmapIndex(), steps, bean, segment);
         SwiftLoggers.getLogger().debug("seg rows: {}", rowTraversal.getCardinality());
         DetailColumn combineColumn = segment.getColumn(new ColumnKey(params.getCombine())).getDetailColumn();
-        Column idColumn = segment.getColumn(new ColumnKey(params.getEvent()));
+        Column idColumn = segment.getColumn(new ColumnKey(params.getUserId()));
         Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(idColumn, rowTraversal, true);
         MergeIterator mergeIterator;
         Iterator<GroupByEntry> empty = new GroupByResult() {
@@ -255,6 +259,8 @@ public class FunnelSegmentQuery implements SegmentQuery {
         for (int index : steps) {
             bitMap.or(eventColumn.getBitMapIndex(index));
         }
+        bitMap.and(FilterBuilder.buildDetailFilter(segment, FilterInfoParser.parse(new SourceKey(bean.getTableName()),
+                bean.getFilter())).createFilterIndex());
         bitMap.and(createDateBitMap(segment, bean));
 
         return bitMap;
