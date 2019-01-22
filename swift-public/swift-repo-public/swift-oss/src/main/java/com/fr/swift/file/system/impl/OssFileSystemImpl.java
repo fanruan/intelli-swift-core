@@ -98,6 +98,11 @@ public class OssFileSystemImpl extends AbstractFileSystem<OssRepositoryConfig> {
         }
     }
 
+    /**
+     * TODO 这个方法这么判断有问题，但是OSS没有文件夹的概念，待优化
+     *
+     * @return
+     */
     @Override
     public boolean isDirectory() {
         return getResourceURI().endsWith("/");
