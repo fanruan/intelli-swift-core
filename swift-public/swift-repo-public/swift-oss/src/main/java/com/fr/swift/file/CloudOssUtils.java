@@ -1,6 +1,7 @@
 package com.fr.swift.file;
 
 import com.aliyun.oss.OSS;
+import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.model.CopyObjectResult;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObject;
@@ -23,7 +24,11 @@ public class CloudOssUtils {
         OSS oss = pool.borrowObject();
         try {
             PutObjectResult result = oss.putObject(bucketName, objectName, is);
-            return result.getResponse().isSuccessful();
+            ResponseMessage response = result.getResponse();
+            if (null != response) {
+                return response.isSuccessful();
+            }
+            return true;
         } finally {
             pool.returnObject(oss);
             IoUtil.close(is);
