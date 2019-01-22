@@ -3,9 +3,13 @@ package com.fr.swift.config.oper.impl;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigTransaction;
 import com.fr.swift.config.oper.TransactionManager.TransactionWorker;
-import org.easymock.EasyMock;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.sql.SQLException;
 
@@ -15,31 +19,35 @@ import static org.junit.Assert.assertTrue;
  * @author yee
  * @date 2018-11-30
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(TransactionWorker.class)
 public class BaseTransactionManagerTest {
 
     @Test
     public void doTransactionIfNeed() throws SQLException {
-        // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ConfigTransaction mockConfigTransaction = PowerMock.createMock(ConfigTransaction.class);
-//        mockConfigTransaction.begin();
-//        EasyMock.expectLastCall().times(2);
+
+        final ConfigSession mockConfigSession = PowerMockito.mock(ConfigSession.class);
+        ConfigTransaction mockConfigTransaction = PowerMockito.mock(ConfigTransaction.class);
         mockConfigTransaction.rollback();
         mockConfigTransaction.commit();
-        EasyMock.expect(mockConfigSession.beginTransaction()).andReturn(mockConfigTransaction).anyTimes();
+
+        Mockito.when(mockConfigSession.beginTransaction()).thenReturn(mockConfigTransaction);
+
+
         mockConfigSession.close();
-        EasyMock.expectLastCall().times(3);
+        PowerMockito.mockStatic(TransactionWorker.class);
+        TransactionWorker normal = PowerMockito.mock(TransactionWorker.class);
+        Mockito.when(normal.work(mockConfigSession)).thenReturn(null);
+        Mockito.when(normal.needTransaction()).thenReturn(true);
+
+        TransactionWorker exception = PowerMockito.mock(TransactionWorker.class);
+        Mockito.when(exception.work(mockConfigSession)).thenThrow(new SQLException("Just Test Exception"));
+        Mockito.when(exception.needTransaction()).thenReturn(true);
+
         // Generate by Mock Plugin
-        TransactionWorker normal = PowerMock.createMock(TransactionWorker.class);
-        EasyMock.expect(normal.needTransaction()).andReturn(true).anyTimes();
-        EasyMock.expect(normal.work(EasyMock.anyObject(ConfigSession.class))).andReturn(null).anyTimes();
-        TransactionWorker exception = PowerMock.createMock(TransactionWorker.class);
-        EasyMock.expect(exception.needTransaction()).andReturn(true).anyTimes();
-        EasyMock.expect(exception.work(EasyMock.anyObject(ConfigSession.class))).andThrow(new SQLException("Just Test Exception")).anyTimes();
-        TransactionWorker noTransaction = PowerMock.createMock(TransactionWorker.class);
-        EasyMock.expect(noTransaction.needTransaction()).andReturn(false).anyTimes();
-        EasyMock.expect(noTransaction.work(EasyMock.anyObject(ConfigSession.class))).andReturn(null).anyTimes();
-        PowerMock.replayAll();
+        TransactionWorker noTransaction = PowerMockito.mock(TransactionWorker.class);
+        Mockito.when(noTransaction.work(mockConfigSession)).thenReturn(null);
+        Mockito.when(noTransaction.needTransaction()).thenReturn(false);
         BaseTransactionManager manager = new BaseTransactionManager() {
             @Override
             protected ConfigSession createSession() {

@@ -1,6 +1,7 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
+import com.fr.swift.util.IoUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,24 +49,21 @@ public class ZipConnector extends BaseConnector {
     @Override
     public void write(FileBlock block, InputStream is) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] bytes = new byte[1024];
+        FileOutputStream fos = null;
+        try {
+            byte[] bytes = new byte[1024];
 
-        int len;
-        while ((len = is.read(bytes, 0, 1024)) > 0) {
-            bos.write(bytes, 0, len);
+            int len;
+            while ((len = is.read(bytes, 0, 1024)) > 0) {
+                bos.write(bytes, 0, len);
+            }
+
+            byte[] data = this.compress(bos.toByteArray());
+            fos = new FileOutputStream(this.getPath(block, true));
+            fos.write(data);
+        } finally {
+            IoUtil.close(is, fos, bos);
         }
-
-        byte[] data = this.compress(bos.toByteArray());
-        FileOutputStream fos = new FileOutputStream(this.getPath(block, true));
-        fos.write(data);
-        if (is != null) {
-            is.close();
-        }
-
-        if (fos != null) {
-            fos.close();
-        }
-
     }
 
     public byte[] decompress(byte[] ready4Decompress) {
