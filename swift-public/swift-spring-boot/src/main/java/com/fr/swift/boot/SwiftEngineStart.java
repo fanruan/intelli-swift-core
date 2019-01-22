@@ -27,6 +27,7 @@ import com.fr.swift.basics.handler.SyncDataProcessHandler;
 import com.fr.swift.cluster.listener.NodeStartedListener;
 import com.fr.swift.cluster.service.MasterService;
 import com.fr.swift.cluster.service.SlaveService;
+import com.fr.swift.config.PublicConfig;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
@@ -78,6 +79,7 @@ public class SwiftEngineStart {
             ProviderTaskManager.start();
             SwiftCommandParser.parseCommand(args);
             registerProxy();
+            PublicConfig.load();
 
             SwiftContext.get().getBean(LocalManager.class).startUp();
             if (SwiftProperty.getProperty().isCluster()) {
