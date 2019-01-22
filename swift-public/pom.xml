@@ -23,6 +23,7 @@
         <module>swift-conf-public</module>
         <module>swift-repo-public</module>
         <module>swift-common-public</module>
+        <module>swift-repo-plugins</module>
     </modules>
 
     <dependencyManagement>

@@ -3,7 +3,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>swift-repo-public</artifactId>
+        <artifactId>swift-repo-plugins</artifactId>
         <groupId>com.fr.intelligence</groupId>
         <version>2019.1</version>
     </parent>
@@ -27,10 +27,6 @@
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-repo-public</artifactId>
             <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
