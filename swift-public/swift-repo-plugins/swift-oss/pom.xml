@@ -25,11 +25,6 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-repo-public</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-io</artifactId>
             <version>${swift.version}</version>
         </dependency>
