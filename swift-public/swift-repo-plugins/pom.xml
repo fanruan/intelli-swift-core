@@ -9,14 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-repo-public</artifactId>
+    <artifactId>swift-repo-plugins</artifactId>
+
     <packaging>pom</packaging>
 
+    <modules>
+        <module>swift-hdfs</module>
+        <module>swift-ftp</module>
+        <module>swift-oss</module>
+    </modules>
 
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-repository</artifactId>
+            <artifactId>swift-repo-public</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
@@ -28,4 +34,5 @@
             <artifactId>swift-base-beans</artifactId>
         </dependency>
     </dependencies>
+
 </project>
