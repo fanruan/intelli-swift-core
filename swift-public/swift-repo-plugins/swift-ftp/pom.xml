@@ -18,11 +18,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-repo-public</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>3.6</version>
