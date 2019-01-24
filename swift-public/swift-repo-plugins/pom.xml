@@ -3,34 +3,35 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>swift-core</artifactId>
+        <artifactId>swift-public</artifactId>
         <groupId>com.fr.intelligence</groupId>
         <version>2019.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-core-analyse</artifactId>
+    <artifactId>swift-repo-plugins</artifactId>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>swift-hdfs</module>
+        <module>swift-ftp</module>
+        <module>swift-oss</module>
+    </modules>
 
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-segment</artifactId>
+            <artifactId>swift-repo-public</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-proxy</artifactId>
-            <version>${swift.version}</version>
-            <scope>compile</scope>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-common</artifactId>
-            <version>${swift.version}</version>
-            <scope>test</scope>
-            <classifier>tests</classifier>
-            <type>test-jar</type>
+            <artifactId>swift-base-beans</artifactId>
         </dependency>
     </dependencies>
 
