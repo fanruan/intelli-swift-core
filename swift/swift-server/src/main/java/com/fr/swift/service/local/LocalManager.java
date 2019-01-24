@@ -6,6 +6,7 @@ import com.fr.swift.service.AbstractSwiftManager;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.service.SwiftManager;
 import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.executor.CollateExecutor;
 import com.fr.swift.service.manager.LocalServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
 
@@ -24,12 +25,15 @@ public class LocalManager extends AbstractSwiftManager implements SwiftManager {
 
     private LocalServiceManager localServiceManager = SwiftContext.get().getBean(LocalServiceManager.class);
 
+    private CollateExecutor collateExecutor = SwiftContext.get().getBean(CollateExecutor.class);
+
     @Override
     public void startUp() throws Exception {
         lock.lock();
         try {
             if (!running) {
                 super.startUp();
+                collateExecutor.start();
             }
         } finally {
             lock.unlock();
@@ -42,6 +46,7 @@ public class LocalManager extends AbstractSwiftManager implements SwiftManager {
         try {
             if (running) {
                 super.shutDown();
+                collateExecutor.stop();
             }
         } finally {
             lock.unlock();

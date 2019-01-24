@@ -12,6 +12,7 @@ import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.SourceKey;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -124,6 +125,25 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
         } catch (SQLException e) {
             SwiftLoggers.getLogger().warn(e);
             return false;
+        }
+    }
+
+    @Override
+    public List<SegLocationBean> findBySourceKey(final SourceKey sourceKey) {
+        try {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<List<SegLocationBean>>(false) {
+                @Override
+                public List<SegLocationBean> work(ConfigSession session) {
+                    return segmentLocationDao.findBySourceKey(session, sourceKey.getId()).list();
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+        } catch (SQLException e) {
+            return Collections.emptyList();
         }
     }
 }

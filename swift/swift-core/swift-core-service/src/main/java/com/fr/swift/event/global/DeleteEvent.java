@@ -5,15 +5,13 @@ import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
-import java.io.Serializable;
-
 /**
  * @author yee
  * @date 2018/9/13
  */
-public class DeleteEvent extends AbstractGlobalRpcEvent<Pair<SourceKey, Where>> implements Serializable {
+public class DeleteEvent extends AbstractGlobalRpcEvent<Pair<SourceKey, Where>> {
 
-    private static final long serialVersionUID = -186984049574011968L;
+    private static final long serialVersionUID = -2275123858659498571L;
     private Pair<SourceKey, Where> content;
 
     public DeleteEvent(Pair<SourceKey, Where> content) {

@@ -13,7 +13,8 @@ import java.util.List;
  */
 public class TransCollateLoadEvent extends SegmentLoadRpcEvent<Pair<SourceKey, List<SegmentKey>>> implements Serializable {
 
-    private static final long serialVersionUID = -8128616454294243512L;
+    private static final long serialVersionUID = 2947402568204712246L;
+
     private Pair<SourceKey, List<SegmentKey>> segmentKey;
 
     public TransCollateLoadEvent(Pair<SourceKey, List<SegmentKey>> segmentKey, String sourceClusterId) {

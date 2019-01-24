@@ -52,4 +52,8 @@ public class SwiftSegmentLocationDaoImpl extends BasicDao<SegLocationBean> imple
         return find(session);
     }
 
+    @Override
+    public FindList<SegLocationBean> findBySourceKey(ConfigSession session, String sourceKey) {
+        return find(session, ConfigWhereImpl.eq("sourceKey", sourceKey));
+    }
 }

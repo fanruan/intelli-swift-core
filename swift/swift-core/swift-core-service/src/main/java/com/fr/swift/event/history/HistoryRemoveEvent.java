@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class HistoryRemoveEvent extends AbstractHistoryRpcEvent {
 
+    private static final long serialVersionUID = 5778321156623768337L;
+
     private Pair<SourceKey, List<SegmentKey>> content;
 
     public HistoryRemoveEvent(List<SegmentKey> needRemoveList, SourceKey sourceKey, String clusterId) {
