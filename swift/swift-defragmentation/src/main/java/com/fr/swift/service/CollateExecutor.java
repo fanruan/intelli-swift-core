@@ -1,14 +1,15 @@
 package com.fr.swift.service;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,14 +20,21 @@ import java.util.concurrent.TimeUnit;
  * @since Advanced FineBI 5.0
  */
 @SwiftBean
-public class CollateExecutor implements Runnable {
+public final class CollateExecutor implements Runnable {
 
-    private CollateService collateService;
+    private ScheduledExecutorService executorService;
 
     private CollateExecutor() {
-        SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass())).
-                scheduleWithFixedDelay(this, 1, 1, TimeUnit.HOURS);
-        collateService = SwiftContext.get().getBean(CollateService.class);
+
+    }
+
+    public void start() {
+        executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
+        executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
+    }
+
+    public void stop() {
+        executorService.shutdown();
     }
 
     @Override
@@ -36,11 +44,7 @@ public class CollateExecutor implements Runnable {
 
     private void triggerCollate() {
         try {
-            List<Table> tables = SwiftDatabase.getInstance().getAllTables();
-            for (Table table : tables) {
-                //todo 增加策略，是否需要触发
-                collateService.autoCollate(table.getSourceKey());
-            }
+            ProxySelector.getProxy(CollateService.class).appointCollate(new SourceKey(), Collections.<SegmentKey>emptyList());
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }

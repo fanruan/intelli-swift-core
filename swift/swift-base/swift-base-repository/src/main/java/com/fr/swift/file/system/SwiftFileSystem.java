@@ -15,8 +15,10 @@ public interface SwiftFileSystem extends Closeable {
 
     void write(InputStream inputStream) throws SwiftFileException;
 
+    @Deprecated
     SwiftFileSystem read(String remote) throws SwiftFileException;
 
+    @Deprecated
     SwiftFileSystem read() throws SwiftFileException;
 
     SwiftFileSystem parent();

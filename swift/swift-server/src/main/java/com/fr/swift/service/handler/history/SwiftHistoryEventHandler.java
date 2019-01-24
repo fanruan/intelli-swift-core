@@ -7,16 +7,20 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.EventResult;
+import com.fr.swift.event.history.HistoryRemoveEvent;
 import com.fr.swift.event.history.SegmentLoadRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.UploadService;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +80,16 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                 }
                 case CHECK_LOAD:
                     checkLoad(event.getSourceClusterId());
+                    break;
+                case HISTORY_REMOVE:
+                    HistoryRemoveEvent removeEvent = (HistoryRemoveEvent) event;
+                    Pair<SourceKey, List<SegmentKey>> content = removeEvent.getContent();
+                    factory.getProxy(HistoryService.class).removeHistory(content.getValue());
+                    List<String> keys = new ArrayList<String>();
+                    for (SegmentKey segmentKey : content.getValue()) {
+                        keys.add(segmentKey.getId());
+                    }
+                    factory.getProxy(AnalyseService.class).removeSegments(removeEvent.getSourceClusterId(), content.getKey(), keys);
                     break;
                 default:
                     return null;

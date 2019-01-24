@@ -20,6 +20,7 @@ import com.fr.swift.basics.base.handler.SwiftAppointProcessHandler;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.basics.handler.AliveNodesProcessHandler;
 import com.fr.swift.basics.handler.AppointProcessHandler;
+import com.fr.swift.basics.handler.CollateProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
@@ -53,6 +54,7 @@ import com.fr.swift.service.DeleteService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
+import com.fr.swift.service.SwiftCollateProcessHandler;
 import com.fr.swift.service.SwiftCommonLoadProcessHandler;
 import com.fr.swift.service.SwiftInsertSegmentProcessHandler;
 import com.fr.swift.service.SwiftQueryableProcessHandler;
@@ -175,5 +177,6 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         processHandlerRegistry.addHandler(AliveNodesProcessHandler.class, SwiftAliveNodesProcessHandler.class);
         processHandlerRegistry.addHandler(CommonProcessHandler.class, SwiftCommonProcessHandler.class);
         processHandlerRegistry.addHandler(AppointProcessHandler.class, SwiftAppointProcessHandler.class);
+        processHandlerRegistry.addHandler(CollateProcessHandler.class, SwiftCollateProcessHandler.class);
     }
 }
