@@ -8,7 +8,7 @@ import com.fr.swift.util.Crasher;
 /**
  * Created by Lyon on 2018/7/13.
  */
-public class HLLAggregatorValue implements AggregatorValue {
+public class HLLAggregatorValue implements AggregatorValue<Double> {
 
     private static final long serialVersionUID = 2390681614784335256L;
     private HyperLogLog hyperLogLog;
@@ -48,7 +48,7 @@ public class HLLAggregatorValue implements AggregatorValue {
     }
 
     @Override
-    public Object calculateValue() {
+    public Double calculateValue() {
         return Double.valueOf(hyperLogLog.cardinality());
     }
 
