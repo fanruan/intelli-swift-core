@@ -8,8 +8,8 @@
         <!--数据源信息 for Druid-->
         <property name="driverClassName">com.mysql.jdbc.Driver</property>
         <property name="url">jdbc:mysql://localhost:3306/test_hibernate</property>
-        <property name="username">root</property>
-        <property name="password">root123</property>
+        <property name="username">admin</property>
+        <property name="password">admin</property>
         <property name="filter">stat,log4j</property>
         <property name="initialSize">5</property>
         <property name="maxActive">100</property>
@@ -29,7 +29,7 @@
         </property>
 
         <property name="hbm2ddl.auto">update</property>
-        <property name="show_sql">false</property>
+        <property name="show_sql">true</property>
         <property name="format_sql">true</property>
         <!-- #hibernate.connection.provider_class org.hibernate.connection.C3P0ConnectionProvider -->
         <property name="hibernate.connection.provider_class">
