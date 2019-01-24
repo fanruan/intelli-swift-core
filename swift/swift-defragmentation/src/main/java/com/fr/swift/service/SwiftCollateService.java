@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
@@ -9,8 +10,12 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.base.SwiftRpcEvent;
+import com.fr.swift.event.history.HistoryRemoveEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -23,6 +28,8 @@ import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
+import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
@@ -172,7 +179,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
         fireUploadHistory(newSegmentKeys);
 
-        clearCollatedSegment(collateSegKeys);
+        clearCollatedSegment(collateSegKeys, tableKey);
     }
 
     private SwiftResultSet newCollateResultSet(List<Segment> segs) {
@@ -215,7 +222,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         }
     }
 
-    private void clearCollatedSegment(final List<SegmentKey> collateSegKeys) {
+    private void clearCollatedSegment(final List<SegmentKey> collateSegKeys, final SourceKey tableKey) {
         CommonExecutor.get().execute(new Runnable() {
             @Override
             public void run() {
@@ -224,6 +231,15 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                     SegmentUtils.clearSegment(collateSegKey);
                     if (collateSegKey.getStoreType().isPersistent()) {
                         SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
+                    }
+                    //通知master删collate的块
+                    if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                        try {
+                            SwiftRpcEvent event = new HistoryRemoveEvent(collateSegKeys, tableKey, SwiftProperty.getProperty().getClusterId());
+                            ProxySelector.getProxy(RemoteSender.class).trigger(event);
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
                     }
                 }
             }

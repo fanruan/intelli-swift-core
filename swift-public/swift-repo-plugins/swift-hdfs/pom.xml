@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.fr.intelligence</groupId>
-        <artifactId>swift-repo-public</artifactId>
+        <artifactId>swift-repo-plugins</artifactId>
         <version>2019.1</version>
     </parent>
 
@@ -17,21 +17,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-repository</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-repo-public</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>

@@ -25,6 +25,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
@@ -115,6 +116,15 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     public ServiceType getServiceType() {
         return ServiceType.HISTORY;
+    }
+
+    @Override
+    public void removeHistory(List<SegmentKey> needRemoveList) {
+        for (SegmentKey segmentKey : needRemoveList) {
+            if (segmentKey.getStoreType().isPersistent()) {
+                SegmentUtils.clearSegment(segmentKey);
+            }
+        }
     }
 
     @Override
