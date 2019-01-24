@@ -22,4 +22,23 @@ public class FRDestination implements Destination {
     public String getId() {
         return destNodeId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        FRDestination that = (FRDestination) o;
+
+        return destNodeId != null ? destNodeId.equals(that.destNodeId) : that.destNodeId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return destNodeId != null ? destNodeId.hashCode() : 0;
+    }
 }

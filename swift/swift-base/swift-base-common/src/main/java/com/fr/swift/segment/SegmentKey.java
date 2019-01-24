@@ -19,4 +19,10 @@ public interface SegmentKey extends ObjectConverter {
     SwiftDatabase getSwiftSchema();
 
     String getId();
+
+    @Override
+    boolean equals(Object o);
+
+    @Override
+    int hashCode();
 }
