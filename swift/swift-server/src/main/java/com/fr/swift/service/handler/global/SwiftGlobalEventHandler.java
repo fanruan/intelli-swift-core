@@ -2,6 +2,7 @@ package com.fr.swift.service.handler.global;
 
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.basic.URL;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
@@ -22,13 +23,16 @@ import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.global.RemoveSegLocationRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.BaseService;
+import com.fr.swift.service.DeleteService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.UploadService;
 import com.fr.swift.service.handler.EventHandlerExecutor;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.service.handler.base.AbstractHandler;
@@ -43,9 +47,12 @@ import com.fr.swift.util.Util;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * @author yee
@@ -133,20 +140,43 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 return (S) result;
             case DELETE:
                 Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
-                SourceKey sourceKey = content.getKey();
+                SourceKey tableKey = content.getKey();
                 Where where = content.getValue();
 
-                try {
-                    // 在process handler里面计算哪些节点上传哪些seg
-                    factory.getProxy(RealtimeService.class).delete(sourceKey, where, null);
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
-                }
-                try {
-                    // 在process handler里面计算哪些节点上传哪些seg
-                    factory.getProxy(HistoryService.class).delete(sourceKey, where, null);
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error(e);
+                Map<URL, UploadService> uploadServices = factory.getPeerProxies(UploadService.class);
+
+                Set<SegmentKey> uploadedSegKeys = new HashSet<SegmentKey>();
+
+                for (Entry<URL, DeleteService> entry : factory.getPeerProxies(DeleteService.class).entrySet()) {
+                    try {
+                        if (entry.getValue().delete(tableKey, where)) {
+                            // delete 提交成功
+                            Map<SourceKey, List<SegmentKey>> ownSegKeys = segmentService.getOwnSegments(entry.getKey().getDestination().getId());
+                            if (!ownSegKeys.containsKey(tableKey)) {
+                                break;
+                            }
+
+                            Set<SegmentKey> segKeys = new HashSet<SegmentKey>(ownSegKeys.get(tableKey));
+                            // 去除persistent的seg
+                            for (Iterator<SegmentKey> itr = segKeys.iterator(); itr.hasNext(); ) {
+                                if (itr.next().getStoreType().isTransient()) {
+                                    itr.remove();
+                                }
+                            }
+
+                            // 去重
+                            segKeys.removeAll(uploadedSegKeys);
+                            uploadedSegKeys.addAll(segKeys);
+
+                            if (!segKeys.isEmpty()) {
+                                // 提交上传任务
+                                uploadServices.get(entry.getKey()).uploadAllShow(segKeys);
+                            }
+
+                        }
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error(e);
+                    }
                 }
                 break;
             case TRUNCATE:
@@ -167,8 +197,6 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         }
         return null;
     }
-
-
 
     private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {
         for (String id : realtime.keySet()) {

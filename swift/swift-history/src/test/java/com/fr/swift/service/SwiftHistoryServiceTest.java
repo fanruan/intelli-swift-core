@@ -11,16 +11,13 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Where;
-import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.ClusterType;
 import com.fr.swift.event.base.SwiftRpcEvent;
-import com.fr.swift.query.info.bean.element.filter.impl.AllShowFilterBean;
 import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -47,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -192,34 +188,8 @@ public class SwiftHistoryServiceTest {
     }
 
     @Test
-    public void load() throws Exception {
-        Set<SegmentKey> set = new HashSet<SegmentKey>();
-        set.add(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        set.add(new SegmentKeyBean(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        set.add(new SegmentKeyBean(new SourceKey("table"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        service.load(set, true);
-        service.load(set, false);
-        PowerMock.verifyAll();
-    }
-
-    @Test
-    public void delete() throws Exception {
-        SourceKey tableKey = new SourceKey("table");
-        service.delete(tableKey, new SwiftWhere(new AllShowFilterBean()), Collections.<SegmentKey>singletonList(new SegmentKeyBean(tableKey, 0, StoreType.FINE_IO, SwiftDatabase.CUBE)));
-        PowerMock.verifyAll();
-    }
-
-    @Test
     public void truncate() throws Exception {
         service.truncate(new SourceKey("table"));
-        PowerMock.verifyAll();
-    }
-
-    @Test
-    public void commonLoad() throws Exception {
-        Map<SegmentKey, List<String>> needLoad = new HashMap<SegmentKey, List<String>>();
-        needLoad.put(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE), Arrays.asList("allShow", "row_count"));
-        service.commonLoad(new SourceKey("table"), needLoad);
         PowerMock.verifyAll();
     }
 

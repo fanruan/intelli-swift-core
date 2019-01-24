@@ -5,14 +5,12 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.db.Where;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
@@ -29,16 +27,13 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
-import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
-import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.swift.task.service.ServiceTaskType;
-import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
@@ -47,13 +42,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  * @author pony
@@ -97,7 +89,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             @Override
             public void run() {
                 try {
-                    load(needLoad, false);
+                    SegmentHelper.download(needLoad, false);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn(e);
                 }
@@ -106,7 +98,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         ClusterListenerHandler.addExtraListener(historyClusterListener);
         return true;
     }
-
 
     @Override
     public boolean shutdown() throws SwiftServiceException {
@@ -127,104 +118,37 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public void load(Set<SegmentKey> sourceSegKeys, boolean replace) throws Exception {
-        Map<SourceKey, Set<String>> needLoadSegments = new HashMap<SourceKey, Set<String>>();
-        for (SegmentKey segmentKey : sourceSegKeys) {
-            SourceKey sourceKey = segmentKey.getTable();
-            if (!needLoadSegments.containsKey(sourceKey)) {
-                needLoadSegments.put(sourceKey, new HashSet<String>());
-            }
-            needLoadSegments.get(sourceKey).add(String.format("%s/seg%d", segmentKey.getTable(), segmentKey.getOrder()));
-        }
-        load(needLoadSegments, replace);
-    }
-
-    @Override
-    public void load(Map<SourceKey, Set<String>> remoteUris, final boolean replace) throws Exception {
-        if (null == remoteUris || remoteUris.isEmpty()) {
-            return;
-        }
-        for (final SourceKey sourceKey : remoteUris.keySet()) {
-            final Set<String> uris = remoteUris.get(sourceKey);
-            if (uris.isEmpty()) {
-                return;
-            }
-
-            try {
-                SegmentHelper.download(sourceKey.getId(), uris, replace);
-                SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
-            }
-        }
-    }
-
-    @Override
-    public boolean delete(final SourceKey sourceKey, final Where where, final List<SegmentKey> needUpload) throws Exception {
-        Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
-                for (SegmentKey segKey : segmentKeys) {
-                    if (segKey.getStoreType().isTransient()) {
-                        continue;
-                    }
-                    if (!segmentManager.existsSegment(segKey)) {
-                        continue;
-                    }
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
-                    ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
-                    if (needUpload.contains(segKey)) {
-                        if (allShowBitmap.isEmpty()) {
-                            SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
-                        } else {
-                            SwiftEventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
-                        }
-                    }
-                }
-                return true;
-            }
-        }));
-        return future.get();
-    }
-
-    @Override
-    public void truncate(SourceKey sourceKey) {
-        SwiftTablePathBean entity = tablePathService.get(sourceKey.getId());
+    public void truncate(SourceKey tableKey) {
+        SwiftTablePathBean entity = tablePathService.get(tableKey.getId());
         int path = 0;
         if (null != entity) {
             path = entity.getTablePath() == null ? 0 : entity.getTablePath();
-            tablePathService.removePath(sourceKey.getId());
+            tablePathService.removePath(tableKey.getId());
         }
-        segmentService.removeSegments(sourceKey.getId());
+        Map<SourceKey, List<SegmentKey>> ownSegs = segmentService.getOwnSegments();
+        // 删配置
+        segmentService.removeSegments(tableKey.getId());
+        // 同步seg location
+        if (ownSegs.containsKey(tableKey)) {
+            SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, ownSegs.get(tableKey));
+        }
 
-        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(tableKey.getId());
+        // 删本地
         String localPath = new CubePathBuilder()
                 .asAbsolute()
                 .setSwiftSchema(metaData.getSwiftDatabase())
                 .setTempDir(path)
-                .setTableKey(new SourceKey(sourceKey.getId())).build();
+                .setTableKey(tableKey).build();
         FileUtil.delete(localPath);
-        CubePathBuilder builder = new CubePathBuilder();
-        builder.setSwiftSchema(metaData.getSwiftDatabase()).setTableKey(sourceKey);
+        // 删远程
+        String remotePath = new CubePathBuilder().setSwiftSchema(metaData.getSwiftDatabase()).setTableKey(tableKey).build();
         try {
-            SwiftRepositoryManager.getManager().currentRepo().delete(builder.build());
+            SwiftRepositoryManager.getManager().currentRepo().delete(remotePath);
         } catch (IOException e) {
             SwiftLoggers.getLogger().warn("truncate remote data failed", e);
         }
     }
-
-    @Override
-    public void commonLoad(SourceKey sourceKey, Map<SegmentKey, List<String>> needLoad) throws Exception {
-        Map<SourceKey, Set<String>> needLoadPath = new HashMap<SourceKey, Set<String>>();
-        Set<String> uris = new HashSet<String>();
-        for (Map.Entry<SegmentKey, List<String>> entry : needLoad.entrySet()) {
-            uris.addAll(entry.getValue());
-        }
-        needLoadPath.put(sourceKey, uris);
-        load(needLoadPath, false);
-    }
-
 
     /**
      * 加入集群后，historyService做集群相应处理
@@ -251,7 +175,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     @Override
                     public void run() {
                         try {
-                            load(needDownload, false);
+                            SegmentHelper.download(needDownload, false);
                         } catch (Exception e) {
                             SwiftLoggers.getLogger().warn(e);
                         }
@@ -278,7 +202,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
             }
         }
-
 
         protected SegmentLocationInfo loadSelfSegmentDestination() {
             Map<SourceKey, List<SegmentKey>> segments = segmentService.getOwnSegments();
