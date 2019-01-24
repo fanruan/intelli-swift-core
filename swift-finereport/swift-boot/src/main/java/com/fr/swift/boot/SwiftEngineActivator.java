@@ -22,7 +22,6 @@ import com.fr.swift.basics.handler.AliveNodesProcessHandler;
 import com.fr.swift.basics.handler.AppointProcessHandler;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
 import com.fr.swift.basics.handler.CommonProcessHandler;
-import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.basics.handler.NodesProcessHandler;
@@ -50,14 +49,15 @@ import com.fr.swift.segment.event.RemoveSegmentLocationListener;
 import com.fr.swift.segment.event.TransferRealtimeListener;
 import com.fr.swift.segment.event.UploadHistoryListener;
 import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.DeleteService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.SwiftCommonLoadProcessHandler;
-import com.fr.swift.service.SwiftDeleteSegmentProcessHandler;
 import com.fr.swift.service.SwiftInsertSegmentProcessHandler;
 import com.fr.swift.service.SwiftQueryableProcessHandler;
 import com.fr.swift.service.SwiftSyncDataProcessHandler;
+import com.fr.swift.service.UploadService;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.local.LocalManager;
 import com.fr.swift.service.local.ServiceManager;
@@ -161,13 +161,15 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         serviceRegistry.registerService(SwiftContext.get().getBean(MasterService.class));
         serviceRegistry.registerService(SwiftContext.get().getBean(SlaveService.class));
 
+        serviceRegistry.registerService(SwiftContext.get().getBean(DeleteService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(UploadService.class));
+
         //注解接口绑定的实现类
         ProcessHandlerRegistry processHandlerRegistry = ProxyProcessHandlerRegistry.get();
         processHandlerRegistry.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
         processHandlerRegistry.addHandler(NodesProcessHandler.class, SwiftNodesProcessHandler.class);
         processHandlerRegistry.addHandler(CommonLoadProcessHandler.class, SwiftCommonLoadProcessHandler.class);
         processHandlerRegistry.addHandler(SyncDataProcessHandler.class, SwiftSyncDataProcessHandler.class);
-        processHandlerRegistry.addHandler(DeleteSegmentProcessHandler.class, SwiftDeleteSegmentProcessHandler.class);
         processHandlerRegistry.addHandler(InsertSegmentProcessHandler.class, SwiftInsertSegmentProcessHandler.class);
         processHandlerRegistry.addHandler(QueryableProcessHandler.class, SwiftQueryableProcessHandler.class);
         processHandlerRegistry.addHandler(AliveNodesProcessHandler.class, SwiftAliveNodesProcessHandler.class);

@@ -2,7 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.listener.SwiftServiceEventHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -20,7 +20,7 @@ public class SwiftServiceListenerManagerTest extends TestCase {
         assertNotNull(SwiftServiceListenerManager.getInstance());
         SwiftService swiftService = EasyMock.createMock(SwiftService.class);
         SwiftRpcEvent event = EasyMock.createMock(SwiftRpcEvent.class);
-        SwiftServiceListenerHandler swiftServiceListenerHandler = EasyMock.createMock(SwiftServiceListenerHandler.class);
+        SwiftServiceEventHandler swiftServiceListenerHandler = EasyMock.createMock(SwiftServiceEventHandler.class);
 
         swiftServiceListenerHandler.registerService(swiftService);
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
@@ -57,19 +57,19 @@ public class SwiftServiceListenerManagerTest extends TestCase {
             SwiftServiceListenerManager.getInstance().registerService(swiftService);
             assertTrue(false);
         } catch (Exception e) {
-            assertEquals(e.getMessage(),"register");
+            assertEquals(e.getMessage(), "register");
         }
         try {
             SwiftServiceListenerManager.getInstance().unRegisterService(swiftService);
             assertTrue(false);
         } catch (Exception e) {
-            assertEquals(e.getMessage(),"unregister");
+            assertEquals(e.getMessage(), "unregister");
         }
         try {
             SwiftServiceListenerManager.getInstance().triggerEvent(event);
             assertTrue(false);
         } catch (Exception e) {
-            assertEquals(e.getMessage(),"trigger");
+            assertEquals(e.getMessage(), "trigger");
         }
 
     }

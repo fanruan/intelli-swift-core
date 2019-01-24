@@ -250,4 +250,23 @@ public class SegmentHelper {
             SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
     }
+
+    public static void download(Map<SourceKey, Set<String>> remoteUris, boolean replace) {
+        if (null == remoteUris || remoteUris.isEmpty()) {
+            return;
+        }
+        for (final SourceKey sourceKey : remoteUris.keySet()) {
+            Set<String> uris = remoteUris.get(sourceKey);
+            if (uris.isEmpty()) {
+                return;
+            }
+
+            try {
+                download(sourceKey.getId(), uris, replace);
+                SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
+            }
+        }
+    }
 }
