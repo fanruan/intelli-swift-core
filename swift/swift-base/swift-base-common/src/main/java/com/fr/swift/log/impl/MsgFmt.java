@@ -2,6 +2,7 @@ package com.fr.swift.log.impl;
 
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Optional;
+import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 
 
@@ -19,6 +20,10 @@ class MsgFmt {
         boolean hasThrowable = false;
         if (args[args.length - 1] instanceof Throwable) {
             hasThrowable = true;
+        }
+
+        if (msg == null) {
+            msg = Strings.EMPTY;
         }
 
         StringBuilder sb = new StringBuilder(msg.length());
