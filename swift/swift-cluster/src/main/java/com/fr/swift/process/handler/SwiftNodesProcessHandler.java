@@ -5,10 +5,13 @@ import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.NodesProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.heart.NodeState;
 import com.fr.swift.heart.NodeType;
@@ -26,6 +29,9 @@ import java.util.concurrent.CountDownLatch;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(NodesProcessHandler.class)
 public class SwiftNodesProcessHandler extends AbstractProcessHandler implements NodesProcessHandler {
 
     public SwiftNodesProcessHandler(InvokerCreator invokerCreator) {

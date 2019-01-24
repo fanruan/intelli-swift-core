@@ -2,15 +2,14 @@ package com.fr.swift.event.analyse;
 
 import com.fr.swift.event.base.AbstractAnalyseRpcEvent;
 
-import java.io.Serializable;
-
 /**
  * @author yee
  * @date 2018/9/4
  */
-public class RequestSegLocationEvent extends AbstractAnalyseRpcEvent<String> implements Serializable {
+public class RequestSegLocationEvent extends AbstractAnalyseRpcEvent<String> {
 
     private static final long serialVersionUID = -5899838977597991295L;
+
     private String clusterId;
 
     public RequestSegLocationEvent(String clusterId) {

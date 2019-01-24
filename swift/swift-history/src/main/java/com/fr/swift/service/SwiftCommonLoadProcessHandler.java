@@ -6,10 +6,13 @@ import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -34,6 +37,9 @@ import java.util.concurrent.CountDownLatch;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(CommonLoadProcessHandler.class)
 public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<URL, Map<SourceKey, List<String>>>> implements CommonLoadProcessHandler {
 
     public SwiftCommonLoadProcessHandler(InvokerCreator invokerCreator) {

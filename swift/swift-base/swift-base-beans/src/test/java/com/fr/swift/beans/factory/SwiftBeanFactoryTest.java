@@ -9,6 +9,7 @@ import com.fr.swift.beans.factory.bean.TestWithoutBeanPrototype;
 import com.fr.swift.beans.factory.bean.TestWithoutBeanSingleton;
 import junit.framework.TestCase;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -152,5 +153,12 @@ public class SwiftBeanFactoryTest extends TestCase {
         Map<String, Object> map = beanFactory.getBeansByAnnotations(SwiftBean.class);
         assertEquals(map.size(), 1);
         assertEquals(map.get("testWithoutBeanSingleton"), bean);
+    }
+
+    public void testgetClassesByAnnotations() {
+        List<Class<?>> list = beanFactory.getClassesByAnnotations(SwiftBean.class);
+        assertEquals(list.size(), 2);
+        assertEquals(list.get(0), TestWithoutBeanPrototype.class);
+        assertEquals(list.get(1), TestWithoutBeanSingleton.class);
     }
 }
