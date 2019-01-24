@@ -1,4 +1,4 @@
-package com.fr.swift.netty.rpc.invoke;
+package com.fr.swift.core.rpc;
 
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
@@ -13,20 +13,20 @@ import com.fr.swift.local.AbstractInvokerCreator;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class RPCInvokerCreator extends AbstractInvokerCreator {
+public class FRInvokerCreator extends AbstractInvokerCreator {
 
     @Override
     public <T> Invoker<T> createAsyncInvoker(Class<T> clazz, URL url) {
         Invoker<T> invoker = super.createAsyncInvoker(clazz, url);
         T service = clazz.cast(ProxyServiceRegistry.get().getService(clazz.getName()));
-        return invoker != null ? invoker : new RPCInvoker<T>(service, clazz, url, false);
+        return invoker != null ? invoker : new FRInvoker<T>(service, clazz, url, false);
     }
 
     @Override
     public <T> Invoker<T> createSyncInvoker(Class<T> clazz, URL url) {
         Invoker<T> invoker = super.createSyncInvoker(clazz, url);
         T service = clazz.cast(ProxyServiceRegistry.get().getService(clazz.getName()));
-        return invoker != null ? invoker : new RPCInvoker<T>(service, clazz, url);
+        return invoker != null ? invoker : new FRInvoker<T>(service, clazz, url);
     }
 
     @Override

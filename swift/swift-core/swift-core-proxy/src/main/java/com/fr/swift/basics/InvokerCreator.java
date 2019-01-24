@@ -11,9 +11,9 @@ import com.fr.swift.basic.URL;
  */
 public interface InvokerCreator {
 
-    Invoker createAsyncInvoker(Class clazz, URL url);
+    <T> Invoker<T> createAsyncInvoker(Class<T> clazz, URL url);
 
-    Invoker createSyncInvoker(Class clazz, URL url);
+    <T> Invoker<T> createSyncInvoker(Class<T> clazz, URL url);
 
     InvokerType getType();
 }
