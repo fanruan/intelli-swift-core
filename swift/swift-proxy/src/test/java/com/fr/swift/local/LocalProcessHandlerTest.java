@@ -33,13 +33,13 @@ public class LocalProcessHandlerTest extends TestCase {
     @Test
     public void testProcessUrl() {
         LocalProcessHandler localProcessHandler = new LocalProcessHandler(invokerCreator);
-        assertNull(localProcessHandler.processUrl(Target.HISTORY));
+        assertNull(localProcessHandler.processUrl(new Target[]{Target.HISTORY}));
     }
 
     @Test
     public void testProcessResult() throws Throwable {
         LocalProcessHandler localProcessHandler = new LocalProcessHandler(invokerCreator);
-        String name = (String) localProcessHandler.processResult(LocalProcessHandlerTest.class.getMethod("getName"), Target.HISTORY);
+        String name = (String) localProcessHandler.processResult(LocalProcessHandlerTest.class.getMethod("getName"), new Target[]{Target.HISTORY});
         assertEquals(name, LocalProcessHandlerTest.class.getName());
     }
 

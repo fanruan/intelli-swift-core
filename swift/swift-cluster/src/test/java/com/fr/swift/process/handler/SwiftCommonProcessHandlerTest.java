@@ -87,7 +87,7 @@ public class SwiftCommonProcessHandlerTest {
         EasyMock.expect(mockInvokerCreator.createAsyncInvoker(EasyMock.notNull(Class.class), EasyMock.anyObject(URL.class))).andReturn(createInvoker()).anyTimes();
         EasyMock.expect(mockInvokerCreator.getType()).andReturn(InvokerType.REMOTE).anyTimes();
         PowerMock.replayAll();
-        new SwiftCommonProcessHandler(mockInvokerCreator).processResult(SwiftCommonProcessHandlerTest.class.getDeclaredMethod("testCommon", String.class), target, target.name());
+        new SwiftCommonProcessHandler(mockInvokerCreator).processResult(SwiftCommonProcessHandlerTest.class.getDeclaredMethod("testCommon", String.class), new Target[]{target}, target.name());
 // do test
         PowerMock.verifyAll();
     }
@@ -101,7 +101,7 @@ public class SwiftCommonProcessHandlerTest {
         PowerMock.replay(ProxyServiceRegistry.class);
         PowerMock.replayAll();
 
-        new SwiftCommonProcessHandler(new LocalInvokerCreator()).processResult(SwiftCommonProcessHandlerTest.class.getDeclaredMethod("testCommon", String.class), Target.ALL, "test local");
+        new SwiftCommonProcessHandler(new LocalInvokerCreator()).processResult(SwiftCommonProcessHandlerTest.class.getDeclaredMethod("testCommon", String.class), new Target[]{Target.ALL}, "test local");
         PowerMock.verifyAll();
     }
 

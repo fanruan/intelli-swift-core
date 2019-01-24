@@ -197,8 +197,8 @@ public class SwiftSyncDataProcessHandlerTest {
         SwiftSyncDataProcessHandler handler = new SwiftSyncDataProcessHandler(mockInvokerCreator);
         Set<SegmentKey> segmentKeys = new HashSet<SegmentKey>();
         segmentKeys.add(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        handler.processResult(HistoryService.class.getMethod("load", Set.class, boolean.class), Target.HISTORY, segmentKeys, true);
-        handler.processResult(HistoryService.class.getMethod("load", Set.class, boolean.class), Target.HISTORY, segmentKeys, true);
+        handler.processResult(HistoryService.class.getMethod("load", Set.class, boolean.class), new Target[]{Target.HISTORY}, segmentKeys, true);
+        handler.processResult(HistoryService.class.getMethod("load", Set.class, boolean.class), new Target[]{Target.HISTORY}, segmentKeys, true);
         PowerMock.verifyAll();
     }
 

@@ -100,7 +100,7 @@ public class SwiftAliveNodesProcessHandlerTest extends TestCase {
 
     public void testProcessUrl() {
         SwiftAliveNodesProcessHandler handler = new SwiftAliveNodesProcessHandler(invokerCreator);
-        List<URL> urls = handler.processUrl(Target.ANALYSE);
+        List<URL> urls = handler.processUrl(new Target[]{Target.ANALYSE});
         assertEquals(urls.size(), 1);
         assertEquals(urls.get(0).getDestination().getId(), "127.0.0.1:8080");
     }
@@ -109,7 +109,7 @@ public class SwiftAliveNodesProcessHandlerTest extends TestCase {
         SwiftAliveNodesProcessHandler handler = new SwiftAliveNodesProcessHandler(invokerCreator);
         try {
             Object result = handler.processResult(
-                    SwiftAliveNodesProcessHandlerTest.class.getMethod("aliveNodesMethodSuccess", String.class, String.class, List.class), Target.ANALYSE, "127.0.0.1:8080", "tableA", Collections.EMPTY_LIST);
+                    SwiftAliveNodesProcessHandlerTest.class.getMethod("aliveNodesMethodSuccess", String.class, String.class, List.class), new Target[]{Target.ANALYSE}, "127.0.0.1:8080", "tableA", Collections.EMPTY_LIST);
             assertNull(result);
         } catch (Throwable throwable) {
             assertTrue(false);

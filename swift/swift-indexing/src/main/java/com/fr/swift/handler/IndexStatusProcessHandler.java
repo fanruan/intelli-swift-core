@@ -37,8 +37,8 @@ public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> imp
     }
 
     @Override
-    public Object processResult(final Method method, Target target, final Object... args) throws Throwable {
-        List<URL> urls = processUrl(target, args);
+    public Object processResult(final Method method, Target[] targets, final Object... args) throws Throwable {
+        List<URL> urls = processUrl(targets, args);
         if (ClusterSelector.getInstance().getFactory().isCluster() && urls.isEmpty()) {
             Crasher.crash("Remote  Not Found");
         }
@@ -91,7 +91,7 @@ public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> imp
     }
 
     @Override
-    public List<URL> processUrl(Target target, Object... args) {
+    public List<URL> processUrl(Target[] targets, Object... args) {
         Map<String, ClusterEntity> entityMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.INDEXING);
         Set<String> clusterIds = entityMap.keySet();
         List<URL> urls = new ArrayList<URL>();
