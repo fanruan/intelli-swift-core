@@ -4,16 +4,15 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2018/9/12
  */
-public class TransCollateLoadEvent extends SegmentLoadRpcEvent<Pair<SourceKey, List<SegmentKey>>> implements Serializable {
+public class TransCollateLoadEvent extends SegmentLoadRpcEvent<Pair<SourceKey, List<SegmentKey>>> {
 
-    private static final long serialVersionUID = 2947402568204712246L;
+    private static final long serialVersionUID = -937933243124511444L;
 
     private Pair<SourceKey, List<SegmentKey>> segmentKey;
 
