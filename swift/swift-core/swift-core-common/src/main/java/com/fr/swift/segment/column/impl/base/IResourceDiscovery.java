@@ -1,9 +1,13 @@
-package com.fr.swift.cube.io;
+package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Clearable;
 
 import java.util.Map;
@@ -19,6 +23,7 @@ import java.util.Map;
  * @since 4.0
  */
 public interface IResourceDiscovery extends Clearable {
+
     <R extends Reader> R getReader(IResourceLocation location, BuildConf conf);
 
     <W extends Writer> W getWriter(IResourceLocation location, BuildConf conf);
@@ -33,13 +38,11 @@ public interface IResourceDiscovery extends Clearable {
 
     Map<String, MemIo> removeCubeResource(String basePath);
 
-    /**
-     * 目前只能删除seg，或者seg中的某一个column
-     * 现只针对于内存数据
-     *
-     * @param location 位置
-     */
-    void release(IResourceLocation location);
+    void releaseTable(SwiftDatabase schema, SourceKey tableKey);
+
+    void releaseSegment(SwiftDatabase schema, SourceKey tableKey, int segOrder);
+
+    void releaseColumn(SwiftDatabase schema, SourceKey tableKey, ColumnKey columnKey);
 
     /**
      * 删除所有内存数据

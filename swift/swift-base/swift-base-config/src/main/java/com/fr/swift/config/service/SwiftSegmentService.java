@@ -24,6 +24,7 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
 
     /**
      * 批量删除Segment
+     * todo 墙裂要求return删掉的seg key
      *
      * @param sourceKey
      * @return

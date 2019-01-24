@@ -14,18 +14,13 @@ import com.fr.swift.util.Strings;
  */
 public class CubePathBuilder {
 
+    private static final SwiftCubePathService PATH_SVC = SwiftContext.get().getBean(SwiftCubePathService.class);
     private boolean absolute = false;
-
     private SwiftDatabase schema = null;
-
     private Integer tempDir = null;
-
     private boolean backup = false;
-
     private SourceKey tableKey = null;
-
     private Integer segOrder = null;
-
     private String columnId = null;
 
     public CubePathBuilder() {
@@ -76,17 +71,15 @@ public class CubePathBuilder {
         return this;
     }
 
-    private static final SwiftCubePathService PATH_SVC = SwiftContext.get().getBean(SwiftCubePathService.class);
-
     public String build() {
         Assert.notNull(schema);
         Assert.isFalse(tempDir != null && backup, "tempDir is not allowed when backup is present, vice versa");
 
-        String schemaDir = backup ? schema.getBackupDir() : schema.getDir();
-        StringBuilder path = new StringBuilder(schemaDir);
+        StringBuilder path = new StringBuilder();
         if (absolute) {
-            path.insert(0, PATH_SVC.getSwiftPath() + '/');
+            path.append(PATH_SVC.getSwiftPath()).append('/');
         }
+        path.append(backup ? schema.getBackupDir() : schema.getDir());
         if (tempDir != null) {
             path.append('/').append(tempDir);
         }
