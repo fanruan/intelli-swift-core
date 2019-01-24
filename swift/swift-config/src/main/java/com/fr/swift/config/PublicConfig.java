@@ -23,17 +23,12 @@ import java.util.Properties;
  * @date 2019-01-02
  */
 public class PublicConfig {
-    private SwiftRepositoryConfService repositoryConfService = SwiftContext.get().getBean(SwiftRepositoryConfService.class);
-    private SwiftFineIOConnectorService fineIoService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
-
-    public PublicConfig() {
-        load();
-    }
-
     /**
      * initMethod 好像没调用
      */
-    private void load() {
+    public static void load() {
+        SwiftRepositoryConfService repositoryConfService = SwiftContext.get().getBean(SwiftRepositoryConfService.class);
+        SwiftFineIOConnectorService fineIoService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
         InputStream is = PublicConfig.class.getClassLoader().getResourceAsStream("public.conf");
         try {
             if (null != is) {

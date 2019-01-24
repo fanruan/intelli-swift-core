@@ -10,6 +10,7 @@ import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.cluster.listener.NodeStartedListener;
+import com.fr.swift.config.PublicConfig;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
@@ -50,6 +51,7 @@ public class SwiftEngineStart {
             ProviderTaskManager.start();
             SwiftCommandParser.parseCommand(args);
             registerProxy();
+            PublicConfig.load();
 
             SwiftContext.get().getBean(LocalManager.class).startUp();
             if (SwiftProperty.getProperty().isCluster()) {
