@@ -23,4 +23,23 @@ public class FRUrl implements URL {
     public Destination getDestination() {
         return destination;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        FRUrl frUrl = (FRUrl) o;
+
+        return destination != null ? destination.equals(frUrl.destination) : frUrl.destination == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return destination != null ? destination.hashCode() : 0;
+    }
 }

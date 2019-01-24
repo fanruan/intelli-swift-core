@@ -16,4 +16,17 @@ public class LocalUrl implements URL {
     public Destination getDestination() {
         return null;
     }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        return getClass() == obj.getClass();
+    }
 }
