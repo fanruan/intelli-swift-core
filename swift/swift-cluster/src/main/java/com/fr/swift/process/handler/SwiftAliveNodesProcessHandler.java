@@ -30,7 +30,7 @@ public class SwiftAliveNodesProcessHandler extends AbstractProcessHandler implem
     }
 
     @Override
-    protected List<URL> processUrl(Target target, Object... args) {
+    protected List<URL> processUrl(Target[] targets, Object... args) {
         Map<String, ClusterEntity> analyseServices = checkAnalyseServiceEmpty();
         List<URL> urlList = new ArrayList<URL>();
         for (Map.Entry<String, ClusterEntity> clusterEntityEntry : analyseServices.entrySet()) {
@@ -40,11 +40,11 @@ public class SwiftAliveNodesProcessHandler extends AbstractProcessHandler implem
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         final Class proxyClass = method.getDeclaringClass();
         final Class<?>[] parameterTypes = method.getParameterTypes();
         final String methodName = method.getName();
-        List<URL> urlList = processUrl(target, args);
+        List<URL> urlList = processUrl(targets, args);
         List<RpcFuture> rpcFutures = new ArrayList<RpcFuture>();
         for (URL url : urlList) {
             final Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
