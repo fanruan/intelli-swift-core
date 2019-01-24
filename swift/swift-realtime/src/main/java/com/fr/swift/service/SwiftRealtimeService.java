@@ -141,7 +141,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
      * todo 公用实现，SwiftHistoryService
      */
     @Override
-    public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
+    public boolean delete(final SourceKey sourceKey, final Where where, final List<SegmentKey> needUpload) throws Exception {
         Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -156,7 +156,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                         continue;
                     }
 
-                    if (needUpload.contains(segKey.toString())) {
+                    if (needUpload.contains(segKey)) {
                         if (allShowBitmap.isEmpty()) {
                             SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
@@ -173,7 +173,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public void truncate(SourceKey sourceKey) {
         try {
-            delete(sourceKey, new SwiftWhere(new AllShowFilterBean()), Collections.<String>emptyList());
+            delete(sourceKey, new SwiftWhere(new AllShowFilterBean()), Collections.<SegmentKey>emptyList());
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("truncate realtime failed", e);
         }

@@ -1,6 +1,6 @@
 package com.fr.swift.source;
 
-import com.fr.swift.util.Util;
+import com.fr.swift.util.Assert;
 
 import java.io.Serializable;
 
@@ -14,7 +14,7 @@ public class SourceKey implements Serializable {
     private String id;
 
     public SourceKey(String id) {
-        Util.requireNonNull(id);
+        Assert.notNull(id);
         this.id = id;
     }
 
