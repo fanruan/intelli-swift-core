@@ -5,10 +5,7 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
-import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
-import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.util.Optional;
 
 import java.lang.reflect.Method;
 
@@ -16,21 +13,16 @@ import java.lang.reflect.Method;
  * @author anchore
  * @date 2018/11/13
  */
-public class SwiftInsertSegmentProcessHandler extends AbstractProcessHandler<Optional<URL>> implements InsertSegmentProcessHandler {
+public class SwiftInsertSegmentProcessHandler extends AbstractProcessHandler<URL> implements InsertSegmentProcessHandler {
 
     public SwiftInsertSegmentProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
     }
 
     @Override
-    protected Optional<URL> processUrl(Target target, Object... args) {
-        if (SwiftProperty.getProperty().isCluster()) {
-            String clusterId = SwiftProperty.getProperty().getClusterId();
-            URL url = UrlSelector.getInstance().getFactory().getURL(clusterId);
-            return Optional.of(url);
-        }
-
-        return Optional.empty();
+    protected URL processUrl(Target target, Object... args) {
+        // 直接走本地realtime service
+        return null;
     }
 
     @Override
@@ -39,11 +31,11 @@ public class SwiftInsertSegmentProcessHandler extends AbstractProcessHandler<Opt
             return null;
         }
 
-        Optional<URL> url = processUrl(target, args);
+        URL url = processUrl(target, args);
         Class<?> proxyClass = method.getDeclaringClass();
         Class<?>[] proxyMethodParamTypes = method.getParameterTypes();
 
-        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, url.isPresent() ? url.get() : null);
+        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, url);
         return invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
     }
 }

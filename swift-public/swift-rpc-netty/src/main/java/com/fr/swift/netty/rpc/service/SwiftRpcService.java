@@ -3,7 +3,7 @@ package com.fr.swift.netty.rpc.service;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.netty.NettyServiceStarter;
+import com.fr.swift.netty.rpc.server.NettyServiceStarter;
 import com.fr.swift.netty.rpc.server.RpcServerServiceStarter;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.util.concurrent.PoolThreadFactory;

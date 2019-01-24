@@ -28,6 +28,6 @@ public abstract class AbstractHistoryRpcEvent<T> implements SwiftRpcEvent<T, Eve
     }
 
     public enum Event implements SubEvent {
-        LOAD_SEGMENT, TRANS_COLLATE_LOAD, COMMON_LOAD, CHECK_LOAD, MODIFY_LOAD
+        LOAD_SEGMENT, TRANS_COLLATE_LOAD, COMMON_LOAD, CHECK_LOAD, MODIFY_LOAD, HISTORY_REMOVE
     }
 }

@@ -27,6 +27,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.segment.event.SegmentEvent;
@@ -160,7 +161,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
-    public boolean delete(final SourceKey sourceKey, final Where where, final List<String> needUpload) throws Exception {
+    public boolean delete(final SourceKey sourceKey, final Where where, final List<SegmentKey> needUpload) throws Exception {
         Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -174,7 +175,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                     }
                     WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
                     ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
-                    if (needUpload.contains(segKey.toString())) {
+                    if (needUpload.contains(segKey)) {
                         if (allShowBitmap.isEmpty()) {
                             SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
                         } else {
@@ -189,6 +190,15 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     }
 
     @Override
+    public void removeHistory(List<SegmentKey> needRemoveList) {
+        for (SegmentKey segmentKey : needRemoveList) {
+            if (segmentKey.getStoreType().isPersistent()) {
+                SegmentUtils.clearSegment(segmentKey);
+            }
+        }
+    }
+
+    @Override
     public void truncate(SourceKey sourceKey) {
         SwiftTablePathBean entity = tablePathService.get(sourceKey.getId());
         int path = 0;
@@ -197,7 +207,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
             tablePathService.removePath(sourceKey.getId());
         }
         segmentService.removeSegments(sourceKey.getId());
-
 
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
         String localPath = new CubePathBuilder()

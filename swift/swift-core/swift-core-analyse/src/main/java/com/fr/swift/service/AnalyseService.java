@@ -3,10 +3,10 @@ package com.fr.swift.service;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.AliveNodesProcessHandler;
-import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 
@@ -32,6 +32,6 @@ public interface AnalyseService extends SwiftService {
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
 
     @InvokeMethod(value = AliveNodesProcessHandler.class, target = Target.ANALYSE)
-    void removeSegments(String clusterId, String sourceKey, List<String> segmentKeys);
+    void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
 
 }
