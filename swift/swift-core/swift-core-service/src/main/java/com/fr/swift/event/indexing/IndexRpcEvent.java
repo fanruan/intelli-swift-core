@@ -3,13 +3,11 @@ package com.fr.swift.event.indexing;
 import com.fr.swift.event.base.AbstractIndexingRpcEvent;
 import com.fr.swift.stuff.IndexingStuff;
 
-import java.io.Serializable;
-
 /**
  * @author yee
  * @date 2018/6/11
  */
-public class IndexRpcEvent extends AbstractIndexingRpcEvent<IndexingStuff> implements Serializable {
+public class IndexRpcEvent extends AbstractIndexingRpcEvent<IndexingStuff> {
 
     private static final long serialVersionUID = -3778606145652475091L;
     private IndexingStuff indexingStuff;

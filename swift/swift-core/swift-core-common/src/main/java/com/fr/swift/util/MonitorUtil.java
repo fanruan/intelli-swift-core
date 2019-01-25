@@ -18,7 +18,7 @@ public class MonitorUtil {
     }
 
     public static void finish(String methodName) {
-        SwiftLoggers.getLogger().debug("Invoke {} costs {} ms", methodName, System.currentTimeMillis() - tl.get());
+//        SwiftLoggers.getLogger().debug("Invoke {} costs {} ms", methodName, System.currentTimeMillis() - tl.get());
         tl.remove();
     }
 }

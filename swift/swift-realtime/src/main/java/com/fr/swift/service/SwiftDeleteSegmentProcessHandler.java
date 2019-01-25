@@ -3,10 +3,13 @@ package com.fr.swift.service;
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.DeleteSegmentProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.log.SwiftLoggers;
@@ -24,6 +27,9 @@ import java.util.concurrent.Future;
  * @author anchore
  * @date 2018/11/9
  */
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(DeleteSegmentProcessHandler.class)
 public class SwiftDeleteSegmentProcessHandler extends AbstractProcessHandler<Optional<List<URL>>> implements DeleteSegmentProcessHandler {
 
     public SwiftDeleteSegmentProcessHandler(InvokerCreator invokerCreator) {

@@ -38,7 +38,7 @@ public class SortedDetailResultSetMerger implements IDetailQueryResultSetMerger 
             rowCount += ((DetailQueryResultSet) queryResultSet).getRowCount();
         }
         return new SortMultiSegmentDetailResultSet(
-                queryResultSets.get(0).getFetchSize(), rowCount,
+                fetchSize, rowCount,
                 new SortedRowIterator(fetchSize,
                         createRowComparator(comparators),
                         queryResultSets), this);

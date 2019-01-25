@@ -30,11 +30,13 @@ import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.CollateService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.SwiftCollateService;
 import com.fr.swift.service.SwiftHistoryService;
 import com.fr.swift.service.SwiftIndexingService;
 import com.fr.swift.service.SwiftRealtimeService;
@@ -97,6 +99,10 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
         ClusterInvoker historyServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(HistoryService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(SwiftHistoryService.class, historyServiceInvoker);
         InvokerCache.getInstance().bindInvoker(HistoryService.class, historyServiceInvoker);
+
+        ClusterInvoker collateServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(CollateService.class), TIMEOUT);
+        InvokerCache.getInstance().bindInvoker(CollateService.class, collateServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(SwiftCollateService.class, collateServiceInvoker);
 
         EventDispatcher.listen(ClusterViewEvent.NODE_JOINED, new Listener<ClusterNode>() {
             @Override
