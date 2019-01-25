@@ -4,7 +4,6 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.HistoryRemoveEvent;
@@ -33,7 +32,6 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryEventHandler.class);
     private HistoryDataSyncManager historyDataSyncManager = SwiftContext.get().getBean(HistoryDataSyncManager.class);
-    private SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 
     @Override
     public <S extends Serializable> S handle(AbstractHistoryRpcEvent event) {
@@ -43,17 +41,6 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                 case LOAD_SEGMENT:
                 case TRANS_COLLATE_LOAD:
                     return historyDataSyncManager.handle((SegmentLoadRpcEvent) event);
-//                case COMMON_LOAD:
-//                    String source = event.getSourceClusterId();
-//                    handleCommonLoad(event, 0);
-//                    return (S) EventResult.success(source);
-//                case MODIFY_LOAD:
-//                    String sourceId = event.getSourceClusterId();
-//                    if (handleCommonLoad(event, 1)) {
-//                        return (S) EventResult.success(sourceId);
-//                    } else {
-//                        return (S) EventResult.failed(sourceId, "load failed");
-//                    }
                 case COMMON_LOAD: {
 //                    //需要load的seg
 //                    Pair<SourceKey, Map<SegmentKey, List<String>>> pair = (Pair<SourceKey, Map<SegmentKey, List<String>>>) event.getContent();
@@ -84,11 +71,13 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                 case HISTORY_REMOVE:
                     HistoryRemoveEvent removeEvent = (HistoryRemoveEvent) event;
                     Pair<SourceKey, List<SegmentKey>> content = removeEvent.getContent();
+                    //找所有history节点删seg文件
                     factory.getProxy(HistoryService.class).removeHistory(content.getValue());
                     List<String> keys = new ArrayList<String>();
                     for (SegmentKey segmentKey : content.getValue()) {
                         keys.add(segmentKey.getId());
                     }
+                    //找所有analyse节点删内存中segkey和location配置
                     factory.getProxy(AnalyseService.class).removeSegments(removeEvent.getSourceClusterId(), content.getKey(), keys);
                     break;
                 default:

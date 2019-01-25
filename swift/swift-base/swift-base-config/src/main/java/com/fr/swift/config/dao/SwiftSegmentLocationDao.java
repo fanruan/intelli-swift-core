@@ -17,5 +17,7 @@ public interface SwiftSegmentLocationDao extends SwiftConfigDao<SegLocationBean>
 
     FindList<SegLocationBean> findBySegmentId(ConfigSession session, String segmentId);
 
+    FindList<SegLocationBean> findBySourceKey(ConfigSession session, String sourceKey);
+
     FindList<SegLocationBean> findAll(ConfigSession session);
 }

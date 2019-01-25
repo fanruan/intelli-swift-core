@@ -48,10 +48,11 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
         if (entity == null) {
             entity = new SwiftTablePathBean(sourceKey.getId(), 0);
         } else {
-            currentDir = entity.getTablePath() == null ? 0 : entity.getTablePath() + 1;
+            // TODO: 2019/1/24 @anchore 考虑历史和collate共用情况下的path
+//            currentDir = entity.getTablePath() == null ? 0 : entity.getTablePath() + 1;
             entity.setTmpDir(currentDir);
         }
-        tablePathService.saveOrUpdate(entity);
+//        tablePathService.saveOrUpdate(entity);
     }
 
     @Override

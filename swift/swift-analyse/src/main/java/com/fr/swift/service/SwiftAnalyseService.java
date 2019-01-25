@@ -23,6 +23,7 @@ import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.service.listener.RemoteSender;
@@ -114,6 +115,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys) {
         SegmentLocationProvider.getInstance().removeSegments(clusterId, sourceKey, segmentKeys);
+        SegmentContainer.NORMAL.remove(sourceKey);
     }
 
     private class AnalyseClusterListener implements ClusterEventListener, Serializable {

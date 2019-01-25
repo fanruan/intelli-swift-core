@@ -9,6 +9,8 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.StatusProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
@@ -31,6 +33,8 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018-12-01
  */
+@SwiftBean
+@SwiftScope("prototype")
 public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> implements StatusProcessHandler {
     public IndexStatusProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);

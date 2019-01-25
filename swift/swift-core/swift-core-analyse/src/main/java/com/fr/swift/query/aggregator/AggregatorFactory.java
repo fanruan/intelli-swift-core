@@ -1,12 +1,13 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.query.aggregator.extension.DistinctDateYMD;
+import com.fr.swift.query.aggregator.extension.TopPercentileAggregator;
 
 /**
  * Created by pony on 2018/3/26.
  */
 public class AggregatorFactory {
-    public static Aggregator createAggregator(AggregatorType type) {
+    public static Aggregator createAggregator(AggregatorType type, Object... params) {
         switch (type) {
             case SUM:
                 return SumAggregate.INSTANCE;
@@ -38,7 +39,13 @@ public class AggregatorFactory {
             // extension
             case DISTINCT_DATE_YMD:
                 return DistinctDateYMD.INSTANCE;
-
+            case TOP_PERCENTILE: {
+                if (params != null && params.length == 2) {
+                    double percentile = Double.parseDouble(params[0].toString());
+                    int numberOfSignificantValueDigits = Integer.parseInt(params[1].toString());
+                    return new TopPercentileAggregator(percentile, numberOfSignificantValueDigits);
+                }
+            }
             default:
                 return DummyAggregator.INSTANCE;
         }

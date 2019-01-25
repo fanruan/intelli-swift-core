@@ -4,9 +4,12 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.MasterProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.util.MonitorUtil;
@@ -18,6 +21,9 @@ import java.util.List;
  * @author yee
  * @date 2018/10/24
  */
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(MasterProcessHandler.class)
 public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> implements MasterProcessHandler {
 
     public SwiftMasterProcessHandler(InvokerCreator invokerCreator) {

@@ -2,15 +2,13 @@ package com.fr.swift.event.history;
 
 import com.fr.swift.source.SourceKey;
 
-import java.io.Serializable;
-
 /**
  * @author yee
  * @date 2018/6/8
  */
-public class HistoryLoadSegmentRpcEvent extends SegmentLoadRpcEvent<SourceKey> implements Serializable {
+public class HistoryLoadSegmentRpcEvent extends SegmentLoadRpcEvent<SourceKey> {
 
-    private static final long serialVersionUID = 5999241318201878252L;
+    private static final long serialVersionUID = 1136927274120474392L;
 
     private SourceKey sourceKey;
 
