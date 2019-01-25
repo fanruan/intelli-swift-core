@@ -38,6 +38,5 @@ public abstract class BaseNodeMergeQRS<T extends SwiftNode> implements NodeMerge
     @Override
     public void close() {
         // todo
-        throw new UnsupportedOperationException();
     }
 }
