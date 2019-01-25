@@ -8,8 +8,6 @@ import com.fr.swift.bitmap.impl.EmptyBitmap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.BuildConf;
-import com.fr.swift.cube.io.IResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.ResourceLocation;

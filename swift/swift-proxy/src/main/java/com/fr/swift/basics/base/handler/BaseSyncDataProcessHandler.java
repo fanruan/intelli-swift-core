@@ -20,8 +20,8 @@ public abstract class BaseSyncDataProcessHandler<T> extends BaseProcessHandler<T
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
-        return super.processResult(method, target, args);
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
+        return super.processResult(method, targets, args);
     }
 
     @Override
@@ -30,7 +30,7 @@ public abstract class BaseSyncDataProcessHandler<T> extends BaseProcessHandler<T
     }
 
     @Override
-    public T processUrl(Target target, Object... args) {
+    public T processUrl(Target[] targets, Object... args) {
         // TODO 获取history地址
         return null;
     }

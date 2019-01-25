@@ -1,19 +1,19 @@
 package com.fr.swift.service;
 
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.log.SwiftLogger;
-import com.fr.swift.log.SwiftLoggers;
 
 import java.io.Serializable;
 
 /**
- * Created by pony on 2017/10/10.
+ * @author pony
+ * @date 2017/10/10
  */
 public abstract class AbstractSwiftService implements SwiftService, Serializable {
 
     private static final long serialVersionUID = -7878341721352591837L;
-    protected transient SwiftLogger logger = SwiftLoggers.getLogger(getClass());
-    //远程机器id，没有表示本地
+    /**
+     * 远程机器id，没有表示本地
+     */
     private String id;
 
     public AbstractSwiftService(String id) {

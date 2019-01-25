@@ -125,12 +125,12 @@ class SwiftInvokerHandlerTestHandler extends AbstractProcessHandler {
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] target, Object... args) throws Throwable {
         return invokerCreator.createSyncInvoker(method.getDeclaringClass(), new RPCUrl(new RPCDestination("master"))).getClass().getName();
     }
 
     @Override
-    protected Object processUrl(Target target, Object... args) {
+    protected Object processUrl(Target[] target, Object... args) {
         return null;
     }
 }

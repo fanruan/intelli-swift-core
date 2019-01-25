@@ -41,7 +41,7 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
     }
 
     @Override
-    protected Map<URL, List<SegmentKey>> processUrl(Target target, Object... args) {
+    protected Map<URL, List<SegmentKey>> processUrl(Target[] targets, Object... args) {
         SourceKey sourceKey = (SourceKey) args[0];
         List<SegmentKey> segmentKeys = (List<SegmentKey>) args[1];
 
@@ -82,13 +82,13 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         try {
             Class proxy = method.getDeclaringClass();
             String methodName = method.getName();
             Class[] paramClass = method.getParameterTypes();
             SourceKey sourceKey = (SourceKey) args[0];
-            Map<URL, List<SegmentKey>> collateMap = processUrl(target, args);
+            Map<URL, List<SegmentKey>> collateMap = processUrl(targets, args);
 
             for (Map.Entry<URL, List<SegmentKey>> urlListEntry : collateMap.entrySet()) {
                 try {

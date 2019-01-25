@@ -26,22 +26,17 @@ public class SwiftInsertSegmentProcessHandler extends AbstractProcessHandler<URL
     }
 
     @Override
-    protected URL processUrl(Target target, Object... args) {
+    protected URL processUrl(Target[] targets, Object... args) {
         // 直接走本地realtime service
         return null;
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
-        if (target != Target.REAL_TIME) {
-            return null;
-        }
-
-        URL url = processUrl(target, args);
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         Class<?> proxyClass = method.getDeclaringClass();
         Class<?>[] proxyMethodParamTypes = method.getParameterTypes();
 
-        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, url);
+        Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, processUrl(targets, args));
         return invoke(invoker, proxyClass, method, method.getName(), proxyMethodParamTypes, args);
     }
 }

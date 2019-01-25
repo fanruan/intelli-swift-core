@@ -28,12 +28,12 @@ public abstract class AbstractProcessHandler<T> implements ProcessHandler {
     }
 
     /**
-     * process target url
+     * process targets url
      * 只负责各种形式的url计算。
      *
      * @return
      */
-    protected abstract T processUrl(Target target, Object... args);
+    protected abstract T processUrl(Target[] targets, Object... args);
 
     /**
      * @param invoker

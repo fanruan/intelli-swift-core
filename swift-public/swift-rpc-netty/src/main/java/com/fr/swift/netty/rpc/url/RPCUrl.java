@@ -22,4 +22,23 @@ public class RPCUrl implements URL {
     public Destination getDestination() {
         return destination;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        RPCUrl rpcUrl = (RPCUrl) o;
+
+        return destination != null ? destination.equals(rpcUrl.destination) : rpcUrl.destination == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return destination != null ? destination.hashCode() : 0;
+    }
 }

@@ -21,4 +21,23 @@ public class RPCDestination implements Destination {
     public String getId() {
         return address;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        RPCDestination that = (RPCDestination) o;
+
+        return address != null ? address.equals(that.address) : that.address == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return address != null ? address.hashCode() : 0;
+    }
 }

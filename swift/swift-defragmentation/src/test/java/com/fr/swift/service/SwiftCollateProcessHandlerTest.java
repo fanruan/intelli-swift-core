@@ -102,7 +102,7 @@ public class SwiftCollateProcessHandlerTest {
     @Test
     public void testProcessUrl() {
         SwiftCollateProcessHandler handler = new SwiftCollateProcessHandler(invokerCreator);
-        Map<URL, List<SegmentKey>> resultMap = handler.processUrl(Target.NONE, new SourceKey("test"), segmentKeyList);
+        Map<URL, List<SegmentKey>> resultMap = handler.processUrl(new Target[]{Target.NONE}, new SourceKey("test"), segmentKeyList);
         assertEquals(segmentKeyList.size(), 12);
         assertEquals(resultMap.size(), 1);
         assertEquals(resultMap.get(cluster1).size(), 10);
@@ -118,7 +118,7 @@ public class SwiftCollateProcessHandlerTest {
         Object[] args = {new SourceKey("test"), segmentKeyList};
         try {
             Method method = SwiftCollateProcessHandlerTest.class.getMethod("testAppointCollate", SourceKey.class, List.class);
-            String result = (String) handler.processResult(method, Target.NONE, args);
+            String result = (String) handler.processResult(method, new Target[]{Target.NONE}, args);
             Mockito.verify(invoker).invoke(Mockito.any(SwiftInvocation.class));
             assertNull(result);
         } catch (Throwable throwable) {

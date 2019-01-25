@@ -28,7 +28,7 @@ public class SwiftBeanFactoryTest extends TestCase {
         super.setUp();
         beanFactory = new SwiftBeanFactory();
         beanFactory.registerPackages("com.fr.swift.beans.factory.bean");
-        ((SwiftBeanFactory) beanFactory).init();
+        beanFactory.init();
     }
 
     public void testGetBeanByNameClassSingleton() {

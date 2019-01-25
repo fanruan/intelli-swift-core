@@ -16,4 +16,9 @@ public interface Destination {
      */
     String getId();
 
+    @Override
+    boolean equals(Object o);
+
+    @Override
+    int hashCode();
 }

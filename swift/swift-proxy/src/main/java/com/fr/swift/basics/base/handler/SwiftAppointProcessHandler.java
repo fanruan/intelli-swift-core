@@ -38,18 +38,18 @@ public class SwiftAppointProcessHandler extends AbstractProcessHandler implement
 
     /**
      * @param method
-     * @param target
+     * @param targets
      * @param args   args[0]固定参数Collection<String> urls
      *               其他是具体参数
      * @return
      * @throws Throwable
      */
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
-        Collection<URL> urls = processUrl(target, args[0]);
+        Collection<URL> urls = processUrl(targets, args[0]);
         final List<Object> resultList = new ArrayList<Object>();
         final CountDownLatch latch = new CountDownLatch(urls.size());
         for (final URL url : urls) {
@@ -77,7 +77,7 @@ public class SwiftAppointProcessHandler extends AbstractProcessHandler implement
     }
 
     @Override
-    public Collection<URL> processUrl(Target target, Object... args) {
+    public Collection<URL> processUrl(Target[] targets, Object... args) {
         Set<URL> urls = new HashSet<URL>();
         Collection<String> urlStrs = (Collection<String>) args[0];
         for (String urlStr : urlStrs) {

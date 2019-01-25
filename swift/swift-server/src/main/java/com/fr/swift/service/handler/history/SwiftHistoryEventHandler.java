@@ -13,6 +13,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.UploadService;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
@@ -40,17 +41,30 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                 case LOAD_SEGMENT:
                 case TRANS_COLLATE_LOAD:
                     return historyDataSyncManager.handle((SegmentLoadRpcEvent) event);
-                case COMMON_LOAD:
-                case MODIFY_LOAD:
-                    //需要load的seg
+                case COMMON_LOAD: {
+//                    //需要load的seg
+//                    Pair<SourceKey, Map<SegmentKey, List<String>>> pair = (Pair<SourceKey, Map<SegmentKey, List<String>>>) event.getContent();
+//                    UploadSegmentService service = factory.getProxy(UploadSegmentService.class);
+//                    try {
+//                        service.downloadAllShow(pair.getKey(), pair.getValue());
+//                        return (S) EventResult.success(event.getSourceClusterId());
+//                    } catch (Exception e) {
+//                        return (S) EventResult.failed(event.getSourceClusterId(), "load failed");
+//                    }
+                    // todo 只有relation用到，暂时先unsupport了
+                    throw new UnsupportedOperationException();
+
+                }
+                case MODIFY_LOAD: {
+                    // 需要load的seg
                     Pair<SourceKey, Map<SegmentKey, List<String>>> pair = (Pair<SourceKey, Map<SegmentKey, List<String>>>) event.getContent();
-                    HistoryService service = factory.getProxy(HistoryService.class);
                     try {
-                        service.commonLoad(pair.getKey(), pair.getValue());
+                        factory.getProxy(UploadService.class).downloadAllShow(pair.getValue().keySet());
                         return (S) EventResult.success(event.getSourceClusterId());
                     } catch (Exception e) {
                         return (S) EventResult.failed(event.getSourceClusterId(), "load failed");
                     }
+                }
                 case CHECK_LOAD:
                     checkLoad(event.getSourceClusterId());
                     break;

@@ -31,15 +31,19 @@ import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
+import com.fr.swift.service.DeleteService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.service.SwiftCollateService;
+import com.fr.swift.service.SwiftDeleteService;
 import com.fr.swift.service.SwiftHistoryService;
 import com.fr.swift.service.SwiftIndexingService;
 import com.fr.swift.service.SwiftRealtimeService;
+import com.fr.swift.service.SwiftUploadService;
+import com.fr.swift.service.UploadService;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.RemoteServiceSender;
 import com.fr.swift.source.SourceKey;
@@ -87,15 +91,19 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
         ClusterInvoker remoteServiceSenderInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(RemoteServiceSender.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(RemoteServiceSender.class, remoteServiceSenderInvoker);
         InvokerCache.getInstance().bindInvoker(RemoteSender.class, remoteServiceSenderInvoker);
+
         ClusterInvoker analyseServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(AnalyseService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(SwiftAnalyseService.class, analyseServiceInvoker);
         InvokerCache.getInstance().bindInvoker(AnalyseService.class, analyseServiceInvoker);
+
         ClusterInvoker realTimeServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(RealtimeService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(SwiftRealtimeService.class, realTimeServiceInvoker);
         InvokerCache.getInstance().bindInvoker(RealtimeService.class, realTimeServiceInvoker);
+
         ClusterInvoker indexingServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(IndexingService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(SwiftIndexingService.class, indexingServiceInvoker);
         InvokerCache.getInstance().bindInvoker(IndexingService.class, indexingServiceInvoker);
+
         ClusterInvoker historyServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(HistoryService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(SwiftHistoryService.class, historyServiceInvoker);
         InvokerCache.getInstance().bindInvoker(HistoryService.class, historyServiceInvoker);
@@ -103,6 +111,14 @@ public class SwiftClusterTicket extends ClusterTicketAdaptor {
         ClusterInvoker collateServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(CollateService.class), TIMEOUT);
         InvokerCache.getInstance().bindInvoker(CollateService.class, collateServiceInvoker);
         InvokerCache.getInstance().bindInvoker(SwiftCollateService.class, collateServiceInvoker);
+
+        ClusterInvoker deleteServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(DeleteService.class), TIMEOUT);
+        InvokerCache.getInstance().bindInvoker(DeleteService.class, deleteServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(SwiftDeleteService.class, deleteServiceInvoker);
+
+        ClusterInvoker uploadServiceInvoker = clusterToolKit.getInvokerFactory().create(SwiftContext.get().getBean(UploadService.class), TIMEOUT);
+        InvokerCache.getInstance().bindInvoker(UploadService.class, uploadServiceInvoker);
+        InvokerCache.getInstance().bindInvoker(SwiftUploadService.class, uploadServiceInvoker);
 
         EventDispatcher.listen(ClusterViewEvent.NODE_JOINED, new Listener<ClusterNode>() {
             @Override

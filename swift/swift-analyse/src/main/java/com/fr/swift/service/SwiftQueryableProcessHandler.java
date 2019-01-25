@@ -62,13 +62,13 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
     }
 
     @Override
-    public Object processResult(final Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(final Method method, Target[] targets, Object... args) throws Throwable {
         String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
         queryBean.setQueryId(UUID.randomUUID().toString());
         SourceKey table = new SourceKey(queryBean.getTableName());
         List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
-        List<Pair<URL, Set<String>>> pairs = processUrl(target, segmentDestinations);
+        List<Pair<URL, Set<String>>> pairs = processUrl(targets, segmentDestinations);
         final List<QueryResultSet> resultSets = new ArrayList<QueryResultSet>();
         final Class proxyClass = method.getDeclaringClass();
         final Class<?>[] parameterTypes = method.getParameterTypes();
@@ -134,7 +134,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
     }
 
     @Override
-    public List<Pair<URL, Set<String>>> processUrl(Target target, Object... args) {
+    public List<Pair<URL, Set<String>>> processUrl(Target[] targets, Object... args) {
         List<SegmentDestination> uris = (List<SegmentDestination>) args[0];
         Map<String, Pair<URL, Set<String>>> map = new HashMap<String, Pair<URL, Set<String>>>();
         for (SegmentDestination destination : uris) {

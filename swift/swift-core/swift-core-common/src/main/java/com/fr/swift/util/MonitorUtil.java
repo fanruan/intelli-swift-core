@@ -1,7 +1,5 @@
 package com.fr.swift.util;
 
-import com.fr.swift.log.SwiftLoggers;
-
 /**
  * This class created on 2018/5/26
  *

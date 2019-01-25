@@ -34,19 +34,19 @@ public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> imple
      * 处理master的远程调用
      *
      * @param method
-     * @param target
+     * @param targets
      * @param args
      * @return
      * @throws Throwable
      */
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
         try {
             MonitorUtil.start();
-            URL masterUrl = processUrl(target, args);
+            URL masterUrl = processUrl(targets, args);
             Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, masterUrl);
             return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
         } finally {
@@ -57,12 +57,12 @@ public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> imple
     /**
      * 计算master的url
      *
-     * @param target
+     * @param targets
      * @param args
      * @return
      */
     @Override
-    public URL processUrl(Target target, Object... args) {
+    public URL processUrl(Target[] targets, Object... args) {
         List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class)
                 .getServiceInfoByService(SwiftServiceInfoService.SERVICE);
         SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
