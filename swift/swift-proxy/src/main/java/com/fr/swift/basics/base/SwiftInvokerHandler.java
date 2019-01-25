@@ -14,9 +14,9 @@ import java.lang.reflect.Method;
  * @description
  * @since Advanced FineBI 5.0
  */
-class RemoteInvokerHandler extends AbstractInvokerHandler {
+class SwiftInvokerHandler extends AbstractInvokerHandler {
 
-    protected RemoteInvokerHandler(InvokerCreator invokerCreator) {
+    protected SwiftInvokerHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
     }
 

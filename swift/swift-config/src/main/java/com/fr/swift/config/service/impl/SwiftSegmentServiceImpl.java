@@ -285,46 +285,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     }
 
     @Override
-    public Map<String, Map<String, List<SegmentKey>>> getAllSegLocations() {
-        try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<String, Map<String, List<SegmentKey>>>>(false) {
-                @Override
-                public Map<String, Map<String, List<SegmentKey>>> work(ConfigSession session) throws SQLException {
-                    final Map<String, Map<String, List<SegmentKey>>> result = new HashMap<String, Map<String, List<SegmentKey>>>();
-
-                    final Map<String, SegmentKey> allSementKeys = swiftSegmentDao.findAllWithId(session);
-                    try {
-                        segmentLocationDao.findAll(session).forEach(new FindList.SimpleEach<SegLocationBean>() {
-                            @Override
-                            protected void each(int idx, SegLocationBean entity) throws Exception {
-                                String clusterId = entity.getClusterId();
-                                String segmentId = entity.getSegmentId();
-                                String sourceKey = entity.getSourceKey();
-                                SegmentKey segmentKey = allSementKeys.get(segmentId);
-                                if (!result.containsKey(clusterId)) {
-                                    result.put(clusterId, new HashMap<String, List<SegmentKey>>());
-                                }
-                                Map<String, List<SegmentKey>> segMap = result.get(clusterId);
-                                if (!segMap.containsKey(sourceKey)) {
-                                    segMap.put(sourceKey, new ArrayList<SegmentKey>());
-                                }
-                                segMap.get(sourceKey).add(segmentKey);
-                            }
-                        });
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().warn(e);
-                    }
-
-                    return result;
-                }
-            });
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Select segments error!", e);
-            return Collections.emptyMap();
-        }
-    }
-
-    @Override
     public Map<SourceKey, List<SegmentKey>> getOwnSegments() {
         return getOwnSegments(SwiftProperty.getProperty().getClusterId());
     }

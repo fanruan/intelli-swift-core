@@ -1,11 +1,11 @@
 package com.fr.swift.basics.base;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.InvokerType;
 import com.fr.swift.basics.ProcessHandler;
 import com.fr.swift.basics.ProcessHandlerPool;
 
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,8 +42,7 @@ public class ProxyProcessHandlerPool implements ProcessHandlerPool {
         if (!processHandlerMap.containsKey(aClass)) {
             synchronized (this) {
                 if (!processHandlerMap.containsKey(aClass)) {
-                    Constructor<? extends ProcessHandler> cons = aClass.getDeclaredConstructor(InvokerCreator.class);
-                    ProcessHandler handler = cons.newInstance(invokerCreator);
+                    ProcessHandler handler = SwiftContext.get().getBean(aClass, invokerCreator);
                     processHandlerMap.put(aClass, handler);
                 }
             }

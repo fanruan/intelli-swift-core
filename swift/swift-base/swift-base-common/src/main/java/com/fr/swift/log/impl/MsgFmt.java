@@ -2,6 +2,7 @@ package com.fr.swift.log.impl;
 
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Optional;
+import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 
 
@@ -20,7 +21,9 @@ class MsgFmt {
         if (args[args.length - 1] instanceof Throwable) {
             hasThrowable = true;
         }
-
+        if (msg == null) {
+            msg = Strings.EMPTY;
+        }
         StringBuilder sb = new StringBuilder(msg.length());
         int head = 0;
         for (int indexOfBrace, argI = 0; (indexOfBrace = msg.indexOf("{}", head)) != -1; ) {
