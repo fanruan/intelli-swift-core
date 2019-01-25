@@ -5,9 +5,12 @@ import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.AppointProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.lang.reflect.Method;
@@ -24,6 +27,10 @@ import java.util.concurrent.CountDownLatch;
  * @author Lucifer
  * @description
  */
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(AppointProcessHandler.class)
+// TODO: 2019/1/22 等an老师改完后待弃用
 public class SwiftAppointProcessHandler extends AbstractProcessHandler implements AppointProcessHandler {
     public SwiftAppointProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);

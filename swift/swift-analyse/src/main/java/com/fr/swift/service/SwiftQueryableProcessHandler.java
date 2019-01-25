@@ -6,11 +6,14 @@ import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
@@ -44,6 +47,9 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/10/25
  */
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(QueryableProcessHandler.class)
 public class SwiftQueryableProcessHandler extends BaseProcessHandler implements QueryableProcessHandler {
 
     public SwiftQueryableProcessHandler(InvokerCreator invokerCreator) {

@@ -12,5 +12,6 @@ public enum AggregatorType {
     DUMMY,
 
     // extension
-    DISTINCT_DATE_YMD
+    DISTINCT_DATE_YMD,
+    TOP_PERCENTILE
 }

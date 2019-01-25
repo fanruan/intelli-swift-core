@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
+import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -28,7 +29,6 @@ import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.Collater;
 import com.fr.swift.segment.operator.collate.HistoryCollater;
-import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
@@ -55,6 +55,7 @@ import java.util.concurrent.Callable;
  */
 @SwiftService(name = "collate")
 @SwiftBean(name = "collate")
+@ProxyService(CollateService.class)
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
     private static final long serialVersionUID = 7259915342007294244L;
@@ -150,9 +151,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private void collateSegments(SourceKey tableKey) throws Exception {
         List<SegmentKey> segKeys = segmentManager.getSegmentKeys(tableKey);
-        SwiftSourceAlloter alloter = new HistoryLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.STEP));
-        FragmentCollectRule collectRule = new SwiftFragmentCollectRule(alloter);
-        collateSegments(tableKey, collectRule.collect(segKeys));
+        collateSegments(tableKey, segKeys);
     }
 
     private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys) throws Exception {
@@ -160,7 +159,9 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         collateSegments(tableKey, collateSegKeys, alloter);
     }
 
-    private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys, SwiftSourceAlloter alloter) throws Exception {
+    private void collateSegments(SourceKey tableKey, final List<SegmentKey> allCollateSegKeys, SwiftSourceAlloter alloter) throws Exception {
+        FragmentCollectRule collectRule = new SwiftFragmentCollectRule(alloter);
+        List<SegmentKey> collateSegKeys = collectRule.collect(allCollateSegKeys);
         if (collateSegKeys.isEmpty()) {
             return;
         }
@@ -218,7 +219,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (SegmentKey newSegKey : newKeys) {
             manager.getSegment(newSegKey);
-            SwiftEventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
+            // TODO: 2019/1/24 先改成同步fire，避免fr rpc timeout
+            SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
     }
 
@@ -230,21 +232,21 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                     swiftSegmentService.removeSegments(Collections.singletonList(collateSegKey));
                     SegmentUtils.clearSegment(collateSegKey);
                     if (collateSegKey.getStoreType().isPersistent()) {
-                        SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
+                        // TODO: 2019/1/24 先改成同步fire，避免fr rpc timeout
+                        SwiftEventDispatcher.syncFire(SegmentEvent.REMOVE_HISTORY, collateSegKey);
                     }
-                    //通知master删collate的块
-                    if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                        try {
-                            SwiftRpcEvent event = new HistoryRemoveEvent(collateSegKeys, tableKey, SwiftProperty.getProperty().getClusterId());
-                            ProxySelector.getProxy(RemoteSender.class).trigger(event);
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
+                }
+                //通知master删collate的块
+                if (SwiftProperty.getProperty().isCluster()) {
+                    try {
+                        SwiftRpcEvent event = new HistoryRemoveEvent(collateSegKeys, tableKey, SwiftProperty.getProperty().getClusterId());
+                        ProxySelector.getProxy(RemoteSender.class).trigger(event);
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error(e);
                     }
                 }
             }
         });
-
         SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, collateSegKeys);
     }
 }

@@ -25,7 +25,7 @@ class MetricParser {
                 default:
                     ColumnKey columnKey = new ColumnKey(bean.getColumn());
                     metrics.add(new GroupMetric(0,
-                            columnKey, filterInfo, AggregatorFactory.createAggregator(bean.getType())));
+                            columnKey, filterInfo, AggregatorFactory.createAggregator(bean.getType(), bean.getParams())));
                     break;
             }
         }

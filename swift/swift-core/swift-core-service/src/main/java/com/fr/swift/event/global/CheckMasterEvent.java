@@ -2,8 +2,6 @@ package com.fr.swift.event.global;
 
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 
-import java.io.Serializable;
-
 /**
  * This class created on 2018/11/9
  *
@@ -11,8 +9,9 @@ import java.io.Serializable;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class CheckMasterEvent extends AbstractGlobalRpcEvent implements Serializable {
-    private static final long serialVersionUID = 1640021465782197562L;
+public class CheckMasterEvent extends AbstractGlobalRpcEvent {
+
+    private static final long serialVersionUID = 6500392706441900658L;
 
     @Override
     public Event subEvent() {

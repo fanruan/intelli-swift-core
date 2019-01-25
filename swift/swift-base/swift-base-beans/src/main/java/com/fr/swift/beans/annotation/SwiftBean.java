@@ -16,6 +16,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+// TODO: 2019/1/21 要加个懒加载
 public @interface SwiftBean {
     String name() default "";
 
