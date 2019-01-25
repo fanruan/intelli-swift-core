@@ -5,10 +5,10 @@ import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
@@ -24,11 +24,9 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.ServiceBeanFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -113,11 +111,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
     }
 
     private RealtimeService getRealTimeService() throws SQLException {
-        List<com.fr.swift.service.SwiftService> services = ServiceBeanFactory.getSwiftServiceByNames(Collections.singleton("realtime"));
-        if (services.isEmpty()) {
-            throw new SQLException("Can not find any RealTime service!");
-        }
-        return (RealtimeService) services.get(0);
+        return SwiftContext.get().getBean(RealtimeService.class);
     }
 
     private class InsertResultSet implements SwiftResultSet {
