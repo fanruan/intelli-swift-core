@@ -47,7 +47,8 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
             Segment seg = newRealTimeSeg(segKey);
             int rowCount = seg.isReadable() ? seg.getRowCount() : 0;
 
-            if (rowCount > maxRowCount) {
+            // todo 暂时限制为未满的块，解除限制会出别的问题
+            if (rowCount < rule.getCapacity() && rowCount > maxRowCount) {
                 // 这边假设配置中可能存在多个realTimeSegment的情况下，取出行数最多的segment进行插入
                 maxSegKey = segKey;
                 maxRowCount = rowCount;
