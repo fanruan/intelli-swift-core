@@ -10,6 +10,10 @@ public class CommaLineParser extends BaseSeparatorLineParser {
         super(skipFirstLine);
     }
 
+    public CommaLineParser(boolean skipFirstLine, LineParserAdaptor adaptor) {
+        super(skipFirstLine, adaptor);
+    }
+
     @Override
     protected String getSeparator() {
         return ",";

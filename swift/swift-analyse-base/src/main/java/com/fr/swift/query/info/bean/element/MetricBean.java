@@ -17,6 +17,8 @@ public class MetricBean {
     private String alias;    // 客户端定义的转移名
     @JsonProperty
     private FilterInfoBean filter;
+    @JsonProperty
+    private Object[] params;
 
     public AggregatorType getType() {
         return type;
@@ -48,5 +50,13 @@ public class MetricBean {
 
     public void setFilter(FilterInfoBean filter) {
         this.filter = filter;
+    }
+
+    public Object[] getParams() {
+        return params;
+    }
+
+    public void setParams(Object[] params) {
+        this.params = params;
     }
 }
