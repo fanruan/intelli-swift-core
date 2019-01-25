@@ -34,7 +34,7 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
     }
 
     @Override
-    protected Map<URL, Map<String, List<SegmentKey>>> processUrl(Target target, Object... args) {
+    protected Map<URL, Map<String, List<SegmentKey>>> processUrl(Target[] targets, Object... args) {
         SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
         //所有节点的segmentKey
         Map<String, Map<String, List<SegmentKey>>> allSegmentKeys = swiftSegmentService.getAllSegLocations();
@@ -62,12 +62,12 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         try {
             Class proxy = method.getDeclaringClass();
             String methodName = method.getName();
             Class[] paramClass = method.getParameterTypes();
-            Map<URL, Map<String, List<SegmentKey>>> collateMap = processUrl(target, args);
+            Map<URL, Map<String, List<SegmentKey>>> collateMap = processUrl(targets, args);
             for (Map.Entry<URL, Map<String, List<SegmentKey>>> urlMapEntry : collateMap.entrySet()) {
                 URL url = urlMapEntry.getKey();
                 Map<String, List<SegmentKey>> keysInfo = urlMapEntry.getValue();

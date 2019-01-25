@@ -1,6 +1,7 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.io.file.FileBlock;
+import com.fr.swift.util.IoUtil;
 import com.fr.third.net.jpountz.lz4.LZ4BlockInputStream;
 import com.fr.third.net.jpountz.lz4.LZ4BlockOutputStream;
 import com.fr.third.net.jpountz.lz4.LZ4Compressor;
