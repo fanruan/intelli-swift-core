@@ -4,14 +4,13 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.cube.io.ResourceDiscovery;
-import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.FileUtil;
@@ -39,18 +38,17 @@ public class DropColumnAction extends BaseAlterTableAction {
 
         List<SegmentKey> segKeys = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegmentKeys(table.getSourceKey());
         for (final SegmentKey segKey : segKeys) {
-            final String columnId = relatedColumnMeta.getColumnId();
             if (segKey.getStoreType().isTransient()) {
                 // 删内存
-                ResourceDiscovery.getInstance().release(new ResourceLocation(new CubePathBuilder(segKey).setColumnId(columnId).build(), StoreType.MEMORY));
+                ResourceDiscovery.getInstance().releaseColumn(segKey.getSwiftSchema(), segKey.getTable(), new ColumnKey(relatedColumnMeta.getName()));
                 // 删备份
-                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().asBackup().build());
+                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().asBackup().setColumnId(relatedColumnMeta.getColumnId()).build());
                 continue;
             }
 
             // 删history todo 还要删共享存储
             int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-            FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).setColumnId(columnId).build());
+            FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).setColumnId(relatedColumnMeta.getColumnId()).build());
         }
 
         alterMeta(table);

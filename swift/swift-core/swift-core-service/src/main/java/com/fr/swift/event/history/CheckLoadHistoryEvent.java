@@ -2,8 +2,6 @@ package com.fr.swift.event.history;
 
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 
-import java.io.Serializable;
-
 /**
  * @author yee
  * @date 2018/9/30

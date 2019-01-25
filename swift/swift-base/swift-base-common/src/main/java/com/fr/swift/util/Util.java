@@ -66,4 +66,14 @@ public final class Util {
         }
         return String.format("%s: %s", simpleThrowable, message);
     }
+
+    public static <E> Optional<E> firstItemOf(Iterable<E> iterable) {
+        if (iterable == null) {
+            return Optional.empty();
+        }
+        for (E e : iterable) {
+            return Optional.of(e);
+        }
+        return Optional.empty();
+    }
 }

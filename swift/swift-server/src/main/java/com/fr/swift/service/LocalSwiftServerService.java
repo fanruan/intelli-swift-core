@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
@@ -7,7 +8,6 @@ import com.fr.swift.event.base.AbstractGlobalRpcEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
@@ -18,6 +18,7 @@ import com.fr.swift.task.impl.TaskEvent;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author pony
@@ -27,11 +28,20 @@ import java.util.Map;
 public class LocalSwiftServerService extends AbstractSwiftServerService {
 
     private static final long serialVersionUID = 9167111609239393074L;
+
     private IndexingService indexingService;
+
     private RealtimeService realTimeService;
+
     private HistoryService historyService;
+
     private AnalyseService analyseService;
+
     private CollateService collateService;
+
+    private DeleteService deleteService;
+
+    private UploadService uploadService;
 
     @Override
     public Serializable trigger(SwiftRpcEvent event) {
@@ -40,8 +50,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                 switch (((AbstractGlobalRpcEvent) event).subEvent()) {
                     case DELETE:
                         Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
-                        realTimeService.delete(content.getKey(), content.getValue(), Collections.<SegmentKey>emptyList());
-                        historyService.delete(content.getKey(), content.getValue(), Collections.<SegmentKey>emptyList());
+                        deleteService.delete(content.getKey(), content.getValue());
                         return null;
                     default:
                 }
@@ -70,7 +79,15 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case COLLATE:
                     collateService = (CollateService) service;
+                    break;
+                case DELETE:
+                    deleteService = (DeleteService) service;
+                    break;
+                case UPLOAD:
+                    uploadService = (UploadService) service;
+                    break;
                 default:
+                    throw new UnsupportedOperationException(String.format("service %s is not allowed to register", service));
             }
         }
     }
@@ -93,7 +110,15 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                     break;
                 case COLLATE:
                     collateService = null;
+                    break;
+                case DELETE:
+                    deleteService = null;
+                    break;
+                case UPLOAD:
+                    uploadService = null;
+                    break;
                 default:
+                    SwiftLoggers.getLogger().warn("you have deregistered a unknown service {}", service);
             }
         }
     }
@@ -120,5 +145,10 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
                 SwiftLoggers.getLogger().info("Local Task cancel");
             }
         });
+    }
+
+    @Override
+    public Set<URL> getNodeUrls(Class<?> proxyIface) {
+        return Collections.emptySet();
     }
 }

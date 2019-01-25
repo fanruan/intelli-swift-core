@@ -48,20 +48,20 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
 
     /**
      * @param method
-     * @param target
+     * @param targets
      * @param args
      * @return
      * @throws Throwable
      */
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
         try {
             MonitorUtil.start();
             SourceKey sourceKey = (SourceKey) args[0];
-            Map<URL, Map<SourceKey, List<String>>> urlMap = processUrl(target, args);
+            Map<URL, Map<SourceKey, List<String>>> urlMap = processUrl(targets, args);
 
             final List<EventResult> resultList = new ArrayList<EventResult>();
             final CountDownLatch latch = new CountDownLatch(urlMap.size());
@@ -100,17 +100,17 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
      * 根据传入的seg信息，遍历所有history节点，找到每个history节点的seg
      * 检验该seg是否在需要args中，是则needload，否则不需要。
      *
-     * @param target
+     * @param targets
      * @param args
      * @return 远程url
      */
     @Override
-    public Map<URL, Map<SourceKey, List<String>>> processUrl(Target target, Object... args) {
+    public Map<URL, Map<SourceKey, List<String>>> processUrl(Target[] targets, Object... args) {
         SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
 
         SourceKey sourceKey = (SourceKey) args[0];
-        Map<String, List<String>> uris = (Map<String, List<String>>) args[1];
+        Map<SegmentKey, List<String>> uris = (Map<SegmentKey, List<String>>) args[1];
 
         if (null == services || services.isEmpty()) {
             throw new RuntimeException("Cannot find history service");

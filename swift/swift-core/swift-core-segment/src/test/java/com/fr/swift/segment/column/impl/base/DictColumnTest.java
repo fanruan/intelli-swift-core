@@ -5,7 +5,6 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.BuildConf;
-import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.input.DoubleReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;

@@ -30,7 +30,7 @@ public abstract class BaseIndexProcessHandler extends BaseProcessHandler impleme
     }
 
     @Override
-    public List<URL> processUrl(Target target, Object... args) {
+    public List<URL> processUrl(Target[] targets, Object... args) {
         IndexingService service = ProxySelector.getInstance().getFactory().getProxy(IndexingService.class);
         try {
             ServerCurrentStatus status = service.currentStatus();

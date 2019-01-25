@@ -14,18 +14,21 @@ import com.fr.swift.property.SwiftProperty;
  * @since Advanced FineBI 5.0
  */
 public abstract class AbstractInvokerCreator implements InvokerCreator {
+
     @Override
-    public Invoker createAsyncInvoker(Class clazz, URL url) {
+    public <T> Invoker<T> createAsyncInvoker(Class<T> clazz, URL url) {
         if (urlIsNull(url) || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId())) {
-            return new LocalInvoker(ProxyServiceRegistry.get().getService(clazz.getName()), clazz, url, false);
+            T service = clazz.cast(ProxyServiceRegistry.get().getService(clazz.getName()));
+            return new LocalInvoker<T>(service, clazz, url, false);
         }
         return null;
     }
 
     @Override
-    public Invoker createSyncInvoker(Class clazz, URL url) {
+    public <T> Invoker<T> createSyncInvoker(Class<T> clazz, URL url) {
         if (urlIsNull(url) || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId())) {
-            return new LocalInvoker(ProxyServiceRegistry.get().getService(clazz.getName()), clazz, url);
+            T service = clazz.cast(ProxyServiceRegistry.get().getService(clazz.getName()));
+            return new LocalInvoker<T>(service, clazz, url);
         }
         return null;
     }

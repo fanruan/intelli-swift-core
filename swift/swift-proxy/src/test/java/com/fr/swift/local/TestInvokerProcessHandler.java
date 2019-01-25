@@ -22,16 +22,16 @@ public class TestInvokerProcessHandler extends AbstractProcessHandler {
     }
 
     @Override
-    protected URL processUrl(Target target, Object... args) {
+    protected URL processUrl(Target[] targets, Object... args) {
         return null;
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
-        URL url = processUrl(target, args);
+        URL url = processUrl(targets, args);
         Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, url);
         Object object = invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
         return object;

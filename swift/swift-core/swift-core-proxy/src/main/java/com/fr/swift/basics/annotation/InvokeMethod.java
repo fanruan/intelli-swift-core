@@ -26,5 +26,5 @@ public @interface InvokeMethod {
      */
     Class<? extends ProcessHandler> value();
 
-    com.fr.swift.basics.annotation.Target target() default com.fr.swift.basics.annotation.Target.NONE;
+    com.fr.swift.basics.annotation.Target[] target() default com.fr.swift.basics.annotation.Target.NONE;
 }

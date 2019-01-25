@@ -45,6 +45,10 @@ public class ServiceBeanFactory {
         if (swiftServiceNames.contains("indexing")) {
             swiftServiceNames.add("collate");
         }
+        if (swiftServiceNames.contains("realtime") || swiftServiceNames.contains("history")) {
+            swiftServiceNames.add("swiftDeleteService");
+            swiftServiceNames.add("swiftUploadService");
+        }
         List<SwiftService> swiftServiceList = new ArrayList<SwiftService>();
         for (String serviceName : swiftServiceNames) {
             try {

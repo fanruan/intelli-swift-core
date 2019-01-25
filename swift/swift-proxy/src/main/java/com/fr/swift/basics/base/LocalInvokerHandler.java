@@ -23,6 +23,6 @@ class LocalInvokerHandler extends AbstractInvokerHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         ProcessHandler handler = ProxyProcessHandlerPool.get().getProcessHandler(LocalProcessHandler.class, invokerCreator);
-        return handler.processResult(method, Target.NONE, args);
+        return handler.processResult(method, new Target[]{Target.NONE}, args);
     }
 }
