@@ -64,7 +64,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
         SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
         SourceKey sourceKey = new SourceKey(metaData.getId());
         try {
-            getRealTimeService().insert(sourceKey, resultSet);
+            SwiftContext.get().getBean(RealtimeService.class).insert(sourceKey, resultSet);
         } catch (SQLException e) {
             throw e;
         } catch (Exception e) {
@@ -108,10 +108,6 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
         } catch (Exception e) {
             throw new SQLException("Table which named " + tableName + " is not exists", e);
         }
-    }
-
-    private RealtimeService getRealTimeService() throws SQLException {
-        return SwiftContext.get().getBean(RealtimeService.class);
     }
 
     private class InsertResultSet implements SwiftResultSet {
