@@ -157,7 +157,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                             }
 
                             Set<SegmentKey> segKeys = new HashSet<SegmentKey>(ownSegKeys.get(tableKey));
-                            // 去除persistent的seg
+                            // 去除transient的seg
                             for (Iterator<SegmentKey> itr = segKeys.iterator(); itr.hasNext(); ) {
                                 if (itr.next().getStoreType().isTransient()) {
                                     itr.remove();

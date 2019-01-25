@@ -115,6 +115,9 @@ public class SwiftEngineStart {
         serviceRegistry.registerService(SwiftContext.get().getBean(SlaveService.class));
         serviceRegistry.registerService(SwiftContext.get().getBean(ApiServerService.class));
 
+        serviceRegistry.registerService(SwiftContext.get().getBean(DeleteService.class));
+        serviceRegistry.registerService(SwiftContext.get().getBean(UploadService.class));
+
         //注解接口绑定的实现类
         ProcessHandlerRegistry processHandlerRegistry = ProxyProcessHandlerRegistry.get();
         processHandlerRegistry.addHandler(MasterProcessHandler.class, SwiftMasterProcessHandler.class);
