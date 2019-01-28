@@ -13,7 +13,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
-import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
@@ -56,8 +55,8 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     }
 
     @Override
-    protected Inserter getInserter(Segment seg) {
-        return new SwiftInserter(seg);
+    protected Inserting getInserting(Segment seg) {
+        return new Inserting(new SwiftInserter(seg), seg, 0);
     }
 
     @Override

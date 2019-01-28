@@ -28,11 +28,13 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     }
 
     @Override
-    protected Inserter getInserter(Segment seg) {
+    protected Inserting getInserting(Segment seg) {
         // 获得事务代理
         SwiftRealtimeInserter swiftRealtimeInserter = new SwiftRealtimeInserter(seg);
         TransactionProxyFactory proxyFactory = new TransactionProxyFactory(swiftRealtimeInserter.getSwiftBackup().getTransactionManager());
-        return (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
+        Inserter inserter = (Inserter) proxyFactory.getProxy(swiftRealtimeInserter);
+
+        return new Inserting(inserter, seg, seg.isReadable() ? seg.getRowCount() : 0);
     }
 
     @Override
