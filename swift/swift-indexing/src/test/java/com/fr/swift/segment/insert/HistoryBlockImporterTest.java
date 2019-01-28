@@ -49,6 +49,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * @author anchore
@@ -106,7 +107,7 @@ public class HistoryBlockImporterTest {
         HistoryBlockImporter<?> historyBlockImporter = spy(new HistoryBlockImporter<SwiftSourceAlloter<AllotRule, RowInfo>>(dataSource, alloter));
         Segment seg = mock(Segment.class);
         doReturn(seg).when(historyBlockImporter).newSegment(Matchers.<SegmentKey>any());
-        doReturn(inserter).when(historyBlockImporter).getInserter(Matchers.<Segment>any());
+        whenNew(SwiftInserter.class).withAnyArguments().thenReturn(inserter);
 
         when(seg.isReadable()).thenReturn(true);
         when(seg.getRowCount()).thenReturn(1);
