@@ -34,12 +34,12 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
     private SwiftCollateExecutor() {
     }
 
+    @Override
     public void start() {
         executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
-        executorService.scheduleWithFixedDelay(this, 3, 5, TimeUnit.MINUTES);
+        executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
         swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
     }
-
     public void stop() {
         executorService.shutdown();
     }
