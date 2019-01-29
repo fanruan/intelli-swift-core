@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -92,6 +92,6 @@ public class SwiftCollateExecutorTest {
     public void run() throws Exception {
         executor.start();
         executor.run();
-        Mockito.verify(collateService).appointCollate(Mockito.any(SourceKey.class), Mockito.anyList());
+        Mockito.verify(collateService).appointCollate(Mockito.any(SourceKey.class), Mockito.<SegmentKey>anyList());
     }
 }

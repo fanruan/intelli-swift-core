@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -20,7 +20,7 @@ import java.net.URI;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -40,7 +40,7 @@ public class BitMapFineIoReaderTest {
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteArrayFineIoReader.class);
-        when(ByteArrayFineIoReader.build(Matchers.<URI>any())).thenReturn(byteArrayReader);
+        when(ByteArrayFineIoReader.build(ArgumentMatchers.<URI>any())).thenReturn(byteArrayReader);
 
         when(byteArrayReader.get(anyLong())).thenReturn(
                 new byte[]{BitMapType.ROARING_IMMUTABLE.getHead(), 1},

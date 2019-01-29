@@ -13,7 +13,7 @@ import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -41,13 +41,13 @@ public class HistoryLineSourceAlloterTest {
         SwiftSegmentService swiftSegmentService = mock(SwiftSegmentService.class);
         when(beanFactory.getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(swiftSegmentService);
 
-        when(swiftSegmentService.tryAppendSegment(Matchers.<SourceKey>any(), Matchers.<StoreType>any())).thenAnswer(new Answer<SegmentKey>() {
+        when(swiftSegmentService.tryAppendSegment(ArgumentMatchers.<SourceKey>any(), ArgumentMatchers.<StoreType>any())).thenAnswer(new Answer<SegmentKey>() {
             int order = 0;
 
             @Override
             public SegmentKey answer(InvocationOnMock invocation) throws Throwable {
-                SourceKey tableKey = invocation.getArgumentAt(0, SourceKey.class);
-                StoreType storeType = invocation.getArgumentAt(1, StoreType.class);
+                SourceKey tableKey = invocation.getArgument(0);
+                StoreType storeType = invocation.getArgument(1);
                 return new SegmentKeyBean(tableKey, order++, storeType, null);
             }
         });

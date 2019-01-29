@@ -16,9 +16,9 @@ import com.fr.swift.source.SourceKey;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -69,7 +69,7 @@ public class SwiftUploadServiceTest {
 
         when(service.getSwiftPath()).thenReturn("/a");
 
-        when(CubeUtil.getCurrentDir(Matchers.<SourceKey>any())).thenReturn(0);
+        when(CubeUtil.getCurrentDir(ArgumentMatchers.<SourceKey>any())).thenReturn(0);
 
         uploadService = new SwiftUploadService();
         uploadService.start();
@@ -150,7 +150,7 @@ public class SwiftUploadServiceTest {
         verifyZeroInteractions(repo);
 
         verifyStatic(SegmentHelper.class, never());
-        SegmentHelper.download(Matchers.<Map<SourceKey, Set<String>>>any(), anyBoolean());
+        SegmentHelper.download(ArgumentMatchers.<Map<SourceKey, Set<String>>>any(), anyBoolean());
     }
 
     @Test

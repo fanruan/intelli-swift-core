@@ -6,7 +6,7 @@ import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.Result;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 
 import java.util.concurrent.Callable;
 
@@ -30,7 +30,7 @@ public class PeerInvocationHandlerTest {
         when(invokeCreator.createSyncInvoker(Callable.class, url)).thenReturn(invoker);
 
         Result result = mock(Result.class);
-        doReturn(result).when(invoker).invoke(Matchers.<Invocation>any());
+        doReturn(result).when(invoker).invoke(ArgumentMatchers.<Invocation>any());
 
         when(result.recreate()).thenReturn(true);
 

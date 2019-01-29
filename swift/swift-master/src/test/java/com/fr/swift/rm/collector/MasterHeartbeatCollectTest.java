@@ -10,7 +10,7 @@ import com.fr.swift.rm.service.SwiftMasterService;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 import junit.framework.TestCase;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -43,7 +43,7 @@ public class MasterHeartbeatCollectTest extends TestCase {
         PowerMockito.mockStatic(SwiftExecutors.class);
         MasterHeartbeatCollect collect = new MasterHeartbeatCollect();
         Thread thread = PowerMockito.mock(Thread.class);
-        PowerMockito.when(SwiftExecutors.newThread(Matchers.any(Runnable.class), Matchers.anyString())).thenReturn(thread);
+        PowerMockito.when(SwiftExecutors.newThread(ArgumentMatchers.any(Runnable.class), ArgumentMatchers.anyString())).thenReturn(thread);
         collect.startCollect();
         collect.stopCollect();
         Mockito.verify(thread).start();
