@@ -10,6 +10,8 @@ public class RealtimeLongColumnTest extends BaseRealtimeColumnTest<Long> {
 
     @Before
     public void setUp() throws Exception {
+        super.setUp();
+
         data1 = new Long[BOUND];
         for (int i = 0; i < data1.length; i++) {
             long l = r.nextInt(BOUND);

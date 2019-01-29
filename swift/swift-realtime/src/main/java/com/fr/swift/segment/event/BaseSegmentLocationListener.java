@@ -51,7 +51,7 @@ abstract class BaseSegmentLocationListener implements SwiftEventListener<List<Se
         }
 
         // 传空会删所有
-        if (!historySegDsts.values().isEmpty()) {
+        if (!historySegDsts.isEmpty()) {
             trigger(new SegmentLocationInfoImpl(ServiceType.HISTORY, historySegDsts));
         }
         if (!realtimeSegDsts.isEmpty()) {
