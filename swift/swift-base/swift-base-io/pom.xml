@@ -10,6 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-base-io</artifactId>
+    <properties>
+        <fineio.version>2.0-RELEASE-SNAPSHOT</fineio.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -26,6 +29,11 @@
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-beans</artifactId>
             <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fineio</groupId>
+            <artifactId>fineio</artifactId>
+            <version>${fineio.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
