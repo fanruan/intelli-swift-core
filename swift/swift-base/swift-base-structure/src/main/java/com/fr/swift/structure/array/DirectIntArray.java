@@ -1,6 +1,5 @@
 package com.fr.swift.structure.array;
 
-
 import com.fineio.memory.MemoryUtils;
 
 /**

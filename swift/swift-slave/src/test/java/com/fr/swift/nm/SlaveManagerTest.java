@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -58,7 +58,7 @@ public class SlaveManagerTest {
         PowerMockito.whenNew(SlaveHeartBeatCollect.class).withAnyArguments().thenReturn(collect);
         Mockito.when(SwiftContext.get()).thenReturn(swiftContext);
         Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
-        Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.anySet())).thenReturn(Collections.singletonList(swiftService));
+        Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.<String>anySet())).thenReturn(Collections.singletonList(swiftService));
         Mockito.when(swiftContext.getBean(ServiceManager.class)).thenReturn(serviceManager);
         Mockito.when(swiftContext.getBean(ClusterServiceManager.class)).thenReturn(clusterServiceManager);
         Mockito.when(ClusterSelector.getInstance()).thenReturn(clusterSelector);
@@ -70,9 +70,9 @@ public class SlaveManagerTest {
         SlaveManager slaveManager = new SlaveManager();
         slaveManager.startUp();
         Mockito.verify(collect).startCollect();
-        Mockito.verify(clusterServiceManager).registerService(Mockito.anyList());
+        Mockito.verify(clusterServiceManager).registerService(Mockito.<SwiftService>anyList());
         slaveManager.shutDown();
         Mockito.verify(collect).stopCollect();
-        Mockito.verify(clusterServiceManager).unregisterService(Mockito.anyList());
+        Mockito.verify(clusterServiceManager).unregisterService(Mockito.<SwiftService>anyList());
     }
 }

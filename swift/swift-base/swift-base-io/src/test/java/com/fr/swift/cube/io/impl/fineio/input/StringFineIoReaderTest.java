@@ -4,7 +4,7 @@ import com.fr.swift.cube.io.input.ByteArrayReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -30,7 +30,7 @@ public class StringFineIoReaderTest {
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteArrayFineIoReader.class);
-        when(ByteArrayFineIoReader.build(Matchers.<URI>any())).thenReturn(byteArrayReader);
+        when(ByteArrayFineIoReader.build(ArgumentMatchers.<URI>any())).thenReturn(byteArrayReader);
 
         when(byteArrayReader.get(0)).thenReturn(new byte[]{1, 2, 3});
 

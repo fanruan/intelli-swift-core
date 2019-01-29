@@ -17,8 +17,8 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.ArgumentMatchers;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -47,7 +47,7 @@ public class RealtimeSegmentImplTest {
 
         mockStatic(ColumnTypeUtils.class, SwiftContext.class);
 
-        when(ColumnTypeUtils.getClassType(Matchers.<SwiftMetaDataColumn>any())).thenReturn(ClassType.DOUBLE);
+        when(ColumnTypeUtils.getClassType(ArgumentMatchers.<SwiftMetaDataColumn>any())).thenReturn(ClassType.DOUBLE);
 
         BeanFactory beanFactory = mock(BeanFactory.class);
         when(SwiftContext.get()).thenReturn(beanFactory);
