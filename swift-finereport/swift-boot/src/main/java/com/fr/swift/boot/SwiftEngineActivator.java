@@ -22,6 +22,7 @@ import com.fr.swift.config.context.SwiftConfigContext;
 import com.fr.swift.cube.queue.ProviderTaskManager;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.ClusterListenerHandler;
+import com.fr.swift.log.FineIoLogger;
 import com.fr.swift.log.SwiftFrLoggers;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.container.SegmentContainer;
@@ -62,7 +63,7 @@ public class SwiftEngineActivator extends Activator implements Prepare {
         SwiftContext.get().init();
         upgrade();
 
-        FineIO.setLogger(SwiftLoggers.getLogger());
+        FineIO.setLogger(new FineIoLogger());
 
         ClusterListenerHandler.addInitialListener(new FRClusterListener());
 
