@@ -5,13 +5,13 @@ import com.fr.swift.cube.io.output.StringWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -30,7 +30,7 @@ public class StringFineIoWriterTest {
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteArrayFineIoWriter.class);
-        when(ByteArrayFineIoWriter.build(Matchers.<URI>any(), anyBoolean())).thenReturn(byteArrayWriter);
+        when(ByteArrayFineIoWriter.build(ArgumentMatchers.<URI>any(), anyBoolean())).thenReturn(byteArrayWriter);
     }
 
     @Test

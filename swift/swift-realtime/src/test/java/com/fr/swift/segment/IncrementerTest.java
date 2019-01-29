@@ -27,9 +27,9 @@ import com.fr.swift.transaction.TransactionProxyFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -99,13 +99,13 @@ public class IncrementerTest {
 
         SwiftSourceAlloter alloter = mock(SwiftSourceAlloter.class);
         when(alloter.getAllotRule()).thenReturn(new LineAllotRule(1));
-        when(alloter.allot(Matchers.<RowInfo>any())).thenReturn(new SwiftSegmentInfo(0, StoreType.MEMORY),
+        when(alloter.allot(ArgumentMatchers.<RowInfo>any())).thenReturn(new SwiftSegmentInfo(0, StoreType.MEMORY),
                 new SwiftSegmentInfo(1, StoreType.MEMORY),
                 new SwiftSegmentInfo(2, StoreType.MEMORY));
 
         Incrementer<?> incrementer = spy(new Incrementer<SwiftSourceAlloter<AllotRule, RowInfo>>(dataSource, alloter));
         Segment seg = mock(Segment.class);
-        doReturn(seg).when(incrementer).newSegment(Matchers.<SegmentKey>any());
+        doReturn(seg).when(incrementer).newSegment(ArgumentMatchers.<SegmentKey>any());
 
         when(seg.isReadable()).thenReturn(true);
         when(seg.getRowCount()).thenReturn(1);
@@ -120,10 +120,10 @@ public class IncrementerTest {
         verify(database).existsTable(tableKey);
         verify(database).createTable(tableKey, metaData);
         // allot and insert
-        verify(alloter, times(3)).allot(Matchers.<RowInfo>any());
+        verify(alloter, times(3)).allot(ArgumentMatchers.<RowInfo>any());
         // transaction proxy
         verify(transactionProxyFactory, times(3)).getProxy(inserter);
-        verify(inserter, times(3)).insertData(Matchers.<Row>any());
+        verify(inserter, times(3)).insertData(ArgumentMatchers.<Row>any());
         // ensure close and release
         verify(resultSet).close();
         verify(inserter, times(3)).release();

@@ -16,17 +16,17 @@ import com.fr.swift.cube.io.output.Writer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.powermock.reflect.Whitebox;
 
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -54,14 +54,14 @@ public class BitMapColumnTest {
 
         when(bitmapReader.isReadable()).thenReturn(true);
         when(bitmapReader.get(anyLong())).thenReturn(new RangeBitmap(1, 3));
-        when(resourceDiscovery.getReader(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Reader>() {
+        when(resourceDiscovery.getReader(ArgumentMatchers.<ResourceLocation>any(), ArgumentMatchers.<BuildConf>any())).then(new Answer<Reader>() {
             @Override
             public Reader answer(InvocationOnMock invocation) throws Throwable {
                 return bitmapReader;
             }
         });
 
-        when(resourceDiscovery.getWriter(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Writer>() {
+        when(resourceDiscovery.getWriter(ArgumentMatchers.<ResourceLocation>any(), ArgumentMatchers.<BuildConf>any())).then(new Answer<Writer>() {
             @Override
             public Writer answer(InvocationOnMock invocation) throws Throwable {
                 return bitmapWriter;
@@ -82,7 +82,7 @@ public class BitMapColumnTest {
         new BitMapColumn(new ResourceLocation("")).putNullIndex(new EmptyBitmap());
 
         verify(bitmapWriter).resetContentPosition();
-        verify(bitmapWriter).put(anyLong(), Matchers.<ImmutableBitMap>any());
+        verify(bitmapWriter).put(anyLong(), ArgumentMatchers.<ImmutableBitMap>any());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class BitMapColumnTest {
     public void putBitMapIndex() {
         new BitMapColumn(new ResourceLocation("")).putBitMapIndex(0, new EmptyBitmap());
 
-        verify(bitmapWriter).put(anyLong(), Matchers.<ImmutableBitMap>any());
+        verify(bitmapWriter).put(anyLong(), ArgumentMatchers.<ImmutableBitMap>any());
     }
 
     @Test

@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -39,7 +39,7 @@ public class ServiceManagerTest {
         PowerMockito.mockStatic(ServiceBeanFactory.class);
         PowerMockito.mockStatic(SwiftProperty.class);
         Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
-        Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.anySet())).thenReturn(Collections.singletonList(swiftService));
+        Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.<String>anySet())).thenReturn(Collections.singletonList(swiftService));
     }
 
     @Test

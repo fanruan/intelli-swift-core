@@ -13,10 +13,10 @@ import com.fr.swift.task.service.ServiceTaskExecutor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -31,8 +31,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -93,10 +93,10 @@ public class SwiftDeleteServiceTest {
         Where where = mock(Where.class);
         SourceKey tableKey = new SourceKey("t");
 
-        when(serviceTaskExecutor.submit(Matchers.<ServiceCallable<Object>>any())).then(new Answer<Future<?>>() {
+        when(serviceTaskExecutor.submit(ArgumentMatchers.<ServiceCallable<Object>>any())).then(new Answer<Future<?>>() {
             @Override
             public Future<?> answer(InvocationOnMock invocation) throws Throwable {
-                ServiceCallable serviceCallable = invocation.getArgumentAt(0, ServiceCallable.class);
+                ServiceCallable serviceCallable = invocation.getArgument(0);
                 serviceCallable.run();
                 return null;
             }
@@ -104,16 +104,16 @@ public class SwiftDeleteServiceTest {
 
         List<SegmentKey> segKeys = Arrays.asList(mock(SegmentKey.class), mock(SegmentKey.class), mock(SegmentKey.class));
         when(segmentManager.getSegmentKeys(tableKey)).thenReturn(segKeys);
-        when(segmentManager.existsSegment(Matchers.<SegmentKey>any())).thenReturn(false, true, true);
+        when(segmentManager.existsSegment(ArgumentMatchers.<SegmentKey>any())).thenReturn(false, true, true);
 
         WhereDeleter whereDeleter = mock(WhereDeleter.class);
         when(SwiftContext.get().getBean(eq("decrementer"), any())).thenReturn(whereDeleter);
 
         // 删除失败的情况
-        when(whereDeleter.delete(Matchers.<Where>any())).thenThrow(Exception.class).thenReturn(null);
+        when(whereDeleter.delete(ArgumentMatchers.<Where>any())).thenThrow(Exception.class).thenReturn(null);
         assertTrue(deleteService.delete(tableKey, where));
 
-        verify(serviceTaskExecutor).submit(Matchers.<ServiceCallable<Object>>any());
+        verify(serviceTaskExecutor).submit(ArgumentMatchers.<ServiceCallable<Object>>any());
 
         verify(SwiftContext.get(), never()).getBean("decrementer", segKeys.get(0));
         verify(SwiftContext.get()).getBean("decrementer", segKeys.get(1));
@@ -122,7 +122,7 @@ public class SwiftDeleteServiceTest {
         verify(whereDeleter, times(2)).delete(where);
 
         // 提交失败的情况
-        doThrow(InterruptedException.class).when(serviceTaskExecutor).submit(Matchers.<ServiceCallable<Object>>any());
+        doThrow(InterruptedException.class).when(serviceTaskExecutor).submit(ArgumentMatchers.<ServiceCallable<Object>>any());
         assertFalse(deleteService.delete(tableKey, where));
 
         verifyNoMoreInteractions(whereDeleter);
