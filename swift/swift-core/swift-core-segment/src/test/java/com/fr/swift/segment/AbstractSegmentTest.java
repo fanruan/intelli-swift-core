@@ -26,10 +26,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -70,10 +70,10 @@ public class AbstractSegmentTest {
     public void setUp() throws Exception {
         IResourceDiscovery resourceDiscovery = mock(IResourceDiscovery.class);
         Whitebox.setInternalState(BaseSegment.class, "DISCOVERY", resourceDiscovery);
-        when(resourceDiscovery.getReader(Matchers.<IResourceLocation>any(), Matchers.<BuildConf>any())).thenAnswer(new Answer<Reader>() {
+        when(resourceDiscovery.getReader(ArgumentMatchers.<IResourceLocation>any(), ArgumentMatchers.<BuildConf>any())).thenAnswer(new Answer<Reader>() {
             @Override
             public Reader answer(InvocationOnMock invocation) throws Throwable {
-                switch (invocation.getArgumentAt(1, BuildConf.class).getDataType()) {
+                switch (invocation.<BuildConf>getArgument(1).getDataType()) {
                     case INT:
                         return intReader;
                     case BITMAP:
@@ -83,10 +83,10 @@ public class AbstractSegmentTest {
                 }
             }
         });
-        when(resourceDiscovery.getWriter(Matchers.<IResourceLocation>any(), Matchers.<BuildConf>any())).thenAnswer(new Answer<Writer>() {
+        when(resourceDiscovery.getWriter(ArgumentMatchers.<IResourceLocation>any(), ArgumentMatchers.<BuildConf>any())).thenAnswer(new Answer<Writer>() {
             @Override
             public Writer answer(InvocationOnMock invocation) throws Throwable {
-                switch (invocation.getArgumentAt(1, BuildConf.class).getDataType()) {
+                switch (invocation.<BuildConf>getArgument(1).getDataType()) {
                     case INT:
                         return intWriter;
                     case BITMAP:
@@ -98,7 +98,7 @@ public class AbstractSegmentTest {
         });
 
         mockStatic(ColumnTypeUtils.class, SwiftContext.class);
-        when(ColumnTypeUtils.getClassType(Matchers.<SwiftMetaDataColumn>any())).thenReturn(ClassType.DOUBLE);
+        when(ColumnTypeUtils.getClassType(ArgumentMatchers.<SwiftMetaDataColumn>any())).thenReturn(ClassType.DOUBLE);
 
         BeanFactory beanFactory = mock(BeanFactory.class);
         when(SwiftContext.get()).thenReturn(beanFactory);

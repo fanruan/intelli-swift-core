@@ -60,7 +60,6 @@ public abstract class BaseSwiftLogger implements SwiftLogger {
         return true;
     }
 
-    @Override
     public void error(String s, Throwable throwable) {
         error(s, new Object[]{throwable});
     }

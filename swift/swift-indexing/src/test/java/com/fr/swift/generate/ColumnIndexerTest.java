@@ -23,9 +23,9 @@ import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -37,9 +37,9 @@ import java.util.Comparator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -112,7 +112,7 @@ public class ColumnIndexerTest {
     public void buildIndexViaExternalMap() throws Exception {
         // external map
         BaseIntListExternalMap<Long> externalMap = mock(BaseIntListExternalMap.class);
-        when(IntListExternalMapFactory.getIntListExternalMap(Matchers.<ClassType>any(), Matchers.<Comparator<Long>>any(), anyString(), anyBoolean()))
+        when(IntListExternalMapFactory.getIntListExternalMap(ArgumentMatchers.<ClassType>any(), ArgumentMatchers.<Comparator<Long>>any(), anyString(), anyBoolean()))
                 .thenReturn(externalMap);
         IntList indexOf1 = IntListFactory.createIntList();
         indexOf1.add(0);
@@ -162,8 +162,8 @@ public class ColumnIndexerTest {
         verify(detailColumn).get(2);
         verify(detailColumn).get(3);
         // put两个非空值的行号list
-        verify(map).put(eq(1L), Matchers.<IntList>any());
-        verify(map).put(eq(3L), Matchers.<IntList>any());
+        verify(map).put(eq(1L), ArgumentMatchers.<IntList>any());
+        verify(map).put(eq(3L), ArgumentMatchers.<IntList>any());
 
         // dict put 3个非空value，对所有value包括空值put index，size包括空值
         verify(dictColumn.putter()).putValue(0, null);

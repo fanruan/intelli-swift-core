@@ -12,13 +12,12 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
@@ -26,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.argThat;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -90,15 +89,10 @@ public class AbstractInserterTest {
         ins.putRow(1, row1);
         ins.putNullIndex();
 
-        verify(bitmapIndexedColumn).putNullIndex(argThat(new BaseMatcher<ImmutableBitMap>() {
+        verify(bitmapIndexedColumn).putNullIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
-            public void describeTo(Description description) {
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                ImmutableBitMap bitmap = (ImmutableBitMap) item;
-                return bitmap.getCardinality() == 1 && bitmap.contains(0);
+            public boolean matches(ImmutableBitMap item) {
+                return item.getCardinality() == 1 && item.contains(0);
             }
         }));
 
@@ -110,15 +104,10 @@ public class AbstractInserterTest {
         ins.putRow(1, row1);
         ins.putNullIndex();
 
-        verify(bitmapIndexedColumn).putNullIndex(argThat(new BaseMatcher<ImmutableBitMap>() {
+        verify(bitmapIndexedColumn).putNullIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
-            public void describeTo(Description description) {
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                ImmutableBitMap bitmap = (ImmutableBitMap) item;
-                return bitmap.getCardinality() == 2 && bitmap.contains(0) && bitmap.contains(2);
+            public boolean matches(ImmutableBitMap item) {
+                return item.getCardinality() == 2 && item.contains(0) && item.contains(2);
             }
         }));
 
@@ -131,15 +120,10 @@ public class AbstractInserterTest {
         ins.putRow(1, row1);
         ins.putNullIndex();
 
-        verify(bitmapIndexedColumn, times(2)).putNullIndex(argThat(new BaseMatcher<ImmutableBitMap>() {
+        verify(bitmapIndexedColumn, times(2)).putNullIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
-            public void describeTo(Description description) {
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                ImmutableBitMap bitmap = (ImmutableBitMap) item;
-                return bitmap.getCardinality() == 1 && bitmap.contains(0);
+            public boolean matches(ImmutableBitMap item) {
+                return item.getCardinality() == 1 && item.contains(0);
             }
         }));
     }
@@ -152,15 +136,10 @@ public class AbstractInserterTest {
         ins.putSegmentInfo(1, 2);
 
         verify(seg).putRowCount(2);
-        verify(seg).putAllShowIndex(argThat(new BaseMatcher<ImmutableBitMap>() {
+        verify(seg).putAllShowIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
-            public void describeTo(Description description) {
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                ImmutableBitMap bitmap = (ImmutableBitMap) item;
-                return bitmap.getCardinality() == 2 && bitmap.contains(0) && bitmap.contains(1);
+            public boolean matches(ImmutableBitMap item) {
+                return item.getCardinality() == 2 && item.contains(0) && item.contains(1);
             }
         }));
 
@@ -169,15 +148,10 @@ public class AbstractInserterTest {
         ins.putSegmentInfo(1, 2);
 
         verify(seg, times(2)).putRowCount(2);
-        verify(seg, times(2)).putAllShowIndex(argThat(new BaseMatcher<ImmutableBitMap>() {
+        verify(seg, times(2)).putAllShowIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
-            public void describeTo(Description description) {
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                ImmutableBitMap bitmap = (ImmutableBitMap) item;
-                return bitmap.getCardinality() == 2 && bitmap.contains(0) && bitmap.contains(1);
+            public boolean matches(ImmutableBitMap item) {
+                return item.getCardinality() == 2 && item.contains(0) && item.contains(1);
             }
         }));
 
@@ -186,15 +160,10 @@ public class AbstractInserterTest {
         ins.putSegmentInfo(1, 2);
 
         verify(seg, times(3)).putRowCount(2);
-        verify(seg, times(3)).putAllShowIndex(argThat(new BaseMatcher<ImmutableBitMap>() {
+        verify(seg, times(3)).putAllShowIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
-            public void describeTo(Description description) {
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                ImmutableBitMap bitmap = (ImmutableBitMap) item;
-                return bitmap.getCardinality() == 2 && bitmap.contains(0) && bitmap.contains(1);
+            public boolean matches(ImmutableBitMap item) {
+                return item.getCardinality() == 2 && item.contains(0) && item.contains(1);
             }
         }));
     }

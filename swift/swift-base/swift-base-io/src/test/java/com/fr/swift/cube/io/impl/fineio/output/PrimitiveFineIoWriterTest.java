@@ -12,13 +12,13 @@ import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -48,7 +48,7 @@ public class PrimitiveFineIoWriterTest {
         when(connectorManager.getConnector()).thenReturn(connector);
 
         mockStatic(FineIO.class);
-        when(FineIO.createIOFile(Matchers.<Connector>any(), Matchers.<URI>any(), Matchers.<MODEL>any(), anyBoolean())).thenReturn(ioFile);
+        when(FineIO.createIOFile(ArgumentMatchers.<Connector>any(), ArgumentMatchers.<URI>any(), ArgumentMatchers.<MODEL>any(), anyBoolean())).thenReturn(ioFile);
 
         when(ioFile.exists()).thenReturn(true);
     }
