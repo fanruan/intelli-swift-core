@@ -83,8 +83,8 @@ public class SwiftRealtimeInserter extends SwiftInserter {
 
     @Override
     public void release() {
-        super.release();
         IoUtil.release(swiftBackup);
+        super.release();
     }
 
     public SwiftSegmentBackup getSwiftBackup() {

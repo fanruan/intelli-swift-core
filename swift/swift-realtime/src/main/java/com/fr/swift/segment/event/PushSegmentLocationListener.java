@@ -29,6 +29,9 @@ public class PushSegmentLocationListener extends BaseSegmentLocationListener {
         SwiftEventDispatcher.listen(SyncSegmentLocationEvent.PUSH_SEG, new PushSegmentLocationListener());
     }
 
+    private PushSegmentLocationListener() {
+    }
+
     public static void listen() {
     }
 }
