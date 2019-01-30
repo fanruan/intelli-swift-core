@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
- * Created by pony on 2017/10/16.
+ * @author pony
+ * @date 2017/10/16
  */
 public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     protected SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);

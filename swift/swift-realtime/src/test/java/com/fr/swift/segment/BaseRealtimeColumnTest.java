@@ -1,29 +1,48 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import java.util.Random;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * @author anchore
  * @date 2018/6/13
  */
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(MockitoJUnitRunner.class)
+@PrepareForTest({SwiftContext.class})
 public abstract class BaseRealtimeColumnTest<T> {
     Random r = new Random(hashCode());
     T[] data1, data2;
     static final int BOUND = 1000;
 
-    @Rule
-    public TestRule getExternalResource() throws Exception {
-        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
-    }
-
     abstract Column<T> getColumn();
+
+    @Before
+    public void setUp() throws Exception {
+        mockStatic(SwiftContext.class);
+        when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
+        SwiftCubePathService cubePathService = mock(SwiftCubePathService.class);
+        when(SwiftContext.get().getBean(SwiftCubePathService.class)).thenReturn(cubePathService);
+
+        when(cubePathService.getSwiftPath()).thenReturn("/");
+    }
 
     @Test
     public void test() {
