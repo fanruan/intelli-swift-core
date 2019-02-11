@@ -15,7 +15,7 @@ public class NodeMergeQRSImpl<T extends GroupNode> extends BaseNodeMergeQRS<T> {
     private T root;
     private List<Map<Integer, Object>> rowGlobalDictionaries;
 
-    private boolean hasNextPage = true;
+    protected boolean hasNextPage = true;
 
     public NodeMergeQRSImpl(int fetchSize, T root, List<Map<Integer, Object>> rowGlobalDictionaries) {
         super(fetchSize);
