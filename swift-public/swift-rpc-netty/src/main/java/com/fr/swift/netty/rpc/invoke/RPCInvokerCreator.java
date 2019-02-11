@@ -16,15 +16,17 @@ import com.fr.swift.local.AbstractInvokerCreator;
 public class RPCInvokerCreator extends AbstractInvokerCreator {
 
     @Override
-    public Invoker createAsyncInvoker(Class clazz, URL url) {
-        Invoker invoker = super.createAsyncInvoker(clazz, url);
-        return invoker != null ? invoker : new RPCInvoker(ProxyServiceRegistry.get().getService(clazz.getName()), clazz, url, false);
+    public <T> Invoker<T> createAsyncInvoker(Class<T> clazz, URL url) {
+        Invoker<T> invoker = super.createAsyncInvoker(clazz, url);
+        T service = clazz.cast(ProxyServiceRegistry.get().getService(clazz.getName()));
+        return invoker != null ? invoker : new RPCInvoker<T>(service, clazz, url, false);
     }
 
     @Override
-    public Invoker createSyncInvoker(Class clazz, URL url) {
-        Invoker invoker = super.createSyncInvoker(clazz, url);
-        return invoker != null ? invoker : new RPCInvoker(ProxyServiceRegistry.get().getService(clazz.getName()), clazz, url);
+    public <T> Invoker<T> createSyncInvoker(Class<T> clazz, URL url) {
+        Invoker<T> invoker = super.createSyncInvoker(clazz, url);
+        T service = clazz.cast(ProxyServiceRegistry.get().getService(clazz.getName()));
+        return invoker != null ? invoker : new RPCInvoker<T>(service, clazz, url);
     }
 
     @Override

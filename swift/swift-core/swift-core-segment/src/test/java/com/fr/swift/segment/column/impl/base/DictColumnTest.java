@@ -5,7 +5,6 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.BuildConf;
-import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.input.DoubleReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;
@@ -22,10 +21,10 @@ import com.fr.swift.util.ArrayLookupHelper.Lookup;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -36,7 +35,7 @@ import java.util.Comparator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -76,10 +75,10 @@ public class DictColumnTest {
         IResourceDiscovery resourceDiscovery = mock(IResourceDiscovery.class);
         Whitebox.setInternalState(BaseDictColumn.class, "DISCOVERY", resourceDiscovery);
 
-        when(resourceDiscovery.getReader(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Reader>() {
+        when(resourceDiscovery.getReader(ArgumentMatchers.<ResourceLocation>any(), ArgumentMatchers.<BuildConf>any())).then(new Answer<Reader>() {
             @Override
             public Reader answer(InvocationOnMock invocation) throws Throwable {
-                switch (invocation.getArgumentAt(1, BuildConf.class).getDataType()) {
+                switch (invocation.<BuildConf>getArgument(1).getDataType()) {
                     case INT:
                         return intReader;
                     case LONG:
@@ -99,10 +98,10 @@ public class DictColumnTest {
         when(doubleReader.get(anyLong())).thenReturn(1D);
         when(stringReader.get(anyLong())).thenReturn("1");
 
-        when(resourceDiscovery.getWriter(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Writer>() {
+        when(resourceDiscovery.getWriter(ArgumentMatchers.<ResourceLocation>any(), ArgumentMatchers.<BuildConf>any())).then(new Answer<Writer>() {
             @Override
             public Writer answer(InvocationOnMock invocation) throws Throwable {
-                switch (invocation.getArgumentAt(1, BuildConf.class).getDataType()) {
+                switch (invocation.<BuildConf>getArgument(1).getDataType()) {
                     case INT:
                         return intWriter;
                     case LONG:
@@ -126,7 +125,7 @@ public class DictColumnTest {
         when(swiftCubePathService.getSwiftPath()).thenReturn("/");
 
         mockStatic(ArrayLookupHelper.class);
-        when(ArrayLookupHelper.lookup(Matchers.<Object[]>any(), Matchers.<Lookup<Object>>any())).thenReturn(new int[]{1});
+        when(ArrayLookupHelper.lookup(ArgumentMatchers.<Object[]>any(), ArgumentMatchers.<Lookup<Object>>any())).thenReturn(new int[]{1});
     }
 
     @Test

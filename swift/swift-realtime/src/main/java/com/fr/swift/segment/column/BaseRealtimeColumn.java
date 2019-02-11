@@ -4,14 +4,14 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
-import com.fr.swift.cube.io.IResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.impl.mem.ObjectMemIo;
 import com.fr.swift.cube.io.impl.mem.SwiftObjectMemIo;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.impl.BaseColumn;
+import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
+import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.util.Optional;
 

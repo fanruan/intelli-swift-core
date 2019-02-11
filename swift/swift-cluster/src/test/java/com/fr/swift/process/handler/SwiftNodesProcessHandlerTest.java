@@ -58,7 +58,7 @@ public class SwiftNodesProcessHandlerTest extends TestCase {
 
     public void testProcessUrl() {
         SwiftNodesProcessHandler handler = new SwiftNodesProcessHandler(invokerCreator);
-        List<URL> urls = handler.processUrl(Target.ANALYSE, nodeStateList);
+        List<URL> urls = handler.processUrl(new Target[]{Target.ANALYSE}, nodeStateList);
         assertEquals(urls.size(), 1);
         assertEquals(urls.get(0).getDestination().getId(), "127.0.0.1:8080");
     }
@@ -66,7 +66,7 @@ public class SwiftNodesProcessHandlerTest extends TestCase {
     public void testProcessResult() {
         SwiftNodesProcessHandler handler = new SwiftNodesProcessHandler(invokerCreator);
         try {
-            List<EventResult> resultList = (List<EventResult>) handler.processResult(SwiftNodesProcessHandlerTest.class.getMethod("nodesHandlerMethodSuccess", List.class), Target.HISTORY, nodeStateList);
+            List<EventResult> resultList = (List<EventResult>) handler.processResult(SwiftNodesProcessHandlerTest.class.getMethod("nodesHandlerMethodSuccess", List.class), new Target[]{Target.HISTORY}, nodeStateList);
             assertEquals(resultList.size(), 1);
             assertEquals(resultList.get(0).getClusterId(), "127.0.0.1:8080");
             assertNull(resultList.get(0).getError());
@@ -76,7 +76,7 @@ public class SwiftNodesProcessHandlerTest extends TestCase {
         }
 
         try {
-            List<EventResult> resultList = (List<EventResult>) handler.processResult(SwiftNodesProcessHandlerTest.class.getMethod("nodesHandlerMethodError", List.class), Target.HISTORY, nodeStateList);
+            List<EventResult> resultList = (List<EventResult>) handler.processResult(SwiftNodesProcessHandlerTest.class.getMethod("nodesHandlerMethodError", List.class), new Target[]{Target.HISTORY}, nodeStateList);
             assertEquals(resultList.size(), 1);
             assertEquals(resultList.get(0).getClusterId(), "127.0.0.1:8080");
             assertNotNull(resultList.get(0).getError());

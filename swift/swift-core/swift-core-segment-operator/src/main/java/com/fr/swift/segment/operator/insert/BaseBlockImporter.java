@@ -21,6 +21,7 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.BaseAllotRule.AllotType;
 import com.fr.swift.source.alloter.impl.hash.HashRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
+import com.fr.swift.util.Assert;
 import com.fr.swift.util.IoUtil;
 
 import java.sql.SQLException;
@@ -75,7 +76,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                     releaseFullIfExists();
                     SegmentKey segKey = newSegmentKey(segInfo);
                     Segment seg = newSegment(segKey);
-                    insertings.put(segInfo, new Inserting(getInserter(seg), seg));
+                    insertings.put(segInfo, getInserting(seg));
                     importSegKeys.add(segKey);
                 }
                 insertings.get(segInfo).insert(row);
@@ -98,7 +99,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         return alloter.allot(new LineRowInfo(cursor));
     }
 
-    protected abstract Inserter getInserter(Segment seg);
+    protected abstract Inserting getInserting(Segment seg);
 
     protected abstract Segment newSegment(SegmentKey segmentKey);
 
@@ -141,20 +142,23 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
         private Segment seg;
 
-        public Inserting(Inserter inserter, Segment seg) {
+        private int rowCount;
+
+        public Inserting(Inserter inserter, Segment seg, int rowCount) {
+            Assert.isTrue(rowCount >= 0);
+
             this.inserter = inserter;
             this.seg = seg;
+            this.rowCount = rowCount;
         }
 
         void insert(Row row) throws Exception {
             inserter.insertData(row);
+            rowCount++;
         }
 
-        public boolean isFull() {
-            if (!seg.isReadable()) {
-                return false;
-            }
-            return seg.getRowCount() >= alloter.getAllotRule().getCapacity();
+        boolean isFull() {
+            return rowCount >= alloter.getAllotRule().getCapacity();
         }
 
         public Segment getSegment() {

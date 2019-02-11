@@ -109,7 +109,7 @@ public class SwiftQueryableProcessHandlerTest extends TestCase {
         SwiftQueryableProcessHandler handler = new SwiftQueryableProcessHandler(invokerCreator);
         try {
             BaseSerializableQRS result = (BaseSerializableQRS) handler.processResult(
-                    SwiftQueryableProcessHandlerTest.class.getMethod("getLocalRS", String.class), Target.ANALYSE, queryString);
+                    SwiftQueryableProcessHandlerTest.class.getMethod("getLocalRS", String.class), new Target[]{Target.ANALYSE}, queryString);
             assertNotNull(result);
         } catch (Throwable throwable) {
             assertTrue(false);
@@ -133,13 +133,13 @@ public class SwiftQueryableProcessHandlerTest extends TestCase {
         SwiftQueryableProcessHandler handler = new SwiftQueryableProcessHandler(invokerCreator);
         // 单机
         List<SegmentDestination> destinations = new ArrayList<SegmentDestination>();
-        List<Pair<URL, Set<String>>> pairs = handler.processUrl(Target.ANALYSE, destinations);
+        List<Pair<URL, Set<String>>> pairs = handler.processUrl(new Target[]{Target.ANALYSE}, destinations);
         assertEquals(1, pairs.size());
         assertNull(pairs.get(0).getKey());
         assertTrue(pairs.get(0).getValue().isEmpty());
 
         destinations.add(new SegmentDestinationImpl("node1", "2", 2));
-        pairs = handler.processUrl(Target.ANALYSE, destinations);
+        pairs = handler.processUrl(new Target[]{Target.ANALYSE}, destinations);
         assertEquals(1, pairs.size());
         assertNotNull(pairs.get(0).getKey());
         assertEquals(1, pairs.get(0).getValue().size());

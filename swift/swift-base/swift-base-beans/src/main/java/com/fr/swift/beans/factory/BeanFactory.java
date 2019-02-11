@@ -1,6 +1,7 @@
 package com.fr.swift.beans.factory;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,4 +31,5 @@ public interface BeanFactory {
 
     Map<String, Object> getBeansByAnnotations(Class<? extends Annotation> annotation);
 
+    List<Class<?>> getClassesByAnnotations(Class<? extends Annotation> annotation);
 }

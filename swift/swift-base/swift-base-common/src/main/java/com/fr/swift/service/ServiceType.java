@@ -1,10 +1,14 @@
 package com.fr.swift.service;
 
 /**
- * Created by pony on 2017/11/8.
+ * @author pony
+ * @date 2017/11/8
  */
 public enum ServiceType {
-    REAL_TIME((byte) 0), SERVER((byte) 1), ANALYSE((byte) 2), INDEXING((byte) 3), HISTORY((byte) 4), COLLATE((byte) 5);
+    //
+    REAL_TIME((byte) 0), SERVER((byte) 1), ANALYSE((byte) 2), INDEXING((byte) 3), HISTORY((byte) 4), COLLATE((byte) 5),
+    DELETE((byte) 6), UPLOAD((byte) 7);
+
     private byte type;
 
     ServiceType(byte type) {

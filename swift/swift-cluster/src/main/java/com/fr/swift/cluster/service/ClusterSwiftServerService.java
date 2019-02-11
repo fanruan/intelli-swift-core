@@ -11,18 +11,19 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.base.SwiftRpcEvent;
-import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.AbstractSwiftService;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
+import com.fr.swift.service.DeleteService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
+import com.fr.swift.service.UploadService;
+import com.fr.swift.service.listener.SwiftServiceEventHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.stuff.DefaultIndexingStuff;
@@ -31,11 +32,13 @@ import com.fr.swift.task.impl.SchedulerTaskPool;
 import com.fr.swift.task.impl.TaskEvent;
 import com.fr.swift.util.Assert;
 
-import javax.annotation.PostConstruct;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -43,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2017/11/14
  * 分布式的server服务，还要负责cube分块的均衡等
  */
-public class ClusterSwiftServerService extends AbstractSwiftService implements SwiftServiceListenerHandler {
+public class ClusterSwiftServerService extends AbstractSwiftService implements SwiftServiceEventHandler {
     private static final long serialVersionUID = -611300229622871920L;
 
     //key: 机器address  value:service对象
@@ -53,19 +56,31 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
     private Map<String, ClusterEntity> historyServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> analyseServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> collateServiceMap = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> uploadSegmentServices = new ConcurrentHashMap<String, ClusterEntity>();
+    private Map<String, ClusterEntity> deleteSegmentServices = new ConcurrentHashMap<String, ClusterEntity>();
 
     private Map<String, ClusterEntity> indexingOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> realTimeOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> historyOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
     private Map<String, ClusterEntity> analyseOfflineMap = new ConcurrentHashMap<String, ClusterEntity>();
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ClusterSwiftServerService.class);
-
     private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
     private SwiftProperty swiftProperty = SwiftProperty.getProperty();
 
     private ClusterSwiftServerService() {
+    }
+
+    public static ClusterSwiftServerService getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static Set<URL> getUrls(Map<String, ClusterEntity> analyseServiceMap) {
+        HashSet<URL> urls = new HashSet<URL>();
+        for (String clusterId : analyseServiceMap.keySet()) {
+            urls.add(UrlSelector.getInstance().getFactory().getURL(clusterId));
+        }
+        return urls;
     }
 
     public void initService() {
@@ -90,16 +105,18 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                     case COLLATE:
                         collateServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, CollateService.class));
                         break;
+                    case DELETE:
+                        deleteSegmentServices.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, DeleteService.class));
+                        break;
+                    case UPLOAD:
+                        uploadSegmentServices.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, UploadService.class));
+                        break;
                     default:
                 }
                 swiftServiceInfoBean.setServiceInfo(swiftProperty.getServerAddress());
                 serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
             }
         }
-    }
-
-    public static ClusterSwiftServerService getInstance() {
-        return SingletonHolder.instance;
     }
 
     public void offline(String address) {
@@ -123,8 +140,30 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
         }
     }
 
-    private static class SingletonHolder {
-        private static ClusterSwiftServerService instance = new ClusterSwiftServerService();
+    @Override
+    public Set<URL> getNodeUrls(Class<?> proxyIface) {
+        if (proxyIface == AnalyseService.class) {
+            return getUrls(analyseServiceMap);
+        }
+        if (proxyIface == RealtimeService.class) {
+            return getUrls(realTimeServiceMap);
+        }
+        if (proxyIface == HistoryService.class) {
+            return getUrls(historyServiceMap);
+        }
+        if (proxyIface == IndexingService.class) {
+            return getUrls(indexingServiceMap);
+        }
+        if (proxyIface == CollateService.class) {
+            return getUrls(collateServiceMap);
+        }
+        if (proxyIface == DeleteService.class) {
+            return getUrls(deleteSegmentServices);
+        }
+        if (proxyIface == UploadService.class) {
+            return getUrls(uploadSegmentServices);
+        }
+        return Collections.emptySet();
     }
 
     @Override
@@ -148,7 +187,7 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
     public void registerService(SwiftService service) {
         Assert.notNull(service.getId(), "Service's clusterId is null! Can't be registered!");
 
-        LOGGER.info("{} register service :{}", service.getId(), service.getServiceType().name());
+        SwiftLoggers.getLogger().info("{} register service :{}", service.getId(), service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(
                     service.getServiceType().name(), service.getId(), swiftProperty.getServerAddress(), false));
@@ -171,6 +210,12 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                 case COLLATE:
                     collateServiceMap.put(service.getId(), new ClusterEntity(url, service.getServiceType(), CollateService.class));
                     break;
+                case DELETE:
+                    deleteSegmentServices.put(service.getId(), new ClusterEntity(url, service.getServiceType(), DeleteService.class));
+                    break;
+                case UPLOAD:
+                    uploadSegmentServices.put(service.getId(), new ClusterEntity(url, service.getServiceType(), UploadService.class));
+                    break;
                 default:
             }
         }
@@ -189,8 +234,12 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                 return new HashMap<String, ClusterEntity>(realTimeServiceMap);
             case COLLATE:
                 return new HashMap<String, ClusterEntity>(collateServiceMap);
+            case DELETE:
+                return new HashMap<String, ClusterEntity>(deleteSegmentServices);
+            case UPLOAD:
+                return new HashMap<String, ClusterEntity>(uploadSegmentServices);
             default:
-                return null;
+                return Collections.emptyMap();
         }
     }
 
@@ -198,7 +247,7 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
     public void unRegisterService(SwiftService service) {
         Assert.notNull(service.getId(), "Service's clusterId is null! Can't be removed!");
 
-        LOGGER.debug("{} unregister service :{}", service.getId(), service.getServiceType().name());
+        SwiftLoggers.getLogger().debug("{} unregister service :{}", service.getId(), service.getServiceType().name());
         synchronized (this) {
             serviceInfoService.removeServiceInfo(new SwiftServiceInfoBean(service.getServiceType().name(), service.getId(), ""));
             switch (service.getServiceType()) {
@@ -246,5 +295,9 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点取消任务");
             }
         });
+    }
+
+    private static class SingletonHolder {
+        private static ClusterSwiftServerService instance = new ClusterSwiftServerService();
     }
 }

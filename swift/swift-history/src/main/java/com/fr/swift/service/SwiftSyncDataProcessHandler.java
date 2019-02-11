@@ -6,9 +6,13 @@ import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseSyncDataProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
+import com.fr.swift.basics.handler.SyncDataProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.DataSyncRuleService;
@@ -39,7 +43,10 @@ import java.util.concurrent.CountDownLatch;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(SyncDataProcessHandler.class)
+public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler implements SyncDataProcessHandler {
 
     private DataSyncRuleService dataSyncRuleService;
 
@@ -56,13 +63,13 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
      * 同步远程机器，history seg load
      *
      * @param method
-     * @param target
+     * @param targets
      * @param args
      * @return
      * @throws Throwable
      */
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
@@ -70,7 +77,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
             MonitorUtil.start();
             final Map<SourceKey, List<SegmentDestination>> destinations = new HashMap<SourceKey, List<SegmentDestination>>();
             final boolean replace = (Boolean) args[1];
-            Map<URL, Set<SegmentKey>> urlMap = processUrl(target, args[0], destinations);
+            Map<URL, Set<SegmentKey>> urlMap = processUrl(targets, args[0], destinations);
 
             final List<EventResult> resultList = new ArrayList<EventResult>();
             final CountDownLatch latch = new CountDownLatch(urlMap.size());
@@ -120,13 +127,13 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler {
      * 计算history seg分布结果
      * 计算远程url和segmentKey集合
      *
-     * @param target
+     * @param targets
      * @param args   传入方法参数+destinations
      * @return
      */
     @Override
-    public Map<URL, Set<SegmentKey>> processUrl(Target target, Object... args) {
-        Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
+    public Map<URL, Set<SegmentKey>> processUrl(Target[] targets, Object... args) {
+        Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.UPLOAD);
         if (null == services || services.isEmpty()) {
             throw new RuntimeException("Cannot find history service");
         }

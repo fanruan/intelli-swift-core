@@ -24,6 +24,7 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
 
     /**
      * 批量删除Segment
+     * todo 墙裂要求return删掉的seg key
      *
      * @param sourceKey
      * @return
@@ -64,13 +65,4 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
      * @return
      */
     SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
-
-    /**
-     * clusterId
-     * sourceKey
-     * segmentKey
-     *
-     * @return
-     */
-    Map<String, Map<String, List<SegmentKey>>> getAllSegLocations();
 }

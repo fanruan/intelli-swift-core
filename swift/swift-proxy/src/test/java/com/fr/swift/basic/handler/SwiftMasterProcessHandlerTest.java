@@ -57,7 +57,7 @@ public class SwiftMasterProcessHandlerTest extends TestCase {
 
     public void testProcessUrl() {
         SwiftMasterProcessHandler handler = new SwiftMasterProcessHandler(invokerCreator);
-        URL url = handler.processUrl(Target.HISTORY);
+        URL url = handler.processUrl(new Target[]{Target.HISTORY});
         assertNull(url);
     }
 
@@ -65,7 +65,7 @@ public class SwiftMasterProcessHandlerTest extends TestCase {
         SwiftMasterProcessHandler handler = new SwiftMasterProcessHandler(invokerCreator);
         try {
             String result = (String) handler.processResult(
-                    SwiftMasterProcessHandlerTest.class.getMethod("masterMethod"), Target.ANALYSE);
+                    SwiftMasterProcessHandlerTest.class.getMethod("masterMethod"), new Target[]{Target.ANALYSE});
             assertEquals(result, "master");
         } catch (Throwable throwable) {
             assertTrue(false);

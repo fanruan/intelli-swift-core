@@ -4,7 +4,6 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.BuildConf;
-import com.fr.swift.cube.io.IResourceDiscovery;
 import com.fr.swift.cube.io.input.DoubleReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;
@@ -19,7 +18,7 @@ import com.fr.swift.cube.io.output.Writer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -29,7 +28,7 @@ import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -69,10 +68,10 @@ public class DetailColumnTest {
         IResourceDiscovery resourceDiscovery = mock(IResourceDiscovery.class);
         Whitebox.setInternalState(BaseDetailColumn.class, "DISCOVERY", resourceDiscovery);
 
-        when(resourceDiscovery.getReader(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Reader>() {
+        when(resourceDiscovery.getReader(ArgumentMatchers.<ResourceLocation>any(), ArgumentMatchers.<BuildConf>any())).then(new Answer<Reader>() {
             @Override
             public Reader answer(InvocationOnMock invocation) throws Throwable {
-                switch (invocation.getArgumentAt(1, BuildConf.class).getDataType()) {
+                switch (invocation.<BuildConf>getArgument(1).getDataType()) {
                     case INT:
                         return intReader;
                     case LONG:
@@ -87,10 +86,10 @@ public class DetailColumnTest {
             }
         });
 
-        when(resourceDiscovery.getWriter(Matchers.<ResourceLocation>any(), Matchers.<BuildConf>any())).then(new Answer<Writer>() {
+        when(resourceDiscovery.getWriter(ArgumentMatchers.<ResourceLocation>any(), ArgumentMatchers.<BuildConf>any())).then(new Answer<Writer>() {
             @Override
             public Writer answer(InvocationOnMock invocation) throws Throwable {
-                switch (invocation.getArgumentAt(1, BuildConf.class).getDataType()) {
+                switch (invocation.<BuildConf>getArgument(1).getDataType()) {
                     case INT:
                         return intWriter;
                     case LONG:

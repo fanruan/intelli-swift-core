@@ -11,11 +11,20 @@
 
     <artifactId>swift-base-structure</artifactId>
 
+    <properties>
+        <fineio.version>2.0-RELEASE-SNAPSHOT</fineio.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-config</artifactId>
             <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fineio</groupId>
+            <artifactId>fineio</artifactId>
+            <version>${fineio.version}</version>
         </dependency>
     </dependencies>
 

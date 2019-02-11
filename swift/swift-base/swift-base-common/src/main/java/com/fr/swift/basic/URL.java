@@ -11,4 +11,9 @@ public interface URL {
 
     Destination getDestination();
 
+    @Override
+    boolean equals(Object o);
+
+    @Override
+    int hashCode();
 }

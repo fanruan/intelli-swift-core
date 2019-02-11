@@ -19,7 +19,7 @@ public abstract class BaseProcessHandler<T> extends AbstractProcessHandler<T> im
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
 //        MonitorUtil.start();
 //        Class proxyClass = method.getDeclaringClass();
 //        Class<?>[] parameterTypes = method.getParameterTypes();

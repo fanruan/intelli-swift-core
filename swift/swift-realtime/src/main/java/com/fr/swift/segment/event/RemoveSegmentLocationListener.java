@@ -30,6 +30,9 @@ public class RemoveSegmentLocationListener extends BaseSegmentLocationListener {
         SwiftEventDispatcher.listen(SyncSegmentLocationEvent.REMOVE_SEG, new RemoveSegmentLocationListener());
     }
 
+    private RemoveSegmentLocationListener() {
+    }
+
     public static void listen() {
     }
 }

@@ -19,7 +19,7 @@ public class JdkProxyInvokeHandler implements InvokerHandler, InvocationHandler 
 //        if (invokerCreator.getType() == InvokerType.LOCAL) {
 //            this.invokerHandler = new LocalInvokerHandler(invokerCreator);
 //        } else {
-            this.invokerHandler = new RemoteInvokerHandler(invokerCreator);
+        this.invokerHandler = new SwiftInvokerHandler(invokerCreator);
 //        }
     }
 

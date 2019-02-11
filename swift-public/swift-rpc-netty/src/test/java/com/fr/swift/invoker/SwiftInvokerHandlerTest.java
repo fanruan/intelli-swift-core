@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SwiftProperty.class, ProxyServiceRegistry.class, ProxyProcessHandlerPool.class})
-public class RemoteInvokerTest extends TestCase {
+public class SwiftInvokerHandlerTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
@@ -51,7 +51,7 @@ public class RemoteInvokerTest extends TestCase {
         ServiceRegistry serviceRegistry = PowerMock.createMock(ServiceRegistry.class);
         EasyMock.expect(ProxyServiceRegistry.get()).andReturn(serviceRegistry).anyTimes();
         PowerMock.replay(ProxyServiceRegistry.class);
-        EasyMock.expect(ProxyServiceRegistry.get().getService(IRemoteTest.class.getName())).andReturn(new IRemoteTest() {
+        EasyMock.expect(ProxyServiceRegistry.get().getService(ISwiftInvokerHandlerTest.class.getName())).andReturn(new ISwiftInvokerHandlerTest() {
             @Override
             public String print(String id, long time) {
                 return id + time;
@@ -78,13 +78,13 @@ public class RemoteInvokerTest extends TestCase {
 
         InvokerCreator invokerCreator = new RPCInvokerCreator();
         try {
-            EasyMock.expect(ProxyProcessHandlerPool.get().getProcessHandler(EasyMock.anyObject(Class.class), EasyMock.anyObject(InvokerCreator.class))).andReturn(new RemoteInvokerTestHandler(invokerCreator)).anyTimes();
+            EasyMock.expect(ProxyProcessHandlerPool.get().getProcessHandler(EasyMock.anyObject(Class.class), EasyMock.anyObject(InvokerCreator.class))).andReturn(new SwiftInvokerHandlerTestHandler(invokerCreator)).anyTimes();
             EasyMock.replay(ProxyProcessHandlerPool.get());
         } catch (Exception e) {
             assertTrue(false);
         }
         ProxySelector.getInstance().switchFactory(new JdkProxyFactory(invokerCreator));
-        IRemoteTest proxy = ProxySelector.getInstance().getFactory().getProxy(IRemoteTest.class);
+        ISwiftInvokerHandlerTest proxy = ProxySelector.getInstance().getFactory().getProxy(ISwiftInvokerHandlerTest.class);
         long time = System.currentTimeMillis();
         assertEquals(proxy.print("1", time), LocalInvoker.class.getName());
     }
@@ -101,36 +101,36 @@ public class RemoteInvokerTest extends TestCase {
 
         InvokerCreator invokerCreator = new RPCInvokerCreator();
         try {
-            EasyMock.expect(ProxyProcessHandlerPool.get().getProcessHandler(EasyMock.anyObject(Class.class), EasyMock.anyObject(InvokerCreator.class))).andReturn(new RemoteInvokerTestHandler(invokerCreator)).anyTimes();
+            EasyMock.expect(ProxyProcessHandlerPool.get().getProcessHandler(EasyMock.anyObject(Class.class), EasyMock.anyObject(InvokerCreator.class))).andReturn(new SwiftInvokerHandlerTestHandler(invokerCreator)).anyTimes();
             EasyMock.replay(ProxyProcessHandlerPool.get());
         } catch (Exception e) {
             assertTrue(false);
         }
         ProxySelector.getInstance().switchFactory(new JdkProxyFactory(invokerCreator));
-        IRemoteTest proxy = ProxySelector.getInstance().getFactory().getProxy(IRemoteTest.class);
+        ISwiftInvokerHandlerTest proxy = ProxySelector.getInstance().getFactory().getProxy(ISwiftInvokerHandlerTest.class);
         long time = System.currentTimeMillis();
         assertEquals(proxy.print("1", time), RPCInvoker.class.getName());
     }
 }
 
-interface IRemoteTest {
+interface ISwiftInvokerHandlerTest {
     @InvokeMethod(value = ProcessHandler.class, target = Target.NONE)
     String print(String id, long time);
 }
 
-class RemoteInvokerTestHandler extends AbstractProcessHandler {
+class SwiftInvokerHandlerTestHandler extends AbstractProcessHandler {
 
-    public RemoteInvokerTestHandler(InvokerCreator invokerCreator) {
+    public SwiftInvokerHandlerTestHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] target, Object... args) throws Throwable {
         return invokerCreator.createSyncInvoker(method.getDeclaringClass(), new RPCUrl(new RPCDestination("master"))).getClass().getName();
     }
 
     @Override
-    protected Object processUrl(Target target, Object... args) {
+    protected Object processUrl(Target[] target, Object... args) {
         return null;
     }
 }

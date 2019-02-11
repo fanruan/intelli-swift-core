@@ -1,5 +1,9 @@
-package com.fr.swift.cube.io;
+package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.cube.CubePathBuilder;
+import com.fr.swift.cube.io.BuildConf;
+import com.fr.swift.cube.io.Readers;
+import com.fr.swift.cube.io.Writers;
 import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.impl.mem.MemIoBuilder;
 import com.fr.swift.cube.io.input.Reader;
@@ -7,6 +11,8 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.IoUtil;
 
 import java.util.Iterator;
@@ -136,32 +142,58 @@ public class ResourceDiscovery implements IResourceDiscovery {
     }
 
     @Override
-    public void release(IResourceLocation location) {
-        if (location.getStoreType().isPersistent()) {
-            return;
-        }
-
-        String path = location.getPath();
+    public void releaseTable(SwiftDatabase schema, SourceKey tableKey) {
         synchronized (cubeMemIos) {
             for (Iterator<Entry<String, ConcurrentMap<String, MemIo>>> segItr = cubeMemIos.entrySet().iterator(); segItr.hasNext(); ) {
                 Entry<String, ConcurrentMap<String, MemIo>> segEntry = segItr.next();
                 String segPath = segEntry.getKey();
-                if (path.equals(segPath)) {
+                String tablePath = new CubePathBuilder().setSwiftSchema(schema).setTableKey(tableKey).build();
+                if (segPath.startsWith(tablePath + "/")) {
+                    // 匹配到seg，则整个release
+                    for (MemIo memIo : segEntry.getValue().values()) {
+                        IoUtil.release(memIo);
+                    }
+
+                    segItr.remove();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void releaseSegment(SwiftDatabase schema, SourceKey tableKey, int segOrder) {
+        synchronized (cubeMemIos) {
+            for (Iterator<Entry<String, ConcurrentMap<String, MemIo>>> segItr = cubeMemIos.entrySet().iterator(); segItr.hasNext(); ) {
+                Entry<String, ConcurrentMap<String, MemIo>> segEntry = segItr.next();
+                String segPath = segEntry.getKey();
+                if (segPath.equals(new CubePathBuilder().setSwiftSchema(schema).setTableKey(tableKey).setSegOrder(segOrder).build())) {
                     // 匹配到seg，则整个release
                     for (MemIo memIo : segEntry.getValue().values()) {
                         IoUtil.release(memIo);
                     }
                     segItr.remove();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void releaseColumn(SwiftDatabase schema, SourceKey tableKey, ColumnKey columnKey) {
+        synchronized (cubeMemIos) {
+            for (Entry<String, ConcurrentMap<String, MemIo>> segEntry : cubeMemIos.entrySet()) {
+                String segPath = segEntry.getKey();
+                String tablePath = new CubePathBuilder().setSwiftSchema(schema).setTableKey(tableKey).build();
+                if (!segPath.startsWith(tablePath + "/")) {
+                    // 不是相关表直接跳过
                     continue;
                 }
 
-                for (Iterator<Entry<String, MemIo>> memIoItr = segEntry.getValue().entrySet().iterator(); memIoItr.hasNext(); ) {
-                    Entry<String, MemIo> memIoEntry = memIoItr.next();
-                    String memIoPath = String.format("%s%s/", segPath, memIoEntry.getKey());
-                    // 匹配前缀，一般为release单个column
-                    if (memIoPath.startsWith(path + "/")) {
-                        IoUtil.release(memIoEntry.getValue());
-                        memIoItr.remove();
+                for (Iterator<Entry<String, MemIo>> columnItr = segEntry.getValue().entrySet().iterator(); columnItr.hasNext(); ) {
+                    Entry<String, MemIo> columnEntry = columnItr.next();
+                    if (columnEntry.getKey().equals("/" + columnKey.getName())) {
+                        IoUtil.release(columnEntry.getValue());
+
+                        columnItr.remove();
                     }
                 }
             }

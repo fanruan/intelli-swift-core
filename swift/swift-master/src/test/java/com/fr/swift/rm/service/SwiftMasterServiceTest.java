@@ -56,7 +56,7 @@ public class SwiftMasterServiceTest extends TestCase {
         NodeContainer.addAll(collection);
         SwiftMasterService swiftMasterService = new SwiftMasterService();
         swiftMasterService.receiveHeartBeat(heartBeatInfo);
-        Mockito.verify(slaveService).syncNodeStates(Mockito.anyCollection());
+        Mockito.verify(slaveService).syncNodeStates(Mockito.<NodeState>anyCollection());
         assertEquals(swiftMasterService.pullNodeStates().size(), 1);
     }
 }

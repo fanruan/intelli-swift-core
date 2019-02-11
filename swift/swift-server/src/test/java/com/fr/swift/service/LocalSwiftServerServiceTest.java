@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -47,6 +47,10 @@ public class LocalSwiftServerServiceTest {
     @Mock
     CollateService collateService;
     @Mock
+    DeleteService deleteService;
+    @Mock
+    UploadService uploadService;
+    @Mock
     SwiftServiceListenerManager swiftServiceListenerManager;
     @Mock
     SchedulerTaskPool schedulerTaskPool;
@@ -67,6 +71,8 @@ public class LocalSwiftServerServiceTest {
         Mockito.when(historyService.getServiceType()).thenReturn(ServiceType.HISTORY);
         Mockito.when(analyseService.getServiceType()).thenReturn(ServiceType.ANALYSE);
         Mockito.when(collateService.getServiceType()).thenReturn(ServiceType.COLLATE);
+        Mockito.when(deleteService.getServiceType()).thenReturn(ServiceType.DELETE);
+        Mockito.when(uploadService.getServiceType()).thenReturn(ServiceType.UPLOAD);
         Mockito.when(event.type()).thenReturn(SwiftRpcEvent.EventType.GLOBAL);
         Mockito.when(event.subEvent()).thenReturn(AbstractGlobalRpcEvent.Event.DELETE);
         Pair<SourceKey, Where> content = Mockito.mock(Pair.class);
@@ -87,15 +93,18 @@ public class LocalSwiftServerServiceTest {
         swiftServerService.registerService(historyService);
         swiftServerService.registerService(analyseService);
         swiftServerService.registerService(collateService);
+        swiftServerService.registerService(deleteService);
+        swiftServerService.registerService(uploadService);
         Mockito.verify(indexingService, Mockito.times(1)).getServiceType();
         Mockito.verify(realTimeService, Mockito.times(1)).getServiceType();
         Mockito.verify(historyService, Mockito.times(1)).getServiceType();
         Mockito.verify(analyseService, Mockito.times(1)).getServiceType();
         Mockito.verify(collateService, Mockito.times(1)).getServiceType();
+        Mockito.verify(deleteService, Mockito.times(1)).getServiceType();
+        Mockito.verify(uploadService, Mockito.times(1)).getServiceType();
 
         swiftServerService.trigger(event);
-        Mockito.verify(realTimeService).delete(Mockito.any(SourceKey.class), Mockito.any(Where.class), Mockito.anyList());
-        Mockito.verify(historyService).delete(Mockito.any(SourceKey.class), Mockito.any(Where.class), Mockito.anyList());
+        Mockito.verify(deleteService).delete(Mockito.any(SourceKey.class), Mockito.any(Where.class));
 
         SwiftEventDispatcher.syncFire(TaskEvent.RUN, new HashMap<TaskKey, DataSource>());
         Mockito.verify(swiftProperty).isCluster();
@@ -107,10 +116,14 @@ public class LocalSwiftServerServiceTest {
         swiftServerService.unRegisterService(historyService);
         swiftServerService.unRegisterService(analyseService);
         swiftServerService.unRegisterService(collateService);
+        swiftServerService.unRegisterService(deleteService);
+        swiftServerService.unRegisterService(uploadService);
         Mockito.verify(indexingService, Mockito.times(2)).getServiceType();
         Mockito.verify(realTimeService, Mockito.times(2)).getServiceType();
         Mockito.verify(historyService, Mockito.times(2)).getServiceType();
         Mockito.verify(analyseService, Mockito.times(2)).getServiceType();
         Mockito.verify(collateService, Mockito.times(2)).getServiceType();
+        Mockito.verify(deleteService, Mockito.times(2)).getServiceType();
+        Mockito.verify(uploadService, Mockito.times(2)).getServiceType();
     }
 }

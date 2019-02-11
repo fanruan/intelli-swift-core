@@ -4,7 +4,6 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.event.history.HistoryRemoveEvent;
@@ -14,6 +13,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.HistoryService;
+import com.fr.swift.service.UploadService;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
@@ -32,7 +32,6 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftHistoryEventHandler.class);
     private HistoryDataSyncManager historyDataSyncManager = SwiftContext.get().getBean(HistoryDataSyncManager.class);
-    private SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 
     @Override
     public <S extends Serializable> S handle(AbstractHistoryRpcEvent event) {
@@ -42,39 +41,43 @@ public class SwiftHistoryEventHandler extends AbstractHandler<AbstractHistoryRpc
                 case LOAD_SEGMENT:
                 case TRANS_COLLATE_LOAD:
                     return historyDataSyncManager.handle((SegmentLoadRpcEvent) event);
-//                case COMMON_LOAD:
-//                    String source = event.getSourceClusterId();
-//                    handleCommonLoad(event, 0);
-//                    return (S) EventResult.success(source);
-//                case MODIFY_LOAD:
-//                    String sourceId = event.getSourceClusterId();
-//                    if (handleCommonLoad(event, 1)) {
-//                        return (S) EventResult.success(sourceId);
-//                    } else {
-//                        return (S) EventResult.failed(sourceId, "load failed");
+                case COMMON_LOAD: {
+//                    //需要load的seg
+//                    Pair<SourceKey, Map<SegmentKey, List<String>>> pair = (Pair<SourceKey, Map<SegmentKey, List<String>>>) event.getContent();
+//                    UploadSegmentService service = factory.getProxy(UploadSegmentService.class);
+//                    try {
+//                        service.downloadAllShow(pair.getKey(), pair.getValue());
+//                        return (S) EventResult.success(event.getSourceClusterId());
+//                    } catch (Exception e) {
+//                        return (S) EventResult.failed(event.getSourceClusterId(), "load failed");
 //                    }
-                case COMMON_LOAD:
-                case MODIFY_LOAD:
-                    //需要load的seg
+                    // todo 只有relation用到，暂时先unsupport了
+                    throw new UnsupportedOperationException();
+
+                }
+                case MODIFY_LOAD: {
+                    // 需要load的seg
                     Pair<SourceKey, Map<SegmentKey, List<String>>> pair = (Pair<SourceKey, Map<SegmentKey, List<String>>>) event.getContent();
-                    HistoryService service = factory.getProxy(HistoryService.class);
                     try {
-                        service.commonLoad(pair.getKey(), pair.getValue());
+                        factory.getProxy(UploadService.class).downloadAllShow(pair.getValue().keySet());
                         return (S) EventResult.success(event.getSourceClusterId());
                     } catch (Exception e) {
                         return (S) EventResult.failed(event.getSourceClusterId(), "load failed");
                     }
+                }
                 case CHECK_LOAD:
                     checkLoad(event.getSourceClusterId());
                     break;
                 case HISTORY_REMOVE:
                     HistoryRemoveEvent removeEvent = (HistoryRemoveEvent) event;
                     Pair<SourceKey, List<SegmentKey>> content = removeEvent.getContent();
+                    //找所有history节点删seg文件
                     factory.getProxy(HistoryService.class).removeHistory(content.getValue());
                     List<String> keys = new ArrayList<String>();
                     for (SegmentKey segmentKey : content.getValue()) {
                         keys.add(segmentKey.getId());
                     }
+                    //找所有analyse节点删内存中segkey和location配置
                     factory.getProxy(AnalyseService.class).removeSegments(removeEvent.getSourceClusterId(), content.getKey(), keys);
                     break;
                 default:

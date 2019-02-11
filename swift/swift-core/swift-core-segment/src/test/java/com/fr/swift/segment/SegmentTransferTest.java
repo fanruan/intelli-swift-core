@@ -8,9 +8,9 @@ import com.fr.swift.segment.operator.Inserter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -19,7 +19,7 @@ import org.powermock.reflect.Whitebox;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -53,12 +53,12 @@ public class SegmentTransferTest {
         when(SwiftContext.get()).thenReturn(beanFactory);
 
         Whitebox.setInternalState(SegmentTransfer.class, "SEG_SVC", swiftSegmentService);
-        when(beanFactory.getBean(eq("inserter"), eq(Inserter.class), Matchers.<Segment>any())).thenReturn(inserter);
+        when(beanFactory.getBean(eq("inserter"), eq(Inserter.class), ArgumentMatchers.<Segment>any())).thenReturn(inserter);
 
         when(swiftSegmentService.containsSegment(oldSegKey)).thenReturn(true);
 
         mockStatic(SegmentUtils.class);
-        when(SegmentUtils.newSegment(Matchers.<SegmentKey>any())).thenReturn(mock(Segment.class));
+        when(SegmentUtils.newSegment(ArgumentMatchers.<SegmentKey>any())).thenReturn(mock(Segment.class));
 
         whenNew(SegmentResultSet.class).withAnyArguments().thenReturn(mock(SegmentResultSet.class));
     }
@@ -74,11 +74,11 @@ public class SegmentTransferTest {
         verify(swiftSegmentService).addSegments(eq(Collections.singletonList(newSegKey)));
 
         // insert
-        verify(inserter).insertData(Matchers.<SwiftResultSet>any());
+        verify(inserter).insertData(ArgumentMatchers.<SwiftResultSet>any());
 
         // index
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.indexSegmentIfNeed(Matchers.<List<Segment>>any());
+        SegmentUtils.indexSegmentIfNeed(ArgumentMatchers.<List<Segment>>any());
 
         // remove old seg
         verify(swiftSegmentService).removeSegments(eq(Collections.singletonList(oldSegKey)));
@@ -88,7 +88,7 @@ public class SegmentTransferTest {
 
     @Test
     public void transferFailed() throws Exception {
-        doThrow(Exception.class).when(inserter).insertData(Matchers.<SwiftResultSet>any());
+        doThrow(Exception.class).when(inserter).insertData(ArgumentMatchers.<SwiftResultSet>any());
 
         SegmentKey newSegKey = mock(SegmentKey.class);
         SegmentTransfer transfer = new SegmentTransfer(oldSegKey, newSegKey);
@@ -99,11 +99,11 @@ public class SegmentTransferTest {
         verify(swiftSegmentService).addSegments(eq(Collections.singletonList(newSegKey)));
 
         // insert failed
-        verify(inserter).insertData(Matchers.<SwiftResultSet>any());
+        verify(inserter).insertData(ArgumentMatchers.<SwiftResultSet>any());
 
         // won't index
         verifyStatic(SegmentUtils.class, times(0));
-        SegmentUtils.indexSegmentIfNeed(Matchers.<List<Segment>>any());
+        SegmentUtils.indexSegmentIfNeed(ArgumentMatchers.<List<Segment>>any());
 
         // remove dirty seg
         verify(swiftSegmentService).removeSegments(eq(Collections.singletonList(newSegKey)));
@@ -127,7 +127,7 @@ public class SegmentTransferTest {
 
         // won't index
         verifyStatic(SegmentUtils.class, times(0));
-        SegmentUtils.indexSegmentIfNeed(Matchers.<List<Segment>>any());
+        SegmentUtils.indexSegmentIfNeed(ArgumentMatchers.<List<Segment>>any());
 
         // won't remove old seg
         verifyStatic(SegmentUtils.class, times(0));

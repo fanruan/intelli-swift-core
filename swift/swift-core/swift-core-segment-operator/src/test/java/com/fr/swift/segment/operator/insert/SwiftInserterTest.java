@@ -11,14 +11,13 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.SwiftMetaData;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -26,7 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Matchers.argThat;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -87,35 +86,23 @@ public class SwiftInserterTest {
         verify(resultSet).close();
 
         // put null index, all show index, row count
-        verify(bitmapIndex).putNullIndex(argThat(new BaseMatcher<ImmutableBitMap>() {
+        verify(bitmapIndex).putNullIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
-            public void describeTo(Description description) {
-
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                ImmutableBitMap bitmap = (ImmutableBitMap) item;
-                return bitmap.getCardinality() == 1 && bitmap.contains(1);
+            public boolean matches(ImmutableBitMap item) {
+                return item.getCardinality() == 1 && item.contains(1);
             }
         }));
         verify(segment).putRowCount(3);
-        verify(segment).putAllShowIndex(argThat(new BaseMatcher<ImmutableBitMap>() {
+        verify(segment).putAllShowIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
-            public void describeTo(Description description) {
-
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                ImmutableBitMap bitmap = (ImmutableBitMap) item;
-                return bitmap.getCardinality() == 3;
+            public boolean matches(ImmutableBitMap item) {
+                return item.getCardinality() == 3;
             }
         }));
 
         // release all
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.releaseColumns(Matchers.<List<Column<Object>>>any());
+        SegmentUtils.releaseColumns(ArgumentMatchers.<List<Column<Object>>>any());
         verifyStatic(SegmentUtils.class);
         SegmentUtils.release(segment);
     }

@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -35,13 +35,13 @@ public class ByteArrayFineIoReaderTest {
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteFineIoReader.class);
-        when(ByteFineIoReader.build(Matchers.<URI>any())).thenReturn(byteReader);
+        when(ByteFineIoReader.build(ArgumentMatchers.<URI>any())).thenReturn(byteReader);
 
         mockStatic(IntFineIoReader.class);
-        when(IntFineIoReader.build(Matchers.<URI>any())).thenReturn(intReader);
+        when(IntFineIoReader.build(ArgumentMatchers.<URI>any())).thenReturn(intReader);
 
         mockStatic(LongFineIoReader.class);
-        when(LongFineIoReader.build(Matchers.<URI>any())).thenReturn(longReader);
+        when(LongFineIoReader.build(ArgumentMatchers.<URI>any())).thenReturn(longReader);
 
         when(byteReader.isReadable()).thenReturn(true);
         when(intReader.isReadable()).thenReturn(true);
