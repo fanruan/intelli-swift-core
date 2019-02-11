@@ -22,7 +22,7 @@ todo
 ```java
 @RestController
 public class Demo {
-    
+
     @RequestMapping("swift/demo/createTable")
     @ResponseBody
     public boolean createTable() {
@@ -96,6 +96,47 @@ public class Demo {
                 )
                 .build();
         SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(queryBean);
+        List<Row> rows = new ArrayList<Row>();
+        while (resultSet.hasNext()) {
+            rows.add(resultSet.getNextRow());
+        }
+        return rows;
+    }
+
+    /**
+     * queryJson:
+     * {
+     *   "fetchSize": 200,
+     *   "aggregations": [
+     *     {
+     *       "column": "单价",
+     *       "type": "AVERAGE"
+     *     },
+     *     {
+     *       "column": "上月库存",
+     *       "type": "MAX"
+     *     }
+     *   ],
+     *   "postAggregations": [],
+     *   "sorts": [],
+     *   "tableName": "commodity_stock",
+     *   "dimensions": [
+     *     {
+     *       "column": "仓库",
+     *       "type": "GROUP"
+     *     },
+     *     {
+     *       "column": "产品名称",
+     *       "type": "GROUP"
+     *     }
+     *   ],
+     *   "queryType": "GROUP"
+     * }
+     */
+    @RequestMapping(value = "swift/demo/query/group", method = RequestMethod.POST)
+    @ResponseBody
+    public Object group(@RequestBody String queryJson) throws Exception {
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(queryJson);
         List<Row> rows = new ArrayList<Row>();
         while (resultSet.hasNext()) {
             rows.add(resultSet.getNextRow());

@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -83,10 +82,8 @@ class NodeResultSetMerger implements Iterator<NodeMergeQRS<GroupNode>> {
         for (Future future : futures) {
             try {
                 future.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e.getMessage(), e);
             }
         }
         if (remainResultSet != null) {
