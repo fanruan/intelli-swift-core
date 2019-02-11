@@ -8,6 +8,8 @@ import com.fr.swift.result.NodeMergeQRSImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -16,12 +18,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 
 /**
  * Created by Lyon on 2018/7/26.
  */
 class NodeResultSetMerger implements Iterator<NodeMergeQRS<GroupNode>> {
+
+    private static ExecutorService service = SwiftExecutors.newFixedThreadPool(10, new PoolThreadFactory(NodeResultSetMerger.class));
 
     private int fetchSize;
     private boolean[] isGlobalIndexed;
@@ -53,17 +60,33 @@ class NodeResultSetMerger implements Iterator<NodeMergeQRS<GroupNode>> {
     }
 
     private NodeMergeQRS<GroupNode> updateAll() {
-        List<NodeMergeQRS<GroupNode>> resultSets = new ArrayList<NodeMergeQRS<GroupNode>>();
+        final List<NodeMergeQRS<GroupNode>> resultSets = new ArrayList<NodeMergeQRS<GroupNode>>();
+        List<Future> futures = new ArrayList<Future>();
         for (int i = 0; i < sources.size(); i++) {
-            if (sources.get(i).hasNextPage()) {
-                Pair<GroupNode, List<Map<Integer, Object>>> pair = sources.get(i).getPage();
-                if (pair == null) {
-                    SwiftLoggers.getLogger().error("NodeResultSetMerger#updateAll: invalid page data!");
-                    continue;
+            final int finalI = i;
+            futures.add(service.submit(new Runnable() {
+                @Override
+                public void run() {
+                    if (sources.get(finalI).hasNextPage()) {
+                        Pair<GroupNode, List<Map<Integer, Object>>> pair = sources.get(finalI).getPage();
+                        if (pair == null) {
+                            SwiftLoggers.getLogger().error("NodeResultSetMerger#updateAll: invalid page data!");
+                            return;
+                        }
+                        GroupNode node = pair.getKey();
+                        resultSets.add(new NodeMergeQRSImpl<GroupNode>(fetchSize, node, pair.getValue()));
+                        lastRowOfPrevPages.set(finalI, SwiftNodeUtils.getLastRow(node));
+                    }
                 }
-                GroupNode node = pair.getKey();
-                resultSets.add(new NodeMergeQRSImpl<GroupNode>(fetchSize, node, pair.getValue()));
-                lastRowOfPrevPages.set(i, SwiftNodeUtils.getLastRow(node));
+            }));
+        }
+        for (Future future : futures) {
+            try {
+                future.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
         }
         if (remainResultSet != null) {
