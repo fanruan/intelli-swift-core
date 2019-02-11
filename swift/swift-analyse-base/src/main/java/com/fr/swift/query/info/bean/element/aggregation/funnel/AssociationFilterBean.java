@@ -14,6 +14,14 @@ public class AssociationFilterBean {
     @JsonProperty
     private List<Integer> funnelIndexes;
 
+    public AssociationFilterBean() {
+    }
+
+    public AssociationFilterBean(String column, List<Integer> funnelIndexes) {
+        this.column = column;
+        this.funnelIndexes = funnelIndexes;
+    }
+
     public String getColumn() {
         return column;
     }

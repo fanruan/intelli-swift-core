@@ -7,13 +7,21 @@ import com.fr.swift.base.json.annotation.JsonProperty;
  */
 public class DayFilterBean {
 
-
     @JsonProperty
     private String column;
     @JsonProperty
     private String dayStart;
     @JsonProperty
     private int numberOfDays;
+
+    public DayFilterBean() {
+    }
+
+    public DayFilterBean(String column, String dayStart, int numberOfDays) {
+        this.column = column;
+        this.dayStart = dayStart;
+        this.numberOfDays = numberOfDays;
+    }
 
     public String getColumn() {
         return column;

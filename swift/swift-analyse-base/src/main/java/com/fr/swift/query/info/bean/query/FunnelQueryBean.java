@@ -24,6 +24,18 @@ public class FunnelQueryBean extends AbstractSingleTableQueryInfoBean {
     @JsonProperty
     private List<PostQueryInfoBean> postAggregations;
 
+    public FunnelQueryBean() {
+    }
+
+    public FunnelQueryBean(FunnelFunctionBean aggregation) {
+        this.aggregation = aggregation;
+    }
+
+    public FunnelQueryBean(FunnelFunctionBean aggregation, List<PostQueryInfoBean> postAggregations) {
+        this.aggregation = aggregation;
+        this.postAggregations = postAggregations;
+    }
+
     public FunnelFunctionBean getAggregation() {
         return aggregation;
     }

@@ -18,6 +18,13 @@ public class RowSortQueryInfoBean extends AbstractPostQueryInfoBean {
         type = PostQueryType.ROW_SORT;
     }
 
+    public RowSortQueryInfoBean() {
+    }
+
+    public RowSortQueryInfoBean(List<SortBean> sortBeans) {
+        this.sortBeans = sortBeans;
+    }
+
     public List<SortBean> getSortBeans() {
         return sortBeans;
     }

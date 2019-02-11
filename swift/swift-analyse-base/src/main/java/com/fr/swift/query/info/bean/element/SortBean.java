@@ -13,6 +13,11 @@ public class SortBean {
     @JsonProperty
     private String name;      // TODO: 2018/7/4 结果排序还是字典排序要区分原始字段名和客户端定义的字段转义名
 
+    public SortBean(SortType type, String name) {
+        this.type = type;
+        this.name = name;
+    }
+
     public SortBean() {
     }
 

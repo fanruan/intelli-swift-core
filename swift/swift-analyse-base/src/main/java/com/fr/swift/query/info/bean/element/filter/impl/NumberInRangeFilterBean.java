@@ -25,4 +25,37 @@ public class NumberInRangeFilterBean extends DetailFilterInfoBean<RangeFilterVal
     public void setFilterValue(RangeFilterValueBean filterValue) {
         this.filterValue = filterValue;
     }
+
+    public static Builder builder(String column) {
+        return new Builder(column);
+    }
+
+    public static class Builder {
+        private String column;
+        private RangeFilterValueBean bean;
+
+        public Builder(String column) {
+            this.column = column;
+            this.bean = new RangeFilterValueBean();
+        }
+
+        public Builder setStart(String start, boolean included) {
+            bean.setStartIncluded(included);
+            bean.setStart(start);
+            return this;
+        }
+
+        public Builder setEnd(String end, boolean included) {
+            bean.setStartIncluded(included);
+            bean.setStart(end);
+            return this;
+        }
+
+        public NumberInRangeFilterBean build() {
+            NumberInRangeFilterBean filterBean = new NumberInRangeFilterBean();
+            filterBean.setColumn(column);
+            filterBean.setFilterValue(bean);
+            return filterBean;
+        }
+    }
 }

@@ -20,6 +20,14 @@ public class MetricBean {
     @JsonProperty
     private Object[] params;
 
+    public MetricBean(String column, AggregatorType type) {
+        this.type = type;
+        this.column = column;
+    }
+
+    public MetricBean() {
+    }
+
     public AggregatorType getType() {
         return type;
     }
@@ -58,5 +66,36 @@ public class MetricBean {
 
     public void setParams(Object[] params) {
         this.params = params;
+    }
+
+    public static Builder builder(String column, AggregatorType type) {
+        return new Builder(column, type);
+    }
+
+    public static class Builder {
+        private MetricBean bean;
+
+        public Builder(String column, AggregatorType type) {
+            bean = new MetricBean(column, type);
+        }
+
+        public Builder setAlias(String alias) {
+            bean.setAlias(alias);
+            return this;
+        }
+
+        public Builder setFilter(FilterInfoBean filter) {
+            bean.setFilter(filter);
+            return this;
+        }
+
+        public Builder setParams(Object[] params) {
+            bean.setParams(params);
+            return this;
+        }
+
+        public MetricBean build() {
+            return bean;
+        }
     }
 }

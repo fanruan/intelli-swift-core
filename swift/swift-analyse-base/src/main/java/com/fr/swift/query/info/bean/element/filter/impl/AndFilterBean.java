@@ -20,6 +20,13 @@ public class AndFilterBean extends GeneralFilterInfoBean<List<FilterInfoBean>> i
         type = SwiftDetailFilterType.AND;
     }
 
+    public AndFilterBean() {
+    }
+
+    public AndFilterBean(List<FilterInfoBean> filters) {
+        filterValue = filters;
+    }
+
     @Override
     public List<FilterInfoBean> getFilterValue() {
         return filterValue;
