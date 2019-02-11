@@ -9,6 +9,8 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.StatusProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.bean.ServerCurrentStatus;
@@ -31,14 +33,16 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018-12-01
  */
+@SwiftBean
+@SwiftScope("prototype")
 public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> implements StatusProcessHandler {
     public IndexStatusProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
     }
 
     @Override
-    public Object processResult(final Method method, Target target, final Object... args) throws Throwable {
-        List<URL> urls = processUrl(target, args);
+    public Object processResult(final Method method, Target[] targets, final Object... args) throws Throwable {
+        List<URL> urls = processUrl(targets, args);
         if (ClusterSelector.getInstance().getFactory().isCluster() && urls.isEmpty()) {
             Crasher.crash("Remote  Not Found");
         }
@@ -91,7 +95,7 @@ public class IndexStatusProcessHandler extends BaseProcessHandler<List<URL>> imp
     }
 
     @Override
-    public List<URL> processUrl(Target target, Object... args) {
+    public List<URL> processUrl(Target[] targets, Object... args) {
         Map<String, ClusterEntity> entityMap = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.INDEXING);
         Set<String> clusterIds = entityMap.keySet();
         List<URL> urls = new ArrayList<URL>();

@@ -151,6 +151,20 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         return resultMap;
     }
 
+    @Override
+    public List<Class<?>> getClassesByAnnotations(Class<? extends Annotation> annotation) {
+        List<Class<?>> resultList = new ArrayList<Class<?>>();
+        Map<String, SwiftBeanDefinition> swiftBeanDefinitionMap = getBeanDefinitionMap();
+        for (Map.Entry<String, SwiftBeanDefinition> entry : swiftBeanDefinitionMap.entrySet()) {
+            Annotation marked = entry.getValue().getClazz().getAnnotation(annotation);
+            if (marked != null) {
+                resultList.add(entry.getValue().getClazz());
+            }
+        }
+        return resultList;
+    }
+
+
     private <T> T createBean(Class<T> tClass, Object... params) throws Exception {
         Class<?>[] parameterTypes = new Class[params.length];
         for (int i = 0; i < params.length; i++) {

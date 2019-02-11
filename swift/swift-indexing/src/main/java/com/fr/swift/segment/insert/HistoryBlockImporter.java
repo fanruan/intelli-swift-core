@@ -13,7 +13,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
-import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
@@ -48,15 +47,16 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
         if (entity == null) {
             entity = new SwiftTablePathBean(sourceKey.getId(), 0);
         } else {
-            currentDir = entity.getTablePath() == null ? 0 : entity.getTablePath() + 1;
+            // TODO: 2019/1/24 @anchore 考虑历史和collate共用情况下的path
+//            currentDir = entity.getTablePath() == null ? 0 : entity.getTablePath() + 1;
             entity.setTmpDir(currentDir);
         }
-        tablePathService.saveOrUpdate(entity);
+//        tablePathService.saveOrUpdate(entity);
     }
 
     @Override
-    protected Inserter getInserter(Segment seg) {
-        return new SwiftInserter(seg);
+    protected Inserting getInserting(Segment seg) {
+        return new Inserting(new SwiftInserter(seg), seg, 0);
     }
 
     @Override

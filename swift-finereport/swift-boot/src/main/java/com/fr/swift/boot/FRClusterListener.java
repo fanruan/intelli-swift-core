@@ -6,7 +6,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.boot.synchronizer.MasterSynchronizer;
 import com.fr.swift.cluster.core.cluster.FRClusterNodeManager;
-import com.fr.swift.core.rpc.FRInvokerCreater;
+import com.fr.swift.core.rpc.FRInvokerCreator;
 import com.fr.swift.core.rpc.FRUrlFactory;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -60,7 +60,7 @@ public class FRClusterListener implements ClusterEventListener {
         try {
             if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
                 SwiftProperty.getProperty().setCluster(true);
-                ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new FRInvokerCreater()));
+                ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new FRInvokerCreator()));
                 UrlSelector.getInstance().switchFactory(new FRUrlFactory());
                 ClusterSelector.getInstance().switchFactory(FRClusterNodeManager.getInstance());
                 SwiftProperty.getProperty().setClusterId(ClusterSelector.getInstance().getFactory().getCurrentId());

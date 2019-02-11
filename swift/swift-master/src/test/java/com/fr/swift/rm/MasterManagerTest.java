@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -69,7 +69,7 @@ public class MasterManagerTest {
         Mockito.when(swiftContext.getBean(SwiftServiceInfoService.class)).thenReturn(serviceInfoService);
         Mockito.when(swiftProperty.getMasterAddress()).thenReturn("127.0.0.1:8080");
         Mockito.when(swiftProperty.getSwiftServiceNames()).thenReturn(Collections.EMPTY_SET);
-        Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.anySet())).thenReturn(Collections.singletonList(swiftService));
+        Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.<String>anySet())).thenReturn(Collections.singletonList(swiftService));
         Mockito.when(ClusterSelector.getInstance()).thenReturn(clusterSelector);
         Mockito.when(clusterSelector.getFactory()).thenReturn(clusterNodeManager);
         Mockito.when(clusterNodeManager.getCurrentId()).thenReturn("127.0.0.1:8088");

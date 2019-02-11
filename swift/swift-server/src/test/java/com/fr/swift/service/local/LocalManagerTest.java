@@ -2,6 +2,7 @@ package com.fr.swift.service.local;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.manager.LocalServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
 import org.junit.Before;
@@ -9,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -48,7 +49,7 @@ public class LocalManagerTest {
         Mockito.when(swiftContext.getBean(ServiceManager.class)).thenReturn(serviceManager);
         Mockito.when(swiftContext.getBean(LocalServiceManager.class)).thenReturn(localServiceManager);
         Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
-        Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.anySet())).thenReturn(new ArrayList());
+        Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.<String>anySet())).thenReturn(new ArrayList());
     }
 
     @Test
@@ -56,10 +57,10 @@ public class LocalManagerTest {
         LocalManager localManager = new LocalManager();
         localManager.startUp();
         Mockito.verify(serviceManager).startUp();
-        Mockito.verify(localServiceManager).registerService(Mockito.anyList());
+        Mockito.verify(localServiceManager).registerService(Mockito.<SwiftService>anyList());
         assertTrue(localManager.isRunning());
         localManager.shutDown();
-        Mockito.verify(localServiceManager).unregisterService(Mockito.anyList());
+        Mockito.verify(localServiceManager).unregisterService(Mockito.<SwiftService>anyList());
         assertTrue(!localManager.isRunning());
     }
 }

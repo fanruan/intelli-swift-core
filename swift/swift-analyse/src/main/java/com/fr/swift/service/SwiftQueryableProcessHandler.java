@@ -6,11 +6,14 @@ import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
@@ -44,6 +47,9 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/10/25
  */
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(QueryableProcessHandler.class)
 public class SwiftQueryableProcessHandler extends BaseProcessHandler implements QueryableProcessHandler {
 
     public SwiftQueryableProcessHandler(InvokerCreator invokerCreator) {
@@ -56,13 +62,13 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
     }
 
     @Override
-    public Object processResult(final Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(final Method method, Target[] targets, Object... args) throws Throwable {
         String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
         queryBean.setQueryId(UUID.randomUUID().toString());
         SourceKey table = new SourceKey(queryBean.getTableName());
         List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
-        List<Pair<URL, Set<String>>> pairs = processUrl(target, segmentDestinations);
+        List<Pair<URL, Set<String>>> pairs = processUrl(targets, segmentDestinations);
         final List<QueryResultSet> resultSets = new ArrayList<QueryResultSet>();
         final Class proxyClass = method.getDeclaringClass();
         final Class<?>[] parameterTypes = method.getParameterTypes();
@@ -128,7 +134,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
     }
 
     @Override
-    public List<Pair<URL, Set<String>>> processUrl(Target target, Object... args) {
+    public List<Pair<URL, Set<String>>> processUrl(Target[] targets, Object... args) {
         List<SegmentDestination> uris = (List<SegmentDestination>) args[0];
         Map<String, Pair<URL, Set<String>>> map = new HashMap<String, Pair<URL, Set<String>>>();
         for (SegmentDestination destination : uris) {

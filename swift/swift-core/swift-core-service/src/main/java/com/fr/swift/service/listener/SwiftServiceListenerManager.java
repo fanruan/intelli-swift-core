@@ -1,10 +1,13 @@
 package com.fr.swift.service.listener;
 
+import com.fr.swift.basic.URL;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.SwiftServiceListenerHandlerAbsentException;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.util.Util;
+
+import java.util.Set;
 
 /**
  * @author pony
@@ -14,7 +17,7 @@ import com.fr.swift.util.Util;
 public class SwiftServiceListenerManager {
     private static final SwiftServiceListenerManager INSTANCE = new SwiftServiceListenerManager();
 
-    private SwiftServiceListenerHandler handler;
+    private SwiftServiceEventHandler handler;
 
     public static SwiftServiceListenerManager getInstance() {
         return INSTANCE;
@@ -26,7 +29,7 @@ public class SwiftServiceListenerManager {
      * @param handler
      * @see SwiftServiceListenerHandler
      */
-    public void registerHandler(SwiftServiceListenerHandler handler) {
+    public void registerHandler(SwiftServiceEventHandler handler) {
         Util.requireNonNull(handler);
         this.handler = handler;
     }
@@ -62,6 +65,10 @@ public class SwiftServiceListenerManager {
     public void triggerEvent(SwiftRpcEvent event) throws SwiftServiceException {
         checkIfHandlerRegistered();
         handler.trigger(event);
+    }
+
+    public Set<URL> getNodeUrls(Class<?> proxyIface) {
+        return handler.getNodeUrls(proxyIface);
     }
 
     private void checkIfHandlerRegistered() throws SwiftServiceListenerHandlerAbsentException {

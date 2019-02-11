@@ -2,10 +2,12 @@ package com.fr.swift.log.impl;
 
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Optional;
+import com.fr.swift.util.Strings;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author anchore
@@ -39,6 +41,11 @@ public class MsgFmtTest {
         ex = new RuntimeException();
         formatted = MsgFmt.fmt("ab{}", "c", ex);
         assertEquals("abc", formatted.getKey());
+        assertEquals(ex, formatted.getValue().get());
+
+        ex = new Exception();
+        formatted = MsgFmt.fmt(null, 1, 2, ex);
+        assertTrue(Strings.isEmpty(formatted.getKey()));
         assertEquals(ex, formatted.getValue().get());
     }
 }

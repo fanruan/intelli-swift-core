@@ -52,7 +52,7 @@ public class SwiftAppointProcessHandlerTest extends TestCase {
         SwiftAppointProcessHandler handler = new SwiftAppointProcessHandler(invokerCreator);
         try {
             Set<String> result = (Set<String>) handler.processResult(
-                    SwiftAppointProcessHandlerTest.class.getMethod("appointMethod", List.class, String.class), Target.ANALYSE, Collections.singletonList("test"), "test");
+                    SwiftAppointProcessHandlerTest.class.getMethod("appointMethod", List.class, String.class), new Target[]{Target.ANALYSE}, Collections.singletonList("test"), "test");
             assertEquals(result.size(), 1);
             List<String> urlList = new ArrayList<String>(result);
             assertEquals(urlList.get(0), "test:appointMethod");

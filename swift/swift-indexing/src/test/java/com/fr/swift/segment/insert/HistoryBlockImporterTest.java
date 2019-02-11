@@ -30,9 +30,9 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -40,7 +40,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.notNull;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,6 +49,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * @author anchore
@@ -99,14 +100,14 @@ public class HistoryBlockImporterTest {
 
         SwiftSourceAlloter alloter = mock(SwiftSourceAlloter.class);
         when(alloter.getAllotRule()).thenReturn(new LineAllotRule(1));
-        when(alloter.allot(Matchers.<RowInfo>any())).thenReturn(new SwiftSegmentInfo(0, StoreType.FINE_IO),
+        when(alloter.allot(ArgumentMatchers.<RowInfo>any())).thenReturn(new SwiftSegmentInfo(0, StoreType.FINE_IO),
                 new SwiftSegmentInfo(1, StoreType.FINE_IO),
                 new SwiftSegmentInfo(2, StoreType.FINE_IO));
 
         HistoryBlockImporter<?> historyBlockImporter = spy(new HistoryBlockImporter<SwiftSourceAlloter<AllotRule, RowInfo>>(dataSource, alloter));
         Segment seg = mock(Segment.class);
-        doReturn(seg).when(historyBlockImporter).newSegment(Matchers.<SegmentKey>any());
-        doReturn(inserter).when(historyBlockImporter).getInserter(Matchers.<Segment>any());
+        doReturn(seg).when(historyBlockImporter).newSegment(ArgumentMatchers.<SegmentKey>any());
+        whenNew(SwiftInserter.class).withAnyArguments().thenReturn(inserter);
 
         when(seg.isReadable()).thenReturn(true);
         when(seg.getRowCount()).thenReturn(1);
@@ -123,14 +124,14 @@ public class HistoryBlockImporterTest {
         verify(database).existsTable(tableKey);
         verify(database).createTable(tableKey, metaData);
         // allot and insert
-        verify(alloter, times(3)).allot(Matchers.<RowInfo>any());
-        verify(inserter, times(3)).insertData(Matchers.<Row>any());
+        verify(alloter, times(3)).allot(ArgumentMatchers.<RowInfo>any());
+        verify(inserter, times(3)).insertData(ArgumentMatchers.<Row>any());
         // ensure close and release
         verify(resultSet).close();
         verify(inserter, times(3)).release();
         // ensure index full history seg and upload
         verifyStatic(SegmentUtils.class, times(3));
-        SegmentUtils.indexSegmentIfNeed(Matchers.<List<Segment>>any());
+        SegmentUtils.indexSegmentIfNeed(ArgumentMatchers.<List<Segment>>any());
         for (SegmentKey segKey : historyBlockImporter.getImportSegments()) {
             verifyStatic(SwiftEventDispatcher.class);
             SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, segKey);

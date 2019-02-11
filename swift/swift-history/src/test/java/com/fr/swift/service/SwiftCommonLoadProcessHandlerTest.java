@@ -64,8 +64,8 @@ public class SwiftCommonLoadProcessHandlerTest {
         map.put(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE), Arrays.asList("row_count", "allShow"));
         map.put(new SegmentKeyBean(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE), Arrays.asList("row_count", "allShow"));
         SwiftCommonLoadProcessHandler handler = new SwiftCommonLoadProcessHandler(mockInvokerCreator);
-        handler.processResult(HistoryService.class.getMethod("commonLoad", SourceKey.class, Map.class), Target.HISTORY, new SourceKey("table"), map);
-        handler.processResult(HistoryService.class.getMethod("commonLoad", SourceKey.class, Map.class), Target.HISTORY, new SourceKey("table"), map);
+        handler.processResult(HistoryService.class.getMethod("commonLoad", SourceKey.class, Map.class), new Target[]{Target.HISTORY}, new SourceKey("table"), map);
+        handler.processResult(HistoryService.class.getMethod("commonLoad", SourceKey.class, Map.class), new Target[]{Target.HISTORY}, new SourceKey("table"), map);
 // do test
         PowerMock.verifyAll();
 

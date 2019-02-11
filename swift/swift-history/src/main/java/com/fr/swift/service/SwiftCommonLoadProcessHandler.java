@@ -6,10 +6,13 @@ import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
+import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.handler.AbstractProcessHandler;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.CommonLoadProcessHandler;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -34,6 +37,9 @@ import java.util.concurrent.CountDownLatch;
  * @description
  * @since Advanced FineBI 5.0
  */
+@SwiftBean
+@SwiftScope("prototype")
+@RegisteredHandler(CommonLoadProcessHandler.class)
 public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<URL, Map<SourceKey, List<String>>>> implements CommonLoadProcessHandler {
 
     public SwiftCommonLoadProcessHandler(InvokerCreator invokerCreator) {
@@ -42,20 +48,20 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
 
     /**
      * @param method
-     * @param target
+     * @param targets
      * @param args
      * @return
      * @throws Throwable
      */
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
         try {
             MonitorUtil.start();
             SourceKey sourceKey = (SourceKey) args[0];
-            Map<URL, Map<SourceKey, List<String>>> urlMap = processUrl(target, args);
+            Map<URL, Map<SourceKey, List<String>>> urlMap = processUrl(targets, args);
 
             final List<EventResult> resultList = new ArrayList<EventResult>();
             final CountDownLatch latch = new CountDownLatch(urlMap.size());
@@ -94,17 +100,17 @@ public class SwiftCommonLoadProcessHandler extends AbstractProcessHandler<Map<UR
      * 根据传入的seg信息，遍历所有history节点，找到每个history节点的seg
      * 检验该seg是否在需要args中，是则needload，否则不需要。
      *
-     * @param target
+     * @param targets
      * @param args
      * @return 远程url
      */
     @Override
-    public Map<URL, Map<SourceKey, List<String>>> processUrl(Target target, Object... args) {
+    public Map<URL, Map<SourceKey, List<String>>> processUrl(Target[] targets, Object... args) {
         SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         Map<String, ClusterEntity> services = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.HISTORY);
 
         SourceKey sourceKey = (SourceKey) args[0];
-        Map<String, List<String>> uris = (Map<String, List<String>>) args[1];
+        Map<SegmentKey, List<String>> uris = (Map<SegmentKey, List<String>>) args[1];
 
         if (null == services || services.isEmpty()) {
             throw new RuntimeException("Cannot find history service");

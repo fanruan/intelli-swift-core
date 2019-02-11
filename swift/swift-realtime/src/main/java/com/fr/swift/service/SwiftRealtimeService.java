@@ -5,13 +5,12 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.cube.io.ResourceDiscovery;
+import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.db.Table;
-import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterEventType;
@@ -20,36 +19,34 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.info.bean.element.filter.impl.AllShowFilterBean;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
-import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.operator.Importer;
-import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
+import com.fr.swift.util.FileUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 /**
  * @author pony
@@ -62,13 +59,13 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     private static final long serialVersionUID = 4719723736240190155L;
 
-    private transient SwiftSegmentManager segmentManager;
-
     private transient ServiceTaskExecutor taskExecutor;
 
     private transient volatile boolean recoverable = true;
 
     private transient ClusterEventListener realtimeClusterListener;
+
+    private transient SwiftSegmentService segSvc;
 
     public SwiftRealtimeService() {
         realtimeClusterListener = new RealtimeClusterListener();
@@ -77,8 +74,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
+        segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         if (recoverable) {
             recover0();
             recoverable = false;
@@ -92,8 +89,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         super.shutdown();
         ResourceDiscovery.getInstance().releaseAll();
         recoverable = true;
-        segmentManager = null;
         taskExecutor = null;
+        segSvc = null;
         ClusterListenerHandler.removeExtraListener(realtimeClusterListener);
         return true;
     }
@@ -136,47 +133,26 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         SwiftLoggers.getLogger().info("recover");
     }
 
-
-    /**
-     * todo 公用实现，SwiftHistoryService
-     */
     @Override
-    public boolean delete(final SourceKey sourceKey, final Where where, final List<SegmentKey> needUpload) throws Exception {
-        Future<Boolean> future = taskExecutor.submit(new SwiftServiceCallable<Boolean>(sourceKey, ServiceTaskType.DELETE, new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(sourceKey);
-                for (SegmentKey segKey : segmentKeys) {
-                    if (!segmentManager.existsSegment(segKey)) {
-                        continue;
-                    }
-                    WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
-                    ImmutableBitMap allShowBitmap = whereDeleter.delete(where);
-                    if (segKey.getStoreType().isTransient()) {
-                        continue;
-                    }
-
-                    if (needUpload.contains(segKey)) {
-                        if (allShowBitmap.isEmpty()) {
-                            SwiftEventDispatcher.fire(SegmentEvent.REMOVE_HISTORY, segKey);
-                        } else {
-                            SwiftEventDispatcher.fire(SegmentEvent.MASK_HISTORY, segKey);
-                        }
-                    }
-                }
-                return true;
-            }
-        }));
-        return future.get();
-    }
-
-    @Override
-    public void truncate(SourceKey sourceKey) {
-        try {
-            delete(sourceKey, new SwiftWhere(new AllShowFilterBean()), Collections.<SegmentKey>emptyList());
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("truncate realtime failed", e);
+    public void truncate(SourceKey tableKey) {
+        Map<SourceKey, List<SegmentKey>> ownSegs = segSvc.getOwnSegments();
+        // 删配置
+        segSvc.removeSegments(tableKey.getId());
+        if (ownSegs.containsKey(tableKey)) {
+            // 同步seg location
+            SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, ownSegs.get(tableKey));
         }
+
+        SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(tableKey.getId());
+        // 删bak
+        String bakPath = new CubePathBuilder()
+                .asAbsolute()
+                .asBackup()
+                .setSwiftSchema(meta.getSwiftDatabase())
+                .setTableKey(tableKey).build();
+        FileUtil.delete(bakPath);
+        // 删内存
+        ResourceDiscovery.getInstance().releaseTable(meta.getSwiftDatabase(), tableKey);
     }
 
     @Override

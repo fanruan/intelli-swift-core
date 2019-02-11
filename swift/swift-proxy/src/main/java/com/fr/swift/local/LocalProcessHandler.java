@@ -22,7 +22,7 @@ public class LocalProcessHandler extends AbstractProcessHandler<URL> {
     }
 
     @Override
-    public Object processResult(Method method, Target target, Object... args) throws Throwable {
+    public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
         Class proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
@@ -31,7 +31,7 @@ public class LocalProcessHandler extends AbstractProcessHandler<URL> {
     }
 
     @Override
-    protected URL processUrl(Target target, Object... args) {
+    protected URL processUrl(Target[] targets, Object... args) {
         return null;
     }
 }

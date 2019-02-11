@@ -2,7 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
-import com.fr.swift.basics.handler.AliveNodesProcessHandler;
+import com.fr.swift.basics.handler.CommonProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -27,11 +27,10 @@ public interface AnalyseService extends SwiftService {
     @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
-    // TODO: 2018/12/5 增删改可以合并成一个接口
-    @InvokeMethod(value = AliveNodesProcessHandler.class, target = Target.ANALYSE)
+    @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
 
-    @InvokeMethod(value = AliveNodesProcessHandler.class, target = Target.ANALYSE)
+    @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
 
 }

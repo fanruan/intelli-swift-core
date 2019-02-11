@@ -84,7 +84,7 @@ public class CubePathBuilderTest {
         path = new CubePathBuilder().setSwiftSchema(swiftSchema)
                 .setTableKey(tableKey)
                 .setSegOrder(segOrder).asBackup().build();
-        Assert.assertEquals(String.format("%s/bak/%s/seg%d", swiftSchema.getDir(), tableKey, segOrder), path);
+        Assert.assertEquals(String.format("%s/%s/seg%d", swiftSchema.getBackupDir(), tableKey, segOrder), path);
 
         path = new CubePathBuilder().setSwiftSchema(swiftSchema)
                 .setTableKey(tableKey)

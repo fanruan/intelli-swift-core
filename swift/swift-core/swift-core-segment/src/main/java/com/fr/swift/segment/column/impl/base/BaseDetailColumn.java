@@ -1,7 +1,5 @@
 package com.fr.swift.segment.column.impl.base;
 
-import com.fr.swift.cube.io.IResourceDiscovery;
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;

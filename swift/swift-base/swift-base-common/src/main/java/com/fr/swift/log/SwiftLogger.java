@@ -1,18 +1,15 @@
 package com.fr.swift.log;
 
-import com.fineio.logger.FineIOLogger;
-
 /**
  * @author anchore
  * @date 2018/7/4
  */
-public interface SwiftLogger extends FineIOLogger {
+public interface SwiftLogger {
 
     boolean isDebugEnabled();
 
     void debug(String msg, Object... args);
 
-    @Override
     void debug(String msg);
 
     void debug(Throwable t);
@@ -21,7 +18,6 @@ public interface SwiftLogger extends FineIOLogger {
 
     void info(String msg, Object... args);
 
-    @Override
     void info(String msg);
 
     boolean isWarnEnabled();
@@ -36,9 +32,7 @@ public interface SwiftLogger extends FineIOLogger {
 
     void error(String msg, Object... args);
 
-    @Override
     void error(String msg);
 
-    @Override
     void error(Throwable t);
 }

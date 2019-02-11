@@ -247,7 +247,7 @@ public class Histogram extends AbstractHistogram {
      */
     public static Histogram decodeFromByteBuffer(final ByteBuffer buffer,
                                                  final long minBarForHighestTrackableValue) {
-        return (Histogram) decodeFromByteBuffer(buffer, Histogram.class, minBarForHighestTrackableValue);
+        return decodeFromByteBuffer(buffer, Histogram.class, minBarForHighestTrackableValue);
     }
 
     /**

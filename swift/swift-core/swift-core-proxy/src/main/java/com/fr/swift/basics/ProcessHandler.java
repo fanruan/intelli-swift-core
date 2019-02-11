@@ -19,5 +19,5 @@ public interface ProcessHandler {
      * @return
      * @throws Throwable
      */
-    Object processResult(Method method, Target target, Object... args) throws Throwable;
+    Object processResult(Method method, Target[] targets, Object... args) throws Throwable;
 }

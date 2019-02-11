@@ -13,13 +13,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
@@ -47,12 +47,12 @@ public class PrimitiveFineIoReaderTest {
         when(connectorManager.getConnector()).thenReturn(connector);
 
         mockStatic(FineIO.class);
-        when(FineIO.createIOFile(Matchers.<Connector>any(), Matchers.<URI>any(), Matchers.<MODEL>any())).thenReturn(ioFile);
+        when(FineIO.createIOFile(ArgumentMatchers.<Connector>any(), ArgumentMatchers.<URI>any(), ArgumentMatchers.<MODEL>any())).thenReturn(ioFile);
 
-        when(FineIO.getByte(Matchers.<IOFile<ByteBuffer>>any(), anyLong())).thenReturn((byte) 1);
-        when(FineIO.getInt(Matchers.<IOFile<IntBuffer>>any(), anyLong())).thenReturn(1);
-        when(FineIO.getLong(Matchers.<IOFile<LongBuffer>>any(), anyLong())).thenReturn(1L);
-        when(FineIO.getDouble(Matchers.<IOFile<DoubleBuffer>>any(), anyLong())).thenReturn(1D);
+        when(FineIO.getByte(ArgumentMatchers.<IOFile<ByteBuffer>>any(), anyLong())).thenReturn((byte) 1);
+        when(FineIO.getInt(ArgumentMatchers.<IOFile<IntBuffer>>any(), anyLong())).thenReturn(1);
+        when(FineIO.getLong(ArgumentMatchers.<IOFile<LongBuffer>>any(), anyLong())).thenReturn(1L);
+        when(FineIO.getDouble(ArgumentMatchers.<IOFile<DoubleBuffer>>any(), anyLong())).thenReturn(1D);
 
         when(ioFile.exists()).thenReturn(true);
     }

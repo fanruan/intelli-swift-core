@@ -4,14 +4,13 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -85,7 +84,7 @@ public class SegmentUtils {
     }
 
     private static void clearRealtimeSegment(SegmentKey segKey) {
-        ResourceDiscovery.getInstance().release(new ResourceLocation(new CubePathBuilder(segKey).build(), StoreType.MEMORY));
+        ResourceDiscovery.getInstance().releaseSegment(segKey.getSwiftSchema(), segKey.getTable(), segKey.getOrder());
 
         FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().asBackup().build());
     }

@@ -8,13 +8,13 @@ import com.fr.swift.cube.io.output.LongWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,18 +43,18 @@ public class ByteArrayFineIoWriterTest {
     @Before
     public void setUp() throws Exception {
         mockStatic(ByteFineIoWriter.class);
-        when(ByteFineIoWriter.build(Matchers.<URI>any(), anyBoolean())).thenReturn(byteWriter);
+        when(ByteFineIoWriter.build(ArgumentMatchers.<URI>any(), anyBoolean())).thenReturn(byteWriter);
 
         mockStatic(IntFineIoWriter.class);
-        when(IntFineIoWriter.build(Matchers.<URI>any(), anyBoolean())).thenReturn(intWriter);
+        when(IntFineIoWriter.build(ArgumentMatchers.<URI>any(), anyBoolean())).thenReturn(intWriter);
 
         mockStatic(LongFineIoWriter.class);
-        when(LongFineIoWriter.build(Matchers.<URI>any(), anyBoolean())).thenReturn(longWriter);
+        when(LongFineIoWriter.build(ArgumentMatchers.<URI>any(), anyBoolean())).thenReturn(longWriter);
 
 
         mockStatic(LongFineIoReader.class);
         LongReader longReader = mock(LongReader.class);
-        when(LongFineIoReader.build(Matchers.<URI>any())).thenReturn(longReader);
+        when(LongFineIoReader.build(ArgumentMatchers.<URI>any())).thenReturn(longReader);
         when(longReader.isReadable()).thenReturn(true);
         when(longReader.get(0)).thenReturn(1L);
     }
