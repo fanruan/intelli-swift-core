@@ -14,6 +14,15 @@ public class ParameterColumnsBean {
     @JsonProperty
     private String combine;
 
+    public ParameterColumnsBean() {
+    }
+
+    public ParameterColumnsBean(String userId, String event, String combine) {
+        this.userId = userId;
+        this.event = event;
+        this.combine = combine;
+    }
+
     public String getUserId() {
         return userId;
     }

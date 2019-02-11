@@ -17,6 +17,15 @@ public class PostGroupBean {
     @JsonProperty
     private List<double[]> rangePairs = new ArrayList<double[]>();
 
+    public PostGroupBean() {
+    }
+
+    public PostGroupBean(int funnelIndex, String column, List<double[]> rangePairs) {
+        this.funnelIndex = funnelIndex;
+        this.column = column;
+        this.rangePairs = rangePairs;
+    }
+
     public int getFunnelIndex() {
         return funnelIndex;
     }

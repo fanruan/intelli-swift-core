@@ -3,6 +3,7 @@ package com.fr.swift.query.info.bean.element.filter.impl;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,6 +15,19 @@ public class InFilterBean extends DetailFilterInfoBean<Set<String>> implements S
 
     {
         type = SwiftDetailFilterType.IN;
+    }
+
+    public InFilterBean() {
+    }
+
+    public InFilterBean(String column, Object... values) {
+        setColumn(column);
+        this.filterValue = new HashSet<String>();
+        for (Object value : values) {
+            if (value != null) {
+                filterValue.add(value.toString());
+            }
+        }
     }
 
     @Override
