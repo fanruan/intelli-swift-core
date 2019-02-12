@@ -6,8 +6,7 @@ Swift是基于分布式、列式存储和实时计算的高性能数据仓库系
 Swift作为数据仓库提供一系列高性能聚合实现，核心库中包括常用的过滤、分组、聚合等计算的实现。同时，基于轻量、最少依赖、易扩展的设计理念，使得开发者可以很容易基于Swift完成系统集成和二次开发需求。
 
 ### Documentation
-
-更多文档详见 <https://kms.finedevelop.com/pages/viewpage.action?pageId=45580653>.
+[详见](docs/query/native_json_api.md)
 
 ### Getting Started
 
