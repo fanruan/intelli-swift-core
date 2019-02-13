@@ -18,6 +18,14 @@ public class HavingFilterQueryInfoBean extends AbstractPostQueryInfoBean {
         type = PostQueryType.HAVING_FILTER;
     }
 
+    public HavingFilterQueryInfoBean() {
+    }
+
+    public HavingFilterQueryInfoBean(String column, FilterInfoBean filter) {
+        this.column = column;
+        this.filter = filter;
+    }
+
     public String getColumn() {
         return column;
     }

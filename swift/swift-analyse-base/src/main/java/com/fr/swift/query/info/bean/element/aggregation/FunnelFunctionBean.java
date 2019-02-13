@@ -26,6 +26,16 @@ public class FunnelFunctionBean {
     @JsonProperty
     private PostGroupBean postGroup;
 
+    public FunnelFunctionBean() {
+    }
+
+    public FunnelFunctionBean(int timeWindow, DayFilterBean dayFilter, ParameterColumnsBean columns, List<String> funnelEvents) {
+        this.timeWindow = timeWindow;
+        this.dayFilter = dayFilter;
+        this.columns = columns;
+        this.funnelEvents = funnelEvents;
+    }
+
     public int getTimeWindow() {
         return timeWindow;
     }
@@ -72,5 +82,32 @@ public class FunnelFunctionBean {
 
     public void setPostGroup(PostGroupBean postGroup) {
         this.postGroup = postGroup;
+    }
+
+    public static Builder builder(int timeWindow, DayFilterBean dayFilter,
+                                  ParameterColumnsBean columns, List<String> funnelEvents) {
+        return new Builder(timeWindow, dayFilter, columns, funnelEvents);
+    }
+
+    public static class Builder {
+        private FunnelFunctionBean bean;
+
+        public Builder(int timeWindow, DayFilterBean dayFilter, ParameterColumnsBean columns, List<String> funnelEvents) {
+            this.bean = new FunnelFunctionBean(timeWindow, dayFilter, columns, funnelEvents);
+        }
+
+        public Builder setAssociatedFilter(AssociationFilterBean associatedFilter) {
+            bean.setAssociatedFilter(associatedFilter);
+            return this;
+        }
+
+        public Builder setPostGroup(PostGroupBean postGroup) {
+            bean.setPostGroup(postGroup);
+            return this;
+        }
+
+        public FunnelFunctionBean build() {
+            return bean;
+        }
     }
 }

@@ -19,6 +19,13 @@ public class NotFilterBean extends GeneralFilterInfoBean<FilterInfoBean> impleme
         type = SwiftDetailFilterType.NOT;
     }
 
+    public NotFilterBean() {
+    }
+
+    public NotFilterBean(FilterInfoBean filter) {
+        filterValue = filter;
+    }
+
     @Override
     public FilterInfoBean getFilterValue() {
         return filterValue;

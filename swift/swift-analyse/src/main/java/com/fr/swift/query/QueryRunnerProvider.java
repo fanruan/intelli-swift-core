@@ -36,6 +36,10 @@ public class QueryRunnerProvider {
         return ourInstance;
     }
 
+    public SwiftResultSet query(QueryBean queryBean) throws Exception {
+        return query(QueryBeanFactory.queryBean2String(queryBean));
+    }
+
     public SwiftResultSet query(String queryJson) throws Exception {
         QueryBean queryBean = QueryBeanFactory.create(queryJson);
         String queryId = queryBean.getQueryId();

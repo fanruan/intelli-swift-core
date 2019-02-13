@@ -18,6 +18,37 @@ public class DimensionBean {
     @JsonProperty
     private DimensionType type;
 
+    public DimensionBean() {
+    }
+
+    public DimensionBean(DimensionType type) {
+        this.type = type;
+    }
+
+    public DimensionBean(DimensionType type, String column) {
+        this.column = column;
+        this.type = type;
+    }
+
+    public DimensionBean(DimensionType type, String column, String alias) {
+        this.column = column;
+        this.type = type;
+        this.alias = alias;
+    }
+
+    public DimensionBean(DimensionType type, String column, SortBean sortBean) {
+        this.column = column;
+        this.sortBean = sortBean;
+        this.type = type;
+    }
+
+    public DimensionBean(DimensionType type, String column, String alias, SortBean sortBean) {
+        this.column = column;
+        this.alias = alias;
+        this.sortBean = sortBean;
+        this.type = type;
+    }
+
     public String getColumn() {
         return column;
     }
