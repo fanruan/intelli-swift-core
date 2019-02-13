@@ -20,6 +20,13 @@ public class OrFilterBean extends GeneralFilterInfoBean<List<FilterInfoBean>> im
         type = SwiftDetailFilterType.OR;
     }
 
+    public OrFilterBean() {
+    }
+
+    public OrFilterBean(List<FilterInfoBean> filters) {
+        filterValue = filters;
+    }
+
     @Override
     public List<FilterInfoBean> getFilterValue() {
         return filterValue;

@@ -1,5 +1,7 @@
 package com.fr.swift.query.info.bean.element.filter.impl;
 
+import com.fr.swift.query.filter.SwiftDetailFilterType;
+
 import java.io.Serializable;
 
 /**
@@ -17,5 +19,21 @@ public class NFilterBean extends DetailFilterInfoBean<Integer> implements Serial
     @Override
     public void setFilterValue(Integer filterValue) {
         this.filterValue = filterValue;
+    }
+
+    public static NFilterBean topN(String column, int n) {
+        NFilterBean nFilterBean = new NFilterBean();
+        nFilterBean.setType(SwiftDetailFilterType.TOP_N);
+        nFilterBean.setColumn(column);
+        nFilterBean.setFilterValue(n);
+        return nFilterBean;
+    }
+
+    public static NFilterBean bottomN(String column, int n) {
+        NFilterBean nFilterBean = new NFilterBean();
+        nFilterBean.setType(SwiftDetailFilterType.BOTTOM_N);
+        nFilterBean.setColumn(column);
+        nFilterBean.setFilterValue(n);
+        return nFilterBean;
     }
 }
