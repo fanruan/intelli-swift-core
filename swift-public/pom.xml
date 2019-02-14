@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.fr.intelligence</groupId>
+        <artifactId>fine-swift</artifactId>
+        <version>2019.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>swift-public</artifactId>
+    <packaging>pom</packaging>
+    <properties>
+        <jackson.version>2.9.7</jackson.version>
+    </properties>
+
+    <modules>
+        <module>swift-redis</module>
+        <module>swift-rpc-netty</module>
+        <module>swift-spring-boot</module>
+        <module>swift-zookeeper</module>
+        <module>swift-conf-public</module>
+        <module>swift-repo-public</module>
+        <module>swift-common-public</module>
+        <module>swift-repo-plugins</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-beans</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>2.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
