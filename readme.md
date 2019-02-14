@@ -152,5 +152,5 @@ todo
 如果发现任何bug或者有新需求，请开[GitHub issue](https://github.com/fanruan/intelli-swift-core/issues)讨论.
 
 ### License
-todo
+![Apache 2](https://img.shields.io/github/license/fanruan/intelli-swift-core.svg?style=flat)
 
