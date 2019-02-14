@@ -1,0 +1,55 @@
+{
+  "queryType": "GROUP",
+  "fetchSize": 200,
+  "filter": {
+    "type": "IN",
+    "filterValue": [
+      "bar",
+      "foo"
+    ],
+    "column": "field_a"
+  },
+  "dimensions": [
+    {
+      "column": "field_name",
+      "alias": "alias_name",
+      "type": "DETAIL"
+    }
+  ],
+  "aggregations": [
+    {
+      "type": "SUM",
+      "column": "sales",
+      "alias": "sales_sum",
+      "filter": null
+    },
+    {
+      "type": "COUNT",
+      "column": "num",
+      "alias": "count",
+      "filter": null
+    }
+  ],
+  "postAggregations": [
+    {
+      "type": "CAL_FIELD",
+      "calField": {
+        "type": "ARITHMETIC_DIV",
+        "name": "average",
+        "parameters": [
+          "sales_sum",
+          "count"
+        ]
+      }
+    },
+    {
+      "type": "ROW_SORT",
+      "sortBeans": [
+        {
+          "type": "DESC",
+          "name": "average"
+        }
+      ]
+    }
+  ]
+}
