@@ -1,0 +1,6 @@
+*.iml
+.idea
+.DS_Store
+.classpath
+target/generated-sources
+
