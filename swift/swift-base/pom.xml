@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.fr.intelligence</groupId>
+        <artifactId>swift</artifactId>
+        <version>2019.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>swift-base</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>swift-base-io</module>
+        <module>swift-base-config</module>
+        <module>swift-base-structure</module>
+        <module>swift-base-bitmap</module>
+        <module>swift-base-repository</module>
+        <module>swift-base-beans</module>
+        <module>swift-base-common</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-bitmap</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-config</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-io</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-structure</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fr.intelligence</groupId>
+                <artifactId>swift-base-repository</artifactId>
+                <version>${swift.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
