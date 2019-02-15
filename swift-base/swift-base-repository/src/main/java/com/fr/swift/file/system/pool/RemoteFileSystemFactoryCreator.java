@@ -1,7 +1,6 @@
 package com.fr.swift.file.system.pool;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.file.SwiftFileSystemType;
 import com.fr.swift.file.system.annotation.FileSystemFactory;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
 import com.fr.swift.util.Assert;
@@ -42,8 +41,8 @@ public class RemoteFileSystemFactoryCreator {
         }
     }
 
-    public SwiftFileSystemFactory getFactory(SwiftFileSystemType type) {
-        SwiftFileSystemFactory factory = factoryMap.get(type.name());
+    public SwiftFileSystemFactory getFactory(String type) {
+        SwiftFileSystemFactory factory = factoryMap.get(type);
         Assert.notNull(factory);
         return factory;
     }
