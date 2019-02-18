@@ -3,10 +3,8 @@ package com.fr.swift.config;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.CommonConnectorConfig;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.oper.impl.VersionConfigProperty;
 import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
-import com.fr.swift.file.SwiftRemoteFileSystemType;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -36,8 +34,8 @@ public class PublicConfig {
                 properties.load(is);
                 try {
                     if (SwiftProperty.getProperty().isCluster()) {
-                        String repoType = properties.getProperty("repo.type", VersionConfigProperty.get().getDefaultRepository());
-                        if (!SwiftRemoteFileSystemType.FR.name().equals(repoType) && Strings.isNotEmpty(repoType)) {
+                        String repoType = properties.getProperty("repo.type");
+                        if (Strings.isNotEmpty(repoType)) {
                             SwiftFileSystemFactory factory = SwiftContext.get().getBean(repoType, SwiftFileSystemFactory.class);
                             if (null != factory) {
                                 SwiftFileSystemConfig config = (SwiftFileSystemConfig) factory.loadFromProperties(properties);
