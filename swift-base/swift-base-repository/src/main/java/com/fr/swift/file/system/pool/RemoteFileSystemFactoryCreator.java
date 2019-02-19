@@ -3,7 +3,7 @@ package com.fr.swift.file.system.pool;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.file.system.annotation.FileSystemFactory;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
-import com.fr.swift.util.Assert;
+import com.fr.swift.repository.exception.RepoNotFoundException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +43,9 @@ public class RemoteFileSystemFactoryCreator {
 
     public SwiftFileSystemFactory getFactory(String type) {
         SwiftFileSystemFactory factory = factoryMap.get(type);
-        Assert.notNull(factory);
+        if (null == factory) {
+            throw new RepoNotFoundException(String.format("Repository which named '%s' is not found", type));
+        }
         return factory;
     }
 }
