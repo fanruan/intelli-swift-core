@@ -6,7 +6,7 @@ import com.fr.swift.config.convert.SwiftFileSystemConvert;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftFileSystemConfig;
-import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
+import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.service.SwiftRepositoryConfService;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class SwiftRepositoryConfServiceImpl implements SwiftRepositoryConfServic
             for (ConfChangeListener changeListener : changeListeners) {
                 try {
                     changeListener.change(config);
-                } catch (DefaultRepoNotFoundException e) {
+                } catch (RepoNotFoundException e) {
                     SwiftLoggers.getLogger().warn("Cannot find default repository config.", e);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("Cannot set swift repository config.", e);
