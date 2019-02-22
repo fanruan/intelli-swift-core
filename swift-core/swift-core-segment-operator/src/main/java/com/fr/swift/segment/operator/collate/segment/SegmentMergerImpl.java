@@ -47,6 +47,7 @@ public class SegmentMergerImpl implements SegmentMerger {
                 SegmentUtils.release(segment);
             } catch (Throwable e) {
                 try {
+                    SegmentUtils.release(segment);
                     SEG_SVC.removeSegments(segmentKeys);
                     for (SegmentKey key : segmentKeys) {
                         SegmentUtils.clearSegment(key);
