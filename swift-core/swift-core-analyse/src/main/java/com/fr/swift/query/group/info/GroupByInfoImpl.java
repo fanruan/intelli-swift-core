@@ -6,6 +6,7 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,15 @@ public class GroupByInfoImpl implements GroupByInfo {
     private DetailFilter detailFilter;
     private List<Sort> sorts;
     private Cursor cursor;
+
+    public GroupByInfoImpl(List<Column> columns, DetailFilter detailFilter) {
+        this.detailFilter = detailFilter;
+        this.dimensions = new ArrayList<Pair<Column, IndexInfo>>();
+        for (Column column : columns) {
+            dimensions.add(Pair.<Column, IndexInfo>of(column, new IndexInfoImpl(true, false)));
+        }
+        this.sorts = new ArrayList<Sort>();
+    }
 
     public GroupByInfoImpl(int fetchSize, List<Pair<Column, IndexInfo>> dimensions, DetailFilter detailFilter, List<Sort> sorts, Cursor cursor) {
         this.fetchSize = fetchSize;
