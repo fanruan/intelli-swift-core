@@ -25,7 +25,7 @@ public class SegmentMergerImpl implements SegmentMerger {
     private static final int currentDir = 0;
 
     @Override
-    public List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter) throws Exception {
+    public List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter) {
         AllotRule rule = alloter.getAllotRule();
         Partitioner partitioner = null;
         if (rule.getType() == BaseAllotRule.AllotType.HASH) {
@@ -41,9 +41,20 @@ public class SegmentMergerImpl implements SegmentMerger {
             segmentKeys.add(segKey);
             ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
             Segment segment = SegmentUtils.newSegment(location, dataSource.getMetadata());
-            AbstractBuilder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
-            builder.build();
-            SegmentUtils.release(segment);
+            try {
+                AbstractBuilder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
+                builder.build();
+                SegmentUtils.release(segment);
+            } catch (Throwable e) {
+                try {
+                    SEG_SVC.removeSegments(segmentKeys);
+                    for (SegmentKey key : segmentKeys) {
+                        SegmentUtils.clearSegment(key);
+                    }
+                } catch (Exception ignore) {
+                }
+                return new ArrayList<SegmentKey>();
+            }
         }
         return segmentKeys;
     }

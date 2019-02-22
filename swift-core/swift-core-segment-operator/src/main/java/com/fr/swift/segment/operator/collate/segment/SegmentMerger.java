@@ -12,5 +12,14 @@ import java.util.List;
  */
 public interface SegmentMerger {
 
-    List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter) throws Exception;
+    /**
+     * 合并多块segment到新块
+     *
+     * @param dataSource 表
+     * @param segments   要合并的块
+     * @param alloter    分块规则
+     * @return 新块的SegmentKey
+     * @throws Exception
+     */
+    List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter);
 }
