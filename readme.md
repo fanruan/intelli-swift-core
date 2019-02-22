@@ -1,6 +1,6 @@
 ## Swift
 
-![Java 6+](https://img.shields.io/badge/java-6+-4c7e9f.svg)![Code Size](https://img.shields.io/github/languages/code-size/fanruan/intelli-swift-core.svg)![Apache 2](https://img.shields.io/github/license/fanruan/intelli-swift-core.svg?style=flat)
+![Java 6+](https://img.shields.io/badge/java-6+-4c7e9f.svg) ![Code Size](https://img.shields.io/github/languages/code-size/fanruan/intelli-swift-core.svg )![Apache 2](https://img.shields.io/github/license/fanruan/intelli-swift-core.svg?style=flat)
 
 Swift是基于分布式、列式存储和实时计算的高性能数据仓库系统，适用于对海量数据进行高效实时分析的场景。
 
