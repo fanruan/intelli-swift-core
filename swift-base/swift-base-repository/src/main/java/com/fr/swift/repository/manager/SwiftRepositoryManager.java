@@ -4,7 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.repository.SwiftRepository;
-import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
+import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
 import com.fr.swift.service.SwiftRepositoryConfService;
 
@@ -25,7 +25,7 @@ public class SwiftRepositoryManager {
                     try {
                         currentRepository = new SwiftRepositoryImpl(change);
                         currentRepository.testConnection();
-                    } catch (DefaultRepoNotFoundException e) {
+                    } catch (RepoNotFoundException e) {
                         throw e;
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
@@ -52,7 +52,7 @@ public class SwiftRepositoryManager {
                 try {
                     currentRepository = new SwiftRepositoryImpl(config);
                     currentRepository.testConnection();
-                } catch (DefaultRepoNotFoundException e) {
+                } catch (RepoNotFoundException e) {
                     throw e;
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
