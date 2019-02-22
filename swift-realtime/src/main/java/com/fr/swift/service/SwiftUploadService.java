@@ -6,7 +6,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
+import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentHelper;
@@ -81,7 +81,7 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
 
             try {
                 SwiftRepositoryManager.getManager().currentRepo().zipToRemote(local, remote);
-            } catch (DefaultRepoNotFoundException e) {
+            } catch (RepoNotFoundException e) {
                 SwiftLoggers.getLogger().warn("default repository not found", e);
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error("upload segment's all show {} failed", segKey, e);
