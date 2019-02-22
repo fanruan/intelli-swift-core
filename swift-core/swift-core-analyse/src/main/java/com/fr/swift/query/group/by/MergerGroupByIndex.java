@@ -1,10 +1,6 @@
 package com.fr.swift.query.group.by;
 
-import com.fr.swift.structure.Pair;
-import com.fr.swift.structure.iterator.RowTraversal;
-
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Created by pony on 2018/3/29.
@@ -17,12 +13,12 @@ public class MergerGroupByIndex extends MergerGroupBy<int[]> {
     }
 
     @Override
-    protected Comparator<Pair<int[], List<RowTraversal[]>>> getComparator() {
-        return new Comparator<Pair<int[], List<RowTraversal[]>>>() {
+    protected Comparator<Item<int[]>> getComparator() {
+        return new Comparator<Item<int[]>>() {
             @Override
-            public int compare(Pair<int[], List<RowTraversal[]>> o1, Pair<int[], List<RowTraversal[]>> o2) {
-                int[] index1 = o1.getKey();
-                int[] index2 = o2.getKey();
+            public int compare(Item<int[]> o1, Item<int[]> o2) {
+                int[] index1 = o1.getPair().getKey();
+                int[] index2 = o2.getPair().getKey();
                 for (int i = 0; i < index1.length; i++) {
                     int result = asc[i] ? index1[i] - index2[i] : index2[i] - index1[i];
                     if (result != 0) {
