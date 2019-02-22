@@ -17,10 +17,8 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentResultSet;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.collate.FragmentCollectRule;
@@ -34,7 +32,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.source.resultset.CoSwiftResultSet;
 import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.task.service.ServiceTaskType;
 import com.fr.swift.task.service.SwiftServiceCallable;
@@ -171,18 +168,19 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         Table table = database.getTable(tableKey);
 
         SegmentMerger merger = new SegmentMergerImpl();
-        List<SegmentKey> newSegmentKeys = merger.merge(table, getSegmentsByKeys(collateSegKeys), alloter);
-
+        List<Segment> segments = getSegmentsByKeys(collateSegKeys);
+        if (!collateSegKeys.isEmpty() && segments.isEmpty()) {
+            // 要合并的块全部标记删除了
+            clearCollatedSegment(collateSegKeys, tableKey);
+            return;
+        }
+        List<SegmentKey> newSegmentKeys = merger.merge(table, segments, alloter);
+        if (newSegmentKeys.isEmpty()) {
+            // 合并失败
+            return;
+        }
         fireUploadHistory(newSegmentKeys);
         clearCollatedSegment(collateSegKeys, tableKey);
-    }
-
-    private SwiftResultSet newCollateResultSet(List<Segment> segs) {
-        List<SwiftResultSet> resultSets = new ArrayList<SwiftResultSet>();
-        for (Segment seg : segs) {
-            resultSets.add(new SegmentResultSet(seg));
-        }
-        return new CoSwiftResultSet(resultSets);
     }
 
     /**
@@ -204,7 +202,10 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     private List<Segment> getSegmentsByKeys(List<SegmentKey> segmentKeys) {
         List<Segment> segments = new ArrayList<Segment>();
         for (SegmentKey segmentKey : segmentKeys) {
-            segments.add(segmentManager.getSegment(segmentKey));
+            Segment segment = segmentManager.getSegment(segmentKey);
+            if (segment.getAllShowIndex().getCardinality() > 0) {
+                segments.add(segment);
+            }
         }
         return segments;
     }
