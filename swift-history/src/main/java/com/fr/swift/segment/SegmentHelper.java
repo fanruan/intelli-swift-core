@@ -14,7 +14,7 @@ import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepository;
-import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
+import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.relation.RelationIndexImpl;
@@ -72,7 +72,7 @@ public class SegmentHelper {
                     segmentService.removeSegments(notExists);
                 }
             }
-        } catch (Exception e) {
+        } catch (RepoNotFoundException e) {
             SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
         return needDownload;
@@ -137,7 +137,7 @@ public class SegmentHelper {
                     SwiftLoggers.getLogger().info("Download {} {}successful", sourceKey, sets);
                 }
             }
-        } catch (DefaultRepoNotFoundException e) {
+        } catch (RepoNotFoundException e) {
             SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
     }
@@ -184,7 +184,7 @@ public class SegmentHelper {
                     ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new HistoryLoadSegmentRpcEvent(sourceKey, clusterId));
                 }
             }
-        } catch (DefaultRepoNotFoundException e) {
+        } catch (RepoNotFoundException e) {
             SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
     }
@@ -246,7 +246,7 @@ public class SegmentHelper {
                     ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey, segNeedUpload), clusterId));
                 }
             }
-        } catch (DefaultRepoNotFoundException e) {
+        } catch (RepoNotFoundException e) {
             SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
     }
