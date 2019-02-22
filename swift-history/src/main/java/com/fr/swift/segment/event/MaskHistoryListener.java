@@ -6,7 +6,7 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.exception.DefaultRepoNotFoundException;
+import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentKey;
@@ -51,7 +51,7 @@ public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
             String remote = String.format("%s/%s", new CubePathBuilder(segKey).build(), BaseSegment.ALL_SHOW_INDEX);
             try {
                 SwiftRepositoryManager.getManager().currentRepo().zipToRemote(local, remote);
-            } catch (DefaultRepoNotFoundException e) {
+            } catch (RepoNotFoundException e) {
                 SwiftLoggers.getLogger().warn("default repository not fount. ", e);
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error("mask segment {} failed", segKey, e);
