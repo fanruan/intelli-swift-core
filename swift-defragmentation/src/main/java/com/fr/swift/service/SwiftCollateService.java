@@ -27,8 +27,8 @@ import com.fr.swift.segment.collate.FragmentCollectRule;
 import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
-import com.fr.swift.segment.operator.Collater;
-import com.fr.swift.segment.operator.collate.HistoryCollater;
+import com.fr.swift.segment.operator.collate.segment.SegmentMerger;
+import com.fr.swift.segment.operator.collate.segment.SegmentMergerImpl;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
@@ -169,17 +169,11 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             throw new TableNotExistException(tableKey);
         }
         Table table = database.getTable(tableKey);
-        SwiftResultSet swiftResultSet = newCollateResultSet(getSegmentsByKeys(collateSegKeys));
-        Collater collater = new HistoryCollater(table, alloter);
-        collater.collate(swiftResultSet);
-        List<SegmentKey> newSegmentKeys = collater.getNewSegments();
-        List<Segment> newSegs = SegmentUtils.newSegments(newSegmentKeys);
 
-        // todo 暂时同步做索引
-        SegmentUtils.indexSegmentIfNeed(newSegs);
+        SegmentMerger merger = new SegmentMergerImpl();
+        List<SegmentKey> newSegmentKeys = merger.merge(table, getSegmentsByKeys(collateSegKeys), alloter);
 
         fireUploadHistory(newSegmentKeys);
-
         clearCollatedSegment(collateSegKeys, tableKey);
     }
 
