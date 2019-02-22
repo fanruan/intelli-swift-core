@@ -72,7 +72,7 @@ public class SegmentHelper {
                     segmentService.removeSegments(notExists);
                 }
             }
-        } catch (DefaultRepoNotFoundException e) {
+        } catch (Exception e) {
             SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
         return needDownload;
