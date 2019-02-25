@@ -42,7 +42,7 @@ public class SegmentMergerImpl implements SegmentMerger {
             ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
             Segment segment = SegmentUtils.newSegment(location, dataSource.getMetadata());
             try {
-                AbstractBuilder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
+                Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                 builder.build();
                 SegmentUtils.release(segment);
             } catch (Throwable e) {
