@@ -12,6 +12,12 @@ class SegmentItem {
     private List<Segment> segments;
     private List<ImmutableBitMap> allShow;
 
+    /**
+     * 用于生成一个新块的碎片块集合
+     *
+     * @param segments 一组待合并的块
+     * @param allShow  每个块对应的allShow
+     */
     public SegmentItem(List<Segment> segments, List<ImmutableBitMap> allShow) {
         this.segments = segments;
         this.allShow = allShow;
