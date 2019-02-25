@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/21.
  */
-class SegmentBuilder extends AbstractBuilder {
+class SegmentBuilder implements Builder {
 
     private Segment segment;
     private List<String> fields;

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/21.
  */
-class DetailBuilder extends AbstractBuilder {
+class DetailBuilder implements Builder {
 
     private DetailColumn column;
     private List<DetailColumn> subColumns;

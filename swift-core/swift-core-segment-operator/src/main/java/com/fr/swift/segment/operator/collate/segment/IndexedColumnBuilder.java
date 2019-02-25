@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/21.
  */
-public class IndexedColumnBuilder extends AbstractBuilder {
+public class IndexedColumnBuilder implements Builder {
 
     private int rowCount;
     private DictionaryEncodedColumn dictColumn;

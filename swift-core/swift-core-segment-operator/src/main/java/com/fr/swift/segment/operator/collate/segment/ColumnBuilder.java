@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/21.
  */
-class ColumnBuilder extends AbstractBuilder {
+class ColumnBuilder implements Builder {
 
     private int rowCount;
     private Column column;
