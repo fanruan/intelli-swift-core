@@ -38,6 +38,19 @@ public class IndexedColumnBuilder extends AbstractBuilder {
 
     private Iterator<Pair<Object[], RowTraversal[][]>> iterator;
 
+    /**
+     * 根据碎片块的columns构建新块的字典列和索引列
+     * 这边实现的前提是要对碎片块进行划分{@link Partitioner}。首先通过对多个碎片块的column分别做groupBy，
+     * 然后根据字典值进行合并，再根据合并结果写新column的index2bitmap和index2dictValue。groupBy迭代器遍历完之后，
+     * 最后写row2index，这样保证了所有写入过程都是顺序写。
+     *
+     * @param rowCount      新块的总行数
+     * @param dictColumn    新块的字典列
+     * @param indexedColumn 新块的索引列
+     * @param subColumns    当前新块column对应的所有碎片块的column
+     * @param allShows      每个碎片块对应的allShow
+     * @param shifters      每个碎片块对应的bitmap偏移器
+     */
     public IndexedColumnBuilder(int rowCount, DictionaryEncodedColumn dictColumn, BitmapIndexedColumn indexedColumn,
                                 List<Column> subColumns, List<ImmutableBitMap> allShows, List<BitMapShifter> shifters) {
         this.rowCount = rowCount;
