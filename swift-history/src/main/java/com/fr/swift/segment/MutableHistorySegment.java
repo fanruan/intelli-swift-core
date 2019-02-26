@@ -57,7 +57,7 @@ public class MutableHistorySegment extends BaseSegment implements HistorySegment
     public void release() {
         super.release();
         for (Column column : columns.values()) {
-            SegmentUtils.release(column);
+            SegmentUtils.releaseHisColumn(column);
         }
     }
 }

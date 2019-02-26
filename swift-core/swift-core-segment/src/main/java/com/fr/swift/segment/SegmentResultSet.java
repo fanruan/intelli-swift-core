@@ -116,7 +116,7 @@ public class SegmentResultSet implements SwiftResultSet {
 
     @Override
     public void close() {
-        SegmentUtils.release(seg);
+        SegmentUtils.releaseHisSeg(seg);
         SegmentUtils.releaseColumnsOf(seg);
     }
 }

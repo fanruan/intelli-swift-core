@@ -10,10 +10,10 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/20.
  */
-public interface SegmentMerger {
+public interface HisSegmentMerger {
 
     /**
-     * 合并多块segment到新块
+     * 合并多个历史块碎片到新的历史块
      *
      * @param dataSource 表
      * @param segments   要合并的块
