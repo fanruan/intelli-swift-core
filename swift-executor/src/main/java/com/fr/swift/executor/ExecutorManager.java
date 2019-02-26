@@ -32,10 +32,7 @@ public class ExecutorManager {
         taskList.addAll(dbTasks);
         taskList.addAll(memTasks);
         if (!taskList.isEmpty()) {
-            synchronized (TaskRouter.class) {
-                TaskRouter.getInstance().addTasks(taskList);
-            }
-            return true;
+            return TaskRouter.getInstance().addTasks(taskList);
         } else {
             return false;
         }

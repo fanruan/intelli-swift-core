@@ -49,14 +49,15 @@ public class ExecutorManagerTest {
     }
 
     @Test
-    public void testPullAll() {
+    public void testPullEmpty() {
         Assert.assertFalse(ExecutorManager.getInstance().pull());
     }
 
     @Test
-    public void testPullEmpty() {
+    public void testPullAll() {
         Mockito.when(dbQueue.pullAll()).thenReturn(Collections.singletonList(executorTask1));
         Mockito.when(memoryQueue.pullBeforeTime(Mockito.anyLong())).thenReturn(Collections.singletonList(executorTask2));
-        Assert.assertTrue(ExecutorManager.getInstance().pull());
+        ExecutorManager.getInstance().pull();
+        Mockito.verify(taskRouter).addTasks(Mockito.<ExecutorTask>anyList());
     }
 }
