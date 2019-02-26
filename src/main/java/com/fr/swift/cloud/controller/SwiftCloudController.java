@@ -3,6 +3,10 @@ package com.fr.swift.cloud.controller;
 import com.fr.swift.cloud.SwiftCloudUtils;
 import com.fr.swift.repository.utils.ZipUtils;
 import com.fr.swift.util.Strings;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -13,6 +17,7 @@ import java.util.Map;
  * @author yee
  * @date 2019-02-25
  */
+@RestController
 public class SwiftCloudController {
     /**
      * TODO: 2019/02/25 用户名密码先写为空，先下载目录放在当前目录县
@@ -21,6 +26,8 @@ public class SwiftCloudController {
     private static final String PASSWORD = Strings.EMPTY;
     private static final String DOWNLOAD_ROOT_PATH = System.getProperty("user.dir");
 
+    @ResponseBody
+    @RequestMapping(value = "/triggerAnalyse", method = RequestMethod.POST)
     public Map<String, Object> triggerAnalyse(UploadInfo info) {
         Map<String, Object> result = new HashMap<String, Object>();
         try {
