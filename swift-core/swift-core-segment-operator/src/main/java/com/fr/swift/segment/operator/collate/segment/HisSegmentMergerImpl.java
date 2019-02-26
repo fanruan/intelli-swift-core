@@ -36,32 +36,35 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
         List<SegmentKey> segmentKeys = new ArrayList<SegmentKey>();
         List<String> fields = dataSource.getMetadata().getFieldNames();
         List<SegmentItem> items = partitioner.partition(segments);
-        for (SegmentItem item : items) {
-            SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO);
-            segmentKeys.add(segKey);
-            ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
-            Segment segment = SegmentUtils.newSegment(location, dataSource.getMetadata());
-            try {
-                Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
-                builder.build();
-                SegmentUtils.releaseHisSeg(segment);
-            } catch (Throwable e) {
+        try {
+            for (SegmentItem item : items) {
+                SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO);
+                segmentKeys.add(segKey);
+                ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
+                Segment segment = SegmentUtils.newSegment(location, dataSource.getMetadata());
                 try {
+                    Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
+                    builder.build();
                     SegmentUtils.releaseHisSeg(segment);
-                    SEG_SVC.removeSegments(segmentKeys);
-                    for (SegmentKey key : segmentKeys) {
-                        SegmentUtils.clearSegment(key);
+                } catch (Throwable e) {
+                    try {
+                        SegmentUtils.releaseHisSeg(segment);
+                        SEG_SVC.removeSegments(segmentKeys);
+                        for (SegmentKey key : segmentKeys) {
+                            SegmentUtils.clearSegment(key);
+                        }
+                    } catch (Exception ignore) {
                     }
-                } catch (Exception ignore) {
+                    return new ArrayList<SegmentKey>();
                 }
-                return new ArrayList<SegmentKey>();
+            }
+            return segmentKeys;
+        } finally {
+            // 释放读过的碎片块。这边直接释放碎片块，可能会导致还在session中的查询报错，刷新之后就没问题了
+            for (SegmentItem item : items) {
+                SegmentUtils.releaseHisSeg(item.getSegments());
             }
         }
-        // 释放读过的碎片块。这边直接释放碎片块，可能会导致还在session中的查询报错，刷新之后就没问题了
-        for (SegmentItem item : items) {
-            SegmentUtils.releaseHisSeg(item.getSegments());
-        }
-        return segmentKeys;
     }
 
 }
