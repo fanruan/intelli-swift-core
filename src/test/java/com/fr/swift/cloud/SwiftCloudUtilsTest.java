@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.io.File;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
@@ -36,7 +35,7 @@ public class SwiftCloudUtilsTest {
             // 通过客户的用户ID、客户的应用ID和客户的数据包日期获取数据包的下载链接
             String downloadLink = SwiftCloudUtils.getDownloadLink(appKey, appSecret, "140045", "fa7fa29a-4581-464d-8088-641663ace623", "201902");
             // 打印结果
-            assertNotNull(downloadLink);
+            assertTrue(Strings.isNotEmpty(downloadLink));
         }
     }
 

@@ -114,9 +114,8 @@ public class SwiftCloudUtils {
                 if (SwiftCloudConstants.SUCCESS.equals(responseMap.get("status"))) {
                     return responseMap.get("data").toString();
                 } else {
-
+                    SwiftLoggers.getLogger().warn(responseMap.get("error").toString());
                 }
-                SwiftLoggers.getLogger().warn(responseMap.get("error").toString());
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn(e);
