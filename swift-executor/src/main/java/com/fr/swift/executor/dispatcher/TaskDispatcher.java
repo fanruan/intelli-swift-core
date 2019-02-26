@@ -5,12 +5,9 @@ import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.TaskRouter;
 import com.fr.swift.executor.thread.TaskExecuteRunnable;
-import com.fr.swift.executor.type.LockType;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.util.Util;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
-import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -65,7 +62,7 @@ public class TaskDispatcher {
                     } finally {
                         lock.unlock();
                     }
-                    ExecutorTask pickedTask = pickExecutorTask();
+                    ExecutorTask pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
                     if (pickedTask == null) {
                         boolean hasPolled = ExecutorManager.getInstance().pull();
                         if (!hasPolled) {
@@ -84,85 +81,7 @@ public class TaskDispatcher {
 
     }
 
-
-    private ExecutorTask pickExecutorTask() {
-        synchronized (TaskRouter.class) {
-            List<ExecutorTask> idleTasks = TaskRouter.getInstance().getIdleTasks();
-            ExecutorTask taskPicked = null;
-            for (ExecutorTask idleTask : idleTasks) {
-                if (isQualified(idleTask)) {
-                    taskPicked = idleTask;
-                    break;
-                }
-            }
-            if (taskPicked != null && TaskRouter.getInstance().remove(taskPicked)) {
-                return taskPicked;
-            } else {
-                return null;
-            }
-        }
-    }
-
     private boolean isThreadBusy() {
         return ConsumeQueue.getInstance().size() >= EXECUTE_THREAD_NUM;
-    }
-
-    private boolean isQualified(ExecutorTask task) {
-        lock.lock();
-        try {
-            List<ExecutorTask> taskList = ConsumeQueue.getInstance().getTaskList();
-            for (ExecutorTask runningTask : taskList) {
-                if (isTasksConfilct(runningTask, task)) {
-                    return false;
-                }
-            }
-            return true;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    /**
-     * 任务是否冲突
-     *
-     * @param runningTask
-     * @param executorTask
-     * @return true:冲突，不能同时执行   false:互斥，可以同时执行
-     */
-    private boolean isTasksConfilct(ExecutorTask runningTask, ExecutorTask executorTask) {
-        //表名不同，直接return false
-        if (Util.equals(runningTask.getSourceKey(), executorTask.getSourceKey())) {
-            //有一个是NONE，则直接return false
-            if (LockType.isNoneLock(runningTask) || LockType.isNoneLock(executorTask)) {
-                return false;
-            }
-            switch (runningTask.getLockType()) {
-                case TABLE://虚拟锁任务可以执行
-                    if (LockType.isVirtualLock(executorTask)) {
-                        return false;
-                    }
-                    return true;
-                case REAL_SEG://虚拟锁任务可以执行；不是同一块的真实锁任务可以执行
-                    if (LockType.isVirtualLock(executorTask)) {
-                        return false;
-                    }
-                    if (LockType.isRealLock(executorTask) && !LockType.isSameLockKey(runningTask, executorTask)) {
-                        return false;
-                    }
-                    return true;
-                case VIRTUAL_SEG://表锁、真实锁可以执行
-                    if (LockType.isTableLock(executorTask)) {
-                        return false;
-                    }
-                    if (LockType.isRealLock(executorTask)) {
-                        return false;
-                    }
-                    return true;
-                default:
-                    return true;
-            }
-        } else {
-            return false;
-        }
     }
 }
