@@ -169,16 +169,4 @@ public class SegmentUtils {
             releaseHisColumn(column);
         }
     }
-
-    public static void releaseColumnsOf(Segment seg) {
-        try {
-            SwiftMetaData meta = seg.getMetaData();
-            for (int i = 0; i < meta.getColumnCount(); i++) {
-                Column<?> column = seg.getColumn(new ColumnKey(meta.getColumnName(i + 1)));
-                releaseHisColumn(column);
-            }
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-    }
 }

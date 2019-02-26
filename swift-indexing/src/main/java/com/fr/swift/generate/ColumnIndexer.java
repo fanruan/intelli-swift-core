@@ -85,7 +85,6 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
                 Column<T> column = getColumn(segment);
                 buildColumnIndex(column, segment.getRowCount());
             } finally {
-                SegmentUtils.releaseColumnsOf(segment);
                 SegmentUtils.releaseHisSeg(segment);
             }
         }
