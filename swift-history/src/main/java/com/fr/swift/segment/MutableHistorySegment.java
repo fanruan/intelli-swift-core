@@ -52,4 +52,12 @@ public class MutableHistorySegment extends BaseSegment implements HistorySegment
             return null;
         }
     }
+
+    @Override
+    public void release() {
+        super.release();
+        for (Column column : columns.values()) {
+            SegmentUtils.release(column);
+        }
+    }
 }
