@@ -101,7 +101,6 @@ public abstract class BaseInserter {
     }
 
     protected void release() {
-        SegmentUtils.releaseColumns(columns);
         SegmentUtils.releaseHisSeg(segment);
     }
 
