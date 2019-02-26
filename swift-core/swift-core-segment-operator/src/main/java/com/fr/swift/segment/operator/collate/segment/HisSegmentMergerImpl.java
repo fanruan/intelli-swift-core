@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/20.
  */
-public class SegmentMergerImpl implements SegmentMerger {
+public class HisSegmentMergerImpl implements HisSegmentMerger {
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
     private static final int currentDir = 0;
@@ -44,10 +44,10 @@ public class SegmentMergerImpl implements SegmentMerger {
             try {
                 Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                 builder.build();
-                SegmentUtils.release(segment);
+                SegmentUtils.releaseHisSeg(segment);
             } catch (Throwable e) {
                 try {
-                    SegmentUtils.release(segment);
+                    SegmentUtils.releaseHisSeg(segment);
                     SEG_SVC.removeSegments(segmentKeys);
                     for (SegmentKey key : segmentKeys) {
                         SegmentUtils.clearSegment(key);
@@ -56,6 +56,10 @@ public class SegmentMergerImpl implements SegmentMerger {
                 }
                 return new ArrayList<SegmentKey>();
             }
+        }
+        // 释放读过的碎片块。这边直接释放碎片块，可能会导致还在session中的查询报错，刷新之后就没问题了
+        for (SegmentItem item : items) {
+            SegmentUtils.releaseHisSeg(item.getSegments());
         }
         return segmentKeys;
     }

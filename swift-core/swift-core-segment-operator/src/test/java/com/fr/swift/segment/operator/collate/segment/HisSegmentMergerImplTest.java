@@ -54,7 +54,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @PrepareForTest({SwiftContext.class, SwiftDatabase.class, SegmentUtils.class})
-public class SegmentMergerImplTest {
+public class HisSegmentMergerImplTest {
 
     @Before
     public void setUp() throws Exception {
@@ -111,7 +111,7 @@ public class SegmentMergerImplTest {
             }
         });
         mockExpectedColumn(seg0);
-        SegmentMerger merger = new SegmentMergerImpl();
+        HisSegmentMerger merger = new HisSegmentMergerImpl();
         List<SegmentKey> keys = merger.merge(dataSource, Collections.singletonList(testSeg0), alloter);
         assertEquals(1, keys.size());
         check0(seg0);
