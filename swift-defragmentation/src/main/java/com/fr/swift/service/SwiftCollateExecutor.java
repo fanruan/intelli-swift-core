@@ -5,7 +5,6 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.executor.CollateExecutor;
@@ -57,7 +56,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
             for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
                 List<SegmentKey> keys = new ArrayList<SegmentKey>();
                 for (SegmentKey key : tableEntry.getValue()) {
-                    if (key.getStoreType() == Types.StoreType.MEMORY) {
+                    if (key.getStoreType().isTransient()) {
                         continue;
                     }
                     keys.add(key);
