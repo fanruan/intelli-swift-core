@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
 
 /**
  * @author yee
@@ -50,26 +49,15 @@ public class SwiftCloudUtilsTest {
         if (res != null) {
             String appKey = res.get("app_key");
             String appSecret = res.get("app_secret");
-
-
             // 通过报告上传的地址获取报告上传的Token
             String reportPath = "analyze/report_140045_fa7fa29a-4581-464d-8088-641663ace623_201902.txt";
-            String uploadToken = SwiftCloudUtils.getToken(appKey, appSecret, reportPath);
-            if (!Strings.isEmpty(uploadToken)) {
-                // 本地报告文件
-                File reportFile = new File("/Users/yee/Downloads/report_140045_fa7fa29a-4581-464d-8088-641663ace623_201902.txt");
+            // 本地报告文件
+            File reportFile = new File("/Users/yee/Downloads/report_140045_fa7fa29a-4581-464d-8088-641663ace623_201902.txt");
 
-                // 通过报告本地的路径、报告上传的地址和报告上传的Token上传报告
-                boolean upload = SwiftCloudUtils.upload(reportFile, reportPath, uploadToken);
-                if (upload) {
-                    // 更新帆软市场的数据库
-                    boolean record = SwiftCloudUtils.uploadSubmit(appKey, appSecret, "140045", "fa7fa29a-4581-464d-8088-641663ace623", "201902", reportPath);
-                    // 打印结果
-                    assertTrue(record);
-                }
-            } else {
-                fail();
-            }
+            // 通过报告本地的路径、报告上传的地址和报告上传的Token上传报告
+            boolean upload = SwiftCloudUtils.upload(reportFile, appKey, appSecret, "140045", "fa7fa29a-4581-464d-8088-641663ace623", "201902", reportPath);
+            // 打印结果
+            assertTrue(upload);
         }
     }
 }
