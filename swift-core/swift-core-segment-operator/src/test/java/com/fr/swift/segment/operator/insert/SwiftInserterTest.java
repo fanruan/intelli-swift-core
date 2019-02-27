@@ -104,6 +104,6 @@ public class SwiftInserterTest {
         verifyStatic(SegmentUtils.class);
         SegmentUtils.releaseColumns(ArgumentMatchers.<List<Column<Object>>>any());
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.release(segment);
+        SegmentUtils.releaseHisSeg(segment);
     }
 }
