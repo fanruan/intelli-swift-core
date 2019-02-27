@@ -87,7 +87,6 @@ public class FileTransactionManager extends AbstractTransactionManager {
 
     @Override
     public void close() {
-        SegmentUtils.release(hisSegment);
-        SegmentUtils.releaseColumnsOf(hisSegment);
+        SegmentUtils.releaseHisSeg(hisSegment);
     }
 }
