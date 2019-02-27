@@ -123,32 +123,37 @@ public class SegmentUtils {
     }
 
     /**
-     * 只release非内存seg todo 可能需要更明确的方法名
+     * 释放历史块内部所有资源
      *
      * @param seg 块
      */
-    public static void release(Segment seg) {
+    public static void releaseHisSeg(Segment seg) {
         if (seg != null && seg.isHistory()) {
             IoUtil.release(seg);
         }
     }
 
-    public static void release(List<Segment> segs) {
+    /**
+     * 释放历史块内部用到的所有资源
+     *
+     * @param segs
+     */
+    public static void releaseHisSeg(List<Segment> segs) {
         if (segs == null) {
             return;
         }
         for (Segment seg : segs) {
-            release(seg);
+            releaseHisSeg(seg);
         }
     }
 
     /**
-     * 只release非内存seg todo 可能需要更明确的方法名
+     * 释放历史块column
      *
      * @param column 列
      * @param <T>    数据类型
      */
-    public static <T> void release(Column<T> column) {
+    public static <T> void releaseHisColumn(Column<T> column) {
         if (column != null && column.getLocation().getStoreType().isPersistent()) {
             IoUtil.release(column.getDetailColumn());
             IoUtil.release(column.getDictionaryEncodedColumn());
@@ -161,19 +166,7 @@ public class SegmentUtils {
             return;
         }
         for (Column<T> column : columns) {
-            release(column);
-        }
-    }
-
-    public static void releaseColumnsOf(Segment seg) {
-        try {
-            SwiftMetaData meta = seg.getMetaData();
-            for (int i = 0; i < meta.getColumnCount(); i++) {
-                Column<?> column = seg.getColumn(new ColumnKey(meta.getColumnName(i + 1)));
-                release(column);
-            }
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
+            releaseHisColumn(column);
         }
     }
 }
