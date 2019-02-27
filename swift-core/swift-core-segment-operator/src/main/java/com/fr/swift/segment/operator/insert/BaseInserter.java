@@ -101,8 +101,7 @@ public abstract class BaseInserter {
     }
 
     protected void release() {
-        SegmentUtils.releaseColumns(columns);
-        SegmentUtils.release(segment);
+        SegmentUtils.releaseHisSeg(segment);
     }
 
     public List<String> getFields() {
