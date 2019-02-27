@@ -5,6 +5,8 @@ import com.fr.swift.cloud.SwiftCloudUtils;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.utils.ZipUtils;
 import com.fr.swift.util.Strings;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +19,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author yee
@@ -33,6 +36,7 @@ public class SwiftCloudController {
     private static final String DOWNLOAD_ROOT_PATH = System.getProperty("user.dir");
 
     private Map<String, String> authMap = new ConcurrentHashMap<String, String>();
+    private ExecutorService service = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftCloudController.class));
 
     @ResponseBody
     @RequestMapping(value = "/triggerAnalyse", method = RequestMethod.POST)
@@ -59,18 +63,21 @@ public class SwiftCloudController {
             if (Strings.isEmpty(appKey) || Strings.isEmpty(appSecret)) {
                 throw new RuntimeException("Auth error! Can not find app_key or app_secret");
             }
-
-            AnalyseTask task = new AnalyseTask(appKey, appSecret, clientUserId, clientAppId, treasDate);
-            // TODO task应该放到队列里执行
-
+            service.submit(new AnalyseTask(appKey, appSecret, clientUserId, clientAppId, treasDate));
             result.put("status", SwiftCloudConstants.SUCCESS);
             result.put("msg", "analyse task has been submitted to the queue");
-
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn(e);
             result.put("error", e.getMessage());
         }
+        logEndTrigger(clientUserId, clientAppId, treasDate);
         return result;
+    }
+
+    private void logEndTrigger(String clientUserId, String clientAppId, String treasDate) {
+        SwiftLoggers.getLogger().info("======================================");
+        SwiftLoggers.getLogger().info("       End Trigger Analyse");
+        logClientInfo(clientUserId, clientAppId, treasDate);
     }
 
 
