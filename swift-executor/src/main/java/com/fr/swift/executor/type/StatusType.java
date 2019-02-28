@@ -7,5 +7,6 @@ package com.fr.swift.executor.type;
  * @description
  */
 public enum StatusType {
+    //
     WAITING, RUNNING, SUCCESS, FAILED
 }

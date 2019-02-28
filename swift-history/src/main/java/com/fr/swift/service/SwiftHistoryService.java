@@ -34,7 +34,6 @@ import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.task.service.ServiceTaskExecutor;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
@@ -60,8 +59,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     private transient SwiftSegmentManager segmentManager;
 
-    private transient ServiceTaskExecutor taskExecutor;
-
     private transient SwiftTablePathService tablePathService;
 
     private transient SwiftSegmentService segmentService;
@@ -80,7 +77,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     public boolean start() throws SwiftServiceException {
         super.start();
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
         tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         loadDataService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftHistoryService.class));
@@ -104,7 +100,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
         segmentManager = null;
-        taskExecutor = null;
         tablePathService = null;
         loadDataService.shutdown();
         loadDataService = null;

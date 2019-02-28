@@ -4,6 +4,7 @@ import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.job.ExecutorJob;
 import com.fr.swift.executor.task.job.Job;
+import com.fr.swift.executor.task.job.Job.JobListener;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,6 +51,9 @@ public class TaskExecutorRunnable {
 
     TaskExecuteRunnable taskExecuteRunnable;
 
+    @Mock
+    private JobListener jobListener;
+
 
     @Before
     public void setUp() throws Exception {
@@ -57,6 +61,7 @@ public class TaskExecutorRunnable {
         PowerMockito.mockStatic(ConsumeQueue.class);
         PowerMockito.whenNew(ExecutorJob.class).withAnyArguments().thenReturn(executorJob);
         Mockito.when(task1.getJob()).thenReturn(job);
+        Mockito.when(job.getJobListener()).thenReturn(jobListener);
         Mockito.when(ConsumeQueue.getInstance()).thenReturn(consumeQueue);
         Mockito.when(consumeQueue.take()).thenReturn(task1, null);
     }
@@ -73,7 +78,7 @@ public class TaskExecutorRunnable {
             Mockito.verify(consumeQueue, Mockito.times(2)).take();
             Mockito.verify(executorJob).run();
             Mockito.verify(executorJob).get();
-            Mockito.verify(executorJob).jobSuccess();
+            Mockito.verify(jobListener).onDone(true);
             Mockito.verify(lock, Mockito.times(2)).lock();
             Mockito.verify(condition, Mockito.times(2)).signal();
             Mockito.verify(lock, Mockito.times(2)).unlock();
