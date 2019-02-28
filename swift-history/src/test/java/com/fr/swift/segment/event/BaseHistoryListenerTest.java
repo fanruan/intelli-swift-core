@@ -15,8 +15,6 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
-import com.fr.swift.task.service.ServiceCallable;
-import com.fr.swift.task.service.ServiceTaskExecutor;
 import org.easymock.EasyMock;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -39,12 +37,6 @@ public class BaseHistoryListenerTest {
         SwiftContext mockSwiftContext = PowerMock.createMock(SwiftContext.class);
         EasyMock.expect(SwiftContext.get()).andReturn(mockSwiftContext).anyTimes();
         PowerMock.replay(SwiftContext.class);
-        // Generate by Mock Plugin
-        ServiceTaskExecutor mockServiceTaskExecutor = PowerMock.createMock(ServiceTaskExecutor.class);
-        EasyMock.expect(mockServiceTaskExecutor.submit(EasyMock.anyObject(ServiceCallable.class))).andReturn(null).anyTimes();
-        PowerMock.replay(mockServiceTaskExecutor);
-
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(ServiceTaskExecutor.class))).andReturn(mockServiceTaskExecutor).anyTimes();
 
         // Generate by Mock Plugin
         SwiftTablePathService mockSwiftTablePathService = PowerMock.createMock(SwiftTablePathService.class);

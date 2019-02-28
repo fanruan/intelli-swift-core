@@ -4,9 +4,11 @@ import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.job.ExecutorJob;
 import com.fr.swift.executor.task.job.Job;
+import com.fr.swift.executor.task.job.Job.JobListener;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.log.SwiftLoggers;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -37,9 +39,9 @@ public class TaskExecuteRunnable implements Runnable {
         this.lock = lock;
         this.freeCondition = condition;
         if (types.length == 0) {
-            threadExecutorTypes = ExecutorTaskType.getAllTypeList();
+            threadExecutorTypes = Arrays.asList(ExecutorTaskType.values());
         } else {
-            threadExecutorTypes = ExecutorTaskType.getTypeList(types);
+            threadExecutorTypes = Arrays.asList(types);
         }
     }
 
@@ -49,18 +51,25 @@ public class TaskExecuteRunnable implements Runnable {
             try {
                 executorTask = ConsumeQueue.getInstance().take();
                 Job job = executorTask.getJob();
+                JobListener jobListener = job.getJobListener();
                 ExecutorJob executorJob = new ExecutorJob(job);
                 executorJob.run();
+                boolean success;
                 try {
                     executorJob.get();
-                    executorJob.jobSuccess();
+                    success = true;
                 } catch (Exception e) {
-                    SwiftLoggers.getLogger().error("e");
-                    executorJob.jobFailure();
+                    SwiftLoggers.getLogger().error(e);
+                    success = false;
+                }
+                if (jobListener != null) {
+                    jobListener.onDone(success);
                 }
             } catch (InterruptedException e) {
                 SwiftLoggers.getLogger().warn("Thread:[{}] catch InterruptedException! Exit!", threadName, e);
                 break;
+            } catch (Throwable t) {
+                SwiftLoggers.getLogger().error(t);
             } finally {
                 lock.lock();
                 try {

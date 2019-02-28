@@ -32,16 +32,12 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.swift.task.service.ServiceTaskType;
-import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * This class created on 2018/7/9
@@ -61,14 +57,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private transient Database database;
 
-    private transient ServiceTaskExecutor taskExecutor;
-
     private transient SwiftSegmentService swiftSegmentService;
-
-
-    public void setTaskExecutor(ServiceTaskExecutor taskExecutor) {
-        this.taskExecutor = taskExecutor;
-    }
 
     private SwiftCollateService() {
     }
@@ -78,7 +67,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         super.start();
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         database = SwiftDatabase.getInstance();
-        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
         swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         return true;
     }
@@ -88,7 +76,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         super.shutdown();
         segmentManager = null;
         database = null;
-        taskExecutor = null;
         swiftSegmentService = null;
         return true;
     }
@@ -97,48 +84,24 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     public void autoCollateRealtime(final SourceKey tableKey) throws Exception {
         final List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
         checkSegmentKeys(segmentKeys, Types.StoreType.MEMORY);
-        taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.COLLATE, new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                collateSegments(tableKey, segmentKeys);
-                return null;
-            }
-        }));
+        collateSegments(tableKey, segmentKeys);
     }
 
     @Override
     public void autoCollateHistory(final SourceKey tableKey) throws Exception {
         final List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
         checkSegmentKeys(segmentKeys, Types.StoreType.FINE_IO);
-        taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.COLLATE, new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                collateSegments(tableKey, segmentKeys);
-                return null;
-            }
-        }));
+        collateSegments(tableKey, segmentKeys);
     }
 
     @Override
     public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeyList) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.COLLATE, new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                collateSegments(tableKey, segmentKeyList);
-                return null;
-            }
-        }));
+        collateSegments(tableKey, segmentKeyList);
     }
 
     @Override
     public void autoCollate(final SourceKey tableKey) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.COLLATE, new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                collateSegments(tableKey);
-                return null;
-            }
-        }));
+        collateSegments(tableKey);
     }
 
     @Override
