@@ -99,11 +99,13 @@ public class SwiftCloudUtils {
 
 
     public static String getDownloadLink(String appKey, String appSecret, String clientUserId, String clientAppId, String treasDate) {
-        HashMap<String, Object> params = getSignMap(appKey, appSecret);
+        HashMap<String, Object> params = getSignMap(appKey);
         // 数据包信息
         params.put("client_user_id", clientUserId);
         params.put("client_app_id", clientAppId);
         params.put("treas_date", treasDate);
+        // 签名
+        params.put("sign", getSign(params, appSecret));
         Response response = null;
         try {
 
@@ -126,15 +128,13 @@ public class SwiftCloudUtils {
         return Strings.EMPTY;
     }
 
-    private static HashMap<String, Object> getSignMap(String appKey, String appSecret) {
+    private static HashMap<String, Object> getSignMap(String appKey) {
         HashMap<String, Object> params = new HashMap<String, Object>();
 
         params.put("app_key", appKey);
         params.put("v", SwiftCloudConstants.VERSION);
         params.put("sign_method", SwiftCloudConstants.SIGN_METHOD);
         params.put("timestamp", String.valueOf(System.currentTimeMillis()));
-        // 签名
-        params.put("sign", getSign(params, appSecret));
         return params;
     }
 
@@ -170,7 +170,7 @@ public class SwiftCloudUtils {
      * @return 上传是否成功
      */
     public static boolean upload(File report, String appKey, String appSecret, String clientUserId, String clientAppId, String treasDate, String reportPath) {
-        HashMap<String, Object> params = getSignMap(appKey, appSecret);
+        HashMap<String, Object> params = getSignMap(appKey);
         String timeStamp = String.valueOf(System.currentTimeMillis());
         params.put("timestamp", timeStamp);
 
@@ -178,6 +178,8 @@ public class SwiftCloudUtils {
         params.put("client_app_id", clientAppId);
         params.put("treas_date", treasDate);
         params.put("report_path", reportPath);
+        // 签名
+        params.put("sign", getSign(params, appSecret));
         try {
             MultipartBody.Builder builder = new MultipartBody.Builder();
             for (Map.Entry<String, Object> param : params.entrySet()) {
@@ -194,10 +196,12 @@ public class SwiftCloudUtils {
                     .readTimeout(20, TimeUnit.SECONDS).build();
             Request request = new Request.Builder()
                     .url(SwiftCloudConstants.UPLOAD_URL)
-                    .post(requestBody)
+                    .put(requestBody)
                     .build();
-            client.newCall(request).execute().close();
-            return true;
+            Response response = client.newCall(request).execute();
+            boolean success = response.isSuccessful();
+            response.close();
+            return success;
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn(e);
         }

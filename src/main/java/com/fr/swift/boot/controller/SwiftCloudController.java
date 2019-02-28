@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -31,9 +30,9 @@ public class SwiftCloudController {
     /**
      * TODO: 2019/02/25 用户名密码先写为空，先下载目录放在当前目录县
      */
-    private static final String USERNAME = Strings.EMPTY;
-    private static final String PASSWORD = Strings.EMPTY;
-    private static final String DOWNLOAD_ROOT_PATH = System.getProperty("user.dir");
+    private static final String USERNAME = "冰轮蓝蓝";
+    private static final String PASSWORD = "fr110059";
+    private static final String DOWNLOAD_ROOT_PATH = String.format("%s/analyseSourceData", System.getProperty("user.dir"));
 
     private Map<String, String> authMap = new ConcurrentHashMap<String, String>();
     private ExecutorService service = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftCloudController.class));
@@ -139,20 +138,20 @@ public class SwiftCloudController {
                 if (Strings.isNotEmpty(downloadLink)) {
                     SwiftLoggers.getLogger().info("get download link success. link is {}", downloadLink);
                     InputStream inputStream = new URL(downloadLink).openStream();
-                    String downloadPath = DOWNLOAD_ROOT_PATH + "/" + clientUserId + "/" + treasDate;
+                    String downloadPath = DOWNLOAD_ROOT_PATH + "/" + clientUserId + "/" + clientAppId;
                     ZipUtils.unZip(downloadPath, inputStream);
                     logStartAnalyse(clientUserId, clientAppId, treasDate);
                     // TODO 2019/02/25 接导入 + 生成报告
 
                     // 云端的path
-                    String reportPath = "";
-                    String filePath = "";
-                    File report = new File(filePath);
-                    logStartUpload(clientUserId, clientAppId, treasDate);
-                    boolean upload = SwiftCloudUtils.upload(report, appKey, appSecret, clientUserId, clientAppId, treasDate, reportPath);
-                    if (upload) {
-                        SwiftLoggers.getLogger().info("Upload report {} success", reportPath);
-                    }
+//                    String reportPath = "";
+//                    String filePath = "";
+//                    File report = new File(filePath);
+//                    logStartUpload(clientUserId, clientAppId, treasDate);
+//                    boolean upload = SwiftCloudUtils.upload(report, appKey, appSecret, clientUserId, clientAppId, treasDate, reportPath);
+//                    if (upload) {
+//                        SwiftLoggers.getLogger().info("Upload report {} success", reportPath);
+//                    }
                 } else {
                     throw new RuntimeException("Download link is empty");
                 }
