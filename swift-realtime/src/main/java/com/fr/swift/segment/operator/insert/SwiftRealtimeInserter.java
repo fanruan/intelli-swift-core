@@ -6,7 +6,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.MutableHistorySegment;
+import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.backup.SwiftSegmentBackup;
 import com.fr.swift.source.Row;
@@ -41,7 +41,7 @@ public class SwiftRealtimeInserter extends SwiftInserter {
         SwiftMetaData meta = segment.getMetaData();
         String segPath = segment.getLocation().getPath();
         SwiftDatabase swiftSchema = meta.getSwiftDatabase();
-        return new MutableHistorySegment(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), StoreType.NIO), meta);
+        return new BackupSegment(new ResourceLocation(segPath.replace(swiftSchema.getDir(), swiftSchema.getBackupDir()), StoreType.NIO), meta);
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.fr.swift.executor.type;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 
 
@@ -15,8 +17,19 @@ public class ExecutorTaskTypeTest {
 
     @Test
     public void testGetAllTypeList() {
-        assertEquals(ExecutorTaskType.getAllTypeList().size(), 9);
-        assertEquals(ExecutorTaskType.getAllTypeList().toString(), "[REALTIME, TRANSFER, INDEX, DELETE, COLLATE, UPLOAD, DOWNLOAD, HISTORY, QUERY]");
+        assertEquals(ExecutorTaskType.getAllTypeList().size(), 11);
+        assertEquals(ExecutorTaskType.getAllTypeList(), Arrays.asList(
+                ExecutorTaskType.REALTIME,
+                ExecutorTaskType.RECOVERY,
+                ExecutorTaskType.TRANSFER,
+                ExecutorTaskType.INDEX,
+                ExecutorTaskType.DELETE,
+                ExecutorTaskType.TRUNCATE,
+                ExecutorTaskType.COLLATE,
+                ExecutorTaskType.UPLOAD,
+                ExecutorTaskType.DOWNLOAD,
+                ExecutorTaskType.HISTORY,
+                ExecutorTaskType.QUERY));
     }
 
     @Test
