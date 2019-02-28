@@ -47,13 +47,17 @@ public class ZipUtils {
         long start = System.currentTimeMillis();
         ZipInputStream zis = new ZipInputStream(new BufferedInputStream(inputStream));
         ZipEntry entry;
-        while ((entry = zis.getNextEntry()) != null && !entry.isDirectory()) {
-            File fout = new File(parent, entry.getName());
-            if (!fout.exists()) {
-                fout.getParentFile().mkdirs();
+        while ((entry = zis.getNextEntry()) != null) {
+            File file = new File(parent, entry.getName());
+            if (entry.isDirectory() && !file.exists()) {
+                file.mkdirs();
+                continue;
+            }
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
             }
 
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fout));
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
             IoUtil.copyBinaryTo(zis, bos);
             IoUtil.close(bos);
         }
