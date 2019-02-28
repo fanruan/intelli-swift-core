@@ -149,6 +149,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
 
                 for (Entry<URL, DeleteService> entry : factory.getPeerProxies(DeleteService.class).entrySet()) {
                     try {
+                        // fixme 通过Proxy调用的service方法，如果真实方法不允许调用produceTask，那就没地方调用了
                         if (entry.getValue().delete(tableKey, where)) {
                             // delete 提交成功
                             Map<SourceKey, List<SegmentKey>> ownSegKeys = segmentService.getOwnSegments(entry.getKey().getDestination().getId());
@@ -170,6 +171,7 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
 
                             if (!segKeys.isEmpty()) {
                                 // 提交上传任务
+                                // fixme 通过Proxy调用的service方法，如果真实方法不允许调用produceTask，那就没地方调用了
                                 uploadServices.get(entry.getKey()).uploadAllShow(segKeys);
                             }
 
@@ -182,11 +184,13 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
             case TRUNCATE:
                 SourceKey truncateContent = (SourceKey) event.getContent();
                 try {
+                    // fixme 通过Proxy调用的service方法，如果真实方法不允许调用produceTask，那就没地方调用了
                     factory.getProxy(RealtimeService.class).truncate(truncateContent);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                 }
                 try {
+                    // fixme 通过Proxy调用的service方法，如果真实方法不允许调用produceTask，那就没地方调用了
                     factory.getProxy(HistoryService.class).truncate(truncateContent);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);

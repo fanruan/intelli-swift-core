@@ -9,6 +9,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Util;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -26,6 +27,7 @@ import static org.junit.Assert.fail;
  * @author anchore
  * @date 2018/4/4
  */
+@Ignore
 public class DatabaseTest {
 
     private Database db = SwiftDatabase.getInstance();

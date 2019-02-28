@@ -1,22 +1,14 @@
 package com.fr.swift.segment.event;
 
-import com.fr.swift.SwiftContext;
-import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
+import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.task.impl.UploadExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.exception.RepoNotFoundException;
-import com.fr.swift.repository.manager.SwiftRepositoryManager;
-import com.fr.swift.segment.BaseSegment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.swift.task.service.ServiceTaskType;
-import com.fr.swift.task.service.SwiftServiceCallable;
 
-import java.io.IOException;
-import java.util.concurrent.Callable;
+import java.sql.SQLException;
 
 /**
  * @author anchore
@@ -25,37 +17,18 @@ import java.util.concurrent.Callable;
  */
 public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
 
-
-    private static final ServiceTaskExecutor SVC_EXEC = SwiftContext.get().getBean(ServiceTaskExecutor.class);
-
     @Override
     public void on(final SegmentKey segKey) {
-        try {
-            SVC_EXEC.submit(new SwiftServiceCallable<Void>(segKey.getTable(), ServiceTaskType.UPLOAD, new Callable<Void>() {
-                @Override
-                public Void call() {
-                    mask(segKey);
-                    return null;
-                }
-            }));
-        } catch (InterruptedException e) {
-            SwiftLoggers.getLogger().error(e);
+        if (ClusterSelector.getInstance().getFactory().isCluster()) {
+            mask(segKey);
         }
     }
 
     private static void mask(final SegmentKey segKey) {
-        if (ClusterSelector.getInstance().getFactory().isCluster()) {
-            int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-            String absoluteSegPath = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
-            String local = String.format("%s/%s", absoluteSegPath, BaseSegment.ALL_SHOW_INDEX);
-            String remote = String.format("%s/%s", new CubePathBuilder(segKey).build(), BaseSegment.ALL_SHOW_INDEX);
-            try {
-                SwiftRepositoryManager.getManager().currentRepo().zipToRemote(local, remote);
-            } catch (RepoNotFoundException e) {
-                SwiftLoggers.getLogger().warn("default repository not fount. ", e);
-            } catch (IOException e) {
-                SwiftLoggers.getLogger().error("mask segment {} failed", segKey, e);
-            }
+        try {
+            TaskProducer.produceTask(UploadExecutorTask.ofAllShowIndex(segKey));
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error("persist task(upload {}'s all_show_index) failed", segKey, e);
         }
     }
 

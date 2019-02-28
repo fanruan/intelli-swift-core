@@ -40,6 +40,7 @@ import java.util.TreeMap;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -84,7 +85,7 @@ public class ColumnIndexerTest {
 
         // base column
         when(detailColumn.get(0)).thenReturn(1L);
-        when(detailColumn.get(1)).thenReturn(Long.MIN_VALUE);
+        // detailColumn.get(1) return 空
         when(detailColumn.get(2)).thenReturn(3L);
         when(detailColumn.get(3)).thenReturn(1L);
         when(dictColumn.putter()).thenReturn(mock(Putter.class));
@@ -127,6 +128,7 @@ public class ColumnIndexerTest {
 
         // 读三行非空明细
         verify(detailColumn).get(0);
+        verify(detailColumn, never()).get(1);
         verify(detailColumn).get(2);
         verify(detailColumn).get(3);
         // put三行

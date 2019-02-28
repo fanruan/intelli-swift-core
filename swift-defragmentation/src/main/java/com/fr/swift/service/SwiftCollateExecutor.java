@@ -1,10 +1,11 @@
 package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
+import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.executor.CollateExecutor;
@@ -41,6 +42,8 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
         executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
         swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
     }
+
+    @Override
     public void stop() {
         executorService.shutdown();
     }
@@ -62,7 +65,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     keys.add(key);
                 }
                 if (!keys.isEmpty()) {
-                    ProxySelector.getProxy(CollateService.class).appointCollate(tableEntry.getKey(), keys);
+                    TaskProducer.produceTask(new CollateExecutorTask(tableEntry.getKey(), keys));
                 }
             }
         } catch (Exception e) {

@@ -40,7 +40,6 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -118,8 +117,6 @@ public class HistoryBlockImporterTest {
 
         historyBlockImporter.importData(resultSet);
 
-        // save temp path
-        verify(tablePathService).saveOrUpdate((SwiftTablePathBean) notNull());
         // create if not exists
         verify(database).existsTable(tableKey);
         verify(database).createTable(tableKey, metaData);
