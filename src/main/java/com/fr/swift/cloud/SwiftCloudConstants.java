@@ -19,23 +19,6 @@ public class SwiftCloudConstants {
     public static final String ZIP_FILE_PATH = String.format("%s/analyseSourceData", System.getProperty("user.dir"));
     private static String ROOT_URL;
 
-
-    private static final String ANALYZE_URL = "/api/v1/analyze";
-    static final String ANALYZE_AUTH_URL = ROOT_URL + ANALYZE_URL;
-
-    public static final String SUCCESS = "success";
-    static final String HMAC_MD5 = "HmacMD5";
-    static final String VERSION = "1.0";
-    static final String SIGN_METHOD = "hmac";
-    /**
-     * Download
-     */
-    static final String DOWNLOAD_URL = ANALYZE_AUTH_URL + "/download/link";
-    /**
-     * Upload
-     */
-    static final String UPLOAD_URL = ANALYZE_AUTH_URL + "/upload/report";
-
     /**
      * root url可以从外部读取
      * PS 主要为了方便debug
@@ -62,4 +45,21 @@ public class SwiftCloudConstants {
             IoUtil.close(inputStream);
         }
     }
+
+    private static final String ANALYZE_URL = "/api/v1/analyze";
+
+    static final String ANALYZE_AUTH_URL = ROOT_URL + ANALYZE_URL;
+    public static final String SUCCESS = "success";
+    static final String HMAC_MD5 = "HmacMD5";
+    static final String VERSION = "1.0";
+    static final String SIGN_METHOD = "hmac";
+    /**
+     * Download
+     */
+    static final String DOWNLOAD_URL = ANALYZE_AUTH_URL + "/download/link";
+
+    /**
+     * Upload
+     */
+    static final String UPLOAD_URL = ANALYZE_AUTH_URL + "/upload/report";
 }
