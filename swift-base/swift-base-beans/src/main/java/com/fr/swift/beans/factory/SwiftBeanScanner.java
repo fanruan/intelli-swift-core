@@ -142,7 +142,11 @@ public class SwiftBeanScanner implements BeanScanner {
                     if ((idx != -1) || recursive) {
                         if (name.endsWith(".class") && !entry.isDirectory()) {
                             try {
-                                String classFile = "jar:" + url.getPath() + name.substring(packageDirName.length() + 1);
+                                String pathHead = url.getPath();
+                                if (!pathHead.endsWith("/")) {
+                                    pathHead += "/";
+                                }
+                                String classFile = "jar:" + pathHead + name.substring(packageDirName.length() + 1);
                                 ClassAnnotations classAnnotations = ClassReader.read(new URL(classFile).openStream());
                                 calcSwiftBeans(classAnnotations, classes);
                             } catch (Exception ignore) {

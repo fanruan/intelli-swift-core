@@ -13,6 +13,8 @@ import com.fr.swift.service.SwiftRepositoryConfService;
 import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.Strings;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -27,8 +29,16 @@ public class PublicConfig {
     public static void load() {
         SwiftRepositoryConfService repositoryConfService = SwiftContext.get().getBean(SwiftRepositoryConfService.class);
         SwiftFineIOConnectorService fineIoService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
-        InputStream is = PublicConfig.class.getClassLoader().getResourceAsStream("public.conf");
+        // 优先读取jar外面的 即当前目录下的文件
+        File configFile = new File("public.conf");
+        InputStream is = null;
         try {
+            if (configFile.exists()) {
+                is = new FileInputStream(configFile);
+            } else {
+                // 如果文件不存在就读jar里的
+                is = PublicConfig.class.getClassLoader().getResourceAsStream("public.conf");
+            }
             if (null != is) {
                 Properties properties = new Properties();
                 properties.load(is);
