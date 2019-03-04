@@ -81,7 +81,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 }
                 insertings.get(segInfo).insert(row);
             }
-
+            // TODO: 2019/3/1 没有满的历史块也要索引
             SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
