@@ -2,6 +2,8 @@ package com.fr.swift.boot.controller;
 
 import com.fr.swift.cloud.SwiftCloudConstants;
 import com.fr.swift.cloud.SwiftCloudUtils;
+import com.fr.swift.cloud.analysis.TemplateAnalysisUtils;
+import com.fr.swift.cloud.load.CSVImportUtils;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.utils.ZipUtils;
 import com.fr.swift.util.Strings;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -36,6 +39,18 @@ public class SwiftCloudController {
 
     private Map<String, String> authMap = new ConcurrentHashMap<String, String>();
     private ExecutorService service = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftCloudController.class));
+
+
+//    @ResponseBody
+//    @RequestMapping(value = "/testAnalysis", method = RequestMethod.POST)
+//    public Boolean testAnalysis() throws Exception {
+//        String path = "/Users/lyon/finereport/cloud-analysis/欧派/treas201812";
+//        String appId = "欧派";
+//        String yearMonth = "201812";
+//        CSVImportUtils.load(path, appId, yearMonth);
+//        TemplateAnalysisUtils.tplAnalysis(appId, yearMonth);
+//        return true;
+//    }
 
     @ResponseBody
     @RequestMapping(value = "/triggerAnalyse", method = RequestMethod.POST)
@@ -138,11 +153,13 @@ public class SwiftCloudController {
                 if (Strings.isNotEmpty(downloadLink)) {
                     SwiftLoggers.getLogger().info("get download link success. link is {}", downloadLink);
                     InputStream inputStream = new URL(downloadLink).openStream();
-                    String downloadPath = DOWNLOAD_ROOT_PATH + "/" + clientUserId + "/" + clientAppId;
+                    String downloadPath = DOWNLOAD_ROOT_PATH + File.separator + clientUserId + File.separator + clientAppId;
                     ZipUtils.unZip(downloadPath, inputStream);
                     logStartAnalyse(clientUserId, clientAppId, treasDate);
-                    // TODO 2019/02/25 接导入 + 生成报告
-
+                    // 先导入csv文件数据到cube，然后生成分析结果，并保存到数据库
+                    String path = downloadPath + File.separator + CSVImportUtils.treas + treasDate;
+                    CSVImportUtils.load(path, clientAppId, treasDate);
+                    TemplateAnalysisUtils.tplAnalysis(clientAppId, treasDate);
                     // 云端的path
 //                    String reportPath = "";
 //                    String filePath = "";

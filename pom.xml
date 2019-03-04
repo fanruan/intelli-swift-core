@@ -24,6 +24,30 @@
             <version>${swift.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-conf-public</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-analyse</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-realtime</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-indexing</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -32,6 +56,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
     <build>
         <plugins>
