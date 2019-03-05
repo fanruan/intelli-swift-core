@@ -70,7 +70,7 @@ public abstract class BaseFileLineParser implements FileLineParser {
             row = adaptor.adapt(row);
         }
         List data = new ArrayList();
-        if (row.getSize() > columns.size()) {
+        if (row.getSize() != columns.size()) {
             Crasher.crash(String.format("Parser expect column size %d but get %d", columns.size(), row.getSize()));
         }
         for (int i = 0; i < row.getSize(); i++) {
