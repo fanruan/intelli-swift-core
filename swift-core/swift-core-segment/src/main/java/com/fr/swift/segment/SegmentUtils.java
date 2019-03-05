@@ -19,7 +19,6 @@ import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -161,7 +160,7 @@ public class SegmentUtils {
         }
     }
 
-    public static <T> void releaseColumns(List<Column<T>> columns) {
+    public static <T> void releaseHisColumn(List<Column<T>> columns) {
         if (columns == null) {
             return;
         }
