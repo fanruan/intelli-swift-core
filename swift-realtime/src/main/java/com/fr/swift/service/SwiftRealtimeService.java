@@ -102,7 +102,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             SourceKey tableKey = table.getSourceKey();
             Map<SourceKey, List<SegmentKey>> ownSegKeys = segSvc.getOwnSegments();
 
-            if (ownSegKeys.containsKey(tableKey)) {
+            if (!ownSegKeys.containsKey(tableKey)) {
                 continue;
             }
             for (SegmentKey segKey : ownSegKeys.get(tableKey)) {
