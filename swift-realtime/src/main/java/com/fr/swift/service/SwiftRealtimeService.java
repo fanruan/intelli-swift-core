@@ -2,7 +2,6 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -51,7 +50,6 @@ import java.util.Map;
  * @date 2017/10/10
  */
 @SwiftService(name = "realtime")
-@ProxyService(RealtimeService.class)
 @SwiftBean(name = "realtime")
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
@@ -102,7 +100,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             SourceKey tableKey = table.getSourceKey();
             Map<SourceKey, List<SegmentKey>> ownSegKeys = segSvc.getOwnSegments();
 
-            if (ownSegKeys.containsKey(tableKey)) {
+            if (!ownSegKeys.containsKey(tableKey)) {
                 continue;
             }
             for (SegmentKey segKey : ownSegKeys.get(tableKey)) {
@@ -116,11 +114,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                 }
             }
         }
-    }
-
-    @Override
-    public void recover(List<SegmentKey> segKeys) {
-        SwiftLoggers.getLogger().info("recover");
     }
 
     @Override

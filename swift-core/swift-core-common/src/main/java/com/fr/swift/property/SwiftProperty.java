@@ -127,11 +127,11 @@ public class SwiftProperty {
     }
 
     private void initRpcAddress() {
-        this.rpcAddress = properties.getProperty("swift.rpc_server_address");
+        this.rpcAddress = properties.getProperty("swift.rpcServerAddress");
     }
 
     private void initCluster() {
-        this.isCluster = Boolean.parseBoolean(properties.getProperty("swift.is_cluster"));
+        this.isCluster = Boolean.parseBoolean(properties.getProperty("swift.isCluster"));
     }
 
     public void setCluster(boolean cluster) {
@@ -156,7 +156,7 @@ public class SwiftProperty {
     }
 
     private void initMasterAddress() {
-        this.masterAddress = properties.getProperty("swift.master_address");
+        this.masterAddress = properties.getProperty("swift.masterAddress");
     }
 
     private void initSelfStart() {

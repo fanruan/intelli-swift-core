@@ -1,5 +1,8 @@
 package com.fr.swift.executor.thread;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.executor.config.ExecutorTaskService;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.job.ExecutorJob;
@@ -21,6 +24,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class created on 2019/2/22
@@ -30,17 +34,12 @@ import java.util.concurrent.locks.Lock;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({ConsumeQueue.class, TaskExecuteRunnable.class})
+@PrepareForTest({TaskExecuteRunnable.class, SwiftContext.class})
 public class TaskExecutorRunnable {
 
     @Mock
-    ConsumeQueue consumeQueue;
-    @Mock
-    Lock lock;
-    @Mock
-    Condition condition;
-    @Mock
     ExecutorTask task1;
+
     @Mock
     Job job;
     @Mock
@@ -54,36 +53,46 @@ public class TaskExecutorRunnable {
     @Mock
     private JobListener jobListener;
 
+    @Mock
+    ExecutorTaskService executorTaskService;
+
+    @Mock
+    BeanFactory beanFactory;
+
 
     @Before
     public void setUp() throws Exception {
+        PowerMockito.mockStatic(SwiftContext.class);
+        Mockito.when(SwiftContext.get()).thenReturn(beanFactory);
+        Mockito.when(beanFactory.getBean(ExecutorTaskService.class)).thenReturn(executorTaskService);
+
+        Lock lock = new ReentrantLock();
+        Condition condition = lock.newCondition();
+
         taskExecuteRunnable = new TaskExecuteRunnable(dispatchThread, "testThread", lock, condition, ExecutorTaskType.DELETE, ExecutorTaskType.REALTIME, ExecutorTaskType.COLLATE);
-        PowerMockito.mockStatic(ConsumeQueue.class);
         PowerMockito.whenNew(ExecutorJob.class).withAnyArguments().thenReturn(executorJob);
         Mockito.when(task1.getJob()).thenReturn(job);
         Mockito.when(job.getJobListener()).thenReturn(jobListener);
-        Mockito.when(ConsumeQueue.getInstance()).thenReturn(consumeQueue);
-        Mockito.when(consumeQueue.take()).thenReturn(task1, null);
     }
 
     @Test
     public void testRun() throws InterruptedException, ExecutionException {
+        ConsumeQueue.getInstance().offer(task1);
         Assert.assertNull(taskExecuteRunnable.getExecutorTask());
         Assert.assertEquals(taskExecuteRunnable.getThreadName(), "testThread");
         Assert.assertTrue(taskExecuteRunnable.isIdle());
-        try {
-            taskExecuteRunnable.run();
-            Assert.assertTrue(false);
-        } catch (NullPointerException e) {
-            Mockito.verify(consumeQueue, Mockito.times(2)).take();
-            Mockito.verify(executorJob).run();
-            Mockito.verify(executorJob).get();
-            Mockito.verify(jobListener).onDone(true);
-            Mockito.verify(lock, Mockito.times(2)).lock();
-            Mockito.verify(condition, Mockito.times(2)).signal();
-            Mockito.verify(lock, Mockito.times(2)).unlock();
-            Mockito.verify(dispatchThread, Mockito.times(2)).interrupt();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                taskExecuteRunnable.run();
+            }
+        }).start();
+        Thread.sleep(100l);
+        Mockito.verify(executorJob).run();
+        Mockito.verify(executorJob).get();
+        executorTaskService.deleteTask(task1);
+        Mockito.verify(jobListener).onDone(true);
+        Assert.assertEquals(ConsumeQueue.getInstance().size(), 0);
     }
 
     @Test

@@ -34,6 +34,7 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
 
     private static void upload(final SegmentKey segKey) {
         try {
+            // TODO: 2019/3/5 考虑看看是否提到上层
             TaskProducer.produceTask(UploadExecutorTask.ofWholeSeg(segKey, new JobListener() {
                 @Override
                 public void onDone(boolean success) {

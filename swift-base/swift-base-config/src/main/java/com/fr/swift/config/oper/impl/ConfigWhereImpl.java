@@ -21,6 +21,10 @@ public class ConfigWhereImpl<T> implements ConfigWhere<T> {
         this.type = type;
     }
 
+    public static ConfigWhere<Serializable> gt(String column, Serializable value) {
+        return new ConfigWhereImpl<Serializable>(column, value, Type.GT);
+    }
+
     public static ConfigWhere<Serializable> eq(String column, Serializable value) {
         return new ConfigWhereImpl<Serializable>(column, value, Type.EQ);
     }

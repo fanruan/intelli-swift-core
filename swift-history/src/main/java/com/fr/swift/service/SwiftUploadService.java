@@ -1,7 +1,6 @@
 package com.fr.swift.service;
 
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
@@ -26,7 +25,6 @@ import java.util.Set;
  * @date 2019/1/22
  */
 @SwiftService(name = "swiftUploadService")
-@ProxyService(UploadService.class)
 @SwiftBean(name = "swiftUploadService")
 public class SwiftUploadService extends AbstractSwiftService implements UploadService, Serializable {
 

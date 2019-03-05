@@ -9,7 +9,7 @@ import com.fr.swift.event.base.AbstractAnalyseRpcEvent;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.structure.Pair;
@@ -32,8 +32,8 @@ public class SwiftAnalyseEventHandler extends AbstractHandler<AbstractAnalyseRpc
             case SEGMENT_LOCATION:
                 Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo> pair = (Pair<SegmentLocationInfo.UpdateType, SegmentLocationInfo>) event.getContent();
                 SegmentLocationInfoContainer.getContainer().add(pair);
-                AnalyseService analyseService = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-                analyseService.updateSegmentInfo(pair.getValue(), pair.getKey());
+                ServiceContext serviceContext = ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class);
+                serviceContext.updateSegmentInfo(pair.getValue(), pair.getKey());
                 break;
             case REQUEST_SEG_LOCATION:
                 String clusterId = (String) event.getContent();
