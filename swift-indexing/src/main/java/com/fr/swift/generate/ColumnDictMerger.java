@@ -105,7 +105,7 @@ public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMe
         }
 
         SegmentUtils.releaseHisSeg(segments);
-        SegmentUtils.releaseColumns(columns);
+        SegmentUtils.releaseHisColumn(columns);
 
         // 外排map释放并清除文件
         map.clear();
