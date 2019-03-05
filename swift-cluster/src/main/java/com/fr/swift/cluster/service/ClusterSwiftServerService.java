@@ -20,6 +20,7 @@ import com.fr.swift.service.DeleteService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
+import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.UploadService;
@@ -280,8 +281,8 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
                 try {
                     ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                    IndexingService indexingService = factory.getProxy(IndexingService.class);
-                    indexingService.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
+                    ServiceContext serviceContext = factory.getProxy(ServiceContext.class);
+                    serviceContext.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn(e);
                 }

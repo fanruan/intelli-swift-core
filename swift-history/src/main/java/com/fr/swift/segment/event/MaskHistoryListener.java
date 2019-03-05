@@ -1,14 +1,15 @@
 package com.fr.swift.segment.event;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
-import com.fr.swift.executor.TaskProducer;
-import com.fr.swift.executor.task.impl.UploadExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.service.ServiceContext;
 
 import java.sql.SQLException;
+import java.util.Collections;
 
 /**
  * @author anchore
@@ -26,9 +27,11 @@ public class MaskHistoryListener implements SwiftEventListener<SegmentKey> {
 
     private static void mask(final SegmentKey segKey) {
         try {
-            TaskProducer.produceTask(UploadExecutorTask.ofAllShowIndex(segKey));
+            SwiftContext.get().getBean(ServiceContext.class).uploadAllShow(Collections.singleton(segKey));
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error("persist task(upload {}'s all_show_index) failed", segKey, e);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 

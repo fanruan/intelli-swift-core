@@ -1,5 +1,7 @@
 package com.fr.swift.beans.factory;
 
+import com.fr.swift.beans.annotation.SwiftScope;
+
 /**
  * This class created on 2018/11/28
  *
@@ -8,10 +10,6 @@ package com.fr.swift.beans.factory;
  * @since Advanced FineBI 5.0
  */
 public class SwiftBeanDefinition {
-
-    public static final String SINGLETON = "singleton";
-
-    public static final String PROTOTYPE = "prototype";
 
     private Class<?> clazz;
 
@@ -24,7 +22,7 @@ public class SwiftBeanDefinition {
 //    private String destroyMethod;
 
     public SwiftBeanDefinition(Class<?> clazz, String beanName) {
-        this(clazz, beanName, SINGLETON);
+        this(clazz, beanName, SwiftScope.SINGLETON);
     }
 
     public SwiftBeanDefinition(Class<?> clazz, String beanName, String scope) {
@@ -42,6 +40,6 @@ public class SwiftBeanDefinition {
     }
 
     public boolean singleton() {
-        return this.scope.equals(SINGLETON);
+        return this.scope.equals(SwiftScope.SINGLETON);
     }
 }

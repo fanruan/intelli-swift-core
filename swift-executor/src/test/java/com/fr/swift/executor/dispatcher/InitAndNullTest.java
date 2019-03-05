@@ -12,6 +12,7 @@ import org.powermock.api.mockito.PowerMockito;
  * @description 测试初始化没有任务时
  */
 public class InitAndNullTest extends BaseDispatcherTest {
+
     /**
      * 初始化内存没任务，db memory队列均没任务
      * condition不会阻塞，pull为空，进入sleep
@@ -25,11 +26,7 @@ public class InitAndNullTest extends BaseDispatcherTest {
         Mockito.when(ExecutorManager.getInstance()).thenReturn(executorManager);
         Mockito.when(executorManager.pull()).thenReturn(false);
         TaskDispatcher.getInstance();
-        Thread.sleep(100L);
-        Mockito.verify(lock).lock();
-        Mockito.verify(condition, Mockito.times(0)).await();
-        Mockito.verify(lock).unlock();
+        Thread.sleep(100);
         Mockito.verify(executorManager).pull();
     }
 }
-

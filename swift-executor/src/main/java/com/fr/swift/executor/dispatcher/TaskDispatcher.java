@@ -8,6 +8,7 @@ import com.fr.swift.executor.thread.TaskExecuteRunnable;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -66,13 +67,19 @@ public class TaskDispatcher {
                     if (pickedTask == null) {
                         boolean hasPolled = ExecutorManager.getInstance().pull();
                         if (!hasPolled) {
-                            Thread.sleep(TASK_PULL_INTERVAL);
+                            lock.lock();
+                            try {
+                                freeCondition.await(TASK_PULL_INTERVAL, TimeUnit.MILLISECONDS);
+                            } finally {
+                                lock.unlock();
+                            }
                         }
                     } else {
                         ConsumeQueue.getInstance().offer(pickedTask);
                     }
                 } catch (InterruptedException e) {
                     SwiftLoggers.getLogger().error(e);
+                    break;
                 } catch (Throwable throwable) {
                     SwiftLoggers.getLogger().error(throwable);
                 }
