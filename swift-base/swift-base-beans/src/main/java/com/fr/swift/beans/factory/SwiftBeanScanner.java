@@ -63,11 +63,11 @@ public class SwiftBeanScanner implements BeanScanner {
 
                     SwiftScope swiftScope = clazz.getAnnotation(SwiftScope.class);
                     try {
-                        if (swiftScope == null || swiftScope.value().equals(SwiftBeanDefinition.SINGLETON)) {
-                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftBeanDefinition.SINGLETON);
+                        if (swiftScope == null || swiftScope.value().equals(SwiftScope.SINGLETON)) {
+                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftScope.SINGLETON);
                             beanRegistry.registerBeanDefinition(beanName, definition);
-                        } else if (swiftScope.value().equals(SwiftBeanDefinition.PROTOTYPE)) {
-                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftBeanDefinition.PROTOTYPE);
+                        } else if (swiftScope.value().equals(SwiftScope.PROTOTYPE)) {
+                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftScope.PROTOTYPE);
                             beanRegistry.registerBeanDefinition(beanName, definition);
                         }
                     } catch (Exception e) {

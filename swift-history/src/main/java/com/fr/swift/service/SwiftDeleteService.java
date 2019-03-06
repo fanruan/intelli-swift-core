@@ -2,7 +2,6 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.SwiftServiceException;
@@ -20,7 +19,6 @@ import java.util.List;
  * @date 2019/1/22
  */
 @SwiftService(name = "swiftDeleteService")
-@ProxyService(DeleteService.class)
 @SwiftBean(name = "swiftDeleteService")
 public class SwiftDeleteService extends AbstractSwiftService implements DeleteService, Serializable {
 

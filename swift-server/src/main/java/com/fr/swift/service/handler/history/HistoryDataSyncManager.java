@@ -9,7 +9,7 @@ import com.fr.swift.event.history.SegmentLoadRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.service.UploadService;
+import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.handler.base.AbstractHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
@@ -83,8 +83,8 @@ public class HistoryDataSyncManager extends AbstractHandler<SegmentLoadRpcEvent>
         EventResult eventResult = new EventResult();
         try {
             eventResult.setClusterId(sourceClusterId);
-            UploadService service = ProxySelector.getInstance().getFactory().getProxy(UploadService.class);
-            service.download(needLoadSegments, updateType == SegmentLocationInfo.UpdateType.ALL);
+            ServiceContext serviceContext = ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class);
+            serviceContext.download(needLoadSegments, updateType == SegmentLocationInfo.UpdateType.ALL);
             eventResult.setSuccess(true);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e.getMessage(), e);

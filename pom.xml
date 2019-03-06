@@ -32,6 +32,7 @@
         <module>swift-sqlparser</module>
         <module>swift-jdbc-emb</module>
         <module>swift-executor</module>
+        <module>swift-base-boot</module>
     </modules>
 
 </project>
