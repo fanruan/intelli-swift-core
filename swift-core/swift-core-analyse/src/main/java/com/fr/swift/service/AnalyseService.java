@@ -1,9 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.basics.annotation.InvokeMethod;
-import com.fr.swift.basics.annotation.Target;
-import com.fr.swift.basics.handler.CommonProcessHandler;
-import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.source.SourceKey;
@@ -24,13 +20,9 @@ public interface AnalyseService extends SwiftService {
      * @return
      * @throws Exception
      */
-    @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
 
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
-
 }

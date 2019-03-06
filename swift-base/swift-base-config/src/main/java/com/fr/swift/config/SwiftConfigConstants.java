@@ -1,14 +1,15 @@
 package com.fr.swift.config;
 
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
 import com.fr.swift.config.bean.SwiftConfigBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.bean.SwiftTableAllotConfBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,19 +18,29 @@ import java.util.List;
  * @date 2018/5/28
  */
 public class SwiftConfigConstants {
-    public static final Class<?>[] ENTITIES = {
-            SwiftMetaDataBean.TYPE,
-            SegmentKeyBean.TYPE,
-            SwiftConfigBean.TYPE,
-            SegLocationBean.TYPE,
-            SwiftServiceInfoBean.TYPE,
-            SwiftTableAllotConfBean.TYPE,
-            SwiftColumnIdxConfBean.TYPE,
-            SwiftTablePathBean.TYPE
-    };
+
+    private static final List<Class<?>> ENTITY_LIST = new ArrayList<Class<?>>() {{
+        add(SwiftMetaDataBean.TYPE);
+        add(SegmentKeyBean.TYPE);
+        add(SwiftConfigBean.TYPE);
+        add(SegLocationBean.TYPE);
+        add(SwiftServiceInfoBean.TYPE);
+        add(SwiftTableAllotConfBean.TYPE);
+        add(SwiftColumnIdxConfBean.TYPE);
+        add(SwiftTablePathBean.TYPE);
+    }};
+
+    public static boolean registerEntity(Class<?> clazz) {
+        return ENTITY_LIST.add(clazz);
+    }
+
+    public static Class<?>[] getEntities() {
+        Class<?>[] entities = new Class[ENTITY_LIST.size()];
+        ENTITY_LIST.toArray(entities);
+        return entities;
+    }
 
     public static final String LOCALHOST = "LOCAL";
-
 
     public static class KeyWords {
         public static final List<String> COLUMN_KEY_WORDS = Arrays.asList("row_count", "all_show_index");

@@ -12,7 +12,7 @@ import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.query.session.factory.SessionFactoryImpl;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.ServiceContext;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({SwiftContext.class, ProxySelector.class, SwiftResultSetUtils.class})
 public class QueryRunnerProviderTest {
 
-    private AnalyseService service;
+    private ServiceContext service;
 
     @Before
     public void setUp() throws Exception {
@@ -46,8 +46,8 @@ public class QueryRunnerProviderTest {
         PowerMock.mockStatic(ProxySelector.class);
         ProxySelector selector = EasyMock.mock(ProxySelector.class);
         ProxyFactory factory = EasyMock.mock(ProxyFactory.class);
-        service = Mockito.mock(AnalyseService.class);
-        EasyMock.expect(factory.getProxy(AnalyseService.class)).andReturn(service).anyTimes();
+        service = Mockito.mock(ServiceContext.class);
+        EasyMock.expect(factory.getProxy(ServiceContext.class)).andReturn(service).anyTimes();
         EasyMock.expect(selector.getFactory()).andReturn(factory).anyTimes();
         EasyMock.expect(ProxySelector.getInstance()).andReturn(selector).anyTimes();
         PowerMock.replay(SwiftContext.class, ProxySelector.class, beanFactory, factory, selector);

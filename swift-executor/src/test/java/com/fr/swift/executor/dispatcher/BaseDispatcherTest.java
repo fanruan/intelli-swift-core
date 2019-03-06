@@ -1,6 +1,9 @@
 package com.fr.swift.executor.dispatcher;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.executor.ExecutorManager;
+import com.fr.swift.executor.config.ExecutorTaskService;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.thread.TaskExecuteRunnable;
 import org.junit.Before;
@@ -13,9 +16,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
-
 /**
  * This class created on 2019/2/25
  *
@@ -24,25 +24,33 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({Runtime.class, TaskDispatcher.class, ExecutorManager.class, Runtime.class, ConsumeQueue.class})
+@PrepareForTest({Runtime.class, TaskDispatcher.class, ExecutorManager.class, ConsumeQueue.class, SwiftContext.class})
 public abstract class BaseDispatcherTest {
     @Mock
     TaskExecuteRunnable executeRunnable;
     @Mock
     Runtime runtime;
+
     @Mock
-    ReentrantLock lock;
+    ExecutorTaskService executorTaskService;
+
     @Mock
-    Condition condition;
+    BeanFactory beanFactory;
+
+    @Mock
+    ExecutorManager executorManager;
 
     @Before
     public void setUp() throws Exception {
+        PowerMockito.mockStatic(SwiftContext.class);
+        Mockito.when(SwiftContext.get()).thenReturn(beanFactory);
+
+        PowerMockito.mockStatic(ExecutorManager.class);
+        Mockito.when(ExecutorManager.getInstance()).thenReturn(executorManager);
+
         PowerMockito.mockStatic(Runtime.class);
         Mockito.when(Runtime.getRuntime()).thenReturn(runtime);
         Mockito.when(runtime.availableProcessors()).thenReturn(5);
-
-        PowerMockito.whenNew(ReentrantLock.class).withAnyArguments().thenReturn(lock);
-        Mockito.when(lock.newCondition()).thenReturn(condition);
 
         PowerMockito.whenNew(TaskExecuteRunnable.class).withAnyArguments().thenReturn(executeRunnable);
     }

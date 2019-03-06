@@ -8,6 +8,7 @@ import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.rm.collector.MasterHeartbeatCollect;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.executor.CollateExecutor;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.service.local.ServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
@@ -56,6 +57,8 @@ public class MasterManagerTest {
     SwiftServiceListenerManager swiftServiceListenerManager;
     @Mock
     ClusterSwiftServerService clusterSwiftServerService;
+    @Mock
+    CollateExecutor collateExecutor;
 
     @Before
     public void setUp() throws Exception {
@@ -67,6 +70,8 @@ public class MasterManagerTest {
         Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
         Mockito.when(swiftContext.getBean(ServiceManager.class)).thenReturn(serviceManager);
         Mockito.when(swiftContext.getBean(SwiftServiceInfoService.class)).thenReturn(serviceInfoService);
+        Mockito.when(swiftContext.getBean(CollateExecutor.class)).thenReturn(collateExecutor);
+
         Mockito.when(swiftProperty.getMasterAddress()).thenReturn("127.0.0.1:8080");
         Mockito.when(swiftProperty.getSwiftServiceNames()).thenReturn(Collections.EMPTY_SET);
         Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.<String>anySet())).thenReturn(Collections.singletonList(swiftService));
@@ -86,10 +91,13 @@ public class MasterManagerTest {
         Mockito.verify(swiftService, Mockito.times(1)).setId("127.0.0.1:8088");
         Mockito.verify(collect).startCollect();
         Mockito.verify(swiftServiceListenerManager).registerService(swiftService);
+        Mockito.verify(collateExecutor).start();
 
         masterManager.shutDown();
         Mockito.verify(collect).stopCollect();
         Mockito.verify(swiftService, Mockito.times(2)).setId("127.0.0.1:8088");
         Mockito.verify(swiftServiceListenerManager).unRegisterService(swiftService);
+        Mockito.verify(collateExecutor).stop();
+
     }
 }
