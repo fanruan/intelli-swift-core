@@ -23,6 +23,8 @@ public class TransferRealtimeListener implements SwiftEventListener<SegmentKey> 
             TaskProducer.produceTask(new TransferExecutorTask(segKey));
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error("persist task(transfer realtime seg {}) failed", segKey, e);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 

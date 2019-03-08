@@ -1,11 +1,11 @@
 package com.fr.swift.executor;
 
+import com.fr.swift.executor.dispatcher.TaskDispatcher;
 import com.fr.swift.executor.queue.DBQueue;
 import com.fr.swift.executor.queue.MemoryQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.TaskRouter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,14 +23,20 @@ public class ExecutorManager {
     }
 
     private ExecutorManager() {
+        TaskDispatcher.getInstance();
     }
 
-    public boolean pull() {
-        List<ExecutorTask> dbTasks = DBQueue.getInstance().pullAll();
+    public boolean pullMemTask() {
         List<ExecutorTask> memTasks = MemoryQueue.getInstance().pullBeforeTime(System.currentTimeMillis());
-        List<ExecutorTask> taskList = new ArrayList<ExecutorTask>(dbTasks.size() + memTasks.size());
-        taskList.addAll(dbTasks);
-        taskList.addAll(memTasks);
+        return addTasks(memTasks);
+    }
+
+    public boolean pullDBTask() {
+        List<ExecutorTask> dbTasks = DBQueue.getInstance().pullAll();
+        return addTasks(dbTasks);
+    }
+
+    private boolean addTasks(List<ExecutorTask> taskList) {
         if (!taskList.isEmpty()) {
             return TaskRouter.getInstance().addTasks(taskList);
         } else {
