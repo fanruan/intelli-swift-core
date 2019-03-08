@@ -1,10 +1,15 @@
-package com.fr.swift.segment;
+package com.fr.swift.segment.operator;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.operator.collate.segment.SegmentBuilder;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -29,30 +34,29 @@ public class SegmentTransfer {
             return;
         }
 
-        final Segment oldSeg = newSegment(oldSegKey), newSeg = newSegment(newSegKey);
-        Inserter inserter = SwiftContext.get().getBean("inserter", Inserter.class, newSeg);
+        Segment oldSeg = null;
+        Segment newSeg = null;
         try {
             SEG_SVC.addSegments(Collections.singletonList(newSegKey));
 
-            inserter.insertData(new SegmentResultSet(oldSeg));
+            oldSeg = newSegment(oldSegKey);
+            newSeg = newSegment(newSegKey);
+            SegmentBuilder segBuilder = new SegmentBuilder(newSeg, oldSeg.getMetaData().getFieldNames(), Collections.singletonList(oldSeg), Collections.singletonList(oldSeg.getAllShowIndex()));
+            segBuilder.build();
 
-            indexSegmentIfNeed(newSeg);
             onSucceed();
-
-            SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("seg transfer from {} to {} failed", oldSegKey, newSegKey, e);
             remove(newSegKey);
+            SwiftLoggers.getLogger().error("seg transfer from {} to {} failed", oldSegKey, newSegKey, e);
+        } finally {
+            SegmentUtils.releaseHisSeg(Arrays.asList(oldSeg, newSeg));
         }
     }
 
     protected void onSucceed() {
         remove(oldSegKey);
         SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(newSegKey);
-    }
-
-    private void indexSegmentIfNeed(Segment newSeg) throws Exception {
-        SegmentUtils.indexSegmentIfNeed(Collections.singletonList(newSeg));
+        SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);
     }
 
     private void remove(final SegmentKey segKey) {

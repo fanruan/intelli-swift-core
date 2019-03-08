@@ -31,7 +31,12 @@ public class UploadExecutorTask extends AbstractExecutorTask<Job> {
         return new UploadExecutorTask(uploadSegKey, true, jobListener);
     }
 
+    public static UploadExecutorTask ofWholeSeg(SegmentKey uploadSegKey) {
+        return new UploadExecutorTask(uploadSegKey, true, null);
+    }
+
     public static UploadExecutorTask ofAllShowIndex(SegmentKey uploadSegKey) {
         return new UploadExecutorTask(uploadSegKey, false, null);
     }
+
 }

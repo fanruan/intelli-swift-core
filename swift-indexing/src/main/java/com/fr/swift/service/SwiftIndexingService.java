@@ -2,7 +2,6 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.ServerCurrentStatus;
@@ -44,7 +43,6 @@ import static com.fr.swift.task.TaskResult.Type.SUCCEEDED;
  * @date 2017/10/10
  */
 @SwiftService(name = "indexing")
-@ProxyService(IndexingService.class)
 @SwiftBean(name = "indexing")
 public class SwiftIndexingService extends AbstractSwiftService implements IndexingService {
 

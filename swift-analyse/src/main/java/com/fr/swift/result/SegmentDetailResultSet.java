@@ -74,7 +74,7 @@ public class SegmentDetailResultSet extends BaseDetailQueryResultSet {
     @Override
     public void close() {
         List columnList = this.columnList;
-        SegmentUtils.releaseColumns(columnList);
+        SegmentUtils.releaseHisColumn(columnList);
     }
 
 }

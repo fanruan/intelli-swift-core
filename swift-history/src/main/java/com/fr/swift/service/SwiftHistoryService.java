@@ -2,7 +2,6 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.SwiftTablePathBean;
@@ -52,7 +51,6 @@ import java.util.concurrent.ExecutorService;
  * @date 2017/10/10
  */
 @SwiftService(name = "history")
-@ProxyService(HistoryService.class)
 @SwiftBean(name = "history")
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;

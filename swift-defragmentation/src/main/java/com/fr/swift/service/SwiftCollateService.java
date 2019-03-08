@@ -2,11 +2,9 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -36,7 +34,6 @@ import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -48,7 +45,6 @@ import java.util.List;
  */
 @SwiftService(name = "collate")
 @SwiftBean(name = "collate")
-@ProxyService(CollateService.class)
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
     private static final long serialVersionUID = 7259915342007294244L;
@@ -81,37 +77,13 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
-    public void autoCollateRealtime(final SourceKey tableKey) throws Exception {
-        final List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
-        checkSegmentKeys(segmentKeys, Types.StoreType.MEMORY);
-        collateSegments(tableKey, segmentKeys);
-    }
-
-    @Override
-    public void autoCollateHistory(final SourceKey tableKey) throws Exception {
-        final List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
-        checkSegmentKeys(segmentKeys, Types.StoreType.FINE_IO);
-        collateSegments(tableKey, segmentKeys);
-    }
-
-    @Override
     public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeyList) throws Exception {
         collateSegments(tableKey, segmentKeyList);
     }
 
     @Override
-    public void autoCollate(final SourceKey tableKey) throws Exception {
-        collateSegments(tableKey);
-    }
-
-    @Override
     public ServiceType getServiceType() {
         return ServiceType.COLLATE;
-    }
-
-    private void collateSegments(SourceKey tableKey) throws Exception {
-        List<SegmentKey> segKeys = segmentManager.getSegmentKeys(tableKey);
-        collateSegments(tableKey, segKeys);
     }
 
     private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys) throws Exception {
@@ -144,22 +116,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         }
         fireUploadHistory(newSegmentKeys);
         clearCollatedSegment(collateSegKeys, tableKey);
-    }
-
-    /**
-     * check的segmentkeys的storeType
-     *
-     * @param segmentKeys
-     * @param storeType
-     */
-    private void checkSegmentKeys(final List<SegmentKey> segmentKeys, Types.StoreType storeType) {
-        Iterator<SegmentKey> iterator = segmentKeys.iterator();
-        while (iterator.hasNext()) {
-            SegmentKey segmentKey = iterator.next();
-            if (segmentKey.getStoreType() != storeType) {
-                iterator.remove();
-            }
-        }
     }
 
     private List<Segment> getSegmentsByKeys(List<SegmentKey> segmentKeys) {
