@@ -1,5 +1,8 @@
 package com.fr.swift.executor;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.executor.config.ExecutorTaskService;
 import com.fr.swift.executor.queue.DBQueue;
 import com.fr.swift.executor.queue.MemoryQueue;
 import com.fr.swift.executor.task.ExecutorTask;
@@ -26,10 +29,8 @@ import java.util.Collections;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({DBQueue.class, MemoryQueue.class, TaskRouter.class})
+@PrepareForTest({MemoryQueue.class, TaskRouter.class, SwiftContext.class})
 public class ExecutorManagerTest {
-    @Mock
-    DBQueue dbQueue;
     @Mock
     MemoryQueue memoryQueue;
     @Mock
@@ -39,11 +40,18 @@ public class ExecutorManagerTest {
     ExecutorTask executorTask1;
     @Mock
     ExecutorTask executorTask2;
+    @Mock
+    ExecutorTaskService executorTaskService;
+    @Mock
+    BeanFactory beanFactory;
 
     @Before
     public void setUp() throws Exception {
-        PowerMockito.mockStatic(DBQueue.class, MemoryQueue.class, TaskRouter.class);
-        Mockito.when(DBQueue.getInstance()).thenReturn(dbQueue);
+        PowerMockito.mockStatic(SwiftContext.class);
+        Mockito.when(SwiftContext.get()).thenReturn(beanFactory);
+        Mockito.when(beanFactory.getBean(ExecutorTaskService.class)).thenReturn(executorTaskService);
+
+        PowerMockito.mockStatic(MemoryQueue.class, TaskRouter.class);
         Mockito.when(MemoryQueue.getInstance()).thenReturn(memoryQueue);
         Mockito.when(TaskRouter.getInstance()).thenReturn(taskRouter);
     }
@@ -55,7 +63,7 @@ public class ExecutorManagerTest {
 
     @Test
     public void testPullAll() {
-        Mockito.when(dbQueue.pullAll()).thenReturn(Collections.singletonList(executorTask1));
+        Mockito.when(DBQueue.getInstance().pullAll()).thenReturn(Collections.singletonList(executorTask1));
         Mockito.when(memoryQueue.pullBeforeTime(Mockito.anyLong())).thenReturn(Collections.singletonList(executorTask2));
         ExecutorManager.getInstance().pull();
         Mockito.verify(taskRouter).addTasks(Mockito.<ExecutorTask>anyList());

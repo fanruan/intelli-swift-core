@@ -49,8 +49,10 @@ public class ZipUtils {
         ZipEntry entry;
         while ((entry = zis.getNextEntry()) != null) {
             File file = new File(parent, entry.getName());
-            if (entry.isDirectory() && !file.exists()) {
-                file.mkdirs();
+            if (entry.isDirectory()) {
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
                 continue;
             }
             if (!file.getParentFile().exists()) {

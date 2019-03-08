@@ -21,8 +21,7 @@ import com.fr.swift.event.global.TruncateEvent;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.HistoryService;
-import com.fr.swift.service.RealtimeService;
+import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -133,12 +132,7 @@ public class TableServiceImpl implements TableService {
             // truncate也应该删除realtime的数据
             SourceKey source = new SourceKey(sourceKey);
             try {
-                ProxySelector.getInstance().getFactory().getProxy(RealtimeService.class).truncate(source);
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
-            }
-            try {
-                ProxySelector.getInstance().getFactory().getProxy(HistoryService.class).truncate(source);
+                ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class).truncate(source);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }

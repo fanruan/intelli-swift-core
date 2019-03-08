@@ -14,7 +14,7 @@ import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.service.AnalyseService;
+import com.fr.swift.service.ServiceContext;
 import com.fr.swift.util.Strings;
 
 import java.net.URI;
@@ -51,9 +51,9 @@ public class QueryRunnerProvider {
                 return resultSet;
             }
         }
-        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
+        ServiceContext serviceContext = ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class);
         resultSet = SwiftResultSetUtils.toSwiftResultSet(
-                service.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
+                serviceContext.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
         if (Strings.isNotEmpty(queryId)) {
             sessionFactory.openSession(queryId).putObject(queryId, resultSet);
         }

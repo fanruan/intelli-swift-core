@@ -3,6 +3,7 @@ package com.fr.swift.service.local;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.executor.CollateExecutor;
 import com.fr.swift.service.manager.LocalServiceManager;
 import com.fr.swift.util.ServiceBeanFactory;
 import org.junit.Before;
@@ -38,6 +39,8 @@ public class LocalManagerTest {
     SwiftContext swiftContext;
     @Mock
     SwiftProperty swiftProperty;
+    @Mock
+    CollateExecutor collateExecutor;
 
     @Before
     public void setUp() throws Exception {
@@ -48,6 +51,7 @@ public class LocalManagerTest {
         Mockito.when(SwiftContext.get()).thenReturn(swiftContext);
         Mockito.when(swiftContext.getBean(ServiceManager.class)).thenReturn(serviceManager);
         Mockito.when(swiftContext.getBean(LocalServiceManager.class)).thenReturn(localServiceManager);
+        Mockito.when(swiftContext.getBean(CollateExecutor.class)).thenReturn(collateExecutor);
         Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
         Mockito.when(ServiceBeanFactory.getSwiftServiceByNames(Mockito.<String>anySet())).thenReturn(new ArrayList());
     }
@@ -58,9 +62,11 @@ public class LocalManagerTest {
         localManager.startUp();
         Mockito.verify(serviceManager).startUp();
         Mockito.verify(localServiceManager).registerService(Mockito.<SwiftService>anyList());
+        Mockito.verify(collateExecutor).start();
         assertTrue(localManager.isRunning());
         localManager.shutDown();
         Mockito.verify(localServiceManager).unregisterService(Mockito.<SwiftService>anyList());
+        Mockito.verify(collateExecutor).stop();
         assertTrue(!localManager.isRunning());
     }
 }

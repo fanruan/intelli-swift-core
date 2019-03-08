@@ -1,10 +1,13 @@
 package com.fr.swift.executor.thread;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.executor.config.ExecutorTaskService;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.job.ExecutorJob;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.Job.JobListener;
+import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -33,6 +36,8 @@ public class TaskExecuteRunnable implements Runnable {
 
     private Thread dispachTthread;
 
+    private ExecutorTaskService executorTaskService = SwiftContext.get().getBean(ExecutorTaskService.class);
+
     public TaskExecuteRunnable(Thread dispachTthread, String threadName, Lock lock, Condition condition, ExecutorTaskType... types) {
         this.dispachTthread = dispachTthread;
         this.threadName = threadName;
@@ -58,9 +63,12 @@ public class TaskExecuteRunnable implements Runnable {
                 try {
                     executorJob.get();
                     success = true;
+                    executorTaskService.deleteTask(executorTask);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                     success = false;
+                    executorTask.setDbStatusType(DBStatusType.FAILED);
+                    executorTaskService.saveOrUpdate(executorTask);
                 }
                 if (jobListener != null) {
                     jobListener.onDone(success);
@@ -76,7 +84,6 @@ public class TaskExecuteRunnable implements Runnable {
                     ConsumeQueue.getInstance().removeTask(executorTask);
                     executorTask = null;
                     freeCondition.signal();
-                    dispachTthread.interrupt();
                 } finally {
                     lock.unlock();
                 }

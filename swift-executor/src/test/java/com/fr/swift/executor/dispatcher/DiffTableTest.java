@@ -3,7 +3,6 @@ package com.fr.swift.executor.dispatcher;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.TaskRouter;
-import com.fr.swift.executor.type.LockType;
 import com.fr.swift.source.SourceKey;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +19,7 @@ import java.util.List;
  * @author Lucifer
  * @description 测试不同表任务直接执行
  */
-public class DiffTableTset extends BaseDispatcherTest {
+public class DiffTableTest extends BaseDispatcherTest {
 
 
     @Mock
