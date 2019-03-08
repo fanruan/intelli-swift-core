@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
  * @author Lucifer
  * @description
  */
-public interface Job<T> extends Callable<T> {
+public interface Job<T, P> extends Callable<T> {
 
     JobListener getJobListener();
 
@@ -19,4 +19,6 @@ public interface Job<T> extends Callable<T> {
     interface JobListener {
         void onDone(boolean success);
     }
+
+    P serializedTag();
 }

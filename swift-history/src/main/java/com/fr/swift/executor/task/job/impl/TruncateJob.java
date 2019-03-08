@@ -11,7 +11,7 @@ import com.fr.swift.source.SourceKey;
  * @author anchore
  * @date 2019/2/27
  */
-public class TruncateJob extends BaseJob<Void> {
+public class TruncateJob extends BaseJob<Void, SourceKey> {
 
     private SourceKey tableKey;
 
@@ -33,5 +33,10 @@ public class TruncateJob extends BaseJob<Void> {
             SwiftLoggers.getLogger().error(e);
         }
         return null;
+    }
+
+    @Override
+    public SourceKey serializedTag() {
+        return tableKey;
     }
 }

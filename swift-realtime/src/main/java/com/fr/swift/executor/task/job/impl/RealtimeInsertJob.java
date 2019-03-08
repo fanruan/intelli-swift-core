@@ -13,7 +13,7 @@ import com.fr.swift.source.SourceKey;
  * @author Lucifer
  * @description
  */
-public class RealtimeInsertJob extends BaseJob<Boolean> {
+public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
 
     private SourceKey tableKey;
     private SwiftResultSet resultSet;

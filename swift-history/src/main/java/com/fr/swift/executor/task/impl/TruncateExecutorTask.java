@@ -12,8 +12,8 @@ import com.fr.swift.source.SourceKey;
  * @author anchore
  * @date 2019/2/27
  */
-public class TruncateExecutorTask extends AbstractExecutorTask<Job<Void>> {
-    public TruncateExecutorTask(SourceKey sourceKey) {
+public class TruncateExecutorTask extends AbstractExecutorTask<Job<Void, SourceKey>> {
+    public TruncateExecutorTask(SourceKey sourceKey) throws Exception {
         super(sourceKey,
                 true,
                 ExecutorTaskType.TRUNCATE,
@@ -21,5 +21,11 @@ public class TruncateExecutorTask extends AbstractExecutorTask<Job<Void>> {
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,
                 new TruncateJob(sourceKey));
+    }
+
+    public TruncateExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
+                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
+        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
+        this.job = new TruncateJob(sourceKey);
     }
 }

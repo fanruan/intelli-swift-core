@@ -14,7 +14,7 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
  * @author Lucifer
  * @description
  */
-public class HistoryImportJob extends BaseJob<Boolean> {
+public class HistoryImportJob extends BaseJob<Boolean, DataSource> {
 
     private DataSource dataSource;
     private SwiftSourceAlloter<?, RowInfo> alloter;

@@ -14,7 +14,7 @@ import java.util.Collections;
  * @author Lucifer
  * @description
  */
-public class DownloadJob extends BaseJob<Boolean> {
+public class DownloadJob extends BaseJob<Boolean, DownloadJob> {
 
     private SegmentKey downloadSegKey;
 
@@ -42,5 +42,10 @@ public class DownloadJob extends BaseJob<Boolean> {
             SwiftLoggers.getLogger().error(e);
             return false;
         }
+    }
+
+    @Override
+    public DownloadJob serializedTag() {
+        return this;
     }
 }
