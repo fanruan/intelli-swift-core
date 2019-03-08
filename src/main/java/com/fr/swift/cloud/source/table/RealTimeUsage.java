@@ -6,6 +6,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,21 +22,29 @@ public class RealTimeUsage extends BaseTable {
     private SwiftMetaDataColumn appId = new MetaDataColumnBean("appId", Types.VARCHAR);
     private SwiftMetaDataColumn yearMonth = new MetaDataColumnBean("yearMonth", Types.VARCHAR);
 
-    private List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
+    private List<SwiftMetaDataColumn> rawColumns = new ArrayList<SwiftMetaDataColumn>();
 
     {
-        columnList.addAll(Arrays.asList(time, cpu, memory, appId, yearMonth));
+        rawColumns.addAll(Arrays.asList(time, cpu, memory));
+        rawColumns = Collections.unmodifiableList(rawColumns);
     }
 
-    public RealTimeUsage() {
-    }
-
-    String getTableName() {
-        return tableName;
+    public RealTimeUsage(String appId, String yearMonth) {
+        super(appId, yearMonth);
     }
 
     @Override
-    List<SwiftMetaDataColumn> getColumnList() {
-        return columnList;
+    List<SwiftMetaDataColumn> getRawColumns() {
+        return rawColumns;
+    }
+
+    @Override
+    List<SwiftMetaDataColumn> getExtraColumns() {
+        return new ArrayList<SwiftMetaDataColumn>();
+    }
+
+    @Override
+    public String getTableName() {
+        return tableName;
     }
 }

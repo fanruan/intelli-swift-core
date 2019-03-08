@@ -6,6 +6,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,25 +54,33 @@ public class TemplateInfo extends BaseTable {
     public static final SwiftMetaDataColumn appId = new MetaDataColumnBean("appId", Types.VARCHAR);
     public static final SwiftMetaDataColumn yearMonth = new MetaDataColumnBean("yearMonth", Types.VARCHAR);
 
-    public static final List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
+    private List<SwiftMetaDataColumn> rawColumns = new ArrayList<SwiftMetaDataColumn>();
 
     {
-        columnList.addAll(Arrays.asList(
+        rawColumns.addAll(Arrays.asList(
                 time, id, tId, tName, condition, formula, sheet, ds, complexFormula, submission, frozen, foldTree,
                 widget, templateSize, imageSize, execution0, execution1, execution2, execution3, execution4,
-                memory0, memory1, memory2, memory3, memory4, sql0, sql1, sql2, sql3, sql4, appId, yearMonth
+                memory0, memory1, memory2, memory3, memory4, sql0, sql1, sql2, sql3, sql4
         ));
+        rawColumns = Collections.unmodifiableList(rawColumns);
     }
 
-    public TemplateInfo() {
-    }
-
-    String getTableName() {
-        return tableName;
+    public TemplateInfo(String appId, String yearMonth) {
+        super(appId, yearMonth);
     }
 
     @Override
-    List<SwiftMetaDataColumn> getColumnList() {
-        return columnList;
+    List<SwiftMetaDataColumn> getRawColumns() {
+        return rawColumns;
+    }
+
+    @Override
+    List<SwiftMetaDataColumn> getExtraColumns() {
+        return new ArrayList<SwiftMetaDataColumn>();
+    }
+
+    @Override
+    public String getTableName() {
+        return tableName;
     }
 }

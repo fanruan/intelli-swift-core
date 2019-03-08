@@ -14,7 +14,6 @@ import com.fr.swift.result.SwiftResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by lyon on 2018/12/21.
@@ -23,37 +22,33 @@ public class GlobalTplMetricQuery implements MetricQuery {
 
     private static String[] metrics = new String[]{
             Execution.consume.getName(),
+            Execution.coreConsume.getName(),
             Execution.sqlTime.getName(),
-            Execution.memory.getName()
     };
 
-    private static List<MetricBean> createMetrics() {
+    private static List<MetricBean> createMetrics(FilterInfoBean top10) {
         List<MetricBean> metricBeans = new ArrayList<MetricBean>();
+        metricBeans.add(MetricBean.builder(Execution.consume.getName(), AggregatorType.AVERAGE)
+                .setFilter(top10).build());
         for (String name : metrics) {
-            MetricBean metricBean = new MetricBean();
-            metricBean.setColumn(name);
-            metricBean.setType(AggregatorType.AVERAGE);
-            metricBeans.add(metricBean);
+            metricBeans.add(new MetricBean(name, AggregatorType.AVERAGE));
         }
-        MetricBean count = new MetricBean();
-        count.setColumn(Execution.id.getName());
-        count.setType(AggregatorType.COUNT);
-        metricBeans.add(count);
+        metricBeans.add(new MetricBean(Execution.id.getName(), AggregatorType.COUNT));
+        for (String name : metrics) {
+            metricBeans.add(new MetricBean(name, AggregatorType.MAX));
+        }
         return metricBeans;
     }
 
     private GroupQueryInfoBean bean;
 
-    public GlobalTplMetricQuery(FilterInfoBean filter) {
+    public GlobalTplMetricQuery(FilterInfoBean filter, FilterInfoBean tp10MetricFilter) {
         this.bean = new GroupQueryInfoBean();
-        bean.setQueryId(UUID.randomUUID().toString());
-        bean.setTableName(Execution.tableName);
         bean.setFilter(filter);
-        DimensionBean dimensionBean = new DimensionBean();
-        dimensionBean.setType(DimensionType.GROUP);
-        dimensionBean.setColumn(Execution.tName.getName());
-        bean.setDimensions(Collections.singletonList(dimensionBean));
-        bean.setAggregations(createMetrics());
+        bean.setTableName(Execution.tableName);
+        bean.setDimensions(Collections.singletonList(
+                new DimensionBean(DimensionType.GROUP, Execution.tName.getName())));
+        bean.setAggregations(createMetrics(tp10MetricFilter));
     }
 
     @Override

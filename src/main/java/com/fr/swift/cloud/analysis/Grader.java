@@ -22,11 +22,13 @@ public interface Grader {
     }
 
     class Time implements Grader {
-        static int timeConsumeThreshold = 2;
+        static int timeConsumeThreshold = 2000;
         static int[] seconds = {2, 5, 10, 20, 30, 60};
 
         @Override
         public long grade(long consume) {
+            // 毫秒转秒
+            consume = consume / 1000;
             double grade = 100 / (seconds.length * 1.0);
             int i = 0;
             while (i < seconds.length && seconds[i] < consume) {

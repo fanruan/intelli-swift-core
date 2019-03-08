@@ -9,16 +9,26 @@
         <!--<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test</property>-->
         <!--<property name="hibernate.connection.username">root</property>-->
         <!--<property name="hibernate.connection.password">123456</property>-->
-        <!--<property name="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</property>-->
 
+        <!--产品的测试数据库-->
+        <!--<property name="connection.driver_class">com.mysql.jdbc.Driver</property>-->
+        <!--<property name="hibernate.connection.url">jdbc:mysql://review.finedevelop.com:3306/test233</property>-->
+        <!--<property name="hibernate.connection.username">monitor</property>-->
+        <!--<property name="hibernate.connection.password">ilovejava</property>-->
+
+        <!--云中心的生产环境数据库（出于安全考虑，最好不硬编码在这）-->
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://47.100.103.59:3306/swift_data</property>
         <property name="hibernate.connection.username">admin</property>
         <property name="hibernate.connection.password">ilovejava1!</property>
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</property>
 
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</property>
         <property name="hbm2ddl.auto">update</property>
-        <property name="show_sql">true</property>
+        <property name="hibernate.jdbc.batch_size">100</property>
+        <property name="hibernate.proxool.existing_pool">
+            com.alibaba.druid.support.hibernate.DruidConnectionProvider
+        </property>
+        <property name="hibernate.current_session_context_class">thread</property>
     </session-factory>
 </hibernate-configuration>
 

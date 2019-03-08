@@ -12,45 +12,46 @@ import com.fr.swift.util.Crasher;
  */
 public class TableUtils {
 
-    public static String createIfAbsent(String name) {
+    public static CSVTable createIfAbsent(String name, String appId, String yearMonth) {
         SwiftMetaDataService service = SwiftContext.get().getBean(SwiftMetaDataService.class);
-        SwiftMetaDataBean bean = createBean(name, SwiftDatabase.CUBE);
+        CSVTable table = getTable(name, appId, yearMonth);
+        SwiftMetaDataBean bean = table.createBean(SwiftDatabase.CUBE);
         String tableName = bean.getTableName();
         if (!service.containsMeta(new SourceKey(tableName))) {
             service.addMetaData(tableName, bean);
         }
-        return bean.getTableName();
+        return table;
     }
 
-    private static SwiftMetaDataBean createBean(String tableName, SwiftDatabase db) {
+    private static CSVTable getTable(String tableName, String appId, String yearMonth) {
         CSVTable table = null;
         TABLE_NAME name = TABLE_NAME.from(tableName);
         switch (name) {
             case function_usage_rate:
-                table = new FunctionUsageRate();
+                table = new FunctionUsageRate(appId, yearMonth);
                 break;
             case web_container:
-                table = new WebContainer();
+                table = new WebContainer(appId, yearMonth);
                 break;
             case template_info:
-                table = new TemplateInfo();
+                table = new TemplateInfo(appId, yearMonth);
                 break;
             case execution_sql:
-                table = new ExecutionSql();
+                table = new ExecutionSql(appId, yearMonth);
                 break;
             case package_info:
-                table = new PackageInfo();
+                table = new PackageInfo(appId, yearMonth);
                 break;
             case real_time_usage:
-                table = new RealTimeUsage();
+                table = new RealTimeUsage(appId, yearMonth);
                 break;
             case execution:
-                table = new Execution();
+                table = new Execution(appId, yearMonth);
                 break;
             default:
                 Crasher.crash(new RuntimeException("table name can not be empty!"));
         }
-        return table.createBean(db);
+        return table;
     }
 
     public enum TABLE_NAME {

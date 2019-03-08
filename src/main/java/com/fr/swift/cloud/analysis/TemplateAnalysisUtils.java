@@ -3,7 +3,6 @@ package com.fr.swift.cloud.analysis;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.cloud.result.ArchiveDBManager;
 import com.fr.swift.cloud.result.table.ExecutionMetric;
-import com.fr.swift.cloud.result.table.ExecutionMetricScore;
 import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
 import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
 import com.fr.swift.cloud.result.table.TemplateProperty;
@@ -12,7 +11,6 @@ import com.fr.swift.cloud.source.table.Execution;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
-import com.fr.swift.query.info.bean.element.filter.impl.AllShowFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
@@ -41,6 +39,7 @@ public class TemplateAnalysisUtils {
     private static final int PERCENT_START = 50;
     private static final int PERCENT_END = 100;
     private static final int PERCENT_STEP = 5;
+    private static final int BATCH_SIZE = 20;
 
     private static SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
 
@@ -56,30 +55,33 @@ public class TemplateAnalysisUtils {
                         new InFilterBean(Execution.yearMonth.getName(), yearMonth))
         );
         filter = tp90(filter);
-        MetricQuery metricQuery = new GlobalAnalysisQuery(new AllShowFilterBean(), filter, appId, yearMonth);
+        MetricQuery metricQuery = new GlobalAnalysisQuery(filter, appId, yearMonth);
         SwiftResultSet rs = metricQuery.getResult();
         Map<String, Integer> fieldIndexMap = fieldIndexMap(rs.getMetaData().getFieldNames());
         Date date = format.parse(yearMonth);
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         Transaction transaction = session.beginTransaction();
+        int count = 1;
         try {
-            int count = 1;
             while (rs.hasNext()) {
                 Row row = rs.getNextRow();
-                session.save(createExecutionMetric(appId, date, row, fieldIndexMap));
-                session.save(createExecutionMetricScore(appId, date, row, fieldIndexMap));
-                session.save(createTemplateProperty(appId, date, row, fieldIndexMap));
-                session.save(createTemplatePropertyRatio(appId, date, row, fieldIndexMap));
+                String tName = row.<String>getValue(0);
+                session.save(createExecutionMetric(tName, appId, date, row, fieldIndexMap));
+                session.save(createTemplateProperty(tName, appId, date, row, fieldIndexMap));
+                session.save(createTemplatePropertyRatio(tName, appId, date, row, fieldIndexMap));
                 session.save(createTemplateAnalysisResult(appId, date, row, fieldIndexMap));
-                if (count % 10 == 0) {
-                    transaction.commit();
-                    transaction = session.beginTransaction();
+                if (count % BATCH_SIZE == 0) {
+                    session.flush();
+                    session.clear();
                 }
                 count++;
             }
         } finally {
             transaction.commit();
-            session.close();
+            try {
+                session.close();
+            } catch (Exception ignored) {
+            }
             rs.close();
         }
     }
@@ -89,38 +91,41 @@ public class TemplateAnalysisUtils {
         String tName = row.getValue(0);
         return new TemplateAnalysisResult(
                 tName,
+                getLongValues("consume", "sqlTime", row, map),
+                getLongValues("consumeMax", "sqlTimeMax", row, map),
+                row.<Long>getValue(map.get("count")),
                 row.<Long>getValue(map.get("total")),
                 appId,
                 yearMonth,
-                row.<String>getValue(map.get("factors"))
+                getStringValues("factor1", "factor3", row, map)
         );
     }
 
-    private static TemplatePropertyRatio createTemplatePropertyRatio(String appId, Date yearMonth, Row row,
+    private static TemplatePropertyRatio createTemplatePropertyRatio(String tName, String appId, Date yearMonth, Row row,
                                                                      Map<String, Integer> map) {
-        String tName = row.getValue(0);
         double[] values = getDoubleValues("conditionRatio", "sqlRatio", row, map);
         return new TemplatePropertyRatio(tName, values, appId, yearMonth);
     }
 
-    private static TemplateProperty createTemplateProperty(String appId, Date yearMonth, Row row,
+    private static TemplateProperty createTemplateProperty(String tName, String appId, Date yearMonth, Row row,
                                                            Map<String, Integer> map) {
-        String tName = row.getValue(0);
         long[] values = getLongValues("condition", "imageSize", row, map);
         return new TemplateProperty(tName, values, appId, yearMonth);
     }
 
-    private static ExecutionMetricScore createExecutionMetricScore(String appId, Date yearMonth, Row row,
-                                                                   Map<String, Integer> map) {
-        String tName = row.getValue(0);
-        long[] values = getLongValues("consumeScore", "countScore", row, map);
-        return new ExecutionMetricScore(tName, values, appId, yearMonth);
-    }
-
-    private static ExecutionMetric createExecutionMetric(String appId, Date yearMonth, Row row, Map<String, Integer> map) {
-        String tName = row.getValue(0);
+    private static ExecutionMetric createExecutionMetric(String tName, String appId, Date yearMonth, Row row, Map<String, Integer> map) {
         long[] values = getLongValues("consume", "count", row, map);
         return new ExecutionMetric(tName, values, appId, yearMonth);
+    }
+
+    private static String[] getStringValues(String start, String end, Row row, Map<String, Integer> map) {
+        int s = map.get(start);
+        int e = map.get(end);
+        String[] values = new String[e - s + 1];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = row.getValue(i + s);
+        }
+        return values;
     }
 
     private static long[] getLongValues(String start, String end, Row row, Map<String, Integer> map) {
@@ -138,7 +143,8 @@ public class TemplateAnalysisUtils {
         int e = map.get(end);
         double[] values = new double[e - s + 1];
         for (int i = 0; i < values.length; i++) {
-            values[i] = row.<Double>getValue(i + s);
+            Double value = row.<Double>getValue(i + s);
+            values[i] = value.isNaN() ? 0 : value;
         }
         return values;
     }
@@ -158,15 +164,18 @@ public class TemplateAnalysisUtils {
         ));
         Date date = format.parse(yearMonth);
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            Transaction transaction = session.beginTransaction();
             for (int percent = PERCENT_START; percent < PERCENT_END; percent += PERCENT_STEP) {
                 long latency = tp(percent, filter);
                 session.save(new LatencyTopPercentileStatistic(appId, date, percent, latency));
             }
-            transaction.commit();
         } finally {
-            session.close();
+            transaction.commit();
+            try {
+                session.close();
+            } catch (Exception ignored) {
+            }
         }
     }
 
@@ -179,7 +188,12 @@ public class TemplateAnalysisUtils {
         AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
         SwiftResultSet resultSet = SwiftResultSetUtils.toSwiftResultSet(
                 service.getQueryResult(QueryBeanFactory.queryBean2String(query)), query);
-        Double value = resultSet.getNextRow().getValue(0);
+        Double value = null;
+        try {
+            value = resultSet.hasNext() ? resultSet.getNextRow().<Double>getValue(0) : null;
+        } finally {
+            resultSet.close();
+        }
         return value == null ? 0 : value.longValue();
     }
 
@@ -195,8 +209,13 @@ public class TemplateAnalysisUtils {
         AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
         SwiftResultSet resultSet = SwiftResultSetUtils.toSwiftResultSet(
                 service.getQueryResult(QueryBeanFactory.queryBean2String(query)), query);
-        Double lowerBound = resultSet.getNextRow().getValue(0);
+        Double value = null;
+        try {
+            value = resultSet.hasNext() ? resultSet.getNextRow().<Double>getValue(0) : null;
+        } finally {
+            resultSet.close();
+        }
         return new AndFilterBean(Arrays.asList(NumberInRangeFilterBean.builder(Execution.consume.getName())
-                .setStart(Long.toString(lowerBound.longValue()), true).build(), filter));
+                .setStart(Long.toString(value == null ? 0 : value.longValue()), true).build(), filter));
     }
 }

@@ -1,7 +1,6 @@
 package com.fr.swift.cloud.result;
 
 import com.fr.swift.cloud.result.table.ExecutionMetric;
-import com.fr.swift.cloud.result.table.ExecutionMetricScore;
 import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
 import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
 import com.fr.swift.cloud.result.table.TemplateProperty;
@@ -30,7 +29,6 @@ public enum ArchiveDBManager {
         configuration.addAnnotatedClass(LatencyTopPercentileStatistic.class);
         configuration.addAnnotatedClass(TemplateAnalysisResult.class);
         configuration.addAnnotatedClass(ExecutionMetric.class);
-        configuration.addAnnotatedClass(ExecutionMetricScore.class);
         configuration.addAnnotatedClass(TemplateProperty.class);
         configuration.addAnnotatedClass(TemplatePropertyRatio.class);
         return configuration.buildSessionFactory();

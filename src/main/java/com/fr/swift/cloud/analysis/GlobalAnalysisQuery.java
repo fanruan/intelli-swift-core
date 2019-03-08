@@ -4,6 +4,8 @@ import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -14,20 +16,19 @@ import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lyon on 2018/12/20.
  */
 public class GlobalAnalysisQuery implements MetricQuery {
 
-    private static final int MILLI = 1000;
-    private static final int MB = 1024 * 1024;
-
-    private static String postfix = "Score";
     private static String resultTableName = "result";
 
     private static String T_NAME = "tName";
@@ -35,12 +36,13 @@ public class GlobalAnalysisQuery implements MetricQuery {
     private static String SQL_RATIO = "sqlRatio";
     private static String APP_ID = "appId";
     private static String YEAR_MONTH = "yearMonth";
-    private static String FACTORS = "factors";
 
     private static String[] metrics = {
-            "consume", "sqlTime", "coreConsume", "memory", "count"
+            "consumeTop10", "consume", "coreConsume", "sqlTime", "count", "consumeMax", "coreConsumeMax", "sqlTimeMax"
     };
-    private static String[] factors = new String[]{
+
+    private static String[] factors = new String[]{"factor1", "factor2", "factor3"};
+    private static String[] ratios = new String[]{
             "conditionRatio", "sheetRatio", "dsRatio", "complexFormulaRatio", "imageSizeRatio", "sqlRatio"
     };
 
@@ -50,12 +52,16 @@ public class GlobalAnalysisQuery implements MetricQuery {
     private String customerId;
     private String yearMonth;
 
-    public GlobalAnalysisQuery(FilterInfoBean tplFilter, FilterInfoBean metricFilter, String customerId, String yearMonth) {
+    public GlobalAnalysisQuery(FilterInfoBean tp10MetricFilter, String customerId, String yearMonth) {
         this.customerId = customerId;
         this.yearMonth = yearMonth;
-        this.query = new GlobalTplMetricQuery(metricFilter);
+        FilterInfoBean filter = new AndFilterBean(Arrays.<FilterInfoBean>asList(
+                new InFilterBean("appId", customerId),
+                new InFilterBean("yearMonth", yearMonth)
+        ));
+        this.query = new GlobalTplMetricQuery(filter, tp10MetricFilter);
         try {
-            initTplQuery(tplFilter);
+            initTplQuery(filter);
         } catch (Exception e) {
             Crasher.crash(e);
         }
@@ -70,9 +76,6 @@ public class GlobalAnalysisQuery implements MetricQuery {
         List<List> base = new ArrayList<List>();
         // 将指标拆分成3列，每列包括模板id
         List<List> consume = new ArrayList<List>();
-        List<List> sqlTime = new ArrayList<List>();
-        List<List> core = new ArrayList<List>();
-        List<List> memory = new ArrayList<List>();
         List<List> count = new ArrayList<List>();
         SwiftResultSet resultSet = query.getResult();
         if (!resultSet.hasNext()) {
@@ -81,31 +84,29 @@ public class GlobalAnalysisQuery implements MetricQuery {
         long id = 0;
         while (resultSet.hasNext()) {
             Row row = resultSet.getNextRow();
-            long c = Math.round((Double) row.getValue(1) / MILLI);
-            long s = Math.round((Double) row.getValue(2) / MILLI);
-            long co = c - s;
-            long m = Math.round((Double) row.getValue(3) / MB);
-            long cc = Math.round((Double) row.getValue(4));
-            base.add(toList(row.getValue(0), c, s, co, m, cc));
-            consume.add(toList(id, c));
-            sqlTime.add(toList(id, s));
-            core.add(toList(id, co));
-            memory.add(toList(id, m));
-            count.add(toList(id, cc));
+            Double value = row.getValue(1);
+            long consumeTop10 = Math.round(value == null ? 0 : value.longValue());
+            long consumeValue = Math.round((Double) row.getValue(2));
+            long coreConsumeValue = Math.round((Double) row.getValue(3));
+            long sqlTimeValue = Math.round((Double) row.getValue(4));
+            long countValue = Math.round((Double) row.getValue(5));
+            long consumeMax = Math.round((Double) row.getValue(6));
+            long coreConsumeMax = Math.round((Double) row.getValue(7));
+            long sqlTimeMax = Math.round((Double) row.getValue(8));
+            base.add(toList(row.getValue(0), consumeTop10,
+                    consumeValue, coreConsumeValue, sqlTimeValue,
+                    countValue,
+                    consumeMax, coreConsumeMax, sqlTimeMax));
+            consume.add(toList(id, consumeTop10));
+            count.add(toList(id, countValue));
             id++;
         }
 
         addRank(consume, 1);
-        addRank(sqlTime, 1);
-        addRank(core, 1);
-        addRank(memory, 1);
         addRank(count, 1);
 
-        addGrade(base, new Grader.Time(), consume, 1);
-        addGrade(base, new Grader.Time(), sqlTime, 1);
-        addGrade(base, new Grader.Time(), core, 1);
-        addGrade(base, new Grader.Memory(), memory, 1);
-        addGrade(base, new Grader.Rank(count.size()), count, 2);
+        addGrade(new Grader.Time(), consume, 1);
+        addGrade(new Grader.Rank(count.size()), count, 2);
 
         long[] grades = new long[base.size()];
         for (int i = 0; i < base.size(); i++) {
@@ -117,14 +118,7 @@ public class GlobalAnalysisQuery implements MetricQuery {
         }
 
         Collections.sort(base, new RowComparator(base.get(0).size() - 1));
-        // 过滤出consume > 2的模板
-        List<List> result = new ArrayList<List>();
-        for (List row : base) {
-            if ((Long) row.get(1) > Grader.Time.timeConsumeThreshold) {
-                result.add(row);
-            }
-        }
-        return result;
+        return base;
     }
 
     private static int getId(List row) {
@@ -132,12 +126,10 @@ public class GlobalAnalysisQuery implements MetricQuery {
         return (int) id;
     }
 
-    private static void addGrade(List<List> base, Grader grader, List<List> lists, int field) {
+    private static void addGrade(Grader grader, List<List> lists, int field) {
         for (List list : lists) {
-            long id = (Long) list.get(0);
             long grade = grader.grade((Long) list.get(field));
             list.add(grade);
-            base.get((int) id).add(grade);
         }
     }
 
@@ -161,6 +153,7 @@ public class GlobalAnalysisQuery implements MetricQuery {
         List<List> metrics = runModel();
         SwiftResultSet tplRS = tplQuery.getResult();
         List<List> result = new ArrayList<List>();
+        Set added = new HashSet();
         while (tplRS.hasNext()) {
             Row row = tplRS.getNextRow();
             String absPath = row.getValue(0);
@@ -169,12 +162,19 @@ public class GlobalAnalysisQuery implements MetricQuery {
             }
             List list = find(absPath, metrics);
             if (list != null) {
+                if (added.contains(list.get(0))) {
+                    continue;
+                } else {
+                    added.add(list.get(0));
+                }
                 list = new ArrayList(list);
                 for (int i = 1; i < row.getSize(); i++) {
                     list.add(row.getValue(i));
                 }
                 // 增加一列sql时间导致性能问题的可能性
-                list.add((Long) list.get(2) * 1.0 / (Long) list.get(1));
+                Double sqlRatio = (Long) list.get(4) * 1.0 / (Long) list.get(2);
+                sqlRatio = sqlRatio > .5 ? 1.0001 : sqlRatio;
+                list.add(sqlRatio);
                 list.add(customerId);
                 list.add(yearMonth);
                 result.add(list);
@@ -201,22 +201,17 @@ public class GlobalAnalysisQuery implements MetricQuery {
                 return Double.compare(val1, val2);
             }
         });
-        StringBuilder builder = new StringBuilder();
         for (List row : result) {
-            for (String field : factors) {
+            for (String field : ratios) {
                 Double value = (Double) row.get(resultFields.indexOf(field));
                 queue.add(Pair.of(field, value));
             }
             Iterator<Pair<String, Double>> iterator = queue.toList().iterator();
             while (iterator.hasNext()) {
                 String factor = iterator.next().getKey();
-                builder.append(factor, 0, factor.indexOf("Ratio"));
-                if (iterator.hasNext()) {
-                    builder.append(", ");
-                }
+                factor = factor.substring(0, factor.indexOf("Ratio"));
+                row.add(factor);
             }
-            row.add(builder.toString());
-            builder.delete(0, builder.length());
         }
     }
 
@@ -226,16 +221,15 @@ public class GlobalAnalysisQuery implements MetricQuery {
         for (String metric : metrics) {
             columns.add(new MetaDataColumnBean(metric, Types.BIGINT));
         }
-        for (String metric : metrics) {
-            columns.add(new MetaDataColumnBean(metric + postfix, Types.BIGINT));
-        }
         columns.add(new MetaDataColumnBean(TOTAL, Types.BIGINT));
         // 模板属性
         columns.addAll(tplFields);
         columns.add(new MetaDataColumnBean(SQL_RATIO, Types.DOUBLE));
         columns.add(new MetaDataColumnBean(APP_ID, Types.VARCHAR));
         columns.add(new MetaDataColumnBean(YEAR_MONTH, Types.VARCHAR));
-        columns.add(new MetaDataColumnBean(FACTORS, Types.VARCHAR));
+        for (String factor : factors) {
+            columns.add(new MetaDataColumnBean(factor, Types.VARCHAR));
+        }
         return new SwiftMetaDataBean(resultTableName, columns);
     }
 

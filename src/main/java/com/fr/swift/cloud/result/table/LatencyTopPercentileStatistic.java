@@ -37,36 +37,4 @@ public class LatencyTopPercentileStatistic {
         this.percentile = percentile;
         this.latency = latency;
     }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public Date getYearMonth() {
-        return yearMonth;
-    }
-
-    public void setYearMonth(Date yearMonth) {
-        this.yearMonth = yearMonth;
-    }
-
-    public int getPercentile() {
-        return percentile;
-    }
-
-    public void setPercentile(int percentile) {
-        this.percentile = percentile;
-    }
-
-    public long getLatency() {
-        return latency;
-    }
-
-    public void setLatency(long latency) {
-        this.latency = latency;
-    }
 }

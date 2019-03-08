@@ -30,10 +30,6 @@ public class ExecutionMetric {
     @Column
     private long sqlTime;
     @Column
-    private long coreConsume;
-    @Column
-    private long memory;
-    @Column
     private long count;
 
     /**
@@ -51,9 +47,7 @@ public class ExecutionMetric {
         this.tName = tName;
         this.consume = values[0];
         this.sqlTime = values[1];
-        this.coreConsume = values[2];
-        this.memory = values[3];
-        this.count = values[4];
+        this.count = values[2];
         this.appId = appId;
         this.yearMonth = yearMonth;
     }
