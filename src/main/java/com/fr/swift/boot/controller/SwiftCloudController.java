@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutorService;
  * @date 2019-02-25
  */
 @RestController
-@RequestMapping("/")
 public class SwiftCloudController {
     /**
      * TODO: 2019/02/25 用户名密码先临时写定，先下载目录放在当前目录县
