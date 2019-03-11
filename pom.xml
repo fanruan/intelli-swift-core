@@ -67,10 +67,11 @@
             <artifactId>opencsv</artifactId>
             <version>2.3</version>
         </dependency>
+
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <version>5.2.17.Final</version>
+            <groupId>cpdetector</groupId>
+            <artifactId>cpdetector</artifactId>
+            <version>1.0.7</version>
         </dependency>
 
     </dependencies>
@@ -95,4 +96,14 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!--用于下载识别文件编码的包cpdetector-->
+    <repositories>
+        <repository>
+            <id>ebi</id>
+            <name>www.ebi.ac.uk</name>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
 </project>

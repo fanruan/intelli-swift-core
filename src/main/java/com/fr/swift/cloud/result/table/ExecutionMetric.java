@@ -16,7 +16,7 @@ import java.util.Date;
 public class ExecutionMetric {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column

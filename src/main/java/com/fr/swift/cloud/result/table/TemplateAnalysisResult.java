@@ -16,7 +16,7 @@ import java.util.Date;
 public class TemplateAnalysisResult {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column

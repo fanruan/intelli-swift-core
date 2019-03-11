@@ -1,6 +1,5 @@
 package com.fr.swift.cloud.analysis;
 
-import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.cloud.result.ArchiveDBManager;
 import com.fr.swift.cloud.result.table.ExecutionMetric;
 import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
@@ -8,6 +7,7 @@ import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
 import com.fr.swift.cloud.result.table.TemplateProperty;
 import com.fr.swift.cloud.result.table.TemplatePropertyRatio;
 import com.fr.swift.cloud.source.table.Execution;
+import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -15,10 +15,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.bean.query.QueryBeanFactory;
-import com.fr.swift.query.result.SwiftResultSetUtils;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.service.AnalyseService;
 import com.fr.swift.source.Row;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -185,9 +182,7 @@ public class TemplateAnalysisUtils {
                 .setAggregations(MetricBean.builder(Execution.consume.getName(), AggregatorType.TOP_PERCENTILE)
                         .setParams(new Object[]{percent, 3}).build())
                 .build();
-        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-        SwiftResultSet resultSet = SwiftResultSetUtils.toSwiftResultSet(
-                service.getQueryResult(QueryBeanFactory.queryBean2String(query)), query);
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
         Double value = null;
         try {
             value = resultSet.hasNext() ? resultSet.getNextRow().<Double>getValue(0) : null;
@@ -206,9 +201,7 @@ public class TemplateAnalysisUtils {
         metricBean.setColumn(Execution.consume.getName());
         metricBean.setParams(new Object[]{90, 3});
         query.setAggregations(Arrays.asList(metricBean));
-        AnalyseService service = ProxySelector.getInstance().getFactory().getProxy(AnalyseService.class);
-        SwiftResultSet resultSet = SwiftResultSetUtils.toSwiftResultSet(
-                service.getQueryResult(QueryBeanFactory.queryBean2String(query)), query);
+        SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(query);
         Double value = null;
         try {
             value = resultSet.hasNext() ? resultSet.getNextRow().<Double>getValue(0) : null;
