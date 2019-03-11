@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutorService;
  * @date 2019-02-25
  */
 @RestController
-@RequestMapping("/swift")
 public class SwiftCloudController {
     /**
      * TODO: 2019/02/25 用户名密码先临时写定，先下载目录放在当前目录县
@@ -56,7 +55,7 @@ public class SwiftCloudController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/triggerAnalyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/cloud/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public Map<String, Object> triggerAnalyse(@RequestBody UploadInfo uploadInfo) {
         String clientUserId = uploadInfo.getClientUserId();
         String clientAppId = uploadInfo.getClientAppId();
