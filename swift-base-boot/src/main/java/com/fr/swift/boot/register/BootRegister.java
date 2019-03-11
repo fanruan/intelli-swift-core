@@ -8,6 +8,18 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.executor.task.ExecutorTypeContainer;
+import com.fr.swift.executor.task.impl.CollateExecutorTask;
+import com.fr.swift.executor.task.impl.DeleteExecutorTask;
+import com.fr.swift.executor.task.impl.DownloadExecutorTask;
+import com.fr.swift.executor.task.impl.HistoryImportExecutorTask;
+import com.fr.swift.executor.task.impl.IndexExecutorTask;
+import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
+import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
+import com.fr.swift.executor.task.impl.TransferExecutorTask;
+import com.fr.swift.executor.task.impl.TruncateExecutorTask;
+import com.fr.swift.executor.task.impl.UploadExecutorTask;
+import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.event.MaskHistoryListener;
 import com.fr.swift.segment.event.PushSegmentLocationListener;
@@ -26,6 +38,20 @@ import java.util.Map;
  * @description
  */
 public class BootRegister {
+
+    public static void registerExecutorTask() {
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.REALTIME, RealtimeInsertExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.RECOVERY, RecoveryExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.TRANSFER, TransferExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.INDEX, IndexExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.DELETE, DeleteExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.TRUNCATE, TruncateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.COLLATE, CollateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.UPLOAD, UploadExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.DOWNLOAD, DownloadExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.HISTORY, HistoryImportExecutorTask.class);
+
+    }
 
     public static void registerListener() {
         TransferRealtimeListener.listen();

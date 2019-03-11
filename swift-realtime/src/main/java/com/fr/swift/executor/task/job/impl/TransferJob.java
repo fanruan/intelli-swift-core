@@ -12,7 +12,7 @@ import com.fr.swift.service.ScheduledRealtimeTransfer;
  * @author Lucifer
  * @description
  */
-public class TransferJob extends BaseJob<Boolean> {
+public class TransferJob extends BaseJob<Boolean, SegmentKey> {
 
     private SegmentKey transferSegKey;
 
@@ -30,5 +30,10 @@ public class TransferJob extends BaseJob<Boolean> {
             SwiftLoggers.getLogger().error(e);
             return false;
         }
+    }
+
+    @Override
+    public SegmentKey serializedTag() {
+        return transferSegKey;
     }
 }

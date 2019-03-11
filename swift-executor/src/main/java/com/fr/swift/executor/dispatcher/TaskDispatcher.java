@@ -65,7 +65,7 @@ public class TaskDispatcher {
                     }
                     ExecutorTask pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
                     if (pickedTask == null) {
-                        boolean hasPolled = ExecutorManager.getInstance().pull();
+                        boolean hasPolled = ExecutorManager.getInstance().pullMemTask();
                         if (!hasPolled) {
                             lock.lock();
                             try {
