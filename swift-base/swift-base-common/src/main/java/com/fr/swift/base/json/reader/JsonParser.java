@@ -79,22 +79,31 @@ public class JsonParser {
     private Stack stack;
     private int status;
     private String json;
+    private Map<String, Object> jsonMap;
 
     public JsonParser(String json) {
         this.json = json;
         tokenizer = new Tokenizer(new CharReader(new StringReader(json)));
     }
 
+    public JsonParser(Map<String, Object> jsonMap) {
+        this.jsonMap = jsonMap;
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T parse(Class<T> clazz) throws Exception {
-        try {
-            Object obj = parse();
-            if (obj instanceof Map && !ReflectUtils.isAssignable(clazz, Map.class)) {
-                return toTargetBean((Map<String, Object>) obj, clazz);
+        if (jsonMap == null) {
+            try {
+                Object obj = parse();
+                if (obj instanceof Map && !ReflectUtils.isAssignable(clazz, Map.class)) {
+                    return toTargetBean((Map<String, Object>) obj, clazz);
+                }
+                return checkExpectedType(obj, clazz);
+            } catch (JsonParseException e) {
+                return (T) fromInvalidJson(json, clazz);
             }
-            return checkExpectedType(obj, clazz);
-        } catch (JsonParseException e) {
-            return (T) fromInvalidJson(json, clazz);
+        } else {
+            return toTargetBean(jsonMap, clazz);
         }
     }
 

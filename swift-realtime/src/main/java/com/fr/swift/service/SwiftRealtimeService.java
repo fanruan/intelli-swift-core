@@ -39,7 +39,6 @@ import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 import com.fr.swift.util.FileUtil;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +108,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                 }
                 try {
                     TaskProducer.produceTask(new RecoveryExecutorTask(segKey));
-                } catch (SQLException e) {
+                } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                 }
             }

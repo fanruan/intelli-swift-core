@@ -49,4 +49,6 @@ public interface ExecutorTask<T extends Job> extends ObjectConverter {
     T getJob();
 
     boolean isPersistent();
+
+    String getTaskContent();
 }

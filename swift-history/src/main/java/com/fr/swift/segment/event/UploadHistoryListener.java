@@ -45,6 +45,8 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
             }));
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error("persist task(upload whore seg {}) failed", "persist task(upload {}'s all_show_index) failed", segKey, e);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 

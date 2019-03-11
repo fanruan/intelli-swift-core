@@ -14,7 +14,7 @@ import java.util.Collections;
  * @author Lucifer
  * @description 索引先放在transfer里一起，暂时弃用
  */
-public class IndexJob extends BaseJob<Boolean> {
+public class IndexJob extends BaseJob<Boolean, SegmentKey> {
 
     private SegmentKey indexSegKey;
 

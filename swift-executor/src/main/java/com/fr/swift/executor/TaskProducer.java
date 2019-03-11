@@ -4,6 +4,7 @@ import com.fr.swift.executor.exception.NotDBTaskExecption;
 import com.fr.swift.executor.queue.DBQueue;
 import com.fr.swift.executor.queue.MemoryQueue;
 import com.fr.swift.executor.task.ExecutorTask;
+import com.fr.swift.log.SwiftLoggers;
 
 import java.sql.SQLException;
 import java.util.Set;
@@ -29,14 +30,29 @@ public class TaskProducer {
                 throw new NotDBTaskExecption(task);
             }
         }
-        return DBQueue.getInstance().put(executorTasks);
+        try {
+            DBQueue.getInstance().put(executorTasks);
+        } catch (SQLException e) {
+            StringBuilder tasks = new StringBuilder();
+            for (ExecutorTask executorTask : executorTasks) {
+                tasks.append(executorTask);
+            }
+            SwiftLoggers.getLogger().error("tasks {} insert db failed! ", tasks, e);
+        }
+        for (ExecutorTask executorTask : executorTasks) {
+            MemoryQueue.getInstance().offer(executorTask);
+        }
+        return true;
     }
 
-    public static boolean produceTask(ExecutorTask executorTask) throws SQLException {
+    public static boolean produceTask(ExecutorTask executorTask) {
         if (executorTask.isPersistent()) {
-            return DBQueue.getInstance().put(executorTask);
-        } else {
-            return MemoryQueue.getInstance().offer(executorTask);
+            try {
+                DBQueue.getInstance().put(executorTask);
+            } catch (SQLException e) {
+                SwiftLoggers.getLogger().error("task {} insert db failed! ", executorTask, e);
+            }
         }
+        return MemoryQueue.getInstance().offer(executorTask);
     }
 }

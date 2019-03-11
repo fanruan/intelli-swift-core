@@ -34,12 +34,12 @@ public class TaskExecuteRunnable implements Runnable {
 
     private Condition freeCondition;
 
-    private Thread dispachTthread;
+    private Thread dispachThread;
 
     private ExecutorTaskService executorTaskService = SwiftContext.get().getBean(ExecutorTaskService.class);
 
-    public TaskExecuteRunnable(Thread dispachTthread, String threadName, Lock lock, Condition condition, ExecutorTaskType... types) {
-        this.dispachTthread = dispachTthread;
+    public TaskExecuteRunnable(Thread dispachThread, String threadName, Lock lock, Condition condition, ExecutorTaskType... types) {
+        this.dispachThread = dispachThread;
         this.threadName = threadName;
         this.lock = lock;
         this.freeCondition = condition;
