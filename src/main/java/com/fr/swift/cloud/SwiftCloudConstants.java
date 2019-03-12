@@ -37,12 +37,11 @@ public class SwiftCloudConstants {
                 properties.load(inputStream);
                 ROOT_URL = properties.getProperty("url.root", "https://market.fanruan.com");
             } else {
-                ROOT_URL = "http://192.168.5.83:3008";
+                ROOT_URL = "https://market.fanruan.com";
             }
         } catch (Exception ignore) {
-            ROOT_URL = "http://192.168.5.83:3008";
+            ROOT_URL = "https://market.fanruan.com";
         } finally {
-            ROOT_URL = "http://192.168.5.83:3008";
             IoUtil.close(inputStream);
         }
     }
