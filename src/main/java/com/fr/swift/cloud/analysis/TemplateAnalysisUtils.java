@@ -7,6 +7,7 @@ import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
 import com.fr.swift.cloud.result.table.TemplateProperty;
 import com.fr.swift.cloud.result.table.TemplatePropertyRatio;
 import com.fr.swift.cloud.source.table.Execution;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.MetricBean;
@@ -81,6 +82,7 @@ public class TemplateAnalysisUtils {
             }
             rs.close();
         }
+        SwiftLoggers.getLogger().info("finished template analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
 
     private static TemplateAnalysisResult createTemplateAnalysisResult(String appId, Date yearMonth, Row row,

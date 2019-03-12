@@ -43,12 +43,11 @@ public class AnalyseTask implements Runnable {
             if (Strings.isNotEmpty(downloadLink)) {
                 SwiftLoggers.getLogger().info("get download link success. link is {}", downloadLink);
                 InputStream inputStream = new URL(downloadLink).openStream();
-                String downloadPath = SwiftCloudConstants.ZIP_FILE_PATH + File.separator + clientUserId + File.separator + clientAppId;
+                String downloadPath = SwiftCloudConstants.ZIP_FILE_PATH + File.separator + clientUserId + File.separator + clientAppId + File.separator + treasDate;
                 ZipUtils.unZip(downloadPath, inputStream);
                 logStartAnalyse(clientUserId, clientAppId, treasDate);
                 // 先导入csv文件数据到cube，然后生成分析结果，并保存到数据库
-                String path = downloadPath + File.separator + CSVImportUtils.treas + treasDate;
-                CSVImportUtils.load(path, clientAppId, treasDate);
+                CSVImportUtils.load(downloadPath, clientAppId, treasDate);
                 TemplateAnalysisUtils.tplAnalysis(clientAppId, treasDate);
 
                 // 云端的path

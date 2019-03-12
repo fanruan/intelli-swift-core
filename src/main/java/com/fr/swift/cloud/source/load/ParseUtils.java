@@ -6,7 +6,6 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import info.monitorenter.cpdetector.io.ASCIIDetector;
 import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
 import info.monitorenter.cpdetector.io.JChardetFacade;
-import info.monitorenter.cpdetector.io.ParsingDetector;
 import info.monitorenter.cpdetector.io.UnicodeDetector;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -21,8 +20,6 @@ import java.util.Map;
  * Created by lyon on 2019/3/7.
  */
 public class ParseUtils {
-
-    private static final String DEFAULT_DATE_FORMAT = "yyyyMM";
 
     public static Map<String, Object> parseFields(String[] row, List<SwiftMetaDataColumn> columns) {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
@@ -53,7 +50,8 @@ public class ParseUtils {
             case LONG:
             case DATE: {
                 if (NumberUtils.isCreatable(value)) {
-                    return NumberUtils.toLong(value);
+                    Number n = NumberUtils.createNumber(value);
+                    return n == null ? null : n.longValue();
                 }
                 break;
             }
@@ -98,11 +96,6 @@ public class ParseUtils {
          */
         CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance();
         /*
-         * ParsingDetector可用于检查HTML、XML等文件或字符流的编码,构造方法中的参数用于
-         * 指示是否显示探测过程的详细信息，为false不显示。
-         */
-        detector.add(new ParsingDetector(false));
-        /*
          * JChardetFacade封装了由Mozilla组织提供的JChardet，它可以完成大多数文件的编码
          * 测定。所以，一般有了这个探测器就可满足大多数项目的要求，如果你还不放心，可以
          * 再多加几个探测器，比如下面的ASCIIDetector、UnicodeDetector等。
@@ -116,7 +109,6 @@ public class ParseUtils {
         try {
             charset = detector.detectCodepage(url);
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
         if (charset != null)
             return charset.name();

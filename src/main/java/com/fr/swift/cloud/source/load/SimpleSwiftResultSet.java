@@ -25,13 +25,19 @@ public class SimpleSwiftResultSet implements SwiftResultSet {
     private Row next;
 
     public SimpleSwiftResultSet(String file, LineParser parser, SwiftMetaData metaData) throws Exception {
+        this(file, parser, metaData, true);
+    }
+
+    public SimpleSwiftResultSet(String file, LineParser parser, SwiftMetaData metaData, boolean skipFirstLine) throws Exception {
         this.parser = parser;
         this.metaData = metaData;
         String charsetName = ParseUtils.getFileEncode(file);
         charsetName = charsetName == null ? "utf8" : charsetName;
+        SwiftLoggers.getLogger().info("file: {}, charset: {}", file, charsetName);
         reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName));
-        // skip first line
-        reader.readLine();
+        if (skipFirstLine) {
+            reader.readLine();
+        }
         next = nextRow();
     }
 

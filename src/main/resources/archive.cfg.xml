@@ -18,7 +18,7 @@
 
         <!--云中心的生产环境数据库（出于安全考虑，最好不硬编码在这）-->
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://47.100.103.59:3306/swift_data</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/swift_data</property>
         <property name="hibernate.connection.username">admin</property>
         <property name="hibernate.connection.password">ilovejava1!</property>
 
