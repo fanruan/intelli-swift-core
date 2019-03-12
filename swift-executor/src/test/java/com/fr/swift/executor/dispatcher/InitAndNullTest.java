@@ -24,9 +24,9 @@ public class InitAndNullTest extends BaseDispatcherTest {
         PowerMockito.mockStatic(ExecutorManager.class);
         ExecutorManager executorManager = Mockito.mock(ExecutorManager.class);
         Mockito.when(ExecutorManager.getInstance()).thenReturn(executorManager);
-        Mockito.when(executorManager.pull()).thenReturn(false);
+        Mockito.when(executorManager.pullMemTask()).thenReturn(false);
         TaskDispatcher.getInstance();
         Thread.sleep(100);
-        Mockito.verify(executorManager).pull();
+        Mockito.verify(executorManager).pullMemTask();
     }
 }

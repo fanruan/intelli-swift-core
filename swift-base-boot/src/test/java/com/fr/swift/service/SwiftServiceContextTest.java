@@ -26,7 +26,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -97,7 +96,7 @@ public class SwiftServiceContextTest {
     }
 
     @Test
-    public void truncate() throws SQLException {
+    public void truncate() throws Exception {
         new SwiftServiceContext().truncate(Mockito.mock(SourceKey.class));
         PowerMockito.verifyStatic(TaskProducer.class);
         TaskProducer.produceTask(Mockito.any(TruncateExecutorTask.class));

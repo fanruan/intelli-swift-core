@@ -16,7 +16,7 @@ import com.fr.swift.segment.SegmentKey;
  */
 public class IndexExecutorTask extends AbstractExecutorTask<Job> {
 
-    public IndexExecutorTask(SegmentKey indexSegKey) {
+    public IndexExecutorTask(SegmentKey indexSegKey) throws Exception {
         super(indexSegKey.getTable(),
                 true,
                 ExecutorTaskType.INDEX,

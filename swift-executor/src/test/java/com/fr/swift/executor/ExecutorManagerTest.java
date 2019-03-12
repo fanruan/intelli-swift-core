@@ -29,12 +29,10 @@ import java.util.Collections;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({MemoryQueue.class, TaskRouter.class, SwiftContext.class})
+@PrepareForTest({MemoryQueue.class, SwiftContext.class})
 public class ExecutorManagerTest {
     @Mock
     MemoryQueue memoryQueue;
-    @Mock
-    TaskRouter taskRouter;
 
     @Mock
     ExecutorTask executorTask1;
@@ -51,21 +49,31 @@ public class ExecutorManagerTest {
         Mockito.when(SwiftContext.get()).thenReturn(beanFactory);
         Mockito.when(beanFactory.getBean(ExecutorTaskService.class)).thenReturn(executorTaskService);
 
-        PowerMockito.mockStatic(MemoryQueue.class, TaskRouter.class);
+        PowerMockito.mockStatic(MemoryQueue.class);
         Mockito.when(MemoryQueue.getInstance()).thenReturn(memoryQueue);
-        Mockito.when(TaskRouter.getInstance()).thenReturn(taskRouter);
     }
 
     @Test
     public void testPullEmpty() {
-        Assert.assertFalse(ExecutorManager.getInstance().pull());
+        Assert.assertFalse(ExecutorManager.getInstance().pullMemTask());
+        Assert.assertFalse(ExecutorManager.getInstance().pullDBTask());
     }
 
     @Test
-    public void testPullAll() {
+    public void testPullDBTask() {
         Mockito.when(DBQueue.getInstance().pullAll()).thenReturn(Collections.singletonList(executorTask1));
+        ExecutorManager.getInstance().pullDBTask();
+        Assert.assertEquals(TaskRouter.getInstance().getIdleTasks().size(), 1);
+        Assert.assertEquals(TaskRouter.getInstance().getIdleTasks().get(0), executorTask1);
+        TaskRouter.getInstance().remove(executorTask1);
+    }
+
+    @Test
+    public void testPullMemTask() {
         Mockito.when(memoryQueue.pullBeforeTime(Mockito.anyLong())).thenReturn(Collections.singletonList(executorTask2));
-        ExecutorManager.getInstance().pull();
-        Mockito.verify(taskRouter).addTasks(Mockito.<ExecutorTask>anyList());
+        ExecutorManager.getInstance().pullMemTask();
+        Assert.assertEquals(TaskRouter.getInstance().getIdleTasks().size(), 1);
+        Assert.assertEquals(TaskRouter.getInstance().getIdleTasks().get(0), executorTask2);
+        TaskRouter.getInstance().remove(executorTask2);
     }
 }
