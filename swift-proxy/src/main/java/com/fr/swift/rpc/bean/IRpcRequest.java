@@ -4,7 +4,7 @@ package com.fr.swift.rpc.bean;
  * @author yee
  * @date 2018/8/27
  */
-public interface RpcRequest {
+public interface IRpcRequest {
     String getRequestId();
 
 

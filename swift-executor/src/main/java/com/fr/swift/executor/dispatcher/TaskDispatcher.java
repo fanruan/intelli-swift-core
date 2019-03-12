@@ -21,9 +21,16 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class TaskDispatcher {
 
-    private static TaskDispatcher INSTANCE = new TaskDispatcher();
+    private static TaskDispatcher INSTANCE = null;
 
-    public static TaskDispatcher getInstance() {
+    public static synchronized TaskDispatcher getInstance() {
+        if (INSTANCE == null) {
+            synchronized (TaskDispatcher.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new TaskDispatcher();
+                }
+            }
+        }
         return INSTANCE;
     }
 
@@ -31,21 +38,25 @@ public class TaskDispatcher {
 
     private static int EXECUTE_THREAD_NUM;
 
-    private Lock lock = new ReentrantLock();
+    private Lock executorLock = new ReentrantLock();
 
-    private Condition freeCondition = lock.newCondition();
+    private Condition freeCondition = executorLock.newCondition();
+
+    private Thread dispachTthread;
+
+    private Thread[] threads;
 
     private TaskDispatcher() {
         EXECUTE_THREAD_NUM = Runtime.getRuntime().availableProcessors();
-        Thread dispachTthread = SwiftExecutors.newThread(new DispatchRunnable());
-        Thread[] threads = new Thread[EXECUTE_THREAD_NUM];
+        threads = new Thread[EXECUTE_THREAD_NUM];
         for (int i = 0; i < threads.length; i++) {
             String threadName = "TaskExecuteRunnable [" + i + "]";
-            Runnable runnable = new TaskExecuteRunnable(dispachTthread, threadName, lock, freeCondition);
+            Runnable runnable = new TaskExecuteRunnable(dispachTthread, threadName, executorLock, freeCondition);
             Thread thread = SwiftExecutors.newThread(runnable, threadName);
             threads[i] = thread;
             thread.start();
         }
+        dispachTthread = SwiftExecutors.newThread(new DispatchRunnable());
         dispachTthread.start();
     }
 
@@ -55,23 +66,23 @@ public class TaskDispatcher {
         public void run() {
             while (true) {
                 try {
-                    lock.lock();
+                    executorLock.lock();
                     try {
                         if (isThreadBusy()) {
                             freeCondition.await();
                         }
                     } finally {
-                        lock.unlock();
+                        executorLock.unlock();
                     }
-                    ExecutorTask pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
+                    ExecutorTask pickedTask = TaskRouter.getInstance().pickExecutorTask(executorLock);
                     if (pickedTask == null) {
                         boolean hasPolled = ExecutorManager.getInstance().pullMemTask();
                         if (!hasPolled) {
-                            lock.lock();
+                            executorLock.lock();
                             try {
                                 freeCondition.await(TASK_PULL_INTERVAL, TimeUnit.MILLISECONDS);
                             } finally {
-                                lock.unlock();
+                                executorLock.unlock();
                             }
                         }
                     } else {

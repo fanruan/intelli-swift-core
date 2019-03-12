@@ -1,6 +1,8 @@
 package com.fr.swift.nm;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.executor.ExecutorManager;
+import com.fr.swift.executor.dispatcher.TaskDispatcher;
 import com.fr.swift.nm.collector.SlaveHeartBeatCollect;
 import com.fr.swift.node.SwiftClusterNodeManager;
 import com.fr.swift.property.SwiftProperty;
@@ -30,7 +32,7 @@ import java.util.Collections;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({SwiftContext.class, SwiftProperty.class, ServiceBeanFactory.class, SlaveManager.class, ClusterSelector.class})
+@PrepareForTest({SwiftContext.class, SwiftProperty.class, ServiceBeanFactory.class, SlaveManager.class, ClusterSelector.class, TaskDispatcher.class, ExecutorManager.class})
 public class SlaveManagerTest {
 
     @Mock
@@ -49,11 +51,15 @@ public class SlaveManagerTest {
     ClusterSelector clusterSelector;
     @Mock
     SwiftClusterNodeManager swiftClusterNodeManager;
+    @Mock
+    TaskDispatcher taskDispatcher;
+    @Mock
+    ExecutorManager executorManager;
 
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(ServiceBeanFactory.class);
-        PowerMockito.mockStatic(SwiftContext.class, SwiftProperty.class, SlaveManager.class, ClusterSelector.class);
+        PowerMockito.mockStatic(SwiftContext.class, SwiftProperty.class, SlaveManager.class, ClusterSelector.class, TaskDispatcher.class, ExecutorManager.class);
 
         PowerMockito.whenNew(SlaveHeartBeatCollect.class).withAnyArguments().thenReturn(collect);
         Mockito.when(SwiftContext.get()).thenReturn(swiftContext);
@@ -63,6 +69,9 @@ public class SlaveManagerTest {
         Mockito.when(swiftContext.getBean(ClusterServiceManager.class)).thenReturn(clusterServiceManager);
         Mockito.when(ClusterSelector.getInstance()).thenReturn(clusterSelector);
         Mockito.when(clusterSelector.getFactory()).thenReturn(swiftClusterNodeManager);
+
+        Mockito.when(TaskDispatcher.getInstance()).thenReturn(taskDispatcher);
+        Mockito.when(ExecutorManager.getInstance()).thenReturn(executorManager);
     }
 
     @Test
@@ -71,8 +80,11 @@ public class SlaveManagerTest {
         slaveManager.startUp();
         Mockito.verify(collect).startCollect();
         Mockito.verify(clusterServiceManager).registerService(Mockito.<SwiftService>anyList());
+        Mockito.verify(executorManager).pullDBTask();
+
         slaveManager.shutDown();
         Mockito.verify(collect).stopCollect();
+        Mockito.verify(executorManager).clearTasks();
         Mockito.verify(clusterServiceManager).unregisterService(Mockito.<SwiftService>anyList());
     }
 }

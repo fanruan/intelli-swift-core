@@ -40,4 +40,8 @@ public final class MemoryQueue {
     public boolean offer(ExecutorTask task) {
         return queue.offer(task);
     }
+
+    public void clear() {
+        queue.clear();
+    }
 }
