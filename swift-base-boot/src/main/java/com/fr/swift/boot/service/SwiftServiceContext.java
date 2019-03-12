@@ -24,7 +24,6 @@ import com.fr.swift.service.ServiceContext;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.stuff.IndexingStuff;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +67,7 @@ public class SwiftServiceContext implements ServiceContext {
     }
 
     @Override
-    public void truncate(SourceKey tableKey) throws SQLException {
+    public void truncate(SourceKey tableKey) throws Exception {
         TaskProducer.produceTask(new TruncateExecutorTask(tableKey));
     }
 

@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.db.Where;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.service.DeleteService;
 import com.fr.swift.source.SourceKey;
 
@@ -13,7 +14,7 @@ import com.fr.swift.source.SourceKey;
  * @author Lucifer
  * @description
  */
-public class DeleteJob extends BaseJob<Boolean> {
+public class DeleteJob extends BaseJob<Boolean, FilterBean> {
 
     private SourceKey sourceKey;
     private Where where;
@@ -32,5 +33,10 @@ public class DeleteJob extends BaseJob<Boolean> {
             SwiftLoggers.getLogger().error(e);
             return false;
         }
+    }
+
+    @Override
+    public FilterBean serializedTag() {
+        return where.getFilterBean();
     }
 }

@@ -19,7 +19,7 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
  */
 public class HistoryImportExecutorTask extends AbstractExecutorTask<Job> {
 
-    public HistoryImportExecutorTask(DataSource dataSource, SwiftSourceAlloter<?, RowInfo> alloter, SwiftResultSet resultSet) {
+    public HistoryImportExecutorTask(DataSource dataSource, SwiftSourceAlloter<?, RowInfo> alloter, SwiftResultSet resultSet) throws Exception {
         super(dataSource.getSourceKey(),
                 false,
                 ExecutorTaskType.HISTORY,

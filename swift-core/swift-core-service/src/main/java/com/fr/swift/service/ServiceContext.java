@@ -18,7 +18,6 @@ import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.stuff.IndexingStuff;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +50,7 @@ public interface ServiceContext {
 
     //history service methods
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.HISTORY, Target.REAL_TIME})
-    void truncate(SourceKey tableKey) throws SQLException;
+    void truncate(SourceKey tableKey) throws Exception;
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.HISTORY)
     void removeHistory(List<SegmentKey> needRemoveList);

@@ -70,6 +70,7 @@ public class TaskProducerTest {
             TaskProducer.produceTask(dbTask);
             Mockito.verify(executorTaskService).saveOrUpdate(dbTask);
             TaskProducer.produceTask(memTask);
+            Mockito.verify(memoryQueue).offer(dbTask);
             Mockito.verify(memoryQueue).offer(memTask);
         } catch (SQLException e) {
             assertTrue(false);
@@ -94,6 +95,7 @@ public class TaskProducerTest {
         try {
             TaskProducer.produceTasks(executorTaskSet2);
             Mockito.verify(executorTaskService).batchSaveOrUpdate(executorTaskSet2);
+            Mockito.verify(memoryQueue, Mockito.times(2)).offer(dbTask);
             Assert.assertTrue(true);
         } catch (NotDBTaskExecption e) {
             Assert.assertTrue(false);
