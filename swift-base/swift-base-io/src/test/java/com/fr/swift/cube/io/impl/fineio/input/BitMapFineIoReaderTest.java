@@ -19,6 +19,7 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
@@ -46,8 +47,8 @@ public class BitMapFineIoReaderTest {
         when(byteArrayReader.get(anyLong())).thenReturn(
                 new byte[]{BitMapType.ROARING_IMMUTABLE.getHead(), 1},
                 new byte[]{BitMapType.ROARING_MUTABLE.getHead(), 1},
-                new byte[]{BitMapType.ALL_SHOW.getHead(), 1},
-                new byte[]{BitMapType.RANGE.getHead(), 1},
+                new byte[]{BitMapType.ALL_SHOW.getHead(), 1, 2, 3, 4},
+                new byte[]{BitMapType.RANGE.getHead(), 1, 2, 3, 4, 5, 6, 7, 8},
                 new byte[]{BitMapType.BIT_SET_IMMUTABLE.getHead(), 1}
         );
 
@@ -57,11 +58,11 @@ public class BitMapFineIoReaderTest {
 
         spy(AllShowBitMap.class);
         doReturn(AllShowBitMap.of(1)).when(AllShowBitMap.class);
-        AllShowBitMap.ofBuffer(Mockito.<ByteBuffer>any());
+        AllShowBitMap.of(anyInt());
 
         spy(RangeBitmap.class);
         doReturn(RangeBitmap.of(0, 1)).when(RangeBitmap.class);
-        RangeBitmap.ofBuffer(Mockito.<ByteBuffer>any());
+        RangeBitmap.of(anyInt(), anyInt());
     }
 
     @Test
