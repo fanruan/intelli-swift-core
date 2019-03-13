@@ -2,47 +2,33 @@ package com.fr.swift.segment.insert;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.Database;
+import com.fr.swift.cube.CubePathBuilder;
+import com.fr.swift.cube.CubeUtil;
+import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
-import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.source.alloter.RowInfo;
+import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
-import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-
-import java.util.List;
+import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
@@ -56,99 +42,79 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({SwiftContext.class, SwiftDatabase.class, SwiftEventDispatcher.class, HistoryBlockImporter.class, SegmentUtils.class})
+@PrepareForTest({SwiftInserter.class, CubeUtil.class, SwiftContext.class, SwiftDatabase.class, SwiftEventDispatcher.class, HistoryBlockImporter.class, SegmentUtils.class})
 public class HistoryBlockImporterTest {
 
-    @Mock
-    private Database database;
-    @Mock
-    private SwiftInserter inserter;
-    @Mock
-    private SwiftTablePathService tablePathService;
-
     @Before
-    public void setUp() throws Exception {
-        mockStatic(SwiftContext.class, SwiftEventDispatcher.class, SegmentUtils.class);
-
-        BeanFactory beanFactory = mock(BeanFactory.class);
-        when(SwiftContext.get()).thenReturn(beanFactory);
-        SwiftMetaDataService metaDataService = mock(SwiftMetaDataService.class);
-        when(beanFactory.getBean(SwiftMetaDataService.class)).thenReturn(metaDataService);
-
-        SwiftCubePathService swiftCubePathService = mock(SwiftCubePathService.class);
-        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
-        when(swiftCubePathService.getSwiftPath()).thenReturn("/");
-
-        when(beanFactory.getBean(SwiftTablePathService.class)).thenReturn(tablePathService);
-        SwiftTablePathBean tablePathBean = mock(SwiftTablePathBean.class);
-        when(tablePathService.get("tbl")).thenReturn(tablePathBean);
-        when(tablePathBean.getTablePath()).thenReturn(1);
-
-        mockStatic(SwiftDatabase.class);
-        when(SwiftDatabase.getInstance()).thenReturn(database);
+    public void setUp() {
+        mockStatic(SwiftContext.class);
+        when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
+        when(SwiftContext.get().getBean(SwiftCubePathService.class)).thenReturn(mock(SwiftCubePathService.class));
     }
 
     @Test
-    public void importData() throws Exception {
-        DataSource dataSource = mock(DataSource.class);
-        SourceKey tableKey = new SourceKey("tbl");
-        when(dataSource.getSourceKey()).thenReturn(tableKey);
-        SwiftMetaData metaData = mock(SwiftMetaData.class);
-        when(dataSource.getMetadata()).thenReturn(metaData);
-        when(metaData.getSwiftDatabase()).thenReturn(com.fr.swift.db.SwiftDatabase.CUBE);
+    public void getInserting() throws Exception {
+        SegmentKey segKey = mock(SegmentKey.class, Mockito.RETURNS_DEEP_STUBS);
 
-        SwiftSourceAlloter alloter = mock(SwiftSourceAlloter.class);
-        when(alloter.getAllotRule()).thenReturn(new LineAllotRule(1));
-        when(alloter.allot(ArgumentMatchers.<RowInfo>any())).thenReturn(new SwiftSegmentInfo(0, StoreType.FINE_IO),
-                new SwiftSegmentInfo(1, StoreType.FINE_IO),
-                new SwiftSegmentInfo(2, StoreType.FINE_IO));
+        mockStatic(CubeUtil.class);
+        when(CubeUtil.getCurrentDir(segKey.getTable())).thenReturn(1);
 
-        HistoryBlockImporter<?> historyBlockImporter = spy(new HistoryBlockImporter<SwiftSourceAlloter<AllotRule, RowInfo>>(dataSource, alloter));
+        CubePathBuilder cubePathBuilder = mock(CubePathBuilder.class, Mockito.RETURNS_DEEP_STUBS);
+        whenNew(CubePathBuilder.class).withArguments(segKey).thenReturn(cubePathBuilder);
+
+        ResourceLocation location = mock(ResourceLocation.class);
+        whenNew(ResourceLocation.class).withArguments(
+                cubePathBuilder.setTempDir(CubeUtil.getCurrentDir(segKey.getTable())).build(),
+                segKey.getStoreType()).thenReturn(location);
+
+        DataSource dataSource = mock(DataSource.class, Mockito.RETURNS_DEEP_STUBS);
+//        when(dataSource.getMetadata()).thenReturn(mock(SwiftMetaData.class));
         Segment seg = mock(Segment.class);
-        doReturn(seg).when(historyBlockImporter).newSegment(ArgumentMatchers.<SegmentKey>any());
-        whenNew(SwiftInserter.class).withAnyArguments().thenReturn(inserter);
+        mockStatic(SegmentUtils.class);
+        when(SegmentUtils.newSegment(location, dataSource.getMetadata())).thenReturn(seg);
 
-        when(seg.isReadable()).thenReturn(true);
-        when(seg.getRowCount()).thenReturn(1);
+        SwiftInserter inserter = mock(SwiftInserter.class);
+        mockStatic(SwiftInserter.class);
+        when(SwiftInserter.ofOverwriteMode(seg)).thenReturn(inserter);
 
-        SwiftResultSet resultSet = mock(SwiftResultSet.class);
-        when(resultSet.hasNext()).thenReturn(true, true, true, false);
-        when(resultSet.getNextRow()).thenReturn(new ListBasedRow(1), new ListBasedRow(2), new ListBasedRow(3));
+        HistoryBlockImporter<SwiftSourceAlloter<?, RowInfo>> historyBlockImporter = new HistoryBlockImporter<SwiftSourceAlloter<?, RowInfo>>(dataSource, mock(SwiftSourceAlloter.class));
+        Object inserting = historyBlockImporter.getInserting(segKey);
 
-        historyBlockImporter.importData(resultSet);
+        assertEquals(inserter, Whitebox.getInternalState(inserting, "inserter"));
+        assertEquals(seg, Whitebox.getInternalState(inserting, "seg"));
+        assertEquals(0, Whitebox.getInternalState(inserting, "rowCount"));
 
-        // create if not exists
-        verify(database).existsTable(tableKey);
-        verify(database).createTable(tableKey, metaData);
-        // allot and insert
-        verify(alloter, times(3)).allot(ArgumentMatchers.<RowInfo>any());
-        verify(inserter, times(3)).insertData(ArgumentMatchers.<Row>any());
-        // ensure close and release
-        verify(resultSet).close();
-        verify(inserter, times(3)).release();
-        // ensure index full history seg and upload
-        verifyStatic(SegmentUtils.class, times(3));
-        SegmentUtils.indexSegmentIfNeed(ArgumentMatchers.<List<Segment>>any());
-        for (SegmentKey segKey : historyBlockImporter.getImportSegments()) {
-            verifyStatic(SwiftEventDispatcher.class);
-            SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, segKey);
-        }
-        // ensure sync all seg location
-        verifyStatic(SwiftEventDispatcher.class);
-        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, historyBlockImporter.getImportSegments());
     }
 
     @Test
-    public void getFields() {
-        DataSource dataSource = mock(DataSource.class);
-        SourceKey tableKey = new SourceKey("tbl");
-        when(dataSource.getSourceKey()).thenReturn(tableKey);
-        SwiftMetaData metaData = mock(SwiftMetaData.class);
-        when(dataSource.getMetadata()).thenReturn(metaData);
-        List<String> list = mock(List.class);
-        when(metaData.getFieldNames()).thenReturn(list);
+    public void handleFullSegment() throws Exception {
+        SegmentInfo segInfo = mock(SegmentInfo.class);
+        HistoryBlockImporter<SwiftSourceAlloter<?, RowInfo>> historyBlockImporter = spy(new HistoryBlockImporter<SwiftSourceAlloter<?, RowInfo>>(mock(DataSource.class), mock(SwiftSourceAlloter.class)));
 
-        List<String> fields = new HistoryBlockImporter<SwiftSourceAlloter<AllotRule, RowInfo>>(dataSource, mock(SwiftSourceAlloter.class)).getFields();
-        assertEquals(list, fields);
+        SegmentKey segKey = mock(SegmentKey.class);
+        doReturn(segKey).when(historyBlockImporter, "newSegmentKey", segInfo);
+
+        mockStatic(SwiftEventDispatcher.class);
+
+        historyBlockImporter.handleFullSegment(segInfo);
+
+        verifyStatic(SwiftEventDispatcher.class);
+        SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, segKey);
+    }
+
+    @Test
+    public void indexIfNeed() {
+        // FIXME 2019/3/13 anchore 私有内部类限制，无法测试
+//        SegmentInfo segInfo = mock(SegmentInfo.class);
+//        HistoryBlockImporter<SwiftSourceAlloter<?, RowInfo>> historyBlockImporter = spy(new HistoryBlockImporter<SwiftSourceAlloter<?, RowInfo>>(mock(DataSource.class), mock(SwiftSourceAlloter.class)));
+//        Map<SegmentInfo, ?> insertings = mock(Map.class, Mockito.RETURNS_DEEP_STUBS);
+//        Whitebox.setInternalState(historyBlockImporter, "insertings", insertings);
+//        when(insertings.get(segInfo))
+//        historyBlockImporter.indexIfNeed(segInfo);
+    }
+
+    @Test
+    public void clearDirtyIfNeed() {
+        // TODO: 2019/3/12 anchore
     }
 }

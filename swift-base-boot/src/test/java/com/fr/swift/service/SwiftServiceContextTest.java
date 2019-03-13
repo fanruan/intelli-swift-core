@@ -3,7 +3,11 @@ package com.fr.swift.service;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.boot.service.SwiftServiceContext;
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.db.Database;
+import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
@@ -13,11 +17,16 @@ import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.backup.ReusableResultSet;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.alloter.impl.BaseAllotRule;
+import com.fr.swift.source.alloter.impl.line.BackupLineSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -29,6 +38,13 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
+
 /**
  * This class created on 2019/3/5
  *
@@ -37,7 +53,7 @@ import java.util.List;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({SwiftContext.class, TaskProducer.class})
+@PrepareForTest({SwiftContext.class, TaskProducer.class, SwiftServiceContext.class, SwiftDatabase.class})
 public class SwiftServiceContextTest {
 
     @Mock
@@ -56,12 +72,16 @@ public class SwiftServiceContextTest {
         Mockito.when(beanFactory.getBean(AnalyseService.class)).thenReturn(analyseService);
         Mockito.when(beanFactory.getBean(HistoryService.class)).thenReturn(historyService);
         Mockito.when(beanFactory.getBean(BaseService.class)).thenReturn(baseService);
+        when(beanFactory.getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(mock(SwiftSegmentService.class));
+
+        mockStatic(TaskProducer.class);
+        when(TaskProducer.produceTask(ArgumentMatchers.<ExecutorTask>any())).thenReturn(true);
     }
 
     @Test
     public void cleanMetaCache() {
         new SwiftServiceContext().cleanMetaCache(new String[0]);
-        Mockito.verify(baseService).cleanMetaCache(Mockito.any(String[].class));
+        Mockito.verify(baseService).cleanMetaCache(any(String[].class));
     }
 
     @Test
@@ -90,16 +110,36 @@ public class SwiftServiceContextTest {
 
     @Test
     public void insert() throws Exception {
-        new SwiftServiceContext().insert(Mockito.mock(SourceKey.class), Mockito.mock(SwiftResultSet.class));
-        PowerMockito.verifyStatic(TaskProducer.class);
-        TaskProducer.produceTask(Mockito.any(RealtimeInsertExecutorTask.class));
+        SourceKey tableKey = mock(SourceKey.class);
+        SwiftResultSet resultSet = mock(SwiftResultSet.class);
+
+        LineAllotRule allotRule = mock(LineAllotRule.class);
+        whenNew(LineAllotRule.class).withArguments(BaseAllotRule.MEM_CAPACITY).thenReturn(allotRule);
+        BackupLineSourceAlloter alloter = mock(BackupLineSourceAlloter.class);
+        whenNew(BackupLineSourceAlloter.class).withArguments(tableKey, allotRule).thenReturn(alloter);
+
+        mockStatic(SwiftDatabase.class);
+        when(SwiftDatabase.getInstance()).thenReturn(mock(Database.class));
+        Table table = mock(Table.class);
+        when(SwiftDatabase.getInstance().getTable(tableKey)).thenReturn(table);
+
+        ReusableResultSet reusableResultSet = mock(ReusableResultSet.class);
+        whenNew(ReusableResultSet.class).withArguments(resultSet).thenReturn(reusableResultSet);
+        when(reusableResultSet.reuse()).thenReturn(mock(SwiftResultSet.class));
+
+        RealtimeInsertExecutorTask executorTask = mock(RealtimeInsertExecutorTask.class);
+        whenNew(RealtimeInsertExecutorTask.class).withArguments(tableKey, reusableResultSet.reuse()).thenReturn(executorTask);
+        new SwiftServiceContext().insert(tableKey, resultSet);
+
+        verifyStatic(TaskProducer.class);
+        TaskProducer.produceTask(executorTask);
     }
 
     @Test
     public void truncate() throws Exception {
         new SwiftServiceContext().truncate(Mockito.mock(SourceKey.class));
         PowerMockito.verifyStatic(TaskProducer.class);
-        TaskProducer.produceTask(Mockito.any(TruncateExecutorTask.class));
+        TaskProducer.produceTask(any(TruncateExecutorTask.class));
     }
 
     @Test
@@ -133,14 +173,14 @@ public class SwiftServiceContextTest {
     public void appointCollate() throws Exception {
         new SwiftServiceContext().appointCollate(Mockito.mock(SourceKey.class), Mockito.mock(List.class));
         PowerMockito.verifyStatic(TaskProducer.class);
-        TaskProducer.produceTask(Mockito.any(CollateExecutorTask.class));
+        TaskProducer.produceTask(any(CollateExecutorTask.class));
     }
 
     @Test
     public void delete() throws Exception {
         new SwiftServiceContext().delete(Mockito.mock(SourceKey.class), Mockito.mock(Where.class));
         PowerMockito.verifyStatic(TaskProducer.class);
-        TaskProducer.produceTask(Mockito.any(DeleteExecutorTask.class));
+        TaskProducer.produceTask(any(DeleteExecutorTask.class));
     }
 
     @Test

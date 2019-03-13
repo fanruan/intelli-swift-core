@@ -27,7 +27,7 @@ public class ExecutorManager {
     }
 
     public boolean pullMemTask() {
-        List<ExecutorTask> memTasks = MemoryQueue.getInstance().pullBeforeTime(System.currentTimeMillis());
+        List<ExecutorTask> memTasks = MemoryQueue.getInstance().pullBeforeTime(System.nanoTime());
         return addTasks(memTasks);
     }
 
