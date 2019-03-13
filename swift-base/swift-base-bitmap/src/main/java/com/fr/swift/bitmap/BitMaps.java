@@ -71,7 +71,6 @@ public final class BitMaps {
         return of(bytes, 0, bytes.length);
     }
 
-
     public static ImmutableBitMap of(byte[] bytes, int off, int len) {
         Assert.notNull(bytes);
 
@@ -84,9 +83,9 @@ public final class BitMaps {
                 // mutable，immutable底层都是同一结构，暂时先统一生成mutable
                 return RoaringMutableBitMap.ofBuffer(buf);
             case ALL_SHOW:
-                return AllShowBitMap.ofBuffer(buf);
+                return AllShowBitMap.of(buf.getInt());
             case RANGE:
-                return RangeBitmap.ofBuffer(buf);
+                return RangeBitmap.of(buf.getInt(), buf.getInt());
             default:
                 return Crasher.crash(String.format("not a valid type or this bitmap doesn't support %s", type));
         }

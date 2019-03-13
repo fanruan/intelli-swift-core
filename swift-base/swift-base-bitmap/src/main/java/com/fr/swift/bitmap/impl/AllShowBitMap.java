@@ -4,8 +4,6 @@ import com.fineio.base.Bits;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 
-import java.nio.ByteBuffer;
-
 /**
  * @author anchore
  */
@@ -16,10 +14,6 @@ public final class AllShowBitMap extends RangeBitmap {
 
     public static ImmutableBitMap of(int rowCount) {
         return new AllShowBitMap(rowCount);
-    }
-
-    public static ImmutableBitMap ofBuffer(ByteBuffer buf) {
-        return of(buf.getInt());
     }
 
     @Override

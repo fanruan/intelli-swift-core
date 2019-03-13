@@ -9,7 +9,6 @@ import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.util.Assert;
 
-import java.nio.ByteBuffer;
 import java.util.Iterator;
 
 /**
@@ -30,10 +29,6 @@ public class RangeBitmap extends AbstractBitMap {
 
     public static ImmutableBitMap of(int start, int end) {
         return new RangeBitmap(start, end);
-    }
-
-    public static ImmutableBitMap ofBuffer(ByteBuffer buf) {
-        return new RangeBitmap(buf.getInt(), buf.getInt());
     }
 
     @Override

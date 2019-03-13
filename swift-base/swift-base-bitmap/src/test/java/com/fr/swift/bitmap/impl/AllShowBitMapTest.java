@@ -5,7 +5,6 @@ import com.fr.swift.bitmap.MutableBitMap;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.ByteBuffer;
 import java.util.Random;
 
 /**
@@ -91,11 +90,8 @@ public class AllShowBitMapTest {
     }
 
     @Test
-    public void ofBuffer() {
-        ByteBuffer buf = ByteBuffer.allocate(4);
-        buf.putInt(100).rewind();
-
-        ImmutableBitMap bitmap = AllShowBitMap.ofBuffer(buf);
+    public void of() {
+        ImmutableBitMap bitmap = AllShowBitMap.of(100);
         Assert.assertEquals(100, bitmap.getCardinality());
         for (int i = 0; i < 100; i++) {
             Assert.assertTrue(bitmap.contains(i));
