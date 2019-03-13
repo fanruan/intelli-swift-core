@@ -21,9 +21,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class TaskDispatcher {
 
-    private static TaskDispatcher INSTANCE = null;
+    private static volatile TaskDispatcher INSTANCE = null;
 
-    public static synchronized TaskDispatcher getInstance() {
+    public static TaskDispatcher getInstance() {
         if (INSTANCE == null) {
             synchronized (TaskDispatcher.class) {
                 if (INSTANCE == null) {
