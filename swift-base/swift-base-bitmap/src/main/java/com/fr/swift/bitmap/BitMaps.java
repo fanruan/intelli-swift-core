@@ -12,6 +12,10 @@ import com.fr.swift.structure.array.IntArray;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
+import com.fr.swift.util.Assert;
+import com.fr.swift.util.Crasher;
+
+import java.nio.ByteBuffer;
 
 /**
  * @author anchore
@@ -61,5 +65,30 @@ public final class BitMaps {
             }
         });
         return array;
+    }
+
+    public static ImmutableBitMap of(byte[] bytes) {
+        return of(bytes, 0, bytes.length);
+    }
+
+
+    public static ImmutableBitMap of(byte[] bytes, int off, int len) {
+        Assert.notNull(bytes);
+
+        ByteBuffer buf = ByteBuffer.wrap(bytes, off, len);
+
+        BitMapType type = BitMapType.ofHead(buf.get());
+        switch (type) {
+            case ROARING_IMMUTABLE:
+            case ROARING_MUTABLE:
+                // mutable，immutable底层都是同一结构，暂时先统一生成mutable
+                return RoaringMutableBitMap.ofBuffer(buf);
+            case ALL_SHOW:
+                return AllShowBitMap.ofBuffer(buf);
+            case RANGE:
+                return RangeBitmap.ofBuffer(buf);
+            default:
+                return Crasher.crash(String.format("not a valid type or this bitmap doesn't support %s", type));
+        }
     }
 }

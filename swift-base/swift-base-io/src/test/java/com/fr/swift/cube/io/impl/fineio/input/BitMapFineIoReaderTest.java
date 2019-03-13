@@ -6,24 +6,25 @@ import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.io.input.ByteArrayReader;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.powermock.api.easymock.PowerMock;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
+import java.nio.ByteBuffer;
 
-import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -50,16 +51,17 @@ public class BitMapFineIoReaderTest {
                 new byte[]{BitMapType.BIT_SET_IMMUTABLE.getHead(), 1}
         );
 
-        PowerMock.mockStaticPartial(RoaringMutableBitMap.class, "ofBytes");
-        expect(RoaringMutableBitMap.ofBytes(EasyMock.<byte[]>anyObject(), EasyMock.anyInt(), EasyMock.anyInt())).andReturn(RoaringMutableBitMap.of()).anyTimes();
+        spy(RoaringMutableBitMap.class);
+        doReturn(RoaringMutableBitMap.of()).when(RoaringMutableBitMap.class);
+        RoaringMutableBitMap.ofBuffer(Mockito.<ByteBuffer>any());
 
-        PowerMock.mockStaticPartial(AllShowBitMap.class, "ofBytes");
-        expect(AllShowBitMap.ofBytes(EasyMock.<byte[]>anyObject(), EasyMock.anyInt())).andReturn(AllShowBitMap.of(1));
+        spy(AllShowBitMap.class);
+        doReturn(AllShowBitMap.of(1)).when(AllShowBitMap.class);
+        AllShowBitMap.ofBuffer(Mockito.<ByteBuffer>any());
 
-        PowerMock.mockStaticPartial(RangeBitmap.class, "ofBytes");
-        expect(RangeBitmap.ofBytes(EasyMock.<byte[]>anyObject(), EasyMock.anyInt())).andReturn(RangeBitmap.of(0, 1));
-
-        PowerMock.replayAll();
+        spy(RangeBitmap.class);
+        doReturn(RangeBitmap.of(0, 1)).when(RangeBitmap.class);
+        RangeBitmap.ofBuffer(Mockito.<ByteBuffer>any());
     }
 
     @Test

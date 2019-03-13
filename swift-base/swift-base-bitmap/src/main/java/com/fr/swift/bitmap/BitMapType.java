@@ -24,4 +24,25 @@ public enum BitMapType {
     public byte getHead() {
         return head;
     }
+
+    public static BitMapType ofHead(byte b) {
+        switch (b) {
+            case 0:
+                return ROARING_IMMUTABLE;
+            case 1:
+                return ROARING_MUTABLE;
+            case 2:
+                return BIT_SET_IMMUTABLE;
+            case 3:
+                return BIT_SET_MUTABLE;
+            case 4:
+                return ALL_SHOW;
+            case 5:
+                return ID;
+            case 6:
+                return RANGE;
+            default:
+                throw new IllegalArgumentException(String.format("unknown bitmap head %d", b));
+        }
+    }
 }
