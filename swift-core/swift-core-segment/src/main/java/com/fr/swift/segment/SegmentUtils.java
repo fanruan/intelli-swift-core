@@ -14,9 +14,9 @@ import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.Assert;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
-import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,18 +35,21 @@ public class SegmentUtils {
     }
 
     public static Segment newSegment(SegmentKey segmentKey, int tmpPath) {
-        Util.requireNonNull(segmentKey);
+        Assert.notNull(segmentKey);
+
         String cubePath;
         if (segmentKey.getStoreType().isTransient()) {
             cubePath = new CubePathBuilder(segmentKey).build();
         } else {
             cubePath = new CubePathBuilder(segmentKey).setTempDir(tmpPath).build();
         }
+
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(cubePath, storeType);
         SourceKey sourceKey = segmentKey.getTable();
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
-        Util.requireNonNull(metaData);
+
+        Assert.notNull(metaData);
         return SegmentUtils.newSegment(location, metaData);
     }
 
