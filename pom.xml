@@ -24,6 +24,30 @@
             <version>${swift.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-conf-public</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-analyse</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-realtime</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-indexing</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -32,6 +56,30 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cpdetector</groupId>
+            <artifactId>cpdetector</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino</artifactId>
+            <version>1.7R5</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -54,4 +102,14 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!--用于下载识别文件编码的包cpdetector-->
+    <repositories>
+        <repository>
+            <id>ebi</id>
+            <name>www.ebi.ac.uk</name>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
 </project>

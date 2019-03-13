@@ -3,10 +3,13 @@ package com.fr.swift.task;
 import com.fr.swift.boot.controller.SwiftCloudController;
 import com.fr.swift.cloud.SwiftCloudConstants;
 import com.fr.swift.cloud.SwiftCloudUtils;
+import com.fr.swift.cloud.analysis.TemplateAnalysisUtils;
+import com.fr.swift.cloud.load.CSVImportUtils;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.utils.ZipUtils;
 import com.fr.swift.util.Strings;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -40,10 +43,12 @@ public class AnalyseTask implements Runnable {
             if (Strings.isNotEmpty(downloadLink)) {
                 SwiftLoggers.getLogger().info("get download link success. link is {}", downloadLink);
                 InputStream inputStream = new URL(downloadLink).openStream();
-                String downloadPath = SwiftCloudConstants.ZIP_FILE_PATH + "/" + clientUserId + "/" + clientAppId;
+                String downloadPath = SwiftCloudConstants.ZIP_FILE_PATH + File.separator + clientUserId + File.separator + clientAppId + File.separator + treasDate;
                 ZipUtils.unZip(downloadPath, inputStream);
                 logStartAnalyse(clientUserId, clientAppId, treasDate);
-                // TODO 2019/02/25 接导入 + 生成报告
+                // 先导入csv文件数据到cube，然后生成分析结果，并保存到数据库
+                CSVImportUtils.load(downloadPath, clientAppId, treasDate);
+                TemplateAnalysisUtils.tplAnalysis(clientAppId, treasDate);
 
                 // 云端的path
 //                    String reportPath = "";
