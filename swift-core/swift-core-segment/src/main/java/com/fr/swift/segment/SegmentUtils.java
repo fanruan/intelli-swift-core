@@ -19,7 +19,6 @@ import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,18 +29,6 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 public class SegmentUtils {
-
-    public static List<Segment> newSegments(List<SegmentKey> segKeys) {
-        if (segKeys == null || segKeys.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Segment> segmentList = new ArrayList<Segment>();
-        for (SegmentKey segKey : segKeys) {
-            segmentList.add(newSegment(segKey));
-        }
-        return segmentList;
-    }
 
     public static Segment newSegment(SegmentKey segKey) {
         return newSegment(segKey, CubeUtil.getCurrentDir(segKey.getTable()));
