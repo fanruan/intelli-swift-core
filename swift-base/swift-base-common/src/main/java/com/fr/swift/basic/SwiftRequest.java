@@ -1,6 +1,4 @@
-package com.fr.swift.rpc.bean.impl;
-
-import com.fr.swift.rpc.bean.IRpcRequest;
+package com.fr.swift.basic;
 
 import java.io.Serializable;
 
@@ -8,7 +6,7 @@ import java.io.Serializable;
  * @author yee
  * @date 2018/8/27
  */
-public class RpcRequest implements IRpcRequest, Serializable {
+public class SwiftRequest implements Request, Serializable {
     private static final long serialVersionUID = -191130570284788808L;
     private String requestId;
     private String interfaceName;

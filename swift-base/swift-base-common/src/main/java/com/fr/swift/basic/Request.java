@@ -1,10 +1,10 @@
-package com.fr.swift.rpc.bean;
+package com.fr.swift.basic;
 
 /**
  * @author yee
  * @date 2018/8/27
  */
-public interface IRpcRequest {
+public interface Request {
     String getRequestId();
 
 
