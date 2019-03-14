@@ -69,6 +69,10 @@ public class TaskRouter {
         }
     }
 
+    public synchronized void clear() {
+        idleTasks.clear();
+    }
+
     private boolean isQualified(ExecutorTask task, Lock lock) {
         lock.lock();
         try {

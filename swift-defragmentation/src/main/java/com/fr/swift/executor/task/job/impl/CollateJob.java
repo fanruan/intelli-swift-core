@@ -7,7 +7,6 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.CollateService;
 import com.fr.swift.source.SourceKey;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -16,9 +15,7 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class CollateJob extends BaseJob<Boolean, List<SegmentKey>> implements Serializable {
-
-    private static final long serialVersionUID = -8915567088027007394L;
+public class CollateJob extends BaseJob<Boolean, List<SegmentKey>> {
 
     private SourceKey tableKey;
 

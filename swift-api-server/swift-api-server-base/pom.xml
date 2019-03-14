@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-rpc-base</artifactId>
+            <artifactId>swift-proxy</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
