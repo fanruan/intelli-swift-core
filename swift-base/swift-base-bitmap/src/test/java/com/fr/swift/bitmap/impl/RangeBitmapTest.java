@@ -11,7 +11,7 @@ import org.junit.Test;
 public class RangeBitmapTest {
 
     @Test
-    public void ofBuffer() {
+    public void of() {
         ImmutableBitMap bitmap = RangeBitmap.of(100, 200);
         Assert.assertEquals(100, bitmap.getCardinality());
         for (int i = 100; i < 200; i++) {
