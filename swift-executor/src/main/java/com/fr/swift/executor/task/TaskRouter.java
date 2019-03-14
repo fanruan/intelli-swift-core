@@ -69,6 +69,10 @@ public class TaskRouter {
         }
     }
 
+    public synchronized void clear() {
+        idleTasks.clear();
+    }
+
     private boolean isQualified(ExecutorTask task, Lock lock) {
         lock.lock();
         try {
@@ -100,26 +104,17 @@ public class TaskRouter {
             }
             switch (runningTask.getLockType()) {
                 case TABLE://虚拟锁任务可以执行
-                    if (LockType.isVirtualLock(executorTask)) {
-                        return false;
-                    }
-                    return true;
+                    return !LockType.isVirtualLock(executorTask);
                 case REAL_SEG://虚拟锁任务可以执行；不是同一块的真实锁任务可以执行
                     if (LockType.isVirtualLock(executorTask)) {
                         return false;
                     }
-                    if (LockType.isRealLock(executorTask) && !LockType.isSameLockKey(runningTask, executorTask)) {
-                        return false;
-                    }
-                    return true;
+                    return !LockType.isRealLock(executorTask) || LockType.isSameLockKey(runningTask, executorTask);
                 case VIRTUAL_SEG://表锁、真实锁可以执行
                     if (LockType.isTableLock(executorTask)) {
                         return false;
                     }
-                    if (LockType.isRealLock(executorTask)) {
-                        return false;
-                    }
-                    return true;
+                    return !LockType.isRealLock(executorTask);
                 default:
                     return true;
             }

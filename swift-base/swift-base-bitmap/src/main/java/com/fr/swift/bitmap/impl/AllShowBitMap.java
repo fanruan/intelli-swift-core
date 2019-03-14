@@ -16,10 +16,6 @@ public final class AllShowBitMap extends RangeBitmap {
         return new AllShowBitMap(rowCount);
     }
 
-    public static ImmutableBitMap ofBytes(byte[] bytes, int offset) {
-        return of(Bits.getInt(bytes, offset));
-    }
-
     @Override
     public byte[] toBytes() {
         byte[] bytes = new byte[4];

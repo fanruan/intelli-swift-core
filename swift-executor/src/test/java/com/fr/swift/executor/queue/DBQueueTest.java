@@ -55,6 +55,5 @@ public class DBQueueTest {
 
         List<ExecutorTask> list = DBQueue.getInstance().pullAll();
         Assert.assertEquals(list.size(), 1);
-        Mockito.verify(executorTask).getCreateTime();
     }
 }

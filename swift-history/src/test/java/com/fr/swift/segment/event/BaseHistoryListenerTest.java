@@ -16,6 +16,7 @@ import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import org.easymock.EasyMock;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -28,6 +29,7 @@ import java.util.List;
  * @author yee
  * @date 2019-01-09
  */
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {SwiftContext.class, SwiftRepositoryManager.class, SwiftProperty.class, ClusterSelector.class, ProxySelector.class})
 public class BaseHistoryListenerTest {

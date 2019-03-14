@@ -69,7 +69,7 @@ public class SwiftInserterTest {
                 new ListBasedRow(7));
         when(resultSet.getMetaData()).thenReturn(meta);
 
-        new SwiftInserter(segment).insertData(resultSet);
+        SwiftInserter.ofOverwriteMode(segment).insertData(resultSet);
 
         Column<Object> c1 = segment.getColumn(new ColumnKey("c1"));
         DetailColumn<Object> detailColumn = c1.getDetailColumn();

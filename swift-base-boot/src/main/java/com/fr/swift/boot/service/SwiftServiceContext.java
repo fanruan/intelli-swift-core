@@ -4,7 +4,9 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.ServerCurrentStatus;
+import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
@@ -17,11 +19,16 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
+import com.fr.swift.segment.backup.BackupBlockImporter;
+import com.fr.swift.segment.backup.ReusableResultSet;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.BaseService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.alloter.impl.BaseAllotRule;
+import com.fr.swift.source.alloter.impl.line.BackupLineSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.stuff.IndexingStuff;
 
 import java.util.HashSet;
@@ -63,7 +70,14 @@ public class SwiftServiceContext implements ServiceContext {
 
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception {
-        TaskProducer.produceTask(new RealtimeInsertExecutorTask(tableKey, resultSet));
+        // 先备份，后insert
+        BackupLineSourceAlloter alloter = new BackupLineSourceAlloter(tableKey, new LineAllotRule(BaseAllotRule.MEM_CAPACITY));
+        Table table = SwiftDatabase.getInstance().getTable(tableKey);
+        ReusableResultSet reusableResultSet = new ReusableResultSet(resultSet);
+        new BackupBlockImporter(table, alloter).importData(reusableResultSet);
+
+        // 暂定备份出问题就直接pass
+        TaskProducer.produceTask(new RealtimeInsertExecutorTask(tableKey, reusableResultSet.reuse()));
     }
 
     @Override

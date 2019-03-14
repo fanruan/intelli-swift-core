@@ -90,5 +90,8 @@ public class TaskRouterTest {
 
         TaskRouter.getInstance().remove(task7);
         Assert.assertEquals(idleTasks.size(), 6);
+
+        TaskRouter.getInstance().clear();
+        Assert.assertEquals(idleTasks.size(), 0);
     }
 }
