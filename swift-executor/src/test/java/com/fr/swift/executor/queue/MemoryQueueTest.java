@@ -55,6 +55,7 @@ public class MemoryQueueTest {
         assertTrue(executorTaskList.contains(task2));
         assertTrue(executorTaskList.contains(task3));
         assertTrue(!executorTaskList.contains(task4));
-
+        MemoryQueue.getInstance().clear();
+        assertEquals(MemoryQueue.getInstance().pullBeforeTime(0).size(), 0);
     }
 }

@@ -12,8 +12,10 @@ import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
+import com.fr.swift.executor.task.impl.DownloadExecutorTask;
 import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
+import com.fr.swift.executor.task.impl.UploadExecutorTask;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -53,7 +55,8 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({SwiftContext.class, TaskProducer.class, SwiftServiceContext.class, SwiftDatabase.class})
+@PrepareForTest({SwiftContext.class, TaskProducer.class, SwiftServiceContext.class, SwiftDatabase.class, UploadExecutorTask.class, DownloadExecutorTask.class, UploadExecutorTask.class
+        , TruncateExecutorTask.class, SwiftServiceContext.class})
 public class SwiftServiceContextTest {
 
     @Mock
@@ -137,6 +140,9 @@ public class SwiftServiceContextTest {
 
     @Test
     public void truncate() throws Exception {
+        PowerMockito.mockStatic(SwiftServiceContext.class);
+        PowerMockito.whenNew(TruncateExecutorTask.class).withAnyArguments().thenReturn(Mockito.mock(TruncateExecutorTask.class));
+
         new SwiftServiceContext().truncate(Mockito.mock(SourceKey.class));
         PowerMockito.verifyStatic(TaskProducer.class);
         TaskProducer.produceTask(any(TruncateExecutorTask.class));
@@ -171,6 +177,9 @@ public class SwiftServiceContextTest {
 
     @Test
     public void appointCollate() throws Exception {
+        PowerMockito.mockStatic(SwiftServiceContext.class);
+        PowerMockito.whenNew(CollateExecutorTask.class).withAnyArguments().thenReturn(Mockito.mock(CollateExecutorTask.class));
+
         new SwiftServiceContext().appointCollate(Mockito.mock(SourceKey.class), Mockito.mock(List.class));
         PowerMockito.verifyStatic(TaskProducer.class);
         TaskProducer.produceTask(any(CollateExecutorTask.class));
@@ -185,6 +194,8 @@ public class SwiftServiceContextTest {
 
     @Test
     public void upload() throws Exception {
+        PowerMockito.mockStatic(UploadExecutorTask.class);
+        Mockito.when(UploadExecutorTask.ofWholeSeg(Mockito.any(SegmentKey.class))).thenReturn(Mockito.mock(UploadExecutorTask.class));
         new SwiftServiceContext().upload(Collections.singleton(Mockito.mock(SegmentKey.class)));
         PowerMockito.verifyStatic(TaskProducer.class);
         TaskProducer.produceTasks(Mockito.<ExecutorTask>anySet());
@@ -192,6 +203,8 @@ public class SwiftServiceContextTest {
 
     @Test
     public void download() throws Exception {
+        PowerMockito.mockStatic(DownloadExecutorTask.class);
+        Mockito.when(DownloadExecutorTask.ofWholeSeg(Mockito.any(SegmentKey.class), Mockito.anyBoolean())).thenReturn(Mockito.mock(DownloadExecutorTask.class));
         new SwiftServiceContext().download(Collections.singleton(Mockito.mock(SegmentKey.class)), true);
         PowerMockito.verifyStatic(TaskProducer.class);
         TaskProducer.produceTasks(Mockito.<ExecutorTask>anySet());
@@ -199,6 +212,8 @@ public class SwiftServiceContextTest {
 
     @Test
     public void uploadAllShow() throws Exception {
+        PowerMockito.mockStatic(UploadExecutorTask.class);
+        Mockito.when(UploadExecutorTask.ofAllShowIndex(Mockito.any(SegmentKey.class))).thenReturn(Mockito.mock(UploadExecutorTask.class));
         new SwiftServiceContext().uploadAllShow(Collections.singleton(Mockito.mock(SegmentKey.class)));
         PowerMockito.verifyStatic(TaskProducer.class);
         TaskProducer.produceTasks(Mockito.<ExecutorTask>anySet());
@@ -206,6 +221,8 @@ public class SwiftServiceContextTest {
 
     @Test
     public void downloadAllShow() throws Exception {
+        PowerMockito.mockStatic(DownloadExecutorTask.class);
+        Mockito.when(DownloadExecutorTask.ofAllShowIndex(Mockito.any(SegmentKey.class))).thenReturn(Mockito.mock(DownloadExecutorTask.class));
         new SwiftServiceContext().downloadAllShow(Collections.singleton(Mockito.mock(SegmentKey.class)));
         PowerMockito.verifyStatic(TaskProducer.class);
         TaskProducer.produceTasks(Mockito.<ExecutorTask>anySet());

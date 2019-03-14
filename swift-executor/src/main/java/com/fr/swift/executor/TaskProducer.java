@@ -33,11 +33,7 @@ public class TaskProducer {
         try {
             DBQueue.getInstance().put(executorTasks);
         } catch (SQLException e) {
-            StringBuilder tasks = new StringBuilder();
-            for (ExecutorTask executorTask : executorTasks) {
-                tasks.append(executorTask);
-            }
-            SwiftLoggers.getLogger().error("tasks {} insert db failed! ", tasks, e);
+            SwiftLoggers.getLogger().error("tasks {} insert db failed! ", executorTasks, e);
         }
         for (ExecutorTask executorTask : executorTasks) {
             MemoryQueue.getInstance().offer(executorTask);
