@@ -31,10 +31,6 @@ public class RangeBitmap extends AbstractBitMap {
         return new RangeBitmap(start, end);
     }
 
-    public static ImmutableBitMap ofBytes(byte[] bytes, int offset) {
-        return new RangeBitmap(Bits.getInt(bytes, offset), Bits.getInt(bytes, offset + 4));
-    }
-
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
         switch (index.getType()) {
