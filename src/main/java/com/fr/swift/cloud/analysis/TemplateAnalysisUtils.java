@@ -21,6 +21,7 @@ import com.fr.swift.source.Row;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.Query;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -41,8 +42,13 @@ public class TemplateAnalysisUtils {
 
     private static SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
 
-
     public static void tplAnalysis(String appId, String yearMonth) throws Exception {
+        // 为了避免重复，先清除数据
+        try {
+            deleteIfExisting(appId, yearMonth);
+        } catch (Exception ignored) {
+        }
+
         // 访问延时分位数统计图
         tpGraph(appId, yearMonth);
 
@@ -154,6 +160,34 @@ public class TemplateAnalysisUtils {
             map.put(fields.get(i), i);
         }
         return map;
+    }
+
+    private static void deleteIfExisting(String appId, String yearMonth) throws Exception {
+        String[] tables = new String[]{
+                ExecutionMetric.class.getSimpleName(),
+                LatencyTopPercentileStatistic.class.getSimpleName(),
+                TemplateAnalysisResult.class.getSimpleName(),
+                TemplateProperty.class.getSimpleName(),
+                TemplatePropertyRatio.class.getSimpleName()
+        };
+        Date date = format.parse(yearMonth);
+        Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
+        for (String table : tables) {
+            try {
+                Transaction transaction = session.beginTransaction();
+                Query query = session.createQuery(deleteSql(table));
+                query.setParameter("appId", appId);
+                query.setParameter("yearMonth", date);
+                query.executeUpdate();
+                transaction.commit();
+            } catch (Exception ignored) {
+            }
+        }
+        session.close();
+    }
+
+    private static String deleteSql(String tableName) {
+        return "delete from " + tableName + " where appId = :appId and yearMonth = :yearMonth";
     }
 
     private static void tpGraph(String appId, String yearMonth) throws Exception {
