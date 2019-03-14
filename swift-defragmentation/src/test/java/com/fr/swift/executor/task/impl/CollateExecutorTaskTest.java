@@ -42,7 +42,7 @@ public class CollateExecutorTaskTest {
 
     @Test
     public void testDeserialize() throws Exception {
-        ExecutorTask executorTask = new CollateExecutorTask(new SourceKey("test"), false, ExecutorTaskType.COLLATE, LockType.TABLE,
+        final ExecutorTask executorTask = new CollateExecutorTask(new SourceKey("test"), false, ExecutorTaskType.COLLATE, LockType.TABLE,
                 "test", DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
         List<SegmentKey> list = (List<SegmentKey>) executorTask.getJob().serializedTag();
         Assert.assertEquals(list.size(), 2);
