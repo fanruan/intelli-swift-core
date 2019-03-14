@@ -39,10 +39,6 @@ public final class DBQueue {
 
     public synchronized List<ExecutorTask> pullAll() {
         List<ExecutorTask> executorTaskList = executorTaskService.getActiveTasksBeforeTime(maxCreatetime);
-        if (!executorTaskList.isEmpty()) {
-            int size = executorTaskList.size();
-            maxCreatetime = executorTaskList.get(size - 1).getCreateTime();
-        }
         return executorTaskList;
     }
 }

@@ -15,13 +15,12 @@ import com.fr.swift.util.Strings;
  * This class created on 2019/2/14
  *
  * @author Lucifer
- * @description todo 增量导入待实现
  */
 public class RealtimeInsertExecutorTask extends AbstractExecutorTask<Job> {
 
     public RealtimeInsertExecutorTask(SourceKey sourceKey, SwiftResultSet resultSet) throws Exception {
         super(sourceKey,
-                true,
+                false,
                 ExecutorTaskType.REALTIME,
                 LockType.VIRTUAL_SEG,
                 Strings.EMPTY,

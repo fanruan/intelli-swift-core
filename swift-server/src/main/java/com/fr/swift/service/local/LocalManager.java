@@ -2,7 +2,7 @@ package com.fr.swift.service.local;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.service.AbstractSwiftManager;
+import com.fr.swift.service.AbstractModeManager;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.service.SwiftManager;
 import com.fr.swift.service.SwiftService;
@@ -19,7 +19,7 @@ import java.util.List;
  * @description 控制单机情况下，service启动和service register和unregister
  */
 @SwiftBean(name = "localManager")
-public class LocalManager extends AbstractSwiftManager implements SwiftManager {
+public class LocalManager extends AbstractModeManager implements SwiftManager {
 
     private ServiceManager serviceManager = SwiftContext.get().getBean(ServiceManager.class);
 

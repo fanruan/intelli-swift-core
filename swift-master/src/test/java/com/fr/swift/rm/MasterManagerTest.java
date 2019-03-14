@@ -3,7 +3,10 @@ package com.fr.swift.rm;
 import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.service.SwiftServiceInfoService;
+import com.fr.swift.executor.ExecutorManager;
+import com.fr.swift.executor.dispatcher.TaskDispatcher;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.rm.collector.MasterHeartbeatCollect;
 import com.fr.swift.selector.ClusterSelector;
@@ -34,7 +37,8 @@ import java.util.Collections;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @PrepareForTest({SwiftContext.class, SwiftProperty.class, MasterManager.class, ServiceBeanFactory.class
-        , ClusterSelector.class, SwiftServiceListenerManager.class, ClusterSwiftServerService.class})
+        , ClusterSelector.class, SwiftServiceListenerManager.class, ClusterSwiftServerService.class
+        , TaskDispatcher.class, ExecutorManager.class})
 public class MasterManagerTest {
 
     @Mock
@@ -59,12 +63,17 @@ public class MasterManagerTest {
     ClusterSwiftServerService clusterSwiftServerService;
     @Mock
     CollateExecutor collateExecutor;
+    @Mock
+    TaskDispatcher taskDispatcher;
+    @Mock
+    ExecutorManager executorManager;
 
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(ServiceBeanFactory.class);
         PowerMockito.mockStatic(SwiftContext.class, SwiftProperty.class, ClusterSelector.class
-                , SwiftServiceListenerManager.class, ClusterSwiftServerService.class, MasterManager.class);
+                , SwiftServiceListenerManager.class, ClusterSwiftServerService.class, MasterManager.class
+                , TaskDispatcher.class, ExecutorManager.class);
         PowerMockito.whenNew(MasterHeartbeatCollect.class).withAnyArguments().thenReturn(collect);
         Mockito.when(SwiftContext.get()).thenReturn(swiftContext);
         Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
@@ -80,6 +89,9 @@ public class MasterManagerTest {
         Mockito.when(clusterNodeManager.getCurrentId()).thenReturn("127.0.0.1:8088");
         Mockito.when(SwiftServiceListenerManager.getInstance()).thenReturn(swiftServiceListenerManager);
         Mockito.when(ClusterSwiftServerService.getInstance()).thenReturn(clusterSwiftServerService);
+
+        Mockito.when(TaskDispatcher.getInstance()).thenReturn(taskDispatcher);
+        Mockito.when(ExecutorManager.getInstance()).thenReturn(executorManager);
     }
 
     @Test
@@ -88,16 +100,20 @@ public class MasterManagerTest {
         masterManager.startUp();
         Mockito.verify(clusterSwiftServerService).start();
         Mockito.verify(serviceManager).startUp();
+
         Mockito.verify(swiftService, Mockito.times(1)).setId("127.0.0.1:8088");
         Mockito.verify(collect).startCollect();
         Mockito.verify(swiftServiceListenerManager).registerService(swiftService);
         Mockito.verify(collateExecutor).start();
+        Mockito.verify(executorManager).pullDBTask();
+        Mockito.verify(serviceInfoService).saveOrUpdate(Mockito.any(SwiftServiceInfoBean.class));
 
         masterManager.shutDown();
         Mockito.verify(collect).stopCollect();
         Mockito.verify(swiftService, Mockito.times(2)).setId("127.0.0.1:8088");
-        Mockito.verify(swiftServiceListenerManager).unRegisterService(swiftService);
         Mockito.verify(collateExecutor).stop();
+        Mockito.verify(executorManager).clearTasks();
+        Mockito.verify(swiftServiceListenerManager).unRegisterService(swiftService);
 
     }
 }

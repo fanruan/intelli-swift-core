@@ -29,7 +29,7 @@ import java.util.Collections;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({MemoryQueue.class, SwiftContext.class})
+@PrepareForTest({MemoryQueue.class, SwiftContext.class, TaskRouter.class})
 public class ExecutorManagerTest {
     @Mock
     MemoryQueue memoryQueue;
@@ -75,5 +75,15 @@ public class ExecutorManagerTest {
         Assert.assertEquals(TaskRouter.getInstance().getIdleTasks().size(), 1);
         Assert.assertEquals(TaskRouter.getInstance().getIdleTasks().get(0), executorTask2);
         TaskRouter.getInstance().remove(executorTask2);
+    }
+
+    @Test
+    public void testClearTasks() {
+        PowerMockito.mockStatic(TaskRouter.class);
+        TaskRouter taskRouter = Mockito.mock(TaskRouter.class);
+        Mockito.when(TaskRouter.getInstance()).thenReturn(taskRouter);
+        ExecutorManager.getInstance().clearTasks();
+        Mockito.verify(taskRouter).clear();
+        Mockito.verify(memoryQueue).clear();
     }
 }
