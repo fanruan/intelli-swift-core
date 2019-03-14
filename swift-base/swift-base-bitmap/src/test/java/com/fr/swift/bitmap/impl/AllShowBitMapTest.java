@@ -2,14 +2,15 @@ package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Random;
 
 /**
  * @author anchore
  */
-public class AllShowBitMapTest extends TestCase {
+public class AllShowBitMapTest {
     private final Random r = new Random();
     private static final int BOUND = 1000000;
 
@@ -28,6 +29,7 @@ public class AllShowBitMapTest extends TestCase {
         return a;
     }
 
+    @Test
     public void testGetAnd() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -37,11 +39,12 @@ public class AllShowBitMapTest extends TestCase {
         ImmutableBitMap and = im.getAnd(m);
         for (int i = 0; i < a.length; i++) {
             if ((a[i] == 1) != and.contains(i)) {
-                fail();
+                Assert.fail();
             }
         }
     }
 
+    @Test
     public void testGetOr() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -51,11 +54,12 @@ public class AllShowBitMapTest extends TestCase {
         ImmutableBitMap or = im.getOr(m);
         for (int i = 0; i < rowCount; i++) {
             if (!or.contains(i)) {
-                fail();
+                Assert.fail();
             }
         }
     }
 
+    @Test
     public void testGetAndNot() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -65,22 +69,32 @@ public class AllShowBitMapTest extends TestCase {
         ImmutableBitMap andNot = im.getAndNot(m);
         for (int i = 0; i < a.length; i++) {
             if ((a[i] == 1) == andNot.contains(i)) {
-                fail();
+                Assert.fail();
             }
         }
     }
 
+    @Test
     public void testGetNot() {
         int rowCount = r.nextInt(BOUND);
         ImmutableBitMap im = AllShowBitMap.of(rowCount);
 
         ImmutableBitMap not = im.getNot(rowCount);
         if (!not.isEmpty()) {
-            fail();
+            Assert.fail();
         }
     }
 
     int rand(int from, int to) {
         return r.nextInt(to - from) + from;
+    }
+
+    @Test
+    public void of() {
+        ImmutableBitMap bitmap = AllShowBitMap.of(100);
+        Assert.assertEquals(100, bitmap.getCardinality());
+        for (int i = 0; i < 100; i++) {
+            Assert.assertTrue(bitmap.contains(i));
+        }
     }
 }
