@@ -5,6 +5,7 @@ import com.fr.swift.bitmap.MutableBitMap;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Random;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -113,6 +114,6 @@ public class IdBitMapTest {
 
     @Test
     public void toBytes() {
-        assertArrayEquals(IdBitMap.of(1).toBytes(), ByteBuffer.allocate(4).putInt(1).array());
+        assertArrayEquals(IdBitMap.of(1).toBytes(), ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(1).array());
     }
 }

@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -26,6 +27,6 @@ public class RangeBitmapTest {
 
     @Test
     public void toBytes() {
-        assertArrayEquals(RangeBitmap.of(1, 3).toBytes(), ByteBuffer.allocate(8).putInt(1).putInt(3).array());
+        assertArrayEquals(RangeBitmap.of(1, 3).toBytes(), ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putInt(1).putInt(3).array());
     }
 }

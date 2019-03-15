@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Random;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -103,6 +104,6 @@ public class AllShowBitMapTest {
 
     @Test
     public void toBytes() {
-        assertArrayEquals(AllShowBitMap.of(1).toBytes(), ByteBuffer.allocate(4).putInt(1).array());
+        assertArrayEquals(AllShowBitMap.of(1).toBytes(), ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(1).array());
     }
 }
