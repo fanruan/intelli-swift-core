@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * @author anchore
@@ -29,7 +30,10 @@ public final class IdBitMap extends RangeBitmap {
 
     @Override
     public byte[] toBytes() {
-        return ByteBuffer.allocate(4).putInt(start).array();
+        return ByteBuffer.allocate(4)
+                // 兼容fineio Bits的小端法
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .putInt(start).array();
     }
 
     @Override

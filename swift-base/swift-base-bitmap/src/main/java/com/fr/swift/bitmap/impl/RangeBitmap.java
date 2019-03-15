@@ -9,6 +9,7 @@ import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.util.Assert;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Iterator;
 
 /**
@@ -97,7 +98,10 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public byte[] toBytes() {
-        return ByteBuffer.allocate(8).putInt(start).putInt(end).array();
+        return ByteBuffer.allocate(8)
+                // 兼容fineio Bits的小端法
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .putInt(start).putInt(end).array();
     }
 
     @Override
