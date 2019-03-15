@@ -162,14 +162,15 @@ public class TemplateAnalysisUtils {
         return map;
     }
 
+    private static String[] tables = new String[]{
+            ExecutionMetric.class.getSimpleName(),
+            LatencyTopPercentileStatistic.class.getSimpleName(),
+            TemplateAnalysisResult.class.getSimpleName(),
+            TemplateProperty.class.getSimpleName(),
+            TemplatePropertyRatio.class.getSimpleName()
+    };
+
     private static void deleteIfExisting(String appId, String yearMonth) throws Exception {
-        String[] tables = new String[]{
-                ExecutionMetric.class.getSimpleName(),
-                LatencyTopPercentileStatistic.class.getSimpleName(),
-                TemplateAnalysisResult.class.getSimpleName(),
-                TemplateProperty.class.getSimpleName(),
-                TemplatePropertyRatio.class.getSimpleName()
-        };
         Date date = format.parse(yearMonth);
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         for (String table : tables) {
