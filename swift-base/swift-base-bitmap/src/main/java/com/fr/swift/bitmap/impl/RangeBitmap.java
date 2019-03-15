@@ -1,6 +1,5 @@
 package com.fr.swift.bitmap.impl;
 
-import com.fineio.base.Bits;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
@@ -9,6 +8,7 @@ import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.util.Assert;
 
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 
 /**
@@ -97,10 +97,7 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public byte[] toBytes() {
-        byte[] bytes = new byte[8];
-        Bits.putInt(bytes, 0, start);
-        Bits.putInt(bytes, 4, end);
-        return bytes;
+        return ByteBuffer.allocate(8).putInt(start).putInt(end).array();
     }
 
     @Override

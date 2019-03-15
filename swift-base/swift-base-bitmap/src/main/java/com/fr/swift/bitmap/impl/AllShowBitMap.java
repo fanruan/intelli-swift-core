@@ -1,8 +1,9 @@
 package com.fr.swift.bitmap.impl;
 
-import com.fineio.base.Bits;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
+
+import java.nio.ByteBuffer;
 
 /**
  * @author anchore
@@ -18,9 +19,7 @@ public final class AllShowBitMap extends RangeBitmap {
 
     @Override
     public byte[] toBytes() {
-        byte[] bytes = new byte[4];
-        Bits.putInt(bytes, 0, end);
-        return bytes;
+        return ByteBuffer.allocate(4).putInt(end).array();
     }
 
     @Override
