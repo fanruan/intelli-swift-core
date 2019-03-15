@@ -7,10 +7,8 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.alloter.impl.BaseAllotRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
@@ -27,7 +25,6 @@ import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
@@ -69,8 +66,8 @@ public class FileSegmentRecoveryTest {
         doNothing().doThrow(Exception.class).when(inserter).insertData(resultSet);
         when(resultSet.getAllShowIndex()).thenReturn(mock(ImmutableBitMap.class));
 
-        when(realtimeSeg.getRowCount()).thenReturn(BaseAllotRule.MEM_CAPACITY);
-        mockStatic(SwiftEventDispatcher.class);
+//        when(realtimeSeg.getRowCount()).thenReturn(BaseAllotRule.MEM_CAPACITY);
+//        mockStatic(SwiftEventDispatcher.class);
 
         Whitebox.invokeMethod(recovery, "recover", segKey);
 
@@ -78,8 +75,8 @@ public class FileSegmentRecoveryTest {
 
         verify(realtimeSeg).putAllShowIndex(resultSet.getAllShowIndex());
 
-        verifyStatic(SwiftEventDispatcher.class);
-        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
+//        verifyStatic(SwiftEventDispatcher.class);
+//        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
 
         Whitebox.invokeMethod(recovery, "recover", segKey);
 
