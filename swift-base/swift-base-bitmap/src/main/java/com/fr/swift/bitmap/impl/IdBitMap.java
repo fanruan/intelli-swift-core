@@ -3,6 +3,8 @@ package com.fr.swift.bitmap.impl;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 
+import java.nio.ByteBuffer;
+
 /**
  * @author anchore
  */
@@ -23,6 +25,11 @@ public final class IdBitMap extends RangeBitmap {
     @Override
     public BitMapType getType() {
         return BitMapType.ID;
+    }
+
+    @Override
+    public byte[] toBytes() {
+        return ByteBuffer.allocate(4).putInt(start).array();
     }
 
     @Override
