@@ -16,6 +16,7 @@ import com.fr.swift.util.Assert;
 import com.fr.swift.util.Crasher;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * @author anchore
@@ -83,9 +84,17 @@ public final class BitMaps {
                 // mutable，immutable底层都是同一结构，暂时先统一生成mutable
                 return RoaringMutableBitMap.ofBuffer(buf);
             case ALL_SHOW:
+                // 兼容fineio Bits的小端法
+                buf.order(ByteOrder.LITTLE_ENDIAN);
                 return AllShowBitMap.of(buf.getInt());
             case RANGE:
+                // 兼容fineio Bits的小端法
+                buf.order(ByteOrder.LITTLE_ENDIAN);
                 return RangeBitmap.of(buf.getInt(), buf.getInt());
+            case ID:
+                // 兼容fineio Bits的小端法
+                buf.order(ByteOrder.LITTLE_ENDIAN);
+                return IdBitMap.of(buf.getInt());
             default:
                 return Crasher.crash(String.format("not a valid type or this bitmap doesn't support %s", type));
         }
