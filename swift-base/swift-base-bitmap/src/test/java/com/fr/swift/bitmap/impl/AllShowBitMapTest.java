@@ -5,7 +5,11 @@ import com.fr.swift.bitmap.MutableBitMap;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Random;
+
+import static org.junit.Assert.assertArrayEquals;
 
 /**
  * @author anchore
@@ -96,5 +100,10 @@ public class AllShowBitMapTest {
         for (int i = 0; i < 100; i++) {
             Assert.assertTrue(bitmap.contains(i));
         }
+    }
+
+    @Test
+    public void toBytes() {
+        assertArrayEquals(AllShowBitMap.of(1).toBytes(), ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(1).array());
     }
 }
