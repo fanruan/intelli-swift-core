@@ -2,14 +2,19 @@ package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import junit.framework.TestCase;
+import org.junit.Test;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Random;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author anchore
  */
-public class IdBitMapTest extends TestCase {
+public class IdBitMapTest {
     private final Random r = new Random();
     private static final int BOUND = 1000000;
 
@@ -28,6 +33,7 @@ public class IdBitMapTest extends TestCase {
         return a;
     }
 
+    @Test
     public void testGetAnd() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -46,6 +52,7 @@ public class IdBitMapTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetOr() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -65,6 +72,7 @@ public class IdBitMapTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetAndNot() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -83,6 +91,7 @@ public class IdBitMapTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetNot() {
         int rowCount = r.nextInt(BOUND);
         int id = r.nextInt(rowCount);
@@ -101,5 +110,10 @@ public class IdBitMapTest extends TestCase {
 
     int rand(int from, int to) {
         return r.nextInt(to - from) + from;
+    }
+
+    @Test
+    public void toBytes() {
+        assertArrayEquals(IdBitMap.of(1).toBytes(), ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(1).array());
     }
 }
