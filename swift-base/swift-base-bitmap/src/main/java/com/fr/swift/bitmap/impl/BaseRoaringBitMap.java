@@ -117,7 +117,9 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
     public byte[] toBytes() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            bitmap.serialize(new DataOutputStream(baos));
+            DataOutputStream dataOutput = new DataOutputStream(baos);
+            dataOutput.write(getType().getHead());
+            bitmap.serialize(dataOutput);
             return baos.toByteArray();
         } catch (IOException e) {
             SwiftLoggers.getLogger().error(e);

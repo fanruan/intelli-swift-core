@@ -7,7 +7,6 @@ import com.fr.swift.structure.array.IntArray;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.util.Crasher;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -16,6 +15,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -41,9 +41,9 @@ public class BitMapsTest {
         list.add(6);
         ImmutableBitMap bitMap = BitMaps.newImmutableBitMap(list);
         IntArray array = BitMaps.traversal2Array(bitMap);
-        Assert.assertEquals(array.get(0), 2);
-        Assert.assertEquals(array.get(1), 4);
-        Assert.assertEquals(array.get(2), 6);
+        assertEquals(array.get(0), 2);
+        assertEquals(array.get(1), 4);
+        assertEquals(array.get(2), 6);
     }
 
     @Test
@@ -54,11 +54,13 @@ public class BitMapsTest {
         ByteBuffer buf = mock(ByteBuffer.class);
         when(ByteBuffer.wrap(bytes, 0, bytes.length)).thenReturn(buf);
 
+        assertEquals(8, BitMapType.values().length);
         when(buf.get()).thenReturn(
                 BitMapType.ROARING_IMMUTABLE.getHead(), BitMapType.ROARING_MUTABLE.getHead(),
                 BitMapType.ALL_SHOW.getHead(),
                 BitMapType.RANGE.getHead(),
                 BitMapType.ID.getHead(),
+                BitMapType.EMPTY.getHead(),
                 BitMapType.BIT_SET_IMMUTABLE.getHead());
         // roaring
         BitMaps.of(bytes, 0, bytes.length);
@@ -87,6 +89,9 @@ public class BitMapsTest {
         verify(buf, times(4)).getInt();
         verifyStatic(IdBitMap.class);
         IdBitMap.of(anyInt());
+        // empty
+        assertEquals(BitMaps.EMPTY_IMMUTABLE, BitMaps.of(bytes, 0, bytes.length));
+
         // default
         BitMaps.of(bytes, 0, bytes.length);
 
