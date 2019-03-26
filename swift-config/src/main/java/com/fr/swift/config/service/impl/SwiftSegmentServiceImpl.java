@@ -360,6 +360,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                                 segmentIds.add(bean.getSegmentId());
                             }
                         });
+                        if (segmentIds.isEmpty()) {
+                            return Collections.emptyList();
+                        }
                         List<ConfigWhere> criterionList = new ArrayList<ConfigWhere>();
                         criterionList.addAll(Arrays.asList(criterion));
                         criterionList.add(ConfigWhereImpl.in("id", segmentIds));
