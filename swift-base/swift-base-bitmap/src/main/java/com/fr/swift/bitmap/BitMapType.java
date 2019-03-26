@@ -13,7 +13,8 @@ public enum BitMapType {
     BIT_SET_MUTABLE((byte) 3),
     ALL_SHOW((byte) 4),
     ID((byte) 5),
-    RANGE((byte) 6);
+    RANGE((byte) 6),
+    EMPTY((byte) 7);
 
     private byte head;
 
@@ -41,6 +42,8 @@ public enum BitMapType {
                 return ID;
             case 6:
                 return RANGE;
+            case 7:
+                return EMPTY;
             default:
                 throw new IllegalArgumentException(String.format("unknown bitmap head %d", b));
         }

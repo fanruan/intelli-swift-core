@@ -1,5 +1,6 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,6 +28,8 @@ public class RangeBitmapTest {
 
     @Test
     public void toBytes() {
-        assertArrayEquals(RangeBitmap.of(1, 3).toBytes(), ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putInt(1).putInt(3).array());
+        assertArrayEquals(RangeBitmap.of(1, 3).toBytes(),
+                ByteBuffer.allocate(9).order(ByteOrder.LITTLE_ENDIAN)
+                        .put(BitMapType.RANGE.getHead()).putInt(1).putInt(3).array());
     }
 }

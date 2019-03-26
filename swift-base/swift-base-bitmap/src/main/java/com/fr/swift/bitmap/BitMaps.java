@@ -95,6 +95,8 @@ public final class BitMaps {
                 // 兼容fineio Bits的小端法
                 buf.order(ByteOrder.LITTLE_ENDIAN);
                 return IdBitMap.of(buf.getInt());
+            case EMPTY:
+                return EMPTY_IMMUTABLE;
             default:
                 return Crasher.crash(String.format("not a valid type or this bitmap doesn't support %s", type));
         }

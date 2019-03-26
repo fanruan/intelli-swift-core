@@ -1,5 +1,6 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import org.junit.Test;
@@ -114,6 +115,8 @@ public class IdBitMapTest {
 
     @Test
     public void toBytes() {
-        assertArrayEquals(IdBitMap.of(1).toBytes(), ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(1).array());
+        assertArrayEquals(IdBitMap.of(1).toBytes(),
+                ByteBuffer.allocate(5).order(ByteOrder.LITTLE_ENDIAN)
+                        .put(BitMapType.ID.getHead()).putInt(1).array());
     }
 }
