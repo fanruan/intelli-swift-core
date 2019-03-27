@@ -1,6 +1,7 @@
 package com.fr.swift.cube.nio.write;
 
 import com.fr.swift.cube.nio.NIOWriter;
+import com.fr.swift.util.IoUtil;
 
 import java.io.UnsupportedEncodingException;
 
@@ -31,10 +32,8 @@ public class StringWriteMappedList implements NIOWriter<String> {
 
     @Override
     public void release() {
-        if (byteWriteMappedList != null) {
-            byteWriteMappedList.release();
-            byteWriteMappedList = null;
-        }
+        IoUtil.release(byteWriteMappedList);
+        byteWriteMappedList = null;
     }
 
     @Override

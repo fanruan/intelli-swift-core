@@ -5,6 +5,7 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -53,8 +54,8 @@ public class BackupBlockImporterTest {
         whenNew(ResourceLocation.class).withArguments(eq(cubePathBuilder.asBackup().build()), eq(StoreType.NIO)).thenReturn(location);
         // mock backup seg
         DataSource dataSource = mock(DataSource.class, RETURNS_DEEP_STUBS);
-        Segment backupSeg = mock(Segment.class);
-        when(SegmentUtils.newSegment(location, dataSource.getMetadata())).thenReturn(backupSeg);
+        BackupSegment backupSeg = mock(BackupSegment.class);
+        whenNew(BackupSegment.class).withArguments(location, dataSource.getMetadata()).thenReturn(backupSeg);
         // mock tx
         TransactionManager transactionManager = mock(TransactionManager.class);
         when(SwiftContext.get().getBean("transactionManager", TransactionManager.class, backupSeg)).thenReturn(transactionManager);

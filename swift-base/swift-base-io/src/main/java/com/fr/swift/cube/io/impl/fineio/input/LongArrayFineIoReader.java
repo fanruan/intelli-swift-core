@@ -3,9 +3,12 @@ package com.fr.swift.cube.io.impl.fineio.input;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongArrayReader;
 import com.fr.swift.cube.io.input.LongReader;
+import com.fr.swift.cube.io.output.ByteArrayWriter;
+import com.fr.swift.cube.io.output.LongArrayWriter;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.structure.array.LongArray;
 import com.fr.swift.structure.array.LongListFactory;
+import com.fr.swift.util.IoUtil;
 
 import java.net.URI;
 
@@ -26,15 +29,15 @@ public class LongArrayFineIoReader implements LongArrayReader {
 
     public static LongArrayFineIoReader build(URI location) {
         // 获得内容部分的byte类型reader
-        URI contentLocation = URI.create(location.getPath() + "/" + CONTENT);
+        URI contentLocation = URI.create(location.getPath() + "/" + ByteArrayWriter.CONTENT);
         LongReader contentReader = LongFineIoReader.build(contentLocation);
 
         // 获得位置部分的long类型reader
-        URI positionLocation = URI.create(location.getPath() + "/" + POSITION);
+        URI positionLocation = URI.create(location.getPath() + "/" + ByteArrayWriter.POSITION);
         LongReader positionReader = LongFineIoReader.build(positionLocation);
 
         // 获得长度部分的int类型reader
-        URI lengthLocation = URI.create(location.getPath() + "/" + LENGTH);
+        URI lengthLocation = URI.create(location.getPath() + "/" + ByteArrayWriter.LENGTH);
         IntReader lengthReader = IntFineIoReader.build(lengthLocation);
 
         return new LongArrayFineIoReader(contentReader, positionReader, lengthReader);
@@ -50,7 +53,7 @@ public class LongArrayFineIoReader implements LongArrayReader {
         long start = positionReader.get(pos);
         int size = lengthReader.get(pos);
         if (size == 0) {
-            return NULL_VALUE;
+            return LongArrayWriter.NULL_VALUE;
         }
         LongArray longs = LongListFactory.createLongArray(size, NIOConstant.LONG.NULL_VALUE);
         for (int i = 0; i < size; i++) {
@@ -61,5 +64,6 @@ public class LongArrayFineIoReader implements LongArrayReader {
 
     @Override
     public void release() {
+        IoUtil.release(contentReader, lengthReader, positionReader);
     }
 }

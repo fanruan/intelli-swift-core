@@ -131,17 +131,6 @@ public class RelationIndexImpl implements RelationIndex {
         return baseLocation;
     }
 
-
-    @Override
-    public void flush() {
-        if (reverseIndexWriter != null) {
-            reverseIndexWriter.flush();
-        }
-        if (nullIndexWriter != null) {
-            nullIndexWriter.flush();
-        }
-    }
-
     @Override
     public void release() {
         if (reverseIndexWriter != null) {

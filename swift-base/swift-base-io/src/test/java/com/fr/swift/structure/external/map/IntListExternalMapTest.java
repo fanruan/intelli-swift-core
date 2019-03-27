@@ -7,8 +7,9 @@ import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.test.TestResource;
 import com.fr.swift.util.FileUtil;
-import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,11 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author anchore
  * @date 2018/3/5
  */
-public class IntListExternalMapTest extends TestCase {
+public class IntListExternalMapTest {
     private List<Integer>
             list1 = Arrays.asList(4, 5, 6),
             list2 = Arrays.asList(1, 2, 3),
@@ -30,6 +34,7 @@ public class IntListExternalMapTest extends TestCase {
 
     private String basePath = TestResource.getRunPath(getClass());
 
+    @Test
     public void testLongPutThenGet() {
         ExternalMap<Long, IntList> map =
                 IntListExternalMapFactory.getIntListExternalMap(ClassType.LONG, Comparators.<Long>asc(), basePath + "/externalMapTest/long", false);
@@ -60,6 +65,7 @@ public class IntListExternalMapTest extends TestCase {
         map.release();
     }
 
+    @Test
     @Ignore
     public void testIntegerPutThenGet() {
         ExternalMap<Integer, IntList> map =
@@ -91,6 +97,7 @@ public class IntListExternalMapTest extends TestCase {
         map.release();
     }
 
+    @Test
     public void testDoublePutThenGet() {
         ExternalMap<Double, IntList> map =
                 IntListExternalMapFactory.getIntListExternalMap(ClassType.DOUBLE, Comparators.<Double>asc(), basePath + "/externalMapTest/long", false);
@@ -105,22 +112,23 @@ public class IntListExternalMapTest extends TestCase {
 
         assertTrue(itr.hasNext());
         Map.Entry<Double, IntList> entry = itr.next();
-        assertEquals(entry.getKey(), 0D);
+        assertEquals(entry.getKey(), 0D, 0);
         assertEquals(list2, toList(entry.getValue()));
 
         assertTrue(itr.hasNext());
         entry = itr.next();
-        assertEquals(entry.getKey(), 1D);
+        assertEquals(entry.getKey(), 1D, 0);
         assertEquals(Arrays.asList(4, 5, 6, 0, 1, 2), toList(entry.getValue()));
 
         assertTrue(itr.hasNext());
         entry = itr.next();
-        assertEquals(entry.getKey(), 3D);
+        assertEquals(entry.getKey(), 3D, 0);
         assertEquals(list3, toList(entry.getValue()));
 
         map.release();
     }
 
+    @Test
     public void testStringPutThenGet() {
         ExternalMap<String, IntList> map =
                 IntListExternalMapFactory.getIntListExternalMap(ClassType.STRING, Comparators.<String>asc(), basePath + "/externalMapTest/string", false);
@@ -167,9 +175,8 @@ public class IntListExternalMapTest extends TestCase {
         return list;
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         FileUtil.delete(basePath + "/externalMapTest");
     }
 }

@@ -54,6 +54,9 @@ public class SegmentUtils {
     }
 
     public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {
+        Assert.notNull(location);
+        Assert.notNull(meta);
+
         if (location.getStoreType().isTransient()) {
             return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, meta);
         }
