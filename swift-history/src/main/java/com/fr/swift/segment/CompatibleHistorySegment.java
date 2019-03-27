@@ -9,7 +9,7 @@ import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DoubleColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.StringColumn;
-import com.fr.swift.segment.column.impl.empty.ImmutableNullColumn;
+import com.fr.swift.segment.column.impl.empty.ReadonlyNullColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
@@ -56,25 +56,25 @@ public class CompatibleHistorySegment extends CacheColumnSegment implements Hist
             case LONG:
                 column = new LongColumn(location);
                 if (!column.getDetailColumn().isReadable()) {
-                    return ImmutableNullColumn.ofLong(location, readRowCount());
+                    return ReadonlyNullColumn.ofLong(location, readRowCount());
                 }
                 return column;
             case DOUBLE:
                 column = new DoubleColumn(location);
                 if (!column.getDetailColumn().isReadable()) {
-                    return ImmutableNullColumn.ofDouble(location, readRowCount());
+                    return ReadonlyNullColumn.ofDouble(location, readRowCount());
                 }
                 return column;
             case DATE:
                 column = new DateColumn(location);
                 if (!column.getDetailColumn().isReadable()) {
-                    return ImmutableNullColumn.ofLong(location, readRowCount());
+                    return ReadonlyNullColumn.ofLong(location, readRowCount());
                 }
                 return column;
             case STRING:
                 column = new StringColumn(location);
                 if (!column.getDetailColumn().isReadable()) {
-                    return ImmutableNullColumn.ofString(location, readRowCount());
+                    return ReadonlyNullColumn.ofString(location, readRowCount());
                 }
                 return column;
             default:
@@ -84,8 +84,11 @@ public class CompatibleHistorySegment extends CacheColumnSegment implements Hist
 
     @Override
     public void release() {
-        super.release();
-        allShowBitMapCache = null;
+        try {
+            super.release();
+        } finally {
+            allShowBitMapCache = null;
+        }
     }
 
     private int readRowCount() {

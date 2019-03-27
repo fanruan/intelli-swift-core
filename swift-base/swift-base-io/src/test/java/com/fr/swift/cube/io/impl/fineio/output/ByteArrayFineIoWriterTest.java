@@ -88,6 +88,12 @@ public class ByteArrayFineIoWriterTest {
 
         verify(byteWriter).release();
         verify(intWriter).release();
-        verify(longWriter, times(2)).release();
+        verify(longWriter).release();
+
+        ByteArrayFineIoWriter.build(location, false).release();
+
+        verify(byteWriter, times(2)).release();
+        verify(intWriter, times(2)).release();
+        verify(longWriter, times(3)).release();
     }
 }

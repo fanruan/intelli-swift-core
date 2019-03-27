@@ -8,7 +8,7 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
-import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
@@ -68,10 +68,8 @@ public class HistoryBlockImporterTest {
                 segKey.getStoreType()).thenReturn(location);
 
         DataSource dataSource = mock(DataSource.class, Mockito.RETURNS_DEEP_STUBS);
-//        when(dataSource.getMetadata()).thenReturn(mock(SwiftMetaData.class));
-        Segment seg = mock(Segment.class);
-        mockStatic(SegmentUtils.class);
-        when(SegmentUtils.newSegment(location, dataSource.getMetadata())).thenReturn(seg);
+        CacheColumnSegment seg = mock(CacheColumnSegment.class);
+        whenNew(CacheColumnSegment.class).withArguments(location, dataSource.getMetadata()).thenReturn(seg);
 
         SwiftInserter inserter = mock(SwiftInserter.class);
         mockStatic(SwiftInserter.class);

@@ -18,13 +18,8 @@ public class StringNio extends BaseNio implements StringWriter, StringReader, Ob
     }
 
     @Override
-    public void flush() {
-
-    }
-
-    @Override
     public String get(long pos) {
-        return new String(obj.get(pos), StringReader.CHARSET);
+        return new String(obj.get(pos), StringWriter.CHARSET);
     }
 
     @Override
@@ -40,6 +35,5 @@ public class StringNio extends BaseNio implements StringWriter, StringReader, Ob
     @Override
     public void release() {
         IoUtil.release(obj);
-        obj = null;
     }
 }
