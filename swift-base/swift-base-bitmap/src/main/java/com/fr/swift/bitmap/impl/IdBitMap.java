@@ -30,9 +30,10 @@ public final class IdBitMap extends RangeBitmap {
 
     @Override
     public byte[] toBytes() {
-        return ByteBuffer.allocate(4)
+        return ByteBuffer.allocate(5)
                 // 兼容fineio Bits的小端法
                 .order(ByteOrder.LITTLE_ENDIAN)
+                .put(getType().getHead())
                 .putInt(start).array();
     }
 

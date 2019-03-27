@@ -98,9 +98,10 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public byte[] toBytes() {
-        return ByteBuffer.allocate(8)
+        return ByteBuffer.allocate(9)
                 // 兼容fineio Bits的小端法
                 .order(ByteOrder.LITTLE_ENDIAN)
+                .put(getType().getHead())
                 .putInt(start).putInt(end).array();
     }
 
