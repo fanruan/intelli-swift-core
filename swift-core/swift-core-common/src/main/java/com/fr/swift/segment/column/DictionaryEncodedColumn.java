@@ -1,6 +1,5 @@
 package com.fr.swift.segment.column;
 
-import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.IfReadable;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.source.ColumnTypeConstants;
@@ -12,7 +11,7 @@ import java.util.Comparator;
  * @date 2017/10/9
  * 字典编码的列
  */
-public interface DictionaryEncodedColumn<T> extends Releasable, Flushable, IfReadable {
+public interface DictionaryEncodedColumn<T> extends Releasable, IfReadable {
     /**
      * 非空序号
      */

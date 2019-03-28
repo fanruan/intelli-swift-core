@@ -12,16 +12,12 @@ import com.fr.swift.util.IoUtil;
  * @date 2018/7/22
  */
 public class BitmapNio extends BaseNio implements BitMapReader, BitMapWriter, ObjectIo<ImmutableBitMap> {
+
     private ByteArrayNio obj;
 
     BitmapNio(NioConf conf) {
         super(conf);
         obj = new ByteArrayNio(conf);
-    }
-
-
-    @Override
-    public void flush() {
     }
 
     @Override
@@ -37,25 +33,16 @@ public class BitmapNio extends BaseNio implements BitMapReader, BitMapWriter, Ob
 
     @Override
     public void put(long pos, ImmutableBitMap val) {
-        byte[] combine = null;
-        if (val != null) {
-            byte head = val.getType().getHead();
-            byte[] bytes = val.toBytes();
-            combine = new byte[bytes.length + 1];
-            combine[0] = head;
-            System.arraycopy(bytes, 0, combine, 1, bytes.length);
-        }
-        obj.put(pos, combine);
-    }
-
-    @Override
-    public void release() {
-        IoUtil.release(obj);
-        obj = null;
+        obj.put(pos, val == null ? null : val.toBytes());
     }
 
     @Override
     public void resetContentPosition() {
         obj.resetContentPosition();
+    }
+
+    @Override
+    public void release() {
+        IoUtil.release(obj);
     }
 }

@@ -15,10 +15,10 @@ abstract class BaseFineIoReader<Buf extends Buffer> implements Reader {
         return ioFile != null && ioFile.exists();
     }
 
-    /**
-     * FineIO的reader不需要进行释放，这里是空实现
-     */
     @Override
     public final void release() {
+        if (ioFile != null) {
+            ioFile.close();
+        }
     }
 }

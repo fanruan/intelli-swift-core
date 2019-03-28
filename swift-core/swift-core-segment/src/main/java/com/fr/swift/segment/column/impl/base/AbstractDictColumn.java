@@ -16,8 +16,4 @@ public abstract class AbstractDictColumn<T> implements DictionaryEncodedColumn<T
     public int getGlobalIndexByRow(int row) {
         return getGlobalIndexByIndex(getIndexByRow(row));
     }
-
-    @Override
-    public void flush() {
-    }
 }

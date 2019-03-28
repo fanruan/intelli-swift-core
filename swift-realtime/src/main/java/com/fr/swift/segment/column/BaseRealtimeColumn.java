@@ -13,6 +13,7 @@ import com.fr.swift.segment.column.impl.BaseColumn;
 import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
 import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.Optional;
 
 import java.util.ArrayList;
@@ -113,12 +114,8 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         }
 
         @Override
-        public void flush() {
-        }
-
-        @Override
         public void release() {
-            detail.release();
+            IoUtil.release(detail);
         }
     }
 
@@ -180,7 +177,7 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         public void release() {
             idToVal.clear();
             valToId.clear();
-            indexAndId.release();
+            IoUtil.release(indexAndId);
         }
 
         @Override
@@ -196,10 +193,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         @Override
         public Putter<V> putter() {
             throw new IllegalStateException("real time dict column needn't put operation");
-        }
-
-        @Override
-        public void flush() {
         }
 
         @Override
@@ -221,10 +214,6 @@ abstract class BaseRealtimeColumn<V> extends BaseColumn<V> implements Column<V> 
         @Override
         public ImmutableBitMap getNullIndex() {
             return getBitMapIndex(0);
-        }
-
-        @Override
-        public void flush() {
         }
 
         @Override

@@ -69,16 +69,7 @@ public class BitMapColumn extends BaseBitmapColumn {
     }
 
     @Override
-    public void flush() {
-        if (indexWriter != null) {
-            indexWriter.flush();
-        }
-    }
-
-    @Override
     public void release() {
         IoUtil.release(indexWriter, indexReader);
-        indexWriter = null;
-        indexReader = null;
     }
 }
