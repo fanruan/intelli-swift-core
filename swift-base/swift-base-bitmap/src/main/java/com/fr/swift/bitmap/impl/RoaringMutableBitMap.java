@@ -5,7 +5,6 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
 
 import java.io.ByteArrayInputStream;
@@ -41,7 +40,7 @@ public class RoaringMutableBitMap extends RoaringImmutableBitMap implements Muta
             return of(another);
         } catch (IOException e) {
             SwiftLoggers.getLogger().error(e);
-            return Crasher.crash(e);
+            return of();
         } finally {
             IoUtil.close(dis);
         }

@@ -5,6 +5,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -41,7 +42,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                 SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO);
                 segmentKeys.add(segKey);
                 ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
-                Segment segment = SegmentUtils.newSegment(location, dataSource.getMetadata());
+                Segment segment = new CacheColumnSegment(location, dataSource.getMetadata());
                 try {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                     builder.build();

@@ -2,8 +2,9 @@ package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.FormulaDetailColumn;
-//import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
+
+//import com.fr.swift.source.etl.utils.FormulaUtils;
 
 /**
  *
@@ -50,11 +51,6 @@ public class FormulaDetailColumnImpl implements FormulaDetailColumn {
     @Override
     public boolean isReadable() {
         return true;
-    }
-
-    @Override
-    public void flush() {
-
     }
 
     @Override

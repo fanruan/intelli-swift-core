@@ -2,6 +2,7 @@ package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.input.StringReader;
+import com.fr.swift.cube.io.output.StringWriter;
 import com.fr.swift.util.IoUtil;
 
 import java.net.URI;
@@ -29,7 +30,7 @@ public class StringFineIoReader implements StringReader {
             return tempValue;
         }
         byte[] bytes = bar.get(pos);
-        tempValue = new String(bytes, CHARSET);
+        tempValue = new String(bytes, StringWriter.CHARSET);
         tempRow = pos;
         return tempValue;
     }

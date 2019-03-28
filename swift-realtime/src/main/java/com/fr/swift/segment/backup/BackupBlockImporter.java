@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -31,7 +32,7 @@ public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
         Segment realtimeSeg = SegmentUtils.newSegment(segKey);
 
         ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).asBackup().build(), StoreType.NIO);
-        Segment backupSeg = SegmentUtils.newSegment(location, dataSource.getMetadata());
+        Segment backupSeg = new BackupSegment(location, dataSource.getMetadata());
 
         // 备份包裹事务
         TransactionManager transactionManager = SwiftContext.get().getBean("transactionManager", TransactionManager.class, backupSeg);

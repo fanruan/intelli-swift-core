@@ -17,8 +17,4 @@ public abstract class BaseBitmapColumn implements BitmapIndexedColumn {
     public ImmutableBitMap getNullIndex() {
         return getBitMapIndex(0);
     }
-
-    @Override
-    public void flush() {
-    }
 }

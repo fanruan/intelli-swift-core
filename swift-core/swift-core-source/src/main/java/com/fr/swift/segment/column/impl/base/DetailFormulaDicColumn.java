@@ -3,16 +3,18 @@ package com.fr.swift.segment.column.impl.base;
 //import com.fr.script.Calculator;
 //import com.fr.stable.Primitive;
 //import com.fr.stable.UtilEvalError;
+
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
-//import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 
 import java.util.Comparator;
 import java.util.Map;
+
+//import com.fr.swift.source.etl.utils.FormulaUtils;
 
 /**
  * Created by pony on 2018/5/10.
@@ -108,11 +110,6 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     @Override
     public Putter putter() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void flush() {
-        Crasher.crash("unsupported");
     }
 
     @Override
