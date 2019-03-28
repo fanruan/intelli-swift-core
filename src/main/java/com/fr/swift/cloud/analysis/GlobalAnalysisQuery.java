@@ -13,6 +13,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.queue.NPriorityQueue;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.Strings;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -206,11 +207,35 @@ public class GlobalAnalysisQuery implements MetricQuery {
                 Double value = (Double) row.get(resultFields.indexOf(field));
                 queue.add(Pair.of(field, value));
             }
-            Iterator<Pair<String, Double>> iterator = queue.toList().iterator();
-            while (iterator.hasNext()) {
-                String factor = iterator.next().getKey();
-                factor = factor.substring(0, factor.indexOf("Ratio"));
-                row.add(factor);
+//            Iterator<Pair<String, Double>> iterator = queue.toList().iterator();
+//            while (iterator.hasNext()) {
+//                String factor = iterator.next().getKey();
+//                factor = factor.substring(0, factor.indexOf("Ratio"));
+//                row.add(factor);
+//            }
+            // 模板标签过滤加个最小临界值，不足3个为空字符串
+            List<Pair<String, Double>> pairs = queue.toList();
+            List<String> tags = new ArrayList<String>();
+            for (int i = 0; i < pairs.size(); i++) {
+                if (pairs.get(i).getKey() != null && pairs.get(i).getValue() > 1) {
+
+                }
+                if (pairs.get(i).getKey() != null && pairs.get(i).getValue() >= 1) {
+                    String factor = pairs.get(i).getKey();
+                    if (pairs.get(i).getValue() == 1 && factor.equals("sheetRatio")) {
+                        // sheet默认都是1，跳过
+                        continue;
+                    }
+                    factor = factor.substring(0, factor.indexOf("Ratio"));
+                    tags.add(factor);
+                }
+            }
+            for (int i = 0; i < factors.length; i++) {
+                if (i < tags.size()) {
+                    row.add(tags.get(i));
+                } else {
+                    row.add(Strings.EMPTY);
+                }
             }
         }
     }
