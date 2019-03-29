@@ -5,10 +5,12 @@ import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.converter.FindList;
 import com.fr.swift.converter.ObjectConverter;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.powermock.api.easymock.PowerMock;
 
 import java.io.Serializable;
@@ -118,5 +120,18 @@ public class SwiftMetaDataDaoImplTest {
         PowerMock.replayAll();
         assertFalse(mockSwiftMetaDataDaoImpl.findAll(mockConfigSession).list().isEmpty());
         PowerMock.verifyAll();
+    }
+
+    @Test
+    public void testFuzzyFind() {
+        ConfigSession configSession = Mockito.mock(ConfigSession.class);
+        ObjectConverter<SwiftMetaDataBean> mockEntity = (ObjectConverter<SwiftMetaDataBean>) Mockito.mock(SwiftMetaDataBean.TYPE);
+        ConfigQuery configQuery = Mockito.mock(ConfigQuery.class);
+        Mockito.when(configSession.createEntityQuery(Mockito.any(Class.class))).thenReturn(configQuery);
+        Mockito.when(configQuery.executeQuery()).thenReturn(Arrays.asList(mockEntity));
+
+        FindList<SwiftMetaDataBean> result = mockSwiftMetaDataDaoImpl.fuzzyFind(configSession, "a");
+        assertFalse(result.isEmpty());
+        Mockito.verify(configQuery).where(Mockito.any(ConfigWhere.class));
     }
 }
