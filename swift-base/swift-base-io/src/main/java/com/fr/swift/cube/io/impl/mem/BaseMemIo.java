@@ -47,11 +47,4 @@ abstract class BaseMemIo implements MemIo {
             throw new ArrayIndexOutOfBoundsException((int) pos);
         }
     }
-
-    /**
-     * no buffer to flush
-     */
-    @Override
-    public final void flush() {
-    }
 }

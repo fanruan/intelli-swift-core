@@ -5,6 +5,7 @@ import com.fr.swift.cube.nio.write.IntNIOWriter;
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.external.map.BaseExternalMapIo;
+import com.fr.swift.util.IoUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,14 +88,9 @@ abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<IntPair
     public void close() {
         writeEndFlag();
 
-        if (valueWriter != null) {
-            valueWriter.release();
-            valueWriter = null;
-        }
-        if (valueReader != null) {
-            valueReader.release();
-            valueReader = null;
-        }
+        IoUtil.release(valueWriter, valueReader);
+        valueWriter = null;
+        valueReader = null;
     }
 
     @Override

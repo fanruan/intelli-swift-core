@@ -20,9 +20,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.net.URI;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -72,7 +73,7 @@ public class PrimitiveFineIoReaderTest {
         LongFineIoReader.build(location).release();
         DoubleFineIoReader.build(location).release();
 
-        verifyZeroInteractions(ioFile);
+        verify(ioFile, times(4)).close();
     }
 
     @Test

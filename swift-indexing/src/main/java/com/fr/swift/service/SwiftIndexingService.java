@@ -70,6 +70,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
 
     @Override
     public void index(IndexingStuff stuff) {
+        // todo 考虑导入后的替换，要把mem的考虑进去
         SwiftLoggers.getLogger().info("indexing stuff");
         appendStuffMap(stuff);
         triggerIndexing(stuff);

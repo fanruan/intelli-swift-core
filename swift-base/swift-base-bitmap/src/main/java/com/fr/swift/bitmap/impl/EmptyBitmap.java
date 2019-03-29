@@ -1,5 +1,7 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMapType;
+
 /**
  * @author anchore
  * @date 2018/7/6
@@ -11,7 +13,12 @@ public class EmptyBitmap extends RangeBitmap {
 
     @Override
     public byte[] toBytes() {
-        return new byte[0];
+        return new byte[]{getType().getHead()};
+    }
+
+    @Override
+    public BitMapType getType() {
+        return BitMapType.EMPTY;
     }
 
     @Override

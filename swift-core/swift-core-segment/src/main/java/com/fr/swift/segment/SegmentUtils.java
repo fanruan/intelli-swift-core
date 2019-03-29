@@ -14,12 +14,11 @@ import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.Assert;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
-import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,39 +30,33 @@ import java.util.List;
  */
 public class SegmentUtils {
 
-    public static List<Segment> newSegments(List<SegmentKey> segKeys) {
-        if (segKeys == null || segKeys.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Segment> segmentList = new ArrayList<Segment>();
-        for (SegmentKey segKey : segKeys) {
-            segmentList.add(newSegment(segKey));
-        }
-        return segmentList;
-    }
-
     public static Segment newSegment(SegmentKey segKey) {
         return newSegment(segKey, CubeUtil.getCurrentDir(segKey.getTable()));
     }
 
     public static Segment newSegment(SegmentKey segmentKey, int tmpPath) {
-        Util.requireNonNull(segmentKey);
+        Assert.notNull(segmentKey);
+
         String cubePath;
         if (segmentKey.getStoreType().isTransient()) {
             cubePath = new CubePathBuilder(segmentKey).build();
         } else {
             cubePath = new CubePathBuilder(segmentKey).setTempDir(tmpPath).build();
         }
+
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(cubePath, storeType);
         SourceKey sourceKey = segmentKey.getTable();
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
-        Util.requireNonNull(metaData);
+
+        Assert.notNull(metaData);
         return SegmentUtils.newSegment(location, metaData);
     }
 
     public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {
+        Assert.notNull(location);
+        Assert.notNull(meta);
+
         if (location.getStoreType().isTransient()) {
             return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, meta);
         }

@@ -135,11 +135,6 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         }
 
         @Override
-        public void flush() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public void release() {
             throw new UnsupportedOperationException();
         }
@@ -175,11 +170,6 @@ class CustomGroupColumn<Base, Derive> implements Column<Derive> {
         @Override
         public void release() {
             groupedBitmaps = null;
-        }
-
-        @Override
-        public void flush() {
-            throw new UnsupportedOperationException();
         }
 
         @Override

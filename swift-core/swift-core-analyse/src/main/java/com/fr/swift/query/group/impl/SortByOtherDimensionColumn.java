@@ -73,10 +73,6 @@ public class SortByOtherDimensionColumn<Base, Derive> implements Column<Derive> 
         }
 
         @Override
-        public void flush() {
-        }
-
-        @Override
         public void release() {
             throw new UnsupportedOperationException();
         }
@@ -146,11 +142,6 @@ public class SortByOtherDimensionColumn<Base, Derive> implements Column<Derive> 
         @Override
         public Putter putter() {
             return null;
-        }
-
-        @Override
-        public void flush() {
-            throw new UnsupportedOperationException();
         }
 
         @Override

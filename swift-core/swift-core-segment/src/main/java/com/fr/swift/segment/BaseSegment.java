@@ -170,22 +170,8 @@ public abstract class BaseSegment implements Segment {
     }
 
     @Override
-    public void flush() {
-        if (rowCountWriter != null) {
-            rowCountWriter.flush();
-        }
-        if (bitMapWriter != null) {
-            bitMapWriter.flush();
-        }
-    }
-
-    @Override
     public void release() {
         IoUtil.release(rowCountWriter, rowCountReader, bitMapWriter, bitMapReader);
-        rowCountWriter = null;
-        rowCountReader = null;
-        bitMapWriter = null;
-        bitMapReader = null;
     }
 
     Column createRelationColumn(ColumnKey key) {

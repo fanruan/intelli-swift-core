@@ -16,7 +16,7 @@ import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
-import com.fr.swift.segment.column.impl.empty.ImmutableNullColumn;
+import com.fr.swift.segment.column.impl.empty.ReadonlyNullColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
@@ -115,7 +115,7 @@ public class CompatibleHistorySegmentTest {
         DetailColumn detailColumn = mock(DetailColumn.class);
         when(longColumn.getDetailColumn()).thenReturn(detailColumn);
         when(detailColumn.isReadable()).thenReturn(false);
-        assertTrue(seg.newColumn(location, ClassType.LONG) instanceof ImmutableNullColumn<?>);
+        assertTrue(seg.newColumn(location, ClassType.LONG) instanceof ReadonlyNullColumn<?>);
     }
 
     @Test
