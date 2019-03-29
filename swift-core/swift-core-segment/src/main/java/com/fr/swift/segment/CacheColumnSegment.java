@@ -57,9 +57,12 @@ public class CacheColumnSegment extends BaseSegment {
 
     @Override
     public void release() {
-        super.release();
-        for (Column column : columns.values()) {
-            SegmentUtils.releaseHisColumn(column);
+        try {
+            super.release();
+        } finally {
+            for (Column column : columns.values()) {
+                SegmentUtils.releaseHisColumn(column);
+            }
         }
     }
 }

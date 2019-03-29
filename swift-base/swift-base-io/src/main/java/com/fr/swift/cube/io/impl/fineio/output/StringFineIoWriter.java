@@ -2,6 +2,7 @@ package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fr.swift.cube.io.output.ByteArrayWriter;
 import com.fr.swift.cube.io.output.StringWriter;
+import com.fr.swift.util.IoUtil;
 
 import java.net.URI;
 
@@ -20,21 +21,12 @@ public class StringFineIoWriter implements StringWriter {
     }
 
     @Override
-    public void flush() {
-        baw.flush();
-    }
-
-    @Override
     public void release() {
-        baw.release();
+        IoUtil.release(baw);
     }
 
     @Override
     public void put(long pos, String val) {
-        byte[] bytes = null;
-        if (val != null) {
-            bytes = val.getBytes(CHARSET);
-        }
-        baw.put(pos, bytes);
+        baw.put(pos, val == null ? null : val.getBytes(CHARSET));
     }
 }

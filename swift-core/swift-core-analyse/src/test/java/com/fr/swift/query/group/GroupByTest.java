@@ -73,11 +73,6 @@ public class GroupByTest extends TestCase {
             }
 
             @Override
-            public void flush() {
-
-            }
-
-            @Override
             public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
 
             }

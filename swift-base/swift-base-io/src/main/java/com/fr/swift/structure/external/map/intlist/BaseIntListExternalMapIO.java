@@ -10,6 +10,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMapIO;
+import com.fr.swift.util.IoUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -165,18 +166,18 @@ abstract class BaseIntListExternalMapIO<K> implements ExternalMapIO<K, IntList> 
 
     @Override
     public void close() {
-        getValueWriter().release();
+        IoUtil.release(getValueWriter());
         try {
-            getValueReader().release();
+            IoUtil.release(getValueReader());
         } catch (FileNotFoundException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
         try {
-            getKeyReader().release();
+            IoUtil.release(getKeyReader());
         } catch (FileNotFoundException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
-        getKeyWriter().release();
+        IoUtil.release(getKeyWriter());
     }
 
     @Override

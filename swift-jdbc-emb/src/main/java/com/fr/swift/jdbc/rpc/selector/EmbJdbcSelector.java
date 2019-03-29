@@ -2,11 +2,11 @@ package com.fr.swift.jdbc.rpc.selector;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftApi;
+import com.fr.swift.basic.SwiftRequest;
+import com.fr.swift.basic.SwiftResponse;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.rpc.connection.EmbJdbcConnector;
 import com.fr.swift.jdbc.rpc.invoke.BaseSelector;
-import com.fr.swift.basic.SwiftResponse;
-import com.fr.swift.basic.SwiftRequest;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Semaphore;

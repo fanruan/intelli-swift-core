@@ -138,10 +138,6 @@ abstract class BaseAtomNio extends BaseNio {
     abstract int getStep();
 
     @Override
-    public void flush() {
-    }
-
-    @Override
     public void release() {
         releaseBuffer(true);
     }

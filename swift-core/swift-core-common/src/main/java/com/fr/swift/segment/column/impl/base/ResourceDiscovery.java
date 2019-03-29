@@ -130,7 +130,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
         //todo 增量的memio慎重clear!!!
         for (Map.Entry<String, ConcurrentMap<String, MemIo>> mapEntry : minorMemIos.entrySet()) {
             for (Map.Entry<String, MemIo> entry : mapEntry.getValue().entrySet()) {
-                entry.getValue().release();
+                IoUtil.release(entry.getValue());
             }
         }
         minorMemIos.clear();

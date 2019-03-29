@@ -2,6 +2,7 @@ package com.fr.swift.structure.external.map;
 
 import com.fr.swift.cube.nio.NIOReader;
 import com.fr.swift.cube.nio.NIOWriter;
+import com.fr.swift.util.IoUtil;
 
 import java.io.File;
 
@@ -48,12 +49,7 @@ public abstract class BaseExternalMapIo<K, V> implements ExternalMapIO<K, V> {
 
     @Override
     public void close() {
-        if (keyWriter != null) {
-            keyWriter.release();
-        }
-        if (keyReader != null) {
-            keyReader.release();
-        }
+        IoUtil.release(keyWriter, keyReader);
     }
 
     @Override
