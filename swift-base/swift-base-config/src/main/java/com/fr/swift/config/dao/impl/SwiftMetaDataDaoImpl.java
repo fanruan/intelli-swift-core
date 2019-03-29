@@ -1,11 +1,12 @@
 package com.fr.swift.config.dao.impl;
 
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.converter.FindList;
 
@@ -52,5 +53,11 @@ public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataBean> implements
     @Override
     public FindList<SwiftMetaDataBean> findAll(ConfigSession session) {
         return find(session);
+    }
+
+    @Override
+    public FindList<SwiftMetaDataBean> fuzzyFind(ConfigSession session, String fuzzyName) {
+        ConfigWhere configWhere = ConfigWhereImpl.like("tableName", fuzzyName, ConfigWhere.MatchMode.ANY);
+        return find(session, configWhere);
     }
 }
