@@ -51,7 +51,13 @@ public interface SwiftMetaDataService extends ConfigService<SwiftMetaData> {
      */
     Map<String, SwiftMetaData> getAllMetaData();
 
-    Map<String,SwiftMetaData> getFuzzyMetaData(String fuzzyName);
+    /**
+     * 模糊查metadata
+     *
+     * @param fuzzyName
+     * @return
+     */
+    Map<String, SwiftMetaData> getFuzzyMetaData(String fuzzyName);
 
     /**
      * 根据SourceKey获取MetaData
