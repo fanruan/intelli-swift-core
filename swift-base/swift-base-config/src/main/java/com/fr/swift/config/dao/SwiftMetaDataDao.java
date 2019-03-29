@@ -49,4 +49,6 @@ public interface SwiftMetaDataDao extends SwiftConfigDao<SwiftMetaDataBean> {
      * @return
      */
     FindList<SwiftMetaDataBean> findAll(ConfigSession session);
+
+    FindList<SwiftMetaDataBean> fuzzyFind(ConfigSession session, String fuzzyName);
 }
