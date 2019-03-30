@@ -167,6 +167,44 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     }
 
     @Override
+    public Map<String, SwiftMetaData> getFuzzyMetaData(final String fuzzyName) {
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
+                @Override
+                public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
+                    try {
+                        final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
+                        swiftMetaDataDao.fuzzyFind(session, fuzzyName).forEach(new FindList.SimpleEach<SwiftMetaDataBean>() {
+                            @Override
+                            public void each(int idx, SwiftMetaDataBean bean) throws Exception {
+                                result.put(bean.getId(), bean);
+                            }
+                        });
+                        metaDataCache.putAll(result);
+                        return result;
+                    } catch (Exception e) {
+                        if (e instanceof SQLException) {
+                            throw (SQLException) e;
+                        }
+                        throw new SQLException(e);
+                    }
+
+
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("Select metadata error!", e);
+            return new HashMap<String, SwiftMetaData>();
+        }
+    }
+
+    @Override
     public SwiftMetaData getMetaDataByKey(final String sourceKey) {
         SwiftMetaData metaData = metaDataCache.get(sourceKey);
         if (null == metaData) {
@@ -188,7 +226,6 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             }
         }
         return metaData;
-
     }
 
     @Override
