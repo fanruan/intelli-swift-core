@@ -110,10 +110,6 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
         return true;
     }
 
-    public static void main(String[] args) {
-        System.out.println(Math.round(-11.5));
-    }
-
     @Override
     public Page<T> findPage(ConfigSession session, int page, int size, Order[] order, ConfigWhere... criterions) {
         if (session == null) {
