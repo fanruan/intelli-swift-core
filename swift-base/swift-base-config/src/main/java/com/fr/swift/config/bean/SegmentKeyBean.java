@@ -137,4 +137,8 @@ public class SegmentKeyBean implements Serializable, SegmentKey {
         }
         return null;
     }
+
+    public void setSwiftSchema(SwiftDatabase database) {
+        swiftSchema = database;
+    }
 }
