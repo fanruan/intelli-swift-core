@@ -68,7 +68,7 @@ public class SingleStreamImportResultSet extends BaseStreamImportResultSet<Strin
 
     private void parseMetaData(SwiftDatabase database, String tableName, InputStream is, FileLineParser parser) throws Exception {
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(tableName);
-        if (metaData.getSwiftDatabase().equals(database)) {
+        if (null != metaData && metaData.getSwiftDatabase().equals(database)) {
             this.metaData = metaData;
             initData(metaData, is, parser);
             return;

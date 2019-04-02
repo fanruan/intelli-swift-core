@@ -1,11 +1,13 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.config.oper.Page;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -32,6 +34,8 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
     boolean removeSegments(String... sourceKey);
 
     boolean removeSegments(List<SegmentKey> segmentKeys);
+
+    boolean removeSegments(Set<String> segmentKeys);
 
     /**
      * @param segments
@@ -65,4 +69,6 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
      * @return
      */
     SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
+
+    Page<SegmentKey> selectSelective(SegmentKey segmentKey, int page, int size);
 }

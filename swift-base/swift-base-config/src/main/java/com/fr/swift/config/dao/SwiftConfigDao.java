@@ -4,6 +4,7 @@ package com.fr.swift.config.dao;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
+import com.fr.swift.config.oper.Page;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.converter.ObjectConverter;
 
@@ -62,4 +63,8 @@ public interface SwiftConfigDao<T extends ObjectConverter> {
     boolean deleteById(ConfigSession session, Serializable id) throws SQLException;
 
     boolean delete(ConfigSession session, T obj) throws SQLException;
+
+    Page<T> findPage(ConfigSession session, int page, int size, Order[] orders, ConfigWhere... criterion);
+
+    Page<T> findPage(ConfigSession session, int page, int size, ConfigWhere... criterion);
 }
