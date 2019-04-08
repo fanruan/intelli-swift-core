@@ -31,4 +31,6 @@ public interface ConfigQuery<Entity> {
      * @return
      */
     int executeUpdate();
+
+    Page<Entity> executeQuery(int page, int size);
 }

@@ -4,6 +4,7 @@ import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
+import com.fr.swift.config.oper.Page;
 import com.fr.swift.converter.FindList;
 import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.converter.ObjectConverter;
@@ -107,5 +108,43 @@ public class BasicDao<T extends ObjectConverter> implements SwiftConfigDao<T> {
             throw new SQLException(e);
         }
         return true;
+    }
+
+    @Override
+    public Page<T> findPage(ConfigSession session, int page, int size, Order[] order, ConfigWhere... criterions) {
+        if (session == null) {
+            return new Page<T>();
+        }
+
+        try {
+            ConfigQuery query = session.createEntityQuery(entityClass);
+            if (null != order && order.length > 0) {
+                query.orderBy(order);
+            }
+            if (null != criterions && criterions.length > 0) {
+                query.where(criterions);
+            }
+
+            Page page1 = query.executeQuery(page, size);
+            final List list = page1.getData();
+            page1.setData(new FindListImpl<T>(page1.getData(), new FindList.Through<T>() {
+                @Override
+                public List<T> go() throws Exception {
+                    List<T> result = new ArrayList<T>();
+                    for (Object o : list) {
+                        result.add(((ObjectConverter<T>) o).convert());
+                    }
+                    return result;
+                }
+            }).list());
+            return page1;
+        } catch (Exception e) {
+            return new Page<T>();
+        }
+    }
+
+    @Override
+    public Page<T> findPage(ConfigSession session, int page, int size, ConfigWhere... criterion) {
+        return findPage(session, page, size, null, criterion);
     }
 }

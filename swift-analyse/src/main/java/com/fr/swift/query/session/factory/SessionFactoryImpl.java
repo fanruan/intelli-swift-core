@@ -6,6 +6,7 @@ import com.fr.swift.query.session.QuerySession;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.util.Strings;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -33,8 +34,8 @@ public class SessionFactoryImpl implements SessionFactory {
     private Map<String, String> queryMap2Session = new ConcurrentHashMap<String, String>();
     private long sessionTimeout = DEFAULT_SESSION_TIMEOUT;
     private long cacheTimeout = DEFAULT_CACHE_TIMEOUT;
-    private ScheduledExecutorService sessionClean = new ScheduledThreadPoolExecutor(1, new PoolThreadFactory("SwiftSessionCleanPool"));
-    private ScheduledExecutorService cacheClean = new ScheduledThreadPoolExecutor(1, new PoolThreadFactory("SwiftCacheCleanPool"));
+    private ScheduledExecutorService sessionClean = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory("SwiftSessionCleanPool"));
+    private ScheduledExecutorService cacheClean = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory("SwiftCacheCleanPool"));
 
     public SessionFactoryImpl() {
         sessionClean.scheduleAtFixedRate(createSessionCleanTask(), sessionTimeout, sessionTimeout, TimeUnit.MILLISECONDS);

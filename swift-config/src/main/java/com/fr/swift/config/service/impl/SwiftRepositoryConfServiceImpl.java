@@ -39,7 +39,7 @@ public class SwiftRepositoryConfServiceImpl implements SwiftRepositoryConfServic
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("Cannot find swift repository config.");
         }
-        if (null == current || !config.equals(current)) {
+        if (!config.equals(current)) {
             configService.deleteConfigBean(CONVERT, current);
             for (ConfChangeListener changeListener : changeListeners) {
                 try {
