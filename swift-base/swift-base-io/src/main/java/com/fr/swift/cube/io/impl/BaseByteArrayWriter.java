@@ -8,6 +8,8 @@ import com.fr.swift.cube.io.output.LongWriter;
 import com.fr.swift.lang.Nullable;
 import com.fr.swift.util.IoUtil;
 
+import java.io.OutputStream;
+
 /**
  * @author anchore
  * @date 2019/3/25
@@ -57,6 +59,29 @@ public class BaseByteArrayWriter implements ByteArrayWriter {
         }
 
         curPos += len;
+    }
+
+    @Override
+    public OutputStream putStream(final long pos) {
+        posWriter.put(pos, curPos);
+
+        return new OutputStream() {
+            long cursor = curPos;
+
+            @Override
+            public void write(int b) {
+                dataWriter.put(cursor++, (byte) b);
+            }
+
+            @Override
+            public void close() {
+                try {
+                    lenWriter.put(pos, (int) (cursor - curPos));
+                } finally {
+                    curPos = cursor;
+                }
+            }
+        };
     }
 
     @Override

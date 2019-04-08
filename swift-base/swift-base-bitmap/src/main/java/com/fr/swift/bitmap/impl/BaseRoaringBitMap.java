@@ -11,6 +11,7 @@ import com.fr.swift.util.IoUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Iterator;
 
 /**
@@ -126,6 +127,17 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
             return new byte[0];
         } finally {
             IoUtil.close(baos);
+        }
+    }
+
+    @Override
+    public void writeBytes(OutputStream output) {
+        try {
+            bitmap.serialize(new DataOutputStream(output));
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+        } finally {
+            IoUtil.close(output);
         }
     }
 

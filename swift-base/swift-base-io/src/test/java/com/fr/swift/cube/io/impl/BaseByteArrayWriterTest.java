@@ -14,6 +14,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.powermock.reflect.Whitebox;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,6 +63,39 @@ public class BaseByteArrayWriterTest {
         assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
 
         byteArrayWriter.put(1, null);
+
+        verify(posWriter).put(1, 3);
+        verify(lenWriter).put(1, 0);
+        verifyNoMoreInteractions(dataWriter);
+
+        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+
+        when(lastPosReader.isReadable()).thenReturn(true);
+        when(lastPosReader.get(0)).thenReturn(3L);
+
+        byteArrayWriter = new BaseByteArrayWriter(dataWriter, posWriter, lenWriter, false, lastPosWriter, lastPosReader);
+        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+    }
+
+    @Test
+    public void putStream() throws IOException {
+        BaseByteArrayWriter byteArrayWriter = new BaseByteArrayWriter(dataWriter, posWriter, lenWriter, true, lastPosWriter, lastPosReader);
+        OutputStream output = byteArrayWriter.putStream(0);
+        output.write(new byte[]{1, 2, 3});
+        output.close();
+
+        verifyZeroInteractions(lastPosWriter, lastPosReader);
+
+        verify(posWriter).put(0, 0);
+        verify(lenWriter).put(0, 3);
+        verify(dataWriter).put(0, (byte) 1);
+        verify(dataWriter).put(1, (byte) 2);
+        verify(dataWriter).put(2, (byte) 3);
+
+        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+
+        output = byteArrayWriter.putStream(1);
+        output.close();
 
         verify(posWriter).put(1, 3);
         verify(lenWriter).put(1, 0);

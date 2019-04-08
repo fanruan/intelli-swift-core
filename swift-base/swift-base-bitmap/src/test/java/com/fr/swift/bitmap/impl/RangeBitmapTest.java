@@ -2,19 +2,37 @@ package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.util.IoUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.Channels;
+import java.nio.channels.WritableByteChannel;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author anchore
  * @date 2019/3/12
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({IoUtil.class, RangeBitmap.class})
 public class RangeBitmapTest {
 
     @Test
@@ -31,5 +49,34 @@ public class RangeBitmapTest {
         assertArrayEquals(RangeBitmap.of(1, 3).toBytes(),
                 ByteBuffer.allocate(9).order(ByteOrder.LITTLE_ENDIAN)
                         .put(BitMapType.RANGE.getHead()).putInt(1).putInt(3).array());
+    }
+
+    @Test
+    public void writeBytes() throws Exception {
+        OutputStream output = mock(OutputStream.class);
+        WritableByteChannel channel = mock(WritableByteChannel.class);
+        mockStatic(Channels.class);
+        when(Channels.newChannel(output)).thenReturn(channel);
+
+        mockStatic(IoUtil.class);
+
+        RangeBitmap.of(1, 2).writeBytes(output);
+
+
+        ByteBuffer buf = ByteBuffer.allocate(9)
+                // 兼容fineio Bits的小端法
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .put(BitMapType.RANGE.getHead())
+                .putInt(1).putInt(2);
+        buf.flip();
+
+        verify(channel).write(buf);
+
+        doThrow(new IOException()).when(channel).write(any(ByteBuffer.class));
+
+        RangeBitmap.of(1, 2).writeBytes(output);
+
+        verifyStatic(IoUtil.class, times(2));
+        IoUtil.close(channel);
     }
 }
