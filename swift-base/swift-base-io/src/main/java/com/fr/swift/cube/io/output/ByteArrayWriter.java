@@ -1,5 +1,7 @@
 package com.fr.swift.cube.io.output;
 
+import java.io.OutputStream;
+
 /**
  * @author anchore
  */
@@ -13,4 +15,6 @@ public interface ByteArrayWriter extends ObjectWriter<byte[]> {
      * todo 要去掉的，这个接口不好
      */
     void resetContentPosition();
+
+    OutputStream putStream(long pos);
 }

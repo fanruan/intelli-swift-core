@@ -35,7 +35,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         segKeys = segKeys == null ? Collections.<SegmentKey>emptyList() : segKeys;
 
         SegmentKey maxSegKey = null;
-        int maxRowCount = 0;
+        Integer maxRowCount = null;
 
         for (SegmentKey segKey : segKeys) {
             if (segKey.getStoreType().isPersistent()) {
@@ -46,6 +46,12 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
             }
             Segment seg = newSeg(segKey);
             int rowCount = seg.isReadable() ? seg.getRowCount() : 0;
+            if (maxRowCount == null) {
+                maxRowCount = rowCount;
+            }
+            if (maxSegKey == null) {
+                maxSegKey = segKey;
+            }
 
             // todo 暂时限制为未满的块，解除限制会出别的问题
             if (rowCount < rule.getCapacity() && rowCount > maxRowCount) {
@@ -56,6 +62,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         }
         if (maxSegKey == null) {
             maxSegKey = SEG_SVC.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
+            maxRowCount = 0;
         }
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(maxSegKey.getOrder(), maxSegKey.getStoreType());
         return new SegmentState(segInfo, maxRowCount - 1);
