@@ -57,6 +57,11 @@ public class DetailQueryInfoBean extends AbstractSingleTableQueryInfoBean implem
             return this;
         }
 
+        public Builder setSorts(SortBean... sorts) {
+            bean.setSorts(Arrays.asList(sorts));
+            return this;
+        }
+
         public DetailQueryInfoBean build() {
             return bean;
         }

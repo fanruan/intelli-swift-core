@@ -3,7 +3,10 @@ package com.fr.swift.query.info.bean.element.aggregation.funnel;
 import com.fr.swift.base.json.annotation.JsonProperty;
 
 /**
- * Created by lyon on 2018/12/28.
+ * 从dayStart开始取numberOfDays天
+ * @author lyon
+ * @date 2018/12/28
+ *
  */
 public class DayFilterBean {
 
