@@ -12,7 +12,7 @@ import java.io.OutputStream;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
@@ -40,9 +40,9 @@ public class EmptyBitmapTest {
 
         new EmptyBitmap().writeBytes(output);
 
-        verify(output).write(BitMapType.EMPTY.getHead());
+        verify(output).write(new byte[]{BitMapType.EMPTY.getHead()});
 
-        doThrow(new IOException()).when(output).write(anyInt());
+        doThrow(new IOException()).when(output).write(any(byte[].class));
 
         new EmptyBitmap().writeBytes(output);
 

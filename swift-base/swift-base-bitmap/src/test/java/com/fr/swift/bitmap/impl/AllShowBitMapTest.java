@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.Channels;
-import java.nio.channels.WritableByteChannel;
 import java.util.Random;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -26,7 +25,6 @@ import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author anchore
@@ -131,9 +129,6 @@ public class AllShowBitMapTest {
     @Test
     public void writeBytes() throws Exception {
         OutputStream output = mock(OutputStream.class);
-        WritableByteChannel channel = mock(WritableByteChannel.class);
-        mockStatic(Channels.class);
-        when(Channels.newChannel(output)).thenReturn(channel);
 
         mockStatic(IoUtil.class);
 
@@ -144,15 +139,14 @@ public class AllShowBitMapTest {
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .put(BitMapType.ALL_SHOW.getHead())
                 .putInt(1);
-        buf.flip();
 
-        verify(channel).write(buf);
+        verify(output).write(buf.array());
 
-        doThrow(new IOException()).when(channel).write(any(ByteBuffer.class));
+        doThrow(new IOException()).when(output).write(any(byte[].class));
 
         AllShowBitMap.of(1).writeBytes(output);
 
         verifyStatic(IoUtil.class, times(2));
-        IoUtil.close(channel);
+        IoUtil.close(output);
     }
 }

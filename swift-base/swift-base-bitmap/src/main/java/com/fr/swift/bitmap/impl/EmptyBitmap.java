@@ -1,11 +1,6 @@
 package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.BitMapType;
-import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.util.IoUtil;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * @author anchore
@@ -19,17 +14,6 @@ public class EmptyBitmap extends RangeBitmap {
     @Override
     public byte[] toBytes() {
         return new byte[]{getType().getHead()};
-    }
-
-    @Override
-    public void writeBytes(OutputStream output) {
-        try {
-            output.write(getType().getHead());
-        } catch (IOException e) {
-            SwiftLoggers.getLogger().error(e);
-        } finally {
-            IoUtil.close(output);
-        }
     }
 
     @Override
