@@ -9,10 +9,11 @@ import com.fr.swift.structure.IntIterable.IntIterator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.ByteBuffer;
+import java.io.ByteArrayInputStream;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -77,7 +78,7 @@ public class RoaringBitmapTest {
             }
         }
 
-        assertTrue(!im.isEmpty());
+        assertFalse(im.isEmpty());
         assertTrue(m.isEmpty());
     }
 
@@ -135,7 +136,7 @@ public class RoaringBitmapTest {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
         byte[] bytes = m.toBytes();
-        MutableBitMap m1 = RoaringMutableBitMap.ofBuffer(ByteBuffer.wrap(bytes, 1, bytes.length - 1));
+        MutableBitMap m1 = RoaringMutableBitMap.ofStream(new ByteArrayInputStream(bytes, 1, bytes.length - 1));
         for (int i = 0; i < a.length; i++) {
             if ((a[i] == 1) != m1.contains(i)) {
                 fail();
@@ -144,7 +145,7 @@ public class RoaringBitmapTest {
 
         ImmutableBitMap im = m.clone();
         bytes = im.toBytes();
-        ImmutableBitMap m2 = RoaringImmutableBitMap.ofBuffer(ByteBuffer.wrap(bytes, 1, bytes.length - 1));
+        ImmutableBitMap m2 = RoaringImmutableBitMap.ofStream(new ByteArrayInputStream(bytes, 1, bytes.length - 1));
         for (int i = 0; i < a.length; i++) {
             if ((a[i] == 1) != m2.contains(i)) {
                 fail();

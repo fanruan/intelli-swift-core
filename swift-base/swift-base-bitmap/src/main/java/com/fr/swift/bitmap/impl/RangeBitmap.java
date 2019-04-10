@@ -6,8 +6,12 @@ import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Assert;
+import com.fr.swift.util.IoUtil;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Iterator;
@@ -103,6 +107,17 @@ public class RangeBitmap extends AbstractBitMap {
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .put(getType().getHead())
                 .putInt(start).putInt(end).array();
+    }
+
+    @Override
+    public void writeBytes(OutputStream output) {
+        try {
+            output.write(toBytes());
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+        } finally {
+            IoUtil.close(output);
+        }
     }
 
     @Override
