@@ -5,16 +5,15 @@ import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.util.IoUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
@@ -34,19 +33,13 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class RoaringMutableBitMapTest {
 
     @Test
-    public void ofBuffer() throws Exception {
-        ByteBuffer buf = ByteBuffer.allocate(3);
-        buf.position(1);
-
-        MutableRoaringBitmap mutableRoaringBitmap = mock(MutableRoaringBitmap.class, Mockito.RETURNS_DEEP_STUBS);
+    public void ofStream() throws Exception {
+        MutableRoaringBitmap mutableRoaringBitmap = mock(MutableRoaringBitmap.class, RETURNS_DEEP_STUBS);
         whenNew(MutableRoaringBitmap.class).withNoArguments().thenReturn(mutableRoaringBitmap);
 
-        ByteArrayInputStream byteArrayInputStream = mock(ByteArrayInputStream.class);
-        whenNew(ByteArrayInputStream.class).withArguments(buf.array(), buf.position(), buf.limit() - buf.position())
-                .thenReturn(byteArrayInputStream);
-
         DataInputStream dataInputStream = mock(DataInputStream.class);
-        whenNew(DataInputStream.class).withArguments(byteArrayInputStream).thenReturn(dataInputStream);
+        InputStream input = mock(InputStream.class);
+        whenNew(DataInputStream.class).withArguments(input).thenReturn(dataInputStream);
 
         MutableBitMap mutableBitMap = mock(MutableBitMap.class);
         spy(RoaringMutableBitMap.class);
@@ -55,7 +48,7 @@ public class RoaringMutableBitMapTest {
 
         mockStatic(IoUtil.class);
 
-        assertEquals(mutableBitMap, RoaringMutableBitMap.ofBuffer(buf));
+        assertEquals(mutableBitMap, RoaringMutableBitMap.ofStream(input));
 
         verify(mutableRoaringBitmap).deserialize(dataInputStream);
 
@@ -64,7 +57,7 @@ public class RoaringMutableBitMapTest {
         doReturn(mutableBitMap).when(RoaringMutableBitMap.class);
         RoaringMutableBitMap.of();
 
-        assertEquals(mutableBitMap, RoaringMutableBitMap.ofBuffer(buf));
+        assertEquals(mutableBitMap, RoaringMutableBitMap.ofStream(input));
 
         verifyStatic(IoUtil.class, times(2));
         IoUtil.close(dataInputStream);

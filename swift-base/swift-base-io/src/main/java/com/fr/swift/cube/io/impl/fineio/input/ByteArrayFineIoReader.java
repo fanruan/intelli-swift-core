@@ -12,11 +12,7 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class ByteArrayFineIoReader extends BaseByteArrayReader {
-
-    public ByteArrayFineIoReader(ByteReader dataReader, LongReader posReader, IntReader lenReader) {
-        super(dataReader, posReader, lenReader);
-    }
+public class ByteArrayFineIoReader {
 
     public static ByteArrayReader build(URI location) {
         // 获得内容部分的byte类型reader
@@ -31,6 +27,6 @@ public class ByteArrayFineIoReader extends BaseByteArrayReader {
         URI lengthLocation = URI.create(location.getPath() + "/" + ByteArrayWriter.LENGTH);
         IntReader lengthReader = IntFineIoReader.build(lengthLocation);
 
-        return new ByteArrayFineIoReader(contentReader, positionReader, lengthReader);
+        return new BaseByteArrayReader(contentReader, positionReader, lengthReader);
     }
 }

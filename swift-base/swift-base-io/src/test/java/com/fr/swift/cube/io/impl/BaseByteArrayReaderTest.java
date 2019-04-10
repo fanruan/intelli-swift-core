@@ -12,7 +12,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
+import java.io.IOException;
+
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -62,6 +65,19 @@ public class BaseByteArrayReaderTest {
         when(dataReader.get(12)).thenReturn((byte) 3);
 
         assertArrayEquals(new byte[]{1, 2, 3}, new BaseByteArrayReader(dataReader, posReader, lenReader).get(0));
+    }
+
+    @Test
+    public void getStream() throws IOException {
+        when(posReader.get(0)).thenReturn(10L);
+        when(lenReader.get(0)).thenReturn(3);
+        when(dataReader.get(10)).thenReturn((byte) 1);
+        when(dataReader.get(11)).thenReturn((byte) 2);
+        when(dataReader.get(12)).thenReturn((byte) 3);
+
+        byte[] bytes = new byte[3];
+        assertEquals(3, new BaseByteArrayReader(dataReader, posReader, lenReader).getStream(0).read(bytes));
+        assertArrayEquals(new byte[]{1, 2, 3}, bytes);
     }
 
     @Test

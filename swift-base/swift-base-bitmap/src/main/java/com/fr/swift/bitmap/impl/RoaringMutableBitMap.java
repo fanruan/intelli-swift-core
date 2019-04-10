@@ -10,7 +10,7 @@ import com.fr.swift.util.IoUtil;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.InputStream;
 
 /**
  * @author anchore
@@ -29,12 +29,12 @@ public class RoaringMutableBitMap extends RoaringImmutableBitMap implements Muta
     }
 
     public static MutableBitMap ofBytes(byte[] bytes) {
-        return ofBuffer(ByteBuffer.wrap(bytes));
+        return ofStream(new ByteArrayInputStream(bytes));
     }
 
-    public static MutableBitMap ofBuffer(ByteBuffer buf) {
+    public static MutableBitMap ofStream(InputStream input) {
         MutableRoaringBitmap another = new MutableRoaringBitmap();
-        DataInputStream dis = new DataInputStream(new ByteArrayInputStream(buf.array(), buf.position(), buf.limit() - buf.position()));
+        DataInputStream dis = new DataInputStream(input);
         try {
             another.deserialize(dis);
             return of(another);

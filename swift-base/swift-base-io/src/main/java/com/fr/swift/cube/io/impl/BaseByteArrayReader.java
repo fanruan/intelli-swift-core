@@ -6,6 +6,8 @@ import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;
 import com.fr.swift.util.IoUtil;
 
+import java.io.InputStream;
+
 /**
  * @author anchore
  * @date 2019/3/25
@@ -40,6 +42,29 @@ public class BaseByteArrayReader implements ByteArrayReader {
             bytes[i] = dataReader.get(start + i);
         }
         return bytes;
+    }
+
+    @Override
+    public InputStream getStream(long pos) {
+        final long start = posReader.get(pos);
+        final int size = lenReader.get(pos);
+
+        return new InputStream() {
+            long cursor = start;
+
+            @Override
+            public int read() {
+                if (available() > 0) {
+                    return dataReader.get(cursor++);
+                }
+                return -1;
+            }
+
+            @Override
+            public int available() {
+                return (int) (start + size - cursor);
+            }
+        };
     }
 
     @Override

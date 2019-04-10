@@ -9,12 +9,14 @@ import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.output.ByteArrayWriter;
 import com.fr.swift.util.IoUtil;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 /**
  * @author anchore
  * @date 2018/7/20
  */
-public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]>, ByteArrayWriter {
-
+public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]>, ByteArrayWriter, ByteArrayReader {
     private ByteArrayWriter byteArrayWriter;
 
     private ByteArrayReader byteArrayReader;
@@ -41,13 +43,23 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]>, ByteArray
     }
 
     @Override
-    public byte[] get(long pos) {
-        return byteArrayReader.get(pos);
+    public OutputStream putStream(long pos) {
+        return byteArrayWriter.putStream(pos);
     }
 
     @Override
     public void resetContentPosition() {
         byteArrayWriter.resetContentPosition();
+    }
+
+    @Override
+    public byte[] get(long pos) {
+        return byteArrayReader.get(pos);
+    }
+
+    @Override
+    public InputStream getStream(long pos) {
+        return byteArrayReader.getStream(pos);
     }
 
     @Override
