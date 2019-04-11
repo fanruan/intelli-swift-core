@@ -2,7 +2,6 @@ package com.fr.swift.cube.io.impl;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.ByteArrayReader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +41,7 @@ public class BaseBitmapReaderTest {
         mockStatic(BitMaps.class);
         when(BitMaps.ofStream(byteArrayReader.getStream(1))).thenReturn(bitmap);
 
-        assertEquals(bitmap, ((BitMapReader) new BaseBitmapReader(byteArrayReader)).get(1));
+        assertEquals(bitmap, new BaseBitmapReader(byteArrayReader).get(1));
     }
 
     @Test

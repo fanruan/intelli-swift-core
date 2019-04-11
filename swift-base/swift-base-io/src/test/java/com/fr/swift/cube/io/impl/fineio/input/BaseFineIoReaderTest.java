@@ -29,8 +29,8 @@ public class BaseFineIoReaderTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     IOFile<? extends Buffer> ioFile;
-
-    private BaseFineIoReader fineIoReader = new FineIoReader();
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
+    private BaseFineIoReader fineIoReader;
 
     @Test
     public void isReadable() throws Exception {
@@ -55,8 +55,5 @@ public class BaseFineIoReaderTest {
         fineIoReader.release();
 
         verify(ioFile).close();
-    }
-
-    class FineIoReader extends BaseFineIoReader {
     }
 }
