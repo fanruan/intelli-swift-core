@@ -73,11 +73,11 @@ public class BaseByteArrayReaderTest {
         when(lenReader.get(0)).thenReturn(3);
         when(dataReader.get(10)).thenReturn((byte) 1);
         when(dataReader.get(11)).thenReturn((byte) 2);
-        when(dataReader.get(12)).thenReturn((byte) 3);
+        when(dataReader.get(12)).thenReturn((byte) -1);
 
         byte[] bytes = new byte[3];
         assertEquals(3, new BaseByteArrayReader(dataReader, posReader, lenReader).getStream(0).read(bytes));
-        assertArrayEquals(new byte[]{1, 2, 3}, bytes);
+        assertArrayEquals(new byte[]{1, 2, -1}, bytes);
     }
 
     @Test
