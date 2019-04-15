@@ -71,5 +71,7 @@ public class BitMapColumn extends BaseBitmapColumn {
     @Override
     public void release() {
         IoUtil.release(indexWriter, indexReader);
+        indexWriter = null;
+        indexReader = null;
     }
 }
