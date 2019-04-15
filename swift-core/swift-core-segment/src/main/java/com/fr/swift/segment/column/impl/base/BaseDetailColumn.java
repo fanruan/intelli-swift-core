@@ -56,5 +56,7 @@ abstract class BaseDetailColumn<T, W extends Writer, R extends Reader> implement
     @Override
     public void release() {
         IoUtil.release(detailWriter, detailReader);
+        detailWriter = null;
+        detailReader = null;
     }
 }
