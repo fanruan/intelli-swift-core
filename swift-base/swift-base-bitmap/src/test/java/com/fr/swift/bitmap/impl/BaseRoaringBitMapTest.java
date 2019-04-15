@@ -1,5 +1,6 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.util.IoUtil;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
@@ -37,13 +39,16 @@ public class BaseRoaringBitMapTest {
         DataOutputStream dataOutput = mock(DataOutputStream.class);
         whenNew(DataOutputStream.class).withArguments(output).thenReturn(dataOutput);
 
+        when(baseRoaringBitMap.getType()).thenReturn(BitMapType.ROARING_MUTABLE);
+
         mockStatic(IoUtil.class);
 
         baseRoaringBitMap.writeBytes(output);
 
+        verify(dataOutput).write(BitMapType.ROARING_MUTABLE.getHead());
         verify(mutableRoaringBitmap).serialize(dataOutput);
 
         verifyStatic(IoUtil.class);
-        IoUtil.close(output);
+        IoUtil.close(dataOutput);
     }
 }
