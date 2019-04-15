@@ -132,12 +132,14 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
 
     @Override
     public void writeBytes(OutputStream output) {
+        DataOutputStream dataOutput = new DataOutputStream(output);
         try {
-            bitmap.serialize(new DataOutputStream(output));
+            dataOutput.write(getType().getHead());
+            bitmap.serialize(dataOutput);
         } catch (IOException e) {
             SwiftLoggers.getLogger().error(e);
         } finally {
-            IoUtil.close(output);
+            IoUtil.close(dataOutput);
         }
     }
 
