@@ -12,7 +12,6 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
@@ -68,10 +67,10 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     public boolean start() throws SwiftServiceException {
         super.start();
         segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-        if (recoverable) {
-            recover0();
-            recoverable = false;
-        }
+//        if (recoverable) {
+//            recover0();
+//            recoverable = false;
+//        }
         ClusterListenerHandler.addExtraListener(realtimeClusterListener);
         return true;
     }
@@ -148,11 +147,11 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
         @Override
         public void handleEvent(ClusterEvent clusterEvent) {
-            if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                ResourceDiscovery.getInstance().releaseAll();
-                recover0();
-                sendLocalSegmentInfo();
-            }
+//            if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+//                ResourceDiscovery.getInstance().releaseAll();
+//                recover0();
+//                sendLocalSegmentInfo();
+//            }
         }
 
         private void sendLocalSegmentInfo() {

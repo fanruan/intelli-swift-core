@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataEntity;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.SwiftRowOperator;
@@ -59,6 +59,6 @@ public class FakeNodeQRSTest {
 
     @Test
     public void convert() {
-        assertNotNull(rs.convert(new SwiftMetaDataBean()));
+        assertNotNull(rs.convert(new SwiftMetaDataEntity()));
     }
 }

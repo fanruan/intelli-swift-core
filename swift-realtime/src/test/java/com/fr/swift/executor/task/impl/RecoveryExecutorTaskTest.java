@@ -1,6 +1,6 @@
 package com.fr.swift.executor.task.impl;
 
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.executor.task.ExecutorTask;
@@ -21,7 +21,7 @@ import org.junit.Test;
 public class RecoveryExecutorTaskTest {
 
     String json = "{\"sourceKey\":\"test\",\"storeType\":\"FINE_IO\",\"swiftSchema\":\"CUBE\",\"id\":\"test@FINE_IO@0\",\"order\":0}";
-    final SegmentKey segmentKey = new SegmentKeyBean("test", 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
+    final SegmentKey segmentKey = new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
 
     @Test
     public void testSerialize() throws Exception {

@@ -2,7 +2,7 @@ package com.fr.swift.db.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataEntity;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
@@ -171,7 +171,7 @@ public class AddColumnActionTest {
         long i = -1;
 
         static SwiftMetaData getMeta() {
-            return new SwiftMetaDataBean("A",
+            return new SwiftMetaDataEntity("A",
                     Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("i", Types.BIGINT)));
         }
     }

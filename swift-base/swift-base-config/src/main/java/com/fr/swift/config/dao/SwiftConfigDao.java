@@ -5,17 +5,16 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.Page;
-import com.fr.swift.converter.FindList;
-import com.fr.swift.converter.ObjectConverter;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author yee
  * @date 2018/5/25
  */
-public interface SwiftConfigDao<T extends ObjectConverter> {
+public interface SwiftConfigDao<T> {
     /**
      * 添加或更新方法
      *
@@ -45,14 +44,14 @@ public interface SwiftConfigDao<T extends ObjectConverter> {
      * @param criterion hibernate sql
      * @return
      */
-    FindList<T> find(ConfigSession session, Order[] order, ConfigWhere... criterion);
+    List<T> find(ConfigSession session, Order[] order, ConfigWhere... criterion);
 
     /**
      * @param session
      * @param criterion
      * @return
      */
-    FindList<T> find(ConfigSession session, ConfigWhere... criterion);
+    List<T> find(ConfigSession session, ConfigWhere... criterion);
 
     /**
      * 根据ID删除

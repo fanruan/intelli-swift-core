@@ -1,7 +1,7 @@
 package com.fr.swift.executor.task.impl;
 
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.Job.JobListener;
@@ -50,7 +50,7 @@ public class UploadExecutorTask extends AbstractExecutorTask<Job> {
         Map<String, Object> contentMap = JsonBuilder.readValue(taskContent, Map.class);
         boolean uploadWholeSeg = (Boolean) contentMap.get("uploadWholeSeg");
         Map<String, Object> uploadSegmentKey = (Map<String, Object>) contentMap.get("uploadSegmentKey");
-        SegmentKey segmentKey = JsonBuilder.readValue(uploadSegmentKey, SegmentKeyBean.class);
+        SegmentKey segmentKey = JsonBuilder.readValue(uploadSegmentKey, SwiftSegmentEntity.class);
         this.job = new UploadJob(segmentKey, uploadWholeSeg, null);
     }
 }

@@ -2,7 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.config.bean.SwiftTablePathBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -86,9 +86,9 @@ public class SegmentHelper {
                 SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
                 SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
                 int tmp = 0;
-                SwiftTablePathBean entity = tablePathService.get(sourceKey);
+                SwiftTablePathEntity entity = tablePathService.get(sourceKey);
                 if (null == entity) {
-                    entity = new SwiftTablePathBean(sourceKey, tmp);
+                    entity = new SwiftTablePathEntity(sourceKey, tmp);
                     tablePathService.saveOrUpdate(entity);
                     replace = true;
                 } else {
@@ -151,7 +151,7 @@ public class SegmentHelper {
                 SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
                 SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
                 final SourceKey sourceKey = dataSource.getSourceKey();
-                SwiftTablePathBean entity = tablePathService.get(sourceKey.getId());
+                SwiftTablePathEntity entity = tablePathService.get(sourceKey.getId());
                 Integer path = entity.getTablePath();
                 path = null == path ? -1 : path;
                 Integer tmpPath = entity.getTmpDir();

@@ -66,7 +66,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
 
     private static Class entityType() {
         try {
-            return Class.forName("com.fr.swift.config.entity.SwiftExecutorTaskEntity");
+            return Class.forName("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
         } catch (ClassNotFoundException e) {
             return null;
         }
@@ -187,10 +187,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         if (lockType != that.lockType) {
             return false;
         }
-        if (lockKey != null ? !lockKey.equals(that.lockKey) : that.lockKey != null) {
-            return false;
-        }
-        return true;
+        return lockKey != null ? lockKey.equals(that.lockKey) : that.lockKey == null;
     }
 
     @Override

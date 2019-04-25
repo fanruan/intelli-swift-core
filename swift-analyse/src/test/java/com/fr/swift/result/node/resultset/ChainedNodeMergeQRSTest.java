@@ -1,11 +1,10 @@
 package com.fr.swift.result.node.resultset;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataEntity;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeQRS;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
 import org.junit.Before;
@@ -13,8 +12,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -37,13 +34,13 @@ public class ChainedNodeMergeQRSTest {
 
     @Test
     public void getMerger() {
-        assertNotNull(rs.<QueryResultSet<Pair<GroupNode, List<Map<Integer, Object>>>>>getMerger());
+        assertNotNull(rs.getMerger());
     }
 
     @Test
     public void convert() {
         try {
-            rs.convert(new SwiftMetaDataBean());
+            rs.convert(new SwiftMetaDataEntity());
             fail();
         } catch (Exception ignored) {
         }
