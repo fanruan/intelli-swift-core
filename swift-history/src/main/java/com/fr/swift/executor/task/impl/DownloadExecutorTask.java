@@ -1,7 +1,7 @@
 package com.fr.swift.executor.task.impl;
 
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.impl.DownloadJob;
@@ -46,7 +46,7 @@ public class DownloadExecutorTask extends AbstractExecutorTask<Job> {
         boolean downloadWholeSeg = (Boolean) contentMap.get("downloadWholeSeg");
         boolean replace = (Boolean) contentMap.get("replace");
         Map<String, Object> downloadSegKey = (Map<String, Object>) contentMap.get("downloadSegKey");
-        SegmentKey segmentKey = JsonBuilder.readValue(downloadSegKey, SegmentKeyBean.class);
+        SegmentKey segmentKey = JsonBuilder.readValue(downloadSegKey, SwiftSegmentEntity.class);
         this.job = new DownloadJob(segmentKey, downloadWholeSeg, replace);
     }
 }

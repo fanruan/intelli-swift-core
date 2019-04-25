@@ -1,13 +1,13 @@
 package com.fr.swift.config;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
-import com.fr.swift.config.bean.SegLocationBean;
-import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
-import com.fr.swift.config.bean.SwiftConfigBean;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
-import com.fr.swift.config.bean.SwiftTableAllotConfBean;
-import com.fr.swift.config.bean.SwiftTablePathBean;
+import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.config.entity.SwiftColumnIndexingConf;
+import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.entity.SwiftTableAllotConf;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,14 +20,14 @@ import java.util.List;
 public class SwiftConfigConstants {
 
     private static final List<Class<?>> ENTITY_LIST = new ArrayList<Class<?>>() {{
-        add(SwiftMetaDataBean.TYPE);
-        add(SegmentKeyBean.TYPE);
-        add(SwiftConfigBean.TYPE);
-        add(SegLocationBean.TYPE);
-        add(SwiftServiceInfoBean.TYPE);
-        add(SwiftTableAllotConfBean.TYPE);
-        add(SwiftColumnIdxConfBean.TYPE);
-        add(SwiftTablePathBean.TYPE);
+        add(SwiftMetaDataEntity.class);
+        add(SwiftSegmentEntity.class);
+        add(SwiftConfigEntity.class);
+        add(SwiftSegmentLocationEntity.class);
+        add(SwiftServiceInfoEntity.class);
+        add(SwiftTableAllotConf.class);
+        add(SwiftColumnIndexingConf.class);
+        add(SwiftTablePathEntity.class);
     }};
 
     public static boolean registerEntity(Class<?> clazz) {

@@ -1,7 +1,7 @@
 package com.fr.swift.executor.task.impl;
 
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.impl.CollateJob;
@@ -40,7 +40,7 @@ public class CollateExecutorTask extends AbstractExecutorTask<Job> {
         List<SegmentKey> segmentKeyList = new ArrayList<SegmentKey>();
         for (Object o : list) {
             Map<String, Object> map = (Map<String, Object>) o;
-            SegmentKey segmentKey = JsonBuilder.readValue(map, SegmentKeyBean.class);
+            SegmentKey segmentKey = JsonBuilder.readValue(map, SwiftSegmentEntity.class);
             segmentKeyList.add(segmentKey);
         }
         this.job = new CollateJob(sourceKey, segmentKeyList);

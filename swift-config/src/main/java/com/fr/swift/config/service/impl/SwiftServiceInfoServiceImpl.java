@@ -2,8 +2,8 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
@@ -32,7 +32,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     }
 
     @Override
-    public boolean saveOrUpdate(final SwiftServiceInfoBean serviceInfoBean) {
+    public boolean saveOrUpdate(final SwiftServiceInfoEntity serviceInfoBean) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
@@ -48,7 +48,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     }
 
     @Override
-    public boolean removeServiceInfo(final SwiftServiceInfoBean serviceInfoBean) {
+    public boolean removeServiceInfo(final SwiftServiceInfoEntity serviceInfoBean) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
@@ -64,11 +64,11 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     }
 
     @Override
-    public SwiftServiceInfoBean getServiceInfo(final SwiftServiceInfoBean serviceInfoBean) {
+    public SwiftServiceInfoEntity getServiceInfo(final SwiftServiceInfoEntity serviceInfoBean) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SwiftServiceInfoBean>(false) {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SwiftServiceInfoEntity>(false) {
                 @Override
-                public SwiftServiceInfoBean work(ConfigSession session) throws SQLException {
+                public SwiftServiceInfoEntity work(ConfigSession session) throws SQLException {
                     return swiftServiceInfoDao.select(session, serviceInfoBean.getId());
                 }
             });
@@ -79,13 +79,13 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
     }
 
     @Override
-    public List<SwiftServiceInfoBean> getAllServiceInfo() {
+    public List<SwiftServiceInfoEntity> getAllServiceInfo() {
 
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftServiceInfoBean>>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftServiceInfoEntity>>() {
                 @Override
-                public List<SwiftServiceInfoBean> work(ConfigSession session) {
-                    return swiftServiceInfoDao.find(session).list();
+                public List<SwiftServiceInfoEntity> work(ConfigSession session) {
+                    return swiftServiceInfoDao.find(session);
                 }
 
                 @Override
@@ -95,18 +95,18 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
             });
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("get all ServiceInfo error!", e);
-            return new ArrayList<SwiftServiceInfoBean>();
+            return new ArrayList<SwiftServiceInfoEntity>();
         }
     }
 
     @Override
-    public List<SwiftServiceInfoBean> getServiceInfoByService(final String service) {
+    public List<SwiftServiceInfoEntity> getServiceInfoByService(final String service) {
 
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftServiceInfoBean>>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftServiceInfoEntity>>() {
                 @Override
-                public List<SwiftServiceInfoBean> work(ConfigSession session) {
-                    return swiftServiceInfoDao.getServiceInfoByService(session, service).list();
+                public List<SwiftServiceInfoEntity> work(ConfigSession session) {
+                    return swiftServiceInfoDao.getServiceInfoByService(session, service);
                 }
 
                 @Override
@@ -116,17 +116,17 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
             });
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("get ServiceInfo by service error!", e);
-            return new ArrayList<SwiftServiceInfoBean>();
+            return new ArrayList<SwiftServiceInfoEntity>();
         }
     }
 
     @Override
-    public List<SwiftServiceInfoBean> find(final ConfigWhere... criterion) {
+    public List<SwiftServiceInfoEntity> find(final ConfigWhere... criterion) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftServiceInfoBean>>() {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftServiceInfoEntity>>() {
                 @Override
-                public List<SwiftServiceInfoBean> work(ConfigSession session) {
-                    return swiftServiceInfoDao.find(session, criterion).list();
+                public List<SwiftServiceInfoEntity> work(ConfigSession session) {
+                    return swiftServiceInfoDao.find(session, criterion);
                 }
 
                 @Override
@@ -136,7 +136,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
             });
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("get ServiceInfo by service error!", e);
-            return new ArrayList<SwiftServiceInfoBean>();
+            return new ArrayList<SwiftServiceInfoEntity>();
         }
     }
 }

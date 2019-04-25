@@ -2,7 +2,7 @@ package com.fr.swift.query.post.meta;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -38,6 +38,6 @@ public class DetailMetaDataCreator implements MetaDataCreator<DetailQueryInfoBea
             metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
                     metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
         }
-        return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
+        return new SwiftMetaDataEntity(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
     }
 }

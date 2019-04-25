@@ -1,6 +1,6 @@
 package com.fr.swift.db.impl;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataEntity;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
@@ -38,7 +38,7 @@ public class AddColumnAction extends BaseAlterTableAction {
                 columnMetas.add(oldMeta.getColumn(i + 1));
             }
             columnMetas.add(relatedColumnMeta);
-            SwiftMetaData newMeta = new SwiftMetaDataBean(
+            SwiftMetaData newMeta = new SwiftMetaDataEntity(
                     oldMeta.getId(),
                     oldMeta.getSwiftDatabase(),
                     oldMeta.getSchemaName(),

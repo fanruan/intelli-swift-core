@@ -1,7 +1,7 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataEntity;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
@@ -11,7 +11,6 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.converter.FindList;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -39,7 +38,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     private TransactionManager transactionManager;
     private SwiftMetaDataDao swiftMetaDataDao;
 
-    private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
+    private final ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
     public SwiftMetaDataServiceImpl() {
         transactionManager = SwiftContext.get().getBean(TransactionManager.class);
@@ -49,7 +48,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean addMetaData(final String sourceKey, final SwiftMetaData metaData) {
         try {
-            final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
+            final SwiftMetaDataEntity bean = (SwiftMetaDataEntity) metaData;
             bean.setId(sourceKey);
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
@@ -76,7 +75,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                     Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
                     while (iterator.hasNext()) {
                         Map.Entry<String, SwiftMetaData> entry = iterator.next();
-                        SwiftMetaDataBean bean = (SwiftMetaDataBean) entry.getValue();
+                        SwiftMetaDataEntity bean = (SwiftMetaDataEntity) entry.getValue();
                         bean.setId(entry.getKey());
                         swiftMetaDataDao.addOrUpdateSwiftMetaData(session, bean);
                         metaDataCache.put(entry.getKey(), bean);
@@ -136,18 +135,12 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        swiftMetaDataDao.findAll(session).forEach(new FindList.SimpleEach<SwiftMetaDataBean>() {
-                            @Override
-                            public void each(int idx, SwiftMetaDataBean bean) throws Exception {
-                                result.put(bean.getId(), bean);
-                            }
-                        });
+                        for (SwiftMetaDataEntity swiftMetaDataEntity : swiftMetaDataDao.findAll(session)) {
+                            result.put(swiftMetaDataEntity.getId(), swiftMetaDataEntity);
+                        }
                         metaDataCache.putAll(result);
                         return result;
                     } catch (Exception e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
                         throw new SQLException(e);
                     }
 
@@ -174,18 +167,12 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        swiftMetaDataDao.fuzzyFind(session, fuzzyName).forEach(new FindList.SimpleEach<SwiftMetaDataBean>() {
-                            @Override
-                            public void each(int idx, SwiftMetaDataBean bean) throws Exception {
-                                result.put(bean.getId(), bean);
-                            }
-                        });
+                        for (SwiftMetaDataEntity swiftMetaDataEntity : swiftMetaDataDao.fuzzyFind(session, fuzzyName)) {
+                            result.put(swiftMetaDataEntity.getId(), swiftMetaDataEntity);
+                        }
                         metaDataCache.putAll(result);
                         return result;
                     } catch (Exception e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
                         throw new SQLException(e);
                     }
 
@@ -267,7 +254,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
                 @Override
                 public List<SwiftMetaData> work(ConfigSession session) {
-                    return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion).list());
+                    return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion));
                 }
             });
         } catch (SQLException e) {

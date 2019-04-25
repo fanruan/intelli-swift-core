@@ -1,6 +1,6 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.base.meta.SwiftMetaDataEntity;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
@@ -73,6 +73,6 @@ public class HavingFilterQueryTest {
         }
         assertTrue(rows.size() > 0);
         assertEquals(expected, rows);
-        resultSet.convert(new SwiftMetaDataBean());
+        resultSet.convert(new SwiftMetaDataEntity());
     }
 }

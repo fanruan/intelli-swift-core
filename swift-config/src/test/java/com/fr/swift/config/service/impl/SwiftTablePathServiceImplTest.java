@@ -1,9 +1,9 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SwiftTablePathBean;
 import com.fr.swift.config.dao.SwiftTablePathDao;
 import com.fr.swift.config.dao.impl.SwiftTablePathDaoImpl;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
@@ -41,7 +41,7 @@ public class SwiftTablePathServiceImplTest extends BaseServiceTest {
 
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession(SwiftTablePathBean.TYPE, mockData());
+        final ConfigSession mockConfigSession = mockSession(SwiftTablePathEntity.class, mockData());
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
@@ -63,7 +63,7 @@ public class SwiftTablePathServiceImplTest extends BaseServiceTest {
 
     @Test
     public void saveOrUpdate() {
-        assertTrue(service.saveOrUpdate(new SwiftTablePathBean("table", 0)));
+        assertTrue(service.saveOrUpdate(new SwiftTablePathEntity("table", 0)));
         PowerMock.verifyAll();
     }
 
@@ -95,17 +95,15 @@ public class SwiftTablePathServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         ObjectConverter tablePathA = PowerMock.createMock(ObjectConverter.class);
         // Generate by Mock Plugin
-        SwiftTablePathBean mockSwiftTablePathBean = PowerMock.createMock(SwiftTablePathBean.class);
-        EasyMock.expect(mockSwiftTablePathBean.convert()).andReturn(tablePathA).anyTimes();
-        EasyMock.expect(mockSwiftTablePathBean.getTablePath()).andReturn(100).anyTimes();
-        EasyMock.expect(mockSwiftTablePathBean.getLastPath()).andReturn(99).anyTimes();
+        SwiftTablePathEntity mockSwiftTablePathEntity = PowerMock.createMock(SwiftTablePathEntity.class);
+        EasyMock.expect(mockSwiftTablePathEntity.getTablePath()).andReturn(100).anyTimes();
+        EasyMock.expect(mockSwiftTablePathEntity.getLastPath()).andReturn(99).anyTimes();
 
-        EasyMock.expect(tablePathA.convert()).andReturn(mockSwiftTablePathBean).anyTimes();
+        EasyMock.expect(tablePathA.convert()).andReturn(mockSwiftTablePathEntity).anyTimes();
         ObjectConverter tablePathB = PowerMock.createMock(ObjectConverter.class);
-        SwiftTablePathBean mockSwiftTablePathBean1 = PowerMock.createMock(SwiftTablePathBean.class);
-        EasyMock.expect(mockSwiftTablePathBean1.convert()).andReturn(tablePathB).anyTimes();
-        EasyMock.expect(tablePathB.convert()).andReturn(mockSwiftTablePathBean1).anyTimes();
-        PowerMock.replay(tablePathA, tablePathB, mockSwiftTablePathBean, mockSwiftTablePathBean1);
+        SwiftTablePathEntity mockSwiftTablePathEntity1 = PowerMock.createMock(SwiftTablePathEntity.class);
+        EasyMock.expect(tablePathB.convert()).andReturn(mockSwiftTablePathEntity1).anyTimes();
+        PowerMock.replay(tablePathA, tablePathB, mockSwiftTablePathEntity, mockSwiftTablePathEntity1);
         return new ObjectConverter[]{
                 tablePathA, tablePathB
         };

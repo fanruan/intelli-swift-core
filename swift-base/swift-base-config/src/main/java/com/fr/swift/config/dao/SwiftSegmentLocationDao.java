@@ -1,23 +1,23 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.bean.SegLocationBean;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.converter.FindList;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author yee
  * @date 2018/7/3
  */
-public interface SwiftSegmentLocationDao extends SwiftConfigDao<SegLocationBean> {
+public interface SwiftSegmentLocationDao extends SwiftConfigDao<SwiftSegmentLocationEntity> {
     boolean deleteBySourceKey(ConfigSession session, String sourceKey) throws SQLException;
 
-    FindList<SegLocationBean> findByClusterId(ConfigSession session, String clusterId);
+    List<SwiftSegmentLocationEntity> findByClusterId(ConfigSession session, String clusterId);
 
-    FindList<SegLocationBean> findBySegmentId(ConfigSession session, String segmentId);
+    List<SwiftSegmentLocationEntity> findBySegmentId(ConfigSession session, String segmentId);
 
-    FindList<SegLocationBean> findBySourceKey(ConfigSession session, String sourceKey);
+    List<SwiftSegmentLocationEntity> findBySourceKey(ConfigSession session, String sourceKey);
 
-    FindList<SegLocationBean> findAll(ConfigSession session);
+    List<SwiftSegmentLocationEntity> findAll(ConfigSession session);
 }

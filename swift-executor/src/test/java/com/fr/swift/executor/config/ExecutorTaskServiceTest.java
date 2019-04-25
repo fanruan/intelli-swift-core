@@ -7,7 +7,6 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.TransactionManager;
-import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.executor.task.ExecutorTask;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +70,7 @@ public class ExecutorTaskServiceTest {
     @Test
     public void testSaveOrUpdate() throws SQLException {
         new ExecutorTaskServiceImpl().saveOrUpdate(executorTask);
-        Mockito.verify(executorTaskDao).saveOrUpdate(configSession, executorTask);
+        Mockito.verify(executorTaskDao).saveOrUpdate(configSession, (SwiftExecutorTaskEntity) executorTask.convert());
     }
 
     @Test
@@ -81,12 +80,12 @@ public class ExecutorTaskServiceTest {
             add(Mockito.mock(ExecutorTask.class));
         }};
         new ExecutorTaskServiceImpl().batchSaveOrUpdate(executorTasks);
-        Mockito.verify(executorTaskDao, Mockito.times(2)).saveOrUpdate(Mockito.eq(configSession), Mockito.any(ExecutorTask.class));
+        Mockito.verify(executorTaskDao, Mockito.times(2)).saveOrUpdate(Mockito.eq(configSession), Mockito.any(SwiftExecutorTaskEntity.class));
     }
 
     @Test
     public void getActiveTasksBeforeTime() {
-        Mockito.when(executorTaskDao.find(Mockito.eq(configSession), Mockito.any(Order[].class), Mockito.<ConfigWhere[]>any())).thenReturn(new FindListImpl<ExecutorTask>(new ArrayList()));
+        Mockito.when(executorTaskDao.find(Mockito.eq(configSession), Mockito.any(Order[].class), Mockito.<ConfigWhere[]>any())).thenReturn(new ArrayList());
         List<ExecutorTask> taskList = new ExecutorTaskServiceImpl().getActiveTasksBeforeTime(0);
         Mockito.verify(executorTaskDao).find(Mockito.eq(configSession), Mockito.any(Order[].class), Mockito.<ConfigWhere[]>any());
     }
@@ -94,7 +93,7 @@ public class ExecutorTaskServiceTest {
     @Test
     public void deleteTask() throws SQLException {
         new ExecutorTaskServiceImpl().deleteTask(executorTask);
-        Mockito.verify(executorTaskDao).delete(configSession, executorTask);
+        Mockito.verify(executorTaskDao).delete(configSession, (SwiftExecutorTaskEntity) executorTask.convert());
     }
 }
 

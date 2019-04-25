@@ -1,8 +1,8 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SwiftTableAllotConfBean;
 import com.fr.swift.config.dao.impl.SwiftConfigDaoImpl;
+import com.fr.swift.config.entity.SwiftTableAllotConf;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
@@ -38,7 +38,7 @@ public class SwiftTableIndexingConfServiceTest extends BaseServiceTest {
         PowerMock.replay(SwiftContext.class);
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession(SwiftTableAllotConfBean.TYPE);
+        final ConfigSession mockConfigSession = mockSession(SwiftTableAllotConf.class);
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
