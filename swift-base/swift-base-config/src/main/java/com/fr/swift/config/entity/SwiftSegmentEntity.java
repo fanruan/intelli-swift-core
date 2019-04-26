@@ -5,6 +5,7 @@ import com.fr.swift.annotation.persistence.Convert;
 import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Enumerated;
 import com.fr.swift.annotation.persistence.Id;
+import com.fr.swift.annotation.persistence.Table;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.convert.URIConverter;
 import com.fr.swift.cube.io.Types;
@@ -20,7 +21,8 @@ import java.net.URI;
  * @author yee
  * @date 2018/5/24
  */
-@Entity(name = "fine_swift_segments")
+@Entity
+@Table(name = "fine_swift_segments")
 public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Id
     private String id;

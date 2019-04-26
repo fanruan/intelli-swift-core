@@ -1,4 +1,4 @@
-package com.fr.swift.config.convert.hibernate;
+package com.fr.swift.config.convert;
 
 /**
  * @author yee
@@ -8,4 +8,6 @@ public interface ConfigAttributeConverter<From, To> {
     To convertToDatabaseColumn(From from);
 
     From convertToEntityAttribute(To s);
+
+    String SIGNATURE = ConfigAttributeConverter.class.getName().replace(".", "/");
 }

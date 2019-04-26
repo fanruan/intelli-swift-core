@@ -4,6 +4,7 @@ package com.fr.swift.config.entity;
 import com.fr.swift.annotation.persistence.Column;
 import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Id;
+import com.fr.swift.annotation.persistence.Table;
 import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
@@ -15,7 +16,8 @@ import static com.fr.swift.config.SwiftConfigConstants.LONG_TEXT_LENGTH;
  * @author yee
  * @date 2018/7/6
  */
-@Entity(name = "fine_swift_config_entity")
+@Entity
+@Table(name = "fine_swift_config_entity")
 public class SwiftConfigEntity implements Serializable {
     private static final long serialVersionUID = 3522815101688011116L;
     @Id

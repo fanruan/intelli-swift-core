@@ -3,6 +3,7 @@ package com.fr.swift.config.entity;
 import com.fr.swift.annotation.persistence.Column;
 import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Id;
+import com.fr.swift.annotation.persistence.Table;
 
 import java.io.Serializable;
 
@@ -14,7 +15,8 @@ import java.io.Serializable;
  * @description
  * @since Advanced FineBI 5.0
  */
-@Entity(name = "fine_swift_service_info")
+@Entity
+@Table(name = "fine_swift_service_info")
 public class SwiftServiceInfoEntity implements Serializable {
 
     @Id
