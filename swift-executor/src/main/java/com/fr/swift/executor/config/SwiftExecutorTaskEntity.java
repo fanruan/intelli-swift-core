@@ -4,6 +4,7 @@ import com.fr.swift.annotation.persistence.Column;
 import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Enumerated;
 import com.fr.swift.annotation.persistence.Id;
+import com.fr.swift.annotation.persistence.Table;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
@@ -18,7 +19,8 @@ import java.io.Serializable;
  * @author Lucifer
  * @description
  */
-@Entity(name = "fine_swift_executor_tasks")
+@Entity
+@Table(name = "fine_swift_executor_tasks")
 public class SwiftExecutorTaskEntity implements Serializable {
 
     private static final long serialVersionUID = -7333801707856105168L;

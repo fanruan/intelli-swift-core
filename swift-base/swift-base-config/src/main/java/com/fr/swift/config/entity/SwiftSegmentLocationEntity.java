@@ -3,6 +3,7 @@ package com.fr.swift.config.entity;
 import com.fr.swift.annotation.persistence.Column;
 import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Id;
+import com.fr.swift.annotation.persistence.Table;
 import com.fr.swift.config.entity.key.SwiftSegLocationEntityId;
 
 import java.io.Serializable;
@@ -12,7 +13,8 @@ import java.io.Serializable;
  * @author yee
  * @date 2018/7/3
  */
-@Entity(name = "fine_swift_seg_location")
+@Entity
+@Table(name = "fine_swift_seg_location")
 public class SwiftSegmentLocationEntity implements Serializable {
     @Id
     private SwiftSegLocationEntityId id;

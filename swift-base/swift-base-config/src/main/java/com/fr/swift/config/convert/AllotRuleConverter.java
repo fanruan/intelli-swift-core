@@ -1,7 +1,6 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.config.convert.hibernate.ConfigAttributeConverter;
 import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.util.Strings;
 

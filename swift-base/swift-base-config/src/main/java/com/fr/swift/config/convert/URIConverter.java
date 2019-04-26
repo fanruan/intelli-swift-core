@@ -1,6 +1,5 @@
 package com.fr.swift.config.convert;
 
-import com.fr.swift.config.convert.hibernate.ConfigAttributeConverter;
 import com.fr.swift.util.Crasher;
 
 import java.net.URI;

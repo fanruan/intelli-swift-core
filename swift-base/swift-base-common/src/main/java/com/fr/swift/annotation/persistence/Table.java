@@ -7,9 +7,10 @@ import java.lang.annotation.Target;
 
 /**
  * @author yee
- * @date 2019-04-25
+ * @date 2019-04-26
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Entity {
+public @interface Table {
+    String name();
 }

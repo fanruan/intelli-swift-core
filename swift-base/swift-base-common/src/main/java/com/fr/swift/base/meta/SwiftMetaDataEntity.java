@@ -1,9 +1,12 @@
 package com.fr.swift.base.meta;
 
 import com.fr.swift.annotation.persistence.Column;
+import com.fr.swift.annotation.persistence.Convert;
 import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Enumerated;
 import com.fr.swift.annotation.persistence.Id;
+import com.fr.swift.annotation.persistence.Table;
+import com.fr.swift.config.convert.MetaDataColumnListConverter;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -20,7 +23,8 @@ import java.util.List;
  * @Description:
  * @Date: Created in 2018-3-8
  */
-@Entity(name = "fine_swift_metadata")
+@Entity
+@Table(name = "fine_swift_metadata")
 public class SwiftMetaDataEntity implements SwiftMetaData, Serializable {
     private static final long serialVersionUID = -6185911493489618460L;
     /**
@@ -39,7 +43,7 @@ public class SwiftMetaDataEntity implements SwiftMetaData, Serializable {
     @Column(name = "remark")
     private String remark;
     @Column(name = "fields", length = 65536)
-//    @Convert(converter = MetaDataColumnListConverter.class)
+    @Convert(converter = MetaDataColumnListConverter.class)
     private List<SwiftMetaDataColumn> fields;
     private int columnCount;
 
