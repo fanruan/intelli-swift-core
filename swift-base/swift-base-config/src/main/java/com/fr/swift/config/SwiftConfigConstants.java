@@ -1,15 +1,5 @@
 package com.fr.swift.config;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
-import com.fr.swift.config.entity.SwiftColumnIndexingConf;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
-import com.fr.swift.config.entity.SwiftServiceInfoEntity;
-import com.fr.swift.config.entity.SwiftTableAllotConf;
-import com.fr.swift.config.entity.SwiftTablePathEntity;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,27 +8,6 @@ import java.util.List;
  * @date 2018/5/28
  */
 public class SwiftConfigConstants {
-
-    private static final List<Class<?>> ENTITY_LIST = new ArrayList<Class<?>>() {{
-        add(SwiftMetaDataEntity.class);
-        add(SwiftSegmentEntity.class);
-        add(SwiftConfigEntity.class);
-        add(SwiftSegmentLocationEntity.class);
-        add(SwiftServiceInfoEntity.class);
-        add(SwiftTableAllotConf.class);
-        add(SwiftColumnIndexingConf.class);
-        add(SwiftTablePathEntity.class);
-    }};
-
-    public static boolean registerEntity(Class<?> clazz) {
-        return ENTITY_LIST.add(clazz);
-    }
-
-    public static Class<?>[] getEntities() {
-        Class<?>[] entities = new Class[ENTITY_LIST.size()];
-        ENTITY_LIST.toArray(entities);
-        return entities;
-    }
 
     public static final String LOCALHOST = "LOCAL";
 
