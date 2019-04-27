@@ -8,7 +8,7 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
  * @author anchore
  * @date 2018/6/5
  */
-@JsonTypeInfo(defaultImpl = LineAllotRule.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = LineAllotRule.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LineAllotRule.class)
 })

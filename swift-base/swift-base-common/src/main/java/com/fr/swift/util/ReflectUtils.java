@@ -80,7 +80,7 @@ public final class ReflectUtils {
             return fieldValue;
         } else if (tClass.isEnum()) {
             return Enum.valueOf(tClass, fieldValue);
-//            Object obj = MAPPER.readValue(fieldValue, tClass);
+//            Object obj = MAPPER.string2Object(fieldValue, tClass);
 //            return obj;
         } else {
             return JsonBuilder.readValue(fieldValue, tClass);

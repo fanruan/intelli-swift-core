@@ -14,6 +14,7 @@ import java.util.List;
  * @date 2018/6/26
  */
 @JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
         property = "type",
         defaultImpl = RelationSourceType.class)
 @JsonSubTypes({
