@@ -8,9 +8,7 @@ import com.fr.swift.base.json.annotation.JsonTypeInfo;
  * @date 2018-12-04
  */
 @JsonTypeInfo(
-        property = "type",
-        defaultImpl = TestA.class
-)
+        use = JsonTypeInfo.Id.NAME, property = "type", defaultImpl = TestA.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = TestA.class, name = "A"),
         @JsonSubTypes.Type(value = TestB.class, name = "B"),

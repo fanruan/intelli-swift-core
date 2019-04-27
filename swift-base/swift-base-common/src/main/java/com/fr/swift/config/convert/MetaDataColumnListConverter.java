@@ -1,5 +1,7 @@
 package com.fr.swift.config.convert;
 
+import com.fr.swift.base.json.JsonBuilder;
+import com.fr.swift.base.json.mapper.BeanTypeReference;
 import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.config.db.util.DBStringUtil;
 import com.fr.swift.log.SwiftLoggers;
@@ -13,8 +15,6 @@ import java.util.List;
  * @date 2018-11-27
  */
 public class MetaDataColumnListConverter implements ConfigAttributeConverter<List<MetaDataColumnBean>, String> {
-//    private ObjectMapper mapper = new ObjectMapper();
-
 
     @Override
     public String convertToDatabaseColumn(List<MetaDataColumnBean> var1) {
@@ -42,8 +42,7 @@ public class MetaDataColumnListConverter implements ConfigAttributeConverter<Lis
     }
     protected String toDatabaseColumn(List<MetaDataColumnBean> list) {
         try {
-//            return mapper.writeValueAsString(list);
-            return Strings.EMPTY;
+            return JsonBuilder.writeJsonString(list);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return Strings.EMPTY;
@@ -52,8 +51,8 @@ public class MetaDataColumnListConverter implements ConfigAttributeConverter<Lis
 
     public List<MetaDataColumnBean> toEntityAttribute(String s) {
         try {
-            return /*Strings.isNotEmpty(s) ? (List<MetaDataColumnBean>) mapper.readValue(s, new TypeReference<List<MetaDataColumnBean>>() {
-            }) : */Collections.emptyList();
+            return Strings.isNotEmpty(s) ? JsonBuilder.readValue(s, new BeanTypeReference<List<MetaDataColumnBean>>() {
+            }) : Collections.<MetaDataColumnBean>emptyList();
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return Collections.emptyList();

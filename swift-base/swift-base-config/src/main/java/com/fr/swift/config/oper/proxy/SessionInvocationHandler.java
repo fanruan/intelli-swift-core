@@ -1,8 +1,8 @@
 package com.fr.swift.config.oper.proxy;
 
+import com.fr.swift.config.VersionConfigProperty;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigTransaction;
-import com.fr.swift.config.oper.impl.VersionConfigProperty;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
@@ -17,27 +17,29 @@ public class SessionInvocationHandler implements InvocationHandler {
 
     private Object object;
     private Class proxyClass;
+    private Class query = null;
 
-    public SessionInvocationHandler(Object object) {
+    public SessionInvocationHandler(Object object) throws ClassNotFoundException {
         this.object = object;
         this.proxyClass = object.getClass();
+        this.query = Class.forName("com.fr.swift.config.hibernate.HibernateQuery");
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.getName().equals("createEntityQuery")) {
-            Constructor constructor = VersionConfigProperty.get().getQuery().getDeclaredConstructor(Class.class, VersionConfigProperty.get().getSession());
+        if ("createEntityQuery".equals(method.getName())) {
+            Constructor constructor = query.getDeclaredConstructor(Class.class, VersionConfigProperty.get().getSession());
             constructor.setAccessible(true);
             return constructor.newInstance(args[0], object);
         }
         Method invokeMethod = proxyClass.getMethod(method.getName(), method.getParameterTypes());
         try {
             Object obj = invokeMethod.invoke(object, args);
-            if (method.getName().equals("createQuery")) {
+            if ("createQuery".equals(method.getName())) {
                 return Proxy.newProxyInstance(object.getClass().getClassLoader(), new Class[]{ConfigQuery.class}, new DirectInvocationHandler(obj));
             }
 
-            if (method.getName().equals("beginTransaction")) {
+            if ("beginTransaction".equals(method.getName())) {
                 return Proxy.newProxyInstance(object.getClass().getClassLoader(), new Class[]{ConfigTransaction.class}, new DirectInvocationHandler(obj));
             }
             return obj;
