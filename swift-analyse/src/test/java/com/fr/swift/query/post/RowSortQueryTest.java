@@ -1,6 +1,6 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.sort.DescSort;
@@ -67,7 +67,7 @@ public class RowSortQueryTest {
             fail();
         } catch (Exception ignored) {
         }
-        SwiftResultSet swiftResultSet = resultSet.convert(new SwiftMetaDataEntity());
+        SwiftResultSet swiftResultSet = resultSet.convert(new SwiftMetaDataBean());
         assertTrue(swiftResultSet.hasNext());
         List<Row> rows = new ArrayList<Row>();
         while (swiftResultSet.hasNext()) {

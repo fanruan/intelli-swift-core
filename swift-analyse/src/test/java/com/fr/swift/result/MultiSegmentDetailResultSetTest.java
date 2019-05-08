@@ -1,6 +1,6 @@
 package com.fr.swift.result;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class MultiSegmentDetailResultSetTest {
     @Test
     public void convert() {
         try {
-            rs.convert(new SwiftMetaDataEntity());
+            rs.convert(new SwiftMetaDataBean());
         } catch (Exception e) {
             fail();
         }

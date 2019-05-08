@@ -1,6 +1,6 @@
 package com.fr.swift.query.result.serialize;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupNode;
@@ -77,7 +77,7 @@ public class NodeSerializableQRSTest {
     @Test
     public void convert() {
         try {
-            qrs.convert(new SwiftMetaDataEntity());
+            qrs.convert(new SwiftMetaDataBean());
             fail();
         } catch (Exception ignored) {
         }

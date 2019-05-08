@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupNode;
@@ -40,7 +40,7 @@ public class ChainedNodeMergeQRSTest {
     @Test
     public void convert() {
         try {
-            rs.convert(new SwiftMetaDataEntity());
+            rs.convert(new SwiftMetaDataBean());
             fail();
         } catch (Exception ignored) {
         }

@@ -13,7 +13,7 @@ import java.util.List;
  */
 //@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 //@JsonSubTypes({
-//        @JsonSubTypes.Type(SwiftMetaDataEntity.class)
+//        @JsonSubTypes.Type(SwiftMetaDataBean.class)
 //})
 public interface SwiftMetaData {
     SwiftDatabase getSwiftDatabase();

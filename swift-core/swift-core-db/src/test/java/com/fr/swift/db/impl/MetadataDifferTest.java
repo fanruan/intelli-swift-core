@@ -1,7 +1,7 @@
 package com.fr.swift.db.impl;
 
 import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.db.DatabaseTest;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -20,11 +20,11 @@ public class MetadataDifferTest {
 
     @Test
     public void diff() {
-        SwiftMetaData meta1 = new SwiftMetaDataEntity("A", Arrays.<SwiftMetaDataColumn>asList(
+        SwiftMetaData meta1 = new SwiftMetaDataBean("A", Arrays.<SwiftMetaDataColumn>asList(
                 new MetaDataColumnBean("a1", Types.INTEGER),
                 new MetaDataColumnBean("a2", Types.FLOAT),
                 new MetaDataColumnBean("a3", Types.TIMESTAMP)));
-        SwiftMetaData meta2 = new SwiftMetaDataEntity("A", Arrays.<SwiftMetaDataColumn>asList(
+        SwiftMetaData meta2 = new SwiftMetaDataBean("A", Arrays.<SwiftMetaDataColumn>asList(
                 new MetaDataColumnBean("a1", Types.INTEGER),
                 new MetaDataColumnBean("a3", Types.TIMESTAMP),
                 new MetaDataColumnBean("a4", Types.BIT)));

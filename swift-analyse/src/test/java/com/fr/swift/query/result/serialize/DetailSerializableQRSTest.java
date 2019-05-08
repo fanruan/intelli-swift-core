@@ -1,6 +1,6 @@
 package com.fr.swift.query.result.serialize;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.result.DetailQueryResultSetMerger;
 import com.fr.swift.result.IDetailQueryResultSetMerger;
 import com.fr.swift.source.ListBasedRow;
@@ -78,7 +78,7 @@ public class DetailSerializableQRSTest {
     @Test
     public void convert() {
         try {
-            qrs.convert(new SwiftMetaDataEntity());
+            qrs.convert(new SwiftMetaDataBean());
             fail();
         } catch (Exception ignored) {
         }

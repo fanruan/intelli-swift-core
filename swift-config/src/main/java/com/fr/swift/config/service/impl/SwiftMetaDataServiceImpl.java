@@ -1,7 +1,7 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
@@ -48,7 +48,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean addMetaData(final String sourceKey, final SwiftMetaData metaData) {
         try {
-            final SwiftMetaDataEntity bean = (SwiftMetaDataEntity) metaData;
+            final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
             bean.setId(sourceKey);
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
@@ -75,7 +75,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                     Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
                     while (iterator.hasNext()) {
                         Map.Entry<String, SwiftMetaData> entry = iterator.next();
-                        SwiftMetaDataEntity bean = (SwiftMetaDataEntity) entry.getValue();
+                        SwiftMetaDataBean bean = (SwiftMetaDataBean) entry.getValue();
                         bean.setId(entry.getKey());
                         swiftMetaDataDao.addOrUpdateSwiftMetaData(session, bean);
                         metaDataCache.put(entry.getKey(), bean);
@@ -135,8 +135,8 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        for (SwiftMetaDataEntity swiftMetaDataEntity : swiftMetaDataDao.findAll(session)) {
-                            result.put(swiftMetaDataEntity.getId(), swiftMetaDataEntity);
+                        for (SwiftMetaDataBean swiftMetaDataBean : swiftMetaDataDao.findAll(session)) {
+                            result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
                         }
                         metaDataCache.putAll(result);
                         return result;
@@ -167,8 +167,8 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        for (SwiftMetaDataEntity swiftMetaDataEntity : swiftMetaDataDao.fuzzyFind(session, fuzzyName)) {
-                            result.put(swiftMetaDataEntity.getId(), swiftMetaDataEntity);
+                        for (SwiftMetaDataBean swiftMetaDataBean : swiftMetaDataDao.fuzzyFind(session, fuzzyName)) {
+                            result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
                         }
                         metaDataCache.putAll(result);
                         return result;

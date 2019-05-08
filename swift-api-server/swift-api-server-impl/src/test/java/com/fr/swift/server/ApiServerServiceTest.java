@@ -7,7 +7,7 @@ import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.server.ApiServerServiceImpl;
 import com.fr.swift.api.server.response.ApiResponse;
 import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
@@ -117,18 +117,18 @@ public class ApiServerServiceTest extends TestCase {
         TableService tableService = EasyMock.createMock(TableService.class);
         EasyMock.expect(SwiftContext.get().getBean(TableService.class)).andReturn(tableService).anyTimes();
 
-        SwiftMetaDataEntity swiftMetaDataEntity = new SwiftMetaDataEntity();
+        SwiftMetaDataBean swiftMetaDataBean = new SwiftMetaDataBean();
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
         fields.add(new MetaDataColumnBean("a", 1));
         fields.add(new MetaDataColumnBean("b", 2));
         fields.add(new MetaDataColumnBean("c", 3));
-        swiftMetaDataEntity.setFields(fields);
+        swiftMetaDataBean.setFields(fields);
 
-        EasyMock.expect(tableService.detectiveMetaData(SwiftDatabase.CUBE, "tableA")).andReturn(swiftMetaDataEntity).anyTimes();
+        EasyMock.expect(tableService.detectiveMetaData(SwiftDatabase.CUBE, "tableA")).andReturn(swiftMetaDataBean).anyTimes();
         EasyMock.replay(SwiftContext.get(), tableService);
 
         ApiResponse response = new ApiServerServiceImpl().dispatchRequest(request);
-        List<SwiftMetaDataColumn> resultFields = ((SwiftMetaDataEntity) (response).result()).getFields();
+        List<SwiftMetaDataColumn> resultFields = ((SwiftMetaDataBean) (response).result()).getFields();
         assertEquals(resultFields.size(), 3);
         assertEquals(resultFields.get(0).getName(), "a");
         assertEquals(resultFields.get(1).getName(), "b");

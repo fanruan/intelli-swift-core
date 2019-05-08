@@ -15,6 +15,11 @@ public class SwiftBeanMapper implements BeanMapper {
     }
 
     @Override
+    public String writeValueAsString(Object o, BeanTypeReference reference) throws Exception {
+        return writeValueAsString(o);
+    }
+
+    @Override
     public String writeValueAsString(Object o) throws Exception {
         return new ObjectJsonWriter().write(o);
     }

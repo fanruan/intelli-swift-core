@@ -1,6 +1,6 @@
 package com.fr.swift.result;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
@@ -33,7 +33,7 @@ public class SortMultiSegmentDetailResultSetTest {
     @Test
     public void convert() {
         try {
-            rs.convert(new SwiftMetaDataEntity());
+            rs.convert(new SwiftMetaDataBean());
         } catch (Exception e) {
             fail();
         }

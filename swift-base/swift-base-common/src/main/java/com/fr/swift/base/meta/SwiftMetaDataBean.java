@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "fine_swift_metadata")
-public class SwiftMetaDataEntity implements SwiftMetaData, Serializable {
+public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
     private static final long serialVersionUID = -6185911493489618460L;
     /**
      * id实际上传的是SourceKey
@@ -47,23 +47,23 @@ public class SwiftMetaDataEntity implements SwiftMetaData, Serializable {
     private List<SwiftMetaDataColumn> fields;
     private int columnCount;
 
-    public SwiftMetaDataEntity(String tableName, List<SwiftMetaDataColumn> fieldList) {
+    public SwiftMetaDataBean(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
     }
 
-    public SwiftMetaDataEntity(SwiftDatabase swiftDatabase, String tableName, List<SwiftMetaDataColumn> fieldList) {
+    public SwiftMetaDataBean(SwiftDatabase swiftDatabase, String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(null, swiftDatabase, null, tableName, null, fieldList);
     }
 
-    public SwiftMetaDataEntity(String tableName, String remark, String schemaName, List<SwiftMetaDataColumn> fields) {
+    public SwiftMetaDataBean(String tableName, String remark, String schemaName, List<SwiftMetaDataColumn> fields) {
         this(null, SwiftDatabase.CUBE, schemaName, tableName, remark, fields);
     }
 
-    public SwiftMetaDataEntity(String id, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
+    public SwiftMetaDataBean(String id, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
         this(id, SwiftDatabase.CUBE, schemaName, tableName, remark, fields);
     }
 
-    public SwiftMetaDataEntity(String id, SwiftDatabase swiftDatabase, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
+    public SwiftMetaDataBean(String id, SwiftDatabase swiftDatabase, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
         this.id = id;
         this.swiftDatabase = swiftDatabase;
         this.schemaName = schemaName;
@@ -77,7 +77,7 @@ public class SwiftMetaDataEntity implements SwiftMetaData, Serializable {
         }
     }
 
-    public SwiftMetaDataEntity() {
+    public SwiftMetaDataBean() {
     }
 
     @Override

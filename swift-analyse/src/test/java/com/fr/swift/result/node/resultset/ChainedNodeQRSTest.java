@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.result.BaseNodeQRS;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
@@ -76,7 +76,7 @@ public class ChainedNodeQRSTest {
                 return p;
             }
         }, create());
-        assertNotNull(rs.convert(new SwiftMetaDataEntity()));
+        assertNotNull(rs.convert(new SwiftMetaDataBean()));
     }
 
     @Test

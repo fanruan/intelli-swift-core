@@ -28,9 +28,7 @@ public final class VersionConfigProperty {
     private Class nonUniqueObjectException;
     private Class constraintViolationException;
     private Class entityExistsException;
-    private Class jsonProperty;
     private String defaultRepository;
-    private Class objectMapper;
 
     private VersionConfigProperty(String version) {
         this.version = version;
@@ -57,8 +55,6 @@ public final class VersionConfigProperty {
                 property.constraintViolationException = loader.loadClass(constraintViolationException);
                 property.entityExistsException = loader.loadClass(entityExistsException);
                 property.defaultRepository = defaultRepo;
-                property.jsonProperty = loader.loadClass(jsonProperty);
-                property.objectMapper = loader.loadClass(objectMapper);
             }
         } catch (ClassNotFoundException e) {
             Crasher.crash(e);
@@ -97,11 +93,4 @@ public final class VersionConfigProperty {
         return defaultRepository;
     }
 
-    public Class getJsonProperty() {
-        return jsonProperty;
-    }
-
-    public Class getObjectMapper() {
-        return objectMapper;
-    }
 }
