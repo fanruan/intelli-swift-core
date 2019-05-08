@@ -7,6 +7,7 @@ import java.util.Map;
  * @date 2018-11-27
  */
 public interface BeanMapper {
+    String writeValueAsString(Object o, BeanTypeReference reference) throws Exception;
     String writeValueAsString(Object o) throws Exception;
 
     <T> T string2TypeReference(String jsonString, BeanTypeReference<T> reference) throws Exception;

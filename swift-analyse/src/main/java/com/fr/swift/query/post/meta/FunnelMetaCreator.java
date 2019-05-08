@@ -1,7 +1,7 @@
 package com.fr.swift.query.post.meta;
 
 import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.PostGroupBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
@@ -33,6 +33,6 @@ public class FunnelMetaCreator implements MetaDataCreator<FunnelQueryBean> {
                 && queryBean.getPostAggregations().get(0).getType() == PostQueryType.FUNNEL_MEDIAN) {
             metaDataColumns.add(new MetaDataColumnBean("median", Types.DOUBLE));
         }
-        return new SwiftMetaDataEntity(queryBean.getTableName(), metaDataColumns);
+        return new SwiftMetaDataBean(queryBean.getTableName(), metaDataColumns);
     }
 }

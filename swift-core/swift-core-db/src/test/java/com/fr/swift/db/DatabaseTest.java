@@ -1,7 +1,7 @@
 package com.fr.swift.db;
 
 import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
@@ -38,7 +38,7 @@ public class DatabaseTest {
                 new MetaDataColumnBean("C", Types.INTEGER)
         );
         SourceKey tableKey = new SourceKey("a");
-        SwiftMetaData meta = new SwiftMetaDataEntity("a", columnMetas);
+        SwiftMetaData meta = new SwiftMetaDataBean("a", columnMetas);
 
         if (db.existsTable(tableKey)) {
             db.dropTable(tableKey);

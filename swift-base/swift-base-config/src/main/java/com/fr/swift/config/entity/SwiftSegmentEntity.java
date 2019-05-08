@@ -85,7 +85,7 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
 
     @Override
     public SourceKey getTable() {
-        return new SourceKey(id);
+        return new SourceKey(segmentOwner);
     }
 
     @Override

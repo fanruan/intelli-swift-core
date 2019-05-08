@@ -1,7 +1,7 @@
 package com.fr.swift.source.alloter;
 
 import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
@@ -57,7 +57,7 @@ public class LineSegmentAlloterTest {
 
             @Override
             public SwiftMetaData getMetaData() {
-                return new SwiftMetaDataEntity("A",
+                return new SwiftMetaDataBean("A",
                         Arrays.<SwiftMetaDataColumn>asList(new MetaDataColumnBean("long", Types.BIGINT)));
             }
 

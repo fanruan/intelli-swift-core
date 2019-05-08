@@ -1,6 +1,6 @@
 package com.fr.swift.config.dao.impl;
 
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.dao.BasicDao;
@@ -18,19 +18,19 @@ import java.util.List;
  * @date 2018/5/24
  */
 @SwiftBean
-public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataEntity> implements SwiftMetaDataDao {
+public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataBean> implements SwiftMetaDataDao {
     public SwiftMetaDataDaoImpl() {
-        super(SwiftMetaDataEntity.class);
+        super(SwiftMetaDataBean.class);
     }
 
     @Override
-    public SwiftMetaDataEntity findBySourceKey(ConfigSession session, String sourceKey) throws SQLException {
+    public SwiftMetaDataBean findBySourceKey(ConfigSession session, String sourceKey) throws SQLException {
         return select(session, sourceKey);
     }
 
     @Override
-    public SwiftMetaDataEntity findByTableName(ConfigSession session, String tableName) {
-        List<SwiftMetaDataEntity> list = find(session, ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName));
+    public SwiftMetaDataBean findByTableName(ConfigSession session, String tableName) {
+        List<SwiftMetaDataBean> list = find(session, ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName));
         if (null == list || list.isEmpty()) {
             throw new RuntimeException(String.format("Find meta data error! Table named '%s' not exists!", tableName));
         }
@@ -41,7 +41,7 @@ public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataEntity> implemen
     }
 
     @Override
-    public boolean addOrUpdateSwiftMetaData(ConfigSession session, SwiftMetaDataEntity metaDataBean) throws SQLException {
+    public boolean addOrUpdateSwiftMetaData(ConfigSession session, SwiftMetaDataBean metaDataBean) throws SQLException {
         return saveOrUpdate(session, metaDataBean);
     }
 
@@ -51,12 +51,12 @@ public class SwiftMetaDataDaoImpl extends BasicDao<SwiftMetaDataEntity> implemen
     }
 
     @Override
-    public List<SwiftMetaDataEntity> findAll(ConfigSession session) {
+    public List<SwiftMetaDataBean> findAll(ConfigSession session) {
         return find(session);
     }
 
     @Override
-    public List<SwiftMetaDataEntity> fuzzyFind(ConfigSession session, String fuzzyName) {
+    public List<SwiftMetaDataBean> fuzzyFind(ConfigSession session, String fuzzyName) {
         ConfigWhere configWhere = ConfigWhereImpl.like("tableName", fuzzyName, ConfigWhere.MatchMode.ANY);
         return find(session, configWhere);
     }

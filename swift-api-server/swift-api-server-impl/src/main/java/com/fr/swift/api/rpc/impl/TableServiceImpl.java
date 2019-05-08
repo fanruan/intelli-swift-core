@@ -5,7 +5,7 @@ import com.fr.swift.annotation.SwiftApi;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataEntity;
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
@@ -85,10 +85,10 @@ public class TableServiceImpl implements TableService {
         if (columns.isEmpty()) {
             Crasher.crash("Table " + tableName + " must contain at lease one column.");
         }
-        SwiftMetaDataEntity swiftMetaDataEntity = new SwiftMetaDataEntity();
-        swiftMetaDataEntity.setSwiftDatabase(schema);
-        swiftMetaDataEntity.setTableName(tableName);
-        swiftMetaDataEntity.setId(tableName);
+        SwiftMetaDataBean swiftMetaDataBean = new SwiftMetaDataBean();
+        swiftMetaDataBean.setSwiftDatabase(schema);
+        swiftMetaDataBean.setTableName(tableName);
+        swiftMetaDataBean.setId(tableName);
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         for (Column column : columns) {
             String columnName = column.getColumnName();
@@ -97,8 +97,8 @@ public class TableServiceImpl implements TableService {
             }
             columnList.add(new MetaDataColumnBean(column.getColumnName(), column.getColumnType()));
         }
-        swiftMetaDataEntity.setFields(columnList);
-        if (swiftMetaDataService.addMetaData(tableName, swiftMetaDataEntity)) {
+        swiftMetaDataBean.setFields(columnList);
+        if (swiftMetaDataService.addMetaData(tableName, swiftMetaDataBean)) {
             return 1;
         }
         return -1;
