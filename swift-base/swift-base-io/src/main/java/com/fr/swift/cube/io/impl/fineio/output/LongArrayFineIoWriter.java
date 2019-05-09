@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.output.LongArrayWriter;
 import com.fr.swift.cube.io.output.LongWriter;
 import com.fr.swift.structure.array.LongArray;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.IoUtil;
 
 import java.net.URI;
 
@@ -77,23 +78,12 @@ public class LongArrayFineIoWriter implements LongArrayWriter {
     }
 
     @Override
-    public void flush() {
-        contentWriter.flush();
-        positionWriter.flush();
-        lengthWriter.flush();
-
-        lastPosWriter.put(0, curPos);
-        lastPosWriter.flush();
-    }
-
-    @Override
     public void release() {
-        contentWriter.release();
-        positionWriter.release();
-        lengthWriter.release();
-
-        lastPosWriter.put(0, curPos);
-        lastPosWriter.release();
+        try {
+            lastPosWriter.put(0, curPos);
+        } finally {
+            IoUtil.release(lastPosWriter, contentWriter, positionWriter, lengthWriter);
+        }
     }
 
     @Override

@@ -2,14 +2,14 @@ package com.fr.swift.cube.io.impl.fineio;
 
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.impl.fineio.input.BitMapFineIoReader;
+import com.fr.swift.cube.io.impl.BaseBitmapReader;
+import com.fr.swift.cube.io.impl.BaseStringReader;
 import com.fr.swift.cube.io.impl.fineio.input.ByteArrayFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.ByteFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.DoubleFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.IntFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.LongArrayFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.LongFineIoReader;
-import com.fr.swift.cube.io.impl.fineio.input.StringFineIoReader;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.util.Crasher;
 
@@ -33,9 +33,9 @@ public final class FineIoReaders {
                 case BYTE_ARRAY:
                     return ByteArrayFineIoReader.build(location);
                 case STRING:
-                    return StringFineIoReader.build(location);
+                    return new BaseStringReader(ByteArrayFineIoReader.build(location));
                 case BITMAP:
-                    return BitMapFineIoReader.build(location);
+                    return new BaseBitmapReader(ByteArrayFineIoReader.build(location));
                 case LONG_ARRAY:
                     return LongArrayFineIoReader.build(location);
                 default:

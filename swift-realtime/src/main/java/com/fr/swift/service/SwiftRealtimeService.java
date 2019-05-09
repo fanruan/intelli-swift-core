@@ -2,7 +2,6 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -18,6 +17,8 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentDestination;
@@ -28,7 +29,6 @@ import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.operator.Importer;
-import com.fr.swift.segment.recover.SegmentRecovery;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
@@ -36,9 +36,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
-import com.fr.swift.task.service.ServiceTaskExecutor;
-import com.fr.swift.task.service.ServiceTaskType;
-import com.fr.swift.task.service.SwiftServiceCallable;
 import com.fr.swift.util.FileUtil;
 
 import java.io.Serializable;
@@ -46,20 +43,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * @author pony
  * @date 2017/10/10
  */
 @SwiftService(name = "realtime")
-@ProxyService(RealtimeService.class)
 @SwiftBean(name = "realtime")
 public class SwiftRealtimeService extends AbstractSwiftService implements RealtimeService, Serializable {
 
     private static final long serialVersionUID = 4719723736240190155L;
-
-    private transient ServiceTaskExecutor taskExecutor;
 
     private transient volatile boolean recoverable = true;
 
@@ -74,7 +67,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        taskExecutor = SwiftContext.get().getBean(ServiceTaskExecutor.class);
         segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
         if (recoverable) {
             recover0();
@@ -89,7 +81,6 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         super.shutdown();
         ResourceDiscovery.getInstance().releaseAll();
         recoverable = true;
-        taskExecutor = null;
         segSvc = null;
         ClusterListenerHandler.removeExtraListener(realtimeClusterListener);
         return true;
@@ -97,40 +88,31 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public void insert(final SourceKey tableKey, final SwiftResultSet resultSet) throws Exception {
-        taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.INSERT, new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.MEM_STEP));
-                Table table = SwiftDatabase.getInstance().getTable(tableKey);
-                Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, table, alloter);
-                importer.importData(resultSet);
-                return null;
-            }
-        }));
+        SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.MEM_STEP));
+        Table table = SwiftDatabase.getInstance().getTable(tableKey);
+        Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, table, alloter);
+        importer.importData(resultSet);
     }
 
     private void recover0() {
         for (Table table : SwiftDatabase.getInstance().getAllTables()) {
-            final SourceKey tableKey = table.getSourceKey();
-            try {
-                taskExecutor.submit(new SwiftServiceCallable<Void>(tableKey, ServiceTaskType.RECOVERY, new Callable<Void>() {
-                    @Override
-                    public Void call() {
-                        // 恢复所有realtime块
-                        SegmentRecovery segmentRecovery = (SegmentRecovery) SwiftContext.get().getBean("segmentRecovery");
-                        segmentRecovery.recover(tableKey);
-                        return null;
-                    }
-                }));
-            } catch (InterruptedException e) {
-                SwiftLoggers.getLogger().warn(e);
+            SourceKey tableKey = table.getSourceKey();
+            Map<SourceKey, List<SegmentKey>> ownSegKeys = segSvc.getOwnSegments();
+
+            if (!ownSegKeys.containsKey(tableKey)) {
+                continue;
+            }
+            for (SegmentKey segKey : ownSegKeys.get(tableKey)) {
+                if (segKey.getStoreType().isPersistent()) {
+                    continue;
+                }
+                try {
+                    TaskProducer.produceTask(new RecoveryExecutorTask(segKey));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
             }
         }
-    }
-
-    @Override
-    public void recover(List<SegmentKey> segKeys) {
-        SwiftLoggers.getLogger().info("recover");
     }
 
     @Override

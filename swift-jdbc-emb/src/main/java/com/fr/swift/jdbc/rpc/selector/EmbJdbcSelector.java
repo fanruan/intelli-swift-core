@@ -2,11 +2,11 @@ package com.fr.swift.jdbc.rpc.selector;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftApi;
+import com.fr.swift.basic.SwiftRequest;
+import com.fr.swift.basic.SwiftResponse;
 import com.fr.swift.jdbc.exception.Exceptions;
 import com.fr.swift.jdbc.rpc.connection.EmbJdbcConnector;
 import com.fr.swift.jdbc.rpc.invoke.BaseSelector;
-import com.fr.swift.rpc.bean.RpcResponse;
-import com.fr.swift.rpc.bean.impl.RpcRequest;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Semaphore;
@@ -59,9 +59,9 @@ public class EmbJdbcSelector extends BaseSelector<EmbJdbcConnector> {
         public void run() {
             while (!stop.get()) {
                 while (connector.isNeedToSend()) {
-                    RpcRequest request = connector.getRequest();
+                    SwiftRequest request = connector.getRequest();
                     String requestId = request.getRequestId();
-                    RpcResponse response = new RpcResponse();
+                    SwiftResponse response = new SwiftResponse();
                     response.setRequestId(requestId);
                     try {
                         Object proxyObject = SwiftContext.get().getBean(Class.forName(request.getInterfaceName()));

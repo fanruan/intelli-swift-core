@@ -1,23 +1,44 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import junit.framework.TestCase;
+import com.fr.swift.util.IoUtil;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Random;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 /**
  * @author anchore
  */
-public class IdBitMapTest extends TestCase {
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({IoUtil.class, IdBitMap.class})
+public class IdBitMapTest {
     private final Random r = new Random();
     private static final int BOUND = 1000000;
 
-    MutableBitMap getMutableBitMap() {
+    private MutableBitMap getMutableBitMap() {
         return RoaringMutableBitMap.of();
     }
 
-    int[] prepare(MutableBitMap m) {
+    private int[] prepare(MutableBitMap m) {
         int[] a = new int[rand(2, BOUND)];
 
         for (int i = 0; i < a.length / 2; i++) {
@@ -28,6 +49,7 @@ public class IdBitMapTest extends TestCase {
         return a;
     }
 
+    @Test
     public void testGetAnd() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -46,6 +68,7 @@ public class IdBitMapTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetOr() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -65,6 +88,7 @@ public class IdBitMapTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetAndNot() {
         MutableBitMap m = getMutableBitMap();
         int[] a = prepare(m);
@@ -83,6 +107,7 @@ public class IdBitMapTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetNot() {
         int rowCount = r.nextInt(BOUND);
         int id = r.nextInt(rowCount);
@@ -99,7 +124,39 @@ public class IdBitMapTest extends TestCase {
         }
     }
 
-    int rand(int from, int to) {
+    private int rand(int from, int to) {
         return r.nextInt(to - from) + from;
+    }
+
+    @Test
+    public void toBytes() {
+        assertArrayEquals(IdBitMap.of(1).toBytes(),
+                ByteBuffer.allocate(5).order(ByteOrder.LITTLE_ENDIAN)
+                        .put(BitMapType.ID.getHead()).putInt(1).array());
+    }
+
+    @Test
+    public void writeBytes() throws Exception {
+        OutputStream output = mock(OutputStream.class);
+
+        mockStatic(IoUtil.class);
+
+        IdBitMap.of(1).writeBytes(output);
+
+
+        ByteBuffer buf = ByteBuffer.allocate(5)
+                // 兼容fineio Bits的小端法
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .put(BitMapType.ID.getHead())
+                .putInt(1);
+
+        verify(output).write(buf.array());
+
+        doThrow(new IOException()).when(output).write(any(byte[].class));
+
+        IdBitMap.of(1).writeBytes(output);
+
+        verifyStatic(IoUtil.class, times(2));
+        IoUtil.close(output);
     }
 }

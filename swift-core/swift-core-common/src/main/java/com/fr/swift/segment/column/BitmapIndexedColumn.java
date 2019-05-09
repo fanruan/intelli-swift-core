@@ -1,7 +1,6 @@
 package com.fr.swift.segment.column;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.IfReadable;
 import com.fr.swift.cube.io.Releasable;
 
@@ -10,7 +9,7 @@ import com.fr.swift.cube.io.Releasable;
  * @date 2017/10/9
  * 列的位图索引
  */
-public interface BitmapIndexedColumn extends Releasable, Flushable, IfReadable {
+public interface BitmapIndexedColumn extends Releasable, IfReadable {
     /**
      * 写入索引
      *

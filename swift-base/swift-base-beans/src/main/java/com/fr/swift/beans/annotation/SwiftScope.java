@@ -17,5 +17,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface SwiftScope {
-    String value() default "singleton";
+
+    String SINGLETON = "singleton";
+    String PROTOTYPE = "prototype";
+
+    String value() default SINGLETON; //prototype
 }

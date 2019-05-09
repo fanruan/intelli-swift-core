@@ -4,7 +4,6 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 
 /**
@@ -17,33 +16,40 @@ public class IterableResultSet implements SwiftResultSet {
 
     private Iterator<Row> rows;
 
-    public IterableResultSet(Iterable<Row> rows, SwiftMetaData meta) {
+    private int fetchSize;
+
+    public IterableResultSet(Iterable<Row> rows, SwiftMetaData meta, int fetchSize) {
         this.meta = meta;
         this.rows = rows.iterator();
+        this.fetchSize = fetchSize;
+    }
+
+    public IterableResultSet(Iterable<Row> rows, SwiftMetaData meta) {
+        this(rows, meta, 0);
     }
 
     @Override
     public int getFetchSize() {
-        return 0;
+        return fetchSize;
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return meta;
     }
 
     @Override
-    public boolean hasNext() throws SQLException {
+    public boolean hasNext() {
         return rows.hasNext();
     }
 
     @Override
-    public Row getNextRow() throws SQLException {
+    public Row getNextRow() {
         return rows.next();
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
         rows = null;
     }
 }

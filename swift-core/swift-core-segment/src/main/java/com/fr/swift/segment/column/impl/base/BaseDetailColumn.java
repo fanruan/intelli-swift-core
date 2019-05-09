@@ -54,13 +54,6 @@ abstract class BaseDetailColumn<T, W extends Writer, R extends Reader> implement
     }
 
     @Override
-    public void flush() {
-        if (detailWriter != null) {
-            detailWriter.flush();
-        }
-    }
-
-    @Override
     public void release() {
         IoUtil.release(detailWriter, detailReader);
         detailWriter = null;

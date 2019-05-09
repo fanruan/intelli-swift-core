@@ -12,6 +12,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
@@ -40,6 +41,8 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
         executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
         swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
     }
+
+    @Override
     public void stop() {
         executorService.shutdown();
     }
@@ -53,7 +56,16 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
         try {
             Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getAllSegments();
             for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
-                ProxySelector.getProxy(CollateService.class).appointCollate(tableEntry.getKey(), tableEntry.getValue());
+                List<SegmentKey> keys = new ArrayList<SegmentKey>();
+                for (SegmentKey key : tableEntry.getValue()) {
+                    if (key.getStoreType().isTransient()) {
+                        continue;
+                    }
+                    keys.add(key);
+                }
+                if (!keys.isEmpty()) {
+                    ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
+                }
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
