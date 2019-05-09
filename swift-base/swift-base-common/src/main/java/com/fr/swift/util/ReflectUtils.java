@@ -1,7 +1,5 @@
 package com.fr.swift.util;
 
-import com.fr.swift.base.json.JsonBuilder;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -82,9 +80,10 @@ public final class ReflectUtils {
             return Enum.valueOf(tClass, fieldValue);
 //            Object obj = MAPPER.string2Object(fieldValue, tClass);
 //            return obj;
-        } else {
-            return JsonBuilder.readValue(fieldValue, tClass);
         }
+//        else {
+//            return JsonBuilder.readValue(fieldValue, tClass);
+//        }
         return null;
     }
 
@@ -176,7 +175,8 @@ public final class ReflectUtils {
             } else if (clazz.isEnum()) {
                 return ((Enum) obj).name();
             } else {
-                return JsonBuilder.writeJsonString(obj);
+//                return JsonBuilder.writeJsonString(obj);
+                return Strings.EMPTY;
             }
         } else {
             return Strings.EMPTY;
