@@ -23,9 +23,11 @@ public interface ProxyFactory {
     /**
      * 拿各个节点上的service代理
      *
-     * @param proxyClass 代理类
-     * @param <T>        class
-     * @return url -> proxy
+     * @param serviceClass service类
+     * @param proxyIface   proxy类接口
+     * @param <S>          type of service
+     * @param <T>          type of proxy
+     * @return url -> ServiceContext的proxy
      */
-    <T> Map<URL, T> getPeerProxies(Class<T> proxyClass);
+    <S, T> Map<URL, T> getPeerProxies(Class<S> serviceClass, Class<T> proxyIface);
 }

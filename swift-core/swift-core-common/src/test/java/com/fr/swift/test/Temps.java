@@ -18,8 +18,11 @@ import java.util.Comparator;
  * 也避免重复代码，很多时候只需要调用到部分方法，其他方法没用到
  * <p>
  * 正式开发还是不要用，不然堆栈看不懂
+ * @deprecated 换用mock
  */
+@Deprecated
 public final class Temps {
+    @Deprecated
     public static class TempDictColumn<T> implements DictionaryEncodedColumn<T> {
         @Override
         public int size() {
@@ -88,11 +91,6 @@ public final class Temps {
         }
 
         @Override
-        public void flush() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public void release() {
             throw new UnsupportedOperationException();
         }
@@ -103,6 +101,7 @@ public final class Temps {
         }
     }
 
+    @Deprecated
     public static class TempBitmapIndexedColumn implements BitmapIndexedColumn {
 
         @Override
@@ -126,11 +125,6 @@ public final class Temps {
         }
 
         @Override
-        public void flush() {
-
-        }
-
-        @Override
         public void release() {
 
         }
@@ -141,6 +135,7 @@ public final class Temps {
         }
     }
 
+    @Deprecated
     public static class TempDetailColumn implements DetailColumn {
 
         @Override
@@ -166,11 +161,6 @@ public final class Temps {
         @Override
         public Object get(int pos) {
             return null;
-        }
-
-        @Override
-        public void flush() {
-
         }
 
         @Override

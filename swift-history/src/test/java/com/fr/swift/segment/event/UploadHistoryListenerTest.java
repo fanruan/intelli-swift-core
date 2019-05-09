@@ -15,7 +15,7 @@ public class UploadHistoryListenerTest extends BaseHistoryListenerTest {
     @Test
     public void on() throws IOException, InterruptedException {
         init();
-        RemoveHistoryListener.listen();
+        UploadHistoryListener.listen();
         SwiftEventDispatcher.fire(SegmentEvent.UPLOAD_HISTORY);
         PowerMock.verifyAll();
     }

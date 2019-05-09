@@ -1,8 +1,8 @@
 package com.fr.swift.source.resultset;
 
+import com.fr.swift.result.DecorateResultSet;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.IoUtil;
 
@@ -12,9 +12,7 @@ import java.sql.SQLException;
  * @author anchore
  * @date 2018/6/5
  */
-public class LimitedResultSet implements SwiftResultSet {
-
-    private SwiftResultSet origin;
+public class LimitedResultSet extends DecorateResultSet {
 
     private boolean closeOrigin;
 
@@ -27,35 +25,25 @@ public class LimitedResultSet implements SwiftResultSet {
     }
 
     public LimitedResultSet(SwiftResultSet origin, int limit, boolean closeOrigin) {
+        super(origin);
         Assert.isTrue(limit >= 0, "limit must be greater than or equal 0");
-        this.origin = origin;
         this.limit = limit;
         this.closeOrigin = closeOrigin;
     }
 
     @Override
-    public int getFetchSize() {
-        return 0;
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return origin.getMetaData();
-    }
-
-    @Override
     public boolean hasNext() throws SQLException {
-        return cursor < limit && origin.hasNext();
+        return cursor < limit && super.hasNext();
     }
 
     @Override
     public Row getNextRow() throws SQLException {
         cursor++;
-        return origin.getNextRow();
+        return super.getNextRow();
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
         if (closeOrigin) {
             IoUtil.close(origin);
         }

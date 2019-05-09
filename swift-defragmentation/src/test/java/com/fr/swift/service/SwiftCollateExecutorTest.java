@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
@@ -56,7 +57,7 @@ public class SwiftCollateExecutorTest {
     SegmentKey segmentKey;
 
     @Mock
-    CollateService collateService;
+    ServiceContext serviceContext;
 
     @Before
     public void setUp() throws Exception {
@@ -72,7 +73,8 @@ public class SwiftCollateExecutorTest {
         allSegments.put(sourceKey, Collections.singletonList(segmentKey));
         Mockito.when(swiftSegmentService.getAllSegments()).thenReturn(allSegments);
 
-        Mockito.when(ProxySelector.getProxy(CollateService.class)).thenReturn(collateService);
+        Mockito.when(ProxySelector.getProxy(ServiceContext.class)).thenReturn(serviceContext);
+        Mockito.when(segmentKey.getStoreType()).thenReturn(Types.StoreType.FINE_IO);
     }
 
     @Test
@@ -92,6 +94,6 @@ public class SwiftCollateExecutorTest {
     public void run() throws Exception {
         executor.start();
         executor.run();
-        Mockito.verify(collateService).appointCollate(Mockito.any(SourceKey.class), Mockito.<SegmentKey>anyList());
+        Mockito.verify(serviceContext).appointCollate(Mockito.any(SourceKey.class), Mockito.<SegmentKey>anyList());
     }
 }

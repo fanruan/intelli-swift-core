@@ -51,7 +51,7 @@ public class ClusterServiceManagerTest {
         Mockito.when(proxySelector.getFactory()).thenReturn(proxyFactory);
         Mockito.when(proxyFactory.getProxy(RemoteSender.class)).thenReturn(remoteSender);
         Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
-        Mockito.when(swiftProperty.getClusterId()).thenReturn(clusterId);
+        Mockito.when(swiftProperty.getServerAddress()).thenReturn(clusterId);
     }
 
     @Test

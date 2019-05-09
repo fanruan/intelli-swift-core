@@ -3,6 +3,7 @@ package com.fr.swift.structure.external.map.intpairs;
 import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.cube.nio.read.LongNIOReader;
 import com.fr.swift.cube.nio.write.LongNIOWriter;
+import com.fr.swift.util.IoUtil;
 
 /**
  * @author anchore
@@ -34,13 +35,11 @@ class Long2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Long> {
 
     @Override
     public void close() {
-        super.close();
-        if (keyWriter != null) {
-            keyWriter.release();
+        try {
+            super.close();
+        } finally {
+            IoUtil.release(keyWriter, keyReader);
             keyWriter = null;
-        }
-        if (keyReader != null) {
-            keyReader.release();
             keyReader = null;
         }
     }

@@ -76,6 +76,8 @@ public class LocalSwiftServerServiceTest {
         Mockito.when(event.type()).thenReturn(SwiftRpcEvent.EventType.GLOBAL);
         Mockito.when(event.subEvent()).thenReturn(AbstractGlobalRpcEvent.Event.DELETE);
         Pair<SourceKey, Where> content = Mockito.mock(Pair.class);
+        Mockito.when(content.getKey()).thenReturn(Mockito.mock(SourceKey.class));
+        Mockito.when(content.getValue()).thenReturn(Mockito.mock(Where.class));
         Mockito.when(event.getContent()).thenReturn(content);
 
     }

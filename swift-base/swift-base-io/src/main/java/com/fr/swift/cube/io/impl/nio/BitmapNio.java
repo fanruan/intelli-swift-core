@@ -1,76 +1,49 @@
 package com.fr.swift.cube.io.impl.nio;
 
-import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.AllShowBitMap;
-import com.fr.swift.bitmap.impl.RangeBitmap;
-import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.io.ObjectIo;
+import com.fr.swift.cube.io.impl.BaseBitmapReader;
+import com.fr.swift.cube.io.impl.BaseBitmapWriter;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.output.BitMapWriter;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
 
 /**
  * @author anchore
  * @date 2018/7/22
  */
-public class BitmapNio extends BaseNio implements BitMapReader, BitMapWriter, ObjectIo<ImmutableBitMap> {
-    private ByteArrayNio obj;
+public class BitmapNio implements BitMapReader, BitMapWriter, ObjectIo<ImmutableBitMap> {
+    private BitMapWriter bitmapWriter;
+    private BitMapReader bitmapReader;
 
-    BitmapNio(NioConf conf) {
-        super(conf);
-        obj = new ByteArrayNio(conf);
-    }
-
-
-    @Override
-    public void flush() {
-    }
-
-    @Override
-    public ImmutableBitMap get(long pos) {
-        byte[] bytes = obj.get(pos);
-        byte head = bytes[0];
-        // mutable，immutable底层都是同一结构，暂时先统一生成mutable
-        if (head == BitMapType.ROARING_IMMUTABLE.getHead() || head == BitMapType.ROARING_MUTABLE.getHead()) {
-            return RoaringMutableBitMap.ofBytes(bytes, 1, bytes.length - 1);
-        }
-        if (head == BitMapType.ALL_SHOW.getHead()) {
-            return AllShowBitMap.ofBytes(bytes, 1);
-        }
-        if (head == BitMapType.RANGE.getHead() || head == BitMapType.ID.getHead()) {
-            return RangeBitmap.ofBytes(bytes, 1);
-        }
-        return Crasher.crash("not a valid head or this bitmap doesn't support, head: " + head);
-    }
-
-    @Override
-    public boolean isReadable() {
-        return obj != null && obj.isReadable();
+    public BitmapNio(NioConf conf) {
+        ByteArrayNio byteArrayNio = new ByteArrayNio(conf);
+        this.bitmapWriter = new BaseBitmapWriter(byteArrayNio);
+        this.bitmapReader = new BaseBitmapReader(byteArrayNio);
     }
 
     @Override
     public void put(long pos, ImmutableBitMap val) {
-        byte[] combine = null;
-        if (val != null) {
-            byte head = val.getType().getHead();
-            byte[] bytes = val.toBytes();
-            combine = new byte[bytes.length + 1];
-            combine[0] = head;
-            System.arraycopy(bytes, 0, combine, 1, bytes.length);
-        }
-        obj.put(pos, combine);
+        bitmapWriter.put(pos, val);
     }
 
     @Override
-    public void release() {
-        IoUtil.release(obj);
-        obj = null;
+    public ImmutableBitMap get(long pos) {
+        return bitmapReader.get(pos);
+    }
+
+    @Override
+    public boolean isReadable() {
+        return bitmapReader != null && bitmapReader.isReadable();
     }
 
     @Override
     public void resetContentPosition() {
-        obj.resetContentPosition();
+        bitmapWriter.resetContentPosition();
+    }
+
+    @Override
+    public void release() {
+        IoUtil.release(bitmapWriter, bitmapReader);
     }
 }

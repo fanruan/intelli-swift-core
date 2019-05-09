@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class created on 2019/1/14
@@ -51,7 +50,7 @@ public class SwiftAppointProcessHandlerTest extends TestCase {
     public void testProcessResult() {
         SwiftAppointProcessHandler handler = new SwiftAppointProcessHandler(invokerCreator);
         try {
-            Set<String> result = (Set<String>) handler.processResult(
+            List<String> result = (List<String>) handler.processResult(
                     SwiftAppointProcessHandlerTest.class.getMethod("appointMethod", List.class, String.class), new Target[]{Target.ANALYSE}, Collections.singletonList("test"), "test");
             assertEquals(result.size(), 1);
             List<String> urlList = new ArrayList<String>(result);

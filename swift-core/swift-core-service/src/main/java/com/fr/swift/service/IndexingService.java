@@ -1,8 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.swift.basics.annotation.InvokeMethod;
-import com.fr.swift.basics.handler.IndexProcessHandler;
-import com.fr.swift.basics.handler.StatusProcessHandler;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.stuff.IndexingStuff;
 
@@ -16,9 +13,7 @@ public interface IndexingService extends SwiftService {
      *
      * @param stuff stuff
      */
-    @InvokeMethod(IndexProcessHandler.class)
     <Stuff extends IndexingStuff> void index(Stuff stuff);
 
-    @InvokeMethod(StatusProcessHandler.class)
     ServerCurrentStatus currentStatus();
 }

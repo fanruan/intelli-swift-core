@@ -9,9 +9,8 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Util;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 
 import java.sql.SQLException;
 import java.sql.Types;
@@ -26,14 +25,10 @@ import static org.junit.Assert.fail;
  * @author anchore
  * @date 2018/4/4
  */
+@Ignore
 public class DatabaseTest {
 
     private Database db = SwiftDatabase.getInstance();
-
-    @Rule
-    public TestRule getExternalResource() throws Exception {
-        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
-    }
 
     @Test
     public void tableOpFlow() throws SQLException {
