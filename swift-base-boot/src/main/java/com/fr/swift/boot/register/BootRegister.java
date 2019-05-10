@@ -50,7 +50,6 @@ public class BootRegister {
         ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.UPLOAD, UploadExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.DOWNLOAD, DownloadExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.HISTORY, HistoryImportExecutorTask.class);
-
     }
 
     public static void registerListener() {

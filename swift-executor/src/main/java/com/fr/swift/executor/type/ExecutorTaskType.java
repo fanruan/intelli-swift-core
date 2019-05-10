@@ -11,7 +11,7 @@ import java.util.List;
  * @description
  */
 public enum ExecutorTaskType {
-    //
+    //swift
     REALTIME,
     RECOVERY,
     TRANSFER,
@@ -22,7 +22,9 @@ public enum ExecutorTaskType {
     UPLOAD,
     DOWNLOAD,
     HISTORY,
-    QUERY;
+    QUERY,
+    //cloud
+    TREASURE_UPLOAD;
 
     public static List<ExecutorTaskType> getAllTypeList() {
         List<ExecutorTaskType> typeList = new ArrayList<ExecutorTaskType>();
