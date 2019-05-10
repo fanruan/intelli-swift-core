@@ -8,6 +8,4 @@ public interface ConfigAttributeConverter<From, To> {
     To convertToDatabaseColumn(From from);
 
     From convertToEntityAttribute(To s);
-
-    String SIGNATURE = ConfigAttributeConverter.class.getName().replace(".", "/");
 }
