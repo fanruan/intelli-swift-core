@@ -54,6 +54,8 @@ public class SwiftCloudController {
         logClientInfo(clientUserId, clientAppId, treasDate);
     }
 
+    // TODO: 2019/5/10 by lucifer to be deleted
+    @Deprecated
     @ResponseBody
     @RequestMapping(value = "/cloud/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public Map<String, Object> triggerAnalyse(@RequestBody UploadInfo uploadInfo) {
@@ -90,6 +92,4 @@ public class SwiftCloudController {
         logEndTrigger(clientUserId, clientAppId, treasDate);
         return result;
     }
-
-
 }

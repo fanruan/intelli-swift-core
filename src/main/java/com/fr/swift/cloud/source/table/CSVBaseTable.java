@@ -1,12 +1,12 @@
 package com.fr.swift.cloud.source.table;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.cloud.source.BaseTable;
+import com.fr.swift.cloud.source.CloudTableType;
 import com.fr.swift.cloud.source.load.AddColumnAdapter;
 import com.fr.swift.cloud.source.load.GeneralLineParser;
 import com.fr.swift.cloud.source.load.LineAdapter;
 import com.fr.swift.cloud.source.load.LineParser;
 import com.fr.swift.cloud.source.load.RawCSVParser;
-import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.util.List;
@@ -14,29 +14,15 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/28.
  */
-abstract class BaseTable implements CSVTable {
+@Deprecated
+abstract class CSVBaseTable extends BaseTable implements CSVTable {
 
     private String appId;
     private String yearMonth;
 
-    public BaseTable(String appId, String yearMonth) {
+    public CSVBaseTable(String appId, String yearMonth) {
         this.appId = appId;
         this.yearMonth = yearMonth;
-    }
-
-    abstract List<SwiftMetaDataColumn> getRawColumns();
-
-    abstract List<SwiftMetaDataColumn> getExtraColumns();
-
-    @Override
-    public SwiftMetaDataBean createBean(SwiftDatabase db) {
-        SwiftMetaDataBean bean = new SwiftMetaDataBean();
-        bean.setSwiftDatabase(db);
-        bean.setId(getTableName());
-        bean.setTableName(getTableName());
-        LineParser parser = getParser();
-        bean.setFields(parser.getFields());
-        return bean;
     }
 
     @Override
@@ -50,5 +36,10 @@ abstract class BaseTable implements CSVTable {
             adapter = new AddColumnAdapter();
         }
         return new GeneralLineParser(getTableName(), appId, yearMonth, rawParser, adapter);
+    }
+
+    @Override
+    public CloudTableType getTableType() {
+        return CloudTableType.CSV;
     }
 }

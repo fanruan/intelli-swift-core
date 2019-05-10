@@ -11,12 +11,12 @@ import java.util.Map;
 /**
  * Created by lyon on 2019/3/7.
  */
-public class GeneralLineParser implements LineParser {
+public class GeneralLineParser<T> implements LineParser<T> {
 
     private String tableName;
     private String appId;
     private String yearMonth;
-    private LineParser rawParser;
+    private LineParser<T> rawParser;
     private LineAdapter lineAdapter;
 
     public GeneralLineParser(String tableName, String appId, String yearMonth, LineParser rawParser, LineAdapter lineAdapter) {
@@ -28,7 +28,7 @@ public class GeneralLineParser implements LineParser {
     }
 
     @Override
-    public Map<String, Object> parseToMap(String input) {
+    public Map<String, Object> parseToMap(T input) {
         Map<String, Object> raw = rawParser.parseToMap(input);
         if (raw == null) {
             return null;

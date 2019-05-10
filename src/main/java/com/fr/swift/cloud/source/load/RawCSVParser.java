@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by lyon on 2019/3/7.
  */
-public class RawCSVParser implements LineParser {
+public class RawCSVParser implements LineParser<String> {
 
     private CSVParser parser = new CSVParser();
     private List<SwiftMetaDataColumn> fields;

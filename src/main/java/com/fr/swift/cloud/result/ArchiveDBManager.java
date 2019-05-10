@@ -5,6 +5,7 @@ import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
 import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
 import com.fr.swift.cloud.result.table.TemplateProperty;
 import com.fr.swift.cloud.result.table.TemplatePropertyRatio;
+import com.fr.swift.cloud.result.table.CustomerInfo;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

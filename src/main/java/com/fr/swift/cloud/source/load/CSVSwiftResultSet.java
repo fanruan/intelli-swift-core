@@ -1,7 +1,7 @@
 package com.fr.swift.cloud.source.load;
 
+import com.fr.swift.cloud.source.CloudTableType;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -16,7 +16,8 @@ import java.util.Map;
 /**
  * Created by lyon on 2019/3/7.
  */
-public class SimpleSwiftResultSet implements SwiftResultSet {
+@Deprecated
+public class CSVSwiftResultSet implements CloudResultSet {
 
     private LineParser parser;
     private SwiftMetaData metaData;
@@ -24,14 +25,15 @@ public class SimpleSwiftResultSet implements SwiftResultSet {
     private BufferedReader reader;
     private Row next;
 
-    public SimpleSwiftResultSet(String file, LineParser parser, SwiftMetaData metaData) throws Exception {
+    public CSVSwiftResultSet(String file, LineParser parser, SwiftMetaData metaData) throws Exception {
         this(file, parser, metaData, true);
     }
 
-    public SimpleSwiftResultSet(String file, LineParser parser, SwiftMetaData metaData, boolean skipFirstLine) throws Exception {
+    public CSVSwiftResultSet(String file, LineParser parser, SwiftMetaData metaData, boolean skipFirstLine) throws Exception {
         this.parser = parser;
         this.metaData = metaData;
-        String charsetName = ParseUtils.getFileEncode(file);
+//        String charsetName = ParseUtils.getFileEncode(file);
+        String charsetName = null;
         charsetName = charsetName == null ? "utf8" : charsetName;
         SwiftLoggers.getLogger().info("file: {}, charset: {}", file, charsetName);
         reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName));
@@ -84,5 +86,10 @@ public class SimpleSwiftResultSet implements SwiftResultSet {
             reader.close();
         } catch (Exception ignored) {
         }
+    }
+
+    @Override
+    public CloudTableType getTableType() {
+        return CloudTableType.CSV;
     }
 }
