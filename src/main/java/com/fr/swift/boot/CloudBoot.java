@@ -19,6 +19,7 @@ public class CloudBoot {
 
     public CloudBoot() {
         ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.TREASURE_UPLOAD, TreasureUploadTask.class);
+        // TODO: 2019/5/10 by lucifer 移动到配置
         consumer = new MessageConsumer("__fine_intelli_treasure_upload__");
         consumer.start();
     }

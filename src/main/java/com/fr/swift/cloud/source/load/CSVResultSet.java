@@ -31,7 +31,7 @@ public class CSVResultSet implements CloudResultSet {
     private int currentFileIndex = 0;
     private Row next;
     private boolean skipFirstLine;
-    String charsetName;
+    private String charsetName;
 
     public CSVResultSet(List<File> files, LineParser parser, SwiftMetaData metaData) throws Exception {
         this(files, parser, metaData, true);

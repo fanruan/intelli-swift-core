@@ -62,6 +62,7 @@ public class MessageConsumer extends ShutdownableThread {
             SwiftLoggers.getLogger().info("Received message: ({}, {}) at offset {}", record.key(), record.value(), record.offset());
 
             switch (record.topic()) {
+                // TODO: 2019/5/10 by lucifer 移动到配置
                 case "__fine_intelli_treasure_upload__":
                     try {
                         TreasureBean treasureBean = jsonMapper.readValue(record.value(), TreasureBean.class);

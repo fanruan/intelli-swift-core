@@ -8,6 +8,7 @@ import com.fr.swift.source.Row;
  * @author Lucifer
  * @description
  */
+// TODO: 2019/5/10 by lucifer gc相关待完事
 public class ShutdownElement extends AbstractDowntimeElement {
 
     private long time;
@@ -34,7 +35,7 @@ public class ShutdownElement extends AbstractDowntimeElement {
 
     @Override
     public long recordTime() {
-        return  time;
+        return time;
     }
 
     public long getStartTime() {

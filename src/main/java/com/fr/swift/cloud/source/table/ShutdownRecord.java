@@ -13,6 +13,7 @@ import java.util.Collections;
  * @author Lucifer
  * @description
  */
+// TODO: 2019/5/10 by lucifer gc相关待完事
 public class ShutdownRecord extends CSVBaseTable {
 
     public static final String tableName = "shutdown_record";

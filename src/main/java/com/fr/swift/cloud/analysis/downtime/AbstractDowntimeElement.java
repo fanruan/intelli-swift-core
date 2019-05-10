@@ -6,6 +6,7 @@ package com.fr.swift.cloud.analysis.downtime;
  * @author Lucifer
  * @description
  */
+// TODO: 2019/5/10 by lucifer gc相关待完事
 public abstract class AbstractDowntimeElement implements DowntimeElement {
 
     protected String appId;

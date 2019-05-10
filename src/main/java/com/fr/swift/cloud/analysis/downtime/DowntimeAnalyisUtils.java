@@ -15,12 +15,10 @@ import com.fr.swift.result.SwiftResultSet;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +29,12 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
+// TODO: 2019/5/10 by lucifer gc相关待完事
 public class DowntimeAnalyisUtils {
-
-    private static SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
 
     private static long RECENT_TEN_MIN = 10 * 60 * 1000L;
 
     public static void test(String appId, String yearMonth) throws Exception {
-        Date date = format.parse(yearMonth);
         String memTable = "real_time_usage";
         String shutdownTable = "shutdown_record";
         String gcTable = "gc_record";
