@@ -29,7 +29,8 @@ public class ExecutorTaskTypeTest {
                 ExecutorTaskType.UPLOAD,
                 ExecutorTaskType.DOWNLOAD,
                 ExecutorTaskType.HISTORY,
-                ExecutorTaskType.QUERY));
+                ExecutorTaskType.QUERY,
+                ExecutorTaskType.TREASURE_UPLOAD));
     }
 
     @Test
