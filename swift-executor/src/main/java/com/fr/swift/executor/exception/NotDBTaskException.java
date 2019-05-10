@@ -8,11 +8,11 @@ import com.fr.swift.executor.task.ExecutorTask;
  * @author Lucifer
  * @description
  */
-public class NotDBTaskExecption extends Exception {
+public class NotDBTaskException extends Exception {
 
     private static final long serialVersionUID = -1580965429579209356L;
 
-    public NotDBTaskExecption(ExecutorTask executorTask) {
+    public NotDBTaskException(ExecutorTask executorTask) {
         super(executorTask.toString());
     }
 }
