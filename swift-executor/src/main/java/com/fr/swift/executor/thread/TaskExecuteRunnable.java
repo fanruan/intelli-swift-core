@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.executor.config.ExecutorTaskService;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
+import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.task.job.ExecutorJob;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.Job.JobListener;
@@ -44,7 +45,7 @@ public class TaskExecuteRunnable implements Runnable {
         this.lock = lock;
         this.freeCondition = condition;
         if (types.length == 0) {
-            threadExecutorTypes = Arrays.asList(ExecutorTaskType.values());
+            threadExecutorTypes = ExecutorTypeContainer.getInstance().getExecutorTaskTypeList();
         } else {
             threadExecutorTypes = Arrays.asList(types);
         }

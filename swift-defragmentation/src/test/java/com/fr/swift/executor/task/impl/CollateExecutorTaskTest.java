@@ -5,8 +5,8 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import org.junit.Assert;
@@ -42,7 +42,7 @@ public class CollateExecutorTaskTest {
 
     @Test
     public void testDeserialize() throws Exception {
-        final ExecutorTask executorTask = new CollateExecutorTask(new SourceKey("test"), false, ExecutorTaskType.COLLATE, LockType.TABLE,
+        final ExecutorTask executorTask = new CollateExecutorTask(new SourceKey("test"), false, SwiftTaskType.COLLATE, LockType.TABLE,
                 "test", DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
         List<SegmentKey> list = (List<SegmentKey>) executorTask.getJob().serializedTag();
         Assert.assertEquals(list.size(), 2);
