@@ -17,8 +17,8 @@ abstract class BaseFineIoReader<Buf extends Buffer> implements Reader {
 
     @Override
     public final void release() {
-//        if (ioFile != null) {
-//            ioFile.close();
-//        }
+        if (ioFile != null) {
+            ioFile.close();
+        }
     }
 }
