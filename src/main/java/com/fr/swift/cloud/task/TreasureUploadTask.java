@@ -7,6 +7,7 @@ import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.TaskType;
 import com.fr.swift.source.SourceKey;
 
 /**
@@ -15,12 +16,13 @@ import com.fr.swift.source.SourceKey;
  * @author Lucifer
  * @description
  */
+@TaskType(type = CloudTaskType.class)
 public class TreasureUploadTask extends AbstractExecutorTask<Job> {
 
     public TreasureUploadTask(TreasureBean treasureBean) throws Exception {
         super(new SourceKey(treasureBean.getTopic()),
                 true,
-                ExecutorTaskType.TREASURE_UPLOAD,
+                CloudTaskType.TREASURE_UPLOAD,
                 LockType.TABLE,
                 treasureBean.getTopic(),
                 DBStatusType.ACTIVE,

@@ -29,7 +29,8 @@ import java.util.Set;
 public class MessageConsumer extends ShutdownableThread {
     private final KafkaConsumer<Integer, String> consumer;
     private final String[] topics;
-    ObjectMapper jsonMapper;
+    private ObjectMapper jsonMapper;
+
 
     public MessageConsumer(String... topics) {
         super("TaskConsumerExample", true);
@@ -60,25 +61,21 @@ public class MessageConsumer extends ShutdownableThread {
         Set<ExecutorTask> executorTasks = new HashSet<ExecutorTask>();
         for (ConsumerRecord<Integer, String> record : records) {
             SwiftLoggers.getLogger().info("Received message: ({}, {}) at offset {}", record.key(), record.value(), record.offset());
-
-            switch (record.topic()) {
-                // TODO: 2019/5/10 by lucifer 移动到配置
-                case "__fine_intelli_treasure_upload__":
-                    try {
-                        TreasureBean treasureBean = jsonMapper.readValue(record.value(), TreasureBean.class);
-                        ExecutorTask executorTask = new TreasureUploadTask(treasureBean);
-                        executorTasks.add(executorTask);
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().error(e);
-                    }
-                    break;
-                default:
+            if (record.topic().equals(CloudProperty.getProperty().getTreasureUploadTopic())) {
+                try {
+                    TreasureBean treasureBean = jsonMapper.readValue(record.value(), TreasureBean.class);
+                    ExecutorTask executorTask = new TreasureUploadTask(treasureBean);
+                    executorTasks.add(executorTask);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
             }
         }
 
         try {
             boolean produceOk = TaskProducer.produceTasks(executorTasks);
             if (produceOk) {
+                // TODO: 2019/5/13 by lucifer
 //                consumer.commitSync();
             }
         } catch (Exception e) {
