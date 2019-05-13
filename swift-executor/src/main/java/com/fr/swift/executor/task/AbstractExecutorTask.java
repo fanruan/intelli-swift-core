@@ -6,6 +6,7 @@ import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.StatusType;
+import com.fr.swift.executor.type.TaskType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 
@@ -16,6 +17,7 @@ import java.lang.reflect.Constructor;
  *
  * @author Lucifer
  */
+@TaskType
 public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTask<T> {
 
     protected SourceKey sourceKey;
