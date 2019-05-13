@@ -9,6 +9,7 @@ import com.fr.swift.executor.task.job.impl.UploadJob;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -25,7 +26,7 @@ public class UploadExecutorTask extends AbstractExecutorTask<Job> {
     public UploadExecutorTask(SegmentKey uploadSegKey, boolean uploadWholeSeg, JobListener jobListener) throws Exception {
         super(uploadSegKey.getTable(),
                 true,
-                ExecutorTaskType.UPLOAD,
+                SwiftTaskType.UPLOAD,
                 LockType.REAL_SEG,
                 uploadSegKey.getId(),
                 DBStatusType.ACTIVE,

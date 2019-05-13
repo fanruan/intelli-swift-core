@@ -4,8 +4,8 @@ import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -47,7 +47,7 @@ public class DeleteExecutorTaskTest {
 
     @Test
     public void testDeserialize() throws Exception {
-        ExecutorTask executorTask = new DeleteExecutorTask(new SourceKey("test"), true, ExecutorTaskType.DELETE, LockType.TABLE,
+        ExecutorTask executorTask = new DeleteExecutorTask(new SourceKey("test"), true, SwiftTaskType.DELETE, LockType.TABLE,
                 "test", DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
         List<FilterInfoBean> filterInfoBeanList = ((AndFilterBean) executorTask.getJob().serializedTag()).getFilterValue();
         Assert.assertEquals(filterInfoBeanList.get(0).getFilterValue(), bean1.getFilterValue());
