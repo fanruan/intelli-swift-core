@@ -1,6 +1,6 @@
 package com.fr.swift.executor.task;
 
-import com.fr.swift.executor.type.ExecutorTaskType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +14,8 @@ public class ExecutorTypeContainerTest {
 
     @Test
     public void test() {
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.COLLATE, AbstractExecutorTask.class);
-        Assert.assertEquals(ExecutorTypeContainer.getInstance().getClassByType(ExecutorTaskType.COLLATE), AbstractExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.COLLATE, AbstractExecutorTask.class);
+        Assert.assertEquals(ExecutorTypeContainer.getInstance().getClassByType(SwiftTaskType.COLLATE.name()), AbstractExecutorTask.class);
+        Assert.assertEquals(ExecutorTypeContainer.getInstance().getExecutorTaskTypeList().size(), 1);
     }
 }

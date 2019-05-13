@@ -6,6 +6,7 @@ import com.fr.swift.executor.task.job.impl.TruncateJob;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.source.SourceKey;
 
 /**
@@ -16,7 +17,7 @@ public class TruncateExecutorTask extends AbstractExecutorTask<Job<Void, SourceK
     public TruncateExecutorTask(SourceKey sourceKey) throws Exception {
         super(sourceKey,
                 true,
-                ExecutorTaskType.TRUNCATE,
+                SwiftTaskType.TRUNCATE,
                 LockType.TABLE,
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,

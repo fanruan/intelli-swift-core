@@ -2,6 +2,8 @@ package com.fr.swift.executor.task;
 
 import com.fr.swift.executor.type.ExecutorTaskType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,16 +21,24 @@ public class ExecutorTypeContainer {
         return INSTANCE;
     }
 
-    Map<ExecutorTaskType, Class<? extends ExecutorTask>> executorTaskTypeClassMap = new ConcurrentHashMap<ExecutorTaskType, Class<? extends ExecutorTask>>();
+    Map<String, Class<? extends ExecutorTask>> executorTaskTypeClassMap = new ConcurrentHashMap<String, Class<? extends ExecutorTask>>();
+
+    private List<ExecutorTaskType> executorTaskTypeList;
 
     private ExecutorTypeContainer() {
+        executorTaskTypeList = new ArrayList<ExecutorTaskType>();
     }
 
     public void registerClass(ExecutorTaskType type, Class<? extends ExecutorTask> clazz) {
-        executorTaskTypeClassMap.put(type, clazz);
+        executorTaskTypeList.add(type);
+        executorTaskTypeClassMap.put(type.name(), clazz);
     }
 
-    public Class<? extends ExecutorTask> getClassByType(ExecutorTaskType type) {
+    public Class<? extends ExecutorTask> getClassByType(String type) {
         return executorTaskTypeClassMap.get(type);
+    }
+
+    public List<ExecutorTaskType> getExecutorTaskTypeList() {
+        return new ArrayList<ExecutorTaskType>(executorTaskTypeList);
     }
 }
