@@ -4,7 +4,6 @@ import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +11,8 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/28.
  */
-public class Execution extends BaseTable {
+@Deprecated
+public class Execution extends CSVBaseTable {
 
     public static final String tableName = "execution";
 
@@ -29,7 +29,6 @@ public class Execution extends BaseTable {
     public static final SwiftMetaDataColumn appId = new MetaDataColumnBean("appId", Types.VARCHAR);
     public static final SwiftMetaDataColumn yearMonth = new MetaDataColumnBean("yearMonth", Types.VARCHAR);
 
-    private List<SwiftMetaDataColumn> rawColumns = new ArrayList<SwiftMetaDataColumn>();
 
     {
         rawColumns.addAll(Arrays.asList(id, tName, displayName, time, memory, type, consume, sqlTime, reportId));
@@ -41,12 +40,7 @@ public class Execution extends BaseTable {
     }
 
     @Override
-    List<SwiftMetaDataColumn> getRawColumns() {
-        return rawColumns;
-    }
-
-    @Override
-    List<SwiftMetaDataColumn> getExtraColumns() {
+    public List<SwiftMetaDataColumn> getExtraColumns() {
         return Collections.singletonList(coreConsume);
     }
 

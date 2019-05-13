@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by lyon on 2019/3/12.
  */
-public class JSLineParser implements LineParser {
+public class JSLineParser implements LineParser<String> {
 
     private static Function<Object, Object> compile(String function) {
         final ContextFactory contextFactory = ContextFactory.getGlobal();

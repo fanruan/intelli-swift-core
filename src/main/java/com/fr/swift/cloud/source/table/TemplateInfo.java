@@ -12,7 +12,8 @@ import java.util.List;
 /**
  * Created by lyon on 2019/2/28.
  */
-public class TemplateInfo extends BaseTable {
+@Deprecated
+public class TemplateInfo extends CSVBaseTable {
 
     public static final String tableName = "template_info";
 
@@ -54,8 +55,6 @@ public class TemplateInfo extends BaseTable {
     public static final SwiftMetaDataColumn appId = new MetaDataColumnBean("appId", Types.VARCHAR);
     public static final SwiftMetaDataColumn yearMonth = new MetaDataColumnBean("yearMonth", Types.VARCHAR);
 
-    private List<SwiftMetaDataColumn> rawColumns = new ArrayList<SwiftMetaDataColumn>();
-
     {
         rawColumns.addAll(Arrays.asList(
                 time, id, tId, tName, condition, formula, sheet, ds, complexFormula, submission, frozen, foldTree,
@@ -67,16 +66,6 @@ public class TemplateInfo extends BaseTable {
 
     public TemplateInfo(String appId, String yearMonth) {
         super(appId, yearMonth);
-    }
-
-    @Override
-    List<SwiftMetaDataColumn> getRawColumns() {
-        return rawColumns;
-    }
-
-    @Override
-    List<SwiftMetaDataColumn> getExtraColumns() {
-        return new ArrayList<SwiftMetaDataColumn>();
     }
 
     @Override

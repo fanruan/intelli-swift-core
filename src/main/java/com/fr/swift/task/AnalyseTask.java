@@ -17,6 +17,7 @@ import java.net.URL;
  * @author yee
  * @date 2019-03-01
  */
+@Deprecated
 public class AnalyseTask implements Runnable {
 
     private String appKey;

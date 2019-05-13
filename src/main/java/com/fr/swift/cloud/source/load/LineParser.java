@@ -8,9 +8,9 @@ import java.util.Map;
 /**
  * Created by lyon on 2019/3/7.
  */
-public interface LineParser {
+public interface LineParser<T> {
 
-    Map<String, Object> parseToMap(String input);
+    Map<String, Object> parseToMap(T input);
 
     List<SwiftMetaDataColumn> getFields();
 }

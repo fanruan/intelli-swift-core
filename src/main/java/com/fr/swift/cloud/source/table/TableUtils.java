@@ -4,17 +4,46 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
+
+import java.io.File;
 
 /**
  * Created by lyon on 2019/2/28.
  */
 public class TableUtils {
 
-    public static CSVTable createIfAbsent(String name, String appId, String yearMonth) {
+    /**
+     * 根据版本获得对应metadata，并和db里的metadata比较
+     *
+     * @param versionMetadata
+     * @return
+     * @throws SwiftMetaDataException
+     */
+    public static CloudTable createIfAbsent(SwiftMetaData versionMetadata, String appId, String yearMonth) throws SwiftMetaDataException {
         SwiftMetaDataService service = SwiftContext.get().getBean(SwiftMetaDataService.class);
-        CSVTable table = getTable(name, appId, yearMonth);
+        String tableName = versionMetadata.getTableName();
+        SwiftMetaData dbMetadata = service.getMetaDataByKey(tableName);
+        CloudTable cloudTable;
+        if (dbMetadata == null) {
+            service.addMetaData(tableName, versionMetadata);
+            dbMetadata = versionMetadata;
+        }
+        if (tableName.equals("execution")) {
+            cloudTable = new ExecutionCSVTable(dbMetadata, appId, yearMonth);
+        } else {
+            cloudTable = new SwiftCSVTable(dbMetadata, appId, yearMonth);
+        }
+        return cloudTable;
+    }
+
+    @Deprecated
+    public static CloudTable createIfAbsent(String name, String appId, String yearMonth, File... files) {
+        SwiftMetaDataService service = SwiftContext.get().getBean(SwiftMetaDataService.class);
+        CloudTable table = getTable(name, appId, yearMonth, files);
         SwiftMetaDataBean bean = table.createBean(SwiftDatabase.CUBE);
         String tableName = bean.getTableName();
         if (!service.containsMeta(new SourceKey(tableName))) {
@@ -23,8 +52,9 @@ public class TableUtils {
         return table;
     }
 
-    private static CSVTable getTable(String tableName, String appId, String yearMonth) {
-        CSVTable table = null;
+    @Deprecated
+    private static CloudTable getTable(String tableName, String appId, String yearMonth, File... files) {
+        CloudTable table = null;
         TABLE_NAME name = TABLE_NAME.from(tableName);
         switch (name) {
             case function_usage_rate:
@@ -48,12 +78,19 @@ public class TableUtils {
             case execution:
                 table = new Execution(appId, yearMonth);
                 break;
+            case shutdown_record:
+                table = new ShutdownRecord(appId, yearMonth);
+                break;
+            case gc_record:
+                table = new GCRecord(appId, yearMonth, files);
+                break;
             default:
                 Crasher.crash(new RuntimeException("table name can not be empty!"));
         }
         return table;
     }
 
+    @Deprecated
     public enum TABLE_NAME {
 
         empty(""),
@@ -63,7 +100,9 @@ public class TableUtils {
         package_info("package"),
         real_time_usage("realtimeusage"),
         template_info("tplinfo"),
-        web_container("webcontainer");
+        web_container("webcontainer"),
+        shutdown_record("signalRecord"),
+        gc_record("fanruan.gc.log");
 
         private final String name;
 
@@ -88,6 +127,10 @@ public class TableUtils {
                 return template_info;
             } else if (tableName.equals(web_container.name)) {
                 return web_container;
+            } else if (tableName.equals(shutdown_record.name)) {
+                return shutdown_record;
+            } else if (tableName.equals(gc_record.name)) {
+                return gc_record;
             }
             return empty;
         }
