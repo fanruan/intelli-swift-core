@@ -1,6 +1,6 @@
 package com.fr.swift.executor;
 
-import com.fr.swift.executor.exception.NotDBTaskExecption;
+import com.fr.swift.executor.exception.NotDBTaskException;
 import com.fr.swift.executor.queue.DBQueue;
 import com.fr.swift.executor.queue.MemoryQueue;
 import com.fr.swift.executor.task.ExecutorTask;
@@ -24,10 +24,10 @@ public class TaskProducer {
      * @return
      * @throws SQLException
      */
-    public static boolean produceTasks(Set<ExecutorTask> executorTasks) throws SQLException, NotDBTaskExecption {
+    public static boolean produceTasks(Set<ExecutorTask> executorTasks) throws SQLException, NotDBTaskException {
         for (ExecutorTask task : executorTasks) {
             if (!task.isPersistent()) {
-                throw new NotDBTaskExecption(task);
+                throw new NotDBTaskException(task);
             }
         }
         try {

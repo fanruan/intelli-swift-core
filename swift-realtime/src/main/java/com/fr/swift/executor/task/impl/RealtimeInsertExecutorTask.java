@@ -4,8 +4,8 @@ import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.impl.RealtimeInsertJob;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Strings;
@@ -21,7 +21,7 @@ public class RealtimeInsertExecutorTask extends AbstractExecutorTask<Job> {
     public RealtimeInsertExecutorTask(SourceKey sourceKey, SwiftResultSet resultSet) throws Exception {
         super(sourceKey,
                 false,
-                ExecutorTaskType.REALTIME,
+                SwiftTaskType.REALTIME,
                 LockType.VIRTUAL_SEG,
                 Strings.EMPTY,
                 DBStatusType.ACTIVE,
