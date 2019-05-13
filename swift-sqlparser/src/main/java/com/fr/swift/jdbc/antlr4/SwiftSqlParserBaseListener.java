@@ -1,9 +1,9 @@
 // Generated from SwiftSqlParser.g4 by ANTLR 4.5.3
 package com.fr.swift.jdbc.antlr4;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.ParserRuleContext;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.tree.ErrorNode;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
  * This class provides an empty implementation of {@link SwiftSqlParserListener},

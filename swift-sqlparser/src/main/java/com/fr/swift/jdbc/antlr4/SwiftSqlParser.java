@@ -1,24 +1,24 @@
 // Generated from SwiftSqlParser.g4 by ANTLR 4.5.3
 package com.fr.swift.jdbc.antlr4;
 
-import org.antlr.v4.runtime.FailedPredicateException;
-import org.antlr.v4.runtime.NoViableAltException;
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.RuleContext;
-import org.antlr.v4.runtime.RuntimeMetaData;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.Vocabulary;
-import org.antlr.v4.runtime.VocabularyImpl;
-import org.antlr.v4.runtime.atn.ATN;
-import org.antlr.v4.runtime.atn.ATNDeserializer;
-import org.antlr.v4.runtime.atn.ParserATNSimulator;
-import org.antlr.v4.runtime.atn.PredictionContextCache;
-import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.FailedPredicateException;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.NoViableAltException;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.Parser;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.ParserRuleContext;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.RecognitionException;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.RuleContext;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.RuntimeMetaData;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.Token;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.TokenStream;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.Vocabulary;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.VocabularyImpl;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.atn.ATN;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.atn.ATNDeserializer;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.atn.ParserATNSimulator;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.atn.PredictionContextCache;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.dfa.DFA;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.tree.ParseTreeListener;
+import com.fr.swift.jdbc.org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
 
@@ -266,7 +266,7 @@ public class SwiftSqlParser extends Parser {
                     setState(74);
                     _errHandler.sync(this);
                     _alt = getInterpreter().adaptivePredict(_input, 1, _ctx);
-                    while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                    while (_alt != 2 && _alt != ATN.INVALID_ALT_NUMBER) {
                         if (_alt == 1) {
                             {
                                 {
@@ -652,7 +652,7 @@ public class SwiftSqlParser extends Parser {
                 setState(111);
                 _errHandler.sync(this);
                 _alt = getInterpreter().adaptivePredict(_input, 7, _ctx);
-                while (_alt != 1 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                while (_alt != 1 && _alt != ATN.INVALID_ALT_NUMBER) {
                     if (_alt == 1 + 1) {
                         {
                             {
@@ -2044,7 +2044,7 @@ public class SwiftSqlParser extends Parser {
                 setState(259);
                 _errHandler.sync(this);
                 _alt = getInterpreter().adaptivePredict(_input, 28, _ctx);
-                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                while (_alt != 2 && _alt != ATN.INVALID_ALT_NUMBER) {
                     if (_alt == 1) {
                         if (_parseListeners != null) triggerExitRuleEvent();
                         _prevctx = _localctx;
