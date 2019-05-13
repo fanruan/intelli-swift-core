@@ -19,7 +19,7 @@ import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.task.impl.UploadExecutorTask;
-import com.fr.swift.executor.type.ExecutorTaskType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.event.MaskHistoryListener;
 import com.fr.swift.segment.event.PushSegmentLocationListener;
@@ -40,16 +40,16 @@ import java.util.Map;
 public class BootRegister {
 
     public static void registerExecutorTask() {
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.REALTIME, RealtimeInsertExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.RECOVERY, RecoveryExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.TRANSFER, TransferExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.INDEX, IndexExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.DELETE, DeleteExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.TRUNCATE, TruncateExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.COLLATE, CollateExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.UPLOAD, UploadExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.DOWNLOAD, DownloadExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(ExecutorTaskType.HISTORY, HistoryImportExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.REALTIME, RealtimeInsertExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.RECOVERY, RecoveryExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.TRANSFER, TransferExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.INDEX, IndexExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.DELETE, DeleteExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.TRUNCATE, TruncateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.COLLATE, CollateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.UPLOAD, UploadExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.DOWNLOAD, DownloadExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.HISTORY, HistoryImportExecutorTask.class);
     }
 
     public static void registerListener() {

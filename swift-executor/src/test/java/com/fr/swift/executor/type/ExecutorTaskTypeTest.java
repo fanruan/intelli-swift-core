@@ -17,25 +17,24 @@ public class ExecutorTaskTypeTest {
 
     @Test
     public void testGetAllTypeList() {
-        assertEquals(ExecutorTaskType.getAllTypeList().size(), 11);
-        assertEquals(ExecutorTaskType.getAllTypeList(), Arrays.asList(
-                ExecutorTaskType.REALTIME,
-                ExecutorTaskType.RECOVERY,
-                ExecutorTaskType.TRANSFER,
-                ExecutorTaskType.INDEX,
-                ExecutorTaskType.DELETE,
-                ExecutorTaskType.TRUNCATE,
-                ExecutorTaskType.COLLATE,
-                ExecutorTaskType.UPLOAD,
-                ExecutorTaskType.DOWNLOAD,
-                ExecutorTaskType.HISTORY,
-                ExecutorTaskType.QUERY,
-                ExecutorTaskType.TREASURE_UPLOAD));
+        assertEquals(SwiftTaskType.getAllTypeList().size(), 11);
+        assertEquals(SwiftTaskType.getAllTypeList(), Arrays.asList(
+                SwiftTaskType.REALTIME,
+                SwiftTaskType.RECOVERY,
+                SwiftTaskType.TRANSFER,
+                SwiftTaskType.INDEX,
+                SwiftTaskType.DELETE,
+                SwiftTaskType.TRUNCATE,
+                SwiftTaskType.COLLATE,
+                SwiftTaskType.UPLOAD,
+                SwiftTaskType.DOWNLOAD,
+                SwiftTaskType.HISTORY,
+                SwiftTaskType.QUERY));
     }
 
     @Test
     public void testGetTypeList() {
-        assertEquals(ExecutorTaskType.getTypeList(ExecutorTaskType.REALTIME, ExecutorTaskType.DELETE).size(), 2);
-        assertEquals(ExecutorTaskType.getTypeList(ExecutorTaskType.REALTIME, ExecutorTaskType.DELETE).toString(), "[REALTIME, DELETE]");
+        assertEquals(SwiftTaskType.getTypeList(SwiftTaskType.REALTIME, SwiftTaskType.DELETE).size(), 2);
+        assertEquals(SwiftTaskType.getTypeList(SwiftTaskType.REALTIME, SwiftTaskType.DELETE).toString(), "[REALTIME, DELETE]");
     }
 }
