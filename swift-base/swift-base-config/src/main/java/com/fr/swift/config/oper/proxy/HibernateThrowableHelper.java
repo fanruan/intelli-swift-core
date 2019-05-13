@@ -21,7 +21,7 @@ public class HibernateThrowableHelper {
         if (ReflectUtils.isAssignable(start.getClass(), VersionConfigProperty.get().getNonUniqueObjectException())) {
             return new SwiftNonUniqueObjectException(throwable);
         }
-        if (null != throwable.getCause()) {
+        if (null != start.getCause()) {
             return throwThrowable(throwable, start.getCause());
         } else {
             return throwable;

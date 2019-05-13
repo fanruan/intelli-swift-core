@@ -2,8 +2,8 @@ package com.fr.swift.executor.task.impl;
 
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.source.SourceKey;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class TruncateExecutorTaskTest {
 
     @Test
     public void testDeserialize() throws Exception {
-        ExecutorTask executorTask = new TruncateExecutorTask(new SourceKey("test"), false, ExecutorTaskType.TRUNCATE, LockType.TABLE,
+        ExecutorTask executorTask = new TruncateExecutorTask(new SourceKey("test"), false, SwiftTaskType.TRUNCATE, LockType.TABLE,
                 "test", DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
         Assert.assertEquals(executorTask.getJob().serializedTag(), new SourceKey("test"));
     }

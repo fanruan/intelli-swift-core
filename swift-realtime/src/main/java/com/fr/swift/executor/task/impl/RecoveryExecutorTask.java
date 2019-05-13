@@ -8,6 +8,7 @@ import com.fr.swift.executor.task.job.impl.RecoveryJob;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -19,7 +20,7 @@ public class RecoveryExecutorTask extends AbstractExecutorTask<Job<Void, Segment
     public RecoveryExecutorTask(SegmentKey recoverySegKey) throws Exception {
         super(recoverySegKey.getTable(),
                 false,
-                ExecutorTaskType.RECOVERY,
+                SwiftTaskType.RECOVERY,
                 LockType.REAL_SEG,
                 recoverySegKey.getId(),
                 DBStatusType.ACTIVE,
