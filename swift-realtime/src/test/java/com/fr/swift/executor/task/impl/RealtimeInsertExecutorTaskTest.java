@@ -1,8 +1,8 @@
 package com.fr.swift.executor.task.impl;
 
 import com.fr.swift.executor.task.job.impl.RealtimeInsertJob;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Strings;
@@ -35,7 +35,7 @@ public class RealtimeInsertExecutorTaskTest {
 
         assertEquals(tableKey, executorTask.getSourceKey());
         assertFalse(executorTask.isPersistent());
-        assertEquals(ExecutorTaskType.REALTIME, executorTask.getExecutorTaskType());
+        assertEquals(SwiftTaskType.REALTIME, executorTask.getExecutorTaskType());
         assertEquals(LockType.VIRTUAL_SEG, executorTask.getLockType());
         assertEquals(Strings.EMPTY, executorTask.getLockKey());
         assertEquals(job, executorTask.getJob());

@@ -2,8 +2,8 @@ package com.fr.swift.executor.task;
 
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.source.SourceKey;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class TaskRouterTest {
         Mockito.when(task4.getCreateTime()).thenReturn(time + 3);
         Mockito.when(task5.getCreateTime()).thenReturn(time + 4);
         Mockito.when(task6.getCreateTime()).thenReturn(time + 5);
-        task7 = new AbstractExecutorTask(new SourceKey("testA"), true, ExecutorTaskType.COLLATE, LockType.TABLE, "testA", DBStatusType.ACTIVE, job) {
+        task7 = new AbstractExecutorTask(new SourceKey("testA"), true, SwiftTaskType.COLLATE, LockType.TABLE, "testA", DBStatusType.ACTIVE, job) {
         };
     }
 

@@ -9,6 +9,7 @@ import com.fr.swift.executor.task.job.impl.DeleteJob;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.source.SourceKey;
@@ -24,7 +25,7 @@ public class DeleteExecutorTask extends AbstractExecutorTask<Job> {
     public DeleteExecutorTask(SourceKey sourceKey, Where where) throws Exception {
         super(sourceKey,
                 true,
-                ExecutorTaskType.DELETE,
+                SwiftTaskType.DELETE,
                 LockType.TABLE,
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,

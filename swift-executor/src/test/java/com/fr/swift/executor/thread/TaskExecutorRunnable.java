@@ -8,7 +8,7 @@ import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.job.ExecutorJob;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.Job.JobListener;
-import com.fr.swift.executor.type.ExecutorTaskType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class TaskExecutorRunnable {
         Lock lock = new ReentrantLock();
         Condition condition = lock.newCondition();
 
-        taskExecuteRunnable = new TaskExecuteRunnable(dispatchThread, "testThread", lock, condition, ExecutorTaskType.DELETE, ExecutorTaskType.REALTIME, ExecutorTaskType.COLLATE);
+        taskExecuteRunnable = new TaskExecuteRunnable(dispatchThread, "testThread", lock, condition, SwiftTaskType.DELETE, SwiftTaskType.REALTIME, SwiftTaskType.COLLATE);
         PowerMockito.whenNew(ExecutorJob.class).withAnyArguments().thenReturn(executorJob);
         Mockito.when(task1.getJob()).thenReturn(job);
         Mockito.when(job.getJobListener()).thenReturn(jobListener);
@@ -97,16 +97,16 @@ public class TaskExecutorRunnable {
 
     @Test
     public void testMatch() {
-        Assert.assertTrue(taskExecuteRunnable.isMatch(ExecutorTaskType.COLLATE));
-        Assert.assertTrue(taskExecuteRunnable.isMatch(ExecutorTaskType.DELETE));
-        Assert.assertTrue(taskExecuteRunnable.isMatch(ExecutorTaskType.REALTIME));
+        Assert.assertTrue(taskExecuteRunnable.isMatch(SwiftTaskType.COLLATE));
+        Assert.assertTrue(taskExecuteRunnable.isMatch(SwiftTaskType.DELETE));
+        Assert.assertTrue(taskExecuteRunnable.isMatch(SwiftTaskType.REALTIME));
 
-        Assert.assertFalse(taskExecuteRunnable.isMatch(ExecutorTaskType.INDEX));
-        Assert.assertFalse(taskExecuteRunnable.isMatch(ExecutorTaskType.HISTORY));
-        Assert.assertFalse(taskExecuteRunnable.isMatch(ExecutorTaskType.TRANSFER));
-        Assert.assertFalse(taskExecuteRunnable.isMatch(ExecutorTaskType.DOWNLOAD));
-        Assert.assertFalse(taskExecuteRunnable.isMatch(ExecutorTaskType.UPLOAD));
-        Assert.assertFalse(taskExecuteRunnable.isMatch(ExecutorTaskType.QUERY));
+        Assert.assertFalse(taskExecuteRunnable.isMatch(SwiftTaskType.INDEX));
+        Assert.assertFalse(taskExecuteRunnable.isMatch(SwiftTaskType.HISTORY));
+        Assert.assertFalse(taskExecuteRunnable.isMatch(SwiftTaskType.TRANSFER));
+        Assert.assertFalse(taskExecuteRunnable.isMatch(SwiftTaskType.DOWNLOAD));
+        Assert.assertFalse(taskExecuteRunnable.isMatch(SwiftTaskType.UPLOAD));
+        Assert.assertFalse(taskExecuteRunnable.isMatch(SwiftTaskType.QUERY));
     }
 
     @Test
