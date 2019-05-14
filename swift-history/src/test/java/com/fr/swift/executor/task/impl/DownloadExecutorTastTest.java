@@ -6,8 +6,8 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.job.impl.DownloadJob;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import org.junit.Assert;
@@ -34,7 +34,7 @@ public class DownloadExecutorTastTest {
 
     @Test
     public void testDeserialize() throws Exception {
-        ExecutorTask executorTask = new DownloadExecutorTask(new SourceKey("test"), false, ExecutorTaskType.DOWNLOAD, LockType.REAL_SEG,
+        ExecutorTask executorTask = new DownloadExecutorTask(new SourceKey("test"), false, SwiftTaskType.DOWNLOAD, LockType.REAL_SEG,
                 LockType.REAL_SEG.name(), DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
         DownloadJob downloadJob = (DownloadJob) executorTask.getJob();
 

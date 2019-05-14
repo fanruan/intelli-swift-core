@@ -3,7 +3,7 @@ package com.fr.swift.executor;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.executor.config.ExecutorTaskService;
-import com.fr.swift.executor.exception.NotDBTaskExecption;
+import com.fr.swift.executor.exception.NotDBTaskException;
 import com.fr.swift.executor.queue.MemoryQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import org.junit.Assert;
@@ -84,7 +84,7 @@ public class TaskProducerTest {
         try {
             TaskProducer.produceTasks(executorTaskSet);
             Assert.assertTrue(false);
-        } catch (NotDBTaskExecption e) {
+        } catch (NotDBTaskException e) {
             Assert.assertTrue(true);
             Assert.assertEquals(e.getMessage(), "memTask");
         }
@@ -97,7 +97,7 @@ public class TaskProducerTest {
             Mockito.verify(executorTaskService).batchSaveOrUpdate(executorTaskSet2);
             Mockito.verify(memoryQueue, Mockito.times(2)).offer(dbTask);
             Assert.assertTrue(true);
-        } catch (NotDBTaskExecption e) {
+        } catch (NotDBTaskException e) {
             Assert.assertTrue(false);
         }
     }

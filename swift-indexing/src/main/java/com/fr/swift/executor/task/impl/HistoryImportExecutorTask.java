@@ -4,8 +4,8 @@ import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.impl.HistoryImportJob;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.RowInfo;
@@ -22,7 +22,7 @@ public class HistoryImportExecutorTask extends AbstractExecutorTask<Job> {
     public HistoryImportExecutorTask(DataSource dataSource, SwiftSourceAlloter<?, RowInfo> alloter, SwiftResultSet resultSet) throws Exception {
         super(dataSource.getSourceKey(),
                 false,
-                ExecutorTaskType.HISTORY,
+                SwiftTaskType.HISTORY,
                 LockType.TABLE,
                 dataSource.getSourceKey().getId(),
                 DBStatusType.ACTIVE,

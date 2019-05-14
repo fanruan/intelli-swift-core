@@ -8,6 +8,7 @@ import com.fr.swift.executor.task.job.impl.DownloadJob;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -24,7 +25,7 @@ public class DownloadExecutorTask extends AbstractExecutorTask<Job> {
     public DownloadExecutorTask(SegmentKey downloadSegKey, boolean downloadWholeSeg, boolean replace) throws Exception {
         super(downloadSegKey.getTable(),
                 true,
-                ExecutorTaskType.DOWNLOAD,
+                SwiftTaskType.DOWNLOAD,
                 LockType.REAL_SEG,
                 LockType.REAL_SEG.name(),
                 DBStatusType.ACTIVE,

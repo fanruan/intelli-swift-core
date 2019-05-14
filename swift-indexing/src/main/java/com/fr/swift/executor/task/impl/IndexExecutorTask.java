@@ -4,8 +4,8 @@ import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.impl.IndexJob;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.segment.SegmentKey;
 
 /**
@@ -19,7 +19,7 @@ public class IndexExecutorTask extends AbstractExecutorTask<Job> {
     public IndexExecutorTask(SegmentKey indexSegKey) throws Exception {
         super(indexSegKey.getTable(),
                 true,
-                ExecutorTaskType.INDEX,
+                SwiftTaskType.INDEX,
                 LockType.REAL_SEG,
                 indexSegKey.getId(),
                 DBStatusType.ACTIVE,
