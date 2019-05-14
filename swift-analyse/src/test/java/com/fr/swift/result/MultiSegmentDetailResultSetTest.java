@@ -1,12 +1,8 @@
 package com.fr.swift.result;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
-import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.source.Row;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -25,7 +21,7 @@ public class MultiSegmentDetailResultSetTest {
 
     @Test
     public void getMerger() {
-        assertNotNull(rs.<QueryResultSet<List<Row>>>getMerger());
+        assertNotNull(rs.getMerger());
     }
 
     @Test

@@ -7,12 +7,13 @@ import java.util.Map;
  * @date 2018-11-27
  */
 public interface BeanMapper {
+    String writeValueAsString(Object o, BeanTypeReference reference) throws Exception;
     String writeValueAsString(Object o) throws Exception;
 
-    Object readValue(String jsonString, BeanTypeReference reference) throws Exception;
+    <T> T string2TypeReference(String jsonString, BeanTypeReference<T> reference) throws Exception;
 
-    <T> T readValue(String jsonString, Class<T> reference) throws Exception;
+    <T> T string2Object(String jsonString, Class<T> reference) throws Exception;
 
-    <T> T readValue(Map<String, Object> jsonMap, Class<T> reference) throws Exception;
+    <T> T map2Object(Map<String, Object> jsonMap, Class<T> reference) throws Exception;
 
 }

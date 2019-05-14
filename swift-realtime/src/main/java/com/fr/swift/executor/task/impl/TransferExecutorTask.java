@@ -1,7 +1,7 @@
 package com.fr.swift.executor.task.impl;
 
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.impl.TransferJob;
@@ -34,7 +34,7 @@ public class TransferExecutorTask extends AbstractExecutorTask<Job> {
                                 String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
         super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
 
-        SegmentKey segmentKey = JsonBuilder.readValue(taskContent, SegmentKeyBean.class);
+        SegmentKey segmentKey = JsonBuilder.readValue(taskContent, SwiftSegmentEntity.class);
         this.job = new TransferJob(segmentKey);
     }
 }

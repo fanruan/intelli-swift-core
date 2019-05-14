@@ -2,7 +2,7 @@ package com.fr.swift.source.alloter.impl.line;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -57,11 +57,11 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
 
     public void testAllot() {
         int newSegOrder = 7;
-        SegmentKey newSeg = new SegmentKeyBean(new SourceKey(""), newSegOrder, Types.StoreType.MEMORY, null);
+        SegmentKey newSeg = new SwiftSegmentEntity(new SourceKey(""), newSegOrder, Types.StoreType.MEMORY, null);
         Map<SourceKey, List<SegmentKey>> keyListMap = new HashMap<SourceKey, List<SegmentKey>>();
         List<SegmentKey> keys = new ArrayList<SegmentKey>();
-        keys.add(new SegmentKeyBean(new SourceKey(""), 1, Types.StoreType.MEMORY, SwiftDatabase.CUBE));
-        keys.add(new SegmentKeyBean(new SourceKey(""), 2, Types.StoreType.MEMORY, SwiftDatabase.CUBE));
+        keys.add(new SwiftSegmentEntity(new SourceKey(""), 1, Types.StoreType.MEMORY, SwiftDatabase.CUBE));
+        keys.add(new SwiftSegmentEntity(new SourceKey(""), 2, Types.StoreType.MEMORY, SwiftDatabase.CUBE));
         keyListMap.put(new SourceKey(""), keys);
 
         Segment seg1 = PowerMock.createMock(Segment.class);

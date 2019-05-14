@@ -8,6 +8,7 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
  * Created by Lyon on 2018/6/3.
  */
 @JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
         property = "type",
         defaultImpl = PostQueryType.class)
 @JsonSubTypes({

@@ -7,7 +7,7 @@ package com.fr.swift.config;
 public interface ColumnIndexingConf extends IndexingConf {
     String getColumn();
 
-    boolean requireIndex();
+    boolean isRequireIndex();
 
-    boolean requireGlobalDict();
+    boolean isRequireGlobalDict();
 }

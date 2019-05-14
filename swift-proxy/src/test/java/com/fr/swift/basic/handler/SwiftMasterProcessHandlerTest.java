@@ -9,7 +9,7 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.handler.SwiftMasterProcessHandler;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.local.LocalInvoker;
 import com.fr.swift.property.SwiftProperty;
@@ -39,7 +39,7 @@ public class SwiftMasterProcessHandlerTest extends TestCase {
     public void setUp() throws Exception {
         ProxyServiceRegistry.get().registerService(new SwiftMasterProcessHandlerTest());
 
-        SwiftServiceInfoBean swiftServiceInfoBean = EasyMock.createMock(SwiftServiceInfoBean.class);
+        SwiftServiceInfoEntity swiftServiceInfoBean = EasyMock.createMock(SwiftServiceInfoEntity.class);
         SwiftServiceInfoService swiftServiceInfoService = EasyMock.createMock(SwiftServiceInfoService.class);
         invokerCreator = EasyMock.createMock(InvokerCreator.class);
         Invoker invoker = new LocalInvoker(ProxyServiceRegistry.get().getService(SwiftMasterProcessHandlerTest.class.getName()), SwiftMasterProcessHandlerTest.class, null, true);

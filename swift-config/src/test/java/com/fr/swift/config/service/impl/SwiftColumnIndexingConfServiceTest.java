@@ -1,7 +1,7 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
+import com.fr.swift.config.entity.SwiftColumnIndexingConf;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
@@ -35,7 +35,7 @@ public class SwiftColumnIndexingConfServiceTest extends BaseServiceTest {
         PowerMock.replay(SwiftContext.class);
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession(SwiftColumnIdxConfBean.TYPE);
+        final ConfigSession mockConfigSession = mockSession(SwiftColumnIndexingConf.class);
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
@@ -60,7 +60,7 @@ public class SwiftColumnIndexingConfServiceTest extends BaseServiceTest {
     @Test
     public void setColumnConf() {
         // Generate by Mock Plugin
-        SwiftColumnIdxConfBean bean = new SwiftColumnIdxConfBean("sourceKey", "column", true, true);
+        SwiftColumnIndexingConf bean = new SwiftColumnIndexingConf(new SourceKey("sourceKey"), "column", true, true);
         service.setColumnConf(bean);
 // do test
         PowerMock.verifyAll();
