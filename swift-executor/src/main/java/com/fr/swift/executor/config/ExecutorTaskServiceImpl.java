@@ -9,15 +9,10 @@ import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.oper.impl.OrderImpl;
 import com.fr.swift.executor.task.ExecutorTask;
-import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.ExecutorTaskType;
-import com.fr.swift.executor.type.LockType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.source.SourceKey;
 
-import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +70,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
                                 , ConfigWhereImpl.eq("clusterId", SwiftProperty.getProperty().getClusterId())
                                 , ConfigWhereImpl.gt("createTime", time))) {
 
-                            tasks.add(instanceTask(item));
+                            tasks.add(item.convert());
 
                         }
                     } catch (Exception e) {
@@ -103,15 +98,5 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             SwiftLoggers.getLogger().warn("delete executorTasks error!", e);
             return false;
         }
-    }
-
-    private ExecutorTask instanceTask(SwiftExecutorTaskEntity entity) throws Exception {
-        Class<? extends ExecutorTask> clazz = ExecutorTypeContainer.getInstance().getClassByType(entity.getExecutorTaskType());
-
-        Constructor constructor = clazz.getDeclaredConstructor(SourceKey.class, boolean.class, ExecutorTaskType.class, LockType.class,
-                String.class, DBStatusType.class, String.class, long.class, String.class);
-
-        return (ExecutorTask) constructor.newInstance(new SourceKey(entity.getSourceKey()), true, entity.getExecutorTaskType(), entity.getLockType(),
-                entity.getLockKey(), entity.getDbStatusType(), entity.getTaskId(), entity.getCreateTime(), entity.getTaskContent());
     }
 }
