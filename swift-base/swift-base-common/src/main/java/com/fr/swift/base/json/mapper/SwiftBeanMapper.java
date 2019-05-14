@@ -15,17 +15,22 @@ public class SwiftBeanMapper implements BeanMapper {
     }
 
     @Override
+    public String writeValueAsString(Object o, BeanTypeReference reference) throws Exception {
+        return writeValueAsString(o);
+    }
+
+    @Override
     public String writeValueAsString(Object o) throws Exception {
         return new ObjectJsonWriter().write(o);
     }
 
     @Override
-    public Object readValue(String jsonString, BeanTypeReference reference) throws Exception {
+    public <T> T string2TypeReference(String jsonString, BeanTypeReference<T> reference) throws Exception {
         return null;
     }
 
     @Override
-    public <T> T readValue(String jsonString, Class<T> reference) throws Exception {
+    public <T> T string2Object(String jsonString, Class<T> reference) throws Exception {
         JsonParser reader = new JsonParser(jsonString);
         if (ReflectUtils.isPrimitiveOrWrapper(reference)) {
             return (T) ReflectUtils.parseObject(reference, jsonString);
@@ -37,7 +42,7 @@ public class SwiftBeanMapper implements BeanMapper {
     }
 
     @Override
-    public <T> T readValue(Map<String, Object> jsonMap, Class<T> reference) throws Exception {
+    public <T> T map2Object(Map<String, Object> jsonMap, Class<T> reference) throws Exception {
         JsonParser reader = new JsonParser(jsonMap);
         return reader.parse(reference);
     }

@@ -1,8 +1,8 @@
 package com.fr.swift.config.convert;
 
 import com.fr.swift.config.annotation.ConfigField;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -25,19 +25,19 @@ public class SwiftFileSystemConvertTest {
     public void toBean() throws SQLException, ClassNotFoundException {
         SwiftConfigDao mockSwiftConfigDao = PowerMock.createMock(SwiftConfigDao.class);
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigBean(convert.getNameSpace() + ".class", TestSwiftFileSystemConfig.class.getName())).once();
+                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigEntity(convert.getNameSpace() + ".class", TestSwiftFileSystemConfig.class.getName())).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigBean(convert.getNameSpace() + ".class", "com.fr.swift.config.bean.FtpRepositoryConfigBean")).once();
+                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigEntity(convert.getNameSpace() + ".class", "com.fr.swift.config.bean.FtpRepositoryConfigBean")).once();
         for (Field field : this.getClass().getClassLoader().loadClass("com.fr.swift.repository.config.FtpRepositoryConfig").getDeclaredFields()) {
             if (field.isAnnotationPresent(ConfigField.class)) {
-                EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class), EasyMock.eq(convert.getNameSpace() + "." + field.getName()))).andReturn(new SwiftConfigBean("", "0"));
+                EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class), EasyMock.eq(convert.getNameSpace() + "." + field.getName()))).andReturn(new SwiftConfigEntity("", "0"));
             }
         }
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigBean(convert.getNameSpace() + ".class", "com.fr.swift.config.bean.HdfsRepositoryConfigBean")).once();
+                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigEntity(convert.getNameSpace() + ".class", "com.fr.swift.config.bean.HdfsRepositoryConfigBean")).once();
         for (Field field : this.getClass().getClassLoader().loadClass("com.fr.swift.repository.config.HdfsRepositoryConfig").getDeclaredFields()) {
             if (field.isAnnotationPresent(ConfigField.class)) {
-                EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class), EasyMock.eq(convert.getNameSpace() + "." + field.getName()))).andReturn(new SwiftConfigBean("", "0"));
+                EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class), EasyMock.eq(convert.getNameSpace() + "." + field.getName()))).andReturn(new SwiftConfigEntity("", "0"));
             }
         }
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);

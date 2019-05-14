@@ -1,4 +1,4 @@
-package com.fr.swift.config.convert.hibernate;
+package com.fr.swift.config.convert;
 
 /**
  * @author yee

@@ -3,7 +3,7 @@ package com.fr.swift.rm;
 import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.executor.ExecutorManager;
 import com.fr.swift.executor.dispatcher.TaskDispatcher;
@@ -106,7 +106,7 @@ public class MasterManagerTest {
         Mockito.verify(swiftServiceListenerManager).registerService(swiftService);
         Mockito.verify(collateExecutor).start();
         Mockito.verify(executorManager).pullDBTask();
-        Mockito.verify(serviceInfoService).saveOrUpdate(Mockito.any(SwiftServiceInfoBean.class));
+        Mockito.verify(serviceInfoService).saveOrUpdate(Mockito.any(SwiftServiceInfoEntity.class));
 
         masterManager.shutDown();
         Mockito.verify(collect).stopCollect();

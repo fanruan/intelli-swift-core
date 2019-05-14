@@ -5,7 +5,7 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
@@ -72,7 +72,7 @@ public class HisSegmentMergerImplTest {
             public SegmentKey answer(InvocationOnMock invocation) throws Throwable {
                 SourceKey tableKey = invocation.getArgument(0);
                 Types.StoreType storeType = invocation.getArgument(1);
-                return new SegmentKeyBean(tableKey, order++, storeType, com.fr.swift.db.SwiftDatabase.CUBE);
+                return new SwiftSegmentEntity(tableKey, order++, storeType, com.fr.swift.db.SwiftDatabase.CUBE);
             }
         });
 

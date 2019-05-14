@@ -7,8 +7,7 @@ import com.fr.swift.base.json.annotation.JsonTypeInfo;
  * 表示一行数据
  */
 @JsonTypeInfo(
-        defaultImpl = ListBasedRow.class
-)
+        use = JsonTypeInfo.Id.CLASS, defaultImpl = ListBasedRow.class)
 public interface Row {
     <V> V getValue(int index);
 

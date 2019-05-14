@@ -10,7 +10,7 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SegmentDestSelectRuleService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.local.LocalInvoker;
@@ -58,7 +58,7 @@ public class SwiftQueryableProcessHandlerTest extends TestCase {
         super.setUp();
         ProxyServiceRegistry.get().registerService(new SwiftQueryableProcessHandlerTest());
 
-        SwiftServiceInfoBean swiftServiceInfoBean = EasyMock.createMock(SwiftServiceInfoBean.class);
+        SwiftServiceInfoEntity swiftServiceInfoBean = EasyMock.createMock(SwiftServiceInfoEntity.class);
         SwiftServiceInfoService swiftServiceInfoService = EasyMock.createMock(SwiftServiceInfoService.class);
         invokerCreator = EasyMock.createMock(InvokerCreator.class);
         Invoker invoker = new LocalInvoker(ProxyServiceRegistry.get().getService(SwiftQueryableProcessHandlerTest.class.getName()), SwiftQueryableProcessHandlerTest.class, null, false);

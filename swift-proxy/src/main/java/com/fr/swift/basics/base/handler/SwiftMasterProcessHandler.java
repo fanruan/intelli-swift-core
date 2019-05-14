@@ -10,7 +10,7 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.util.MonitorUtil;
 
@@ -63,9 +63,9 @@ public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> imple
      */
     @Override
     public URL processUrl(Target[] targets, Object... args) {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class)
+        List<SwiftServiceInfoEntity> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class)
                 .getServiceInfoByService(SwiftServiceInfoService.SERVICE);
-        SwiftServiceInfoBean swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
+        SwiftServiceInfoEntity swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
 }
