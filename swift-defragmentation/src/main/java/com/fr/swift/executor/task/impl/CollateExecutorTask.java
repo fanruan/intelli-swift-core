@@ -8,6 +8,7 @@ import com.fr.swift.executor.task.job.impl.CollateJob;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -26,7 +27,7 @@ public class CollateExecutorTask extends AbstractExecutorTask<Job> {
     public CollateExecutorTask(SourceKey sourceKey, List<SegmentKey> segmentKeys) throws Exception {
         super(sourceKey,
                 false,
-                ExecutorTaskType.COLLATE,
+                SwiftTaskType.COLLATE,
                 LockType.TABLE,
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,
