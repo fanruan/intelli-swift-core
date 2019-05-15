@@ -71,7 +71,7 @@ public class FileImportUtils {
      * @return key:filenameHeader  value:file list
      * @throws Exception
      */
-    private static Map<String, List<File>> initCsvImportTables(String path, String yearMonth) throws Exception {
+    public static Map<String, List<File>> initCsvImportTables(String path, String yearMonth) throws Exception {
         File file = new File(path);
         File[] importFiles = file.listFiles();
         Map<String, List<File>> importTables = new HashMap<String, List<File>>();
@@ -88,7 +88,7 @@ public class FileImportUtils {
         return importTables;
     }
 
-    private static Map<String, SwiftMetaData> initMetadatas(String version) throws Exception {
+    public static Map<String, SwiftMetaData> initMetadatas(String version) throws Exception {
         return CloudVersionProperty.getProperty().getMetadataMapByVersion(version);
     }
 

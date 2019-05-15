@@ -73,6 +73,18 @@ public class TemplateAnalysisResult {
     private String factor3;
 
     /**
+     * 耗时长的数据集
+     */
+    @Column
+    private String ds1;
+
+    @Column
+    private String ds2;
+
+    @Column
+    private String ds3;
+
+    /**
      * 可能导致性能问题的模板属性
      */
     @Column
@@ -82,7 +94,7 @@ public class TemplateAnalysisResult {
     }
 
     public TemplateAnalysisResult(String tName, long[] average, long[] max, long count,
-                                  long total, String appId, Date yearMonth, String[] factors) {
+                                  long total, String appId, Date yearMonth, String[] factors, String[] ds) {
         this.tName = tName;
         this.consume = average[0];
         this.coreConsume = average[1];
@@ -97,5 +109,8 @@ public class TemplateAnalysisResult {
         this.factor1 = factors[0];
         this.factor2 = factors[1];
         this.factor3 = factors[2];
+        this.ds1 = ds[0];
+        this.ds2 = ds[1];
+        this.ds3 = ds[2];
     }
 }

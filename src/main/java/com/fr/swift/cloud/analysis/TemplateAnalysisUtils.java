@@ -102,13 +102,14 @@ public class TemplateAnalysisUtils {
                 row.<Long>getValue(map.get("total")),
                 appId,
                 yearMonth,
-                getStringValues("factor1", "factor3", row, map)
+                getStringValues("factor1", "factor3", row, map),
+                getStringValues("ds1", "ds3", row, map)
         );
     }
 
     private static TemplatePropertyRatio createTemplatePropertyRatio(String tName, String appId, Date yearMonth, Row row,
                                                                      Map<String, Integer> map) {
-        double[] values = getDoubleValues("conditionRatio", "sqlRatio", row, map);
+        double[] values = getDoubleValues("conditionRatio", "memoryRatio", row, map);
         return new TemplatePropertyRatio(tName, values, appId, yearMonth);
     }
 

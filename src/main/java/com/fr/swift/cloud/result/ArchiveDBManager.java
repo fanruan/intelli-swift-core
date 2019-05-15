@@ -41,6 +41,7 @@ public enum ArchiveDBManager {
         configuration.addAnnotatedClass(ExecutionMetric.class);
         configuration.addAnnotatedClass(TemplateProperty.class);
         configuration.addAnnotatedClass(TemplatePropertyRatio.class);
+        configuration.addAnnotatedClass(CustomerInfo.class);
         return configuration.buildSessionFactory();
     }
 }

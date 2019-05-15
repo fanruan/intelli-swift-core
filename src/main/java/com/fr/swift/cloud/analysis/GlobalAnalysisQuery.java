@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,21 +31,25 @@ import java.util.Set;
  */
 public class GlobalAnalysisQuery implements MetricQuery {
 
+    private static final int TOP_N_DATASET = 3;
+
     private static String resultTableName = "result";
 
     private static String T_NAME = "tName";
     private static String TOTAL = "total";
-    private static String SQL_RATIO = "sqlRatio";
+    private static String MEMORY_RATIO = "memoryRatio";
     private static String APP_ID = "appId";
     private static String YEAR_MONTH = "yearMonth";
 
     private static String[] metrics = {
-            "consumeTop10", "consume", "coreConsume", "sqlTime", "count", "consumeMax", "coreConsumeMax", "sqlTimeMax"
+            "consumeTop10", "consume", "coreConsume", "sqlTime", "memory", "count", "consumeMax", "coreConsumeMax", "sqlTimeMax"
     };
 
     private static String[] factors = new String[]{"factor1", "factor2", "factor3"};
+    private static String[] dataSets = new String[]{"ds1", "ds2", "ds3"};
+
     private static String[] ratios = new String[]{
-            "conditionRatio", "sheetRatio", "dsRatio", "complexFormulaRatio", "imageSizeRatio", "sqlRatio"
+            "conditionRatio", "sheetRatio", "dsRatio", "complexFormulaRatio", "imageSizeRatio", MEMORY_RATIO
     };
 
     private MetricQuery query;
@@ -90,12 +95,13 @@ public class GlobalAnalysisQuery implements MetricQuery {
             long consumeValue = Math.round((Double) row.getValue(2));
             long coreConsumeValue = Math.round((Double) row.getValue(3));
             long sqlTimeValue = Math.round((Double) row.getValue(4));
-            long countValue = Math.round((Double) row.getValue(5));
-            long consumeMax = Math.round((Double) row.getValue(6));
-            long coreConsumeMax = Math.round((Double) row.getValue(7));
-            long sqlTimeMax = Math.round((Double) row.getValue(8));
+            long memoryValue = Math.round((Double) row.getValue(5));
+            long countValue = Math.round((Double) row.getValue(6));
+            long consumeMax = Math.round((Double) row.getValue(7));
+            long coreConsumeMax = Math.round((Double) row.getValue(8));
+            long sqlTimeMax = Math.round((Double) row.getValue(9));
             base.add(toList(row.getValue(0), consumeTop10,
-                    consumeValue, coreConsumeValue, sqlTimeValue,
+                    consumeValue, coreConsumeValue, sqlTimeValue, memoryValue,
                     countValue,
                     consumeMax, coreConsumeMax, sqlTimeMax));
             consume.add(toList(id, consumeTop10));
@@ -155,6 +161,7 @@ public class GlobalAnalysisQuery implements MetricQuery {
         SwiftResultSet tplRS = tplQuery.getResult();
         List<List> result = new ArrayList<List>();
         Set added = new HashSet();
+        Grader grader = new Grader.Memory();
         while (tplRS.hasNext()) {
             Row row = tplRS.getNextRow();
             String absPath = row.getValue(0);
@@ -172,10 +179,9 @@ public class GlobalAnalysisQuery implements MetricQuery {
                 for (int i = 1; i < row.getSize(); i++) {
                     list.add(row.getValue(i));
                 }
-                // 增加一列sql时间导致性能问题的可能性
-                Double sqlRatio = (Long) list.get(4) * 1.0 / (Long) list.get(2);
-                sqlRatio = sqlRatio > .5 ? 1.0001 : sqlRatio;
-                list.add(sqlRatio);
+                // 通过内存来识别格子数
+                double memoryRatio = grader.grade((Long) list.get(5)) * 1.0 / 100;
+                list.add(memoryRatio);
                 list.add(customerId);
                 list.add(yearMonth);
                 result.add(list);
@@ -189,8 +195,33 @@ public class GlobalAnalysisQuery implements MetricQuery {
         }
         final SwiftMetaData data = createMetaData(columns);
         calculateFactors(data.getFieldNames(), result);
+
+        // 给排名前20的每个模板选出耗时最长的3个数据集（不足3个用空字符串代替）
+        Collections.sort(result, new RowComparator(data.getFieldNames().indexOf("total")));
+        Map<String, String[]> topNDataSet = new DataSetQuery(customerId, yearMonth, topNTemplates(result)).topNDataSet();
+        addDataSet(result, topNDataSet);
         final Iterator<List> iterator = result.iterator();
         return TplPropertyQuery.createResultSet(data, iterator);
+    }
+
+    private static void addDataSet(List<List> result, Map<String, String[]> topNDataSet) {
+        String[] empty = new String[TOP_N_DATASET];
+        Arrays.fill(empty, "");
+        for (List list : result) {
+            if (topNDataSet.containsKey(list.get(0))) {
+                list.addAll(Arrays.asList(topNDataSet.get(list.get(0))));
+            } else {
+                list.addAll(Arrays.asList(empty));
+            }
+        }
+    }
+
+    private static List<String> topNTemplates(List<List> result) {
+        List<String> templates = new ArrayList<String>();
+        for (int i = 0; i < result.size(); i++) {
+            templates.add((String) result.get(i).get(0));
+        }
+        return templates;
     }
 
     private static void calculateFactors(List<String> resultFields, List<List> result) {
@@ -249,11 +280,14 @@ public class GlobalAnalysisQuery implements MetricQuery {
         columns.add(new MetaDataColumnBean(TOTAL, Types.BIGINT));
         // 模板属性
         columns.addAll(tplFields);
-        columns.add(new MetaDataColumnBean(SQL_RATIO, Types.DOUBLE));
+        columns.add(new MetaDataColumnBean(MEMORY_RATIO, Types.DOUBLE));
         columns.add(new MetaDataColumnBean(APP_ID, Types.VARCHAR));
         columns.add(new MetaDataColumnBean(YEAR_MONTH, Types.VARCHAR));
         for (String factor : factors) {
             columns.add(new MetaDataColumnBean(factor, Types.VARCHAR));
+        }
+        for (String ds : dataSets) {
+            columns.add(new MetaDataColumnBean(ds, Types.VARCHAR));
         }
         return new SwiftMetaDataBean(resultTableName, columns);
     }

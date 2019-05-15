@@ -20,6 +20,8 @@ public class CloudProperty {
     private int kafkaServerPort;
     private String kafkaGroupId;
     private String treasureUploadTopic;
+    private String treasureAnalysisTopic;
+
 
     private void initProperties() {
         properties = new Properties();
@@ -30,11 +32,13 @@ public class CloudProperty {
             kafkaServerPort = Integer.valueOf(properties.getProperty("kafka.server.port", "9092"));
             kafkaGroupId = properties.getProperty("kafka.group.id", SwiftProperty.getProperty().getClusterId());
             treasureUploadTopic = properties.getProperty("kafka.treasure.upload.topic", "__fine_intelli_treasure_upload__");
+            treasureAnalysisTopic = properties.getProperty("kafka.treasure.analyse.topic", "__fine_intelli_analyse_report__");
         } catch (IOException e) {
             kafkaServerUrl = "127.0.0.1";
             kafkaServerPort = 9092;
             kafkaGroupId = SwiftProperty.getProperty().getClusterId();
             treasureUploadTopic = "__fine_intelli_treasure_upload__";
+            treasureAnalysisTopic = "__fine_intelli_analyse_report__";
             Crasher.crash(e);
         }
     }
@@ -63,5 +67,9 @@ public class CloudProperty {
 
     public String getTreasureUploadTopic() {
         return treasureUploadTopic;
+    }
+
+    public String getTreasureAnalysisTopic() {
+        return treasureAnalysisTopic;
     }
 }

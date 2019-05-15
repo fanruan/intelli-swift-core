@@ -31,42 +31,45 @@ import java.util.Arrays;
 @Deprecated
 public class CSVImportUtils {
 
-    private static String end = ".csv";
+    private static String csvTag = ".csv";
+    private static String gcTag = ".gc.log";
 
-    public static void load(String path, final String appId, final String yearMonth) throws Exception {
+
+    public static void load(String path, final String appId, final String yearMonth, final String version) throws Exception {
         SwiftLoggers.getLogger().info("base dir:\t{} ", path);
-        File[] files = new File(path).listFiles(new FileFilter() {
+
+        File[] csvFiles = new File(path).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.getName().endsWith(end);
+                return pathname.getName().endsWith(csvTag);
             }
         });
-        if (files == null) {
+
+        File[] gcFiles = new File(path).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getName().contains(gcTag);
+            }
+        });
+
+        if (csvFiles == null) {
             SwiftLoggers.getLogger().error("invalid dir:\t{} ", path);
             return;
         }
         final SwiftMetaDataService service = SwiftContext.get().getBean(SwiftMetaDataService.class);
-        for (File file : files) {
-            String name = file.getName();
+
+        for (File csvFile : csvFiles) {
+            String name = csvFile.getName();
             name = name.substring(0, name.indexOf(yearMonth));
-            CSVTable csvTable = TableUtils.createIfAbsent(name, appId, yearMonth);
+            CSVTable csvTable = (CSVTable) TableUtils.createIfAbsent(name, appId, yearMonth);
             final String tableName = csvTable.getTableName();
             deleteIfExisting(tableName, appId, yearMonth);
             SwiftLoggers.getLogger().info("start importing table:\t{} ", tableName);
-            SwiftResultSet resultSet = new SimpleSwiftResultSet(file.getAbsolutePath(), csvTable.getParser(), service.getMetaDataByKey(csvTable.getTableName()));
+            SwiftResultSet resultSet = new CSVSwiftResultSet(csvFile.getAbsolutePath(), csvTable.getParser(), service.getMetaDataByKey(csvTable.getTableName()));
             Table t = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(new SourceKey(tableName));
             HistoryLineSourceAlloter alloter = new HistoryLineSourceAlloter(new SourceKey(tableName), new LineAllotRule());
             HistoryBlockImporter importer = new HistoryBlockImporter(t, alloter);
             importer.importData(new ProgressResultSet(resultSet, tableName));
-            SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-            List<SegmentKey> segmentKeys = segmentService.getSegmentByKey(tableName);
-            List<Segment> segments = new ArrayList<Segment>();
-            for (SegmentKey key : segmentKeys) {
-                segments.add(SegmentUtils.newSegment(key));
-            }
-            // 索引没有满的segment
-            SegmentUtils.indexSegmentIfNeed(segments);
-            SegmentUtils.releaseHisSeg(segments);
             SwiftLoggers.getLogger().info("finished importing table:\t{} ", tableName);
         }
 
