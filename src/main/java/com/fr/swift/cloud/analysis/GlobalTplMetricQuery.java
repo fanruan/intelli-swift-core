@@ -33,6 +33,8 @@ public class GlobalTplMetricQuery implements MetricQuery {
         for (String name : metrics) {
             metricBeans.add(new MetricBean(name, AggregatorType.AVERAGE));
         }
+        // 统计平均内存用于估算格子数
+        metricBeans.add(new MetricBean(Execution.memory.getName(), AggregatorType.AVERAGE));
         metricBeans.add(new MetricBean(Execution.id.getName(), AggregatorType.COUNT));
         for (String name : metrics) {
             metricBeans.add(new MetricBean(name, AggregatorType.MAX));

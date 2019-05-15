@@ -28,10 +28,10 @@ public class CSVResultSet implements CloudResultSet {
 
     private BufferedReader reader;
     private List<File> files;
+    private List<String> charsetList;
     private int currentFileIndex = 0;
     private Row next;
     private boolean skipFirstLine;
-    private String charsetName;
 
     public CSVResultSet(List<File> files, LineParser parser, SwiftMetaData metaData) throws Exception {
         this(files, parser, metaData, true);
@@ -40,12 +40,15 @@ public class CSVResultSet implements CloudResultSet {
     public CSVResultSet(List<File> files, LineParser parser, SwiftMetaData metaData, boolean skipFirstLine) throws Exception {
         this.parser = parser;
         this.metaData = metaData;
-        charsetName = charsetName == null ? "utf8" : charsetName;
-        SwiftLoggers.getLogger().info("file: {}, charset: {}", files.toString(), this.charsetName);
         this.files = files;
         this.skipFirstLine = skipFirstLine;
-
-        reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), this.charsetName));
+        this.charsetList = new ArrayList<String>();
+        for (File file : files) {
+            String currentCharset = EncodeUtils.getEncode(file.getAbsolutePath());
+            charsetList.add(currentCharset);
+            SwiftLoggers.getLogger().info("file: {}, charset: {}", files.toString(), currentCharset);
+        }
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), charsetList.get(currentFileIndex)));
         if (this.skipFirstLine) {
             reader.readLine();
         }
@@ -63,7 +66,7 @@ public class CSVResultSet implements CloudResultSet {
             } else {
                 if (++currentFileIndex < files.size()) {
                     close();
-                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), this.charsetName));
+                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), charsetList.get(currentFileIndex)));
                     if (this.skipFirstLine) {
                         reader.readLine();
                     }

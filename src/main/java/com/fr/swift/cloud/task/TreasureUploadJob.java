@@ -1,8 +1,11 @@
 package com.fr.swift.cloud.task;
 
+import com.fr.swift.cloud.CloudProperty;
 import com.fr.swift.cloud.SwiftCloudConstants;
 import com.fr.swift.cloud.analysis.TemplateAnalysisUtils;
+import com.fr.swift.cloud.bean.TreasureAnalysisBean;
 import com.fr.swift.cloud.bean.TreasureBean;
+import com.fr.swift.cloud.kafka.MessageProducer;
 import com.fr.swift.cloud.load.FileImportUtils;
 import com.fr.swift.cloud.result.ArchiveDBManager;
 import com.fr.swift.cloud.result.table.CustomerInfo;
@@ -27,6 +30,7 @@ import java.net.URL;
 public class TreasureUploadJob extends BaseJob<Boolean, TreasureBean> {
 
     private TreasureBean treasureBean;
+    private static MessageProducer messageProducer = new MessageProducer();
 
     public TreasureUploadJob(TreasureBean treasureBean) {
         this.treasureBean = treasureBean;
@@ -35,6 +39,7 @@ public class TreasureUploadJob extends BaseJob<Boolean, TreasureBean> {
     @Override
     public Boolean call() throws Exception {
         // 通过客户的用户ID、客户的应用ID和客户的数据包日期获取数据包的下载链接
+        logStartGetDownload(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth());
         String downloadLink = treasureBean.getUrl();
         if (Strings.isNotEmpty(downloadLink)) {
             SwiftLoggers.getLogger().info("get download link success. link is {}", downloadLink);
@@ -42,10 +47,14 @@ public class TreasureUploadJob extends BaseJob<Boolean, TreasureBean> {
             String downloadPath = SwiftCloudConstants.ZIP_FILE_PATH + File.separator + treasureBean.getClientId() + File.separator + treasureBean.getClientAppId() + File.separator + treasureBean.getYearMonth();
             ZipUtils.unZip(downloadPath, inputStream);
             // 先导入csv文件数据到cube，然后生成分析结果，并保存到数据库
+            logStartAnalyse(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth());
+
             FileImportUtils.load(downloadPath, treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());
             TemplateAnalysisUtils.tplAnalysis(treasureBean.getClientAppId(), treasureBean.getYearMonth());
             saveCustomerInfo(treasureBean.getClientId(), treasureBean.getClientAppId());
 //                DowntimeAnalyisUtils.test("app1", "201904");
+            TreasureAnalysisBean treasureAnalysisBean = new TreasureAnalysisBean(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());
+            messageProducer.produce(CloudProperty.getProperty().getTreasureAnalysisTopic(), treasureAnalysisBean);
         } else {
             throw new RuntimeException("Download link is empty");
         }
@@ -87,5 +96,31 @@ public class TreasureUploadJob extends BaseJob<Boolean, TreasureBean> {
     @Override
     public TreasureBean serializedTag() {
         return treasureBean;
+    }
+
+    private void logStartGetDownload(String clientUserId, String clientAppId, String treasDate) {
+        SwiftLoggers.getLogger().info("======================================");
+        SwiftLoggers.getLogger().info("     Start get download address");
+        logClientInfo(clientUserId, clientAppId, treasDate);
+    }
+
+    private void logStartAnalyse(String clientUserId, String clientAppId, String treasDate) {
+        SwiftLoggers.getLogger().info("======================================");
+        SwiftLoggers.getLogger().info("           Start Analyse");
+        logClientInfo(clientUserId, clientAppId, treasDate);
+    }
+
+    private void logStartUpload(String clientUserId, String clientAppId, String treasDate) {
+        SwiftLoggers.getLogger().info("======================================");
+        SwiftLoggers.getLogger().info("           Start Upload");
+        logClientInfo(clientUserId, clientAppId, treasDate);
+    }
+
+    private void logClientInfo(String clientUserId, String clientAppId, String treasDate) {
+        SwiftLoggers.getLogger().info("======================================");
+        SwiftLoggers.getLogger().info(" ClientUserId:\t{} ", clientUserId);
+        SwiftLoggers.getLogger().info(" ClientAppId:\t{} ", clientAppId);
+        SwiftLoggers.getLogger().info(" TreasDate:\t{} ", treasDate);
+        SwiftLoggers.getLogger().info("======================================");
     }
 }

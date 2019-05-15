@@ -1,5 +1,6 @@
 package com.fr.swift.cloud.kafka;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.swift.cloud.CloudProperty;
 import com.fr.swift.log.SwiftLoggers;
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -20,6 +21,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class MessageProducer {
     private KafkaProducer<Integer, String> producer;
+    private ObjectMapper jsonMapper;
+
 
     public MessageProducer() {
         Properties props = new Properties();
@@ -32,6 +35,12 @@ public class MessageProducer {
         props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
         props.put("sasl.mechanism", "PLAIN");
         producer = new KafkaProducer<Integer, String>(props);
+        jsonMapper = new ObjectMapper();
+    }
+
+    public void produce(String topic, Object object) throws Exception {
+        String message = jsonMapper.writeValueAsString(object);
+        produce(topic, message);
     }
 
     public void produce(String topic, String message) throws ExecutionException, InterruptedException {

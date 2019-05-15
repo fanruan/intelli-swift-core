@@ -57,7 +57,7 @@ public class MessageConsumer extends ShutdownableThread {
 
     @Override
     public void doWork() {
-        ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofSeconds(5));
+        ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofSeconds(20));
         Set<ExecutorTask> executorTasks = new HashSet<ExecutorTask>();
         for (ConsumerRecord<Integer, String> record : records) {
             SwiftLoggers.getLogger().info("Received message: ({}, {}) at offset {}", record.key(), record.value(), record.offset());
@@ -73,10 +73,11 @@ public class MessageConsumer extends ShutdownableThread {
         }
 
         try {
-            boolean produceOk = TaskProducer.produceTasks(executorTasks);
-            if (produceOk) {
-                // TODO: 2019/5/13 by lucifer
-//                consumer.commitSync();
+            if (!executorTasks.isEmpty()) {
+                boolean produceOk = TaskProducer.produceTasks(executorTasks);
+                if (produceOk) {
+                    consumer.commitSync();
+                }
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
