@@ -48,7 +48,7 @@ public class DeleteExecutorTaskTest {
     @Test
     public void testDeserialize() throws Exception {
         ExecutorTask executorTask = new DeleteExecutorTask(new SourceKey("test"), true, SwiftTaskType.DELETE, LockType.TABLE,
-                "test", DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
+                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json);
         List<FilterInfoBean> filterInfoBeanList = ((AndFilterBean) executorTask.getJob().serializedTag()).getFilterValue();
         Assert.assertEquals(filterInfoBeanList.get(0).getFilterValue(), bean1.getFilterValue());
         Assert.assertEquals(filterInfoBeanList.get(0).getType(), bean1.getType());

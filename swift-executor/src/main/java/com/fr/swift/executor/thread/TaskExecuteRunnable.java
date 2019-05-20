@@ -64,8 +64,10 @@ public class TaskExecuteRunnable implements Runnable {
                 try {
                     executorJob.get();
                     success = true;
-                    executorTask.setDbStatusType(DBStatusType.SUCCESS);
-                    executorTaskService.saveOrUpdate(executorTask);
+                    if (executorTask.isPersistent()) {
+                        executorTask.setDbStatusType(DBStatusType.SUCCESS);
+                        executorTaskService.saveOrUpdate(executorTask);
+                    }
 //                    executorTaskService.deleteTask(executorTask);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
