@@ -4,6 +4,7 @@ import com.fr.swift.cloud.load.CloudVersionProperty;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.CompatibleHistorySegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -30,7 +31,7 @@ public class CubeController {
 
     @ResponseBody
     @RequestMapping(value = "/cloud/cube/query", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public Map<String, Object> queryCube(@RequestBody Map<String, String> map) throws Exception {
+    public Object queryCube(@RequestBody Map<String, String> map) throws Exception {
         String fileName = String.valueOf(map.get("fileName"));
         Types.StoreType storeType = Types.StoreType.valueOf(map.get("storeType"));
         String cubePath = map.get("cubePath");
@@ -44,13 +45,16 @@ public class CubeController {
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             columnList.add(segment.getColumn(new ColumnKey(metaData.getColumn(i).getName())));
         }
-        for (int i = 0; i < segment.getRowCount(); i++) {
-            StringBuilder a = new StringBuilder();
+        int rowCount = segment.getRowCount() > 200 ? 200 : segment.getRowCount();
+        List<String> columnDatas = new ArrayList<String>();
+        for (int i = 0; i < rowCount; i++) {
+            StringBuilder columnData = new StringBuilder();
             for (Column column : columnList) {
-                a.append(column.getDetailColumn().get(i)).append("  ");
+                columnData.append(column.getDetailColumn().get(i)).append("  ;  ");
             }
-            System.out.println(a.toString());
+            columnDatas.add(columnData.toString());
+            SwiftLoggers.getLogger().info(columnData.toString());
         }
-        return null;
+        return columnDatas;
     }
 }
