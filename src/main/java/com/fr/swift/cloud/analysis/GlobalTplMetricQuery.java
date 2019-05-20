@@ -1,6 +1,5 @@
 package com.fr.swift.cloud.analysis;
 
-import com.fr.swift.cloud.source.table.Execution;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
@@ -21,21 +20,21 @@ import java.util.List;
 public class GlobalTplMetricQuery implements MetricQuery {
 
     private static String[] metrics = new String[]{
-            Execution.consume.getName(),
-            Execution.coreConsume.getName(),
-            Execution.sqlTime.getName(),
+            "consume",
+            "coreConsume",
+            "sqlTime",
     };
 
     private static List<MetricBean> createMetrics(FilterInfoBean top10) {
         List<MetricBean> metricBeans = new ArrayList<MetricBean>();
-        metricBeans.add(MetricBean.builder(Execution.consume.getName(), AggregatorType.AVERAGE)
+        metricBeans.add(MetricBean.builder("consume", AggregatorType.AVERAGE)
                 .setFilter(top10).build());
         for (String name : metrics) {
             metricBeans.add(new MetricBean(name, AggregatorType.AVERAGE));
         }
         // 统计平均内存用于估算格子数
-        metricBeans.add(new MetricBean(Execution.memory.getName(), AggregatorType.AVERAGE));
-        metricBeans.add(new MetricBean(Execution.id.getName(), AggregatorType.COUNT));
+        metricBeans.add(new MetricBean("memory", AggregatorType.AVERAGE));
+        metricBeans.add(new MetricBean("id", AggregatorType.COUNT));
         for (String name : metrics) {
             metricBeans.add(new MetricBean(name, AggregatorType.MAX));
         }
@@ -47,9 +46,9 @@ public class GlobalTplMetricQuery implements MetricQuery {
     public GlobalTplMetricQuery(FilterInfoBean filter, FilterInfoBean tp10MetricFilter) {
         this.bean = new GroupQueryInfoBean();
         bean.setFilter(filter);
-        bean.setTableName(Execution.tableName);
+        bean.setTableName("execution");
         bean.setDimensions(Collections.singletonList(
-                new DimensionBean(DimensionType.GROUP, Execution.tName.getName())));
+                new DimensionBean(DimensionType.GROUP, "tName")));
         bean.setAggregations(createMetrics(tp10MetricFilter));
     }
 

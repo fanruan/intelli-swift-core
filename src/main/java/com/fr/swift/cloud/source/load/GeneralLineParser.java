@@ -1,7 +1,6 @@
 package com.fr.swift.cloud.source.load;
 
-import com.fr.swift.cloud.source.table.Execution;
-import com.fr.swift.cloud.source.table.PackageInfo;
+import com.fr.swift.cloud.source.table.CloudTable;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.util.ArrayList;
@@ -34,10 +33,10 @@ public class GeneralLineParser<T> implements LineParser<T> {
             return null;
         }
         raw = lineAdapter.adapt(raw);
-        if (!tableName.equals(PackageInfo.tableName)) {
-            raw.put(Execution.appId.getName(), appId);
+        if (!tableName.equals("package_info")) {
+            raw.put(CloudTable.appIdColumn.getName(), appId);
         }
-        raw.put(Execution.yearMonth.getName(), ParseUtils.convert(yearMonth, Execution.yearMonth));
+        raw.put("yearMonth", ParseUtils.convert(yearMonth, CloudTable.yearMonthColumn));
         return raw;
     }
 
@@ -46,10 +45,10 @@ public class GeneralLineParser<T> implements LineParser<T> {
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
         columns.addAll(rawParser.getFields());
         columns.addAll(lineAdapter.getFields());
-        if (!tableName.equals(PackageInfo.tableName)) {
-            columns.add(Execution.appId);
+        if (!tableName.equals("package_info")) {
+            columns.add(CloudTable.appIdColumn);
         }
-        columns.add(Execution.yearMonth);
+        columns.add(CloudTable.yearMonthColumn);
         return columns;
     }
 }
