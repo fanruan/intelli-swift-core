@@ -91,4 +91,24 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             return false;
         }
     }
+
+    @Override
+    public ExecutorTask getExecutorTask(final String taskId) {
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<ExecutorTask>() {
+                @Override
+                public ExecutorTask work(ConfigSession session) throws SQLException {
+                    List<ExecutorTask> executorTasks = executorTaskDao.find(session, ConfigWhereImpl.eq("id", taskId)).list();
+                    if (executorTasks.isEmpty()) {
+                        return null;
+                    } else {
+                        return executorTasks.get(0);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("delete executorTasks error!", e);
+            return null;
+        }
+    }
 }

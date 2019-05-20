@@ -9,6 +9,7 @@ import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.executor.task.ExecutorTask;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,6 +96,13 @@ public class ExecutorTaskServiceTest {
     public void deleteTask() throws SQLException {
         new ExecutorTaskServiceImpl().deleteTask(executorTask);
         Mockito.verify(executorTaskDao).delete(configSession, executorTask);
+    }
+
+    @Test
+    public void getExecutorTask() throws SQLException {
+        Mockito.when(executorTaskDao.find(Mockito.eq(configSession), Mockito.<ConfigWhere[]>any())).thenReturn(new FindListImpl<ExecutorTask>(null));
+        Assert.assertEquals(new ExecutorTaskServiceImpl().getExecutorTask("testTask"), null);
+        Mockito.verify(executorTaskDao).find(Mockito.eq(configSession), Mockito.<ConfigWhere[]>any());
     }
 }
 
