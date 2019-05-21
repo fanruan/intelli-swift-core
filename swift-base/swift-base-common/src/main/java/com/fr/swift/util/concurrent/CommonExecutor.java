@@ -17,5 +17,6 @@ public class CommonExecutor {
     private static final CommonExecutor INSTANCE = new CommonExecutor();
 
     private CommonExecutor() {
+
     }
 }
