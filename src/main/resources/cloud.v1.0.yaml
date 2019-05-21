@@ -1,6 +1,24 @@
----
-webcontainer: !com.fr.swift.base.meta.SwiftMetaDataBean
-  fields:
+--- !java.util.LinkedHashMap
+execute: !com.fr.swift.base.meta.SwiftMetaDataBean
+  fields: 
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: id
+      name: id
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: tName
+      name: tName
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: displayName
+      name: displayName
+      precision: 255
+      scale: 15
+      type: 12
     - !com.fr.swift.base.meta.MetaDataColumnBean
       columnId: time
       name: time
@@ -8,29 +26,41 @@ webcontainer: !com.fr.swift.base.meta.SwiftMetaDataBean
       scale: 15
       type: 91
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: containerType
-      name: containerType
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: containerMemory
-      name: containerMemory
+      columnId: memory
+      name: memory
       precision: 255
       scale: 15
       type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: cpu
-      name: cpu
+      columnId: type
+      name: type
       precision: 255
       scale: 15
       type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: disk
-      name: disk
+      columnId: consume
+      name: consume
+      precision: 255
+      scale: 15
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: sqlTime
+      name: sqlTime
+      precision: 255
+      scale: 15
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: reportId
+      name: reportId
       precision: 255
       scale: 15
       type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: coreConsume
+      name: coreConsume
+      precision: 255
+      scale: 15
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
       columnId: appId
       name: appId
@@ -43,10 +73,122 @@ webcontainer: !com.fr.swift.base.meta.SwiftMetaDataBean
       precision: 255
       scale: 15
       type: 12
-  swiftDatabase: &31 !com.fr.swift.db.SwiftDatabase CUBE
-  tableName: web_container
+  id: execution
+  swiftDatabase: &51 !com.fr.swift.db.SwiftDatabase CUBE
+  tableName: execution
+executesql: !com.fr.swift.base.meta.SwiftMetaDataBean
+  fields: 
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: time
+      name: time
+      precision: 255
+      scale: 15
+      type: 91
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: executionId
+      name: executionId
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: dsName
+      name: dsName
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: sqlTime
+      name: sqlTime
+      precision: 255
+      scale: 15
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: rows
+      name: rows
+      precision: 255
+      scale: 15
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: columns
+      name: columns
+      precision: 255
+      scale: 15
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: appId
+      name: appId
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: yearMonth
+      name: yearMonth
+      precision: 255
+      scale: 15
+      type: 12
+  id: execution_sql
+  swiftDatabase: *51
+  tableName: execution_sql
+functionusagerate: !com.fr.swift.base.meta.SwiftMetaDataBean
+  fields: 
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: id
+      name: id
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: time
+      name: time
+      precision: 255
+      scale: 15
+      type: 91
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: appId
+      name: appId
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: yearMonth
+      name: yearMonth
+      precision: 255
+      scale: 15
+      type: 12
+  id: function_usage_rate
+  swiftDatabase: *51
+  tableName: function_usage_rate
+package: !com.fr.swift.base.meta.SwiftMetaDataBean
+  fields: 
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: appName
+      name: appName
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: appId
+      name: appId
+      precision: 255
+      scale: 15
+      type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: time
+      name: time
+      precision: 255
+      scale: 15
+      type: 91
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: yearMonth
+      name: yearMonth
+      precision: 255
+      scale: 15
+      type: 12
+  id: package_info
+  swiftDatabase: *51
+  tableName: package_info
 realtimeusage: !com.fr.swift.base.meta.SwiftMetaDataBean
-  fields:
+  fields: 
     - !com.fr.swift.base.meta.MetaDataColumnBean
       columnId: time
       name: time
@@ -77,66 +219,11 @@ realtimeusage: !com.fr.swift.base.meta.SwiftMetaDataBean
       precision: 255
       scale: 15
       type: 12
-  swiftDatabase: *31
+  id: real_time_usage
+  swiftDatabase: *51
   tableName: real_time_usage
-functionusagerate: !com.fr.swift.base.meta.SwiftMetaDataBean
-  fields:
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: id
-      name: id
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: time
-      name: time
-      precision: 255
-      scale: 15
-      type: 91
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: appId
-      name: appId
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: yearMonth
-      name: yearMonth
-      precision: 255
-      scale: 15
-      type: 12
-  swiftDatabase: *31
-  tableName: function_usage_rate
-package: !com.fr.swift.base.meta.SwiftMetaDataBean
-  fields:
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: appName
-      name: appName
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: appId
-      name: appId
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: time
-      name: time
-      precision: 255
-      scale: 15
-      type: 91
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: yearMonth
-      name: yearMonth
-      precision: 255
-      scale: 15
-      type: 12
-  swiftDatabase: *31
-  tableName: package_info
 tplinfo: !com.fr.swift.base.meta.SwiftMetaDataBean
-  fields:
+  fields: 
     - !com.fr.swift.base.meta.MetaDataColumnBean
       columnId: time
       name: time
@@ -329,28 +416,11 @@ tplinfo: !com.fr.swift.base.meta.SwiftMetaDataBean
       precision: 255
       scale: 15
       type: 12
-  swiftDatabase: *31
+  id: template_info
+  swiftDatabase: *51
   tableName: template_info
-execute: !com.fr.swift.base.meta.SwiftMetaDataBean
-  fields:
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: id
-      name: id
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: tName
-      name: tName
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: displayName
-      name: displayName
-      precision: 255
-      scale: 15
-      type: 12
+webcontainer: !com.fr.swift.base.meta.SwiftMetaDataBean
+  fields: 
     - !com.fr.swift.base.meta.MetaDataColumnBean
       columnId: time
       name: time
@@ -358,41 +428,29 @@ execute: !com.fr.swift.base.meta.SwiftMetaDataBean
       scale: 15
       type: 91
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: memory
-      name: memory
-      precision: 255
-      scale: 15
-      type: -5
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: type
-      name: type
-      precision: 255
-      scale: 15
-      type: -5
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: consume
-      name: consume
-      precision: 255
-      scale: 15
-      type: -5
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: sqlTime
-      name: sqlTime
-      precision: 255
-      scale: 15
-      type: -5
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: reportId
-      name: reportId
+      columnId: containerType
+      name: containerType
       precision: 255
       scale: 15
       type: 12
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: coreConsume
-      name: coreConsume
+      columnId: containerMemory
+      name: containerMemory
       precision: 255
       scale: 15
       type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: cpu
+      name: cpu
+      precision: 255
+      scale: 15
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: disk
+      name: disk
+      precision: 255
+      scale: 15
+      type: 12
     - !com.fr.swift.base.meta.MetaDataColumnBean
       columnId: appId
       name: appId
@@ -405,57 +463,6 @@ execute: !com.fr.swift.base.meta.SwiftMetaDataBean
       precision: 255
       scale: 15
       type: 12
-  swiftDatabase: *31
-  tableName: execution
-executesql: !com.fr.swift.base.meta.SwiftMetaDataBean
-  fields:
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: time
-      name: time
-      precision: 255
-      scale: 15
-      type: 91
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: executionId
-      name: executionId
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: dsName
-      name: dsName
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: sqlTime
-      name: sqlTime
-      precision: 255
-      scale: 15
-      type: -5
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: rows
-      name: rows
-      precision: 255
-      scale: 15
-      type: -5
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: columns
-      name: columns
-      precision: 255
-      scale: 15
-      type: -5
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: appId
-      name: appId
-      precision: 255
-      scale: 15
-      type: 12
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: yearMonth
-      name: yearMonth
-      precision: 255
-      scale: 15
-      type: 12
-  swiftDatabase: *31
-  tableName: execution_sql
+  id: web_container
+  swiftDatabase: *51
+  tableName: web_container

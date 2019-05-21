@@ -1,7 +1,6 @@
 package com.fr.swift.cloud.analysis.downtime;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.fr.swift.cloud.source.table.Execution;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -41,8 +40,8 @@ public class DowntimeAnalyisUtils {
 
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.<FilterInfoBean>asList(
-                        new InFilterBean(Execution.appId.getName(), appId),
-                        new InFilterBean(Execution.yearMonth.getName(), yearMonth))
+                        new InFilterBean("appId", appId),
+                        new InFilterBean("yearMonth", yearMonth))
         );
         DetailQueryInfoBean bean1 = DetailQueryInfoBean.builder(memTable).setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN))
                 .setFilter(filter).build();

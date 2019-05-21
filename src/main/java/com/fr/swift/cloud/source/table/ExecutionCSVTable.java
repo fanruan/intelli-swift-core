@@ -17,9 +17,11 @@ import java.util.List;
 public class ExecutionCSVTable extends SwiftCSVTable {
 
     public static final SwiftMetaDataColumn coreConsume = new MetaDataColumnBean("coreConsume", Types.BIGINT);
+    public static final SwiftMetaDataColumn consume = new MetaDataColumnBean("consume", Types.BIGINT);
+    public static final SwiftMetaDataColumn sqlTime = new MetaDataColumnBean("sqlTime", Types.BIGINT);
 
-    public ExecutionCSVTable(SwiftMetaData dbMetadata, String appId, String yearMonth) {
-        super(dbMetadata, appId, yearMonth);
+    public ExecutionCSVTable(SwiftMetaData dbMetadata, SwiftMetaData versionMetadata, String appId, String yearMonth) {
+        super(dbMetadata, versionMetadata, appId, yearMonth);
     }
 
     @Override

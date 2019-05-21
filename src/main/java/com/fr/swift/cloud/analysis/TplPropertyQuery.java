@@ -1,10 +1,7 @@
 package com.fr.swift.cloud.analysis;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
-import com.fr.swift.cloud.source.table.TemplateInfo;
-import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
@@ -22,6 +19,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -35,18 +33,16 @@ public class TplPropertyQuery implements MetricQuery {
     private static String postfix = "Ratio";
 
     private GroupQueryInfoBean bean;
-    private SwiftMetaDataService service = SwiftContext.get().getBean(SwiftMetaDataService.class);
     private List<String> properties;
 
     {
-        List<String> fields = service.getMetaDataByKey(TemplateInfo.tableName).getFieldNames();
-        properties = fields.subList(fields.indexOf(TemplateInfo.condition.getName()), fields.indexOf(TemplateInfo.execution0.getName()));
+        properties = new ArrayList<String>(Arrays.asList("condition", "formula", "sheet", "ds", "complexFormula", "submission", "frozen", "foldTree", "widget", "templateSize", "imageSize"));
     }
 
     public TplPropertyQuery(FilterInfoBean filter) {
-        bean = GroupQueryInfoBean.builder(TemplateInfo.tableName)
+        bean = GroupQueryInfoBean.builder("template_info")
                 .setFilter(filter)
-                .setDimensions(new DimensionBean(DimensionType.GROUP, TemplateInfo.tName.getName()))
+                .setDimensions(new DimensionBean(DimensionType.GROUP, "tName"))
                 .setAggregations(createMetrics())
                 .build();
     }
@@ -71,7 +67,11 @@ public class TplPropertyQuery implements MetricQuery {
             List list = new ArrayList();
             list.add(row.getValue(0));
             for (int i = 1; i < row.getSize(); i++) {
-                list.add(Math.round((Double) row.getValue(i)));
+                if (row.getValue(i) != null) {
+                    list.add(Math.round((Double) row.getValue(i)));
+                } else {
+                    list.add(0L);
+                }
             }
             rows.add(list);
         }

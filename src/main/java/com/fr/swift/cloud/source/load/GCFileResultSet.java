@@ -1,22 +1,16 @@
 package com.fr.swift.cloud.source.load;
 
 import com.fr.swift.cloud.source.CloudTableType;
-import com.fr.swift.cloud.source.table.GCRecord;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,86 +20,53 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-// TODO: 2019/5/10 by lucifer gc demo待重构
-public class GCFileResultSet implements CloudResultSet {
+public class GCFileResultSet extends AbstractCloudResultSet {
 
-    private LineParser parser;
-    private GCRecord gcRecord;
-    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public GCFileResultSet(List<File> files, LineParser parser, SwiftMetaData versionMetadata, SwiftMetaData dbMetadata) throws Exception {
+        super(files, parser, versionMetadata, dbMetadata);
+    }
 
-
-    private SwiftMetaData metaData;
-    private List<Row> rowList = new ArrayList<Row>();
-    private int currentRow = 0;
-
-    public GCFileResultSet(GCRecord gcRecord, SwiftMetaData metadata) {
-        this.metaData = metadata;
-        this.gcRecord = gcRecord;
-        this.parser = gcRecord.getParser();
+    @Override
+    protected Row nextRow() {
         String line;
         try {
             StringBuilder currentBuilder = null;
-            int currentFile = 0;
-            while (currentFile < gcRecord.getFiles().length) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(gcRecord.getFiles()[currentFile]), "utf8"));
-                try {
-                    while ((line = reader.readLine()) != null) {
-                        if (line.contains("minor GC") || line.contains("major GC")) {
-                            currentBuilder = new StringBuilder();
-                        }
-                        if (currentBuilder == null) {
-                            continue;
-                        }
-                        currentBuilder.append(line);
-                        if (line.contains("duration")) {
-                            int duration = currentBuilder.indexOf("duration");
-                            String time = currentBuilder.substring(0, 25);
-
-                            // TODO: 2019/5/10 by lucifer 改使用
-                            LocalDateTime localDateTime = LocalDateTime.parse(time.replace("EDT", " "), dtf);
-                            ZoneId zone = ZoneId.systemDefault();
-                            Instant instant = localDateTime.atZone(zone).toInstant();
-                            Date date = Date.from(instant);
-                            rowList.add(new ListBasedRow(date.getTime()
-                                    , (currentBuilder.toString().contains("minor GC") ? "minor GC" : "major GC")
-                                    , Long.valueOf(currentBuilder.toString().substring(duration + 9, currentBuilder.length() - 2))));
-                            currentBuilder = null;
-                        }
-                    }
-                } finally {
-                    reader.close();
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("minor GC") || line.contains("major GC")) {
+                    currentBuilder = new StringBuilder();
                 }
-                currentFile++;
+                if (currentBuilder == null) {
+                    continue;
+                }
+                currentBuilder.append(line);
+                if (line.contains("duration")) {
+                    Map<String, Object> result = this.parser.parseToMap(currentBuilder.toString());
+                    Row row = null;
+                    if (result != null) {
+                        Object[] rowValue = new Object[dbMetadata.getColumnCount()];
+                        for (Map.Entry<String, Object> rowEntry : result.entrySet()) {
+                            String columnName = rowEntry.getKey();
+                            try {
+                                int dbIndex = dbMetadata.getColumnIndex(columnName);
+                                Object value = rowEntry.getValue();
+                                rowValue[dbIndex - 1] = value;
+                            } catch (SwiftMetaDataException ignore) {
+                            }
+                        }
+                        row = new ListBasedRow(rowValue);
+                    }
+                    return row;
+                }
+            }
+            if (++currentFileIndex < files.size()) {
+                close();
+                reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), charsetList.get(currentFileIndex)));
+                return nextRow();
             }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-    }
-
-    @Override
-    public int getFetchSize() {
-        return 0;
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return metaData;
-    }
-
-    @Override
-    public boolean hasNext() throws SQLException {
-        return rowList.size() > currentRow;
-    }
-
-    @Override
-    public Row getNextRow() throws SQLException {
-        Map<String, Object> row = parser.parseToMap(rowList.get(currentRow++));
-        return new ListBasedRow(new ArrayList(row.values()));
-
-    }
-
-    @Override
-    public void close() throws SQLException {
+        return null;
     }
 
     @Override
@@ -113,42 +74,25 @@ public class GCFileResultSet implements CloudResultSet {
         return CloudTableType.GC;
     }
 
-//    public static void main(String[] args) throws IOException {
+//    public static void main(String[] args) throws Exception {
 //        File[] files = new File[]{
-//                new File("D:\\swift-new\\analyseSourceData\\lucifer\\app1\\201904\\fanruan.gc.log.2019-04-22")
-//                , new File("D:\\swift-new\\analyseSourceData\\lucifer\\app1\\201904\\fanruan.gc.log.2019-04-23")};
-//        String line;
-//        try {
-//            StringBuilder currentBuilder = null;
-//            int currentFile = 0;
-//            while (currentFile < files.length) {
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(files[currentFile]), "utf8"));
-//                while ((line = reader.readLine()) != null) {
-//                    if (line.contains("minor GC") || line.contains("major GC")) {
-//                        currentBuilder = new StringBuilder();
-//                    }
-//                    if (currentBuilder == null) {
-//                        continue;
-//                    }
-//                    currentBuilder.append(line);
-//                    if (line.contains("duration")) {
-//                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                        int duration = currentBuilder.indexOf("duration");
+//                new File("D:\\swift-new\\analyseSourceData\\treas201905\\fanruan.gc.log.2019-05-16")
+//                , new File("D:\\swift-new\\analyseSourceData\\treas201905\\fanruan.gc.log.2019-05-15")
+//                , new File("D:\\swift-new\\analyseSourceData\\treas201905\\fanruan.gc.log.2019-05-14")};
+//        Map<String, SwiftMetaData> map = CloudVersionProperty.getProperty().getMetadataMapByVersion("2.0");
+//        SwiftMetaData swiftMetaData = map.get("fanruan.gc.log");
 //
-//                        String time = currentBuilder.substring(0, 25);
-//                        Date date = sdf.parse(time.replace("EDT", " "));
-//                        System.out.println(date.getTime());
-//                        System.out.println("type:" + (currentBuilder.toString().contains("minor GC") ? "minor GC" : "major GC"));
-//                        System.out.println("duration:" + currentBuilder.toString().substring(duration + 9, currentBuilder.length() - 2));
-//                        currentBuilder = null;
-//                        System.out.println("==========");
-//                    }
-//                }
-//                currentFile++;
+//        List<SwiftMetaDataColumn> selfBaseFields = new ArrayList<SwiftMetaDataColumn>();
+//        for (SwiftMetaDataColumn field : ((SwiftMetaDataBean) swiftMetaData).getFields()) {
+//            if (field.getName().equals("appId") || field.getName().equals("yearMonth")) {
+//                continue;
 //            }
-//        } catch (Exception e) {
-//            SwiftLoggers.getLogger().error(e);
+//            selfBaseFields.add(field);
 //        }
-//        return;
+//        GCFileResultSet resultSet = new GCFileResultSet(Arrays.asList(files), new GeneralLineParser("gc_record", "a", "201905", new RawGCParser(selfBaseFields), LineAdapter.DUMMY), swiftMetaData, swiftMetaData);
+//        while (resultSet.hasNext()) {
+//            Row row = resultSet.getNextRow();
+//            System.out.println(row);
+//        }
 //    }
 }
