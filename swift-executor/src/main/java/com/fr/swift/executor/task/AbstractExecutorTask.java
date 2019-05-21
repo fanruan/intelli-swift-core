@@ -44,7 +44,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.job = job;
         //job to taskContent
         this.statusType = StatusType.WAITING;
-        this.createTime = System.nanoTime();
+        this.createTime = System.currentTimeMillis();
         this.taskId = String.valueOf(createTime);
 
         this.taskContent = JsonBuilder.writeJsonString(job.serializedTag());

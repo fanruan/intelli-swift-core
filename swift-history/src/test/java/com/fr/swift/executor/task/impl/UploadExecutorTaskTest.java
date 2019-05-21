@@ -36,7 +36,7 @@ public class UploadExecutorTaskTest {
     @Test
     public void testDeserialize() throws Exception {
         ExecutorTask executorTask = new UploadExecutorTask(new SourceKey("test"), false, SwiftTaskType.UPLOAD, LockType.REAL_SEG,
-                LockType.REAL_SEG.name(), DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
+                LockType.REAL_SEG.name(), DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json);
         UploadJob uploadJob = (UploadJob) executorTask.getJob();
 
         Field field1 = UploadJob.class.getDeclaredField("uploadSegmentKey");
