@@ -1,15 +1,20 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
+import com.fineio.accessor.Block;
 import com.fineio.io.file.FileBlock;
 import com.fineio.storage.Connector;
+import com.fineio.v3.file.DirectoryBlock;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.IoUtil;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yee
@@ -17,7 +22,7 @@ import java.io.InputStream;
  */
 public class FileConnector extends BaseConnector {
 
-    private FileConnector(String path) {
+    FileConnector(String path) {
         super(path);
     }
 
@@ -25,23 +30,23 @@ public class FileConnector extends BaseConnector {
         return new FileConnector(path);
     }
 
-    private File toFile(FileBlock block, boolean mkdirs) {
-        File dir = new File(parentURI + "/" + block.getParentUri().getPath());
+    private File toFile(String path, String name, boolean mkdirs) {
+        File dir = new File(parentURI + "/" + path);
         if (mkdirs) {
             dir.mkdirs();
         }
-        return new File(dir, block.getFileName());
+        return new File(dir, name);
     }
 
     @Override
     public InputStream read(FileBlock block) throws IOException {
-        File f = toFile(block, false);
+        File f = toFile(block.getParentUri().getPath(), block.getFileName(), false);
         return new FileInputStream(f);
     }
 
     @Override
     public void write(FileBlock block, InputStream is) throws IOException {
-        File f = toFile(block, true);
+        File f = toFile(block.getParentUri().getPath(), block.getFileName(), true);
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(f);
@@ -58,14 +63,36 @@ public class FileConnector extends BaseConnector {
     }
 
     @Override
-    public boolean delete(FileBlock block) {
-        File f = toFile(block, false);
+    public boolean delete(Block block) {
+        File f = toFile(block.getPath(), block.getName(), false);
         return f.delete();
     }
 
     @Override
-    public boolean exists(FileBlock block) {
-        File f = toFile(block, false);
+    public boolean exists(Block block) {
+        File f = toFile(block.getPath(), block.getName(), false);
         return f.exists() && f.length() > 0;
+    }
+
+    @Override
+    public Block list(String dir) {
+        File f = new File(parentURI + "/" + dir);
+        if (f.isDirectory()) {
+            List<Block> blocks = new ArrayList<Block>();
+            File[] list = f.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File name) {
+                    return !(".".equals(name.getName()) || "..".equals(name.getName()));
+                }
+            });
+            if (null != list) {
+                for (File s : list) {
+                    blocks.add(list(s.getAbsolutePath()));
+                }
+            }
+            return new DirectoryBlock(dir, blocks);
+        } else {
+            return new FileBlock(f.getParent().replace(parentURI + "/", ""), f.getName());
+        }
     }
 }
