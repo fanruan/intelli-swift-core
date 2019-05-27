@@ -47,4 +47,12 @@ public class MessageProducer {
         producer.send(new ProducerRecord<Integer, String>(topic, message)).get();
         SwiftLoggers.getLogger().info("Sent message: [" + message + "]");
     }
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        MessageProducer messageProducer = new MessageProducer();
+        messageProducer.produce("lucifer_test", "test_2019_05_22");
+
+        MessageConsumer consumer = new MessageConsumer("lucifer_test");
+        consumer.start();
+    }
 }

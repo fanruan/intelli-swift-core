@@ -50,7 +50,9 @@ public class FileImportUtils {
         for (Map.Entry<String, List<File>> fileImportTableEntry : fileImportTables.entrySet()) {
             String fileNameHead = fileImportTableEntry.getKey();
             SwiftMetaData versionMetadata = metaDataMap.get(fileNameHead);
-
+            if (versionMetadata == null) {
+                continue;
+            }
             CloudTable cloudTable = TableUtils.createIfAbsent(versionMetadata, appId, yearMonth);
             final String tableName = cloudTable.getTableName();
             deleteIfExisting(tableName, appId, yearMonth);

@@ -45,7 +45,7 @@ public abstract class AbstractCloudResultSet implements CloudResultSet {
         for (File file : files) {
             String currentCharset = EncodeUtils.getEncode(file.getAbsolutePath());
             charsetList.add(currentCharset);
-            SwiftLoggers.getLogger().info("file: {}, charset: {}", files.toString(), currentCharset);
+            SwiftLoggers.getLogger().info("file: {}, charset: {}", file.getAbsolutePath(), currentCharset);
         }
         reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), charsetList.get(currentFileIndex)));
         if (this.skipFirstLine) {
