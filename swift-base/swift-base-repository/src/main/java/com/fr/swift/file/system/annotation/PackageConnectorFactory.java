@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FileSystemFactory {
+public @interface PackageConnectorFactory {
     String name();
 }

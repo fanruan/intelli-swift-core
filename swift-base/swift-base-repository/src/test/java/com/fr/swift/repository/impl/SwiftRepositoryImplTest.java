@@ -1,10 +1,10 @@
 package com.fr.swift.repository.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.file.SwiftFileSystemType;
-import com.fr.swift.file.system.annotation.FileSystemFactory;
+import com.fr.swift.file.PackageConnectorType;
+import com.fr.swift.file.system.annotation.PackageConnectorFactory;
 import com.fr.swift.file.system.pool.TestRemoteSystemFactory;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.service.SwiftRepositoryConfService;
 import com.fr.swift.util.FileUtil;
@@ -109,7 +109,7 @@ public class SwiftRepositoryImplTest {
         PowerMock.replay(SwiftContext.class);
         Map<String, Object> factoryMap = new HashMap<String, Object>();
         factoryMap.put("TEST", new TestRemoteSystemFactory());
-        EasyMock.expect(mockSwiftContext.getBeansByAnnotations(EasyMock.eq(FileSystemFactory.class))).andReturn(factoryMap).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBeansByAnnotations(EasyMock.eq(PackageConnectorFactory.class))).andReturn(factoryMap).anyTimes();
         // Generate by Mock Plugin
         SwiftRepositoryConfService mockSwiftRepositoryConfService = PowerMock.createMock(SwiftRepositoryConfService.class);
         EasyMock.expect(mockSwiftRepositoryConfService.getCurrentRepository()).andReturn(mockConfig()).anyTimes();
@@ -119,16 +119,16 @@ public class SwiftRepositoryImplTest {
         PowerMock.replay(mockSwiftContext, mockSwiftRepositoryConfService);
     }
 
-    private SwiftFileSystemConfig mockConfig() {
+    private PackageConnectorConfig mockConfig() {
         // Generate by Mock Plugin
-        SwiftFileSystemConfig mockSwiftFileSystemConfig = PowerMock.createMock(SwiftFileSystemConfig.class);
-        EasyMock.expect(mockSwiftFileSystemConfig.getType()).andReturn(new SwiftFileSystemType() {
+        PackageConnectorConfig mockPackageConnectorConfig = PowerMock.createMock(PackageConnectorConfig.class);
+        EasyMock.expect(mockPackageConnectorConfig.getType()).andReturn(new PackageConnectorType() {
             @Override
             public String name() {
                 return "TEST";
             }
         }).anyTimes();
-        PowerMock.replay(mockSwiftFileSystemConfig);
-        return mockSwiftFileSystemConfig;
+        PowerMock.replay(mockPackageConnectorConfig);
+        return mockPackageConnectorConfig;
     }
 }

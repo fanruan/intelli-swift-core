@@ -5,7 +5,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.convert.SwiftFileSystemConvert;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.service.SwiftRepositoryConfService;
 
@@ -24,16 +24,16 @@ public class SwiftRepositoryConfServiceImpl implements SwiftRepositoryConfServic
     private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
 
     @Override
-    public SwiftFileSystemConfig getCurrentRepository() {
+    public PackageConnectorConfig getCurrentRepository() {
         return configService.getConfigBean(CONVERT);
     }
 
     @Override
-    public boolean setCurrentRepository(SwiftFileSystemConfig config) {
+    public boolean setCurrentRepository(PackageConnectorConfig config) {
         if (null == config) {
             return false;
         }
-        SwiftFileSystemConfig current = null;
+        PackageConnectorConfig current = null;
         try {
             current = getCurrentRepository();
         } catch (Exception e) {

@@ -1,19 +1,19 @@
 package com.fr.swift.service;
 
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 
 /**
  * @author yee
  * @date 2018/7/6
  */
 public interface SwiftRepositoryConfService {
-    SwiftFileSystemConfig getCurrentRepository();
+    PackageConnectorConfig getCurrentRepository();
 
-    boolean setCurrentRepository(SwiftFileSystemConfig config);
+    boolean setCurrentRepository(PackageConnectorConfig config);
 
     void registerListener(ConfChangeListener listener);
 
     interface ConfChangeListener {
-        void change(SwiftFileSystemConfig change);
+        void change(PackageConnectorConfig change);
     }
 }
