@@ -8,7 +8,7 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
 import com.fr.swift.config.service.SwiftConfigService;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 import com.fr.swift.service.SwiftRepositoryConfService;
 import com.fr.swift.service.SwiftRepositoryConfService.ConfChangeListener;
 import org.easymock.EasyMock;
@@ -86,7 +86,7 @@ public class SwiftRepositoryConfServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         PowerMock.mockStatic(ConfChangeListener.class);
         ConfChangeListener mockConfChangeListener = PowerMock.createMock(ConfChangeListener.class);
-        mockConfChangeListener.change(EasyMock.anyObject(SwiftFileSystemConfig.class));
+        mockConfChangeListener.change(EasyMock.anyObject(PackageConnectorConfig.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             @Override
             public Object answer() throws Throwable {
@@ -94,11 +94,11 @@ public class SwiftRepositoryConfServiceImplTest extends BaseServiceTest {
             }
         }).once();
         // Generate by Mock Plugin
-        SwiftFileSystemConfig mockSwiftFileSystemConfig = PowerMock.createMock(SwiftFileSystemConfig.class);
+        PackageConnectorConfig mockPackageConnectorConfig = PowerMock.createMock(PackageConnectorConfig.class);
 
         PowerMock.replayAll();
         service.registerListener(mockConfChangeListener);
-        service.setCurrentRepository(mockSwiftFileSystemConfig);
+        service.setCurrentRepository(mockPackageConnectorConfig);
 // do test
         PowerMock.verifyAll();
 

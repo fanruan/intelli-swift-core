@@ -1,7 +1,7 @@
 package com.fr.swift.file.system;
 
 import com.fr.swift.file.exception.SwiftFileException;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 import com.fr.swift.util.Strings;
 
@@ -11,7 +11,7 @@ import java.io.InputStream;
  * @author yee
  * @date 2018/5/28
  */
-public abstract class AbstractFileSystem<Config extends SwiftFileSystemConfig> implements SwiftFileSystem {
+public abstract class AbstractFileSystem<Config extends PackageConnectorConfig> implements SwiftFileSystem {
     protected Config config;
     private String uri;
 

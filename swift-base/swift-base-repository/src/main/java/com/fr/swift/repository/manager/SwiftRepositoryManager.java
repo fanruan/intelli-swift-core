@@ -2,7 +2,7 @@ package com.fr.swift.repository.manager;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
@@ -20,16 +20,15 @@ public class SwiftRepositoryManager {
         service = SwiftContext.get().getBean(SwiftRepositoryConfService.class);
         service.registerListener(new SwiftRepositoryConfService.ConfChangeListener() {
             @Override
-            public void change(SwiftFileSystemConfig change) {
+            public void change(PackageConnectorConfig change) {
                 if (null != currentRepository) {
                     try {
                         currentRepository = new SwiftRepositoryImpl(change);
-                        currentRepository.testConnection();
                     } catch (RepoNotFoundException e) {
                         throw e;
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
-                        currentRepository = new SwiftRepositoryImpl();
+                        currentRepository = new SwiftRepositoryImpl(change);
                     }
                 }
             }
@@ -43,7 +42,7 @@ public class SwiftRepositoryManager {
     public SwiftRepository currentRepo() {
         if (null == currentRepository) {
             synchronized (SwiftRepositoryManager.class) {
-                SwiftFileSystemConfig config = null;
+                PackageConnectorConfig config = null;
                 try {
                     config = SwiftContext.get().getBean(SwiftRepositoryConfService.class).getCurrentRepository();
                 } catch (Exception e) {
@@ -51,12 +50,11 @@ public class SwiftRepositoryManager {
                 }
                 try {
                     currentRepository = new SwiftRepositoryImpl(config);
-                    currentRepository.testConnection();
                 } catch (RepoNotFoundException e) {
                     throw e;
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
-                    currentRepository = new SwiftRepositoryImpl();
+                    currentRepository = new SwiftRepositoryImpl(config);
                 }
             }
         }

@@ -2,7 +2,7 @@ package com.fr.swift.file.system.pool;
 
 import com.fr.swift.file.system.AbstractFileSystem;
 import com.fr.swift.file.system.SwiftFileSystem;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 import com.fr.swift.repository.impl.SwiftRepositoryImplTest;
 import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 import com.fr.swift.util.Strings;
@@ -17,9 +17,9 @@ import java.io.InputStream;
  * @date 2019-01-08
  */
 public class TestRemoteSystemPool implements RemoteFileSystemPool {
-    private SwiftFileSystemConfig config;
+    private PackageConnectorConfig config;
 
-    public TestRemoteSystemPool(SwiftFileSystemConfig config) {
+    public TestRemoteSystemPool(PackageConnectorConfig config) {
         this.config = config;
     }
 

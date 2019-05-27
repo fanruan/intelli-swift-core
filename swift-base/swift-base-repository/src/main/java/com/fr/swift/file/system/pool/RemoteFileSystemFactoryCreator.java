@@ -1,7 +1,7 @@
 package com.fr.swift.file.system.pool;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.file.system.annotation.FileSystemFactory;
+import com.fr.swift.file.system.annotation.PackageConnectorFactory;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
 import com.fr.swift.repository.exception.RepoNotFoundException;
 
@@ -32,10 +32,10 @@ public class RemoteFileSystemFactoryCreator {
     }
 
     private void init() {
-        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansByAnnotations(FileSystemFactory.class);
+        Map<String, Object> serviceBeanMap = SwiftContext.get().getBeansByAnnotations(PackageConnectorFactory.class);
         if (null != serviceBeanMap && !serviceBeanMap.isEmpty()) {
             for (Object factoryBean : serviceBeanMap.values()) {
-                FileSystemFactory factory = factoryBean.getClass().getAnnotation(FileSystemFactory.class);
+                PackageConnectorFactory factory = factoryBean.getClass().getAnnotation(PackageConnectorFactory.class);
                 factoryMap.put(factory.name(), (SwiftFileSystemFactory) factoryBean);
             }
         }

@@ -8,7 +8,7 @@ import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 import com.fr.swift.file.system.factory.SwiftFileSystemFactory;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 import com.fr.swift.service.SwiftRepositoryConfService;
 import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.Strings;
@@ -48,7 +48,7 @@ public class PublicConfig {
                         if (Strings.isNotEmpty(repoType)) {
                             SwiftFileSystemFactory factory = SwiftContext.get().getBean(repoType, SwiftFileSystemFactory.class);
                             if (null != factory) {
-                                SwiftFileSystemConfig config = (SwiftFileSystemConfig) factory.loadFromProperties(properties);
+                                PackageConnectorConfig config = (PackageConnectorConfig) factory.loadFromProperties(properties);
                                 repositoryConfService.setCurrentRepository(config);
                             }
                         }

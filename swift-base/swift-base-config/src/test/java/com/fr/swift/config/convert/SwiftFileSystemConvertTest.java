@@ -25,7 +25,7 @@ public class SwiftFileSystemConvertTest {
     public void toBean() throws SQLException, ClassNotFoundException {
         SwiftConfigDao mockSwiftConfigDao = PowerMock.createMock(SwiftConfigDao.class);
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigEntity(convert.getNameSpace() + ".class", TestSwiftFileSystemConfig.class.getName())).once();
+                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigEntity(convert.getNameSpace() + ".class", TestPackageConnectorConfig.class.getName())).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
                 EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigEntity(convert.getNameSpace() + ".class", "com.fr.swift.config.bean.FtpRepositoryConfigBean")).once();
         for (Field field : this.getClass().getClassLoader().loadClass("com.fr.swift.repository.config.FtpRepositoryConfig").getDeclaredFields()) {
@@ -42,7 +42,7 @@ public class SwiftFileSystemConvertTest {
         }
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         PowerMock.replayAll();
-        TestSwiftFileSystemConfig rule = (TestSwiftFileSystemConfig) convert.toBean(mockSwiftConfigDao, mockConfigSession);
+        TestPackageConnectorConfig rule = (TestPackageConnectorConfig) convert.toBean(mockSwiftConfigDao, mockConfigSession);
         assertNotNull(rule);
         assertEquals("FTP", convert.toBean(mockSwiftConfigDao, mockConfigSession).getType().name());
         assertEquals("HDFS", convert.toBean(mockSwiftConfigDao, mockConfigSession).getType().name());

@@ -1,7 +1,7 @@
 package com.fr.swift.file.system;
 
 import com.fr.swift.file.exception.SwiftFileException;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -52,7 +52,7 @@ public interface SwiftFileSystem extends Closeable {
     @Override
     void close() throws SwiftFileException;
 
-    SwiftFileSystemConfig getConfig();
+    PackageConnectorConfig getConfig();
 
     long getSize();
 

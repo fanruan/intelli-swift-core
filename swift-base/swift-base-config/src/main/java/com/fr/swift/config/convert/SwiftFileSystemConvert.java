@@ -2,19 +2,19 @@ package com.fr.swift.config.convert;
 
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 
 /**
  * @author yee
  * @date 2018/7/6
  */
-public class SwiftFileSystemConvert extends AbstractObjectConfigConvert<SwiftFileSystemConfig> {
+public class SwiftFileSystemConvert extends AbstractObjectConfigConvert<PackageConnectorConfig> {
 
     private static final String OLD_FTP_CONF = "com.fr.swift.config.bean.FtpRepositoryConfigBean";
     private static final String OLD_HDFS_CONF = "com.fr.swift.config.bean.HdfsRepositoryConfigBean";
 
     public SwiftFileSystemConvert() {
-        super(SwiftFileSystemConfig.class);
+        super(PackageConnectorConfig.class);
     }
 
     @Override

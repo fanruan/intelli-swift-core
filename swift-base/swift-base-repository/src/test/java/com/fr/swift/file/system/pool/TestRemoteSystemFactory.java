@@ -1,8 +1,8 @@
 package com.fr.swift.file.system.pool;
 
-import com.fr.swift.file.system.annotation.FileSystemFactory;
+import com.fr.swift.file.system.annotation.PackageConnectorFactory;
 import com.fr.swift.file.system.factory.BasePooledFileSystemFactory;
-import com.fr.swift.repository.SwiftFileSystemConfig;
+import com.fr.swift.repository.PackageConnectorConfig;
 
 import java.util.Properties;
 
@@ -10,10 +10,10 @@ import java.util.Properties;
  * @author yee
  * @date 2019-01-08
  */
-@FileSystemFactory(name = "TEST")
+@PackageConnectorFactory(name = "TEST")
 public class TestRemoteSystemFactory extends BasePooledFileSystemFactory {
     @Override
-    protected RemoteFileSystemPool createPool(SwiftFileSystemConfig config) {
+    protected RemoteFileSystemPool createPool(PackageConnectorConfig config) {
         return new TestRemoteSystemPool(config);
     }
 
