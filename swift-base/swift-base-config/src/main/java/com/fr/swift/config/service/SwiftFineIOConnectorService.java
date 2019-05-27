@@ -10,4 +10,10 @@ public interface SwiftFineIOConnectorService {
     FineIOConnectorConfig getCurrentConfig();
 
     void setCurrentConfig(FineIOConnectorConfig config);
+
+    void registerListener(ConfChangeListener listener);
+
+    interface ConfChangeListener {
+        void change(FineIOConnectorConfig change);
+    }
 }
