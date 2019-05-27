@@ -7,7 +7,6 @@ import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.cube.io.impl.fineio.connector.annotation.ConnectorBuilder;
 import com.fr.swift.cube.io.impl.fineio.connector.builder.FineIOConnectorBuilder;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.PackageConnectorConfig;
 import com.fr.swift.util.Crasher;
 
 import java.lang.reflect.Constructor;
@@ -53,8 +52,8 @@ public class SwiftConnectorCreator {
         return Crasher.crash(String.format("Cannot build connector witch type is %s", key));
     }
 
-    public static PackageConnector create(PackageConnectorConfig connectorConfig, String path) {
-        String name = connectorConfig.getType().name();
+    public static PackageConnector create(FineIOConnectorConfig connectorConfig, String path) {
+        String name = connectorConfig.type();
         if (INSTANCE.builderMap.containsKey(name)) {
             return INSTANCE.builderMap.get(name).setBasePath(path).buildPackageConnector();
         }
