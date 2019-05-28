@@ -5,6 +5,7 @@ import com.fineio.io.file.FileBlock;
 import com.fineio.storage.Connector;
 import com.fineio.v3.connector.PackageConnector;
 import com.fineio.v3.file.DirectoryBlock;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.utils.SwiftRepositoryUtils;
 
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class PackageConnectorImpl implements PackageConnector {
         try {
             list = connector.list(dir);
         } catch (IOException e) {
-            e.printStackTrace();
+            SwiftLoggers.getLogger().warn(e);
         }
         if (null == list) {
             return new FileBlock(SwiftRepositoryUtils.getParent(dir), SwiftRepositoryUtils.getName(dir) + getSuffix());
