@@ -5,7 +5,9 @@ import com.fineio.v3.connector.PackageConnector;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.cube.io.impl.fineio.connector.annotation.ConnectorBuilder;
+import com.fr.swift.cube.io.impl.fineio.connector.annotation.PackConnectorBuilder;
 import com.fr.swift.cube.io.impl.fineio.connector.builder.FineIOConnectorBuilder;
+import com.fr.swift.cube.io.impl.fineio.connector.builder.PackageConnectorBuilder;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
@@ -20,12 +22,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SwiftConnectorCreator {
     private static final SwiftConnectorCreator INSTANCE = new SwiftConnectorCreator();
     private Map<String, FineIOConnectorBuilder> builderMap = new ConcurrentHashMap<String, FineIOConnectorBuilder>();
+    private Map<String, PackageConnectorBuilder> packageBuilder = new ConcurrentHashMap<String, PackageConnectorBuilder>();
 
     private SwiftConnectorCreator() {
         Map<String, Object> beans = SwiftContext.get().getBeansByAnnotations(ConnectorBuilder.class);
         for (Object value : beans.values()) {
             ConnectorBuilder builder = value.getClass().getAnnotation(ConnectorBuilder.class);
             builderMap.put(builder.value(), (FineIOConnectorBuilder) value);
+        }
+        beans = SwiftContext.get().getBeansByAnnotations(PackConnectorBuilder.class);
+        for (Object value : beans.values()) {
+            PackConnectorBuilder builder = value.getClass().getAnnotation(PackConnectorBuilder.class);
+            packageBuilder.put(builder.value(), (PackageConnectorBuilder) value);
         }
     }
 
@@ -52,10 +60,10 @@ public class SwiftConnectorCreator {
         return Crasher.crash(String.format("Cannot build connector witch type is %s", key));
     }
 
-    public static PackageConnector create(FineIOConnectorConfig connectorConfig, String path) {
+    public static PackageConnector createPackConnector(FineIOConnectorConfig connectorConfig) {
         String name = connectorConfig.type();
-        if (INSTANCE.builderMap.containsKey(name)) {
-            return INSTANCE.builderMap.get(name).setBasePath(path).buildPackageConnector();
+        if (INSTANCE.packageBuilder.containsKey(name)) {
+            return INSTANCE.packageBuilder.get(name).build(connectorConfig);
         }
         return Crasher.crash(String.format("Cannot build package connector witch type is %s", name));
     }

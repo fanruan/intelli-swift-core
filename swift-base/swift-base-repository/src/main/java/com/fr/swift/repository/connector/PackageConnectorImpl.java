@@ -1,4 +1,4 @@
-package com.fr.swift.cube.io.impl.fineio.connector;
+package com.fr.swift.repository.connector;
 
 import com.fineio.accessor.Block;
 import com.fineio.io.file.FileBlock;
@@ -38,7 +38,12 @@ public class PackageConnectorImpl implements PackageConnector {
 
     @Override
     public Block list(String dir) {
-        Block list = connector.list(dir);
+        Block list = null;
+        try {
+            list = connector.list(dir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (null == list) {
             return new FileBlock(SwiftRepositoryUtils.getParent(dir), SwiftRepositoryUtils.getName(dir) + getSuffix());
         }

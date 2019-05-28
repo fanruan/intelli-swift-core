@@ -32,7 +32,7 @@ public class SwiftRepositoryManager {
                     }
                 }
             }
-        });
+        }, SwiftFineIOConnectorService.Type.PACKAGE);
     }
 
     public static SwiftRepositoryManager getManager() {
@@ -44,7 +44,7 @@ public class SwiftRepositoryManager {
             synchronized (SwiftRepositoryManager.class) {
                 FineIOConnectorConfig config = null;
                 try {
-                    config = SwiftContext.get().getBean(SwiftFineIOConnectorService.class).getCurrentConfig();
+                    config = SwiftContext.get().getBean(SwiftFineIOConnectorService.class).getCurrentConfig(SwiftFineIOConnectorService.Type.PACKAGE);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn("Cannot find repository config. Use default.");
                 }
