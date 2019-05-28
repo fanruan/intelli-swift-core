@@ -46,8 +46,8 @@ public class NumberInRangeFilterBean extends DetailFilterInfoBean<RangeFilterVal
         }
 
         public Builder setEnd(String end, boolean included) {
-            bean.setStartIncluded(included);
-            bean.setStart(end);
+            bean.setEndIncluded(included);
+            bean.setEnd(end);
             return this;
         }
 
