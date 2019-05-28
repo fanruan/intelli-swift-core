@@ -1,6 +1,8 @@
 package com.fr.swift.boot.controller;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.annotation.Inside;
+import com.fr.swift.annotation.Negative;
 import com.fr.swift.cloud.analysis.TemplateAnalysisUtils;
 import com.fr.swift.cloud.analysis.downtime.DowntimeAnalyser;
 import com.fr.swift.cloud.load.CloudVersionProperty;
@@ -70,6 +72,7 @@ public class SwiftCloudController {
 
     @ResponseBody
     @RequestMapping(value = "/cloud/tpl/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @Inside
     public boolean reAnalyseTpl(@RequestBody Map<String, String> map) throws Exception {
         String appId = map.get("appId");
         String clientId = map.get("clientId");
@@ -82,8 +85,8 @@ public class SwiftCloudController {
 
     @ResponseBody
     @RequestMapping(value = "/cloud/query/sql", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @Inside
     public Object querySql(@RequestBody Map<String, String> map) throws Exception {
-        //todo 暂时先写死给测试服测试用，勿喷
         String url = "jdbc:swift:remote://192.168.5.66:7000/cube";
         String sql = map.get("sql");
         Class.forName("com.fr.swift.jdbc.Driver");
@@ -112,6 +115,7 @@ public class SwiftCloudController {
         }
     }
 
+    @Negative(until = "2019-06-30")
     private void saveCustomerInfo(String clientId, String appId, String yearMonth) {
         if (isExisted(clientId, appId)) {
             return;
@@ -127,6 +131,7 @@ public class SwiftCloudController {
         session.close();
     }
 
+    @Negative(until = "2019-06-30")
     private boolean isExisted(String clientId, String appId) {
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         try {
@@ -140,6 +145,7 @@ public class SwiftCloudController {
         return false;
     }
 
+    @Negative(until = "2019-06-30")
     private String sql(String tableName) {
         return "select 1 from " + tableName + " where clientId = :clientId and appId = :appId";
     }
