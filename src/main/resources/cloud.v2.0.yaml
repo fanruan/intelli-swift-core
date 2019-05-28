@@ -828,16 +828,10 @@ shutdownrecord: !com.fr.swift.base.meta.SwiftMetaDataBean
   swiftDatabase: *63
   tableName: shutdown_record
 fanruan.gc.log: !com.fr.swift.base.meta.SwiftMetaDataBean
-  fields: 
+  fields:
     - !com.fr.swift.base.meta.MetaDataColumnBean
       columnId: gcStartTime
       name: gcStartTime
-      precision: 255
-      scale: 15
-      type: -5
-    - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: gcEndTime
-      name: gcEndTime
       precision: 255
       scale: 15
       type: -5
@@ -860,59 +854,77 @@ fanruan.gc.log: !com.fr.swift.base.meta.SwiftMetaDataBean
       scale: 15
       type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: psEdenSpace
-      name: psEdenSpace
+      columnId: youngBefore
+      name: youngBefore
       precision: 255
       scale: 15
-      type: 12
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: codeCache
-      name: codeCache
+      columnId: youngAfter
+      name: youngAfter
       precision: 255
       scale: 15
-      type: 12
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: classSpace
-      name: classSpace
+      columnId: youngTotal
+      name: youngTotal
       precision: 255
       scale: 15
-      type: 12
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: psSurvivorSpace
-      name: psSurvivorSpace
+      columnId: oldBefore
+      name: oldBefore
       precision: 255
       scale: 15
-      type: 12
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: psOldGen
-      name: psOldGen
+      columnId: oldAfter
+      name: oldAfter
       precision: 255
       scale: 15
-      type: 12
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: metaSpace
-      name: metaSpace
+      columnId: oldTotal
+      name: oldTotal
       precision: 255
       scale: 15
-      type: 12
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: psYoungGen
-      name: psYoungGen
+      columnId: metaspaceBefore
+      name: metaspaceBefore
       precision: 255
       scale: 15
-      type: 12
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: parOldGen
-      name: parOldGen
+      columnId: metaspaceAfter
+      name: metaspaceAfter
       precision: 255
       scale: 15
-      type: 12
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
-      columnId: heap
-      name: heap
+      columnId: metaspaceTotal
+      name: metaspaceTotal
       precision: 255
       scale: 15
-      type: 12
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: sumBefore
+      name: sumBefore
+      precision: 255
+      scale: 15
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: sumAfter
+      name: sumAfter
+      precision: 255
+      scale: 15
+      type: -5
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: sumTotal
+      name: sumTotal
+      precision: 255
+      scale: 15
+      type: -5
     - !com.fr.swift.base.meta.MetaDataColumnBean
       columnId: appId
       name: appId

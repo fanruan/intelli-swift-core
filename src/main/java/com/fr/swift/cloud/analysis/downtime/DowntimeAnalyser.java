@@ -157,7 +157,9 @@ public class DowntimeAnalyser {
         int overloadCpuTimes = 0;
         for (DowntimeElement downtimeElement : downtimeElementList) {
             if (downtimeElement.type() == AbstractDowntimeElement.ElementType.GC) {
-                totalFullGcTime += ((GCElement) downtimeElement).duration();
+                if (((GCElement) downtimeElement).getGcType() != GCElement.GcType.MINOR_GC) {
+                    totalFullGcTime += ((GCElement) downtimeElement).duration();
+                }
             } else if (downtimeElement.type() == AbstractDowntimeElement.ElementType.REALTIME_USAGE) {
                 totalCpuTimes++;
                 if (((RealtimeUsageElement) downtimeElement).cpu() >= CPU_OVERLOAD_RATE) {
@@ -202,7 +204,7 @@ public class DowntimeAnalyser {
         List<DowntimeExecutionResult> rowList = new ArrayList<>();
         while (executionResultSet.hasNext()) {
             Row executionRow = executionResultSet.getNextRow();
-            DowntimeExecutionResult downtimeExecutionResult = new DowntimeExecutionResult(executionRow, downtimeResult.getId(),downtimeResult.getAppId(),downtimeResult.getYearMonth());
+            DowntimeExecutionResult downtimeExecutionResult = new DowntimeExecutionResult(executionRow, downtimeResult.getId(), downtimeResult.getAppId(), downtimeResult.getYearMonth());
 
             FilterInfoBean executionSqlFilter = new AndFilterBean(
                     Arrays.<FilterInfoBean>asList(

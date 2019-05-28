@@ -52,30 +52,34 @@ public class CloudMetadataCreatorV2_0 {
         public static final String fileName = "fanruan.gc.log";
 
         public SwiftMetaDataColumn gcStartTime = new MetaDataColumnBean("gcStartTime", Types.BIGINT);
-        public SwiftMetaDataColumn gcEndTime = new MetaDataColumnBean("gcEndTime", Types.BIGINT);
         public SwiftMetaDataColumn gcType = new MetaDataColumnBean("gcType", Types.VARCHAR);
         public SwiftMetaDataColumn pid = new MetaDataColumnBean("pid", Types.BIGINT);
         public SwiftMetaDataColumn duration = new MetaDataColumnBean("duration", Types.BIGINT);
 
         //暂时先按一行为一个字段存储
-        public SwiftMetaDataColumn edenSpace = new MetaDataColumnBean("psEdenSpace", Types.VARCHAR);
-        public SwiftMetaDataColumn codeCache = new MetaDataColumnBean("codeCache", Types.VARCHAR);
-        public SwiftMetaDataColumn classSpace = new MetaDataColumnBean("classSpace", Types.VARCHAR);
-        public SwiftMetaDataColumn survivorSpace = new MetaDataColumnBean("psSurvivorSpace", Types.VARCHAR);
-        public SwiftMetaDataColumn oldGen = new MetaDataColumnBean("psOldGen", Types.VARCHAR);
-        public SwiftMetaDataColumn metaSpace = new MetaDataColumnBean("metaSpace", Types.VARCHAR);
-        public SwiftMetaDataColumn youngGen = new MetaDataColumnBean("psYoungGen", Types.VARCHAR);
-        public SwiftMetaDataColumn parOldGen = new MetaDataColumnBean("parOldGen", Types.VARCHAR);
-        public SwiftMetaDataColumn heap = new MetaDataColumnBean("heap", Types.VARCHAR);
+        public SwiftMetaDataColumn youngBefore = new MetaDataColumnBean("youngBefore", Types.BIGINT);
+        public SwiftMetaDataColumn youngAfter = new MetaDataColumnBean("youngAfter", Types.BIGINT);
+        public SwiftMetaDataColumn youngTotal = new MetaDataColumnBean("youngTotal", Types.BIGINT);
 
+        public SwiftMetaDataColumn oldBefore = new MetaDataColumnBean("oldBefore", Types.BIGINT);
+        public SwiftMetaDataColumn oldAfter = new MetaDataColumnBean("oldAfter", Types.BIGINT);
+        public SwiftMetaDataColumn oldTotal = new MetaDataColumnBean("oldTotal", Types.BIGINT);
+
+        public SwiftMetaDataColumn metaspaceBefore = new MetaDataColumnBean("metaspaceBefore", Types.BIGINT);
+        public SwiftMetaDataColumn metaspaceAfter = new MetaDataColumnBean("metaspaceAfter", Types.BIGINT);
+        public SwiftMetaDataColumn metaspaceTotal = new MetaDataColumnBean("metaspaceTotal", Types.BIGINT);
+
+        public SwiftMetaDataColumn sumBefore = new MetaDataColumnBean("sumBefore", Types.BIGINT);
+        public SwiftMetaDataColumn sumAfter = new MetaDataColumnBean("sumAfter", Types.BIGINT);
+        public SwiftMetaDataColumn sumTotal = new MetaDataColumnBean("sumTotal", Types.BIGINT);
 
         public SwiftMetaDataColumn appId = new MetaDataColumnBean("appId", Types.VARCHAR);
         public SwiftMetaDataColumn yearMonth = new MetaDataColumnBean("yearMonth", Types.VARCHAR);
 
         public SwiftMetaData getMetadata() {
             List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-            columnList.addAll(Arrays.asList(gcStartTime, gcEndTime, gcType, pid, duration, edenSpace,
-                    codeCache, classSpace, survivorSpace, oldGen, metaSpace, youngGen, parOldGen, heap, appId, yearMonth));
+            columnList.addAll(Arrays.asList(gcStartTime, gcType, pid, duration, youngBefore, youngAfter, youngTotal, oldBefore, oldAfter, oldTotal,
+                    metaspaceBefore, metaspaceAfter, metaspaceTotal, sumBefore, sumAfter, sumTotal, appId, yearMonth));
             return new SwiftMetaDataBean(tableName, null, tableName, null, columnList);
         }
     }

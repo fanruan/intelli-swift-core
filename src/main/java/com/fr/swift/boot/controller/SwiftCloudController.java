@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +88,7 @@ public class SwiftCloudController {
     @RequestMapping(value = "/cloud/query/sql", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @Inside
     public Object querySql(@RequestBody Map<String, String> map) throws Exception {
-        String url = "jdbc:swift:remote://192.168.5.66:7000/cube";
+        String url = map.get("url");
         String sql = map.get("sql");
         Class.forName("com.fr.swift.jdbc.Driver");
         Connection connection = DriverManager.getConnection(url);
@@ -95,20 +96,15 @@ public class SwiftCloudController {
         try {
             ResultSet resultSet = statement.executeQuery(sql);
             int columnCount = resultSet.getMetaData().getColumnCount();
-            List<List> resultList = new ArrayList<>();
-            List fieldNames = new ArrayList();
-            for (int i = 1; i <= columnCount; i++) {
-                fieldNames.add(resultSet.getMetaData().getColumnName(i));
-            }
-            resultList.add(fieldNames);
+            List<Map<String, Object>> resultMap = new ArrayList<>();
             while (resultSet.next()) {
-                List row = new ArrayList();
+                Map<String, Object> row = new LinkedHashMap<>();
                 for (int i = 1; i <= columnCount; i++) {
-                    row.add(resultSet.getObject(i));
+                    row.put(resultSet.getMetaData().getColumnName(i), resultSet.getObject(i));
                 }
-                resultList.add(row);
+                resultMap.add(row);
             }
-            return resultList;
+            return resultMap;
         } finally {
             statement.close();
             connection.close();
