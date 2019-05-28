@@ -1,11 +1,13 @@
 package com.fr.swift.cloud.result;
 
+import com.fr.swift.cloud.result.table.CustomerInfo;
 import com.fr.swift.cloud.result.table.ExecutionMetric;
 import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
 import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
 import com.fr.swift.cloud.result.table.TemplateProperty;
 import com.fr.swift.cloud.result.table.TemplatePropertyRatio;
-import com.fr.swift.cloud.result.table.CustomerInfo;
+import com.fr.swift.cloud.result.table.downtime.DowntimeExecutionResult;
+import com.fr.swift.cloud.result.table.downtime.DowntimeResult;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -42,6 +44,9 @@ public enum ArchiveDBManager {
         configuration.addAnnotatedClass(TemplateProperty.class);
         configuration.addAnnotatedClass(TemplatePropertyRatio.class);
         configuration.addAnnotatedClass(CustomerInfo.class);
+        configuration.addAnnotatedClass(DowntimeResult.class);
+        configuration.addAnnotatedClass(DowntimeExecutionResult.class);
+
         return configuration.buildSessionFactory();
     }
 }

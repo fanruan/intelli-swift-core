@@ -1,5 +1,7 @@
 package com.fr.swift.cloud.analysis.downtime;
 
+import com.fr.swift.query.info.bean.element.DimensionBean;
+import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.source.Row;
 
 /**
@@ -8,7 +10,6 @@ import com.fr.swift.source.Row;
  * @author Lucifer
  * @description
  */
-// TODO: 2019/5/10 by lucifer gc demo待重构
 public class RealtimeUsageElement extends AbstractDowntimeElement {
 
     private long time;
@@ -20,7 +21,7 @@ public class RealtimeUsageElement extends AbstractDowntimeElement {
     private long pid;
 
     public RealtimeUsageElement(Row row) {
-        super(String.valueOf(row.getValue(7)), String.valueOf(row.getValue(8)));
+        super(row.getValue(7), row.getValue(8));
         this.time = row.getValue(0);
         this.node = row.getValue(1);
         this.cpu = row.getValue(2);
@@ -31,17 +32,17 @@ public class RealtimeUsageElement extends AbstractDowntimeElement {
 
     }
 
+    public String node() {
+        return node;
+    }
+
     @Override
     public int pid() {
         return (int) this.pid;
     }
 
-    public double getCpu() {
+    public double cpu() {
         return cpu;
-    }
-
-    public long getMemory() {
-        return memory;
     }
 
     @Override
@@ -52,5 +53,18 @@ public class RealtimeUsageElement extends AbstractDowntimeElement {
     @Override
     public ElementType type() {
         return ElementType.REALTIME_USAGE;
+    }
+
+    public static DimensionBean[] getDimensions() {
+        DimensionBean dimensionBean1 = new DimensionBean(DimensionType.DETAIL, "time");
+        DimensionBean dimensionBean2 = new DimensionBean(DimensionType.DETAIL, "node");
+        DimensionBean dimensionBean3 = new DimensionBean(DimensionType.DETAIL, "cpu");
+        DimensionBean dimensionBean4 = new DimensionBean(DimensionType.DETAIL, "memory");
+        DimensionBean dimensionBean5 = new DimensionBean(DimensionType.DETAIL, "sessionnum");
+        DimensionBean dimensionBean6 = new DimensionBean(DimensionType.DETAIL, "onlinenum");
+        DimensionBean dimensionBean7 = new DimensionBean(DimensionType.DETAIL, "pid");
+        DimensionBean dimensionBean8 = new DimensionBean(DimensionType.DETAIL, "appId");
+        DimensionBean dimensionBean9 = new DimensionBean(DimensionType.DETAIL, "yearMonth");
+        return new DimensionBean[]{dimensionBean1, dimensionBean2, dimensionBean3, dimensionBean4, dimensionBean5, dimensionBean6, dimensionBean7, dimensionBean8, dimensionBean9};
     }
 }

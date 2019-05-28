@@ -6,7 +6,6 @@ package com.fr.swift.cloud.analysis.downtime;
  * @author Lucifer
  * @description
  */
-// TODO: 2019/5/10 by lucifer gc demo待重构
 public abstract class AbstractDowntimeElement implements DowntimeElement {
 
     protected String appId;
@@ -19,5 +18,15 @@ public abstract class AbstractDowntimeElement implements DowntimeElement {
 
     public enum ElementType {
         GC, SHUTDOWN, REALTIME_USAGE
+    }
+
+    @Override
+    public String appid() {
+        return appId;
+    }
+
+    @Override
+    public String yearMonth() {
+        return yearMonth;
     }
 }

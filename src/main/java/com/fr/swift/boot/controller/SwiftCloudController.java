@@ -1,7 +1,10 @@
 package com.fr.swift.boot.controller;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.annotation.Inside;
+import com.fr.swift.annotation.Negative;
 import com.fr.swift.cloud.analysis.TemplateAnalysisUtils;
+import com.fr.swift.cloud.analysis.downtime.DowntimeAnalyser;
 import com.fr.swift.cloud.load.CloudVersionProperty;
 import com.fr.swift.cloud.result.ArchiveDBManager;
 import com.fr.swift.cloud.result.table.CustomerInfo;
@@ -21,7 +24,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Query;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,23 +72,58 @@ public class SwiftCloudController {
 
     @ResponseBody
     @RequestMapping(value = "/cloud/tpl/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @Inside
     public boolean reAnalyseTpl(@RequestBody Map<String, String> map) throws Exception {
         String appId = map.get("appId");
         String clientId = map.get("clientId");
         String yearMonth = map.get("yearMonth");
         TemplateAnalysisUtils.tplAnalysis(appId, yearMonth);
-        saveCustomerInfo(clientId, appId);
+        new DowntimeAnalyser().downtimeAnalyse(appId, yearMonth);
+        saveCustomerInfo(clientId, appId, yearMonth);
         return true;
     }
 
-    private void saveCustomerInfo(String clientId, String appId) {
+    @ResponseBody
+    @RequestMapping(value = "/cloud/query/sql", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @Inside
+    public Object querySql(@RequestBody Map<String, String> map) throws Exception {
+        String url = "jdbc:swift:remote://192.168.5.66:7000/cube";
+        String sql = map.get("sql");
+        Class.forName("com.fr.swift.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url);
+        Statement statement = connection.createStatement();
+        try {
+            ResultSet resultSet = statement.executeQuery(sql);
+            int columnCount = resultSet.getMetaData().getColumnCount();
+            List<List> resultList = new ArrayList<>();
+            List fieldNames = new ArrayList();
+            for (int i = 1; i <= columnCount; i++) {
+                fieldNames.add(resultSet.getMetaData().getColumnName(i));
+            }
+            resultList.add(fieldNames);
+            while (resultSet.next()) {
+                List row = new ArrayList();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.add(resultSet.getObject(i));
+                }
+                resultList.add(row);
+            }
+            return resultList;
+        } finally {
+            statement.close();
+            connection.close();
+        }
+    }
+
+    @Negative(until = "2019-06-30")
+    private void saveCustomerInfo(String clientId, String appId, String yearMonth) {
         if (isExisted(clientId, appId)) {
             return;
         }
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         try {
             Transaction transaction = session.beginTransaction();
-            CustomerInfo customerInfo = new CustomerInfo(clientId, appId);
+            CustomerInfo customerInfo = new CustomerInfo(clientId, appId, yearMonth);
             session.saveOrUpdate(customerInfo);
             transaction.commit();
         } catch (Exception ignored) {
@@ -87,6 +131,7 @@ public class SwiftCloudController {
         session.close();
     }
 
+    @Negative(until = "2019-06-30")
     private boolean isExisted(String clientId, String appId) {
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         try {
@@ -100,6 +145,7 @@ public class SwiftCloudController {
         return false;
     }
 
+    @Negative(until = "2019-06-30")
     private String sql(String tableName) {
         return "select 1 from " + tableName + " where clientId = :clientId and appId = :appId";
     }
