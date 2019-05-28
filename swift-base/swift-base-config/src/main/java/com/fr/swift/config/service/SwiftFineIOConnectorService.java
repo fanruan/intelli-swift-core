@@ -7,13 +7,19 @@ import com.fr.swift.config.bean.FineIOConnectorConfig;
  * @date 2018-12-20
  */
 public interface SwiftFineIOConnectorService {
-    FineIOConnectorConfig getCurrentConfig();
 
-    void setCurrentConfig(FineIOConnectorConfig config);
+    FineIOConnectorConfig getCurrentConfig(Type type);
 
-    void registerListener(ConfChangeListener listener);
+    void setCurrentConfig(FineIOConnectorConfig config, Type type);
+
+    void registerListener(ConfChangeListener listener, Type type);
 
     interface ConfChangeListener {
         void change(FineIOConnectorConfig change);
+    }
+
+    enum Type {
+        //
+        CONNECTOR, PACKAGE
     }
 }

@@ -6,12 +6,12 @@ import com.fineio.storage.Connector;
 import com.fineio.v3.connector.PackageManager;
 import com.fineio.v3.connector.ZipPackageManager;
 import com.fineio.v3.file.DirectoryBlock;
-import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.impl.fineio.connector.SwiftConnectorCreator;
 import com.fr.swift.repository.SwiftRepository;
+import com.fr.swift.repository.exception.RepoNotFoundException;
+import com.fr.swift.util.Crasher;
 
 import java.io.IOException;
 
@@ -24,9 +24,12 @@ public class SwiftRepositoryImpl implements SwiftRepository {
     private PackageManager packageManager;
 
     public SwiftRepositoryImpl(FineIOConnectorConfig config) {
-        String path = SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
-        packageManager = new ZipPackageManager(ConnectorManager.getInstance().getConnector(),
-                SwiftConnectorCreator.create(config, path));
+        try {
+            packageManager = new ZipPackageManager(ConnectorManager.getInstance().getConnector(),
+                    SwiftConnectorCreator.createPackConnector(config));
+        } catch (Crasher.CrashException e) {
+            throw new RepoNotFoundException(e.getMessage());
+        }
     }
 
     @Override

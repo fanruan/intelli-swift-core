@@ -49,7 +49,7 @@ public class ConnectorManager {
         if (null == connector) {
             synchronized (this) {
                 if (null == connector) {
-                    connector = provider.apply(fineIOConnectorService.getCurrentConfig());
+                    connector = provider.apply(fineIOConnectorService.getCurrentConfig(SwiftFineIOConnectorService.Type.CONNECTOR));
                 }
             }
         }

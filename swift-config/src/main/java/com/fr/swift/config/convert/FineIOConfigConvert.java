@@ -16,10 +16,23 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018-12-20
  */
-public class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConnectorConfig> {
+public abstract class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConnectorConfig> {
     private static final String FINE_IO_CONNECTOR = "FINE_IO_CONNECTOR";
+    public static final FineIOConfigConvert CONNECTOR = new FineIOConfigConvert() {
+        @Override
+        protected String getNameSpace() {
+            return FINE_IO_CONNECTOR + "." + SwiftProperty.getProperty().getClusterId();
+        }
+    };
+    private static final String FINE_IO_PACKAGE = "FINE_IO_PACKAGE";
+    public static final FineIOConfigConvert PACKAGE = new FineIOConfigConvert() {
+        @Override
+        protected String getNameSpace() {
+            return FINE_IO_PACKAGE + "." + SwiftProperty.getProperty().getClusterId();
+        }
+    };
 
-    public FineIOConfigConvert() {
+    FineIOConfigConvert() {
         super(FineIOConnectorConfig.class);
     }
 
@@ -38,8 +51,5 @@ public class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConne
         return className;
     }
 
-    @Override
-    protected String getNameSpace() {
-        return FINE_IO_CONNECTOR + "." + SwiftProperty.getProperty().getClusterId();
-    }
+
 }

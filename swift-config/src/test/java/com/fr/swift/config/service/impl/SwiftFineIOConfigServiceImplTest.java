@@ -71,7 +71,7 @@ public class SwiftFineIOConfigServiceImplTest extends BaseServiceTest {
 
     @Test
     public void getCurrentConfig() {
-        assertNotNull(service.getCurrentConfig());
+        assertNotNull(service.getCurrentConfig(SwiftFineIOConnectorService.Type.CONNECTOR));
         PowerMock.verifyAll();
     }
 
@@ -80,7 +80,7 @@ public class SwiftFineIOConfigServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         FineIOConnectorConfig mockFineIOConnectorConfig = PowerMock.createMock(FineIOConnectorConfig.class);
         PowerMock.replayAll();
-        service.setCurrentConfig(mockFineIOConnectorConfig);
+        service.setCurrentConfig(mockFineIOConnectorConfig, SwiftFineIOConnectorService.Type.CONNECTOR);
 // do test
         PowerMock.verifyAll();
 
