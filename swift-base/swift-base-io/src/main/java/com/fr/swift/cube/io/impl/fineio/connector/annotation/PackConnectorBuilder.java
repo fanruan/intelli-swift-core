@@ -1,4 +1,5 @@
-package com.fr.swift.file.system.annotation;
+package com.fr.swift.cube.io.impl.fineio.connector.annotation;
+
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,10 +8,10 @@ import java.lang.annotation.Target;
 
 /**
  * @author yee
- * @date 2018/8/21
+ * @date 2018-12-20
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FileSystemFactory {
-    String name();
+public @interface PackConnectorBuilder {
+    String value();
 }

@@ -1,6 +1,7 @@
 package com.fr.swift.cube.io.impl.fineio.connector.builder;
 
 import com.fineio.storage.Connector;
+import com.fineio.v3.connector.PackageConnector;
 import com.fr.swift.config.ConfigLoader;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
 
@@ -12,4 +13,6 @@ public interface FineIOConnectorBuilder extends ConfigLoader<FineIOConnectorConf
     FineIOConnectorBuilder setBasePath(String basePath);
 
     Connector build();
+
+    PackageConnector buildPackageConnector();
 }
