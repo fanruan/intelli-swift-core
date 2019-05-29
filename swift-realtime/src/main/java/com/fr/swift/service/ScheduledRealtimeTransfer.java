@@ -2,7 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -62,7 +62,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
         }
 
         private static SegmentKey getHistorySegKey(SegmentKey realtimeSegKey) {
-            return new SegmentKeyBean(realtimeSegKey.getTable().getId(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema());
+            return new SwiftSegmentEntity(realtimeSegKey.getTable(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema());
         }
 
         @Override

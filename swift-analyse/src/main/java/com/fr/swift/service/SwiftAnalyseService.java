@@ -7,7 +7,6 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
@@ -59,7 +58,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
         sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
-        cacheSegments();
+//        cacheSegments();
         ClusterListenerHandler.addExtraListener(analyseClusterListener);
         return start;
     }
@@ -122,10 +121,10 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
         @Override
         public void handleEvent(ClusterEvent clusterEvent) {
-            if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-                loadSegmentLocationInfo(clusterSegmentService);
-            }
+//            if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+//                SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+//                loadSegmentLocationInfo(clusterSegmentService);
+//            }
         }
 
         private void loadSegmentLocationInfo(SwiftClusterSegmentService clusterSegmentService) {

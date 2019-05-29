@@ -2,15 +2,12 @@ package com.fr.swift.result;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.ColumnTypeConstants;
-import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -30,7 +27,7 @@ public class SortMultiSegmentDetailResultSetTest {
 
     @Test
     public void getMerger() {
-        assertNotNull(rs.<QueryResultSet<List<Row>>>getMerger());
+        assertNotNull(rs.getMerger());
     }
 
     @Test

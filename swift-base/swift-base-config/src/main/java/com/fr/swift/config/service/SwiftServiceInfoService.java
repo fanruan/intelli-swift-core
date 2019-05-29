@@ -1,6 +1,6 @@
 package com.fr.swift.config.service;
 
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 
 import java.util.List;
 
@@ -11,15 +11,15 @@ import java.util.List;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface SwiftServiceInfoService extends ConfigService<SwiftServiceInfoBean> {
+public interface SwiftServiceInfoService extends ConfigService<SwiftServiceInfoEntity> {
 
     String SERVICE = "cluster_master_service";
 
-    boolean removeServiceInfo(SwiftServiceInfoBean serviceInfoBean);
+    boolean removeServiceInfo(SwiftServiceInfoEntity serviceInfoBean);
 
-    SwiftServiceInfoBean getServiceInfo(SwiftServiceInfoBean serviceInfoBean);
+    SwiftServiceInfoEntity getServiceInfo(SwiftServiceInfoEntity serviceInfoBean);
 
-    List<SwiftServiceInfoBean> getAllServiceInfo();
+    List<SwiftServiceInfoEntity> getAllServiceInfo();
 
-    List<SwiftServiceInfoBean> getServiceInfoByService(String service);
+    List<SwiftServiceInfoEntity> getServiceInfoByService(String service);
 }

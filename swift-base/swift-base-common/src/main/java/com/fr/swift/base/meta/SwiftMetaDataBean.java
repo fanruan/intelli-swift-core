@@ -1,16 +1,20 @@
 package com.fr.swift.base.meta;
 
-import com.fr.swift.converter.ObjectConverter;
+import com.fr.swift.annotation.persistence.Column;
+import com.fr.swift.annotation.persistence.Convert;
+import com.fr.swift.annotation.persistence.Entity;
+import com.fr.swift.annotation.persistence.Enumerated;
+import com.fr.swift.annotation.persistence.Id;
+import com.fr.swift.annotation.persistence.Table;
+import com.fr.swift.config.convert.MetaDataColumnListConverter;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,29 +23,29 @@ import java.util.List;
  * @Description:
  * @Date: Created in 2018-3-8
  */
-public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectConverter {
+@Entity
+@Table(name = "fine_swift_metadata")
+public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
     private static final long serialVersionUID = -6185911493489618460L;
     /**
      * id实际上传的是SourceKey
      * 理论上SourceKey不重复
      */
+    @Id
     private String id;
+    @Column(name = "swiftSchema")
+    @Enumerated(Enumerated.EnumType.STRING)
     private SwiftDatabase swiftDatabase;
+    @Column(name = "schemaName")
     private String schemaName;
+    @Column(name = "tableName")
     private String tableName;
+    @Column(name = "remark")
     private String remark;
+    @Column(name = "fields", length = 65536)
+    @Convert(converter = MetaDataColumnListConverter.class)
     private List<SwiftMetaDataColumn> fields;
     private int columnCount;
-
-    public static final Class TYPE = entityType();
-
-    private static Class entityType() {
-        try {
-            return Class.forName("com.fr.swift.config.entity.SwiftMetaDataEntity");
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
 
     public SwiftMetaDataBean(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
@@ -219,14 +223,4 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
         return String.format("{%s, %s, %s}", swiftDatabase, tableName, fields);
     }
 
-    @Override
-    public Object convert() {
-        try {
-            Constructor constructor = TYPE.getDeclaredConstructor(SwiftMetaDataBean.class);
-            return constructor.newInstance(this);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-        return null;
-    }
 }

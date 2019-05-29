@@ -21,6 +21,7 @@ import com.fr.swift.query.query.FilterBean;
  * @date 2018/6/22
  */
 @JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
         property = "type",
         defaultImpl = SwiftDetailFilterType.class)
 @JsonSubTypes({

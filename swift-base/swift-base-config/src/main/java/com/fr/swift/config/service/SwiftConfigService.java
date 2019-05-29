@@ -1,7 +1,7 @@
 package com.fr.swift.config.service;
 
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 
 import java.sql.SQLException;
@@ -28,12 +28,12 @@ public interface SwiftConfigService {
          * @return
          * @throws SQLException
          */
-        Bean toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException;
+        Bean toBean(SwiftConfigDao<SwiftConfigEntity> dao, ConfigSession session, Object... args) throws SQLException;
 
         /**
          * @param bean
          * @return
          */
-        List<SwiftConfigBean> toEntity(Bean bean, Object... args);
+        List<SwiftConfigEntity> toEntity(Bean bean, Object... args);
     }
 }

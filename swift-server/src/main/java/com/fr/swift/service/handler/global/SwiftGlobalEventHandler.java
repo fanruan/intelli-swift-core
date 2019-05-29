@@ -9,7 +9,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.db.Where;
@@ -68,11 +68,11 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         // todo 用表驱动法，分离switch匹配，和具体的处理逻辑
         switch (event.subEvent()) {
             case CHECK_MASTER:
-                List<SwiftServiceInfoBean> masterServiceInfoBeanList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
+                List<SwiftServiceInfoEntity> masterServiceInfoBeanList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
                 if (masterServiceInfoBeanList.isEmpty()) {
                     Crasher.crash("Master is null!");
                 }
-                SwiftServiceInfoBean masterBean = masterServiceInfoBeanList.get(0);
+                SwiftServiceInfoEntity masterBean = masterServiceInfoBeanList.get(0);
                 if (!Util.equals(ClusterSelector.getInstance().getFactory().getMasterId(), masterBean.getClusterId())) {
                     SwiftLoggers.getLogger().info("Master is not synchronized!");
                     try {

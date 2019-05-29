@@ -1,10 +1,10 @@
 package com.fr.swift.config.dao;
 
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.converter.FindList;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * This class created on 2018/5/29
@@ -13,10 +13,10 @@ import java.sql.SQLException;
  * @description
  * @since Advanced FineBI 5.0
  */
-public interface SwiftServiceInfoDao extends SwiftConfigDao<SwiftServiceInfoBean> {
-    FindList<SwiftServiceInfoBean> getServiceInfoByService(ConfigSession session, String service);
+public interface SwiftServiceInfoDao extends SwiftConfigDao<SwiftServiceInfoEntity> {
+    List<SwiftServiceInfoEntity> getServiceInfoByService(ConfigSession session, String service);
 
-    FindList<SwiftServiceInfoBean> getServiceInfoBySelective(ConfigSession session, SwiftServiceInfoBean bean);
+    List<SwiftServiceInfoEntity> getServiceInfoBySelective(ConfigSession session, SwiftServiceInfoEntity bean);
 
     boolean deleteByServiceInfo(ConfigSession session, String serviceInfo) throws SQLException;
 }

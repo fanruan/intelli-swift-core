@@ -114,7 +114,7 @@ public class BasicDaoTest {
         Mockito.doNothing().when(mockConfigQuery).orderBy(Mockito.any(Order.class));
         Mockito.doNothing().when(mockConfigQuery).where(Mockito.any(ConfigWhere.class));
         Mockito.when(mockConfigSession.createEntityQuery(TestEntity.class)).thenReturn(mockConfigQuery);
-        assertFalse(mockBasicDao.find(mockConfigSession, new Order[]{OrderImpl.asc("")}).list().isEmpty());
+        assertFalse(mockBasicDao.find(mockConfigSession, new Order[]{OrderImpl.asc("")}).isEmpty());
         assertTrue(mockBasicDao.find(mockConfigSession, new Order[]{OrderImpl.asc("")}, ConfigWhereImpl.eq("", "")).isEmpty());
         Mockito.verify(mockConfigQuery, Mockito.atLeastOnce()).orderBy(Mockito.any(Order.class));
         Mockito.verify(mockConfigQuery, Mockito.atLeastOnce()).where(Mockito.any(ConfigWhere.class));
@@ -139,7 +139,7 @@ public class BasicDaoTest {
         });
         Mockito.doNothing().when(mockConfigQuery).where(Mockito.any(ConfigWhere.class));
         Mockito.when(mockConfigSession.createEntityQuery(TestEntity.class)).thenReturn(mockConfigQuery);
-        assertFalse(mockBasicDao.find(mockConfigSession).list().isEmpty());
+        assertFalse(mockBasicDao.find(mockConfigSession).isEmpty());
         assertTrue(mockBasicDao.find(mockConfigSession, ConfigWhereImpl.eq("", "")).isEmpty());
         Mockito.verify(mockConfigQuery, Mockito.times(2)).executeQuery();
         Mockito.verify(mockConfigQuery, Mockito.atLeastOnce()).where(Mockito.any(ConfigWhere.class));

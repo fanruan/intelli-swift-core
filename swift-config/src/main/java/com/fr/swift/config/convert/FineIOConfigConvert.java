@@ -2,9 +2,9 @@ package com.fr.swift.config.convert;
 
 import com.fr.swift.config.bean.CommonConnectorConfig;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 import com.fr.swift.log.SwiftLoggers;
@@ -16,15 +16,28 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018-12-20
  */
-public class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConnectorConfig> {
+public abstract class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConnectorConfig> {
     private static final String FINE_IO_CONNECTOR = "FINE_IO_CONNECTOR";
+    public static final FineIOConfigConvert CONNECTOR = new FineIOConfigConvert() {
+        @Override
+        protected String getNameSpace() {
+            return FINE_IO_CONNECTOR + "." + SwiftProperty.getProperty().getClusterId();
+        }
+    };
+    private static final String FINE_IO_PACKAGE = "FINE_IO_PACKAGE";
+    public static final FineIOConfigConvert PACKAGE = new FineIOConfigConvert() {
+        @Override
+        protected String getNameSpace() {
+            return FINE_IO_PACKAGE + "." + SwiftProperty.getProperty().getClusterId();
+        }
+    };
 
-    public FineIOConfigConvert() {
+    FineIOConfigConvert() {
         super(FineIOConnectorConfig.class);
     }
 
     @Override
-    public FineIOConnectorConfig toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
+    public FineIOConnectorConfig toBean(SwiftConfigDao<SwiftConfigEntity> dao, ConfigSession session, Object... args) throws SQLException {
         try {
             return super.toBean(dao, session, args);
         } catch (Exception e) {
@@ -38,8 +51,5 @@ public class FineIOConfigConvert extends AbstractObjectConfigConvert<FineIOConne
         return className;
     }
 
-    @Override
-    protected String getNameSpace() {
-        return FINE_IO_CONNECTOR + "." + SwiftProperty.getProperty().getClusterId();
-    }
+
 }
