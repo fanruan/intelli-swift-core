@@ -106,7 +106,11 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<ExecutorTask>() {
                 @Override
                 public ExecutorTask work(ConfigSession session) throws SQLException {
-                    List<ExecutorTask> executorTasks = executorTaskDao.find(session, ConfigWhereImpl.eq("id", taskId)).list();
+                    List<SwiftExecutorTaskEntity> entities = executorTaskDao.find(session, ConfigWhereImpl.eq("id", taskId));
+                    List<ExecutorTask> executorTasks = new ArrayList<ExecutorTask>();
+                    for (SwiftExecutorTaskEntity item : entities) {
+                        executorTasks.add(item.convert());
+                    }
                     if (executorTasks.isEmpty()) {
                         return null;
                     } else {
