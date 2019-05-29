@@ -164,7 +164,7 @@ public class SegmentHelper {
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {
                             String uploadPath = new CubePathBuilder(segmentKey).build();
-                            String local = new CubePathBuilder(segmentKey).asAbsolute().setTempDir(tmpPath).build();
+                            String local = new CubePathBuilder(segmentKey).setTempDir(tmpPath).build();
                             repository.copyToRemote(local, uploadPath);
                         } catch (Exception e) {
                             SwiftLoggers.getLogger().error("upload error! ", e);
@@ -206,7 +206,7 @@ public class SegmentHelper {
                             try {
                                 String src = Strings.unifySlash(
                                         String.format("%s/%s/%s",
-                                                new CubePathBuilder(segmentKey).asAbsolute().setTempDir(CubeUtil.getCurrentDir(sourceKey)).build(),
+                                                new CubePathBuilder(segmentKey).setTempDir(CubeUtil.getCurrentDir(sourceKey)).build(),
                                                 RelationIndexImpl.RELATIONS_KEY,
                                                 primary.getId()
                                         ));
