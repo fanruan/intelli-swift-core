@@ -35,7 +35,7 @@ public class DownloadExecutorTastTest {
     @Test
     public void testDeserialize() throws Exception {
         ExecutorTask executorTask = new DownloadExecutorTask(new SourceKey("test"), false, SwiftTaskType.DOWNLOAD, LockType.REAL_SEG,
-                LockType.REAL_SEG.name(), DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
+                LockType.REAL_SEG.name(), DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json);
         DownloadJob downloadJob = (DownloadJob) executorTask.getJob();
 
         Field field1 = DownloadJob.class.getDeclaredField("downloadSegKey");

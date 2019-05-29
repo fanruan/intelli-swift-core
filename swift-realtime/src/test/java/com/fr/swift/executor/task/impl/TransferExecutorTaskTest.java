@@ -32,7 +32,7 @@ public class TransferExecutorTaskTest {
     @Test
     public void testDeserialize() throws Exception {
         ExecutorTask executorTask = new TransferExecutorTask(new SourceKey("test"), false, SwiftTaskType.TRANSFER, LockType.TABLE,
-                "test", DBStatusType.ACTIVE, String.valueOf(System.nanoTime()), System.nanoTime(), json);
+                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json);
         Assert.assertEquals(executorTask.getJob().serializedTag(), segmentKey);
     }
 }
