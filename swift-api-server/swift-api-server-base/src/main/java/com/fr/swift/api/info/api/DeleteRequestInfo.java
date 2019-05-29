@@ -1,5 +1,7 @@
-package com.fr.swift.api.info;
+package com.fr.swift.api.info.api;
 
+import com.fr.swift.api.info.ApiInvocation;
+import com.fr.swift.api.info.RequestType;
 import com.fr.swift.base.json.annotation.JsonProperty;
 
 /**
@@ -11,7 +13,7 @@ public class DeleteRequestInfo extends TableRequestInfo {
     private String where;
 
     public DeleteRequestInfo() {
-        super(ApiRequestType.DELETE);
+        super(RequestType.DELETE);
     }
 
     public String getWhere() {

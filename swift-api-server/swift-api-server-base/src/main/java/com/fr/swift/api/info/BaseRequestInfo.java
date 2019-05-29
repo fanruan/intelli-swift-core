@@ -9,13 +9,13 @@ import java.util.UUID;
  * @date 2018-12-03
  */
 public abstract class BaseRequestInfo<T extends RequestParserVisitor> implements RequestInfo<T> {
-    @JsonProperty(value = "requestType", serializeMethod = "name")
-    protected RequestInfo.Request request;
+    @JsonProperty(value = "requestType")
+    protected RequestType requestType;
     @JsonProperty(value = "requestId")
     private String requestId;
 
-    public BaseRequestInfo(RequestInfo.Request request) {
-        this.request = request;
+    public BaseRequestInfo(RequestType requestType) {
+        this.requestType = requestType;
         this.requestId = UUID.randomUUID().toString();
     }
 
@@ -29,7 +29,11 @@ public abstract class BaseRequestInfo<T extends RequestParserVisitor> implements
     }
 
     @Override
-    public <R extends Request> R getRequest() {
-        return (R) request;
+    public RequestType getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(RequestType requestType) {
+        this.requestType = requestType;
     }
 }

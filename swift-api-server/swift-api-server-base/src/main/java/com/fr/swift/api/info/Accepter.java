@@ -14,7 +14,7 @@ public interface Accepter<T extends RequestParserVisitor> {
      * visitor visits and get api invocation
      *
      * @param visitor any object implement RequestParserVisitor
-     * @return invocation for request
+     * @return invocation for requestType
      * @see RequestParserVisitor
      */
     ApiInvocation accept(T visitor);
