@@ -2,9 +2,9 @@ package com.fr.swift.config.dao;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.converter.FindList;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author yee
@@ -48,7 +48,7 @@ public interface SwiftMetaDataDao extends SwiftConfigDao<SwiftMetaDataBean> {
      *
      * @return
      */
-    FindList<SwiftMetaDataBean> findAll(ConfigSession session);
+    List<SwiftMetaDataBean> findAll(ConfigSession session);
 
     /**
      * 模糊查詢
@@ -57,5 +57,5 @@ public interface SwiftMetaDataDao extends SwiftConfigDao<SwiftMetaDataBean> {
      * @param fuzzyName
      * @return
      */
-    FindList<SwiftMetaDataBean> fuzzyFind(ConfigSession session, String fuzzyName);
+    List<SwiftMetaDataBean> fuzzyFind(ConfigSession session, String fuzzyName);
 }

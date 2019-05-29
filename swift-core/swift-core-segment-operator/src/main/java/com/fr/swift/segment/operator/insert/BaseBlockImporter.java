@@ -1,6 +1,6 @@
 package com.fr.swift.segment.operator.insert;
 
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -106,7 +106,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
-        return new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
+        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
     }
 
     private void releaseFullIfExists() {

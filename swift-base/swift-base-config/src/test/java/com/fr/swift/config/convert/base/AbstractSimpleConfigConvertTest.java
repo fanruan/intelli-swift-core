@@ -1,7 +1,7 @@
 package com.fr.swift.config.convert.base;
 
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -32,9 +32,9 @@ public class AbstractSimpleConfigConvertTest {
         AbstractSimpleConfigConvert<Boolean> mockAbstractSimpleConfigConvert = PowerMock.createMock(AbstractSimpleConfigConvert.class, Boolean.class);
         EasyMock.expect(mockAbstractSimpleConfigConvert.getNameSpace()).andReturn("nameSpace").anyTimes();
         SwiftConfigDao mockSwiftConfigDao = PowerMock.createMock(SwiftConfigDao.class);
-        EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class), EasyMock.anyObject(Serializable.class))).andReturn(new SwiftConfigBean("nameSpace", "true")).once();
+        EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class), EasyMock.anyObject(Serializable.class))).andReturn(new SwiftConfigEntity("nameSpace", "true")).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class), EasyMock.anyObject(Serializable.class))).andReturn(null).once();
-        SwiftConfigBean mockSwiftConfigEntity = PowerMock.createMock(SwiftConfigBean.class);
+        SwiftConfigEntity mockSwiftConfigEntity = PowerMock.createMock(SwiftConfigEntity.class);
         EasyMock.expect(mockSwiftConfigEntity.getConfigValue()).andThrow(new RuntimeException()).anyTimes();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class), EasyMock.anyObject(Serializable.class))).andReturn(mockSwiftConfigEntity).once();
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);

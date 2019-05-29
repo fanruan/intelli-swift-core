@@ -2,7 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -76,9 +76,9 @@ public class SwiftUploadServiceTest {
 
         SourceKey tableKey = new SourceKey("t");
         segKeys = new HashSet<SegmentKey>(Arrays.<SegmentKey>asList(
-                new SegmentKeyBean(tableKey, 0, StoreType.FINE_IO, SwiftDatabase.CUBE),
-                new SegmentKeyBean(tableKey, 1, StoreType.FINE_IO, SwiftDatabase.CUBE),
-                new SegmentKeyBean(tableKey, 2, StoreType.FINE_IO, SwiftDatabase.CUBE)
+                new SwiftSegmentEntity(tableKey, 0, StoreType.FINE_IO, SwiftDatabase.CUBE),
+                new SwiftSegmentEntity(tableKey, 1, StoreType.FINE_IO, SwiftDatabase.CUBE),
+                new SwiftSegmentEntity(tableKey, 2, StoreType.FINE_IO, SwiftDatabase.CUBE)
         ));
     }
 

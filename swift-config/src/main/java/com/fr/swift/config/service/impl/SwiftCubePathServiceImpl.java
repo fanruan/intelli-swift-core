@@ -3,9 +3,9 @@ package com.fr.swift.config.service.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractSimpleConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftCubePathService;
@@ -27,7 +27,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
     private final SwiftConfigService.ConfigConvert<String> CONVERT = new AbstractSimpleConfigConvert<String>(String.class) {
 
         @Override
-        public String toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
+        public String toBean(SwiftConfigDao<SwiftConfigEntity> dao, ConfigSession session, Object... args) throws SQLException {
             try {
                 String path = super.toBean(dao, session, args);
                 if (isValidPath(path)) {
@@ -36,7 +36,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
             } catch (Exception ignore) {
             }
             String path = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
-            for (SwiftConfigBean swiftConfigEntity : toEntity(path)) {
+            for (SwiftConfigEntity swiftConfigEntity : toEntity(path)) {
                 dao.saveOrUpdate(session, swiftConfigEntity);
             }
             return path;

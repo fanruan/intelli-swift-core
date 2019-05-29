@@ -1,7 +1,7 @@
 package com.fr.swift.config.convert.base;
 
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -29,19 +29,19 @@ public class AbstractObjectConfigConvertTest {
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
                 EasyMock.eq("nameSpace.class"))).andReturn(null).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq("nameSpace.class"))).andReturn(new SwiftConfigBean("nameSpace.class", "com.fr.swift.config.convert.base.AbstractObjectConfigConvertTest")).once();
+                EasyMock.eq("nameSpace.class"))).andReturn(new SwiftConfigEntity("nameSpace.class", "com.fr.swift.config.convert.base.AbstractObjectConfigConvertTest")).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq("nameSpace.class"))).andReturn(new SwiftConfigBean("nameSpace.class", "com.fr.swift.config.convert.base.TestObject")).once();
+                EasyMock.eq("nameSpace.class"))).andReturn(new SwiftConfigEntity("nameSpace.class", "com.fr.swift.config.convert.base.TestObject")).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq("nameSpace.name"))).andReturn(new SwiftConfigBean("nameSpace.name", "小明")).once();
+                EasyMock.eq("nameSpace.name"))).andReturn(new SwiftConfigEntity("nameSpace.name", "小明")).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq("nameSpace.age"))).andReturn(new SwiftConfigBean("nameSpace.age", "20")).once();
+                EasyMock.eq("nameSpace.age"))).andReturn(new SwiftConfigEntity("nameSpace.age", "20")).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq("nameSpace.class"))).andReturn(new SwiftConfigBean("nameSpace.class", "com.fr.swift.config.convert.base.TestObject")).once();
+                EasyMock.eq("nameSpace.class"))).andReturn(new SwiftConfigEntity("nameSpace.class", "com.fr.swift.config.convert.base.TestObject")).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq("nameSpace.name"))).andReturn(new SwiftConfigBean("nameSpace.name", "小明")).once();
+                EasyMock.eq("nameSpace.name"))).andReturn(new SwiftConfigEntity("nameSpace.name", "小明")).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq("nameSpace.age"))).andReturn(new SwiftConfigBean("nameSpace.age", "exception")).once();
+                EasyMock.eq("nameSpace.age"))).andReturn(new SwiftConfigEntity("nameSpace.age", "exception")).once();
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         PowerMock.replayAll();
         boolean exception = false;
@@ -80,7 +80,7 @@ public class AbstractObjectConfigConvertTest {
         TestObject testObject = new TestObject();
         testObject.setAge(100);
         testObject.setName("Mark");
-        List<SwiftConfigBean> list = mockAbstractObjectConfigConvert.toEntity(testObject);
+        List<SwiftConfigEntity> list = mockAbstractObjectConfigConvert.toEntity(testObject);
         assertEquals(3, list.size());
         assertEquals("nameSpace.class", list.get(0).getConfigKey());
         assertEquals("com.fr.swift.config.convert.base.TestObject", list.get(0).getConfigValue());

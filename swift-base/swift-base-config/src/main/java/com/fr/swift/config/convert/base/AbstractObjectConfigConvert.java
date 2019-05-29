@@ -1,8 +1,8 @@
 package com.fr.swift.config.convert.base;
 
 import com.fr.swift.config.annotation.ConfigField;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.ReflectUtils;
@@ -26,8 +26,8 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
     }
 
     @Override
-    public T toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
-        SwiftConfigBean entity = dao.select(session, getKey("class"));
+    public T toBean(SwiftConfigDao<SwiftConfigEntity> dao, ConfigSession session, Object... args) throws SQLException {
+        SwiftConfigEntity entity = dao.select(session, getKey("class"));
         if (null == entity) {
             throw new SQLException("Cannot find Rule");
         }
@@ -41,7 +41,7 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 if (field.isAnnotationPresent(ConfigField.class)) {
-                    SwiftConfigBean tmp = dao.select(session, getKey(field.getName()));
+                    SwiftConfigEntity tmp = dao.select(session, getKey(field.getName()));
                     if (null != tmp) {
                         ReflectUtils.set(field, rule, tmp.getConfigValue());
                     }
@@ -54,11 +54,11 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
     }
 
     @Override
-    public List<SwiftConfigBean> toEntity(T dataSyncRule, Object... args) {
+    public List<SwiftConfigEntity> toEntity(T dataSyncRule, Object... args) {
         try {
             String syncClass = dataSyncRule.getClass().getName();
-            List<SwiftConfigBean> result = new ArrayList<SwiftConfigBean>();
-            SwiftConfigBean entity = new SwiftConfigBean(getKey("class"), syncClass);
+            List<SwiftConfigEntity> result = new ArrayList<SwiftConfigEntity>();
+            SwiftConfigEntity entity = new SwiftConfigEntity(getKey("class"), syncClass);
             result.add(entity);
             Field[] fields = dataSyncRule.getClass().getDeclaredFields();
             for (Field field : fields) {
@@ -68,7 +68,7 @@ public abstract class AbstractObjectConfigConvert<T> extends BaseConfigConvert<T
                     if (Strings.isEmpty(value) && configField.ignoreNull()) {
                         continue;
                     }
-                    result.add(new SwiftConfigBean(getKey(field.getName()), ReflectUtils.getString(field, dataSyncRule)));
+                    result.add(new SwiftConfigEntity(getKey(field.getName()), ReflectUtils.getString(field, dataSyncRule)));
                 }
             }
             return result;

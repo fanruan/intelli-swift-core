@@ -5,7 +5,7 @@ import com.fr.swift.Collect;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rm.collector.MasterHeartbeatCollect;
@@ -47,7 +47,7 @@ public class MasterManager extends AbstractModeManager implements SwiftManager {
                 collateExecutor.start();
                 super.startUp();
                 String masterAddress = swiftProperty.getMasterAddress();
-                serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(ClusterNodeService.SERVICE, masterAddress, masterAddress, true));
+                serviceInfoService.saveOrUpdate(new SwiftServiceInfoEntity(ClusterNodeService.SERVICE, masterAddress, masterAddress, true));
             }
         } finally {
             lock.unlock();

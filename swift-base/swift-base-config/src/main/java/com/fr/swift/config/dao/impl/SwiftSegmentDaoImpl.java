@@ -2,13 +2,12 @@ package com.fr.swift.config.dao.impl;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.bean.SegmentKeyBean;
 import com.fr.swift.config.dao.BasicDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
-import com.fr.swift.converter.FindList;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
@@ -30,7 +29,7 @@ import java.util.Map;
 public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSegmentDao {
 
     public SwiftSegmentDaoImpl() {
-        super(SegmentKeyBean.TYPE);
+        super(SwiftSegmentEntity.class);
     }
 
     @Override
@@ -44,19 +43,16 @@ public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSe
             throw new SQLException();
         }
         return find(session, ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey),
-                ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, type)).list();
+                ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, type));
     }
 
     @Override
     public boolean deleteBySourceKey(final ConfigSession session, final String sourceKey) throws SQLException {
         try {
-            find(session, ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey)).justForEach(new FindList.ConvertEach() {
-                @Override
-                public Object forEach(int idx, Object item) {
-                    session.delete(item);
-                    return null;
-                }
-            });
+            List<SegmentKey> segmentKeys = find(session, ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey));
+            for (SegmentKey segmentKey : segmentKeys) {
+                session.delete(segmentKey);
+            }
             return true;
         } catch (Exception e) {
             throw new SQLException(e);
@@ -64,7 +60,7 @@ public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSe
     }
 
     @Override
-    public FindList<SegmentKey> findAll(ConfigSession session) {
+    public List<SegmentKey> findAll(ConfigSession session) {
         return find(session);
     }
 
@@ -72,16 +68,13 @@ public class SwiftSegmentDaoImpl extends BasicDao<SegmentKey> implements SwiftSe
     public Map<SourceKey, List<SegmentKey>> findSegmentKeyWithSourceKey(ConfigSession session, ConfigWhere... criteria) {
         final Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
         try {
-            find(session, criteria).forEach(new FindList.SimpleEach<SegmentKey>() {
-                @Override
-                protected void each(int idx, SegmentKey bean) throws Exception {
-                    SourceKey sourceKey = bean.getTable();
-                    if (!result.containsKey(sourceKey)) {
-                        result.put(sourceKey, new ArrayList<SegmentKey>());
-                    }
-                    result.get(sourceKey).add(bean);
+            for (SegmentKey segmentKey : find(session, criteria)) {
+                SourceKey sourceKey = segmentKey.getTable();
+                if (!result.containsKey(sourceKey)) {
+                    result.put(sourceKey, new ArrayList<SegmentKey>());
                 }
-            });
+                result.get(sourceKey).add(segmentKey);
+            }
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("find segments failed", e);
         }

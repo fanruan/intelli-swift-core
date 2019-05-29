@@ -4,7 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.bean.SwiftTablePathBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -122,7 +122,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
     @Override
     public void truncate(SourceKey tableKey) {
-        SwiftTablePathBean entity = tablePathService.get(tableKey.getId());
+        SwiftTablePathEntity entity = tablePathService.get(tableKey.getId());
         int path = 0;
         if (null != entity) {
             path = entity.getTablePath() == null ? 0 : entity.getTablePath();

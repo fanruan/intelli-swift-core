@@ -1,7 +1,7 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
+import com.fr.swift.config.entity.SwiftColumnIndexingConf;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.query.group.Groups;
@@ -43,7 +43,7 @@ class DimensionParser {
             if (sortBean != null) {
                 sort = sortBean.getType() == SortType.ASC ? new AscSort(i) : new DescSort(i);
             }
-            SwiftColumnIdxConfBean conf = service.getColumnConf(table, dimensionBean.getColumn());
+            SwiftColumnIndexingConf conf = service.getColumnConf(table, dimensionBean.getColumn());
             switch (dimensionBean.getType()) {
                 case GROUP:
                     dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
@@ -57,7 +57,7 @@ class DimensionParser {
                     SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(table.getId());
                     List<String> fields = meta.getFieldNames();
                     for (int n = 0; n < fields.size(); n++) {
-                        SwiftColumnIdxConfBean conf1 = service.getColumnConf(table, fields.get(n));
+                        SwiftColumnIndexingConf conf1 = service.getColumnConf(table, fields.get(n));
                         dimensions.add(new DetailDimension(n, new ColumnKey(fields.get(n)),
                                 Groups.newGroup(new NoGroupRule()), sort,
                                 new IndexInfoImpl(conf1.isRequireIndex(), conf1.isRequireGlobalDict())));

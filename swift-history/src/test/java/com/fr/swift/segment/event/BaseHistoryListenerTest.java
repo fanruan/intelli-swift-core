@@ -4,7 +4,7 @@ import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.config.bean.SwiftTablePathBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.event.SwiftEventDispatcher;
@@ -42,7 +42,7 @@ public class BaseHistoryListenerTest {
 
         // Generate by Mock Plugin
         SwiftTablePathService mockSwiftTablePathService = PowerMock.createMock(SwiftTablePathService.class);
-        SwiftTablePathBean bean = new SwiftTablePathBean();
+        SwiftTablePathEntity bean = new SwiftTablePathEntity();
         bean.setLastPath(0);
         bean.setTmpDir(1);
         bean.setTablePath(0);

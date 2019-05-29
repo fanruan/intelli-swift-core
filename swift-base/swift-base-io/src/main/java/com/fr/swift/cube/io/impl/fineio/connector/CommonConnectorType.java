@@ -5,5 +5,5 @@ package com.fr.swift.cube.io.impl.fineio.connector;
  * @date 2018-12-20
  */
 public enum CommonConnectorType implements ConnectorType {
-    LZ4, ZIP, IO_STREAM
+    LZ4, IO_STREAM
 }
