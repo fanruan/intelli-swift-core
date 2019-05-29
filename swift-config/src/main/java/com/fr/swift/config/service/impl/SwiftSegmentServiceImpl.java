@@ -130,13 +130,13 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 public Boolean work(final ConfigSession session) throws SQLException {
                     try {
                         for (final SegmentKey segmentKey : segmentKeys) {
-                            for (SwiftSegmentLocationEntity item : segmentLocationDao.findBySegmentId(session, segmentKey.toString())) {
+                            for (SwiftSegmentLocationEntity item : segmentLocationDao.findBySegmentId(session, segmentKey.getId())) {
                                 session.delete(item);
                                 for (SegmentContainer value : SegmentContainer.values()) {
                                     value.remove(segmentKey);
                                 }
                             }
-                            swiftSegmentDao.deleteById(session, segmentKey.toString());
+                            swiftSegmentDao.deleteById(session, segmentKey.getId());
                         }
                     } catch (Throwable e) {
                         throw new SQLException(e);
@@ -242,7 +242,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
-                    if (null != swiftSegmentDao.select(session, segmentKey.toString())) {
+                    if (null != swiftSegmentDao.select(session, segmentKey.getId())) {
                         return !segmentLocationDao.find(session,
                                 ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
                                 ConfigWhereImpl.eq("id.segmentId", segmentKey.getId())).isEmpty();
