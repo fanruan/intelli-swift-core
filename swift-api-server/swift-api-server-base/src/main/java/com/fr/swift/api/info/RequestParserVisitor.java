@@ -7,10 +7,10 @@ package com.fr.swift.api.info;
  */
 public interface RequestParserVisitor {
     /**
-     * just visit auth requestType info
+     * just visit auth request info
      *
-     * @param authRequestInfo auth requestType info.
-     * @return return an invocation to invoke this requestType
+     * @param authRequestInfo auth request info.
+     * @return return an invocation to invoke this request
      * @see AuthRequestInfo
      * @see RequestInfo
      */
