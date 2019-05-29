@@ -2,11 +2,10 @@ package com.fr.swift.cloud.source.table;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.cloud.source.CloudTableType;
-import com.fr.swift.cloud.source.load.AddColumnAdapter;
 import com.fr.swift.cloud.source.load.GeneralLineParser;
 import com.fr.swift.cloud.source.load.LineAdapter;
 import com.fr.swift.cloud.source.load.LineParser;
-import com.fr.swift.cloud.source.load.RawCSVParser;
+import com.fr.swift.cloud.source.load.RawGCParser;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -16,19 +15,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class created on 2019/5/10
+ * This class created on 2019/5/17
  *
  * @author Lucifer
  * @description
  */
-public class SwiftCSVTable implements CloudTable {
+public class SwiftGCTable implements CloudTable {
 
     private SwiftMetaData dbMetadata;
     private SwiftMetaData versionMetadata;
     private String appId;
     private String yearMonth;
 
-    public SwiftCSVTable(SwiftMetaData dbMetadata, SwiftMetaData versionMetadata, String appId, String yearMonth) {
+    public SwiftGCTable(SwiftMetaData dbMetadata, SwiftMetaData versionMetadata, String appId, String yearMonth) {
         this.dbMetadata = dbMetadata;
         this.appId = appId;
         this.yearMonth = yearMonth;
@@ -37,29 +36,12 @@ public class SwiftCSVTable implements CloudTable {
 
     @Override
     public LineParser getParser() {
-        List<SwiftMetaDataColumn> extraFields = getExtraColumns();
-        List<String> extraFieldNames = getExtraColumnNames();
         List<SwiftMetaDataColumn> selfBaseFields = new ArrayList<SwiftMetaDataColumn>();
-
-        //package_info表自带appid和yearmonth，其他表需要拼接
         for (SwiftMetaDataColumn field : ((SwiftMetaDataBean) versionMetadata).getFields()) {
-            if (extraFieldNames.contains(field.getName()) || field.getName().equals("yearMonth")) {
-                continue;
-            }
-            if (!getTableName().equals("package_info")) {
-                if (field.getName().equals("appId")) {
-                    continue;
-                }
-            }
             selfBaseFields.add(field);
         }
-        LineParser rawParser = new RawCSVParser(selfBaseFields);
-        LineAdapter adapter;
-        if (extraFields.isEmpty()) {
-            adapter = LineAdapter.DUMMY;
-        } else {
-            adapter = new AddColumnAdapter();
-        }
+        LineParser rawParser = new RawGCParser(selfBaseFields);
+        LineAdapter adapter = LineAdapter.DUMMY;
         return new GeneralLineParser(getTableName(), appId, yearMonth, rawParser, adapter);
     }
 
@@ -94,4 +76,5 @@ public class SwiftCSVTable implements CloudTable {
     public List<String> getExtraColumnNames() {
         return Collections.EMPTY_LIST;
     }
+
 }

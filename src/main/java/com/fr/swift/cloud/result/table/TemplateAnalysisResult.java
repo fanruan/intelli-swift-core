@@ -1,5 +1,7 @@
 package com.fr.swift.cloud.result.table;
 
+import com.fr.swift.source.Row;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by lyon on 2019/2/28.
@@ -73,6 +76,18 @@ public class TemplateAnalysisResult {
     private String factor3;
 
     /**
+     * 耗时长的数据集
+     */
+    @Column
+    private String ds1;
+
+    @Column
+    private String ds2;
+
+    @Column
+    private String ds3;
+
+    /**
      * 可能导致性能问题的模板属性
      */
     @Column
@@ -81,8 +96,9 @@ public class TemplateAnalysisResult {
     public TemplateAnalysisResult() {
     }
 
+    @Deprecated
     public TemplateAnalysisResult(String tName, long[] average, long[] max, long count,
-                                  long total, String appId, Date yearMonth, String[] factors) {
+                                  long total, String appId, Date yearMonth, String[] factors, String[] ds) {
         this.tName = tName;
         this.consume = average[0];
         this.coreConsume = average[1];
@@ -97,5 +113,30 @@ public class TemplateAnalysisResult {
         this.factor1 = factors[0];
         this.factor2 = factors[1];
         this.factor3 = factors[2];
+        this.ds1 = ds[0];
+        this.ds2 = ds[1];
+        this.ds3 = ds[2];
+    }
+
+    public TemplateAnalysisResult(String tName, String appId, Date yearMonth, Row row, Map<String, Integer> map) {
+        this.tName = tName;
+        this.appId = appId;
+        this.yearMonth = yearMonth;
+
+        this.consume = row.getValue(map.get("consume"));
+        this.coreConsume = row.getValue(map.get("coreConsume"));
+        this.sqlTime = row.getValue(map.get("sqlTime"));
+        this.consumeMax = row.getValue(map.get("consumeMax"));
+        this.coreConsumeMax = row.getValue(map.get("coreConsumeMax"));
+        this.sqlTimeMax = row.getValue(map.get("sqlTimeMax"));
+        this.count = row.getValue(map.get("count"));
+        this.total = row.getValue(map.get("total"));
+        this.factor1 = row.getValue(map.get("factor1"));
+        this.factor2 = row.getValue(map.get("factor2"));
+        this.factor3 = row.getValue(map.get("factor3"));
+        this.ds1 = row.getValue(map.get("ds1"));
+        this.ds2 = row.getValue(map.get("ds2"));
+        this.ds3 = row.getValue(map.get("ds3"));
+
     }
 }

@@ -1,22 +1,38 @@
 package com.fr.swift.boot.controller;
 
-import com.fr.swift.cloud.SwiftCloudConstants;
-import com.fr.swift.cloud.SwiftCloudUtils;
-import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.task.AnalyseTask;
-import com.fr.swift.util.Strings;
-import com.fr.swift.util.concurrent.PoolThreadFactory;
-import com.fr.swift.util.concurrent.SwiftExecutors;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.annotation.Inside;
+import com.fr.swift.annotation.Negative;
+import com.fr.swift.cloud.analysis.TemplateAnalysisUtils;
+import com.fr.swift.cloud.analysis.downtime.DowntimeAnalyser;
+import com.fr.swift.cloud.load.CloudVersionProperty;
+import com.fr.swift.cloud.result.ArchiveDBManager;
+import com.fr.swift.cloud.result.table.CustomerInfo;
+import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.config.ExecutorTaskService;
+import com.fr.swift.executor.task.ExecutorTask;
+import com.fr.swift.executor.type.DBStatusType;
+import com.fr.swift.source.SwiftMetaData;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.Query;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author yee
@@ -24,72 +40,109 @@ import java.util.concurrent.ExecutorService;
  */
 @RestController
 public class SwiftCloudController {
-    /**
-     * TODO: 2019/02/25 用户名密码先临时写定，先下载目录放在当前目录县
-     */
-    private static final String USERNAME = "冰轮蓝蓝";
-    private static final String PASSWORD = "fr110059";
 
-    private Map<String, String> authMap = new ConcurrentHashMap<String, String>();
-    private ExecutorService service = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftCloudController.class));
-
-    public static void logClientInfo(String clientUserId, String clientAppId, String treasDate) {
-        SwiftLoggers.getLogger().info("======================================");
-        SwiftLoggers.getLogger().info(" ClientUserId:\t{} ", clientUserId);
-        SwiftLoggers.getLogger().info(" ClientAppId:\t{} ", clientAppId);
-        SwiftLoggers.getLogger().info(" TreasDate:\t{} ", treasDate);
-        SwiftLoggers.getLogger().info("======================================");
-    }
-
-    private void logEndTrigger(String clientUserId, String clientAppId, String treasDate) {
-        SwiftLoggers.getLogger().info("======================================");
-        SwiftLoggers.getLogger().info("       End Trigger Analyse");
-        logClientInfo(clientUserId, clientAppId, treasDate);
-    }
-
-
-    private void logStartTrigger(String clientUserId, String clientAppId, String treasDate) {
-        SwiftLoggers.getLogger().info("======================================");
-        SwiftLoggers.getLogger().info("       Start Trigger Analyse");
-        logClientInfo(clientUserId, clientAppId, treasDate);
-    }
-
-    // TODO: 2019/5/10 by lucifer to be deleted
-    @Deprecated
     @ResponseBody
-    @RequestMapping(value = "/cloud/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public Map<String, Object> triggerAnalyse(@RequestBody UploadInfo uploadInfo) {
-        String clientUserId = uploadInfo.getClientUserId();
-        String clientAppId = uploadInfo.getClientAppId();
-        String treasDate = uploadInfo.getTreasDate();
-        logStartTrigger(clientUserId, clientAppId, treasDate);
-        Map<String, Object> result = new HashMap<String, Object>();
-        try {
-            if (authMap.isEmpty()) {
-                SwiftLoggers.getLogger().info("====== Start get Auth code ======");
-                Map<String, String> res = SwiftCloudUtils.getUserInfo(USERNAME, PASSWORD);
-                if (!res.isEmpty()) {
-                    authMap.putAll(res);
-                    SwiftLoggers.getLogger().info("====== Get Auth code success ======");
-                } else {
-                    result.put("error", "Get app_key and app_secret error");
-                    SwiftLoggers.getLogger().info("====== Get app_key and app_secret error skip task ======");
-                    return result;
-                }
+    @RequestMapping(value = "/cloud/metadata/update/{version}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public Map<String, Boolean> updateMetadata(@PathVariable("version") String version) throws Exception {
+        Map<String, SwiftMetaData> metaDataMap = CloudVersionProperty.getProperty().getMetadataMapByVersion(version);
+        Map<String, Boolean> resultMap = new HashMap<>();
+        if (metaDataMap != null && !metaDataMap.isEmpty()) {
+            SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
+            for (Map.Entry<String, SwiftMetaData> entry : metaDataMap.entrySet()) {
+                boolean updateResult = metaDataService.saveOrUpdate(entry.getValue());
+                resultMap.put(entry.getValue().getTableName(), updateResult);
             }
-            String appKey = authMap.get("app_key");
-            String appSecret = authMap.get("app_secret");
-            if (Strings.isEmpty(appKey) || Strings.isEmpty(appSecret)) {
-                throw new RuntimeException("Auth error! Can not find app_key or app_secret");
-            }
-            service.submit(new AnalyseTask(appKey, appSecret, clientUserId, clientAppId, treasDate));
-            result.put("status", SwiftCloudConstants.SUCCESS);
-            result.put("msg", "analyse task has been submitted to the queue");
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn(e);
-            result.put("error", e.getMessage());
         }
-        logEndTrigger(clientUserId, clientAppId, treasDate);
-        return result;
+        return resultMap;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/cloud/retrigger/task/{taskId}", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public boolean reTriggerTask(@PathVariable("taskId") String taskId) throws Exception {
+        ExecutorTaskService executorTaskService = SwiftContext.get().getBean(ExecutorTaskService.class);
+        ExecutorTask executorTask = executorTaskService.getExecutorTask(taskId);
+        if (executorTask == null) {
+            throw new Exception(String.format("%s is not existed", taskId));
+        }
+        if (executorTask.getDbStatusType() == DBStatusType.ACTIVE) {
+            throw new Exception(String.format("%s is ACTIVE", taskId));
+        }
+        executorTask.setDbStatusType(DBStatusType.ACTIVE);
+        return TaskProducer.produceTask(executorTask);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/cloud/tpl/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @Inside
+    public boolean reAnalyseTpl(@RequestBody Map<String, String> map) throws Exception {
+        String appId = map.get("appId");
+        String clientId = map.get("clientId");
+        String yearMonth = map.get("yearMonth");
+        TemplateAnalysisUtils.tplAnalysis(appId, yearMonth);
+        new DowntimeAnalyser().downtimeAnalyse(appId, yearMonth);
+        saveCustomerInfo(clientId, appId, yearMonth);
+        return true;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/cloud/query/sql", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @Inside
+    public Object querySql(@RequestBody Map<String, String> map) throws Exception {
+        String url = map.get("url");
+        String sql = map.get("sql");
+        Class.forName("com.fr.swift.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url);
+        Statement statement = connection.createStatement();
+        try {
+            ResultSet resultSet = statement.executeQuery(sql);
+            int columnCount = resultSet.getMetaData().getColumnCount();
+            List<Map<String, Object>> resultMap = new ArrayList<>();
+            while (resultSet.next()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.put(resultSet.getMetaData().getColumnName(i), resultSet.getObject(i));
+                }
+                resultMap.add(row);
+            }
+            return resultMap;
+        } finally {
+            statement.close();
+            connection.close();
+        }
+    }
+
+    @Negative(until = "2019-06-30")
+    private void saveCustomerInfo(String clientId, String appId, String yearMonth) {
+        if (isExisted(clientId, appId)) {
+            return;
+        }
+        Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
+        try {
+            Transaction transaction = session.beginTransaction();
+            CustomerInfo customerInfo = new CustomerInfo(clientId, appId, yearMonth);
+            session.saveOrUpdate(customerInfo);
+            transaction.commit();
+        } catch (Exception ignored) {
+        }
+        session.close();
+    }
+
+    @Negative(until = "2019-06-30")
+    private boolean isExisted(String clientId, String appId) {
+        Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
+        try {
+            Query query = session.createQuery(sql(CustomerInfo.class.getSimpleName()));
+            query.setParameter("clientId", clientId);
+            query.setParameter("appId", appId);
+            return ((org.hibernate.query.Query) query).uniqueResult() != null;
+        } catch (Exception ignored) {
+        }
+        session.close();
+        return false;
+    }
+
+    @Negative(until = "2019-06-30")
+    private String sql(String tableName) {
+        return "select 1 from " + tableName + " where clientId = :clientId and appId = :appId";
     }
 }

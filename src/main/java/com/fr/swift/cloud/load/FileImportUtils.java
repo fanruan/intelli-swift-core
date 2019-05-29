@@ -2,7 +2,8 @@ package com.fr.swift.cloud.load;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.cloud.source.load.CSVResultSet;
-import com.fr.swift.cloud.source.table.CSVTable;
+import com.fr.swift.cloud.source.load.GCFileResultSet;
+import com.fr.swift.cloud.source.table.CloudTable;
 import com.fr.swift.cloud.source.table.TableUtils;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftWhere;
@@ -34,29 +35,34 @@ import java.util.Map;
  */
 public class FileImportUtils {
     private static String csvTag = ".csv";
-    private static String gcTag = ".gc.log";
+    private static String gcTag = "fanruan.gc.log";
 
 
     public static void load(String path, final String appId, final String yearMonth, final String version) throws Exception {
         SwiftLoggers.getLogger().info("base dir:\t{} ", path);
-        Map<String, List<File>> csvImportTables = initCsvImportTables(path, yearMonth);
+        Map<String, List<File>> fileImportTables = initImportTables(path, yearMonth);
         Map<String, SwiftMetaData> metaDataMap = initMetadatas(version);
-        if (csvImportTables == null) {
+        if (fileImportTables == null) {
             SwiftLoggers.getLogger().error("invalid dir:\t{} ", path);
             return;
         }
 
-        for (Map.Entry<String, List<File>> csvImportTableEntry : csvImportTables.entrySet()) {
-            String fileNameHead = csvImportTableEntry.getKey();
+        for (Map.Entry<String, List<File>> fileImportTableEntry : fileImportTables.entrySet()) {
+            String fileNameHead = fileImportTableEntry.getKey();
             SwiftMetaData versionMetadata = metaDataMap.get(fileNameHead);
-
-            CSVTable csvTable = (CSVTable) TableUtils.createIfAbsent(versionMetadata, appId, yearMonth);
-//            CSVTable csvTable = (CSVTable) TableUtils.createIfAbsent(fileNameHead, appId, yearMonth);
-
-            final String tableName = csvTable.getTableName();
+            if (versionMetadata == null) {
+                continue;
+            }
+            CloudTable cloudTable = TableUtils.createIfAbsent(versionMetadata, appId, yearMonth);
+            final String tableName = cloudTable.getTableName();
             deleteIfExisting(tableName, appId, yearMonth);
             SwiftLoggers.getLogger().info("start importing table:\t{} ", tableName);
-            SwiftResultSet resultSet = new CSVResultSet(csvImportTableEntry.getValue(), csvTable.getParser(), versionMetadata);
+            SwiftResultSet resultSet;
+            if (fileNameHead.equals(gcTag)) {
+                resultSet = new GCFileResultSet(fileImportTableEntry.getValue(), cloudTable.getParser(), cloudTable.getVersionMetadata(), cloudTable.getDBMetadata());
+            } else {
+                resultSet = new CSVResultSet(fileImportTableEntry.getValue(), cloudTable.getParser(), cloudTable.getVersionMetadata(), cloudTable.getDBMetadata());
+            }
             Table t = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(new SourceKey(tableName));
             HistoryLineSourceAlloter alloter = new HistoryLineSourceAlloter(new SourceKey(tableName), new LineAllotRule());
             HistoryBlockImporter importer = new HistoryBlockImporter(t, alloter);
@@ -71,15 +77,19 @@ public class FileImportUtils {
      * @return key:filenameHeader  value:file list
      * @throws Exception
      */
-    private static Map<String, List<File>> initCsvImportTables(String path, String yearMonth) throws Exception {
+    public static Map<String, List<File>> initImportTables(String path, String yearMonth) throws Exception {
         File file = new File(path);
         File[] importFiles = file.listFiles();
         Map<String, List<File>> importTables = new HashMap<String, List<File>>();
         for (File importFile : importFiles) {
-            if (!importFile.getName().endsWith(csvTag)) {
+            String fileName;
+            if (importFile.getName().endsWith(csvTag)) {
+                fileName = importFile.getName().split(yearMonth)[0];
+            } else if (importFile.getName().startsWith(gcTag)) {
+                fileName = gcTag;
+            } else {
                 continue;
             }
-            String fileName = importFile.getName().split(yearMonth)[0];
             if (!importTables.containsKey(fileName)) {
                 importTables.put(fileName, new ArrayList<File>());
             }
@@ -88,7 +98,7 @@ public class FileImportUtils {
         return importTables;
     }
 
-    private static Map<String, SwiftMetaData> initMetadatas(String version) throws Exception {
+    public static Map<String, SwiftMetaData> initMetadatas(String version) throws Exception {
         return CloudVersionProperty.getProperty().getMetadataMapByVersion(version);
     }
 

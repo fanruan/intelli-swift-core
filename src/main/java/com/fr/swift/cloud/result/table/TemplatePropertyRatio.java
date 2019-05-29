@@ -1,5 +1,7 @@
 package com.fr.swift.cloud.result.table;
 
+import com.fr.swift.source.Row;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by lyon on 2019/3/3.
@@ -61,6 +64,7 @@ public class TemplatePropertyRatio {
     @Column
     private Date yearMonth;
 
+    @Deprecated
     public TemplatePropertyRatio(String tName, double[] values, String appId, Date yearMonth) {
         this.tName = tName;
         this.conditionRatio = values[0];
@@ -75,6 +79,24 @@ public class TemplatePropertyRatio {
         this.templateSizeRatio = values[9];
         this.imageSizeRatio = values[10];
         this.sqlRatio = values[11];
+        this.appId = appId;
+        this.yearMonth = yearMonth;
+    }
+
+    public TemplatePropertyRatio(String tName, Row row, Map<String, Integer> map, String appId, Date yearMonth) {
+        this.tName = tName;
+        this.conditionRatio = row.getValue(map.get("conditionRatio"));
+        this.formulaRatio = row.getValue(map.get("formulaRatio"));
+        this.sheetRatio = row.getValue(map.get("sheetRatio"));
+        this.dsRatio = row.getValue(map.get("dsRatio"));
+        this.complexFormulaRatio = row.getValue(map.get("complexFormulaRatio"));
+        this.submissionRatio = row.getValue(map.get("submissionRatio"));
+        this.frozenRatio = row.getValue(map.get("frozenRatio"));
+        this.foldTreeRatio = row.getValue(map.get("foldTreeRatio"));
+        this.widgetRatio = row.getValue(map.get("widgetRatio"));
+        this.templateSizeRatio = row.getValue(map.get("templateSizeRatio"));
+        this.imageSizeRatio = row.getValue(map.get("imageSizeRatio"));
+        this.sqlRatio = row.getValue(map.get("memoryRatio"));
         this.appId = appId;
         this.yearMonth = yearMonth;
     }

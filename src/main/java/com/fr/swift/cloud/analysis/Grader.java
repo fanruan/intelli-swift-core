@@ -12,6 +12,8 @@ public interface Grader {
 
         @Override
         public long grade(long memory) {
+            // 单位为MB
+            memory = memory >> 20;
             double grade = 100 / (memories.length * 1.0);
             int i = 0;
             while (i < memories.length && memories[i] < memory) {

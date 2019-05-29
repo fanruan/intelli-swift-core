@@ -7,6 +7,7 @@ import org.ho.yaml.Yaml;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -45,7 +46,7 @@ public class CloudVersionProperty {
     private Map<String, SwiftMetaData> loadMetaDataMataByVersion(String version) throws Exception {
         InputStream versionInput = SwiftProperty.class.getClassLoader().getResourceAsStream(String.format("cloud.v%s.yaml", version));
         try {
-            Map<String, SwiftMetaData> metaDataMap = Yaml.loadType(versionInput, HashMap.class);
+            Map<String, SwiftMetaData> metaDataMap = Yaml.loadType(versionInput, LinkedHashMap.class);
             if (metaDataMap.isEmpty()) {
                 Crasher.crash(String.format("version %s's properties is not exist or empty!", version));
             }

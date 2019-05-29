@@ -1,6 +1,6 @@
 package com.fr.swift.cloud.source.load;
 
-import com.fr.swift.cloud.source.table.Execution;
+import com.fr.swift.cloud.source.table.ExecutionCSVTable;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.util.Collections;
@@ -12,8 +12,8 @@ import java.util.Map;
  */
 public class AddColumnAdapter implements LineAdapter {
 
-    private String consume = Execution.consume.getName();
-    private String sqlTime = Execution.sqlTime.getName();
+    private String consume = "consume";
+    private String sqlTime = "sqlTime";
 
     @Override
     public Map<String, Object> adapt(Map<String, Object> origin) {
@@ -23,12 +23,12 @@ public class AddColumnAdapter implements LineAdapter {
         if (v1 != null && v2 != null) {
             value = (Long) v1 - (Long) v2;
         }
-        origin.put(Execution.coreConsume.getName(), value);
+        origin.put("coreConsume", value);
         return origin;
     }
 
     @Override
     public List<SwiftMetaDataColumn> getFields() {
-        return Collections.singletonList(Execution.coreConsume);
+        return Collections.singletonList(ExecutionCSVTable.coreConsume);
     }
 }

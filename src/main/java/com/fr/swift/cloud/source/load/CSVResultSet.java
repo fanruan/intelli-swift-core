@@ -1,6 +1,7 @@
 package com.fr.swift.cloud.source.load;
 
 import com.fr.swift.cloud.source.CloudTableType;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
@@ -10,8 +11,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,49 +20,39 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-public class CSVResultSet implements CloudResultSet {
+public class CSVResultSet extends AbstractCloudResultSet {
 
-    private LineParser parser;
-    private SwiftMetaData metaData;
-
-    private BufferedReader reader;
-    private List<File> files;
-    private int currentFileIndex = 0;
-    private Row next;
-    private boolean skipFirstLine;
-    private String charsetName;
-
-    public CSVResultSet(List<File> files, LineParser parser, SwiftMetaData metaData) throws Exception {
-        this(files, parser, metaData, true);
+    public CSVResultSet(List<File> files, LineParser parser, SwiftMetaData versionMetadata, SwiftMetaData dbMetadata) throws Exception {
+        this(files, parser, versionMetadata, dbMetadata, true);
     }
 
-    public CSVResultSet(List<File> files, LineParser parser, SwiftMetaData metaData, boolean skipFirstLine) throws Exception {
-        this.parser = parser;
-        this.metaData = metaData;
-        charsetName = charsetName == null ? "utf8" : charsetName;
-        SwiftLoggers.getLogger().info("file: {}, charset: {}", files.toString(), this.charsetName);
-        this.files = files;
-        this.skipFirstLine = skipFirstLine;
-
-        reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), this.charsetName));
-        if (this.skipFirstLine) {
-            reader.readLine();
-        }
-        next = nextRow();
+    public CSVResultSet(List<File> files, LineParser parser, SwiftMetaData versionMetadata, SwiftMetaData dbMetadata, boolean skipFirstLine) throws Exception {
+        super(files, parser, versionMetadata, dbMetadata, skipFirstLine);
     }
 
-    private Row nextRow() {
+    @Override
+    protected Row nextRow() {
         String line;
         try {
             if ((line = reader.readLine()) != null) {
-                Map row = parser.parseToMap(line);
+                Map<String, Object> row = parser.parseToMap(line);
                 if (row != null) {
-                    return new ListBasedRow(new ArrayList(row.values()));
+                    Object[] rowValue = new Object[dbMetadata.getColumnCount()];
+                    for (Map.Entry<String, Object> rowEntry : row.entrySet()) {
+                        String columnName = rowEntry.getKey();
+                        try {
+                            int dbIndex = dbMetadata.getColumnIndex(columnName);
+                            Object value = rowEntry.getValue();
+                            rowValue[dbIndex - 1] = value;
+                        } catch (SwiftMetaDataException ignore) {
+                        }
+                    }
+                    return new ListBasedRow(rowValue);
                 }
             } else {
                 if (++currentFileIndex < files.size()) {
                     close();
-                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), this.charsetName));
+                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.files.get(currentFileIndex)), charsetList.get(currentFileIndex)));
                     if (this.skipFirstLine) {
                         reader.readLine();
                     }
@@ -77,37 +66,6 @@ public class CSVResultSet implements CloudResultSet {
             SwiftLoggers.getLogger().error(e);
         }
         return null;
-    }
-
-    @Override
-    public int getFetchSize() {
-        return 0;
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return metaData;
-    }
-
-    @Override
-    public boolean hasNext() throws SQLException {
-        return next != null;
-    }
-
-    @Override
-    public Row getNextRow() throws SQLException {
-        Row ret = next;
-        next = nextRow();
-        // TODO: 2019/5/10 by lucifer 兼容字段增加
-        return ret;
-    }
-
-    @Override
-    public void close() throws SQLException {
-        try {
-            reader.close();
-        } catch (Exception ignored) {
-        }
     }
 
     @Override

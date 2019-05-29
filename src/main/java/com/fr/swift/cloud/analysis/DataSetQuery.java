@@ -1,7 +1,5 @@
 package com.fr.swift.cloud.analysis;
 
-import com.fr.swift.cloud.source.table.Execution;
-import com.fr.swift.cloud.source.table.ExecutionSql;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -53,16 +51,16 @@ public class DataSetQuery {
         Map<String, String[]> result = new HashMap<String, String[]>();
         for (String template : templates) {
             List<Long> timestamps = getTimeStamps(template);
-            QueryInfoBean query = GroupQueryInfoBean.builder(ExecutionSql.tableName)
+            QueryInfoBean query = GroupQueryInfoBean.builder("execution_sql")
                     .setFilter(new AndFilterBean(Arrays.<FilterInfoBean>asList(
-                            new InFilterBean(Execution.appId.getName(), customerId),
-                            new InFilterBean(Execution.yearMonth.getName(), yearMonth),
-                            new InFilterBean(Execution.time.getName(), timestamps.toArray(new Object[timestamps.size()]))
+                            new InFilterBean("appId", customerId),
+                            new InFilterBean("yearMonth", yearMonth),
+                            new InFilterBean("time", timestamps.toArray(new Object[timestamps.size()]))
                     )))
-                    .setDimensions(new DimensionBean(DimensionType.GROUP, ExecutionSql.dsName.getName()))
-                    .setAggregations(new MetricBean(ExecutionSql.sqlTime.getName(), AggregatorType.AVERAGE))
+                    .setDimensions(new DimensionBean(DimensionType.GROUP, "dsName"))
+                    .setAggregations(new MetricBean("sqlTime", AggregatorType.AVERAGE))
                     .setPostAggregations(Collections.<PostQueryInfoBean>singletonList(
-                            new RowSortQueryInfoBean(Collections.singletonList(new SortBean(SortType.DESC, ExecutionSql.sqlTime.getName())))
+                            new RowSortQueryInfoBean(Collections.singletonList(new SortBean(SortType.DESC, "sqlTime")))
                     ))
                     .build();
             try {
@@ -88,13 +86,13 @@ public class DataSetQuery {
 
     private List<Long> getTimeStamps(String template) {
         FilterInfoBean filter = new AndFilterBean(Arrays.<FilterInfoBean>asList(
-                new InFilterBean(Execution.appId.getName(), customerId),
-                new InFilterBean(Execution.yearMonth.getName(), yearMonth),
-                new InFilterBean(Execution.tName.getName(), template)
+                new InFilterBean("appId", customerId),
+                new InFilterBean("yearMonth", yearMonth),
+                new InFilterBean("tName", template)
         ));
-        QueryInfoBean query = GroupQueryInfoBean.builder(Execution.tableName)
+        QueryInfoBean query = GroupQueryInfoBean.builder("execution")
                 .setFilter(filter)
-                .setDimensions(new DimensionBean(DimensionType.GROUP, Execution.time.getName()))
+                .setDimensions(new DimensionBean(DimensionType.GROUP, "time"))
                 .build();
         List<Long> result = new ArrayList<Long>();
         try {
