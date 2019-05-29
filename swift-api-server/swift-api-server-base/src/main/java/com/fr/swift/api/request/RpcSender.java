@@ -9,9 +9,9 @@ import com.fr.swift.basic.SwiftResponse;
  */
 public interface RpcSender {
     /**
-     * send rpc request
+     * send rpc requestType
      *
-     * @param request rpc request
+     * @param request rpc requestType
      * @return rpc response
      * @throws Exception the method might be throw exception
      * @see SwiftRequest

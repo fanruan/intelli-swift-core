@@ -1,5 +1,8 @@
-package com.fr.swift.api.info;
+package com.fr.swift.api.info.api;
 
+import com.fr.swift.api.info.ApiInvocation;
+import com.fr.swift.api.info.BaseRequestInfo;
+import com.fr.swift.api.info.RequestType;
 import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.db.SwiftDatabase;
 
@@ -15,12 +18,8 @@ public class TableRequestInfo extends BaseRequestInfo<ApiRequestParserVisitor> {
     @JsonProperty(value = "table")
     private String table;
 
-    public TableRequestInfo(Request request) {
+    protected TableRequestInfo(RequestType request) {
         super(request);
-    }
-
-    public TableRequestInfo() {
-        super(null);
     }
 
     @Override

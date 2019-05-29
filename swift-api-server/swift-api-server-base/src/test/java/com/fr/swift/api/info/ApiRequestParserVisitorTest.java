@@ -1,5 +1,12 @@
 package com.fr.swift.api.info;
 
+import com.fr.swift.api.info.api.ApiRequestParserVisitor;
+import com.fr.swift.api.info.api.CreateTableRequestInfo;
+import com.fr.swift.api.info.api.DeleteRequestInfo;
+import com.fr.swift.api.info.api.InsertRequestInfo;
+import com.fr.swift.api.info.api.QueryRequestInfo;
+import com.fr.swift.api.info.api.TableRequestInfo;
+import com.fr.swift.api.info.api.TruncateRequestInfo;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +76,7 @@ public class ApiRequestParserVisitorTest {
         }
         assertTrue(exp);
         exp = false;
-        visit(new TableRequestInfo());
+        visit(new TruncateRequestInfo());
         try {
             visit((TableRequestInfo) null);
         } catch (Exception e) {
