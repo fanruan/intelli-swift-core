@@ -21,7 +21,9 @@ public class TopPercentileAggregatorValue implements AggregatorValue<Double> {
     }
 
     void recordValue(long value) {
-        histogram.recordValue(value);
+        if (value >= 0) {
+            histogram.recordValue(value);
+        }
     }
 
     void add(TopPercentileAggregatorValue value) {

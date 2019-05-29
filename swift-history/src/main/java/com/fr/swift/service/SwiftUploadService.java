@@ -38,7 +38,7 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
         int currentDir = CubeUtil.getCurrentDir(Util.firstItemOf(segKeys).get().getTable());
 
         for (SegmentKey segKey : segKeys) {
-            String local = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
+            String local = new CubePathBuilder(segKey).setTempDir(currentDir).build();
             String remote = new CubePathBuilder(segKey).build();
             try {
                 SwiftRepositoryManager.getManager().currentRepo().copyToRemote(local, remote);
