@@ -39,7 +39,7 @@ public interface RequestInfo<T extends RequestParserVisitor> extends Accepter<T>
      * any requestType should contains an auth code except auth requestType.
      *
      * @return return null if it's an auth requestType.
-     * return auth code if it's other requestType.
+     * return auth code if it's other request.
      */
     String getAuthCode();
 
