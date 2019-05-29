@@ -11,7 +11,7 @@
 
     <artifactId>swift-base-io</artifactId>
     <properties>
-        <fineio.version>2.0-RELEASE-SNAPSHOT</fineio.version>
+        <fineio.version>3.0-RELEASE-SNAPSHOT</fineio.version>
     </properties>
 
     <dependencies>
