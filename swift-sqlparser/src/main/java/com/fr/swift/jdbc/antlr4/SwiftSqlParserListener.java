@@ -1,7 +1,7 @@
 // Generated from SwiftSqlParser.g4 by ANTLR 4.5.3
 package com.fr.swift.jdbc.antlr4;
 
-import com.fr.swift.jdbc.org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
  * This interface defines a complete listener for a parse tree produced by

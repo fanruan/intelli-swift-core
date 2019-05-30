@@ -1,16 +1,16 @@
 // Generated from SwiftSqlLexer.g4 by ANTLR 4.5.3
 package com.fr.swift.jdbc.antlr4;
 
-import com.fr.swift.jdbc.org.antlr.v4.runtime.CharStream;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.Lexer;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.RuntimeMetaData;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.Vocabulary;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.VocabularyImpl;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.atn.ATN;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.atn.ATNDeserializer;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.atn.LexerATNSimulator;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.atn.PredictionContextCache;
-import com.fr.swift.jdbc.org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.RuntimeMetaData;
+import org.antlr.v4.runtime.Vocabulary;
+import org.antlr.v4.runtime.VocabularyImpl;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.LexerATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class SwiftSqlLexer extends Lexer {
