@@ -41,7 +41,7 @@ public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
 
         Inserter inserter = (Inserter) proxyFactory.getProxy(SwiftInserter.ofAppendMode(backupSeg));
 
-        return new Inserting(inserter, backupSeg, backupSeg.isReadable() ? backupSeg.getRowCount() : 0);
+        return new Inserting(inserter, backupSeg, SegmentUtils.safeGetRowCount(backupSeg));
     }
 
     @Override

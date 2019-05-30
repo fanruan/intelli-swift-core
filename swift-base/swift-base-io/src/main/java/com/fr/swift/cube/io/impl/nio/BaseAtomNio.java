@@ -21,9 +21,9 @@ abstract class BaseAtomNio extends BaseNio {
 
     private FileChannel ch;
 
-    private int currentBuf = -1, currentFile = -1;
+    private int curBuf = -1, curFile = -1;
 
-    private int currentStart = -1;
+    private int curBufStart = -1;
 
     BaseAtomNio(NioConf conf) {
         super(conf);
@@ -36,32 +36,31 @@ abstract class BaseAtomNio extends BaseNio {
         }
     }
 
-    int getPage(long pos) {
+    int nthBuf(long pos) {
         return (int) (pos >> (conf.getBufSize() - getStep()));
     }
 
-    int getOffset(long pos) {
+    int bufOffset(long pos) {
         return (int) ((pos << getStep()) & ((1 << conf.getBufSize()) - 1));
     }
 
     void initBuf(int nthBuf) {
-        if (currentBuf == nthBuf) {
-            return;
+        if (curBuf != nthBuf) {
+            releaseBuf(false);
+            loadBuffer(nthBuf);
         }
-        releaseBuffer(false);
-        loadBuffer(nthBuf);
     }
 
     private void loadBuffer(int nthBuf) {
-        int file = getFile(nthBuf);
+        int nthFile = nthFile(nthBuf);
         try {
-            if (currentFile != file) {
+            if (curFile != nthFile) {
                 IoUtil.close(ch);
-                ch = new RandomAccessFile(String.format("%s/%d", conf.getPath(), file), conf.isRead() ? "r" : "rw").getChannel();
-                currentFile = file;
+                ch = new RandomAccessFile(String.format("%s/%d", conf.getPath(), nthFile), conf.isRead() ? "r" : "rw").getChannel();
+                curFile = nthFile;
             }
 
-            int fileOffset = getFileOffset(nthBuf);
+            int fileOffset = fileOffset(nthBuf);
             if (conf.isMapped()) {
                 buf = ch.map(conf.isRead() ? MapMode.READ_ONLY : MapMode.READ_WRITE, fileOffset, 1 << conf.getBufSize());
             } else {
@@ -69,14 +68,14 @@ abstract class BaseAtomNio extends BaseNio {
                     buf = ByteBuffer.allocateDirect(1 << conf.getBufSize());
                 }
                 if (conf.isAppend()) {
-                    currentStart = ch.size() < fileOffset ? 0 : ((int) (ch.size() - fileOffset));
+                    curBufStart = ch.size() < fileOffset ? 0 : ((int) (ch.size() - fileOffset));
                 } else {
-                    currentStart = 0;
+                    curBufStart = 0;
                     ch.read(buf, fileOffset);
                 }
             }
 
-            currentBuf = nthBuf;
+            curBuf = nthBuf;
         } catch (IOException e) {
             IoUtil.release(buf);
             IoUtil.close(ch);
@@ -84,15 +83,15 @@ abstract class BaseAtomNio extends BaseNio {
         }
     }
 
-    private int getFile(int nthBuf) {
+    private int nthFile(int nthBuf) {
         return nthBuf >> (conf.getFileSize() - conf.getBufSize());
     }
 
-    private int getFileOffset(int nthBuf) {
+    private int fileOffset(int nthBuf) {
         return (nthBuf & ((1 << (conf.getFileSize() - conf.getBufSize())) - 1)) << conf.getBufSize();
     }
 
-    private void releaseBuffer(boolean finalRelease) {
+    private void releaseBuf(boolean finalRelease) {
         if (buf == null) {
             return;
         }
@@ -104,9 +103,9 @@ abstract class BaseAtomNio extends BaseNio {
             } else {
                 // 非mapped写，buf视为内存块
                 buf.limit(buf.position());
-                buf.position(currentStart);
+                buf.position(curBufStart);
                 try {
-                    ch.write(buf, currentStart + getFileOffset(currentBuf));
+                    ch.write(buf, fileOffset(curBuf) + curBufStart);
                 } catch (IOException e) {
                     SwiftLoggers.getLogger().error(e);
                 }
@@ -114,9 +113,9 @@ abstract class BaseAtomNio extends BaseNio {
         }
 
         buf.clear();
-        currentBuf = -1;
-        currentFile = -1;
-        currentStart = -1;
+        curBuf = -1;
+        curFile = -1;
+        curBufStart = -1;
         if (finalRelease) {
             IoUtil.release(buf);
             buf = null;
@@ -124,14 +123,14 @@ abstract class BaseAtomNio extends BaseNio {
         }
     }
 
-    void setBufPosition(int offset) {
+    void setBufPos(int offset) {
         int newPos = offset + (1 << getStep());
         if (newPos > buf.position()) {
             buf.position(newPos);
         }
 
-        if (currentStart > offset) {
-            currentStart = offset < 0 ? 0 : offset;
+        if (curBufStart > offset) {
+            curBufStart = offset < 0 ? 0 : offset;
         }
     }
 
@@ -139,6 +138,6 @@ abstract class BaseAtomNio extends BaseNio {
 
     @Override
     public void release() {
-        releaseBuffer(true);
+        releaseBuf(true);
     }
 }

@@ -148,9 +148,7 @@ public class SegmentUtils {
      */
     public static <T> void releaseHisColumn(Column<T> column) {
         if (column != null && column.getLocation().getStoreType().isPersistent()) {
-            IoUtil.release(column.getDetailColumn());
-            IoUtil.release(column.getDictionaryEncodedColumn());
-            IoUtil.release(column.getBitmapIndex());
+            IoUtil.release(column.getDetailColumn(), column.getDictionaryEncodedColumn(), column.getBitmapIndex());
         }
     }
 
@@ -160,6 +158,14 @@ public class SegmentUtils {
         }
         for (Column<T> column : columns) {
             releaseHisColumn(column);
+        }
+    }
+
+    public static int safeGetRowCount(Segment seg) {
+        try {
+            return seg.isReadable() ? seg.getRowCount() : 0;
+        } finally {
+            releaseHisSeg(seg);
         }
     }
 }

@@ -18,16 +18,16 @@ public class LongNio extends BaseAtomNio implements LongIo {
 
     @Override
     public long get(long pos) {
-        initBuf(getPage(pos));
-        return buf.getLong(getOffset(pos));
+        initBuf(nthBuf(pos));
+        return buf.getLong(bufOffset(pos));
     }
 
     @Override
     public void put(long pos, long val) {
-        initBuf(getPage(pos));
-        int offset = getOffset(pos);
+        initBuf(nthBuf(pos));
+        int offset = bufOffset(pos);
         buf.putLong(offset, val);
 
-        setBufPosition(offset);
+        setBufPos(offset);
     }
 }
