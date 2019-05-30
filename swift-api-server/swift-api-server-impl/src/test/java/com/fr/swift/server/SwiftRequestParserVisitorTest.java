@@ -1,13 +1,13 @@
 package com.fr.swift.server;
 
 import com.fr.swift.api.info.ApiInvocation;
+import com.fr.swift.api.info.jdbc.ColumnsRequestInfo;
+import com.fr.swift.api.info.jdbc.SqlRequestInfo;
+import com.fr.swift.api.info.jdbc.TablesRequestInfo;
 import com.fr.swift.api.rpc.DataMaintenanceService;
 import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.api.server.SwiftRequestParserVisitor;
-import com.fr.swift.jdbc.info.ColumnsRequestInfo;
-import com.fr.swift.jdbc.info.SqlRequestInfo;
-import com.fr.swift.jdbc.info.TablesRequestInfo;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Method;
