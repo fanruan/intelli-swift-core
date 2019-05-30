@@ -1,5 +1,7 @@
-package com.fr.swift.api.info;
+package com.fr.swift.api.info.api;
 
+import com.fr.swift.api.info.ApiInvocation;
+import com.fr.swift.api.info.RequestType;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.base.json.annotation.JsonProperty;
 
@@ -15,7 +17,7 @@ public class CreateTableRequestInfo extends TableRequestInfo {
     private List<Column> columns = new ArrayList<Column>();
 
     public CreateTableRequestInfo() {
-        super(ApiRequestType.CREATE_TABLE);
+        super(RequestType.CREATE_TABLE);
     }
 
 

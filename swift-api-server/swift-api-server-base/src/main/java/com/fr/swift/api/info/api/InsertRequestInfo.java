@@ -1,5 +1,7 @@
-package com.fr.swift.api.info;
+package com.fr.swift.api.info.api;
 
+import com.fr.swift.api.info.ApiInvocation;
+import com.fr.swift.api.info.RequestType;
 import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.source.Row;
 
@@ -16,7 +18,7 @@ public class InsertRequestInfo extends TableRequestInfo {
     private List<Row> data;
 
     public InsertRequestInfo() {
-        super(ApiRequestType.INSERT);
+        super(RequestType.INSERT);
     }
 
     public List<String> getSelectFields() {
