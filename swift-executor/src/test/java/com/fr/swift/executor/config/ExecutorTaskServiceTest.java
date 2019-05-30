@@ -99,7 +99,7 @@ public class ExecutorTaskServiceTest {
 
     @Test
     public void getExecutorTask() throws SQLException {
-        Mockito.when(executorTaskDao.find(Mockito.eq(configSession), Mockito.<ConfigWhere[]>any())).thenReturn(new FindListImpl<ExecutorTask>(null));
+        Mockito.when(executorTaskDao.find(Mockito.eq(configSession), Mockito.<ConfigWhere[]>any())).thenReturn(new ArrayList<SwiftExecutorTaskEntity>(null));
         Assert.assertEquals(new ExecutorTaskServiceImpl().getExecutorTask("testTask"), null);
         Mockito.verify(executorTaskDao).find(Mockito.eq(configSession), Mockito.<ConfigWhere[]>any());
     }
