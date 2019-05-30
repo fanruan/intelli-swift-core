@@ -132,10 +132,15 @@ public enum SegmentContainer {
         segmentKeyMapSegment.remove(segmentKey.toString());
         SourceKey table = segmentKey.getTable();
         if (tableMapSegments.containsKey(table)) {
-            Iterator<SegmentKey> iterator = tableMapSegments.get(table).iterator();
-            while (iterator.hasNext()) {
-                if (Util.equals(iterator.next(), segmentKey)) {
-                    iterator.remove();
+            List<SegmentKey> segmentKeys = tableMapSegments.get(table);
+            if (segmentKeys != null) {
+                synchronized (segmentKeys) {
+                    Iterator<SegmentKey> iterator = segmentKeys.iterator();
+                    while (iterator.hasNext()) {
+                        if (Util.equals(iterator.next(), segmentKey)) {
+                            iterator.remove();
+                        }
+                    }
                 }
             }
         }
