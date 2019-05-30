@@ -5,7 +5,8 @@ parser grammar SwiftSqlParser;
 
 cd到g4文件目录，cp指定antlr4-tool jar的path
 
-java -cp antlr4-4.5.3.jar org.antlr.v4.Tool -package com.fr.swift.jdbc.antlr4 -o antlr4 SwiftSqlLexer.g4 SwiftSqlParser.g4
+java -cp antlr4-4.5.3.jar org.antlr.v4.Tool -package com.fr.swift.jdbc.antlr4 -o antlr4 SwiftSqlLexer.g4 SwiftSqlParser.
+g4
 
 Parser即生成到了com.fr.swift.jdbc.antlr4包下
 */
