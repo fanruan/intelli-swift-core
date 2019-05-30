@@ -1,11 +1,10 @@
 package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fineio.FineIO;
-import com.fineio.FineIO.MODEL;
-import com.fineio.io.ByteBuffer;
-import com.fineio.io.DoubleBuffer;
-import com.fineio.io.IntBuffer;
-import com.fineio.io.LongBuffer;
+import com.fineio.accessor.FineIOAccessor;
+import com.fineio.accessor.IOAccessor;
+import com.fineio.accessor.Model;
+import com.fineio.accessor.file.IReadFile;
 import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
@@ -13,18 +12,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.reflect.Whitebox.setInternalState;
 
 /**
  * @author anchore
@@ -35,8 +35,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class PrimitiveFineIoReaderTest {
 
     private final URI location = URI.create("/cubes/table/seg0/column/detail");
-    private final IOFile ioFile = mock(IOFile.class);
-
+    private final IReadFile<?> ioFile = mock(IReadFile.class);
 
     @Before
     public void setUp() throws Exception {
@@ -47,13 +46,14 @@ public class PrimitiveFineIoReaderTest {
         Connector connector = mock(Connector.class);
         when(connectorManager.getConnector()).thenReturn(connector);
 
-        mockStatic(FineIO.class);
-        when(FineIO.createIOFile(ArgumentMatchers.<Connector>any(), ArgumentMatchers.<URI>any(), ArgumentMatchers.<MODEL>any())).thenReturn(ioFile);
+        IOAccessor ioAccessor = mock(IOAccessor.class);
+        setInternalState(FineIOAccessor.INSTANCE, "accessor", ioAccessor);
+        when(ioAccessor.createFile(any(Connector.class), any(URI.class), any(Model.class))).thenReturn(ioFile);
 
-        when(FineIO.getByte(ArgumentMatchers.<IOFile<ByteBuffer>>any(), anyLong())).thenReturn((byte) 1);
-        when(FineIO.getInt(ArgumentMatchers.<IOFile<IntBuffer>>any(), anyLong())).thenReturn(1);
-        when(FineIO.getLong(ArgumentMatchers.<IOFile<LongBuffer>>any(), anyLong())).thenReturn(1L);
-        when(FineIO.getDouble(ArgumentMatchers.<IOFile<DoubleBuffer>>any(), anyLong())).thenReturn(1D);
+        when(ioAccessor.getByte(any(IReadFile.class), anyInt())).thenReturn((byte) 1);
+        when(ioAccessor.getInt(any(IReadFile.class), anyInt())).thenReturn(1);
+        when(ioAccessor.getLong(any(IReadFile.class), anyInt())).thenReturn(1L);
+        when(ioAccessor.getDouble(any(IReadFile.class), anyInt())).thenReturn(1D);
 
         when(ioFile.exists()).thenReturn(true);
     }

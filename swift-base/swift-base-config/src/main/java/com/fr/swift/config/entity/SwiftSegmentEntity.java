@@ -155,4 +155,9 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         result = 31 * result + (swiftSchema != null ? swiftSchema.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }

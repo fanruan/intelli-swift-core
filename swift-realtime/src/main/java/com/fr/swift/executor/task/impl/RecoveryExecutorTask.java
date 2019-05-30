@@ -21,7 +21,7 @@ public class RecoveryExecutorTask extends AbstractExecutorTask<Job<Void, Segment
         super(recoverySegKey.getTable(),
                 false,
                 SwiftTaskType.RECOVERY,
-                LockType.REAL_SEG,
+                LockType.VIRTUAL_SEG,
                 recoverySegKey.getId(),
                 DBStatusType.ACTIVE,
                 new RecoveryJob(recoverySegKey));
