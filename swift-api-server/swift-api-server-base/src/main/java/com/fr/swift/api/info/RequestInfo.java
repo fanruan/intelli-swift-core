@@ -1,64 +1,53 @@
 package com.fr.swift.api.info;
 
+import com.fr.swift.api.info.api.CreateTableRequestInfo;
+import com.fr.swift.api.info.api.DeleteRequestInfo;
+import com.fr.swift.api.info.api.DropRequestInfo;
+import com.fr.swift.api.info.api.InsertRequestInfo;
+import com.fr.swift.api.info.api.QueryRequestInfo;
+import com.fr.swift.api.info.api.TruncateRequestInfo;
+import com.fr.swift.api.info.jdbc.ColumnsRequestInfo;
+import com.fr.swift.api.info.jdbc.SqlRequestInfo;
+import com.fr.swift.api.info.jdbc.TablesRequestInfo;
 import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.base.json.annotation.JsonSubTypes;
+import com.fr.swift.base.json.annotation.JsonTypeInfo;
 
 /**
- * basic interface of request info for api and jdbc
+ * basic interface of requestType info for api and jdbc
  *
  * @author yee
  * @date 2018/11/16
  * @see JsonBuilder#writeJsonString(Object)
  * @see BaseRequestInfo
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "requestType")
+@JsonSubTypes({
+        @JsonSubTypes.Type(name = "AUTH", value = AuthRequestInfo.class),
+        @JsonSubTypes.Type(name = "SQL", value = SqlRequestInfo.class),
+        @JsonSubTypes.Type(name = "TABLES", value = TablesRequestInfo.class),
+        @JsonSubTypes.Type(name = "COLUMNS", value = ColumnsRequestInfo.class),
+        @JsonSubTypes.Type(name = "CREATE_TABLE", value = CreateTableRequestInfo.class),
+        @JsonSubTypes.Type(name = "DELETE", value = DeleteRequestInfo.class),
+        @JsonSubTypes.Type(name = "INSERT", value = InsertRequestInfo.class),
+        @JsonSubTypes.Type(name = "JSON_QUERY", value = QueryRequestInfo.class),
+        @JsonSubTypes.Type(name = "DROP_TABLE", value = DropRequestInfo.class),
+        @JsonSubTypes.Type(name = "TRUNCATE_TABLE", value = TruncateRequestInfo.class)
+})
 public interface RequestInfo<T extends RequestParserVisitor> extends Accepter<T> {
     /**
-     * any request should contains an auth code except auth request.
+     * any requestType should contains an auth code except auth requestType.
      *
-     * @return return null if it's an auth request.
+     * @return return null if it's an auth requestType.
      * return auth code if it's other request.
      */
     String getAuthCode();
 
-    Request AUTH = new Request() {
-        @Override
-        public String name() {
-            return "AUTH";
-        }
-    };
-
     /**
-     * get request type like <code>AUTH</code>,
+     * get requestType type like <code>AUTH</code>,
      * <code>SQL</code>...
      *
-     * @param <R> type extend Request
-     * @return request type for this request
-     * @see RequestInfo#AUTH
-     * @see Request
+     * @return requestType type for this requestType
      */
-    <R extends Request> R getRequest();
-
-    /**
-     * basic interface for request type
-     */
-    @JsonSubTypes({
-            @JsonSubTypes.Type(value = ApiRequestType.class, name = "JSON_QUERY"),
-            @JsonSubTypes.Type(value = ApiRequestType.class, name = "INSERT"),
-            @JsonSubTypes.Type(value = ApiRequestType.class, name = "DELETE"),
-            @JsonSubTypes.Type(value = ApiRequestType.class, name = "CREATE_TABLE"),
-            @JsonSubTypes.Type(value = ApiRequestType.class, name = "DROP_TABLE"),
-            @JsonSubTypes.Type(value = ApiRequestType.class, name = "TRUNCATE_TABLE"),
-            @JsonSubTypes.Type(value = JdbcRequestType.class, name = "SQL"),
-            @JsonSubTypes.Type(value = JdbcRequestType.class, name = "TABLES"),
-            @JsonSubTypes.Type(value = JdbcRequestType.class, name = "COLUMNS")
-    }
-    )
-    interface Request {
-        /**
-         * return request type name
-         *
-         * @return request type name
-         */
-        String name();
-    }
+    RequestType getRequestType();
 }

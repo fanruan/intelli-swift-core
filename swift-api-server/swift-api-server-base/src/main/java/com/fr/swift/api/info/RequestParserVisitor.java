@@ -1,7 +1,7 @@
 package com.fr.swift.api.info;
 
 /**
- * this is a common interface to visit request info
+ * this is a common interface to visit requestType info
  * @author yee
  * @date 2018-12-11
  */
