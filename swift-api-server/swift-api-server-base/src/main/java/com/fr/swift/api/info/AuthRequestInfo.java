@@ -15,11 +15,11 @@ public class AuthRequestInfo extends BaseRequestInfo<RequestParserVisitor> {
     private String from;
 
     public AuthRequestInfo() {
-        super(RequestInfo.AUTH);
+        super(RequestType.AUTH);
     }
 
     public AuthRequestInfo(String swiftUser, String swiftPassword) {
-        super(RequestInfo.AUTH);
+        super(RequestType.AUTH);
         this.swiftUser = swiftUser;
         this.swiftPassword = swiftPassword;
     }
