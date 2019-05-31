@@ -37,13 +37,6 @@ public class Demo {
         HistoryLineSourceAlloter alloter = new HistoryLineSourceAlloter(new SourceKey("commodity_stock"), new LineAllotRule(10000));
         HistoryBlockImporter importer = new HistoryBlockImporter(table, alloter);
         importer.importData(new ProgressResultSet(resultSet, "commodity_stock"));
-        SwiftSegmentService service = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-        List<SegmentKey> segmentKeys = service.getSegmentByKey("commodity_stock");
-        List<Segment> segments = new ArrayList<Segment>();
-        for (SegmentKey key : segmentKeys) {
-            segments.add(SegmentUtils.newSegment(key));
-        }
-        SegmentUtils.indexSegmentIfNeed(segments);
         return true;
     }
 
