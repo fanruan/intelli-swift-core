@@ -1,30 +1,34 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
 import com.fineio.FineIO;
-import com.fineio.FineIO.MODEL;
-import com.fineio.io.ByteBuffer;
-import com.fineio.io.DoubleBuffer;
-import com.fineio.io.IntBuffer;
-import com.fineio.io.LongBuffer;
+import com.fineio.accessor.FineIOAccessor;
+import com.fineio.accessor.IOAccessor;
+import com.fineio.accessor.Model;
+import com.fineio.accessor.buffer.ByteBuf;
+import com.fineio.accessor.buffer.DoubleBuf;
+import com.fineio.accessor.buffer.IntBuf;
+import com.fineio.accessor.buffer.LongBuf;
+import com.fineio.accessor.file.IAppendFile;
+import com.fineio.accessor.file.IWriteFile;
 import com.fineio.io.file.IOFile;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import java.net.URI;
 
-import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.reflect.Whitebox.setInternalState;
 
 /**
  * @author anchore
@@ -36,7 +40,7 @@ public class PrimitiveFineIoWriterTest {
 
     private final URI location = URI.create("/cubes/table/seg0/column/detail");
 
-    private final IOFile ioFile = mock(IOFile.class);
+    private final IWriteFile<?> ioFile = mock(IWriteFile.class);
 
     @Before
     public void setUp() throws Exception {
@@ -47,8 +51,9 @@ public class PrimitiveFineIoWriterTest {
         Connector connector = mock(Connector.class);
         when(connectorManager.getConnector()).thenReturn(connector);
 
-        mockStatic(FineIO.class);
-        when(FineIO.createIOFile(ArgumentMatchers.<Connector>any(), ArgumentMatchers.<URI>any(), ArgumentMatchers.<MODEL>any(), anyBoolean())).thenReturn(ioFile);
+        IOAccessor ioAccessor = mock(IOAccessor.class);
+        setInternalState(FineIOAccessor.INSTANCE, "accessor", ioAccessor);
+        when(ioAccessor.createFile(any(Connector.class), any(URI.class), any(Model.class))).thenReturn(ioFile);
 
         when(ioFile.exists()).thenReturn(true);
     }
@@ -75,6 +80,8 @@ public class PrimitiveFineIoWriterTest {
         LongFineIoWriter.build(location, true);
         DoubleFineIoWriter.build(location, true);
 
+        when(Whitebox.<IOAccessor>getInternalState(FineIOAccessor.INSTANCE, "accessor").createFile(any(Connector.class), any(URI.class), any(Model.class))).thenReturn(mock(IAppendFile.class));
+
         ByteFineIoWriter.build(location, false);
         IntFineIoWriter.build(location, false);
         LongFineIoWriter.build(location, false);
@@ -88,10 +95,10 @@ public class PrimitiveFineIoWriterTest {
         LongFineIoWriter.build(location, true).put(0, 1);
         DoubleFineIoWriter.build(location, true).put(0, 1);
 
-        verifyStatic(FineIO.class);
-        FineIO.put((IOFile<ByteBuffer>) ioFile, 0, (byte) 1);
-        FineIO.put((IOFile<IntBuffer>) ioFile, 0, 1);
-        FineIO.put((IOFile<LongBuffer>) ioFile, 0, 1);
-        FineIO.put((IOFile<DoubleBuffer>) ioFile, 0, 1);
+        IOAccessor accessor = Whitebox.getInternalState(FineIOAccessor.INSTANCE, "accessor");
+        verify(accessor).put((IWriteFile<? extends ByteBuf>) ioFile, 0, (byte) 1);
+        verify(accessor).put((IWriteFile<? extends IntBuf>) ioFile, 0, 1);
+        verify(accessor).put((IWriteFile<? extends LongBuf>) ioFile, 0, 1);
+        verify(accessor).put((IWriteFile<? extends DoubleBuf>) ioFile, 0, 1);
     }
 }

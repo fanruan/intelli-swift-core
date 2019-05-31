@@ -26,7 +26,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     @Override
     protected Inserting getInserting(SegmentKey segKey) {
         Segment seg = SegmentUtils.newSegment(segKey);
-        return new Inserting(SwiftInserter.ofAppendMode(seg), seg, seg.isReadable() ? seg.getRowCount() : 0);
+        return new Inserting(SwiftInserter.ofAppendMode(seg), seg, SegmentUtils.safeGetRowCount(seg));
     }
 
     @Override

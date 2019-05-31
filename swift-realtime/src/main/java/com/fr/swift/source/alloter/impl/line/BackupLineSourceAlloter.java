@@ -1,10 +1,10 @@
 package com.fr.swift.source.alloter.impl.line;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -26,6 +26,6 @@ public class BackupLineSourceAlloter extends RealtimeLineSourceAlloter {
     Segment newSeg(SegmentKey key) {
         IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).asBackup().build(), StoreType.NIO);
         SwiftMetaData metaData = META_SVC.getMetaDataByKey(tableKey.getId());
-        return SwiftContext.get().getBean("historySegment", Segment.class, location, metaData);
+        return new BackupSegment(location, metaData);
     }
 }

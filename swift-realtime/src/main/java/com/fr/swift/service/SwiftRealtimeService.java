@@ -20,6 +20,7 @@ import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
@@ -27,12 +28,13 @@ import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
-import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.impl.BaseAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 import com.fr.swift.util.FileUtil;
@@ -67,10 +69,10 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     public boolean start() throws SwiftServiceException {
         super.start();
         segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-//        if (recoverable) {
-//            recover0();
-//            recoverable = false;
-//        }
+        if (recoverable) {
+            recover0();
+            recoverable = false;
+        }
         ClusterListenerHandler.addExtraListener(realtimeClusterListener);
         return true;
     }
@@ -87,10 +89,9 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public void insert(final SourceKey tableKey, final SwiftResultSet resultSet) throws Exception {
-        SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.MEM_STEP));
+        SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(BaseAllotRule.MEM_CAPACITY));
         Table table = SwiftDatabase.getInstance().getTable(tableKey);
-        Importer importer = SwiftContext.get().getBean("incrementer", Importer.class, table, alloter);
-        importer.importData(resultSet);
+        new Incrementer<SwiftSourceAlloter<?, RowInfo>>(table, alloter).importData(resultSet);
     }
 
     private void recover0() {

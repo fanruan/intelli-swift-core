@@ -1,8 +1,10 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
-import com.fineio.FineIO;
-import com.fineio.FineIO.MODEL;
-import com.fineio.io.ByteBuffer;
+import com.fineio.accessor.FineIOAccessor;
+import com.fineio.accessor.buffer.ByteBuf;
+import com.fineio.accessor.file.IAppendFile;
+import com.fineio.accessor.file.IWriteFile;
+import com.fineio.accessor.impl.BaseModel;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.output.ByteWriter;
@@ -12,12 +14,13 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class ByteFineIoWriter extends BaseFineIoWriter<ByteBuffer> implements ByteWriter {
+public class ByteFineIoWriter extends BaseFineIoWriter<ByteBuf> implements ByteWriter {
     private ByteFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
+        super(isOverwrite);
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_BYTE, true);
+            writeFile = (IWriteFile<ByteBuf>) FineIOAccessor.INSTANCE.createFile(connector, uri, BaseModel.ofByte().asWrite());
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_BYTE, true);
+            appendFile = (IAppendFile<ByteBuf>) FineIOAccessor.INSTANCE.createFile(connector, uri, BaseModel.ofByte().asAppend());
         }
     }
 
@@ -31,6 +34,10 @@ public class ByteFineIoWriter extends BaseFineIoWriter<ByteBuffer> implements By
 
     @Override
     public void put(long pos, byte val) {
-        FineIO.put(ioFile, pos, val);
+        if (isOverwrite) {
+            FineIOAccessor.INSTANCE.put(writeFile, (int) pos, val);
+        } else {
+            FineIOAccessor.INSTANCE.put(appendFile, val);
+        }
     }
 }
