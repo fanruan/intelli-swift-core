@@ -94,7 +94,7 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
                 try {
                     URL url = urlListEntry.getKey();
                     List<SegmentKey> segmentKeyList = urlListEntry.getValue();
-                    Invoker invoker = invokerCreator.createAsyncInvoker(CollateService.class, url);
+                    Invoker invoker = invokerCreator.createAsyncInvoker(ServiceContext.class, url);
                     invoke(invoker, proxy, method, methodName, paramClass, sourceKey, segmentKeyList);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);

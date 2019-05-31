@@ -1,19 +1,20 @@
 package com.fr.swift.segment.event;
 
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.event.history.TransCollateLoadEvent;
+import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.task.impl.UploadExecutorTask;
+import com.fr.swift.executor.task.job.Job.JobListener;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.structure.Pair;
 
+import java.sql.SQLException;
 import java.util.Collections;
 
 /**
@@ -26,21 +27,26 @@ public class UploadHistoryListener implements SwiftEventListener<SegmentKey> {
 
     @Override
     public void on(final SegmentKey segKey) {
-        upload(segKey);
+        if (SwiftProperty.getProperty().isCluster()) {
+            upload(segKey);
+        }
     }
 
     private static void upload(final SegmentKey segKey) {
-        if (SwiftProperty.getProperty().isCluster()) {
-            int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-            String local = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
-            String remote = new CubePathBuilder(segKey).build();
-            try {
-                SwiftRepositoryManager.getManager().currentRepo().copyToRemote(local, remote);
-
-                notifyDownload(segKey);
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error("Cannot upload Segment which path is {}", local, e);
-            }
+        try {
+            // TODO: 2019/3/5 考虑看看是否提到上层
+            TaskProducer.produceTask(UploadExecutorTask.ofWholeSeg(segKey, new JobListener() {
+                @Override
+                public void onDone(boolean success) {
+                    if (success) {
+                        notifyDownload(segKey);
+                    }
+                }
+            }));
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error("persist task(upload whore seg {}) failed", "persist task(upload {}'s all_show_index) failed", segKey, e);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 

@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -60,28 +61,32 @@ class NodeResultSetMerger implements Iterator<NodeMergeQRS<GroupNode>> {
 
     private NodeMergeQRS<GroupNode> updateAll() {
         final List<NodeMergeQRS<GroupNode>> resultSets = new ArrayList<NodeMergeQRS<GroupNode>>();
-        List<Future> futures = new ArrayList<Future>();
+        List<Future<NodeMergeQRS<GroupNode>>> futures = new ArrayList<Future<NodeMergeQRS<GroupNode>>>();
         for (int i = 0; i < sources.size(); i++) {
             final int finalI = i;
-            futures.add(service.submit(new Runnable() {
+            futures.add(service.submit(new Callable<NodeMergeQRS<GroupNode>>() {
                 @Override
-                public void run() {
+                public NodeMergeQRS<GroupNode> call() {
                     if (sources.get(finalI).hasNextPage()) {
                         Pair<GroupNode, List<Map<Integer, Object>>> pair = sources.get(finalI).getPage();
                         if (pair == null) {
                             SwiftLoggers.getLogger().error("NodeResultSetMerger#updateAll: invalid page data!");
-                            return;
+                            return null;
                         }
                         GroupNode node = pair.getKey();
-                        resultSets.add(new NodeMergeQRSImpl<GroupNode>(fetchSize, node, pair.getValue()));
                         lastRowOfPrevPages.set(finalI, SwiftNodeUtils.getLastRow(node));
+                        return new NodeMergeQRSImpl<GroupNode>(fetchSize, node, pair.getValue());
                     }
+                    return null;
                 }
             }));
         }
-        for (Future future : futures) {
+        for (Future<NodeMergeQRS<GroupNode>> future : futures) {
             try {
-                future.get();
+                NodeMergeQRS<GroupNode> rs = future.get();
+                if (rs != null) {
+                    resultSets.add(rs);
+                }
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e.getMessage(), e);
             }

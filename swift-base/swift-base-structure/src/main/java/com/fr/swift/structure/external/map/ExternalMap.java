@@ -4,6 +4,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.concurrent.SimpleThreadFactory;
 
 import java.io.BufferedOutputStream;
@@ -836,7 +837,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
             } finally {
-                io.close();
+                IoUtil.close(io);
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.fr.swift.api.request;
 
-import com.fr.swift.rpc.bean.RpcResponse;
-import com.fr.swift.rpc.bean.impl.RpcRequest;
+import com.fr.swift.basic.SwiftRequest;
+import com.fr.swift.basic.SwiftResponse;
 
 /**
  * @author yee
@@ -14,8 +14,8 @@ public interface RpcSender {
      * @param request rpc request
      * @return rpc response
      * @throws Exception the method might be throw exception
-     * @see RpcRequest
-     * @see RpcResponse
+     * @see SwiftRequest
+     * @see SwiftResponse
      */
-    RpcResponse send(RpcRequest request) throws Exception;
+    SwiftResponse send(SwiftRequest request) throws Exception;
 }

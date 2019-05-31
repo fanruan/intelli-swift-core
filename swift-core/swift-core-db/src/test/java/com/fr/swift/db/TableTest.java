@@ -16,8 +16,6 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Rule;
-import org.junit.rules.TestRule;
 import org.junit.runners.MethodSorters;
 
 import java.sql.Types;
@@ -34,11 +32,6 @@ public class TableTest {
     private Database db = SwiftDatabase.getInstance();
     private SourceKey sk = new SourceKey(getClass().getSimpleName());
     private Table t;
-
-    @Rule
-    public TestRule getExternalResource() throws Exception {
-        return (TestRule) Class.forName("com.fr.swift.test.external.BuildCubeResource").newInstance();
-    }
 
     @Before
     public void setUp() throws Exception {

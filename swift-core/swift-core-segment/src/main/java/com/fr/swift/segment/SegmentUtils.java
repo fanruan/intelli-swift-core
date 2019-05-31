@@ -14,12 +14,11 @@ import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.segment.operator.column.SwiftColumnIndexer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.Assert;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
-import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,39 +30,33 @@ import java.util.List;
  */
 public class SegmentUtils {
 
-    public static List<Segment> newSegments(List<SegmentKey> segKeys) {
-        if (segKeys == null || segKeys.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Segment> segmentList = new ArrayList<Segment>();
-        for (SegmentKey segKey : segKeys) {
-            segmentList.add(newSegment(segKey));
-        }
-        return segmentList;
-    }
-
     public static Segment newSegment(SegmentKey segKey) {
         return newSegment(segKey, CubeUtil.getCurrentDir(segKey.getTable()));
     }
 
     public static Segment newSegment(SegmentKey segmentKey, int tmpPath) {
-        Util.requireNonNull(segmentKey);
+        Assert.notNull(segmentKey);
+
         String cubePath;
         if (segmentKey.getStoreType().isTransient()) {
             cubePath = new CubePathBuilder(segmentKey).build();
         } else {
             cubePath = new CubePathBuilder(segmentKey).setTempDir(tmpPath).build();
         }
+
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(cubePath, storeType);
         SourceKey sourceKey = segmentKey.getTable();
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
-        Util.requireNonNull(metaData);
+
+        Assert.notNull(metaData);
         return SegmentUtils.newSegment(location, metaData);
     }
 
     public static Segment newSegment(IResourceLocation location, SwiftMetaData meta) {
+        Assert.notNull(location);
+        Assert.notNull(meta);
+
         if (location.getStoreType().isTransient()) {
             return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, meta);
         }
@@ -123,32 +116,37 @@ public class SegmentUtils {
     }
 
     /**
-     * 只release非内存seg todo 可能需要更明确的方法名
+     * 释放历史块内部所有资源
      *
      * @param seg 块
      */
-    public static void release(Segment seg) {
+    public static void releaseHisSeg(Segment seg) {
         if (seg != null && seg.isHistory()) {
             IoUtil.release(seg);
         }
     }
 
-    public static void release(List<Segment> segs) {
+    /**
+     * 释放历史块内部用到的所有资源
+     *
+     * @param segs
+     */
+    public static void releaseHisSeg(List<Segment> segs) {
         if (segs == null) {
             return;
         }
         for (Segment seg : segs) {
-            release(seg);
+            releaseHisSeg(seg);
         }
     }
 
     /**
-     * 只release非内存seg todo 可能需要更明确的方法名
+     * 释放历史块column
      *
      * @param column 列
      * @param <T>    数据类型
      */
-    public static <T> void release(Column<T> column) {
+    public static <T> void releaseHisColumn(Column<T> column) {
         if (column != null && column.getLocation().getStoreType().isPersistent()) {
             IoUtil.release(column.getDetailColumn());
             IoUtil.release(column.getDictionaryEncodedColumn());
@@ -156,24 +154,12 @@ public class SegmentUtils {
         }
     }
 
-    public static <T> void releaseColumns(List<Column<T>> columns) {
+    public static <T> void releaseHisColumn(List<Column<T>> columns) {
         if (columns == null) {
             return;
         }
         for (Column<T> column : columns) {
-            release(column);
-        }
-    }
-
-    public static void releaseColumnsOf(Segment seg) {
-        try {
-            SwiftMetaData meta = seg.getMetaData();
-            for (int i = 0; i < meta.getColumnCount(); i++) {
-                Column<?> column = seg.getColumn(new ColumnKey(meta.getColumnName(i + 1)));
-                release(column);
-            }
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
+            releaseHisColumn(column);
         }
     }
 }

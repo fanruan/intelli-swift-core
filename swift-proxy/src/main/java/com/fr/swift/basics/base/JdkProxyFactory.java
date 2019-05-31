@@ -36,13 +36,13 @@ public class JdkProxyFactory extends BaseProxyFactory {
     }
 
     @Override
-    public <T> Map<URL, T> getPeerProxies(Class<T> proxyIface) {
-        Map<URL, T> urlToService = new HashMap<URL, T>();
-        Set<URL> urls = SwiftServiceListenerManager.getInstance().getNodeUrls(proxyIface);
+    public <S, T> Map<URL, T> getPeerProxies(Class<S> serviceClass, Class<T> proxyIface) {
+        Map<URL, T> urlToProxy = new HashMap<URL, T>();
+        Set<URL> urls = SwiftServiceListenerManager.getInstance().getNodeUrls(serviceClass);
         for (URL url : urls) {
-            T service = proxyIface.cast(Proxy.newProxyInstance(proxyIface.getClassLoader(), new Class[]{proxyIface}, new PeerInvocationHandler(proxyIface, url, invokerCreator)));
-            urlToService.put(url, service);
+            T proxy = proxyIface.cast(Proxy.newProxyInstance(proxyIface.getClassLoader(), new Class[]{proxyIface}, new PeerInvocationHandler(proxyIface, url, invokerCreator)));
+            urlToProxy.put(url, proxy);
         }
-        return urlToService;
+        return urlToProxy;
     }
 }

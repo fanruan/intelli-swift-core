@@ -1,6 +1,7 @@
 package com.fr.swift.cube.nio.read;
 
 import com.fr.swift.cube.nio.NIOReader;
+import com.fr.swift.util.IoUtil;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -51,10 +52,8 @@ public class StringReadMappedList implements NIOReader<String> {
 
     @Override
     public void release() {
-        if (byteNIOReader != null) {
-            byteNIOReader.release();
-            byteNIOReader = null;
-        }
+        IoUtil.release(byteNIOReader);
+        byteNIOReader = null;
     }
 
     public void delete() {

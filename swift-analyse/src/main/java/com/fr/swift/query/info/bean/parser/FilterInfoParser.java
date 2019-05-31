@@ -23,6 +23,7 @@ import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.DateUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -231,8 +232,8 @@ public class FilterInfoParser {
             case INTEGER:
             case LONG:
                 return Long.parseLong(origin.toString());
-//            case DATE:
-//                return DateUtils.string2Date(origin.toString(), true).getTime();
+            case DATE:
+                return DateUtils.string2Date(origin.toString()).getTime();
             case DOUBLE:
                 return Double.parseDouble(origin.toString());
             default:

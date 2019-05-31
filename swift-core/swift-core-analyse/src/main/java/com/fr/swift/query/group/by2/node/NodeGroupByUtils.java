@@ -6,8 +6,6 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.NodeMergeQRSImpl;
-import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.RowTraversal;
 
@@ -35,10 +33,11 @@ public class NodeGroupByUtils {
             List<NodeMergeQRS<GroupNode>> list = new ArrayList<NodeMergeQRS<GroupNode>>();
             list.add(new NodeMergeQRSImpl<GroupNode>(groupByInfo.getFetchSize(), root, null) {
                 @Override
-                public <Q extends QueryResultSet<Pair<GroupNode, List<Map<Integer, Object>>>>> QueryResultSetMerger<Pair<GroupNode, List<Map<Integer, Object>>>, Q> getMerger() {
+                public Pair<GroupNode, List<Map<Integer, Object>>> getPage() {
+                    // 只有一页，适配ChainedResultSet
                     hasNextPage = false;
                     aggregateRoot(root, groupByInfo.getDetailFilter().createFilterIndex(), metricInfo);
-                    return (QueryResultSetMerger<Pair<GroupNode, List<Map<Integer, Object>>>, Q>) new NodeMergeQRSImpl<GroupNode>(getFetchSize(), root, new ArrayList<Map<Integer, Object>>());
+                    return Pair.<GroupNode, List<Map<Integer, Object>>>of(root, new ArrayList<Map<Integer, Object>>());
                 }
             });
             return list.iterator();

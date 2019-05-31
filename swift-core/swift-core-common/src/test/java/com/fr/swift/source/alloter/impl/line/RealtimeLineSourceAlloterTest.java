@@ -7,6 +7,7 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.Segment;
@@ -17,6 +18,7 @@ import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -27,6 +29,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * Created by lyon on 2018/12/26.
@@ -116,5 +127,29 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
         segmentInfo = alloter.allot(new LineRowInfo(0));
         assertEquals(newSegOrder, segmentInfo.getOrder());
         assertEquals(Types.StoreType.MEMORY, segmentInfo.getStoreType());
+    }
+
+    @Test
+    public void getInsertableSeg() throws Exception {
+        // 只要有seg是transient且没有正在被插，必须选一个供插入而不去tryAppend
+        SwiftSegmentService segmentService = mock(SwiftSegmentService.class);
+        mockStatic(SwiftContext.class);
+        when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
+        when(SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(segmentService);
+
+        SourceKey tableKey = mock(SourceKey.class);
+        RealtimeLineSourceAlloter alloter = spy(new RealtimeLineSourceAlloter(tableKey, new LineAllotRule()));
+        SegmentKey segKey = mock(SegmentKey.class);
+        when(segmentService.getOwnSegments()).thenReturn(Collections.singletonMap(tableKey, Collections.singletonList(segKey)));
+
+        when(segKey.getStoreType()).thenReturn(StoreType.MEMORY);
+
+        when(alloter, "isSegInserting", any(SegmentInfo.class)).thenReturn(false);
+
+        doReturn(mock(Segment.class)).when(alloter).newSeg(segKey);
+
+        alloter.getInsertableSeg();
+
+        verify(segmentService, never()).tryAppendSegment(tableKey, StoreType.MEMORY);
     }
 }

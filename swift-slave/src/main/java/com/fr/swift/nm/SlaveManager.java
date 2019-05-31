@@ -7,7 +7,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.collector.SlaveHeartBeatCollect;
 import com.fr.swift.node.SwiftClusterNodeManager;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.AbstractSwiftManager;
+import com.fr.swift.service.AbstractModeManager;
 import com.fr.swift.service.SwiftManager;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.local.ServiceManager;
@@ -24,7 +24,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 @SwiftBean(name = "slaveManager")
-public class SlaveManager extends AbstractSwiftManager implements SwiftManager {
+public class SlaveManager extends AbstractModeManager implements SwiftManager {
 
     private Collect heartBeatCollect = new SlaveHeartBeatCollect();
 

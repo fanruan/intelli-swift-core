@@ -2,7 +2,6 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
@@ -42,7 +41,6 @@ import java.util.Map;
  * 分析服务
  */
 @SwiftService(name = "analyse")
-@ProxyService(AnalyseService.class)
 @SwiftBean(name = "analyse")
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService, Serializable {
     private static final long serialVersionUID = 841582089735823794L;

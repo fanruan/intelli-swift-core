@@ -1,8 +1,10 @@
 package com.fr.swift.bitmap.impl;
 
-import com.fineio.base.Bits;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * @author anchore
@@ -16,15 +18,13 @@ public final class AllShowBitMap extends RangeBitmap {
         return new AllShowBitMap(rowCount);
     }
 
-    public static ImmutableBitMap ofBytes(byte[] bytes, int offset) {
-        return of(Bits.getInt(bytes, offset));
-    }
-
     @Override
     public byte[] toBytes() {
-        byte[] bytes = new byte[4];
-        Bits.putInt(bytes, 0, end);
-        return bytes;
+        return ByteBuffer.allocate(5)
+                // 兼容fineio Bits的小端法
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .put(getType().getHead())
+                .putInt(end).array();
     }
 
     @Override

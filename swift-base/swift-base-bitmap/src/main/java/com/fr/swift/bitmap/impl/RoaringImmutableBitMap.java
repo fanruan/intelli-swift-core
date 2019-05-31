@@ -7,9 +7,9 @@ import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.IoUtil;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author anchore
@@ -27,13 +27,9 @@ public class RoaringImmutableBitMap extends BaseRoaringBitMap {
         return of(new MutableRoaringBitmap());
     }
 
-    static ImmutableBitMap ofBytes(byte[] bytes) {
-        return ofBytes(bytes, 0, bytes.length);
-    }
-
-    private static ImmutableBitMap ofBytes(byte[] bytes, int offset, int length) {
+    public static ImmutableBitMap ofStream(InputStream input) {
         MutableRoaringBitmap another = new MutableRoaringBitmap();
-        DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes, offset, length));
+        DataInputStream dis = new DataInputStream(input);
         try {
             another.deserialize(dis);
             return of(another);
