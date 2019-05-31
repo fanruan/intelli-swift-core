@@ -8,11 +8,14 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,40 +35,35 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
     protected SegmentState getInsertableSeg() {
         Map<SourceKey, List<SegmentKey>> keyListMap = SEG_SVC.getOwnSegments();
         List<SegmentKey> segKeys = keyListMap.get(tableKey);
-        segKeys = segKeys == null ? Collections.<SegmentKey>emptyList() : segKeys;
+        segKeys = segKeys == null ? new ArrayList<SegmentKey>() : segKeys;
 
-        SegmentKey maxSegKey = null;
-        Integer maxRowCount = null;
+        Collections.sort(segKeys, new Comparator<SegmentKey>() {
+            @Override
+            public int compare(SegmentKey o1, SegmentKey o2) {
+                return o1.getOrder() - o2.getOrder();
+            }
+        });
 
         for (SegmentKey segKey : segKeys) {
             if (segKey.getStoreType().isPersistent()) {
                 continue;
             }
-            if (isSegInserting(new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType()))) {
+            SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
+            if (isSegInserting(segInfo)) {
                 continue;
             }
-            Segment seg = newSeg(segKey);
-            int rowCount = seg.isReadable() ? seg.getRowCount() : 0;
-            if (maxRowCount == null) {
-                maxRowCount = rowCount;
-            }
-            if (maxSegKey == null) {
-                maxSegKey = segKey;
-            }
+            int rowCount = SegmentUtils.safeGetRowCount(newSeg(segKey));
 
             // todo 暂时限制为未满的块，解除限制会出别的问题
-            if (rowCount < rule.getCapacity() && rowCount > maxRowCount) {
-                // 这边假设配置中可能存在多个realTimeSegment的情况下，取出行数最多的segment进行插入
-                maxSegKey = segKey;
-                maxRowCount = rowCount;
+            // TODO: 2019/5/30 anchore 是不是满了的可以直接在这触发transfer
+            if (rowCount < rule.getCapacity()) {
+                return new SegmentState(segInfo, rowCount - 1);
             }
         }
-        if (maxSegKey == null) {
-            maxSegKey = SEG_SVC.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
-            maxRowCount = 0;
-        }
-        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(maxSegKey.getOrder(), maxSegKey.getStoreType());
-        return new SegmentState(segInfo, maxRowCount - 1);
+        // 全是历史块 或 全在inserting 或 全都满了；所以重新new一块
+        SegmentKey newSegKey = SEG_SVC.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
+        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType());
+        return new SegmentState(segInfo);
     }
 
     /**
