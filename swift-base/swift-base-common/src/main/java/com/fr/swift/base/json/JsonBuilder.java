@@ -19,6 +19,11 @@ public class JsonBuilder {
     private static final Map<Class, BeanMapper> BEAN_MAPPER_MAP = new ConcurrentHashMap<Class, BeanMapper>();
     private static final BeanMapper DEFAULT = new SwiftBeanMapper();
 
+    public static <T> T readValue(Map<String, Object> jsonMap, Class<T> reference) throws Exception {
+        BeanMapper mapper = DEFAULT;
+        return mapper.readValue(jsonMap, reference);
+    }
+
     public static <T> T readValue(String jsonString, Class<T> reference) throws Exception {
         BeanMapper mapper;
         if (!ReflectUtils.isAssignable(reference, Map.class) && reference.isAnnotationPresent(JsonMapper.class)) {

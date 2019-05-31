@@ -7,5 +7,5 @@ import com.fr.swift.cube.io.output.ObjectWriter;
  * @author anchore
  * @date 2018/7/20
  */
-public interface ObjectIo<T> extends ObjectWriter<T>, ObjectReader<T> {
+public interface ObjectIo<T> extends Io, ObjectWriter<T>, ObjectReader<T> {
 }

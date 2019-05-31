@@ -8,6 +8,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.LongDictColumn;
+import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.function.Function;
 
 import java.util.Arrays;
@@ -98,12 +99,7 @@ public class SubDateColumn extends BaseColumn<Long> {
 
         @Override
         public void release() {
-            baseDict.release();
-        }
-
-        @Override
-        public void flush() {
-            baseDict.flush();
+            IoUtil.release(baseDict);
         }
     }
 
@@ -135,13 +131,8 @@ public class SubDateColumn extends BaseColumn<Long> {
         }
 
         @Override
-        public void flush() {
-            deriveBitmapColumn.flush();
-        }
-
-        @Override
         public void release() {
-            deriveBitmapColumn.release();
+            IoUtil.release(deriveBitmapColumn);
         }
 
         @Override

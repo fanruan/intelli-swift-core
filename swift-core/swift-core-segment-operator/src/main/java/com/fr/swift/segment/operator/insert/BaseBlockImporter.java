@@ -72,11 +72,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
                 if (!insertings.containsKey(segInfo)) {
                     // 可能有满了的seg
-                    // todo 如果增量走这边，要fire upload的
                     releaseFullIfExists();
                     SegmentKey segKey = newSegmentKey(segInfo);
-                    Segment seg = newSegment(segKey);
-                    insertings.put(segInfo, getInserting(seg));
+                    insertings.put(segInfo, getInserting(segKey));
                     importSegKeys.add(segKey);
                 }
                 insertings.get(segInfo).insert(row);
@@ -85,8 +83,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
+            clearDirtyIfNeed();
         } finally {
-            // todo 报错后如何处置，脏数据清掉？
             IoUtil.close(swiftResultSet);
             IoUtil.release(this);
         }
@@ -99,11 +97,13 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         return alloter.allot(new LineRowInfo(cursor));
     }
 
-    protected abstract Inserting getInserting(Segment seg);
-
-    protected abstract Segment newSegment(SegmentKey segmentKey);
+    protected abstract Inserting getInserting(SegmentKey segKey);
 
     protected abstract void handleFullSegment(SegmentInfo segInfo);
+
+    protected void clearDirtyIfNeed() {
+        // for override
+    }
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
         return new SegmentKeyBean(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
@@ -114,6 +114,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (entry.getValue().isFull()) {
                 IoUtil.release(entry.getValue());
+
+                indexIfNeed(entry.getKey());
 
                 // 处理满了的块，比如上传历史块或者持久化增量块
                 handleFullSegment(entry.getKey());
@@ -129,12 +131,17 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             Entry<SegmentInfo, Inserting> entry = itr.next();
             IoUtil.release(entry.getValue());
 
+            indexIfNeed(entry.getKey());
+
             if (entry.getValue().isFull()) {
                 // 处理满了的块，比如上传历史块或者持久化增量块
                 handleFullSegment(entry.getKey());
             }
             itr.remove();
         }
+    }
+
+    protected void indexIfNeed(SegmentInfo segInfo) {
     }
 
     protected class Inserting implements Releasable {

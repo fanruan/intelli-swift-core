@@ -19,23 +19,9 @@ import java.util.List;
 @SwiftService(name = "collate")
 @SwiftBean(name = "collate")
 public class TestCollateService extends AbstractSwiftService implements CollateService {
-    @Override
-    public void autoCollateRealtime(SourceKey tableKey) throws Exception {
-
-    }
-
-    @Override
-    public void autoCollateHistory(SourceKey tableKey) throws Exception {
-
-    }
 
     @Override
     public void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception {
-
-    }
-
-    @Override
-    public void autoCollate(SourceKey tableKey) throws Exception {
 
     }
 

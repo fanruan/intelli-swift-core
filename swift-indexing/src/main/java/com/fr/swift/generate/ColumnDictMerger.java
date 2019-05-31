@@ -104,8 +104,8 @@ public class ColumnDictMerger<T> extends BaseWorker implements SwiftColumnDictMe
             dictColumn.putter().putGlobalSize(globalIndex);
         }
 
-        SegmentUtils.release(segments);
-        SegmentUtils.releaseColumns(columns);
+        SegmentUtils.releaseHisSeg(segments);
+        SegmentUtils.releaseHisColumn(columns);
 
         // 外排map释放并清除文件
         map.clear();

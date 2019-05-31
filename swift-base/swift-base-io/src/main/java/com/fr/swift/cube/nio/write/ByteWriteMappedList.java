@@ -1,6 +1,5 @@
 package com.fr.swift.cube.nio.write;
 
-import com.fr.swift.cube.io.output.ByteArrayWriter;
 import com.fr.swift.cube.nio.NIOWriter;
 
 import java.io.File;
@@ -9,6 +8,8 @@ import java.io.File;
  * Created by 小灰灰 on 14-1-7.
  */
 public class ByteWriteMappedList implements NIOWriter<byte[]> {
+    private static final byte[] NULL_VALUE = new byte[]{};
+
     protected LongNIOWriter index_array;
 
     protected IntNIOWriter size_array;
@@ -27,7 +28,7 @@ public class ByteWriteMappedList implements NIOWriter<byte[]> {
     @Override
     public void add(long row, byte[] v) {
         if (v == null) {
-            v = ByteArrayWriter.NULL_VALUE;
+            v = NULL_VALUE;
         }
         int len = v.length;
         long start = pos;

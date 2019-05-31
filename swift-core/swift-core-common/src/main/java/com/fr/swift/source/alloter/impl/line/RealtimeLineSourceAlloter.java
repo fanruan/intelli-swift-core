@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
 
-    private static final SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
+    static final SwiftMetaDataService META_SVC = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
     public RealtimeLineSourceAlloter(SourceKey tableKey, LineAllotRule rule) {
         super(tableKey, rule);
@@ -35,7 +35,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         segKeys = segKeys == null ? Collections.<SegmentKey>emptyList() : segKeys;
 
         SegmentKey maxSegKey = null;
-        int maxRowCount = 0;
+        Integer maxRowCount = null;
 
         for (SegmentKey segKey : segKeys) {
             if (segKey.getStoreType().isPersistent()) {
@@ -44,8 +44,14 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
             if (isSegInserting(new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType()))) {
                 continue;
             }
-            Segment seg = newRealTimeSeg(segKey);
+            Segment seg = newSeg(segKey);
             int rowCount = seg.isReadable() ? seg.getRowCount() : 0;
+            if (maxRowCount == null) {
+                maxRowCount = rowCount;
+            }
+            if (maxSegKey == null) {
+                maxSegKey = segKey;
+            }
 
             // todo 暂时限制为未满的块，解除限制会出别的问题
             if (rowCount < rule.getCapacity() && rowCount > maxRowCount) {
@@ -56,14 +62,21 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         }
         if (maxSegKey == null) {
             maxSegKey = SEG_SVC.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
+            maxRowCount = 0;
         }
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(maxSegKey.getOrder(), maxSegKey.getStoreType());
         return new SegmentState(segInfo, maxRowCount - 1);
     }
 
-    private Segment newRealTimeSeg(SegmentKey key) {
+    /**
+     * {@link BackupLineSourceAlloter} 会override，假装去读备份块
+     *
+     * @param key seg key
+     * @return 需要的seg
+     */
+    Segment newSeg(SegmentKey key) {
         IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).build(), key.getStoreType());
-        SwiftMetaData metaData = metaDataService.getMetaDataByKey(tableKey.getId());
+        SwiftMetaData metaData = META_SVC.getMetaDataByKey(tableKey.getId());
         return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, metaData);
     }
 }

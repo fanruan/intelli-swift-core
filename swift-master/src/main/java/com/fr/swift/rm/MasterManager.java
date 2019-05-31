@@ -10,7 +10,7 @@ import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.rm.collector.MasterHeartbeatCollect;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.AbstractSwiftManager;
+import com.fr.swift.service.AbstractModeManager;
 import com.fr.swift.service.SwiftManager;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.executor.CollateExecutor;
@@ -28,7 +28,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 @SwiftBean(name = "masterManager")
-public class MasterManager extends AbstractSwiftManager implements SwiftManager {
+public class MasterManager extends AbstractModeManager implements SwiftManager {
 
     private ServiceManager serviceManager = SwiftContext.get().getBean(ServiceManager.class);
 

@@ -1,23 +1,25 @@
 package com.fr.swift.cube.io.impl.nio;
 
-import com.fr.swift.cube.io.ByteIo;
-import com.fr.swift.cube.io.IntIo;
 import com.fr.swift.cube.io.LongIo;
 import com.fr.swift.cube.io.ObjectIo;
+import com.fr.swift.cube.io.impl.BaseByteArrayReader;
+import com.fr.swift.cube.io.impl.BaseByteArrayWriter;
 import com.fr.swift.cube.io.impl.nio.NioConf.IoType;
+import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.output.ByteArrayWriter;
 import com.fr.swift.util.IoUtil;
+
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author anchore
  * @date 2018/7/20
  */
-public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]>, ByteArrayWriter {
-    private LongIo position;
-    private IntIo length;
-    private ByteIo data;
+public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]>, ByteArrayWriter, ByteArrayReader {
+    private ByteArrayWriter byteArrayWriter;
 
-    private long currentPos;
+    private ByteArrayReader byteArrayReader;
 
     public ByteArrayNio(NioConf conf) {
         super(conf);
@@ -25,64 +27,48 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]>, ByteArray
     }
 
     private void init() {
-        position = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "pos")));
-        length = new IntNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "len")));
-        data = new ByteNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "data")));
-        if (conf.isAppend()) {
-            LongIo lastPosition = new LongNio(new NioConf(
-                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.READ, conf.getBufSize(), conf.getFileSize(), conf.isMapped()));
-            currentPos = lastPosition.isReadable() ? lastPosition.get(0) : 0;
-            lastPosition.release();
-        }
-    }
+        ByteNio data = new ByteNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "data")));
+        LongNio position = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "pos")));
+        IntNio length = new IntNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "len")));
+        LongIo lastPosition = conf.isOverwrite() ? null :
+                new LongNio(new NioConf(String.format("%s/%s", conf.getPath(), "last_pos"), IoType.OVERWRITE, conf.getBufSize(), conf.getFileSize(), conf.isMapped()));
 
-    @Override
-    public byte[] get(long pos) {
-        long start = position.get(pos);
-        int size = length.get(pos);
-        byte[] bytes = new byte[size];
-        for (long i = 0; i < size; i++) {
-            bytes[(int) i] = data.get(start + i);
-        }
-        return bytes;
+        byteArrayWriter = new BaseByteArrayWriter(data, position, length, conf.isOverwrite(), lastPosition, lastPosition);
+        byteArrayReader = new BaseByteArrayReader(data, position, length);
     }
 
     @Override
     public void put(long pos, byte[] val) {
-        position.put(pos, currentPos);
-        length.put(pos, val.length);
-        for (byte b : val) {
-            data.put(currentPos++, b);
-        }
+        byteArrayWriter.put(pos, val);
+    }
+
+    @Override
+    public OutputStream putStream(long pos) {
+        return byteArrayWriter.putStream(pos);
     }
 
     @Override
     public void resetContentPosition() {
-        currentPos = 0;
+        byteArrayWriter.resetContentPosition();
     }
 
     @Override
-    public void flush() {
+    public byte[] get(long pos) {
+        return byteArrayReader.get(pos);
+    }
+
+    @Override
+    public InputStream getStream(long pos) {
+        return byteArrayReader.getStream(pos);
     }
 
     @Override
     public boolean isReadable() {
-        return position != null && position.isReadable() &&
-                length != null && length.isReadable() &&
-                data != null && data.isReadable();
+        return byteArrayReader.isReadable();
     }
 
     @Override
     public void release() {
-        if (conf.isAppend()) {
-            LongIo lastPosition = new LongNio(new NioConf(
-                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.OVERWRITE, conf.getBufSize(), conf.getFileSize(), conf.isMapped()));
-            lastPosition.put(0, currentPos);
-            lastPosition.release();
-        }
-        IoUtil.release(data, position, length);
-        data = null;
-        position = null;
-        length = null;
+        IoUtil.release(byteArrayWriter, byteArrayReader);
     }
 }

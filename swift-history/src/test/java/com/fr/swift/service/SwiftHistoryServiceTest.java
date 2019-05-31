@@ -28,9 +28,6 @@ import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.task.service.ServiceBlockingQueue;
-import com.fr.swift.task.service.ServiceCallable;
-import com.fr.swift.task.service.ServiceTaskExecutor;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -47,11 +44,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * @author yee
@@ -72,7 +66,6 @@ public class SwiftHistoryServiceTest {
         EasyMock.expect(SwiftContext.get()).andReturn(mockSwiftContext).anyTimes();
         PowerMock.replay(SwiftContext.class);
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("localSegmentProvider"), EasyMock.eq(SwiftSegmentManager.class))).andReturn(mockSegmentManager()).anyTimes();
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(ServiceTaskExecutor.class))).andReturn(mockServiceTaskExecutor()).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftTablePathService.class))).andReturn(mockSwiftTablePathService()).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftCubePathService.class))).andReturn(mockSwiftCubePathService()).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("segmentServiceProvider"), EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService()).anyTimes();
@@ -149,37 +142,6 @@ public class SwiftHistoryServiceTest {
         PowerMock.replay(mockSwiftTablePathService);
 
         return mockSwiftTablePathService;
-    }
-
-    private ServiceTaskExecutor mockServiceTaskExecutor() {
-        // Generate by Mock Plugin
-        ServiceTaskExecutor mockServiceTaskExecutor = new ServiceTaskExecutor() {
-            @Override
-            public <T> Future<T> submit(ServiceCallable<T> serviceCallable) throws InterruptedException {
-                serviceCallable.run();
-                // Generate by Mock Plugin
-                Future mockFuture = PowerMock.createMock(Future.class);
-                try {
-                    EasyMock.expect(mockFuture.get()).andReturn(true).anyTimes();
-                } catch (ExecutionException e) {
-                    fail();
-                }
-                PowerMock.replayAll(mockFuture);
-                return mockFuture;
-
-            }
-
-            @Override
-            public void registerQueue(String name, ServiceBlockingQueue queue) {
-
-            }
-
-            @Override
-            public void unRegisterQueue(String name) {
-
-            }
-        };
-        return mockServiceTaskExecutor;
     }
 
     @Test

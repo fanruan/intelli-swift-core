@@ -3,14 +3,14 @@ package com.fr.swift.cube.io.impl.fineio;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.Types.WriteType;
-import com.fr.swift.cube.io.impl.fineio.output.BitMapFineIoWriter;
+import com.fr.swift.cube.io.impl.BaseBitmapWriter;
+import com.fr.swift.cube.io.impl.BaseStringWriter;
 import com.fr.swift.cube.io.impl.fineio.output.ByteArrayFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.ByteFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.DoubleFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.IntFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.LongArrayFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.LongFineIoWriter;
-import com.fr.swift.cube.io.impl.fineio.output.StringFineIoWriter;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.util.Crasher;
 
@@ -35,9 +35,9 @@ public final class FineIoWriters {
                 case BYTE_ARRAY:
                     return ByteArrayFineIoWriter.build(location, isOverwrite);
                 case STRING:
-                    return StringFineIoWriter.build(location, isOverwrite);
+                    return new BaseStringWriter(ByteArrayFineIoWriter.build(location, isOverwrite));
                 case BITMAP:
-                    return BitMapFineIoWriter.build(location, isOverwrite);
+                    return new BaseBitmapWriter(ByteArrayFineIoWriter.build(location, isOverwrite));
                 case LONG_ARRAY:
                     return LongArrayFineIoWriter.build(location, isOverwrite);
                 default:

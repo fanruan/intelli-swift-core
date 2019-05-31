@@ -32,9 +32,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -43,7 +43,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({SwiftContext.class})
+@PrepareForTest({SwiftContext.class, SegmentUtils.class})
 public class SegmentResultSetTest {
 
     private final SwiftMetaData meta = new SwiftMetaDataBean("DEMO_CONTRACT",
@@ -55,7 +55,7 @@ public class SegmentResultSetTest {
 
     @Before
     public void setUp() throws Exception {
-        mockStatic(SwiftContext.class);
+        mockStatic(SwiftContext.class, SegmentUtils.class);
         BeanFactory beanFactory = mock(BeanFactory.class);
         when(SwiftContext.get()).thenReturn(beanFactory);
 
@@ -63,7 +63,6 @@ public class SegmentResultSetTest {
         when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
         when(swiftCubePathService.getSwiftPath()).thenReturn("/");
 
-        when(seg.isHistory()).thenReturn(true);
         when(seg.isReadable()).thenReturn(true);
         when(seg.getMetaData()).thenReturn(meta);
         when(seg.getRowCount()).thenReturn(4);
@@ -102,16 +101,8 @@ public class SegmentResultSetTest {
         }
         resultSet.close();
 
-        verify(seg).release();
-
-        Column<Object> column = seg.getColumn(new ColumnKey("合同ID"));
-        DetailColumn<Object> detailColumn = column.getDetailColumn();
-        DictionaryEncodedColumn<Object> dictionaryEncodedColumn = column.getDictionaryEncodedColumn();
-        BitmapIndexedColumn bitmapIndex = column.getBitmapIndex();
-
-        verify(detailColumn).release();
-        verify(dictionaryEncodedColumn).release();
-        verify(bitmapIndex).release();
+        verifyStatic(SegmentUtils.class);
+        SegmentUtils.releaseHisSeg(seg);
 
         assertEquals(3, rows.size());
         assertEquals("1", rows.get(0).getValue(0));

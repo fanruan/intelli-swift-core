@@ -140,7 +140,6 @@ abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T>
         indexReader = null;
         globalSizeReader = null;
         globalIndexReader = null;
-
         putter = null;
     }
 

@@ -5,7 +5,7 @@ import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Table;
-import com.fr.swift.segment.HistorySegmentImpl;
+import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.RealtimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -40,7 +40,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
 
     protected Segment getBackupSegment(SegmentKey realtimeSegKey, SwiftMetaData meta) {
         // 恢复用的，只能读不能写
-        return new HistorySegmentImpl(new ResourceLocation(new CubePathBuilder(realtimeSegKey).asBackup().build(), Types.StoreType.NIO), meta);
+        return new BackupSegment(new ResourceLocation(new CubePathBuilder(realtimeSegKey).asBackup().build(), Types.StoreType.NIO), meta);
     }
 
     protected Segment newRealtimeSegment(Segment realtimeSeg) {

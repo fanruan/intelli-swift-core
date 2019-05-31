@@ -89,11 +89,6 @@ public class SwiftCollateProcessHandlerTest {
         Mockito.when(beanFactory.getBean(SwiftSegmentLocationService.class)).thenReturn(locationService);
         Mockito.when(locationService.findBySourceKey(Mockito.any(SourceKey.class))).thenReturn(segLocationBeanList);
 
-        Mockito.when(cluster1.getDestination()).thenReturn(destination1);
-        Mockito.when(destination1.getId()).thenReturn("cluster1");
-        Mockito.when(cluster2.getDestination()).thenReturn(destination2);
-        Mockito.when(destination2.getId()).thenReturn("cluster2");
-
         Mockito.when(urlFactory.getURL("cluster1")).thenReturn(cluster1);
         Mockito.when(urlFactory.getURL("cluster2")).thenReturn(cluster2);
 

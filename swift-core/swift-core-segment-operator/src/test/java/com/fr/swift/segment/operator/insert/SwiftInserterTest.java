@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -23,7 +22,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
@@ -71,7 +69,7 @@ public class SwiftInserterTest {
                 new ListBasedRow(7));
         when(resultSet.getMetaData()).thenReturn(meta);
 
-        new SwiftInserter(segment).insertData(resultSet);
+        SwiftInserter.ofOverwriteMode(segment).insertData(resultSet);
 
         Column<Object> c1 = segment.getColumn(new ColumnKey("c1"));
         DetailColumn<Object> detailColumn = c1.getDetailColumn();
@@ -102,8 +100,6 @@ public class SwiftInserterTest {
 
         // release all
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.releaseColumns(ArgumentMatchers.<List<Column<Object>>>any());
-        verifyStatic(SegmentUtils.class);
-        SegmentUtils.release(segment);
+        SegmentUtils.releaseHisSeg(segment);
     }
 }

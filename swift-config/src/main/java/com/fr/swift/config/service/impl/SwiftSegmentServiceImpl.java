@@ -11,6 +11,7 @@ import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
+import com.fr.swift.config.oper.Page;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
 import com.fr.swift.config.oper.exception.SwiftEntityExistsException;
@@ -157,6 +158,37 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
         }
     }
 
+    @Override
+    public boolean removeSegments(final Set<String> segmentKeys) {
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+                @Override
+                public Boolean work(final ConfigSession session) throws SQLException {
+                    try {
+                        for (final String segmentKey : segmentKeys) {
+                            segmentLocationDao.findBySegmentId(session, segmentKey).justForEach(new FindList.ConvertEach() {
+                                @Override
+                                public Object forEach(int idx, Object item) throws Exception {
+                                    session.delete(item);
+                                    for (SegmentContainer value : SegmentContainer.values()) {
+                                        value.remove(swiftSegmentDao.select(session, segmentKey));
+                                    }
+                                    return item;
+                                }
+                            });
+                            swiftSegmentDao.deleteById(session, segmentKey);
+                        }
+                    } catch (Throwable e) {
+                        throw new SQLException(e);
+                    }
+                    return true;
+                }
+            });
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
     private boolean addSegmentsWithoutTransaction(ConfigSession session, List<SegmentKey> segments) throws SQLException {
         for (SegmentKey segment : segments) {
             swiftSegmentDao.addOrUpdateSwiftSegment(session, segment);
@@ -284,6 +316,52 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     }
 
     @Override
+    public Page<SegmentKey> selectSelective(SegmentKey segmentKey, final int page, final int size) {
+        final List<ConfigWhere> wheres = new ArrayList<ConfigWhere>();
+        SourceKey sourceKey = segmentKey.getTable();
+        if (null != sourceKey) {
+            wheres.add(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey.getId()));
+        }
+        StoreType storeType = segmentKey.getStoreType();
+        if (null != storeType) {
+            wheres.add(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, storeType));
+        }
+        com.fr.swift.db.SwiftDatabase swiftSchema = segmentKey.getSwiftSchema();
+        if (null != swiftSchema) {
+            wheres.add(ConfigWhereImpl.eq("swiftSchema", swiftSchema));
+        }
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Page<SegmentKey>>(false) {
+                @Override
+                public Page<SegmentKey> work(ConfigSession session) throws SQLException {
+                    try {
+                        final Set<String> segmentIds = new HashSet<String>();
+                        segmentLocationDao.find(session,
+                                ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId())).forEach(new FindList.SimpleEach<SegLocationBean>() {
+                            @Override
+                            protected void each(int idx, SegLocationBean bean) throws Exception {
+                                segmentIds.add(bean.getSegmentId());
+                            }
+                        });
+                        if (segmentIds.isEmpty()) {
+                            return new Page<SegmentKey>();
+                        }
+                        wheres.add(ConfigWhereImpl.in("id", segmentIds));
+                        return swiftSegmentDao.findPage(session, page, size, new Order[]{OrderImpl.asc("id"), OrderImpl.asc("segmentOrder")}, wheres.toArray(new ConfigWhere[0]));
+                    } catch (Throwable e) {
+                        if (e instanceof SQLException) {
+                            throw (SQLException) e;
+                        }
+                        throw new SQLException(e);
+                    }
+                }
+            });
+        } catch (SQLException e) {
+            return new Page<SegmentKey>();
+        }
+    }
+
+    @Override
     public Map<SourceKey, List<SegmentKey>> getOwnSegments() {
         return getOwnSegments(SwiftProperty.getProperty().getClusterId());
     }
@@ -360,6 +438,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                                 segmentIds.add(bean.getSegmentId());
                             }
                         });
+                        if (segmentIds.isEmpty()) {
+                            return Collections.emptyList();
+                        }
                         List<ConfigWhere> criterionList = new ArrayList<ConfigWhere>();
                         criterionList.addAll(Arrays.asList(criterion));
                         criterionList.add(ConfigWhereImpl.in("id", segmentIds));
