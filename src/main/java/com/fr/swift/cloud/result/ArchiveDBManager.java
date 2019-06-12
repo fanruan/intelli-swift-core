@@ -1,13 +1,19 @@
 package com.fr.swift.cloud.result;
 
+import com.fr.swift.cloud.result.table.ConfEntity;
+import com.fr.swift.cloud.result.table.CustomerBaseInfo;
 import com.fr.swift.cloud.result.table.CustomerInfo;
-import com.fr.swift.cloud.result.table.ExecutionMetric;
-import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
-import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
-import com.fr.swift.cloud.result.table.TemplateProperty;
-import com.fr.swift.cloud.result.table.TemplatePropertyRatio;
+import com.fr.swift.cloud.result.table.FunctionUsageRate;
+import com.fr.swift.cloud.result.table.PluginUsage;
+import com.fr.swift.cloud.result.table.SystemUsageInfo;
+import com.fr.swift.cloud.result.table.TemplateUsageInfo;
 import com.fr.swift.cloud.result.table.downtime.DowntimeExecutionResult;
 import com.fr.swift.cloud.result.table.downtime.DowntimeResult;
+import com.fr.swift.cloud.result.table.template.ExecutionMetric;
+import com.fr.swift.cloud.result.table.template.LatencyTopPercentileStatistic;
+import com.fr.swift.cloud.result.table.template.TemplateAnalysisResult;
+import com.fr.swift.cloud.result.table.template.TemplateProperty;
+import com.fr.swift.cloud.result.table.template.TemplatePropertyRatio;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

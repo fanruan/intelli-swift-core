@@ -1,11 +1,11 @@
-package com.fr.swift.cloud.analysis;
+package com.fr.swift.cloud.analysis.template;
 
 import com.fr.swift.cloud.result.ArchiveDBManager;
-import com.fr.swift.cloud.result.table.ExecutionMetric;
-import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
-import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
-import com.fr.swift.cloud.result.table.TemplateProperty;
-import com.fr.swift.cloud.result.table.TemplatePropertyRatio;
+import com.fr.swift.cloud.result.table.template.ExecutionMetric;
+import com.fr.swift.cloud.result.table.template.LatencyTopPercentileStatistic;
+import com.fr.swift.cloud.result.table.template.TemplateAnalysisResult;
+import com.fr.swift.cloud.result.table.template.TemplateProperty;
+import com.fr.swift.cloud.result.table.template.TemplatePropertyRatio;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -20,7 +20,6 @@ import com.fr.swift.source.Row;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import javax.persistence.Query;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;

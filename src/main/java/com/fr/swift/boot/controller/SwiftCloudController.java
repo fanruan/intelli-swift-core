@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.Query;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -104,40 +103,5 @@ public class SwiftCloudController {
             statement.close();
             connection.close();
         }
-    }
-
-    @Negative(until = "2019-06-30")
-    private void saveCustomerInfo(String clientId, String appId, String yearMonth) {
-        if (isExisted(clientId, appId)) {
-            return;
-        }
-        Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
-        try {
-            Transaction transaction = session.beginTransaction();
-            CustomerInfo customerInfo = new CustomerInfo(clientId, appId, yearMonth);
-            session.saveOrUpdate(customerInfo);
-            transaction.commit();
-        } catch (Exception ignored) {
-        }
-        session.close();
-    }
-
-    @Negative(until = "2019-06-30")
-    private boolean isExisted(String clientId, String appId) {
-        Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
-        try {
-            Query query = session.createQuery(sql(CustomerInfo.class.getSimpleName()));
-            query.setParameter("clientId", clientId);
-            query.setParameter("appId", appId);
-            return ((org.hibernate.query.Query) query).uniqueResult() != null;
-        } catch (Exception ignored) {
-        }
-        session.close();
-        return false;
-    }
-
-    @Negative(until = "2019-06-30")
-    private String sql(String tableName) {
-        return "select 1 from " + tableName + " where clientId = :clientId and appId = :appId";
     }
 }
