@@ -1,35 +1,19 @@
 package com.fr.swift.cloud.task;
 
-import com.fr.swift.cloud.CloudProperty;
 import com.fr.swift.cloud.SwiftCloudConstants;
-import com.fr.swift.cloud.analysis.TemplateAnalysisUtils;
-import com.fr.swift.cloud.analysis.downtime.DowntimeAnalyser;
-import com.fr.swift.cloud.bean.TreasureAnalysisBean;
 import com.fr.swift.cloud.bean.TreasureBean;
-import com.fr.swift.cloud.kafka.MessageProducer;
 import com.fr.swift.cloud.load.FileImportUtils;
-import com.fr.swift.cloud.result.ArchiveDBManager;
-import com.fr.swift.cloud.result.table.CustomerInfo;
-import com.fr.swift.cloud.result.table.ExecutionMetric;
-import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
-import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
-import com.fr.swift.cloud.result.table.TemplateProperty;
-import com.fr.swift.cloud.result.table.TemplatePropertyRatio;
-import com.fr.swift.cloud.result.table.downtime.DowntimeExecutionResult;
-import com.fr.swift.cloud.result.table.downtime.DowntimeResult;
-import com.fr.swift.cloud.util.TimeUtils;
+import com.fr.swift.cloud.util.CloudLogUtils;
 import com.fr.swift.cloud.util.ZipUtils;
+import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Strings;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
-import javax.persistence.Query;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
 
 /**
  * This class created on 2019/5/9
@@ -37,19 +21,20 @@ import java.util.Date;
  * @author Lucifer
  * @description
  */
-public class TreasureUploadJob extends BaseJob<Boolean, TreasureBean> {
+public class TreasureImportJob extends BaseJob<Boolean, TreasureBean> {
 
     private TreasureBean treasureBean;
-    private static MessageProducer messageProducer = new MessageProducer();
+    private final static int RETRY_TIMES = 10;
+    private final static long RETRY_INTERVAL = 10 * 1000L;
 
-    public TreasureUploadJob(TreasureBean treasureBean) {
+    public TreasureImportJob(TreasureBean treasureBean) {
         this.treasureBean = treasureBean;
     }
 
     @Override
     public Boolean call() throws Exception {
         // 通过客户的用户ID、客户的应用ID和客户的数据包日期获取数据包的下载链接
-        logStartGetDownload(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());
+        CloudLogUtils.logStartJob(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion(), "download");
         String downloadLink = treasureBean.getUrl();
         if (Strings.isNotEmpty(downloadLink)) {
             SwiftLoggers.getLogger().info("get download link success. link is {}", downloadLink);
@@ -57,23 +42,9 @@ public class TreasureUploadJob extends BaseJob<Boolean, TreasureBean> {
             String downloadPath = SwiftCloudConstants.ZIP_FILE_PATH + File.separator + treasureBean.getClientId() + File.separator + treasureBean.getClientAppId() + File.separator + treasureBean.getYearMonth();
             ZipUtils.unzip(inputStream, new File(downloadPath));
             // 先导入csv文件数据到cube，然后生成分析结果，并保存到数据库
-            logStartAnalyse(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());
-
+            CloudLogUtils.logStartJob(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion(), "import");
             FileImportUtils.load(downloadPath, treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());
-
-            // 为了避免重复，先清除数据
-            try {
-                deleteIfExisting(treasureBean.getClientAppId(), treasureBean.getYearMonth());
-            } catch (Exception ignored) {
-            }
-
-            TemplateAnalysisUtils.tplAnalysis(treasureBean.getClientAppId(), treasureBean.getYearMonth());
-            if (!treasureBean.getVersion().equals("1.0")) {
-                new DowntimeAnalyser().downtimeAnalyse(treasureBean.getClientAppId(), treasureBean.getYearMonth());
-            }
-            saveCustomerInfo(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth());
-            TreasureAnalysisBean treasureAnalysisBean = new TreasureAnalysisBean(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());
-            messageProducer.produce(CloudProperty.getProperty().getTreasureAnalysisTopic(), treasureAnalysisBean);
+            TaskProducer.produceTask(new TreasureAnalysisTask(treasureBean));
         } else {
             throw new RuntimeException("Download link is empty");
         }
@@ -146,32 +117,5 @@ public class TreasureUploadJob extends BaseJob<Boolean, TreasureBean> {
     @Override
     public TreasureBean serializedTag() {
         return treasureBean;
-    }
-
-    private void logStartGetDownload(String clientUserId, String clientAppId, String treasDate, String version) {
-        SwiftLoggers.getLogger().info("======================================");
-        SwiftLoggers.getLogger().info("     Start get download address");
-        logClientInfo(clientUserId, clientAppId, treasDate, version);
-    }
-
-    private void logStartAnalyse(String clientUserId, String clientAppId, String treasDate, String version) {
-        SwiftLoggers.getLogger().info("======================================");
-        SwiftLoggers.getLogger().info("           Start Analyse");
-        logClientInfo(clientUserId, clientAppId, treasDate, version);
-    }
-
-    private void logStartUpload(String clientUserId, String clientAppId, String treasDate, String version) {
-        SwiftLoggers.getLogger().info("======================================");
-        SwiftLoggers.getLogger().info("           Start Upload");
-        logClientInfo(clientUserId, clientAppId, treasDate, version);
-    }
-
-    private void logClientInfo(String clientUserId, String clientAppId, String treasDate, String version) {
-        SwiftLoggers.getLogger().info("======================================");
-        SwiftLoggers.getLogger().info(" ClientUserId:\t{} ", clientUserId);
-        SwiftLoggers.getLogger().info(" ClientAppId:\t{} ", clientAppId);
-        SwiftLoggers.getLogger().info(" TreasDate:\t{} ", treasDate);
-        SwiftLoggers.getLogger().info(" Version:\t{} ", version);
-        SwiftLoggers.getLogger().info("======================================");
     }
 }

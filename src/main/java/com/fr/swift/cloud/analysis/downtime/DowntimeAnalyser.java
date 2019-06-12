@@ -46,7 +46,7 @@ public class DowntimeAnalyser {
     private static final String execution = "execution";
     private static final String executionSql = "execution_sql";
 
-    public void downtimeAnalyse(String appId, String yearMonth) throws Exception {
+    public List<DowntimeResult> downtimeAnalyse(String appId, String yearMonth) throws Exception {
 
         SwiftLoggers.getLogger().info("Start downtime analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
         FilterInfoBean filter = new AndFilterBean(
@@ -92,6 +92,7 @@ public class DowntimeAnalyser {
             }
             pidElementsMap.get(downtimeElement.pid()).add(downtimeElement);
         }
+        List<DowntimeResult> downtimeResultList = new ArrayList<>();
         for (Map.Entry<Integer, List<DowntimeElement>> entry : pidElementsMap.entrySet()) {
             int pid = entry.getKey();
             List<DowntimeElement> downtimeElementList = entry.getValue();
@@ -102,6 +103,7 @@ public class DowntimeAnalyser {
             analyseDowntimeType(downtimeElementList, downtimeResult, shutdownMap);
 
             List<DowntimeExecutionResult> downtimeExecutionResultList = analyseExecutionInfo(downtimeResult, filter, downtimeElementList);
+            downtimeResultList.add(downtimeResult);
 
             Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
             Transaction transaction = session.beginTransaction();
@@ -125,6 +127,7 @@ public class DowntimeAnalyser {
             }
         }
         SwiftLoggers.getLogger().info("finished downtime analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
+        return downtimeResultList;
     }
 
     /**

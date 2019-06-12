@@ -112,6 +112,10 @@ public class DowntimeResult {
         return yearMonth;
     }
 
+    public String getPredictDownType() {
+        return predictDownType;
+    }
+
     /**
      * 暂时swift只判断和输出TERM、CPU、OOM这三种
      */

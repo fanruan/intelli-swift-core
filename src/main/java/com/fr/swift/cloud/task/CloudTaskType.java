@@ -9,5 +9,5 @@ import com.fr.swift.executor.type.ExecutorTaskType;
  * @description
  */
 public enum CloudTaskType implements ExecutorTaskType {
-    TREASURE_UPLOAD;
+    TREASURE_IMPORT, TREASURE_ANALYSIS;
 }

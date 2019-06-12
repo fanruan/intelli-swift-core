@@ -17,23 +17,23 @@ import com.fr.swift.source.SourceKey;
  * @description
  */
 @TaskType(type = CloudTaskType.class)
-public class TreasureUploadTask extends AbstractExecutorTask<Job> {
+public class TreasureImportTask extends AbstractExecutorTask<Job> {
 
-    public TreasureUploadTask(TreasureBean treasureBean) throws Exception {
-        super(new SourceKey(treasureBean.getTopic()),
+    public TreasureImportTask(TreasureBean treasureBean) throws Exception {
+        super(new SourceKey(treasureBean.getTopic() + CloudTaskType.TREASURE_IMPORT.name()),
                 true,
-                CloudTaskType.TREASURE_UPLOAD,
+                CloudTaskType.TREASURE_IMPORT,
                 LockType.TABLE,
-                treasureBean.getTopic(),
+                treasureBean.getTopic() + CloudTaskType.TREASURE_IMPORT.name(),
                 DBStatusType.ACTIVE,
-                new TreasureUploadJob(treasureBean));
+                new TreasureImportJob(treasureBean));
     }
 
-    public TreasureUploadTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
+    public TreasureImportTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
                               String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
         super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
 
         TreasureBean treasureBean = JsonBuilder.readValue(taskContent, TreasureBean.class);
-        this.job = new TreasureUploadJob(treasureBean);
+        this.job = new TreasureImportJob(treasureBean);
     }
 }

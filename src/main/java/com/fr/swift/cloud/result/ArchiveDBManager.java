@@ -47,6 +47,13 @@ public enum ArchiveDBManager {
         configuration.addAnnotatedClass(DowntimeResult.class);
         configuration.addAnnotatedClass(DowntimeExecutionResult.class);
 
+        configuration.addAnnotatedClass(CustomerBaseInfo.class);
+        configuration.addAnnotatedClass(FunctionUsageRate.class);
+        configuration.addAnnotatedClass(ConfEntity.class);
+        configuration.addAnnotatedClass(PluginUsage.class);
+        configuration.addAnnotatedClass(SystemUsageInfo.class);
+        configuration.addAnnotatedClass(TemplateUsageInfo.class);
+
         return configuration.buildSessionFactory();
     }
 }
