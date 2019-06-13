@@ -52,7 +52,6 @@ public class ExecutorTaskServiceTest {
     @Mock
     ConfigSession configSession;
 
-
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(SwiftContext.class);
@@ -105,4 +104,3 @@ public class ExecutorTaskServiceTest {
         Mockito.verify(executorTaskDao).find(Mockito.eq(configSession), Mockito.<ConfigWhere[]>any());
     }
 }
-

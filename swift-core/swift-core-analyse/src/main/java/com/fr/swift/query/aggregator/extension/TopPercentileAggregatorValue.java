@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator.extension;
 
+import com.fr.swift.annotation.Negative;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.extension.histogram.Histogram;
 
@@ -20,6 +21,7 @@ public class TopPercentileAggregatorValue implements AggregatorValue<Double> {
         this.histogram = new Histogram(numberOfSignificantValueDigits);
     }
 
+    @Negative(until = "201907")
     void recordValue(long value) {
         if (value >= 0) {
             histogram.recordValue(value);
