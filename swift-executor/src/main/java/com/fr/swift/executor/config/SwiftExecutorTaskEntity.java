@@ -166,7 +166,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     @Override
     public ExecutorTask convert() {
         try {
-            Class<? extends ExecutorTask> clazz = ExecutorTypeContainer.getInstance().getClassByType(this.executorTaskType.name());
+            Class<? extends ExecutorTask> clazz = ExecutorTypeContainer.getInstance().getClassByType(this.taskType);
 
             Constructor constructor = clazz.getDeclaredConstructor(SourceKey.class, boolean.class, ExecutorTaskType.class, LockType.class,
                     String.class, DBStatusType.class, String.class, long.class, String.class);

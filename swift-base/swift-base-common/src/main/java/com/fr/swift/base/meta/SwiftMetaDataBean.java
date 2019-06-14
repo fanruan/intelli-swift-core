@@ -45,7 +45,6 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
     @Column(name = "fields", length = 65536)
     @Convert(converter = MetaDataColumnListConverter.class)
     private List<SwiftMetaDataColumn> fields;
-    private int columnCount;
 
     public SwiftMetaDataBean(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
@@ -70,11 +69,6 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
         this.tableName = tableName;
         this.remark = remark;
         this.fields = fields;
-        if (null == fields) {
-            this.columnCount = 0;
-        } else {
-            this.columnCount = fields.size();
-        }
     }
 
     public SwiftMetaDataBean() {
@@ -101,7 +95,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
 
     @Override
     public int getColumnCount() {
-        return columnCount;
+        return fields.size();
     }
 
     @Override
@@ -131,7 +125,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
 
     @Override
     public SwiftMetaDataColumn getColumn(int index) throws SwiftMetaDataException {
-        if (index < 1 || index > columnCount) {
+        if (index < 1 || index > getColumnCount()) {
             throw new SwiftMetaDataException();
         }
         return fields.get(index - 1);
@@ -152,7 +146,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
     @Override
     public int getColumnIndex(String columnName) throws SwiftMetaDataException {
         if (Strings.isNotEmpty(columnName)) {
-            for (int i = 0; i < columnCount; i++) {
+            for (int i = 0, columnCount = getColumnCount(); i < columnCount; i++) {
                 SwiftMetaDataColumn column = fields.get(i);
                 if (columnName.equals(column.getName())) {
                     return i + 1;
@@ -202,7 +196,6 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
 
     public void setFields(List<SwiftMetaDataColumn> fields) {
         this.fields = fields;
-        this.columnCount = fields.size();
     }
 
     public void setSwiftDatabase(SwiftDatabase schema) {
