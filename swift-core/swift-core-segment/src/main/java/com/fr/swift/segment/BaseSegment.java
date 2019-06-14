@@ -172,6 +172,10 @@ public abstract class BaseSegment implements Segment {
     @Override
     public void release() {
         IoUtil.release(rowCountWriter, rowCountReader, bitMapWriter, bitMapReader);
+        rowCountWriter = null;
+        rowCountReader = null;
+        bitMapWriter = null;
+        bitMapReader = null;
     }
 
     Column createRelationColumn(ColumnKey key) {

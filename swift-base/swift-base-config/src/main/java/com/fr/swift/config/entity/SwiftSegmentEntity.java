@@ -1,13 +1,12 @@
 package com.fr.swift.config.entity;
 
 import com.fr.swift.annotation.persistence.Column;
-import com.fr.swift.annotation.persistence.Convert;
 import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Enumerated;
 import com.fr.swift.annotation.persistence.Id;
 import com.fr.swift.annotation.persistence.Table;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.convert.URIConverter;
+import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
+import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
@@ -15,34 +14,39 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.io.Serializable;
-import java.net.URI;
+
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE;
 
 /**
  * @author yee
  * @date 2018/5/24
  */
+@JsonIgnoreProperties({"table", "order"})
 @Entity
 @Table(name = "fine_swift_segments")
 public class SwiftSegmentEntity implements Serializable, SegmentKey {
+    private static final long serialVersionUID = -3997047283578403498L;
+
+    @JsonProperty("id")
     @Id
     private String id;
 
-    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER)
+    @JsonProperty(COLUMN_SEGMENT_OWNER)
+    @Column(name = COLUMN_SEGMENT_OWNER)
     private String segmentOwner;
 
-    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI, length = SwiftConfigConstants.LONG_TEXT_LENGTH)
-    @Convert(
-            converter = URIConverter.class
-    )
-    private URI segmentUri;
-
-    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)
+    @JsonProperty(COLUMN_SEGMENT_ORDER)
+    @Column(name = COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
 
-    @Column(name = SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE)
+    @JsonProperty(COLUMN_STORE_TYPE)
+    @Column(name = COLUMN_STORE_TYPE)
     @Enumerated(Enumerated.EnumType.STRING)
     private Types.StoreType storeType;
 
+    @JsonProperty("swiftSchema")
     @Column(name = "swiftSchema")
     @Enumerated(Enumerated.EnumType.STRING)
     private SwiftDatabase swiftSchema;
@@ -57,7 +61,6 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
         id = getId(segmentOwner, segmentOrder, storeType);
         this.segmentOwner = segmentOwner.getId();
-        this.segmentUri = URI.create(String.format("%s/seg%d", segmentOwner.getId(), segmentOrder));
         this.segmentOrder = segmentOrder;
         this.storeType = storeType;
         this.swiftSchema = swiftSchema;
