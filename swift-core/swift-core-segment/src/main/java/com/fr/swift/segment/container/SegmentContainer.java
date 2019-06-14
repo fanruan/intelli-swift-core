@@ -6,13 +6,11 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -135,12 +133,7 @@ public enum SegmentContainer {
             List<SegmentKey> segmentKeys = tableMapSegments.get(table);
             if (segmentKeys != null) {
                 synchronized (segmentKeys) {
-                    Iterator<SegmentKey> iterator = segmentKeys.iterator();
-                    while (iterator.hasNext()) {
-                        if (Util.equals(iterator.next(), segmentKey)) {
-                            iterator.remove();
-                        }
-                    }
+                    segmentKeys.remove(segmentKey);
                 }
             }
         }
