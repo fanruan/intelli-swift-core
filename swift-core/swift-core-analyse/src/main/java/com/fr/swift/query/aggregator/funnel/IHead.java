@@ -15,7 +15,7 @@ public interface IHead {
      */
     int getSize();
 
-    int getDate();
+    String getDate();
 
     /**
      * 设置新的size大小，重置多余的元素为-1
