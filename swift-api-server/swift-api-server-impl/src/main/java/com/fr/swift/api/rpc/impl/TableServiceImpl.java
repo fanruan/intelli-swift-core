@@ -86,7 +86,7 @@ public class TableServiceImpl implements TableService {
             Crasher.crash("Table " + tableName + " must contain at lease one column.");
         }
         SwiftMetaDataBean swiftMetaDataBean = new SwiftMetaDataBean();
-        swiftMetaDataBean.setSwiftDatabase(schema);
+        swiftMetaDataBean.setSwiftSchema(schema);
         swiftMetaDataBean.setTableName(tableName);
         swiftMetaDataBean.setId(tableName);
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();

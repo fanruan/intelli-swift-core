@@ -130,11 +130,11 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         String bakPath = new CubePathBuilder()
                 .asAbsolute()
                 .asBackup()
-                .setSwiftSchema(meta.getSwiftDatabase())
+                .setSwiftSchema(meta.getSwiftSchema())
                 .setTableKey(tableKey).build();
         FileUtil.delete(bakPath);
         // 删内存
-        ResourceDiscovery.getInstance().releaseTable(meta.getSwiftDatabase(), tableKey);
+        ResourceDiscovery.getInstance().releaseTable(meta.getSwiftSchema(), tableKey);
     }
 
     @Override

@@ -276,7 +276,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                     SwiftSegmentEntity segKeyEntity = null;
                     do {
                         segKeyEntity = new SwiftSegmentEntity(tableKey, appendOrder, storeType,
-                                SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftDatabase());
+                                SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftSchema());
                         try {
                             swiftSegmentDao.persist(session, segKeyEntity);
                             for (SegmentContainer value : SegmentContainer.values()) {

@@ -40,7 +40,7 @@ public class AddColumnAction extends BaseAlterTableAction {
             columnMetas.add(relatedColumnMeta);
             SwiftMetaData newMeta = new SwiftMetaDataBean(
                     oldMeta.getId(),
-                    oldMeta.getSwiftDatabase(),
+                    oldMeta.getSwiftSchema(),
                     oldMeta.getSchemaName(),
                     oldMeta.getTableName(),
                     oldMeta.getRemark(), columnMetas);

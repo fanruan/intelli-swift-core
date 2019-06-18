@@ -35,7 +35,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
     private String id;
     @Column(name = "swiftSchema")
     @Enumerated(Enumerated.EnumType.STRING)
-    private SwiftDatabase swiftDatabase;
+    private SwiftDatabase swiftSchema;
     @Column(name = "schemaName")
     private String schemaName;
     @Column(name = "tableName")
@@ -64,7 +64,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
 
     public SwiftMetaDataBean(String id, SwiftDatabase swiftDatabase, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
         this.id = id;
-        this.swiftDatabase = swiftDatabase;
+        this.swiftSchema = swiftDatabase;
         this.schemaName = schemaName;
         this.tableName = tableName;
         this.remark = remark;
@@ -75,8 +75,8 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
     }
 
     @Override
-    public SwiftDatabase getSwiftDatabase() {
-        return swiftDatabase;
+    public SwiftDatabase getSwiftSchema() {
+        return swiftSchema;
     }
 
     @Override
@@ -198,8 +198,8 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
         this.fields = fields;
     }
 
-    public void setSwiftDatabase(SwiftDatabase schema) {
-        this.swiftDatabase = schema;
+    public void setSwiftSchema(SwiftDatabase schema) {
+        this.swiftSchema = schema;
     }
 
     @Override
@@ -213,7 +213,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
 
     @Override
     public String toString() {
-        return String.format("{%s, %s, %s}", swiftDatabase, tableName, fields);
+        return String.format("{%s, %s, %s}", swiftSchema, tableName, fields);
     }
 
 }

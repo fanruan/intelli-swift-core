@@ -144,12 +144,7 @@ public class GroupTWFilter implements ITimeWindowFilter {
     private boolean newStep(int eventIndex, int dateIndex, int timestamp, int associatedValue, Object groupValue,
                             IStepContainer prevHeads, IStepContainer currentHeads) {
         if (!iterableEvents[eventIndex]) {
-            IHead prevHead;
-            if (associatedEvents[eventIndex]) {
-                prevHead = prevHeads.getHead(associatedValue);
-            } else {
-                prevHead = prevHeads.getHead(associatedValue);
-            }
+            IHead prevHead = prevHeads.getHead(associatedValue);
             if (prevHead == null || timestamp - prevHead.getTimestamp() > timeWindow) {
                 return false;
             }

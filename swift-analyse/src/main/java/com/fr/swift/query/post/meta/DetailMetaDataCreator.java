@@ -24,7 +24,7 @@ public class DetailMetaDataCreator implements MetaDataCreator<DetailQueryInfoBea
     public SwiftMetaData create(DetailQueryInfoBean bean) throws SwiftMetaDataException {
         final String tableName = bean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(bean.getTableName());
-        SwiftDatabase schema = meta.getSwiftDatabase();
+        SwiftDatabase schema = meta.getSwiftSchema();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = bean.getDimensions();
         if (dimensionBeans.size() == 1 && dimensionBeans.get(0).getType() == DimensionType.DETAIL_ALL_COLUMN) {

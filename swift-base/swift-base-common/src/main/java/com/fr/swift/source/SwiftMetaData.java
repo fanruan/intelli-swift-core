@@ -16,7 +16,7 @@ import java.util.List;
 //        @JsonSubTypes.Type(SwiftMetaDataBean.class)
 //})
 public interface SwiftMetaData {
-    SwiftDatabase getSwiftDatabase();
+    SwiftDatabase getSwiftSchema();
 
     String getSchemaName() throws SwiftMetaDataException;
 

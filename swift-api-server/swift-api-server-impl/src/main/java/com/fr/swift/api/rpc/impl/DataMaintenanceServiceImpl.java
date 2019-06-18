@@ -133,7 +133,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
                 }
                 SwiftMetaDataBean bean = (SwiftMetaDataBean) base;
                 insertMetaData = new SwiftMetaDataBean(bean.getId(), bean.getSchemaName(), bean.getTableName(), bean.getRemark(), columns);
-                ((SwiftMetaDataBean) insertMetaData).setSwiftDatabase(bean.getSwiftDatabase());
+                ((SwiftMetaDataBean) insertMetaData).setSwiftSchema(bean.getSwiftSchema());
             }
         }
 
