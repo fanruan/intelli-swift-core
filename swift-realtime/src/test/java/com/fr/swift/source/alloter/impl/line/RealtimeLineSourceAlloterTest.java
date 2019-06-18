@@ -9,7 +9,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -60,8 +60,8 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
         SegmentKey newSeg = new SwiftSegmentEntity(new SourceKey(""), newSegOrder, Types.StoreType.MEMORY, null);
         Map<SourceKey, List<SegmentKey>> keyListMap = new HashMap<SourceKey, List<SegmentKey>>();
         List<SegmentKey> keys = new ArrayList<SegmentKey>();
-        keys.add(new SwiftSegmentEntity(new SourceKey(""), 1, Types.StoreType.MEMORY, SwiftDatabase.CUBE));
-        keys.add(new SwiftSegmentEntity(new SourceKey(""), 2, Types.StoreType.MEMORY, SwiftDatabase.CUBE));
+        keys.add(new SwiftSegmentEntity(new SourceKey(""), 1, Types.StoreType.MEMORY, SwiftSchema.CUBE));
+        keys.add(new SwiftSegmentEntity(new SourceKey(""), 2, Types.StoreType.MEMORY, SwiftSchema.CUBE));
         keyListMap.put(new SourceKey(""), keys);
 
         Segment seg1 = PowerMock.createMock(Segment.class);

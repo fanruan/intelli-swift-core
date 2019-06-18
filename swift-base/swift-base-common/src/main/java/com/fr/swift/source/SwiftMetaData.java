@@ -1,6 +1,6 @@
 package com.fr.swift.source;
 
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 //        @JsonSubTypes.Type(SwiftMetaDataBean.class)
 //})
 public interface SwiftMetaData {
-    SwiftDatabase getSwiftSchema();
+    SwiftSchema getSwiftSchema();
 
     String getSchemaName() throws SwiftMetaDataException;
 

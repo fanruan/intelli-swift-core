@@ -1,7 +1,7 @@
 package com.fr.swift.api.rpc;
 
 import com.fr.swift.api.result.SwiftApiResultSet;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 
 /**
  * @author yee
@@ -16,5 +16,5 @@ public interface SelectService extends ApiService {
      * @return
      * @throws Exception
      */
-    SwiftApiResultSet query(SwiftDatabase database, String queryJson) throws Exception;
+    SwiftApiResultSet query(SwiftSchema database, String queryJson) throws Exception;
 }

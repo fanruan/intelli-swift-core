@@ -1,7 +1,7 @@
 //package com.fr.swift.query.post.utils;
 //
 //import com.fr.swift.compare.Comparators;
-//import com.fr.swift.db.SwiftDatabase;
+//import com.fr.swift.db.SwiftSchema;
 //import com.fr.swift.query.aggregator.AggregatorValue;
 //import com.fr.swift.query.aggregator.Combiner;
 //import com.fr.swift.query.info.element.dimension.Dimension;
@@ -107,7 +107,7 @@
 //        final List<String> columnNames = getColumnNames(dimensions, resultSets);
 //        return new SwiftMetaData() {
 //            @Override
-//            public SwiftDatabase getSwiftSchema() {
+//            public SwiftSchema getSwiftSchema() {
 //                return null;
 //            }
 //

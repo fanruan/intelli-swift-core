@@ -14,7 +14,7 @@ import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -75,7 +75,7 @@ public class SwiftSegmentServiceImplTest extends BaseServiceTest {
         EasyMock.expect(mockSwiftMetaDataService.containsMeta(EasyMock.notNull(SourceKey.class))).andReturn(true).anyTimes();
         // Generate by Mock Plugin
         SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
-        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftSchema.CUBE).anyTimes();
         EasyMock.expect(mockSwiftMetaDataService.getMetaDataByKey(EasyMock.notNull(String.class))).andReturn(mockSwiftMetaData).anyTimes();
 
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftMetaDataService.class))).andReturn(mockSwiftMetaDataService).anyTimes();
