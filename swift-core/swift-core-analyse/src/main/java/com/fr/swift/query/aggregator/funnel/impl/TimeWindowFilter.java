@@ -1,13 +1,17 @@
 package com.fr.swift.query.aggregator.funnel.impl;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.funnel.IHead;
 import com.fr.swift.query.aggregator.funnel.IStep;
 import com.fr.swift.query.aggregator.funnel.ITimeWindowFilter;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class created on 2018/12/13
@@ -21,12 +25,17 @@ public class TimeWindowFilter implements ITimeWindowFilter {
     private final int dayWindow;
 
     private int timeWindow;
-    private int dateStart;
+    private long dateStart;
     private int numberOfDates;
 
     // 漏斗定义的顺序步骤
     private IStep step;
     private boolean hasAnotherStep0;
+    /**
+     * TODO@yee 2019/06/18 暂时先这样 format应该支持自定义或者直接不需要format，从timestamp解析应该就可以
+     */
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
 
     // 对应文档的D类：漏斗关联属性
     // 关联的事件属性值在一行参数中的index，即Object[] row数组中哪一个。这个要在解析的时候算好
@@ -39,12 +48,16 @@ public class TimeWindowFilter implements ITimeWindowFilter {
     private boolean[] finished;
     private boolean hasNoHeadBefore = true;
 
-    public TimeWindowFilter(int timeWindow, int dateStart, int numberOfDates, IStep step,
+    public TimeWindowFilter(int timeWindow, String dateStart, int numberOfDates, IStep step,
                             int firstAssociatedIndex, boolean[] associatedEvents,
                             DictionaryEncodedColumn associatedPropertyColumn) {
         this.timeWindow = timeWindow;
         this.dayWindow = timeWindow / DAY_SECONDS + 1;
-        this.dateStart = dateStart;
+        try {
+            this.dateStart = sdf.parse(dateStart).getTime();
+        } catch (ParseException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
         this.numberOfDates = numberOfDates;
         this.step = step;
         this.firstAssociatedIndex = firstAssociatedIndex;
@@ -68,13 +81,18 @@ public class TimeWindowFilter implements ITimeWindowFilter {
     }
 
     @Override
-    public void add(int event, int timestamp, int dateDictIndex, int associatedValue, Object groupValue) {
+    public void add(int event, int timestamp, String date, int associatedValue, Object groupValue) {
         // 事件有序进入
         // 更新临时对象: 从后往前, 并根据条件适当跳出
         if (hasNoHeadBefore && !step.isEqual(0, event)) {
             return;
         }
-        int dateIndex = dateDictIndex - dateStart;
+        int dateIndex = 0;
+        try {
+            dateIndex = (int) TimeUnit.MILLISECONDS.toDays(sdf.parse(date).getTime() - dateStart);
+        } catch (ParseException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
         int minDay = Math.max(0, dateIndex - dayWindow);
         for (; dateIndex >= minDay; dateIndex--) {
             if (finished[dateIndex]) {
@@ -83,7 +101,7 @@ public class TimeWindowFilter implements ITimeWindowFilter {
             temp = lists.get(dateIndex);
             if (step.isEqual(0, event)) {
                 hasNoHeadBefore = false;
-                createHead(dateDictIndex, timestamp, associatedValue, groupValue);
+                createHead(date, timestamp, associatedValue, groupValue);
                 //重复事件是head
                 if (!hasAnotherStep0) {
                     break;
@@ -191,7 +209,7 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         return true;
     }
 
-    private void createHead(int date, int timestamp, int associatedValue, Object groupValue) {
+    private void createHead(String date, int timestamp, int associatedValue, Object groupValue) {
         // 当前事务没有被使用且属于第一个事件，则新建临时IHead对象
         IHead newHead = new Head(step.size(), date, associatedValue, associatedColumnSize);
         newHead.addStep(timestamp, groupValue);

@@ -110,7 +110,8 @@ public class FunnelSegmentQuery implements SegmentQuery {
         Column event = segment.getColumn(new ColumnKey(params.getEvent()));
         RowTraversal rowTraversal = getFilerRows(event.getBitmapIndex(), steps, bean, segment);
         SwiftLoggers.getLogger().debug("seg rows: {}", rowTraversal.getCardinality());
-        DetailColumn combineColumn = segment.getColumn(new ColumnKey(params.getCombine())).getDetailColumn();
+        DetailColumn combineColumn = segment.getColumn(new ColumnKey(params.getTimestamp())).getDetailColumn();
+        DictionaryEncodedColumn date = segment.getColumn(new ColumnKey(params.getDate())).getDictionaryEncodedColumn();
         Column idColumn = segment.getColumn(new ColumnKey(params.getUserId()));
         Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(idColumn, rowTraversal, true);
         MergeIterator mergeIterator;
@@ -134,6 +135,8 @@ public class FunnelSegmentQuery implements SegmentQuery {
                 new DictionaryEncodedColumn[]{idColumn.getDictionaryEncodedColumn(),
                         null},
                 new DetailColumn[]{combineColumn, null},
+                new DictionaryEncodedColumn[]{event.getDictionaryEncodedColumn(), null},
+                new DictionaryEncodedColumn[]{date,},
                 createAssociatedColumn(), createPostGroupColumn(), getPostGroupStep());
 
         Map<FunnelGroupKey, FunnelAggValue> results = new HashMap<FunnelGroupKey, FunnelAggValue>();
@@ -171,9 +174,9 @@ public class FunnelSegmentQuery implements SegmentQuery {
         if (postGroupStep != -1) {
             if (rangePairs.size() == 0) {
                 if (groupValue != null) {
-                    groupKey = new FunnelGroupKey(dates[head.getDate()], 0, (String) groupValue);
+                    groupKey = new FunnelGroupKey(head.getDate(), 0, (String) groupValue);
                 } else {
-                    groupKey = new FunnelGroupKey(dates[head.getDate()], 0, "");
+                    groupKey = new FunnelGroupKey(head.getDate(), 0, "");
                 }
             } else {
                 Double price = (Double) groupValue;
@@ -188,10 +191,10 @@ public class FunnelSegmentQuery implements SegmentQuery {
                 }
                 List<Double> pair = priceGroup == -1 ? new ArrayList<Double>() :
                         Arrays.asList(rangePairs.get(priceGroup)[0], rangePairs.get(priceGroup)[1]);
-                groupKey = new FunnelGroupKey(dates[head.getDate()], priceGroup, pair);
+                groupKey = new FunnelGroupKey(head.getDate(), priceGroup, pair);
             }
         } else {
-            groupKey = new FunnelGroupKey(dates[head.getDate()]);
+            groupKey = new FunnelGroupKey(head.getDate());
         }
         return groupKey;
     }
@@ -298,15 +301,15 @@ public class FunnelSegmentQuery implements SegmentQuery {
             associatedPropertyColumn = segment.getColumn(new ColumnKey(association.getColumn())).getDictionaryEncodedColumn();
         }
         DayFilterBean dayFilterBean = bean.getAggregation().getDayFilter();
-        int dateStart = getDateStart(dayFilterBean.getDayStart());
+//        int dateStart = getDateStart(dayFilterBean.getDayStart());
         int firstAssociatedIndex = (association == null || association.getFunnelIndexes().size() == 0) ? -1 : association.getFunnelIndexes().get(0);
         boolean repeated = step.hasRepeatedEvents();
         if (!repeated) {
             step = step.toNoRepeatedStep();
-            return new GroupTWFilter(bean.getAggregation().getTimeWindow(), dateStart, dayFilterBean.getNumberOfDays(),
+            return new GroupTWFilter(bean.getAggregation().getTimeWindow(), dayFilterBean.getDayStart(), dayFilterBean.getNumberOfDays(),
                     step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
         }
-        return new TimeWindowFilter(bean.getAggregation().getTimeWindow(), dateStart, dayFilterBean.getNumberOfDays(),
+        return new TimeWindowFilter(bean.getAggregation().getTimeWindow(), dayFilterBean.getDayStart(), dayFilterBean.getNumberOfDays(),
                 step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
     }
 
