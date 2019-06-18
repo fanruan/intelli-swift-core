@@ -30,7 +30,7 @@ public class GroupMetaDataCreator implements MetaDataCreator<GroupQueryInfoBean>
     public SwiftMetaData create(GroupQueryInfoBean queryBean) throws SwiftMetaDataException {
         final String tableName = queryBean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(queryBean.getTableName());
-        SwiftDatabase schema = meta.getSwiftDatabase();
+        SwiftDatabase schema = meta.getSwiftSchema();
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = queryBean.getDimensions();
         for (DimensionBean dimensionBean : dimensionBeans) {

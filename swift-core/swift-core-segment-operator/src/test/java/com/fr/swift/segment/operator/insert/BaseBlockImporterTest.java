@@ -75,7 +75,7 @@ public class BaseBlockImporterTest {
         when(alloter.allot(ArgumentMatchers.<RowInfo>any())).thenReturn(segInfo0, segInfo0, segInfo1);
 
         when(dataSource.getSourceKey()).thenReturn(mock(SourceKey.class));
-        when(dataSource.getMetadata().getSwiftDatabase()).thenReturn(com.fr.swift.db.SwiftDatabase.CUBE);
+        when(dataSource.getMetadata().getSwiftSchema()).thenReturn(com.fr.swift.db.SwiftDatabase.CUBE);
 
         BaseBlockImporter<?> blockImporter = spy(new BlockImporter<SwiftSourceAlloter<?, RowInfo>>(dataSource, alloter));
 

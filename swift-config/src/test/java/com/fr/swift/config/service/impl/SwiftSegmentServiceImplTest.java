@@ -75,7 +75,7 @@ public class SwiftSegmentServiceImplTest extends BaseServiceTest {
         EasyMock.expect(mockSwiftMetaDataService.containsMeta(EasyMock.notNull(SourceKey.class))).andReturn(true).anyTimes();
         // Generate by Mock Plugin
         SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
-        EasyMock.expect(mockSwiftMetaData.getSwiftDatabase()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftDatabase.CUBE).anyTimes();
         EasyMock.expect(mockSwiftMetaDataService.getMetaDataByKey(EasyMock.notNull(String.class))).andReturn(mockSwiftMetaData).anyTimes();
 
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftMetaDataService.class))).andReturn(mockSwiftMetaDataService).anyTimes();

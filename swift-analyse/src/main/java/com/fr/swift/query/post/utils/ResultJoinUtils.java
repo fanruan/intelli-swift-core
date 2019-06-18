@@ -107,7 +107,7 @@
 //        final List<String> columnNames = getColumnNames(dimensions, resultSets);
 //        return new SwiftMetaData() {
 //            @Override
-//            public SwiftDatabase getSwiftDatabase() {
+//            public SwiftDatabase getSwiftSchema() {
 //                return null;
 //            }
 //

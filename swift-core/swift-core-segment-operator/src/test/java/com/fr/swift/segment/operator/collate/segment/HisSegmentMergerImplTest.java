@@ -92,7 +92,7 @@ public class HisSegmentMergerImplTest {
         when(dataSource.getSourceKey()).thenReturn(tableKey);
         SwiftMetaData metaData = mock(SwiftMetaData.class);
         when(dataSource.getMetadata()).thenReturn(metaData);
-        when(metaData.getSwiftDatabase()).thenReturn(com.fr.swift.db.SwiftDatabase.CUBE);
+        when(metaData.getSwiftSchema()).thenReturn(com.fr.swift.db.SwiftDatabase.CUBE);
         when(metaData.getFieldNames()).thenReturn(Collections.singletonList("a"));
 
         Segment testSeg0 = mock(Segment.class);

@@ -60,7 +60,7 @@ class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements Inserti
                 ApiCrasher.crash(ServerErrorCode.SERVER_UNKNOWN_ERROR, String.format("Table %s is not exists", tableName[0]));
             }
             for (SwiftMetaData swiftMetaData : metaDataList) {
-                if (swiftMetaData.getSwiftDatabase().equals(SwiftDatabase.fromKey(database))) {
+                if (swiftMetaData.getSwiftSchema().equals(SwiftDatabase.fromKey(database))) {
                     metaData = swiftMetaData;
                     break;
                 }

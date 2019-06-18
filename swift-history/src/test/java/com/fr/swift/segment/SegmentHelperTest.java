@@ -115,7 +115,7 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         SwiftMetaDataService mockSwiftMetaDataService = PowerMock.createMock(SwiftMetaDataService.class);
         SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
-        EasyMock.expect(mockSwiftMetaData.getSwiftDatabase()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftDatabase.CUBE).anyTimes();
         EasyMock.expect(mockSwiftMetaDataService.getMetaDataByKey(EasyMock.anyString())).andReturn(mockSwiftMetaData).anyTimes();
 
         // Generate by Mock Plugin
@@ -177,7 +177,7 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         DataSource mockDataSource = PowerMock.createMock(DataSource.class);
         SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
-        EasyMock.expect(mockSwiftMetaData.getSwiftDatabase()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftDatabase.CUBE).anyTimes();
         EasyMock.expect(mockDataSource.getMetadata()).andReturn(mockSwiftMetaData).anyTimes();
         EasyMock.expect(mockDataSource.getSourceKey()).andReturn(new SourceKey("table")).anyTimes();
 
