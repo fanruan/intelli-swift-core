@@ -9,7 +9,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
@@ -159,7 +159,7 @@ public class SegmentHelper {
                 entity.setLastPath(path);
                 List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
                 if (null != segmentKeys) {
-                    SwiftDatabase swiftSchema = dataSource.getMetadata().getSwiftSchema();
+                    SwiftSchema swiftSchema = dataSource.getMetadata().getSwiftSchema();
                     repository.delete(new CubePathBuilder().setSwiftSchema(swiftSchema).setTableKey(sourceKey).build());
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {

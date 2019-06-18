@@ -6,7 +6,7 @@ import com.fr.swift.api.info.api.TableRequestInfo;
 import com.fr.swift.api.info.api.TruncateRequestInfo;
 import com.fr.swift.api.rpc.bean.Column;
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class RequestInfoTest {
         info.setTable("table");
         info.setColumns(Arrays.asList(new Column("id", Types.BIGINT), new Column("name", Types.VARCHAR)));
         info.setAuthCode("authCode");
-        info.setDatabase(SwiftDatabase.CUBE);
+        info.setDatabase(SwiftSchema.CUBE);
         String json = JsonBuilder.writeJsonString(info);
         CreateTableRequestInfo newInfo = JsonBuilder.readValue(json, CreateTableRequestInfo.class);
         assertEquals(info.getTable(), newInfo.getTable());
@@ -58,7 +58,7 @@ public class RequestInfoTest {
 //        info.setTable("table");
 //        info.setWhere(JsonBuilder.writeJsonString(filterBean));
 //        info.setAuthCode("authCode");
-//        info.setDatabase(SwiftDatabase.CUBE);
+//        info.setDatabase(SwiftSchema.CUBE);
 //        String json = JsonBuilder.writeJsonString(info);
 //        DeleteRequestInfo newInfo = JsonBuilder.readValue(json, DeleteRequestInfo.class);
 //        assertEquals(info.getTable(), newInfo.getTable());
@@ -75,7 +75,7 @@ public class RequestInfoTest {
         info.setSelectFields(Arrays.asList("id", "name"));
         info.setData(Arrays.<Row>asList(new ListBasedRow(1L, "anchor"), new ListBasedRow(2L, "mike")));
         info.setAuthCode("authCode");
-        info.setDatabase(SwiftDatabase.CUBE);
+        info.setDatabase(SwiftSchema.CUBE);
         String json = JsonBuilder.writeJsonString(info);
         InsertRequestInfo newInfo = JsonBuilder.readValue(json, InsertRequestInfo.class);
         assertEquals(info.getTable(), newInfo.getTable());
@@ -106,7 +106,7 @@ public class RequestInfoTest {
 //        bean.setType(DimensionType.DETAIL_ALL_COLUMN);
 //        queryBean.setDimensions(Arrays.asList(bean));
 //        info.setAuthCode("authCode");
-//        info.setDatabase(SwiftDatabase.CUBE);
+//        info.setDatabase(SwiftSchema.CUBE);
 //        info.setQueryJson(QueryBeanFactory.queryBean2String(queryBean));
 //
 //        String json = JsonBuilder.writeJsonString(info);
@@ -127,7 +127,7 @@ public class RequestInfoTest {
         TableRequestInfo info = new TruncateRequestInfo();
         info.setTable("table");
         info.setAuthCode("authCode");
-        info.setDatabase(SwiftDatabase.CUBE);
+        info.setDatabase(SwiftSchema.CUBE);
         String json = JsonBuilder.writeJsonString(info);
         TableRequestInfo newInfo = JsonBuilder.readValue(json, TableRequestInfo.class);
         assertEquals(info.getTable(), newInfo.getTable());

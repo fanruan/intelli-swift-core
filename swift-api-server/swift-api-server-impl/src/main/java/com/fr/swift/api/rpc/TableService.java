@@ -1,7 +1,7 @@
 package com.fr.swift.api.rpc;
 
 import com.fr.swift.api.rpc.bean.Column;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -20,7 +20,7 @@ public interface TableService extends ApiService {
      * @return
      * @throws SwiftMetaDataAbsentException
      */
-    SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException;
+    SwiftMetaData detectiveMetaData(SwiftSchema schema, String tableName) throws SwiftMetaDataAbsentException;
 
     /**
      * 获取数据库下的所有表名
@@ -28,7 +28,7 @@ public interface TableService extends ApiService {
      * @param schema
      * @return
      */
-    List<SwiftMetaData> detectiveAllTable(SwiftDatabase schema);
+    List<SwiftMetaData> detectiveAllTable(SwiftSchema schema);
 
     /**
      * 表是否存在
@@ -38,7 +38,7 @@ public interface TableService extends ApiService {
      * @return
      * @throws SwiftMetaDataAbsentException
      */
-    boolean isTableExists(SwiftDatabase schema, String tableName);
+    boolean isTableExists(SwiftSchema schema, String tableName);
 
     /**
      * 建表接口
@@ -49,7 +49,7 @@ public interface TableService extends ApiService {
      * @return
      * @throws Exception
      */
-    int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws Exception;
+    int createTable(SwiftSchema schema, String tableName, List<Column> columns) throws Exception;
 
     /**
      * 删除表接口
@@ -58,7 +58,7 @@ public interface TableService extends ApiService {
      * @param tableName
      * @throws Exception
      */
-    int dropTable(SwiftDatabase schema, String tableName) throws Exception;
+    int dropTable(SwiftSchema schema, String tableName) throws Exception;
 
     /**
      * 清空数据
@@ -67,7 +67,7 @@ public interface TableService extends ApiService {
      * @param tableName
      * @throws Exception
      */
-    void truncateTable(SwiftDatabase schema, String tableName) throws Exception;
+    void truncateTable(SwiftSchema schema, String tableName) throws Exception;
 
     /**
      * 加字段
@@ -75,7 +75,7 @@ public interface TableService extends ApiService {
      * @param column
      * @return
      */
-    boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws Exception;
+    boolean addColumn(SwiftSchema schema, String tableName, Column column) throws Exception;
 
     /**
      * 删字段
@@ -83,5 +83,5 @@ public interface TableService extends ApiService {
      * @param columnName
      * @return
      */
-    boolean dropColumn(SwiftDatabase schema, String tableName, String columnName) throws Exception;
+    boolean dropColumn(SwiftSchema schema, String tableName, String columnName) throws Exception;
 }

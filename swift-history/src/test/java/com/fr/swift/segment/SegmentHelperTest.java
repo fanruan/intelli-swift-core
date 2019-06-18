@@ -11,7 +11,7 @@ import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
@@ -64,8 +64,8 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         SwiftSegmentService mockSwiftSegmentService = PowerMock.createMock(SwiftSegmentService.class);
         Map<SourceKey, List<SegmentKey>> keys = new HashMap<SourceKey, List<SegmentKey>>();
-        keys.put(new SourceKey("table"), Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE),
-                new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE)));
+        keys.put(new SourceKey("table"), Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE),
+                new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftSchema.CUBE)));
         EasyMock.expect(mockSwiftSegmentService.getOwnSegments()).andReturn(keys).anyTimes();
         EasyMock.expect(mockSwiftSegmentService.removeSegments(EasyMock.anyObject(List.class))).andReturn(true).anyTimes();
 
@@ -115,7 +115,7 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         SwiftMetaDataService mockSwiftMetaDataService = PowerMock.createMock(SwiftMetaDataService.class);
         SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
-        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftSchema.CUBE).anyTimes();
         EasyMock.expect(mockSwiftMetaDataService.getMetaDataByKey(EasyMock.anyString())).andReturn(mockSwiftMetaData).anyTimes();
 
         // Generate by Mock Plugin
@@ -161,7 +161,7 @@ public class SegmentHelperTest {
         SwiftSegmentService mockSwiftSegmentService = PowerMock.createMock(SwiftSegmentService.class);
         EasyMock.expect(mockSwiftSegmentService.getSegmentByKey(EasyMock.anyString()))
                 .andReturn(
-                        Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE))
+                        Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE))
                 ).anyTimes();
 
         // Generate by Mock Plugin
@@ -177,7 +177,7 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         DataSource mockDataSource = PowerMock.createMock(DataSource.class);
         SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
-        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftSchema.CUBE).anyTimes();
         EasyMock.expect(mockDataSource.getMetadata()).andReturn(mockSwiftMetaData).anyTimes();
         EasyMock.expect(mockDataSource.getSourceKey()).andReturn(new SourceKey("table")).anyTimes();
 
@@ -234,7 +234,7 @@ public class SegmentHelperTest {
         SwiftSegmentService mockSwiftSegmentService = PowerMock.createMock(SwiftSegmentService.class);
         EasyMock.expect(mockSwiftSegmentService.getSegmentByKey(EasyMock.anyString()))
                 .andReturn(
-                        Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE))
+                        Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE))
                 ).anyTimes();
 
         // Generate by Mock Plugin

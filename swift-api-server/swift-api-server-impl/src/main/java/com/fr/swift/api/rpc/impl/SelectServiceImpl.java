@@ -8,7 +8,7 @@ import com.fr.swift.api.rpc.SelectService;
 import com.fr.swift.api.rpc.TableService;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.query.AbstractSingleTableQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
@@ -33,7 +33,7 @@ public class SelectServiceImpl implements SelectService {
 
     @Override
     @SwiftApi
-    public SwiftApiResultSet query(SwiftDatabase database, String queryJson) {
+    public SwiftApiResultSet query(SwiftSchema database, String queryJson) {
         try {
             QueryBean queryBean = QueryBeanFactory.create(queryJson);
             if (queryBean instanceof AbstractSingleTableQueryInfoBean) {

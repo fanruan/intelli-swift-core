@@ -2,7 +2,7 @@ package com.fr.swift.source.resultset.importing.file;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -30,7 +30,7 @@ public class SingleStreamImportResultSet extends BaseStreamImportResultSet<Strin
     private Row firstDataRow;
     private String currentLine;
 
-    public SingleStreamImportResultSet(SwiftDatabase database, String tableName, InputStream inputStream, FileLineParser parser) {
+    public SingleStreamImportResultSet(SwiftSchema database, String tableName, InputStream inputStream, FileLineParser parser) {
         super(parser);
         try {
             parseMetaData(database, tableName, inputStream, parser);
@@ -39,7 +39,7 @@ public class SingleStreamImportResultSet extends BaseStreamImportResultSet<Strin
         }
     }
 
-    public SingleStreamImportResultSet(SwiftDatabase database, String tableName, String s, FileLineParser parser) {
+    public SingleStreamImportResultSet(SwiftSchema database, String tableName, String s, FileLineParser parser) {
         super(s, parser);
         try {
             parseMetaData(database, tableName, getInputStream(s), parser);
@@ -66,7 +66,7 @@ public class SingleStreamImportResultSet extends BaseStreamImportResultSet<Strin
         }
     }
 
-    private void parseMetaData(SwiftDatabase database, String tableName, InputStream is, FileLineParser parser) throws Exception {
+    private void parseMetaData(SwiftSchema database, String tableName, InputStream is, FileLineParser parser) throws Exception {
         SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(tableName);
         if (null != metaData && metaData.getSwiftSchema().equals(database)) {
             this.metaData = metaData;

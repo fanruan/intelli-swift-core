@@ -1,6 +1,6 @@
 package com.fr.swift.api.rpc;
 
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.Where;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
@@ -22,7 +22,7 @@ public interface DataMaintenanceService extends ApiService {
      * @return
      * @throws Exception
      */
-    int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws Exception;
+    int insert(SwiftSchema schema, String tableName, List<String> fields, List<Row> rows) throws Exception;
 
     /**
      * 插入所有字段
@@ -33,7 +33,7 @@ public interface DataMaintenanceService extends ApiService {
      * @return
      * @throws Exception
      */
-    int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws Exception;
+    int insert(SwiftSchema schema, String tableName, List<Row> rows) throws Exception;
 
     /**
      * 将某查询的结果插入表中
@@ -44,7 +44,7 @@ public interface DataMaintenanceService extends ApiService {
      * @return
      * @throws Exception
      */
-    int insert(SwiftDatabase schema, String tableName, String queryJson) throws Exception;
+    int insert(SwiftSchema schema, String tableName, String queryJson) throws Exception;
 
     /**
      * 删除接口
@@ -55,7 +55,7 @@ public interface DataMaintenanceService extends ApiService {
      * @return
      * @throws Exception
      */
-    int delete(SwiftDatabase schema, String tableName, Where where) throws Exception;
+    int delete(SwiftSchema schema, String tableName, Where where) throws Exception;
 
     /**
      * 修改数据接口
@@ -67,6 +67,6 @@ public interface DataMaintenanceService extends ApiService {
      * @return
      * @throws Exception
      */
-    int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws Exception;
+    int update(SwiftSchema schema, String tableName, SwiftResultSet resultSet, Where where) throws Exception;
 
 }
