@@ -15,7 +15,7 @@ public class Head implements IHead, Serializable {
 
     private static final long serialVersionUID = -5646429773979005076L;
     private int size;
-    private int date;
+    private String date;
     private int[] timestamps;
     private int associatedProperty = -1;
     private boolean[] associatedMap;
@@ -28,7 +28,7 @@ public class Head implements IHead, Serializable {
      * @param numberOfSteps      漏斗总共定义了多少个步骤
      * @param associatedProperty 关联的属性值
      */
-    public Head(int numberOfSteps, int date, int associatedProperty, int associatedColumnSize) {
+    public Head(int numberOfSteps, String date, int associatedProperty, int associatedColumnSize) {
         this.size = 0;
         this.date = date;
         this.associatedProperty = associatedProperty;
@@ -43,7 +43,7 @@ public class Head implements IHead, Serializable {
     }
 
     @Override
-    public int getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -106,6 +106,7 @@ public class Head implements IHead, Serializable {
         }
     }
 
+    @Override
     public boolean containsAssociatedEvents(int associatedProperty) {
         return associatedMap[associatedProperty];
     }

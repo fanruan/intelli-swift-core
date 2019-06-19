@@ -10,6 +10,7 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -72,7 +73,7 @@ public class HisSegmentMergerImplTest {
             public SegmentKey answer(InvocationOnMock invocation) throws Throwable {
                 SourceKey tableKey = invocation.getArgument(0);
                 Types.StoreType storeType = invocation.getArgument(1);
-                return new SwiftSegmentEntity(tableKey, order++, storeType, com.fr.swift.db.SwiftDatabase.CUBE);
+                return new SwiftSegmentEntity(tableKey, order++, storeType, SwiftSchema.CUBE);
             }
         });
 
@@ -92,7 +93,7 @@ public class HisSegmentMergerImplTest {
         when(dataSource.getSourceKey()).thenReturn(tableKey);
         SwiftMetaData metaData = mock(SwiftMetaData.class);
         when(dataSource.getMetadata()).thenReturn(metaData);
-        when(metaData.getSwiftDatabase()).thenReturn(com.fr.swift.db.SwiftDatabase.CUBE);
+        when(metaData.getSwiftSchema()).thenReturn(SwiftSchema.CUBE);
         when(metaData.getFieldNames()).thenReturn(Collections.singletonList("a"));
 
         Segment testSeg0 = mock(Segment.class);

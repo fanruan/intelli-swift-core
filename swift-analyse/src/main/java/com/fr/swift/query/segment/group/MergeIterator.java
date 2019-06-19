@@ -35,40 +35,15 @@ public class MergeIterator {
 
     private final Iterator<GroupByEntry>[] iterators;
     private final DictionaryEncodedColumn<String>[] recordDic;
-    private final DetailColumn[] combineColumns;
+    //    private final DetailColumn[] combineColumns;
+    private DetailColumn[] timestampDetails;
+    private DictionaryEncodedColumn[] eventDicts;
+    private DictionaryEncodedColumn[] dateColumns;
     private final IMergeColumn[] associatedColumns;
     private final IMergeColumn[] groupColumns;
     private IntListRowTraversal[] travels;
     private String[] values;
-
-
-    public MergeIterator(ITimeWindowFilter filter, IStep step, Iterator<GroupByEntry>[] iterators,
-                         DictionaryEncodedColumn<String>[] recordDic, DetailColumn[] combineColumns,
-                         DictionaryEncodedColumn[] associatedColumns, Column[] groupColumns,
-                         int postGroupIndex) {
-        this.filter = filter;
-        this.step = step;
-        this.iterators = iterators;
-        this.recordDic = recordDic;
-        SwiftLoggers.getLogger().debug("segment his recordDic size: {}", recordDic[0].size());
-        if (recordDic[1] != null) {
-            SwiftLoggers.getLogger().debug("segment append recordDic size: {}", recordDic[1].size());
-        }
-        this.combineColumns = combineColumns;
-        this.associatedColumns = merge(associatedColumns);
-        this.groupColumns = mergeGroupColumn(groupColumns);
-        this.postGroupIndex = postGroupIndex;
-        if (associatedColumns != null) {
-            SwiftLoggers.getLogger().debug("associatedColumn size: {}", this.associatedColumns[0].dictSize());
-            filter.setDictSize(this.associatedColumns[0].dictSize());
-        }
-        filter.init();
-
-        travels = new IntListRowTraversal[2];
-        values = new String[2];
-        move(0);
-        move(1);
-    }
+    private long[] timestamps = new long[2];
 
     private IMergeColumn[] mergeGroupColumn(Column[] groupColumns) {
         if (groupColumns == null) {
@@ -122,24 +97,58 @@ public class MergeIterator {
         }
     }
 
+    private int[] events = new int[2];
+
+    private int[] indexes = new int[]{0, 0};
+    private int[] rows = new int[2];
+    private String[] dates = new String[2];
+
+    public MergeIterator(ITimeWindowFilter filter, IStep step, Iterator<GroupByEntry>[] iterators,
+                         DictionaryEncodedColumn<String>[] recordDic, DetailColumn[] combineColumns,
+                         DictionaryEncodedColumn[] eventDicts,
+                         DictionaryEncodedColumn[] dateColumns,
+                         DictionaryEncodedColumn[] associatedColumns, Column[] groupColumns,
+                         int postGroupIndex) {
+        this.filter = filter;
+        this.step = step;
+        this.iterators = iterators;
+        this.recordDic = recordDic;
+        SwiftLoggers.getLogger().debug("segment his recordDic size: {}", recordDic[0].size());
+        if (recordDic[1] != null) {
+            SwiftLoggers.getLogger().debug("segment append recordDic size: {}", recordDic[1].size());
+        }
+//        this.combineColumns = combineColumns;
+        this.timestampDetails = combineColumns;
+        this.eventDicts = eventDicts;
+        this.dateColumns = dateColumns;
+        this.associatedColumns = merge(associatedColumns);
+        this.groupColumns = mergeGroupColumn(groupColumns);
+        this.postGroupIndex = postGroupIndex;
+        if (associatedColumns != null) {
+            SwiftLoggers.getLogger().debug("associatedColumn size: {}", this.associatedColumns[0].dictSize());
+            filter.setDictSize(this.associatedColumns[0].dictSize());
+        }
+        filter.init();
+
+        travels = new IntListRowTraversal[2];
+        values = new String[2];
+        move(0);
+        move(1);
+    }
+
     private void singleRecord(final int i) {
         travels[i].traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                long combine = combineColumns[i].getLong(row);
-                int timestamp = (int) (combine >> 32);
-                int event = (int) (MASK & (combine >> 16));
-                int dateIndex = (int) (MASK & combine);
-                filter.add(event, timestamp, dateIndex,
+                int timestamp = (int) timestampDetails[i].getLong(row);
+                int event = eventDicts[i].getIndexByRow(row);
+                String value = (String) dateColumns[i].getValueByRow(row);
+                filter.add(event, timestamp, value,
                         associatedColumns == null ? -1 : associatedColumns[i].getIndex(row),
                         postGroupIndex == -1 ? null : step.isEqual(postGroupIndex, event) ? groupColumns[i].getValue(row) : null);
             }
         });
     }
-
-    private int[] indexes = new int[]{0, 0};
-    private int[] rows = new int[2];
-    private long[] combines = new long[2];
     private IntList[] lists = new IntList[2];
 
     private void multiRecord() {
@@ -149,11 +158,16 @@ public class MergeIterator {
         lists[1] = travels[1].getList();
         rows[0] = lists[0].get(indexes[0]);
         rows[1] = lists[1].get(indexes[1]);
-        combines[0] = combineColumns[0].getLong(rows[0]);
-        combines[1] = combineColumns[1].getLong(rows[1]);
+        timestamps[0] = timestampDetails[0].getLong(rows[0]);
+        timestamps[1] = timestampDetails[1].getLong(rows[1]);
+        events[0] = eventDicts[0].getIndexByRow(rows[0]);
+        events[1] = eventDicts[1].getIndexByRow(rows[1]);
+        dates[0] = (String) dateColumns[0].getValueByRow(rows[0]);
+        dates[1] = (String) dateColumns[1].getValueByRow(rows[1]);
+
         while (indexes[0] < lists[0].size() || indexes[1] < lists[1].size()) {
             //不会相同的
-            if (combines[0] < combines[1]) {
+            if (timestamps[0] < timestamps[1]) {
                 filter(0);
             } else {
                 filter(1);
@@ -164,18 +178,20 @@ public class MergeIterator {
     }
 
     private void filter(int i) {
-        int timestamp = (int) (combines[i] >> 32);
-        int event = (int) (MASK & (combines[i] >> 16));
-        int dateIndex = (int) (MASK & combines[i]);
-        filter.add(event, timestamp, dateIndex,
+        int timestamp = (int) timestamps[i];
+        int event = events[i];
+
+        filter.add(event, timestamp, dates[i],
                 associatedColumns == null ? -1 : associatedColumns[i].getIndex(rows[i]),
                 postGroupIndex == -1 ? null : step.isEqual(postGroupIndex, event) ? groupColumns[i].getValue(rows[i]) : null);
         if (++indexes[i] < lists[i].size()) {
             rows[i] = lists[i].get(indexes[i]);
-            combines[i] = combineColumns[i].getLong(rows[i]);
+            timestamps[i] = timestampDetails[i].getLong(rows[i]);
+            events[i] = eventDicts[i].getIndexByRow(rows[i]);
+            dates[i] = (String) dateColumns[i].getValueByRow(rows[i]);
         } else {
             //设置成long.maxvalue，就不会遍历了，一直是大的那个
-            combines[i] = Long.MAX_VALUE;
+            timestamps[i] = Long.MAX_VALUE;
         }
     }
 

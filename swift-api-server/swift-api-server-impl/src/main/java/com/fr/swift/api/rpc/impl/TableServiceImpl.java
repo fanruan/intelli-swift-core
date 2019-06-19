@@ -13,7 +13,7 @@ import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.AlterTableAction;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.AddColumnAction;
 import com.fr.swift.db.impl.DropColumnAction;
@@ -45,7 +45,7 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi
-    public SwiftMetaData detectiveMetaData(SwiftDatabase schema, String tableName) throws SwiftMetaDataAbsentException {
+    public SwiftMetaData detectiveMetaData(SwiftSchema schema, String tableName) throws SwiftMetaDataAbsentException {
         List<SwiftMetaData> metaDataList = swiftMetaDataService.find(ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName),
                 ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
         if (metaDataList.isEmpty()) {
@@ -56,7 +56,7 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi
-    public List<SwiftMetaData> detectiveAllTable(SwiftDatabase schema) {
+    public List<SwiftMetaData> detectiveAllTable(SwiftSchema schema) {
         List<SwiftMetaData> metaDataList = swiftMetaDataService.find(ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, schema));
         if (metaDataList.isEmpty()) {
             return Collections.emptyList();
@@ -67,7 +67,7 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi
-    public boolean isTableExists(SwiftDatabase schema, String tableName) {
+    public boolean isTableExists(SwiftSchema schema, String tableName) {
         try {
             return null != detectiveMetaData(schema, tableName);
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class TableServiceImpl implements TableService {
     @Override
     @SwiftApi
     synchronized
-    public int createTable(SwiftDatabase schema, String tableName, List<Column> columns) throws SQLException {
+    public int createTable(SwiftSchema schema, String tableName, List<Column> columns) throws SQLException {
         if (isTableExists(schema, tableName)) {
             Crasher.crash("Table " + tableName + " is already exists");
         }
@@ -86,7 +86,7 @@ public class TableServiceImpl implements TableService {
             Crasher.crash("Table " + tableName + " must contain at lease one column.");
         }
         SwiftMetaDataBean swiftMetaDataBean = new SwiftMetaDataBean();
-        swiftMetaDataBean.setSwiftDatabase(schema);
+        swiftMetaDataBean.setSwiftSchema(schema);
         swiftMetaDataBean.setTableName(tableName);
         swiftMetaDataBean.setId(tableName);
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
@@ -106,7 +106,7 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi
-    public int dropTable(SwiftDatabase schema, String tableName) throws Exception {
+    public int dropTable(SwiftSchema schema, String tableName) throws Exception {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         truncateTable(metaData);
         if (swiftMetaDataService.removeMetaDatas(new SourceKey(metaData.getId()))) {
@@ -117,7 +117,7 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi
-    public void truncateTable(SwiftDatabase schema, String tableName) throws Exception {
+    public void truncateTable(SwiftSchema schema, String tableName) throws Exception {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         truncateTable(metaData);
     }
@@ -141,7 +141,7 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi(enable = false)
-    public boolean addColumn(SwiftDatabase schema, String tableName, Column column) throws SQLException {
+    public boolean addColumn(SwiftSchema schema, String tableName, Column column) throws SQLException {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         if (metaData.getFieldNames().contains(column.getColumnName())) {
             throw new SQLException("Column " + column.getColumnName() + " is already exists!");
@@ -154,7 +154,7 @@ public class TableServiceImpl implements TableService {
 
     @Override
     @SwiftApi(enable = false)
-    public boolean dropColumn(SwiftDatabase schema, String tableName, String columnName) throws SQLException {
+    public boolean dropColumn(SwiftSchema schema, String tableName, String columnName) throws SQLException {
         SwiftMetaData metaData = detectiveMetaData(schema, tableName);
         SwiftMetaDataColumn metaDataColumn = metaData.getColumn(columnName);
         Table table = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(new SourceKey(metaData.getId()));

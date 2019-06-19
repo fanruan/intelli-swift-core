@@ -140,12 +140,12 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         // 删本地
         String localPath = new CubePathBuilder()
                 .asAbsolute()
-                .setSwiftSchema(metaData.getSwiftDatabase())
+                .setSwiftSchema(metaData.getSwiftSchema())
                 .setTempDir(path)
                 .setTableKey(tableKey).build();
         FileUtil.delete(localPath);
         // 删远程
-        String remotePath = new CubePathBuilder().setSwiftSchema(metaData.getSwiftDatabase()).setTableKey(tableKey).build();
+        String remotePath = new CubePathBuilder().setSwiftSchema(metaData.getSwiftSchema()).setTableKey(tableKey).build();
         try {
             SwiftRepositoryManager.getManager().currentRepo().delete(remotePath);
         } catch (IOException e) {

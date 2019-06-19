@@ -13,7 +13,7 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import org.junit.Assert;
@@ -112,7 +112,7 @@ public class IResourceDiscoveryTest {
 
     @Test
     public void releaseTable() {
-        SwiftDatabase schema = SwiftDatabase.CUBE;
+        SwiftSchema schema = SwiftSchema.CUBE;
         SourceKey tableKey = new SourceKey("table");
         SourceKey tableKey1 = new SourceKey("table1");
         ColumnKey columnKey = new ColumnKey("column");
@@ -136,7 +136,7 @@ public class IResourceDiscoveryTest {
 
     @Test
     public void releaseSeg() {
-        SwiftDatabase schema = SwiftDatabase.CUBE;
+        SwiftSchema schema = SwiftSchema.CUBE;
         SourceKey tableKey = new SourceKey("table");
         SourceKey tableKey1 = new SourceKey("table1");
         ColumnKey columnKey = new ColumnKey("column");
@@ -165,7 +165,7 @@ public class IResourceDiscoveryTest {
 
     @Test
     public void releaseColumn() {
-        SwiftDatabase schema = SwiftDatabase.CUBE;
+        SwiftSchema schema = SwiftSchema.CUBE;
         SourceKey tableKey = new SourceKey("table");
         SourceKey tableKey1 = new SourceKey("table1");
         ColumnKey columnKey = new ColumnKey("column");

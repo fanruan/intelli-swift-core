@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Database;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.result.SwiftResultSet;
@@ -75,7 +76,7 @@ public class BaseBlockImporterTest {
         when(alloter.allot(ArgumentMatchers.<RowInfo>any())).thenReturn(segInfo0, segInfo0, segInfo1);
 
         when(dataSource.getSourceKey()).thenReturn(mock(SourceKey.class));
-        when(dataSource.getMetadata().getSwiftDatabase()).thenReturn(com.fr.swift.db.SwiftDatabase.CUBE);
+        when(dataSource.getMetadata().getSwiftSchema()).thenReturn(SwiftSchema.CUBE);
 
         BaseBlockImporter<?> blockImporter = spy(new BlockImporter<SwiftSourceAlloter<?, RowInfo>>(dataSource, alloter));
 

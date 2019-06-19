@@ -4,7 +4,7 @@ package com.fr.swift.db;
  * @author yee
  * @date 2018/8/27
  */
-public enum SwiftDatabase {
+public enum SwiftSchema {
     /**
      * 默认schema
      */
@@ -16,7 +16,7 @@ public enum SwiftDatabase {
     private final String name;
     private final String dir;
 
-    SwiftDatabase(int id, String name, String dir) {
+    SwiftSchema(int id, String name, String dir) {
         this.id = id;
         this.name = name;
         this.dir = dir;
@@ -38,7 +38,7 @@ public enum SwiftDatabase {
         return name;
     }
 
-    public static SwiftDatabase fromKey(String key) {
+    public static SwiftSchema fromKey(String key) {
         return valueOf(key.toUpperCase());
     }
 }

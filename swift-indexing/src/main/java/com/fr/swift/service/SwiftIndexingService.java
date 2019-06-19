@@ -172,7 +172,7 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                         Integer tmpPath = entity.getTmpDir();
                         String deletePath = String.format("%s/%s/%d/%s",
                                 pathService.getSwiftPath(),
-                                ((DataSource) obj).getMetadata().getSwiftDatabase().getDir(),
+                                ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
                                 tmpPath,
                                 sourceKey.getId());
                         FileUtil.delete(deletePath);

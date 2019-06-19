@@ -17,7 +17,7 @@ import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import org.junit.Before;
@@ -127,18 +127,18 @@ public class SwiftCollateProcessHandlerTest {
 
 
     void prepareSegments(List<SegmentKey> segmentKeyList, List<SwiftSegmentLocationEntity> segLocationBeanList) {
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 3, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 4, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 5, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 6, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 7, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 8, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 9, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 10, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 11, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 1, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 2, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 3, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 4, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 5, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 6, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 7, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 8, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 9, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 10, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        segmentKeyList.add(new SwiftSegmentEntity(new SourceKey("test"), 11, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
 
         segLocationBeanList.add(new SwiftSegmentLocationEntity("cluster1", segmentKeyList.get(0).getId(), "test"));
         segLocationBeanList.add(new SwiftSegmentLocationEntity("cluster1", segmentKeyList.get(1).getId(), "test"));

@@ -9,7 +9,7 @@ import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.global.DeleteEvent;
@@ -41,7 +41,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
     @SwiftApi
-    public int insert(SwiftDatabase schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
+    public int insert(SwiftSchema schema, String tableName, List<String> fields, List<Row> rows) throws SQLException {
         SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
         insert(schema, tableName, new InsertResultSet(metaData, fields, rows));
         return rows.size();
@@ -49,18 +49,18 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
     @SwiftApi
-    public int insert(SwiftDatabase schema, String tableName, List<Row> rows) throws SQLException {
+    public int insert(SwiftSchema schema, String tableName, List<Row> rows) throws SQLException {
         return insert(schema, tableName, null, rows);
     }
 
     @Override
     @SwiftApi
-    public int insert(SwiftDatabase schema, String tableName, String queryJson) throws Exception {
+    public int insert(SwiftSchema schema, String tableName, String queryJson) throws Exception {
         SwiftResultSet resultSet = SwiftContext.get().getBean(SelectService.class).query(schema, queryJson);
         return insert(schema, tableName, resultSet);
     }
 
-    private int insert(SwiftDatabase schema, String tableName, SwiftResultSet resultSet) throws SQLException {
+    private int insert(SwiftSchema schema, String tableName, SwiftResultSet resultSet) throws SQLException {
         SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
         SourceKey sourceKey = new SourceKey(metaData.getId());
         try {
@@ -75,7 +75,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
     @SwiftApi
-    public int delete(SwiftDatabase schema, String tableName, Where where) throws SQLException {
+    public int delete(SwiftSchema schema, String tableName, Where where) throws SQLException {
         try {
             SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
             if (null == metaData) {
@@ -95,7 +95,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
 
     @Override
     @SwiftApi(enable = false)
-    public int update(SwiftDatabase schema, String tableName, SwiftResultSet resultSet, Where where) throws SQLException {
+    public int update(SwiftSchema schema, String tableName, SwiftResultSet resultSet, Where where) throws SQLException {
 
         try {
             SwiftMetaDataBean metaData = (SwiftMetaDataBean) tableService.detectiveMetaData(schema, tableName);
@@ -133,7 +133,7 @@ public class DataMaintenanceServiceImpl implements DataMaintenanceService {
                 }
                 SwiftMetaDataBean bean = (SwiftMetaDataBean) base;
                 insertMetaData = new SwiftMetaDataBean(bean.getId(), bean.getSchemaName(), bean.getTableName(), bean.getRemark(), columns);
-                ((SwiftMetaDataBean) insertMetaData).setSwiftDatabase(bean.getSwiftDatabase());
+                ((SwiftMetaDataBean) insertMetaData).setSwiftSchema(bean.getSwiftSchema());
             }
         }
 

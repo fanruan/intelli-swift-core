@@ -12,15 +12,18 @@ public class ParameterColumnsBean {
     @JsonProperty
     private String event;
     @JsonProperty
-    private String combine;
+    private String timestamp;
+    @JsonProperty
+    private String date;
 
     public ParameterColumnsBean() {
     }
 
-    public ParameterColumnsBean(String userId, String event, String combine) {
+    public ParameterColumnsBean(String userId, String event, String timestamp, String date) {
         this.userId = userId;
         this.event = event;
-        this.combine = combine;
+        this.timestamp = timestamp;
+        this.date = date;
     }
 
     public String getUserId() {
@@ -39,11 +42,19 @@ public class ParameterColumnsBean {
         this.event = event;
     }
 
-    public String getCombine() {
-        return combine;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setCombine(String combine) {
-        this.combine = combine;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

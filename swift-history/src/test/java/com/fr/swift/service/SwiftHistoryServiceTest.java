@@ -11,7 +11,7 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventType;
@@ -124,7 +124,7 @@ public class SwiftHistoryServiceTest {
         SwiftSegmentService mockSwiftSegmentService = PowerMock.createMock(SwiftSegmentService.class);
         EasyMock.expect(mockSwiftSegmentService.removeSegments(EasyMock.eq("table"))).andReturn(true).anyTimes();
         Map<SourceKey, List<SegmentKey>> segments = new HashMap<SourceKey, List<SegmentKey>>();
-        segments.put(new SourceKey("table"), Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE)));
+        segments.put(new SourceKey("table"), Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE)));
         EasyMock.expect(mockSwiftSegmentService.getOwnSegments()).andReturn(segments).anyTimes();
         PowerMock.replay(mockSwiftSegmentService);
         return mockSwiftSegmentService;
@@ -189,9 +189,9 @@ public class SwiftHistoryServiceTest {
     private SwiftSegmentManager mockSegmentManager() {
         // Generate by Mock Plugin
         List<SegmentKey> list = new ArrayList<SegmentKey>();
-        list.add(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        list.add(new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
-        list.add(new SwiftSegmentEntity(new SourceKey("table"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
+        list.add(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        list.add(new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
+        list.add(new SwiftSegmentEntity(new SourceKey("table"), 2, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
         SwiftSegmentManager mockSwiftSegmentManager = PowerMock.createMock(SwiftSegmentManager.class);
         EasyMock.expect(mockSwiftSegmentManager.getSegmentKeys(EasyMock.anyObject(SourceKey.class))).andReturn(list).anyTimes();
         EasyMock.expect(mockSwiftSegmentManager.existsSegment(EasyMock.anyObject(SegmentKey.class))).andReturn(true).anyTimes();

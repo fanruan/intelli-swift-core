@@ -14,7 +14,7 @@ public class AHead implements IHead, Serializable {
 
     private static final long serialVersionUID = -5646429773979005076L;
     private int size;
-    private int date;
+    private String date;
     private int[] timestamps;
     private int associatedProperty = -1;
     private boolean canCopied = true;
@@ -27,7 +27,7 @@ public class AHead implements IHead, Serializable {
      * @param numberOfSteps      漏斗总共定义了多少个步骤
      * @param associatedProperty 关联的属性值
      */
-    public AHead(int numberOfSteps, int date, int associatedProperty) {
+    public AHead(int numberOfSteps, String date, int associatedProperty) {
         this.size = 0;
         this.date = date;
         this.associatedProperty = associatedProperty;
@@ -41,7 +41,7 @@ public class AHead implements IHead, Serializable {
     }
 
     @Override
-    public int getDate() {
+    public String getDate() {
         return date;
     }
 
