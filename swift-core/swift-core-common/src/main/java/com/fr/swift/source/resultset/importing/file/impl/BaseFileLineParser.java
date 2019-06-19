@@ -74,7 +74,8 @@ public abstract class BaseFileLineParser implements FileLineParser {
             Crasher.crash(String.format("Parser expect column size %d but get %d", columns.size(), row.getSize()));
         }
         for (int i = 0; i < row.getSize(); i++) {
-            String col = row.getValue(i);
+            Object value = row.getValue(i);
+            String col = value != null ? value.toString() : null;
             try {
                 ColumnTypeConstants.ClassType classType = ColumnTypeUtils.getClassType(columns.get(i));
                 addRowDataFromString(data, col, classType);

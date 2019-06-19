@@ -9,7 +9,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.log.SwiftLoggers;
@@ -102,9 +102,9 @@ public class SegmentHelper {
 
                 boolean downloadSuccess = true;
                 for (String uri : sets) {
-                    CubePathBuilder builder = new CubePathBuilder().asAbsolute().setSwiftSchema(metaData.getSwiftDatabase()).setTempDir(tmp);
+                    CubePathBuilder builder = new CubePathBuilder().asAbsolute().setSwiftSchema(metaData.getSwiftSchema()).setTempDir(tmp);
                     String cubePath = String.format("%s/%s", builder.build(), uri);
-                    String remotePath = String.format("%s/%s", metaData.getSwiftDatabase().getDir(), uri);
+                    String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
                     try {
                         repository.copyFromRemote(remotePath, cubePath);
                     } catch (Exception e) {
@@ -122,7 +122,7 @@ public class SegmentHelper {
                     tablePathService.saveOrUpdate(entity);
                     CubePathBuilder builder = new CubePathBuilder()
                             .asAbsolute()
-                            .setSwiftSchema(metaData.getSwiftDatabase())
+                            .setSwiftSchema(metaData.getSwiftSchema())
                             .setTempDir(current)
                             .setTableKey(new SourceKey(sourceKey));
                     String cubePath = builder.build();
@@ -159,7 +159,7 @@ public class SegmentHelper {
                 entity.setLastPath(path);
                 List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
                 if (null != segmentKeys) {
-                    SwiftDatabase swiftSchema = dataSource.getMetadata().getSwiftDatabase();
+                    SwiftSchema swiftSchema = dataSource.getMetadata().getSwiftSchema();
                     repository.delete(new CubePathBuilder().setSwiftSchema(swiftSchema).setTableKey(sourceKey).build());
                     for (SegmentKey segmentKey : segmentKeys) {
                         try {

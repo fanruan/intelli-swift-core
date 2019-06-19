@@ -6,7 +6,7 @@ import com.fr.swift.api.server.response.error.ServerErrorCode;
 import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.druid.sql.ast.SQLExpr;
 import com.fr.swift.jdbc.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -54,13 +54,13 @@ class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements Inserti
         try {
             List<SwiftMetaData> metaDataList = SwiftContext.get().getBean(SwiftMetaDataService.class).find(
                     ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_TABLE_NAME, tableName[0]),
-                    ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, SwiftDatabase.fromKey(database))
+                    ConfigWhereImpl.eq(SwiftConfigConstants.MetaDataConfig.COLUMN_SWIFT_SCHEMA, SwiftSchema.fromKey(database))
             );
             if (metaDataList.isEmpty()) {
                 ApiCrasher.crash(ServerErrorCode.SERVER_UNKNOWN_ERROR, String.format("Table %s is not exists", tableName[0]));
             }
             for (SwiftMetaData swiftMetaData : metaDataList) {
-                if (swiftMetaData.getSwiftDatabase().equals(SwiftDatabase.fromKey(database))) {
+                if (swiftMetaData.getSwiftSchema().equals(SwiftSchema.fromKey(database))) {
                     metaData = swiftMetaData;
                     break;
                 }

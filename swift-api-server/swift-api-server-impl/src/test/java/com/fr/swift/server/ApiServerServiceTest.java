@@ -9,7 +9,7 @@ import com.fr.swift.api.server.response.ApiResponse;
 import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.exception.meta.SwiftMetaDataAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SwiftMetaData;
@@ -67,7 +67,7 @@ public class ApiServerServiceTest extends TestCase {
         EasyMock.expect(SwiftContext.get().getBean(SelectService.class)).andReturn(selectService).anyTimes();
         SwiftApiResultSet result = EasyMock.createMock(SwiftApiResultSet.class);
         try {
-            EasyMock.expect(selectService.query(SwiftDatabase.CUBE, null)).andReturn(result).anyTimes();
+            EasyMock.expect(selectService.query(SwiftSchema.CUBE, null)).andReturn(result).anyTimes();
         } catch (Exception e) {
             fail();
         }
@@ -95,7 +95,7 @@ public class ApiServerServiceTest extends TestCase {
 
         tables.add(tableA);
         tables.add(tableB);
-        EasyMock.expect(tableService.detectiveAllTable(SwiftDatabase.CUBE)).andReturn(tables).anyTimes();
+        EasyMock.expect(tableService.detectiveAllTable(SwiftSchema.CUBE)).andReturn(tables).anyTimes();
         EasyMock.replay(SwiftContext.get(), tableService, tableA, tableB);
 
         ApiResponse response = new ApiServerServiceImpl().dispatchRequest(request);
@@ -124,7 +124,7 @@ public class ApiServerServiceTest extends TestCase {
         fields.add(new MetaDataColumnBean("c", 3));
         swiftMetaDataBean.setFields(fields);
 
-        EasyMock.expect(tableService.detectiveMetaData(SwiftDatabase.CUBE, "tableA")).andReturn(swiftMetaDataBean).anyTimes();
+        EasyMock.expect(tableService.detectiveMetaData(SwiftSchema.CUBE, "tableA")).andReturn(swiftMetaDataBean).anyTimes();
         EasyMock.replay(SwiftContext.get(), tableService);
 
         ApiResponse response = new ApiServerServiceImpl().dispatchRequest(request);

@@ -21,6 +21,7 @@ import com.fr.swift.config.oper.impl.OrderImpl;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -276,7 +277,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                     SwiftSegmentEntity segKeyEntity = null;
                     do {
                         segKeyEntity = new SwiftSegmentEntity(tableKey, appendOrder, storeType,
-                                SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftDatabase());
+                                SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftSchema());
                         try {
                             swiftSegmentDao.persist(session, segKeyEntity);
                             for (SegmentContainer value : SegmentContainer.values()) {
@@ -314,7 +315,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
         if (null != storeType) {
             wheres.add(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, storeType));
         }
-        com.fr.swift.db.SwiftDatabase swiftSchema = segmentKey.getSwiftSchema();
+        SwiftSchema swiftSchema = segmentKey.getSwiftSchema();
         if (null != swiftSchema) {
             wheres.add(ConfigWhereImpl.eq("swiftSchema", swiftSchema));
         }

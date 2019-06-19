@@ -9,7 +9,7 @@ import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
 import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -49,7 +49,7 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @JsonProperty("swiftSchema")
     @Column(name = "swiftSchema")
     @Enumerated(Enumerated.EnumType.STRING)
-    private SwiftDatabase swiftSchema;
+    private SwiftSchema swiftSchema;
 
     public SwiftSegmentEntity() {
     }
@@ -58,7 +58,7 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema());
     }
 
-    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftSchema swiftSchema) {
         id = getId(segmentOwner, segmentOrder, storeType);
         this.segmentOwner = segmentOwner.getId();
         this.segmentOrder = segmentOrder;
@@ -115,11 +115,11 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     @Override
-    public SwiftDatabase getSwiftSchema() {
+    public SwiftSchema getSwiftSchema() {
         return swiftSchema;
     }
 
-    public void setSwiftSchema(SwiftDatabase swiftSchema) {
+    public void setSwiftSchema(SwiftSchema swiftSchema) {
         this.swiftSchema = swiftSchema;
     }
 

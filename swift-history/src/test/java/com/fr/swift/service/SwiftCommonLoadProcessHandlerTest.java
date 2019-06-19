@@ -18,7 +18,7 @@ import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
@@ -61,8 +61,8 @@ public class SwiftCommonLoadProcessHandlerTest {
         mockContext();
         mockServerService();
         Map<SegmentKey, List<String>> map = new HashMap<SegmentKey, List<String>>();
-        map.put(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE), Arrays.asList("row_count", "allShow"));
-        map.put(new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE), Arrays.asList("row_count", "allShow"));
+        map.put(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE), Arrays.asList("row_count", "allShow"));
+        map.put(new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftSchema.CUBE), Arrays.asList("row_count", "allShow"));
         SwiftCommonLoadProcessHandler handler = new SwiftCommonLoadProcessHandler(mockInvokerCreator);
         handler.processResult(HistoryService.class.getMethod("commonLoad", SourceKey.class, Map.class), new Target[]{Target.HISTORY}, new SourceKey("table"), map);
         handler.processResult(HistoryService.class.getMethod("commonLoad", SourceKey.class, Map.class), new Target[]{Target.HISTORY}, new SourceKey("table"), map);
@@ -83,8 +83,8 @@ public class SwiftCommonLoadProcessHandlerTest {
 
         Map<SourceKey, List<SegmentKey>> map = new HashMap<SourceKey, List<SegmentKey>>();
         map.put(new SourceKey("table"), Arrays.<SegmentKey>asList(
-                new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE),
-                new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE)));
+                new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE),
+                new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftSchema.CUBE)));
         EasyMock.expect(mockSwiftClusterSegmentService.getOwnSegments(EasyMock.anyString())).andReturn(map).anyTimes();
 
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftClusterSegmentService.class))).andReturn(mockSwiftClusterSegmentService).anyTimes();

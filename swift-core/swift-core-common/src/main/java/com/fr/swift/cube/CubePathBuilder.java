@@ -2,7 +2,7 @@ package com.fr.swift.cube;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Assert;
@@ -16,7 +16,7 @@ public class CubePathBuilder {
 
     private static final SwiftCubePathService PATH_SVC = SwiftContext.get().getBean(SwiftCubePathService.class);
     private boolean absolute = false;
-    private SwiftDatabase schema = null;
+    private SwiftSchema schema = null;
     private Integer tempDir = null;
     private boolean backup = false;
     private SourceKey tableKey = null;
@@ -37,7 +37,7 @@ public class CubePathBuilder {
         return this;
     }
 
-    public CubePathBuilder setSwiftSchema(SwiftDatabase schema) {
+    public CubePathBuilder setSwiftSchema(SwiftSchema schema) {
         Assert.notNull(schema);
         this.schema = schema;
         return this;

@@ -6,7 +6,7 @@ import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
@@ -41,14 +41,14 @@ public class SwiftSegmentDaoImplTest {
         EasyMock.expect(mockConfigSession.merge(null)).andThrow(new SQLException("Just Test Exception")).anyTimes();
         SwiftSegmentEntity testException = PowerMock.createMock(SwiftSegmentEntity.class);
         EasyMock.expect(testException.getStoreType()).andReturn(Types.StoreType.MEMORY).anyTimes();
-        EasyMock.expect(testException.getSwiftSchema()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(testException.getSwiftSchema()).andReturn(SwiftSchema.CUBE).anyTimes();
         EasyMock.expect(testException.getId()).andReturn("keyId").anyTimes();
         EasyMock.expect(testException.getOrder()).andReturn(0).anyTimes();
         EasyMock.expect(testException.getTable()).andReturn(new SourceKey("table")).anyTimes();
 
         SegmentKey mockSegmentKey = PowerMock.createMock(SegmentKey.class);
         EasyMock.expect(mockSegmentKey.getStoreType()).andReturn(Types.StoreType.MEMORY).anyTimes();
-        EasyMock.expect(mockSegmentKey.getSwiftSchema()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSegmentKey.getSwiftSchema()).andReturn(SwiftSchema.CUBE).anyTimes();
         EasyMock.expect(mockSegmentKey.getId()).andReturn("keyId").anyTimes();
         EasyMock.expect(mockSegmentKey.getOrder()).andReturn(0).anyTimes();
         EasyMock.expect(mockSegmentKey.getTable()).andReturn(new SourceKey("table")).anyTimes();
@@ -69,7 +69,7 @@ public class SwiftSegmentDaoImplTest {
     @Test
     public void findBeanByStoreType() throws Exception {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        final SegmentKey segmentKey = new SwiftSegmentEntity(new SourceKey("sourceKey"), 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
+        final SegmentKey segmentKey = new SwiftSegmentEntity(new SourceKey("sourceKey"), 0, Types.StoreType.MEMORY, SwiftSchema.CUBE);
         ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
         mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class), EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
@@ -83,7 +83,7 @@ public class SwiftSegmentDaoImplTest {
     @Test
     public void deleteBySourceKey() throws SQLException {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        final SegmentKey segmentKey = new SwiftSegmentEntity(new SourceKey("sourceKey"), 0, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
+        final SegmentKey segmentKey = new SwiftSegmentEntity(new SourceKey("sourceKey"), 0, Types.StoreType.MEMORY, SwiftSchema.CUBE);
         ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
         mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
