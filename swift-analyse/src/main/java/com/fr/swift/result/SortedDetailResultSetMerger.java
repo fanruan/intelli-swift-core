@@ -69,8 +69,9 @@ public class SortedDetailResultSetMerger implements IDetailQueryResultSetMerger 
     private static Comparator getComparator(Pair<Sort, ColumnTypeConstants.ClassType> pair) {
         SortType sortType = pair.getKey().getSortType();
         switch (pair.getValue()) {
-            case LONG:
             case INTEGER:
+                return sortType == SortType.ASC ? Comparators.<Integer>asc() : Comparators.<Integer>desc();
+            case LONG:
             case DATE:
                 return sortType == SortType.ASC ? Comparators.<Long>asc() : Comparators.<Long>desc();
             case DOUBLE:
