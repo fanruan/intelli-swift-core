@@ -2,7 +2,7 @@ package com.fr.swift.cloud.relation;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.cloud.relationUtils.RelationQueryUtils;
+import com.fr.swift.cloud.util.RelationQueryUtils;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.SingleInfoBean;

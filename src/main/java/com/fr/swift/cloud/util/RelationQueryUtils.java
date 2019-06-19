@@ -1,6 +1,5 @@
-package com.fr.swift.cloud.relationUtils;
+package com.fr.swift.cloud.util;
 
-import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
@@ -13,8 +12,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
-import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,22 +88,26 @@ public class RelationQueryUtils {
             Object columnData = row1.getValue(index1);
             for (RelationRow row2 : rowList) {
                 //把关联字段对应数据组后 存放到新的row中并加入到结果集中
-                if (row2.getValue(index2).equals(columnData)) {
-                    RelationRow newRow = new ListRelationRow(row1);
-                    newRow.addAllRowElement(row2);
-                    res.add(newRow);
+                if(row2.getValue(index2)!=null) {
+                    if (row2.getValue(index2).equals(columnData)) {
+                        RelationRow newRow = new ListRelationRow(row1);
+                        newRow.addAllRowElement(row2);
+                        res.add(newRow);
+                    }
                 }
             }
         }
 
-        //构建返回的结果SwiftResultSet
+        //构建返回的结果SwiftResultSet  使用result1和result2的metadatacolumn
         List<SwiftMetaDataColumn> swiftMetaDataColumns = new ArrayList<>();
-        //TODO:缺点 全是一个类型String
-        for (String column : resultColumnName) {
-            swiftMetaDataColumns.add(new MetaDataColumnBean(column, Types.VARCHAR));
+        for (int i=1;i<=resultSet1.getMetaData().getColumnCount();i++){
+            swiftMetaDataColumns.add(resultSet1.getMetaData().getColumn(i));
         }
-        SwiftMetaData metaData2 = new SwiftMetaDataBean("table", swiftMetaDataColumns);
-        SwiftResultSet swiftResultSet = new RowSwiftResultSet(metaData2, res);
+        for(int i=1;i<=resultSet2.getMetaData().getColumnCount();i++){
+            swiftMetaDataColumns.add(resultSet2.getMetaData().getColumn(i));
+        }
+        SwiftMetaData metaData = new SwiftMetaDataBean("table", swiftMetaDataColumns);
+        SwiftResultSet swiftResultSet = new RowSwiftResultSet(metaData, res);
         return swiftResultSet;
     }
 
