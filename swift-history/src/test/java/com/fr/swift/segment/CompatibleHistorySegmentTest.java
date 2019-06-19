@@ -14,6 +14,7 @@ import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.segment.column.DetailColumn;
+import com.fr.swift.segment.column.impl.IntColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
 import com.fr.swift.segment.column.impl.empty.ReadonlyNullColumn;
@@ -102,7 +103,24 @@ public class CompatibleHistorySegmentTest {
     }
 
     @Test
-    public void newColumn() throws Exception {
+    public void newIntColumn() throws Exception {
+        IResourceLocation location = mock(IResourceLocation.class);
+        CompatibleHistorySegment seg = spy(new CompatibleHistorySegment(location, mock(SwiftMetaData.class)));
+
+        doReturn(false).when(seg).isReadable();
+        assertTrue(seg.newColumn(location, ClassType.INTEGER) instanceof IntColumn);
+
+        doReturn(true).when(seg).isReadable();
+        IntColumn intColumn = mock(IntColumn.class);
+        whenNew(IntColumn.class).withAnyArguments().thenReturn(intColumn);
+        DetailColumn detailColumn = mock(DetailColumn.class);
+        when(intColumn.getDetailColumn()).thenReturn(detailColumn);
+        when(detailColumn.isReadable()).thenReturn(false);
+        assertTrue(seg.newColumn(location, ClassType.INTEGER) instanceof ReadonlyNullColumn<?>);
+    }
+
+    @Test
+    public void newLongColumn() throws Exception {
         IResourceLocation location = mock(IResourceLocation.class);
         CompatibleHistorySegment seg = spy(new CompatibleHistorySegment(location, mock(SwiftMetaData.class)));
 

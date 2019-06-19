@@ -8,6 +8,7 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.RealtimeDateColumn;
 import com.fr.swift.segment.column.RealtimeDoubleColumn;
+import com.fr.swift.segment.column.RealtimeIntColumn;
 import com.fr.swift.segment.column.RealtimeLongColumn;
 import com.fr.swift.segment.column.RealtimeStringColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
@@ -72,6 +73,7 @@ public class RealtimeSegmentImplTest {
 
     @Test
     public void newColumn() throws Exception {
+        whenNew(RealtimeIntColumn.class).withAnyArguments().thenReturn(mock(RealtimeIntColumn.class), mock(RealtimeIntColumn.class));
         whenNew(RealtimeLongColumn.class).withAnyArguments().thenReturn(mock(RealtimeLongColumn.class), mock(RealtimeLongColumn.class));
         whenNew(RealtimeStringColumn.class).withAnyArguments().thenReturn(mock(RealtimeStringColumn.class), mock(RealtimeStringColumn.class));
         whenNew(RealtimeDateColumn.class).withAnyArguments().thenReturn(mock(RealtimeDateColumn.class), mock(RealtimeDateColumn.class));
@@ -79,7 +81,7 @@ public class RealtimeSegmentImplTest {
         IResourceLocation location = mock(IResourceLocation.class);
         RealtimeSegmentImpl seg = spy(new RealtimeSegmentImpl(location, mock(SwiftMetaData.class)));
 
-        assertTrue(seg.newColumn(location, ClassType.INTEGER) instanceof RealtimeLongColumn);
+        assertTrue(seg.newColumn(location, ClassType.INTEGER) instanceof RealtimeIntColumn);
         assertTrue(seg.newColumn(location, ClassType.LONG) instanceof RealtimeLongColumn);
         assertTrue(seg.newColumn(location, ClassType.DOUBLE) instanceof RealtimeDoubleColumn);
         assertTrue(seg.newColumn(location, ClassType.STRING) instanceof RealtimeStringColumn);
