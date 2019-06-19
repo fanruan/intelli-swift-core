@@ -165,10 +165,11 @@ public class FilterInfoParser {
     private static Object convertValue(Object origin, ColumnTypeConstants.ClassType classType, boolean start) {
         switch (classType) {
             case INTEGER:
+                return origin == null ? (start ? Integer.MIN_VALUE : Integer.MAX_VALUE) : Integer.parseInt(origin.toString());
             case LONG:
                 return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : Long.parseLong(origin.toString());
-//            case DATE:
-//                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString(), true).getTime();
+            case DATE:
+                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString()).getTime();
             default:
                 return origin == null ? (start ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY) : Double.parseDouble(origin.toString());
         }
@@ -230,6 +231,7 @@ public class FilterInfoParser {
     private static Object convert(Object origin, ColumnTypeConstants.ClassType type) {
         switch (type) {
             case INTEGER:
+                return Integer.parseInt(origin.toString());
             case LONG:
                 return Long.parseLong(origin.toString());
             case DATE:
