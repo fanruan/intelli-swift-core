@@ -63,15 +63,17 @@ public class SystemUsageInfo implements Serializable {
     private int stopTime;
 
     public SystemUsageInfo(Row row, String appId, String yearMonth, int downTime, int stopTime) {
-        this.node = row.getValue(0);
-        this.avgCpu = row.getValue(1);
-        this.avgMem = row.getValue(2);
-        this.avgOnline = row.getValue(3);
-        this.avgSession = row.getValue(4);
-        this.maxCpu = row.getValue(5);
-        this.maxMem = row.getValue(6);
-        this.maxOnline = row.getValue(7);
-        this.maxSession = row.getValue(8);
+        if(row != null) {
+            this.node = row.getValue(0);
+            this.avgCpu = row.getValue(1);
+            this.avgMem = row.getValue(2);
+            this.avgOnline = row.getValue(3) == null ? 0 : row.getValue(3);
+            this.avgSession = row.getValue(4) == null ? 0 : row.getValue(4);
+            this.maxCpu = row.getValue(5);
+            this.maxMem = row.getValue(6);
+            this.maxOnline = row.getValue(7) == null ? 0 : row.getValue(7);
+            this.maxSession = row.getValue(8) == null ? 0 : row.getValue(8);
+        }
         this.appId = appId;
         this.yearMonth = TimeUtils.yearMonth2Date(yearMonth);
         this.downTime = downTime;

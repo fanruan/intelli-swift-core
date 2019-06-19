@@ -24,7 +24,7 @@ public class TreasureImportTask extends AbstractExecutorTask<Job> {
                 true,
                 CloudTaskType.TREASURE_IMPORT,
                 LockType.TABLE,
-                treasureBean.getTopic() + CloudTaskType.TREASURE_IMPORT.name(),
+                treasureBean.getTopic(),
                 DBStatusType.ACTIVE,
                 new TreasureImportJob(treasureBean));
     }

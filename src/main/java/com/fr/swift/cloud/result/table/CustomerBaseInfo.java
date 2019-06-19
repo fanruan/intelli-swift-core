@@ -105,12 +105,12 @@ public class CustomerBaseInfo implements Serializable {
             map.put(row.getValue(2), row.getValue(3));
         }
         this.containerMem = (String) map.get("containerMem");
-        this.cpu = Long.valueOf((String) map.get("cpu"));
+        this.cpu = map.get("cpu") == null ? 0L : Long.valueOf((String) map.get("cpu"));
         this.jdkVersion = (String) map.get("jdkVersion");
         this.containerVersion = (String) map.get("containerVersion");
-        this.machineMem = Long.valueOf((String) map.get("machineMem"));
+        this.machineMem = map.get("machineMem") == null ? 0L : Long.valueOf((String) map.get("machineMem"));
         this.system = (String) map.get("system");
-        this.systemNum = Long.valueOf((String) map.get("systemNum"));
+        this.systemNum = map.get("systemNum") == null ? 0L : Long.valueOf((String) map.get("systemNum"));
         this.arch = (String) map.get("arch");
         this.diskSpeed = (String) map.get("diskSpeed");
         this.buildNO = (String) map.get("buildNO");

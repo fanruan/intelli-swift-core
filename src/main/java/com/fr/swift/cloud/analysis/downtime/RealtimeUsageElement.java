@@ -45,6 +45,10 @@ public class RealtimeUsageElement extends AbstractDowntimeElement {
         return cpu;
     }
 
+    public long memory() {
+        return memory;
+    }
+
     @Override
     public long recordTime() {
         return time;

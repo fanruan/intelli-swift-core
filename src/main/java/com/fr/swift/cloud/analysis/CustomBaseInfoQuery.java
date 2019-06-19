@@ -41,7 +41,7 @@ public class CustomBaseInfoQuery {
         double time = 0;
         while (maxTimeResultSet.hasNext()) {
             Row row = maxTimeResultSet.getNextRow();
-            time = row.getValue(0);
+            time = row.getValue(0) == null ? 0 : row.getValue(0);
         }
         FilterInfoBean timeFilter = new InFilterBean("time", (long) time);
         FilterInfoBean andFilter = new AndFilterBean(

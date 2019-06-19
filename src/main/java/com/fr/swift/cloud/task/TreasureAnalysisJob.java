@@ -101,7 +101,8 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
         }
 
         CloudLogUtils.logStartJob(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion(), "send message");
-        TreasureAnalysisBean treasureAnalysisBean = new TreasureAnalysisBean(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());
+        TreasureAnalysisBean treasureAnalysisBean = new TreasureAnalysisBean(treasureBean.getClientId(), treasureBean.getClientAppId()
+                , treasureBean.getYearMonth(), treasureBean.getVersion(), treasureBean.getType());
         messageProducer.produce(CloudProperty.getProperty().getTreasureAnalysisTopic(), treasureAnalysisBean);
         return true;
     }

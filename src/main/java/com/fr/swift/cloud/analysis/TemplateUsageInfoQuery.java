@@ -42,7 +42,8 @@ public class TemplateUsageInfoQuery {
         SwiftResultSet tNumResultSet = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(tNumBean));
         int tNum = 0;
         while (tNumResultSet.hasNext()) {
-            tNum = ((Double) tNumResultSet.getNextRow().getValue(0)).intValue();
+            Row row = tNumResultSet.getNextRow();
+            tNum = row.getValue(0) != null ? ((Double) row.getValue(0)).intValue() : 0;
         }
         GroupQueryInfoBean tvNumBean = GroupQueryInfoBean.builder("execution")
                 .setAggregations(new MetricBean("id", AggregatorType.DISTINCT), new MetricBean("userId", AggregatorType.DISTINCT))
@@ -53,8 +54,8 @@ public class TemplateUsageInfoQuery {
         int sumVisit = 0;
         while (tvNumResultSet.hasNext()) {
             Row row = tvNumResultSet.getNextRow();
-            tvNum = ((Double) row.getValue(0)).intValue();
-            MAU = ((Double) row.getValue(1)).intValue();
+            tvNum = row.getValue(0) != null ? ((Double) row.getValue(0)).intValue() : 0;
+            MAU = row.getValue(1) != null ? ((Double) row.getValue(1)).intValue() : 0;
             sumVisit = tvNum;
         }
 
