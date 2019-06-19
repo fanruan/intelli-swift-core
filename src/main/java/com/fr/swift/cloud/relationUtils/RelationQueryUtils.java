@@ -1,4 +1,4 @@
-package com.fr.swift.cloud.relation;
+package com.fr.swift.cloud.relationUtils;
 
 import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Create by lifan on 2019-06-14 10:00
  */
-public class RelationQueryInfoBean {
+public class RelationQueryUtils {
 
     /**
      * @description 对多表进行关联
@@ -30,7 +30,7 @@ public class RelationQueryInfoBean {
      * @return SwiftResultSet的结果集
      * @throws Exception
      */
-    public SwiftResultSet relationAllTables(List<String[]> columnNames, List<SingleInfoBean> queryBeans) throws Exception {
+    public static SwiftResultSet relationAllTables(List<String[]> columnNames, List<SingleInfoBean> queryBeans) throws Exception {
         int index = 0;
         SwiftResultSet resultSet1 = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(queryBeans.get(0)));
         SwiftResultSet resultSet2;
@@ -50,7 +50,7 @@ public class RelationQueryInfoBean {
      * @return 结果集
      * @throws Exception
      */
-    public SwiftResultSet relationTable(String columnName1, String columnName2, SingleInfoBean q1, SingleInfoBean q2) throws Exception {
+    public static SwiftResultSet relationTable(String columnName1, String columnName2, SingleInfoBean q1, SingleInfoBean q2) throws Exception {
         SwiftResultSet resultSet1 = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(q1));
         SwiftResultSet resultSet2 = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(q2));
         return relation(columnName1, columnName2, resultSet1, resultSet2);
@@ -65,13 +65,12 @@ public class RelationQueryInfoBean {
      * @return 关联后的结果集
      * @throws Exception
      */
-    public SwiftResultSet relation(String columnName1, String columnName2, SwiftResultSet resultSet1, SwiftResultSet resultSet2) throws Exception {
+    public static SwiftResultSet relation(String columnName1, String columnName2, SwiftResultSet resultSet1, SwiftResultSet resultSet2) throws Exception {
 
         //第一个关联字段在第一张表的列数
-        int index1 = calculateIndex(resultSet1, columnName1);
+        int index1 = resultSet1.getMetaData().getColumnIndex(columnName1)-1;
         //第二个关联字段在第二张表的列数
-        int index2 = calculateIndex(resultSet2, columnName2);
-
+        int index2 = resultSet2.getMetaData().getColumnIndex(columnName2)-1;
         //联表后结果字段名 resultColumnName
         List<String> resultColumnName = resultSet1.getMetaData().getFieldNames();
         List<String> resultColumn2 = resultSet2.getMetaData().getFieldNames();
@@ -88,10 +87,11 @@ public class RelationQueryInfoBean {
         List<Row> res = new ArrayList<>();
         while (resultSet1.hasNext()) {
             RelationRow row1 = new ListRelationRow(resultSet1.getNextRow());
-            String columnData = String.valueOf(row1.getValue(index1));
+//            String columnData = String.valueOf(row1.getValue(index1));
+            Object columnData = row1.getValue(index1);
             for (RelationRow row2 : rowList) {
                 //把关联字段对应数据组后 存放到新的row中并加入到结果集中
-                if (String.valueOf(row2.getValue(index2)).equals(columnData)) {
+                if (row2.getValue(index2).equals(columnData)) {
                     RelationRow newRow = new ListRelationRow(row1);
                     newRow.addAllRowElement(row2);
                     res.add(newRow);
@@ -110,22 +110,4 @@ public class RelationQueryInfoBean {
         return swiftResultSet;
     }
 
-    /**
-     * @param resultSet
-     * @param columnName
-     * @return
-     * @throws SQLException
-     * @throws NoSuchFieldException
-     * @descripition 计算关联字段所在列数
-     */
-    private int calculateIndex(SwiftResultSet resultSet, String columnName) throws SQLException, NoSuchFieldException {
-        int index = 0; //列数标记
-        for (String fieldName : resultSet.getMetaData().getFieldNames()) {
-            if (fieldName.equals(columnName)) {
-                return index;
-            }
-            index++;
-        }
-        throw new NoSuchFieldException(String.format("Column %s not found!", columnName));
-    }
 }

@@ -2,6 +2,7 @@ package com.fr.swift.cloud.relation;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.cloud.relationUtils.RelationQueryUtils;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.SingleInfoBean;
@@ -32,7 +33,7 @@ import java.util.List;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @PrepareForTest({QueryRunnerProvider.class, SwiftContext.class, QueryBeanFactory.class})
-public class RelationQueryInfoBeanTest {
+public class RelationQueryUtilsTest {
     @Mock
     SingleInfoBean queryBean1;
 
@@ -73,7 +74,6 @@ public class RelationQueryInfoBeanTest {
         String relationColomnBean1 = "id";
         String relationColomnBean2 = "id";
 
-        RelationQueryInfoBean bean = new RelationQueryInfoBean();
         String jsonString1 = QueryBeanFactory.queryBean2String(queryBean1);
         String jsonString2 = QueryBeanFactory.queryBean2String(queryBean2);
 
@@ -83,7 +83,7 @@ public class RelationQueryInfoBeanTest {
         Mockito.when(queryRunnerProvider.query(jsonString1)).thenReturn(rs1);
         Mockito.when(queryRunnerProvider.query(jsonString2)).thenReturn(rs2);
 
-        SwiftResultSet newResult1 = bean.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
+        SwiftResultSet newResult1 = RelationQueryUtils.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
         newResult1.hasNext();
         Assert.assertEquals("[id, name, id, age]",newResult1.getMetaData().getFieldNames().toString());
         Assert.assertEquals("[0, name0, 0, age0]",newResult1.getNextRow().getValues().toString());
@@ -98,7 +98,7 @@ public class RelationQueryInfoBeanTest {
         Mockito.when(queryRunnerProvider.query(jsonString1)).thenReturn(rs3);
         Mockito.when(queryRunnerProvider.query(jsonString2)).thenReturn(rs4);
 
-        SwiftResultSet newResult2 = bean.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
+        SwiftResultSet newResult2 = RelationQueryUtils.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
         newResult2.hasNext();
         Assert.assertEquals("[0, name0, 0, age0]",newResult2.getNextRow().getValues().toString());
         Assert.assertEquals("[1, name1, 1, age1]",newResult2.getNextRow().getValues().toString());
@@ -112,7 +112,7 @@ public class RelationQueryInfoBeanTest {
         Mockito.when(queryRunnerProvider.query(jsonString1)).thenReturn(rs5);
         Mockito.when(queryRunnerProvider.query(jsonString2)).thenReturn(rs6);
 
-        SwiftResultSet newResult3 = bean.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
+        SwiftResultSet newResult3 = RelationQueryUtils.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
         newResult3.hasNext();
         Assert.assertEquals("[0, name0, 0, age0]",newResult3.getNextRow().getValues().toString());
         Assert.assertEquals("[1, name1, 1, age1]",newResult3.getNextRow().getValues().toString());
@@ -125,7 +125,7 @@ public class RelationQueryInfoBeanTest {
         SwiftResultSet rs8 = InitResultSetUtils.makeResultSetIdAndAge11();
         Mockito.when(queryRunnerProvider.query(jsonString1)).thenReturn(rs7);
         Mockito.when(queryRunnerProvider.query(jsonString2)).thenReturn(rs8);
-        SwiftResultSet newResult4 = bean.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
+        SwiftResultSet newResult4 = RelationQueryUtils.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
         newResult4.hasNext();
         Assert.assertEquals("[0, name0, 0, age0]",newResult4.getNextRow().getValues().toString());
         Assert.assertEquals("[1, name1, 1, age1]",newResult4.getNextRow().getValues().toString());
@@ -141,7 +141,6 @@ public class RelationQueryInfoBeanTest {
         String relationColomnBean1 = "id";
         String relationColomnBean2 = "id";
 
-        RelationQueryInfoBean bean = new RelationQueryInfoBean();
         String jsonString1 = QueryBeanFactory.queryBean2String(queryBean1);
         String jsonString2 = QueryBeanFactory.queryBean2String(queryBean2);
 
@@ -151,7 +150,7 @@ public class RelationQueryInfoBeanTest {
         Mockito.when(queryRunnerProvider.query(jsonString1)).thenReturn(rs1);
         Mockito.when(queryRunnerProvider.query(jsonString2)).thenReturn(rs2);
 
-        SwiftResultSet newResult1 = bean.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
+        SwiftResultSet newResult1 = RelationQueryUtils.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
         newResult1.hasNext();
         Assert.assertEquals("[0, name0, 0, age00]",newResult1.getNextRow().getValues().toString());
         Assert.assertEquals("[0, name0, 0, age01]",newResult1.getNextRow().getValues().toString());
@@ -171,7 +170,7 @@ public class RelationQueryInfoBeanTest {
         Mockito.when(queryRunnerProvider.query(jsonString1)).thenReturn(rs3);
         Mockito.when(queryRunnerProvider.query(jsonString2)).thenReturn(rs4);
 
-        SwiftResultSet newResult2 = bean.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
+        SwiftResultSet newResult2 = RelationQueryUtils.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
         newResult2.hasNext();
         Assert.assertEquals("[0, name0, 0, age00]",newResult2.getNextRow().getValues().toString());
         Assert.assertEquals("[0, name0, 0, age01]",newResult2.getNextRow().getValues().toString());
@@ -190,7 +189,7 @@ public class RelationQueryInfoBeanTest {
         Mockito.when(queryRunnerProvider.query(jsonString1)).thenReturn(rs5);
         Mockito.when(queryRunnerProvider.query(jsonString2)).thenReturn(rs6);
 
-        SwiftResultSet newResult3 = bean.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
+        SwiftResultSet newResult3 = RelationQueryUtils.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
         newResult3.hasNext();
         Assert.assertEquals("[0, name0, 0, age00]",newResult3.getNextRow().getValues().toString());
         Assert.assertEquals("[0, name0, 0, age01]",newResult3.getNextRow().getValues().toString());
@@ -209,7 +208,7 @@ public class RelationQueryInfoBeanTest {
         Mockito.when(queryRunnerProvider.query(jsonString1)).thenReturn(rs7);
         Mockito.when(queryRunnerProvider.query(jsonString2)).thenReturn(rs8);
 
-        SwiftResultSet newResult4 = bean.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
+        SwiftResultSet newResult4 = RelationQueryUtils.relationTable(relationColomnBean1, relationColomnBean2, queryBean1, queryBean2);
         newResult4.hasNext();
         Assert.assertEquals("[0, name0, 0, age00]",newResult4.getNextRow().getValues().toString());
         Assert.assertEquals("[0, name0, 0, age01]",newResult4.getNextRow().getValues().toString());
@@ -229,7 +228,6 @@ public class RelationQueryInfoBeanTest {
         String[] relationName1 = {"id","id"};
         String[] relationName2 = {"id","id"};
 
-        RelationQueryInfoBean bean = new RelationQueryInfoBean();
         String jsonString1 = QueryBeanFactory.queryBean2String(queryBean1);
         String jsonString2 = QueryBeanFactory.queryBean2String(queryBean2);
         String jsonString3 = QueryBeanFactory.queryBean2String(queryBean3);
@@ -244,7 +242,7 @@ public class RelationQueryInfoBeanTest {
 
         List<SingleInfoBean> beanList1 = Arrays.asList(queryBean1,queryBean2,queryBean3);
         List<String[]> relationNameList1 = Arrays.asList(relationName1,relationName2);
-        SwiftResultSet newResult1 = bean.relationAllTables(relationNameList1, beanList1);
+        SwiftResultSet newResult1 = RelationQueryUtils.relationAllTables(relationNameList1, beanList1);
         newResult1.hasNext();
         Assert.assertEquals("[id, name, id, age, id, name]",newResult1.getMetaData().getFieldNames().toString());
         Assert.assertEquals("[0, name0, 0, age0, 0, name0]",newResult1.getNextRow().getValues().toString());
@@ -263,7 +261,7 @@ public class RelationQueryInfoBeanTest {
 
         List<SingleInfoBean> beanList2 = Arrays.asList(queryBean1,queryBean2,queryBean3);
         List<String[]> relationNameList2 = Arrays.asList(relationName1,relationName2);
-        SwiftResultSet newResult2 = bean.relationAllTables(relationNameList2, beanList2);
+        SwiftResultSet newResult2 = RelationQueryUtils.relationAllTables(relationNameList2, beanList2);
         newResult2.hasNext();
         Assert.assertEquals("[id, name, id, age, id, name]",newResult1.getMetaData().getFieldNames().toString());
 
@@ -287,7 +285,7 @@ public class RelationQueryInfoBeanTest {
 
         List<SingleInfoBean> beanList3 = Arrays.asList(queryBean1,queryBean2,queryBean3);
         List<String[]> relationNameList3 = Arrays.asList(relationName1,relationName2);
-        SwiftResultSet newResult3 = bean.relationAllTables(relationNameList3, beanList3);
+        SwiftResultSet newResult3 = RelationQueryUtils.relationAllTables(relationNameList3, beanList3);
         newResult3.hasNext();
         Assert.assertEquals("[id, name, id, age, id, name]",newResult1.getMetaData().getFieldNames().toString());
         Assert.assertEquals("[0, name0, 0, age00, 0, name00]",resList1.get(0).getValues().toString());
