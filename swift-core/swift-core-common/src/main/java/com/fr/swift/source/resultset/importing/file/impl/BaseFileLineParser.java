@@ -45,6 +45,8 @@ public abstract class BaseFileLineParser implements FileLineParser {
                 data.add(Double.parseDouble(col));
                 break;
             case INTEGER:
+                data.add(Integer.parseInt(col));
+                break;
             case LONG:
                 data.add(Long.parseLong(col));
                 break;

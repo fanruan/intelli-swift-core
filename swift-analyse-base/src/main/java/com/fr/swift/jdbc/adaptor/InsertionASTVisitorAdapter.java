@@ -103,6 +103,8 @@ class InsertionASTVisitorAdapter extends SQLASTVisitorAdapter implements Inserti
                                 row.add(number.doubleValue());
                                 break;
                             case INTEGER:
+                                row.add(number.intValue());
+                                break;
                             case LONG:
                             case DATE:
                                 row.add(number.longValue());

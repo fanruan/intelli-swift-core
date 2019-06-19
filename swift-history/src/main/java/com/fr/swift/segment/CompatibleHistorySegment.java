@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DoubleColumn;
+import com.fr.swift.segment.column.impl.IntColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.StringColumn;
 import com.fr.swift.segment.column.impl.empty.ReadonlyNullColumn;
@@ -53,6 +54,11 @@ public class CompatibleHistorySegment extends CacheColumnSegment implements Hist
         Column<?> column;
         switch (classType) {
             case INTEGER:
+                column = new IntColumn(location);
+                if (!column.getDetailColumn().isReadable()) {
+                    return ReadonlyNullColumn.ofInt(location, readRowCount());
+                }
+                return column;
             case LONG:
                 column = new LongColumn(location);
                 if (!column.getDetailColumn().isReadable()) {
