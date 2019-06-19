@@ -179,13 +179,85 @@ public class DowntimeAnalyser {
         } else if (((double) overloadCpuTimes / totalCpuTimes) >= 0.8) {
             downtimeResult.setPredictDownType(DowntimeResult.SignalName.XCPU.name());
         } else {
-            downtimeResult.setPredictDownType(DowntimeResult.SignalName.TERM.name());
+            if (oomKiller(downtimeElementList)) {
+                downtimeResult.setPredictDownType(DowntimeResult.SignalName.OOM.name());
+            } else {
+                downtimeResult.setPredictDownType(DowntimeResult.SignalName.TERM.name());
+            }
         }
         if (shutdownMap.containsKey(downtimeResult.getPid())) {
             downtimeResult.setRecordDownType(shutdownMap.get(downtimeResult.getPid()).getSignalName());
         }
     }
 
+    /**
+     * @param downtimeElementList
+     * @return
+     * @description gc次数和内存波动
+     */
+    private boolean oomKiller(List<DowntimeElement> downtimeElementList) {
+        int gcTimes = 0;
+        List<Long> mems = new ArrayList<>();
+        for (DowntimeElement downtimeElement : downtimeElementList) {
+            if (downtimeElement.type() == AbstractDowntimeElement.ElementType.GC) {
+                gcTimes++;
+            } else if (downtimeElement.type() == AbstractDowntimeElement.ElementType.REALTIME_USAGE) {
+                mems.add(((RealtimeUsageElement) downtimeElement).memory());
+            }
+        }
+        int[] times = new int[mems.size()];
+        double[] memMbs = new double[mems.size()];
+        double totalMemMbs = 0;
+        for (int i = 0; i < mems.size(); i++) {
+            times[i] = i + 1;
+            memMbs[i] = mems.get(i) / 1024 / 1024;
+            totalMemMbs += memMbs[i];
+        }
+        double memSlope = calcMemSlope(times.length, times, memMbs);
+        double volatility = 0;
+        if (!Double.isNaN(memSlope)) {
+            volatility = memSlope / (totalMemMbs / times.length);
+        }
+        if (gcTimes < 10) {
+            //todo GC次数很少且内存持续很低
+            //todo GC次数很少但是内存持续很高
+            return false;
+        }
+        if (gcTimes > 20) {
+            if (volatility < -0.2d) {
+                //GC次数频繁但内存持续下降
+                return false;
+            } else {
+                //GC次数频繁但内存波动不大
+                return true;
+            }
+        }
+        return true;
+    }
+
+    public double calcMemSlope(int n, int x[], double y[]) {
+        int sumxx = 0, sumx = 0, sumxy = 0, sumy = 0;
+        for (int i = 0; i < n; i++) {
+            sumxx += x[i] * x[i]; //x平方求和
+            sumx += x[i];        //x求和
+            sumxy += x[i] * y[i];  //xy求和
+            sumy += y[i];        //y求和
+        }
+
+        int fm = n * sumxx - sumx * sumx;
+        int fz1 = n * sumxy - sumx * sumy;
+        int fz2 = sumy * sumxx - sumx * sumxy;
+        return 1.0 * fz1 / fm;
+    }
+
+    /**
+     * @param downtimeResult
+     * @param baseFilter
+     * @param downtimeElementList
+     * @return
+     * @throws Exception
+     * @description 宕机时间点前模版访问情况
+     */
     private List<DowntimeExecutionResult> analyseExecutionInfo(DowntimeResult downtimeResult, FilterInfoBean baseFilter, List<DowntimeElement> downtimeElementList) throws Exception {
         if (downtimeElementList.size() < 2) {
             return Collections.EMPTY_LIST;

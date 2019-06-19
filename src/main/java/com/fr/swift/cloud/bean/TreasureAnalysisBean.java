@@ -12,16 +12,19 @@ public class TreasureAnalysisBean {
     private String yearMonth;
     private String version;
     private long timestamp;
+    private String type;
+
 
     public TreasureAnalysisBean() {
     }
 
-    public TreasureAnalysisBean(String clientId, String clientAppId, String yearMonth, String version) {
+    public TreasureAnalysisBean(String clientId, String clientAppId, String yearMonth, String version, String type) {
         this.clientId = clientId;
         this.clientAppId = clientAppId;
         this.yearMonth = yearMonth;
         this.version = version;
         this.timestamp = System.currentTimeMillis();
+        this.type = type;
     }
 
     public String getClientId() {
@@ -42,5 +45,9 @@ public class TreasureAnalysisBean {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public String getType() {
+        return type;
     }
 }

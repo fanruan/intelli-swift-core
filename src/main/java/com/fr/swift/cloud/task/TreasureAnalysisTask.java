@@ -24,7 +24,7 @@ public class TreasureAnalysisTask extends AbstractExecutorTask<Job> {
                 true,
                 CloudTaskType.TREASURE_ANALYSIS,
                 LockType.TABLE,
-                treasureBean.getTopic() + CloudTaskType.TREASURE_ANALYSIS.name(),
+                treasureBean.getTopic(),
                 DBStatusType.ACTIVE,
                 new TreasureAnalysisJob(treasureBean));
     }
