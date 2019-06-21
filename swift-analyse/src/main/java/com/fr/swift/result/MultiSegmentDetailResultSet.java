@@ -1,6 +1,5 @@
 package com.fr.swift.result;
 
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -22,10 +21,10 @@ public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
      * mergeIterator和rowIterator看似相同，其实不然，前者可以理解为内部实现(处理翻页缓存等)，后者为外部实现(对应SwiftResult)
      */
     private Iterator<Row> mergeIterator;
-    private IDetailQueryResultSetMerger merger;
+    private QueryResultSetMerger<DetailQueryResultSet> merger;
 
     public MultiSegmentDetailResultSet(int fetchSize, int rowCount, DetailQueryResultSetMerger.DetailRowIterator queries,
-                                       IDetailQueryResultSetMerger merger) {
+                                       QueryResultSetMerger<DetailQueryResultSet> merger) {
         super(fetchSize);
         this.mergeIterator = queries;
         this.rowCount = rowCount;
@@ -48,8 +47,8 @@ public class MultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
     }
 
     @Override
-    public <Q extends QueryResultSet<List<Row>>> QueryResultSetMerger<List<Row>, Q> getMerger() {
-        return (QueryResultSetMerger<List<Row>, Q>) merger;
+    public QueryResultSetMerger<DetailQueryResultSet> getMerger() {
+        return merger;
     }
 
     @Override
