@@ -4,18 +4,19 @@ import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
+import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.BaseNodeMergeQRS;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.SwiftNodeUtils;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +33,10 @@ public class NodeQueryResultSetMergerTest extends TestCase {
         List<Map<Integer, Object>> map = new ArrayList<Map<Integer, Object>>();
         double value = 5;
         int numberOfNodeQRS = 3;
-        List<NodeMergeQRS<GroupNode>> resultSets = new ArrayList<NodeMergeQRS<GroupNode>>();
+        List<QueryResultSet<GroupPage>> resultSets = new ArrayList<QueryResultSet<GroupPage>>();
         for (int n = 0; n < numberOfNodeQRS; n++) {
             String k = "";
-            List<Pair<GroupNode, List<Map<Integer, Object>>>> pages = new ArrayList<Pair<GroupNode, List<Map<Integer, Object>>>>();
+            List<GroupPage> pages = new ArrayList<GroupPage>();
             for (int i = 0; i < numberOfPages; i++) {
                 String[] keys = new String[pageSize];
                 double[] values = new double[pageSize];
@@ -44,18 +45,18 @@ public class NodeQueryResultSetMergerTest extends TestCase {
                     keys[j] = k;
                     values[j] = value;
                 }
-                pages.add(Pair.of(createNode(keys, values), map));
+                pages.add(new GroupPage(createNode(keys, values), map));
             }
             resultSets.add(new TestNodeQRS(fetchSize, pages));
         }
         NodeQueryResultSetMerger merger = new NodeQueryResultSetMerger(fetchSize, new boolean[]{false},
-                Arrays.asList(AggregatorFactory.createAggregator(AggregatorType.COUNT)),
-                Arrays.asList(Pair.of(SortType.ASC, ColumnTypeConstants.ClassType.STRING)));
-        NodeMergeQRS<GroupNode> resultSet = merger.merge(resultSets);
+                Collections.singletonList(AggregatorFactory.createAggregator(AggregatorType.COUNT)),
+                Collections.singletonList(Pair.of(SortType.ASC, ClassType.STRING)));
+        QueryResultSet<GroupPage> resultSet = merger.merge(resultSets);
         List<Row> rows = new ArrayList<Row>();
         while (resultSet.hasNextPage()) {
-            Pair<GroupNode, List<Map<Integer, Object>>> page = resultSet.getPage();
-            Iterator<Row> iterator = SwiftNodeUtils.node2RowIterator(page.getKey());
+            GroupPage page = resultSet.getPage();
+            Iterator<Row> iterator = SwiftNodeUtils.node2RowIterator(page.getRoot());
             while (iterator.hasNext()) {
                 rows.add(iterator.next());
             }
@@ -78,17 +79,17 @@ public class NodeQueryResultSetMergerTest extends TestCase {
         return root;
     }
 
-    private static class TestNodeQRS extends BaseNodeMergeQRS<GroupNode> {
+    private static class TestNodeQRS extends BaseNodeMergeQRS {
 
-        Iterator<Pair<GroupNode, List<Map<Integer, Object>>>> iterator;
+        Iterator<GroupPage> iterator;
 
-        public TestNodeQRS(int fetchSize, List<Pair<GroupNode, List<Map<Integer, Object>>>> pages) {
+        TestNodeQRS(int fetchSize, List<GroupPage> pages) {
             super(fetchSize);
             this.iterator = pages.iterator();
         }
 
         @Override
-        public Pair<GroupNode, List<Map<Integer, Object>>> getPage() {
+        public GroupPage getPage() {
             return iterator.next();
         }
 
