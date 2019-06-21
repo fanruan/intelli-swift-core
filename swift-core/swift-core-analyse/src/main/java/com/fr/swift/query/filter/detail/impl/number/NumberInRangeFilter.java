@@ -51,7 +51,7 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
 
     @Override
     protected RowTraversal getIntIterator(final DictionaryEncodedColumn<Number> dict) {
-        ArrayLookupHelper.Lookup<Number> lookup = LookupFactory.create(dict, Comparators.numberAsc());
+        ArrayLookupHelper.Lookup<Number> lookup = LookupFactory.create(dict, Comparators.NUMBER_ASC);
         // 获取过滤条件对应的RangeIntList区间
         int start = min.doubleValue() == Double.NEGATIVE_INFINITY ? START_INDEX : getStart(ArrayLookupHelper.binarySearch(lookup, min));
         int end = max.doubleValue() == Double.POSITIVE_INFINITY ? dict.size() - 1 : getEnd(ArrayLookupHelper.binarySearch(lookup, max));

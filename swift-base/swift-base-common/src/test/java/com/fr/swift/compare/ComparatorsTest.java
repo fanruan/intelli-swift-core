@@ -20,7 +20,7 @@ public class ComparatorsTest {
         short s1 = Short.MAX_VALUE, s2 = Short.MIN_VALUE;
         byte b1 = Byte.MAX_VALUE, b2 = Byte.MIN_VALUE;
 
-        Comparator<Number> c = Comparators.numberAsc();
+        Comparator<Number> c = Comparators.NUMBER_ASC;
 
         assertEquals(0, c.compare(d1, d1));
         assertEquals(0, c.compare(l1, l1));
