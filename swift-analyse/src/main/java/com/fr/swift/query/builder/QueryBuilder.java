@@ -15,7 +15,6 @@ import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.util.Crasher;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
