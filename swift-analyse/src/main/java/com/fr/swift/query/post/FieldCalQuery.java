@@ -1,6 +1,7 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
@@ -17,18 +18,18 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/5/31.
  */
-public class FieldCalQuery implements PostQuery<QueryResultSet> {
+public class FieldCalQuery implements Query<QueryResultSet<SwiftNode>> {
 
-    private PostQuery<QueryResultSet> query;
+    private Query<QueryResultSet<SwiftNode>> query;
     private GroupTarget calInfo;
 
-    public FieldCalQuery(PostQuery<QueryResultSet> query, GroupTarget calInfo) {
+    public FieldCalQuery(Query<QueryResultSet<SwiftNode>> query, GroupTarget calInfo) {
         this.query = query;
         this.calInfo = calInfo;
     }
 
     @Override
-    public QueryResultSet getQueryResult() throws SQLException {
+    public QueryResultSet<SwiftNode> getQueryResult() throws SQLException {
         SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
             public SwiftNode apply(SwiftNode node) {
