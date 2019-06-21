@@ -6,6 +6,7 @@ import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
 import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.NodeQRSImpl;
 import com.fr.swift.result.SwiftNode;
@@ -50,7 +51,7 @@ public class HavingFilterQueryTest {
             root.addChild(child);
         }
         QueryResultSet<SwiftNode> rs = new NodeQRSImpl(200, root);
-        PostQuery<QueryResultSet> postQuery = EasyMock.createMock(PostQuery.class);
+        Query<QueryResultSet<SwiftNode>> postQuery = EasyMock.createMock(Query.class);
         EasyMock.expect(postQuery.getQueryResult()).andReturn(rs).anyTimes();
         EasyMock.replay(postQuery);
         DetailBasedMatchFilter filter = new DetailBasedMatchFilter(0,

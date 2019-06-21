@@ -5,7 +5,7 @@ import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.AbstractResultQuery;
-import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 
 import java.sql.SQLException;
@@ -14,31 +14,31 @@ import java.util.List;
 /**
  * Created by pony on 2017/11/27.
  */
-public abstract class AbstractDetailResultQuery extends AbstractResultQuery<QueryResultSet> {
+public abstract class AbstractDetailResultQuery extends AbstractResultQuery<DetailQueryResultSet> {
 
-    protected List<DetailTarget> targets;
+    private List<DetailTarget> targets;
 
-    public AbstractDetailResultQuery(int fetchSize, List<Query<QueryResultSet>> queries) {
+    AbstractDetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries) {
         super(fetchSize, queries);
         this.fetchSize = fetchSize;
     }
 
-    public AbstractDetailResultQuery(int fetchSize, List<Query<QueryResultSet>> queries, List<DetailTarget> targets) {
+    AbstractDetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries, List<DetailTarget> targets) {
         super(fetchSize, queries);
         this.fetchSize = fetchSize;
         this.targets = targets;
     }
 
-    protected abstract QueryResultSetMerger createMerger();
+    protected abstract QueryResultSetMerger<DetailQueryResultSet> createMerger();
 
     @Override
-    public QueryResultSet getQueryResult() throws SQLException {
-        FindList<QueryResultSet> list = new FindListImpl<QueryResultSet>(queryList);
-        QueryResultSetMerger merger = createMerger();
+    public DetailQueryResultSet getQueryResult() throws SQLException {
+        FindList<DetailQueryResultSet> list = new FindListImpl<DetailQueryResultSet>(queryList);
+        QueryResultSetMerger<DetailQueryResultSet> merger = createMerger();
         try {
-            return merger.merge(list.forEach(new FindList.ConvertEach<Query, QueryResultSet>() {
+            return merger.merge(list.forEach(new FindList.ConvertEach<Query<DetailQueryResultSet>, DetailQueryResultSet>() {
                 @Override
-                public QueryResultSet forEach(int idx, Query item) throws Exception {
+                public DetailQueryResultSet forEach(int idx, Query<DetailQueryResultSet> item) throws Exception {
                     return item.getQueryResult();
                 }
             }));
