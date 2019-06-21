@@ -20,16 +20,16 @@ import java.util.List;
  */
 public class SwiftNodeUtils {
 
-    public static <T extends SwiftNode> List<T> getRow(T root, int index) {
-        return (List<T>) IteratorUtils.iterator2List(node2RowListIterator(root)).get(index);
+    public static List<SwiftNode> getRow(SwiftNode root, int index) {
+        return IteratorUtils.iterator2List(node2RowListIterator(root)).get(index);
     }
 
-    public static <T extends SwiftNode> List<T> getLastRow(T root) {
+    public static List<SwiftNode> getLastRow(SwiftNode root) {
         int dimensionSize = getDimensionSize(root);
-        T prev = root;
-        List<T> row = new ArrayList<T>();
+        SwiftNode prev = root;
+        List<SwiftNode> row = new ArrayList<SwiftNode>();
         for (int i = 0; i < dimensionSize; i++) {
-            T node = (T) prev.getChild(prev.getChildrenSize() - 1);
+            SwiftNode node = prev.getChild(prev.getChildrenSize() - 1);
             row.add(node);
             prev = node;
         }
@@ -103,11 +103,11 @@ public class SwiftNodeUtils {
         return objects;
     }
 
-    public static GroupNode[] splitNode(GroupNode root, int numberOfNodes, int rowCount) {
-        Iterator<GroupNode> iterator = SwiftNodeUtils.dftNodeIterator(root);
+    public static SwiftNode[] splitNode(SwiftNode root, int numberOfNodes, int rowCount) {
+        Iterator<SwiftNode> iterator = SwiftNodeUtils.dftNodeIterator(root);
         iterator.next();    // 跳过root
-        GroupNode[] cachedNodes = new GroupNode[getDimensionSize(root)];
-        GroupNode[] result = new GroupNode[numberOfNodes];
+        SwiftNode[] cachedNodes = new SwiftNode[getDimensionSize(root)];
+        SwiftNode[] result = new SwiftNode[numberOfNodes];
         for (int i = 0; i < numberOfNodes; i++) {
             if (!iterator.hasNext()) {
                 break;
@@ -122,11 +122,11 @@ public class SwiftNodeUtils {
         return result;
     }
 
-    private static void copy(GroupNode[] cachedNodes, Iterator<GroupNode> iterator, int size) {
+    private static void copy(SwiftNode[] cachedNodes, Iterator<SwiftNode> iterator, int size) {
         int rowCount = 0;
         boolean uninitialized = true;
         while (iterator.hasNext() && rowCount < size) {
-            GroupNode node = iterator.next();
+            SwiftNode node = iterator.next();
             int depth = node.getDepth();
             if (uninitialized) {
                 newCacheNodes(cachedNodes, depth);
@@ -144,7 +144,7 @@ public class SwiftNodeUtils {
         }
     }
 
-    private static void newCacheNodes(GroupNode[] cachedNodes, int index) {
+    private static void newCacheNodes(SwiftNode[] cachedNodes, int index) {
         GroupNode[] newCachedNodes = new GroupNode[cachedNodes.length];
         newCachedNodes[0] = new GroupNode(-1, null);
         for (int i = 0; i < index; i++) {
@@ -153,32 +153,30 @@ public class SwiftNodeUtils {
             newCachedNodes[i + 1] = child;
             newCachedNodes[i].addChild(child);
         }
-        for (int i = 0; i < cachedNodes.length; i++) {
-            cachedNodes[i] = newCachedNodes[i];
-        }
+        System.arraycopy(newCachedNodes, 0, cachedNodes, 0, cachedNodes.length);
     }
 
-    public static Iterator<GroupNode> dftNodeIterator(int dimensionSize, GroupNode root) {
+    public static Iterator<SwiftNode> dftNodeIterator(int dimensionSize, SwiftNode root) {
         return new DFTGroupNodeIterator(dimensionSize, root);
     }
 
-    public static Iterator<GroupNode> dftNodeIterator(GroupNode root) {
+    public static Iterator<SwiftNode> dftNodeIterator(SwiftNode root) {
         return new DFTGroupNodeIterator(getDimensionSize(root), root);
     }
 
-    private static class DFTGroupNodeIterator implements Iterator<GroupNode> {
+    private static class DFTGroupNodeIterator implements Iterator<SwiftNode> {
 
-        private GroupNode root;
-        private LimitedStack<Iterator<GroupNode>> iterators;
-        private GroupNode next;
+        private SwiftNode root;
+        private LimitedStack<Iterator<SwiftNode>> iterators;
+        private SwiftNode next;
 
         /**
          * @param dimensionSize <= 0的情况下返回根节点
          * @param root
          */
-        public DFTGroupNodeIterator(int dimensionSize, GroupNode root) {
+        DFTGroupNodeIterator(int dimensionSize, SwiftNode root) {
             this.root = root;
-            this.iterators = dimensionSize <= 0 ? null : new ArrayLimitedStack<Iterator<GroupNode>>(dimensionSize);
+            this.iterators = dimensionSize <= 0 ? null : new ArrayLimitedStack<Iterator<SwiftNode>>(dimensionSize);
             init();
         }
 
@@ -194,12 +192,12 @@ public class SwiftNodeUtils {
             return next != null;
         }
 
-        private GroupNode getNext() {
-            GroupNode ret = null;
+        private SwiftNode getNext() {
+            SwiftNode ret = null;
             while (iterators != null && !iterators.isEmpty()) {
-                Iterator<GroupNode> it = iterators.peek();
+                Iterator<SwiftNode> it = iterators.peek();
                 if (it.hasNext()) {
-                    GroupNode node = it.next();
+                    SwiftNode node = it.next();
                     ret = node;
                     if (iterators.size() != iterators.limit()) {
                         iterators.push(node.getChildren().iterator());
@@ -213,8 +211,8 @@ public class SwiftNodeUtils {
         }
 
         @Override
-        public GroupNode next() {
-            GroupNode ret = next;
+        public SwiftNode next() {
+            SwiftNode ret = next;
             next = getNext();
             return ret;
         }

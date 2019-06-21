@@ -7,28 +7,28 @@ import java.util.List;
  * @date 2017/10/10
  * 存储聚合之后的值的树状结构
  */
-public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer {
+public interface SwiftNode extends AggregatorValueContainer {
 
     Object getData();
 
     void setData(Object data);
 
-    T getChild(int index);
+    SwiftNode getChild(int index);
 
-    void addChild(T child);
+    void addChild(SwiftNode child);
 
     /**
      * 节点的兄弟节点，下一个节点，用于纵向遍历。
      *
      * @return
      */
-    T getSibling();
+    SwiftNode getSibling();
 
-    void setSibling(T sibling);
+    void setSibling(SwiftNode sibling);
 
-    T getParent();
+    SwiftNode getParent();
 
-    void setParent(T parent);
+    void setParent(SwiftNode parent);
 
     int getChildrenSize();
 
@@ -48,5 +48,9 @@ public interface SwiftNode<T extends SwiftNode> extends AggregatorValueContainer
 
     void clearChildren();
 
-    List<T> getChildren();
+    List<SwiftNode> getChildren();
+
+    void setIndex(int nodeIndex);
+
+    int getDictionaryIndex();
 }

@@ -3,7 +3,7 @@ package com.fr.swift.result.node.cal;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.Filter;
@@ -21,14 +21,14 @@ import java.util.Map;
  * Created by pony on 2018/5/16.
  */
 public abstract class AbstractRelationTargetCalculator extends AbstractTargetCalculator {
-    private GroupNode root;
-    private Function<GroupNode, List<AggregatorValue[]>> aggFunc;
-    protected Pair<Integer, GroupType> decrease;
-    protected GroupType decType;
-    protected List<Map<Integer, Object>> dic;
+    private SwiftNode root;
+    private Function<SwiftNode, List<AggregatorValue[]>> aggFunc;
+    Pair<Integer, GroupType> decrease;
+    GroupType decType;
+    private List<Map<Integer, Object>> dic;
     private Decreaser decreaser;
 
-    public AbstractRelationTargetCalculator(int[] paramIndex, int resultIndex, GroupNode root, List<Map<Integer, Object>> dic, Function<GroupNode, List<AggregatorValue[]>> aggFunc, List<Pair<Integer, GroupType>> brotherGroupIndex) {
+    AbstractRelationTargetCalculator(int[] paramIndex, int resultIndex, SwiftNode root, List<Map<Integer, Object>> dic, Function<SwiftNode, List<AggregatorValue[]>> aggFunc, List<Pair<Integer, GroupType>> brotherGroupIndex) {
         super(paramIndex[0], resultIndex, null);
         this.root = root;
         this.dic = dic;
@@ -37,7 +37,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         initDecreaser();
     }
 
-    protected void initDecreaser() {
+    private void initDecreaser() {
         if (decType == null || decrease == null) {
             decreaser = new EmptyDecreaser();
             return;
@@ -57,24 +57,22 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
 
     }
 
-    ;
-
     /**
      * @param brotherGroupIndex 第一个出现的日期字段的维度序号与分组类型，序号-1的表示设置了同期的分组方式
      */
     protected abstract void initIndexTypePair(List<Pair<Integer, GroupType>> brotherGroupIndex);
 
     @Override
-    public Object call() throws Exception {
-        Iterator<GroupNode> iterator = new BFTGroupNodeIterator(root);
-        FilteredIterator<GroupNode> filteredIterator = new FilteredIterator<GroupNode>(iterator, new Filter<GroupNode>() {
+    public Object call() {
+        Iterator<SwiftNode> iterator = new BFTGroupNodeIterator(root);
+        FilteredIterator<SwiftNode> filteredIterator = new FilteredIterator<SwiftNode>(iterator, new Filter<SwiftNode>() {
             @Override
-            public boolean accept(GroupNode biGroupNode) {
+            public boolean accept(SwiftNode biGroupNode) {
                 return biGroupNode.getChildrenSize() == 0;
             }
         });
         while (filteredIterator.hasNext()) {
-            GroupNode last = filteredIterator.next();
+            SwiftNode last = filteredIterator.next();
             List<AggregatorValue[]> rows = aggFunc.apply(last);
             for (int i = 0; i < rows.size(); i++) {
                 Double value = getRelationValue(i, last);
@@ -91,8 +89,8 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
 
     protected abstract Double getValue(Double relationValue, Double currentValue);
 
-    private Double getRelationValue(int i, GroupNode last) {
-        GroupNode node = getNode(last);
+    private Double getRelationValue(int i, SwiftNode last) {
+        SwiftNode node = getNode(last);
         if (node == null) {
             return null;
         }
@@ -100,9 +98,9 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         return (Double) rows.get(i)[paramIndex].calculateValue();
     }
 
-    private GroupNode getNode(GroupNode last) {
+    private SwiftNode getNode(SwiftNode last) {
         List values = getDataValue(last);
-        GroupNode node = root;
+        SwiftNode node = root;
         for (int i = 0; i < values.size(); i++) {
             node = getChildByData(node, values.get(values.size() - i - 1));
             if (node == null) {
@@ -112,9 +110,9 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         return node;
     }
 
-    private GroupNode getChildByData(GroupNode parent, Object data) {
-        List<GroupNode> children = parent.getChildren();
-        for (GroupNode child : children) {
+    private SwiftNode getChildByData(SwiftNode parent, Object data) {
+        List<SwiftNode> children = parent.getChildren();
+        for (SwiftNode child : children) {
             if (Util.equals(getNodeData(child), data)) {
                 return child;
             }
@@ -122,7 +120,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         return null;
     }
 
-    protected List getDataValue(GroupNode last) {
+    private List getDataValue(SwiftNode last) {
         List list = new ArrayList();
         while (last.getParent() != null) {
             list.add(getNodeData(last));
@@ -132,11 +130,11 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         return list;
     }
 
-    private Object getNodeData(GroupNode node) {
+    private Object getNodeData(SwiftNode node) {
         return dic.get(node.getDepth()).get(node.getDictionaryIndex());
     }
 
-    protected void decrease(List list) {
+    private void decrease(List list) {
         int index = list.size() - decrease.getKey() - 1;
         list.set(index, decrease(list.get(index)));
     }
@@ -145,7 +143,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         return decreaser.decrease((Long) o);
     }
 
-    public int getUnit() {
+    private int getUnit() {
         switch (decType) {
             case YEAR:
                 return Calendar.YEAR;
@@ -181,7 +179,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
     class DateDecreaser implements Decreaser {
         private Calendar c = Calendar.getInstance();
 
-        public DateDecreaser(int unit) {
+        DateDecreaser(int unit) {
             this.unit = unit;
         }
 
@@ -204,7 +202,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
     class SeasonDecreaser implements Decreaser {
         private Calendar c = Calendar.getInstance();
 
-        public SeasonDecreaser() {
+        SeasonDecreaser() {
         }
 
         @Override
