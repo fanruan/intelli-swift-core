@@ -5,13 +5,13 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/4/4.
  */
-public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
+public class GroupNode extends AbstractSwiftNode {
 
     private static final long serialVersionUID = -538699789884622264L;
     private int depth;
-    int nodeIndex = 0;
-    protected Object data;
-    private ChildMap<T> childMap = new ChildMap<T>();
+    private int nodeIndex = 0;
+    private Object data;
+    private ChildMap<SwiftNode> childMap = new ChildMap<SwiftNode>();
     private int dictionaryIndex = -1;
     private boolean isGlobalIndexUpdated = false;
 
@@ -28,23 +28,13 @@ public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
     public GroupNode() {
     }
 
+    @Override
     public int getDictionaryIndex() {
         return dictionaryIndex;
     }
 
-    public ChildMap<T> getChildMap() {
+    public ChildMap<SwiftNode> getChildMap() {
         return childMap;
-    }
-
-    @Override
-    @Deprecated
-    public T getSibling() {
-        return super.getSibling();
-    }
-
-    @Override
-    public T getParent() {
-        return super.getParent();
     }
 
     @Override
@@ -58,11 +48,11 @@ public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
 
     @Override
     public void clearChildren() {
-        childMap = new ChildMap<T>();
+        childMap = new ChildMap<SwiftNode>();
     }
 
     @Override
-    public List<T> getChildren() {
+    public List<SwiftNode> getChildren() {
         return childMap.getList();
     }
 
@@ -77,20 +67,20 @@ public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
     }
 
     @Override
-    public void addChild(T child) {
+    public void addChild(SwiftNode child) {
         int siblings = getChildrenSize();
         if (siblings != 0) {
-            getLastChild().sibling = child;
+            getLastChild().setSibling(child);
             // 在构造的时候设置这个没啥用，但是过滤之后，重新把节点添加进来的时候就有用了
-            child.nodeIndex = getLastChild().nodeIndex + 1;
+            child.setIndex(getLastChild().getIndex() + 1);
         } else {
-            child.nodeIndex = 0;
+            child.setIndex(0);
         }
         childMap.put(child.getData(), child);
-        child.parent = (T) this;
+        child.setParent(this);
     }
 
-    private T getLastChild() {
+    private SwiftNode getLastChild() {
         return childMap.size() == 0 ? null : childMap.get(childMap.size() - 1);
     }
 
@@ -106,7 +96,7 @@ public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
     }
 
     @Override
-    public T getChild(int index) {
+    public SwiftNode getChild(int index) {
         return childMap.get(index);
     }
 
@@ -120,6 +110,7 @@ public class GroupNode<T extends GroupNode<T>> extends AbstractSwiftNode<T> {
         return nodeIndex;
     }
 
+    @Override
     public void setIndex(int nodeIndex) {
         this.nodeIndex = nodeIndex;
     }

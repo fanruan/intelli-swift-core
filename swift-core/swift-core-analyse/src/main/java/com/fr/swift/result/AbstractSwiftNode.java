@@ -5,37 +5,37 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 /**
  * Created by pony on 2017/12/8.
  */
-public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNode<T> {
+public abstract class AbstractSwiftNode implements SwiftNode {
     private static final long serialVersionUID = -1451247093003530849L;
-    protected T parent;
-    protected T sibling;
-    protected AggregatorValue[] aggregatorValues;
+    private SwiftNode parent;
+    private SwiftNode sibling;
+    private AggregatorValue[] aggregatorValues;
 
     public AbstractSwiftNode(int sumLength) {
         this.aggregatorValues = new AggregatorValue[sumLength];
     }
 
-    protected AbstractSwiftNode() {
+    AbstractSwiftNode() {
         this.aggregatorValues = new AggregatorValue[0];
     }
 
     @Override
-    public T getSibling() {
+    public SwiftNode getSibling() {
         return sibling;
     }
 
     @Override
-    public void setSibling(T sibling) {
+    public void setSibling(SwiftNode sibling) {
         this.sibling = sibling;
     }
 
     @Override
-    public T getParent() {
+    public SwiftNode getParent() {
         return parent;
     }
 
     @Override
-    public void setParent(T parent) {
+    public void setParent(SwiftNode parent) {
         this.parent = parent;
     }
 
