@@ -3,8 +3,8 @@ package com.fr.swift.query.segment.detail;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.result.SortSegmentDetailResultSet;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.Pair;
 
@@ -24,7 +24,7 @@ public class SortDetailSegmentQuery extends AbstractDetailSegmentQuery {
     }
 
     @Override
-    public QueryResultSet getQueryResult() {
+    public DetailQueryResultSet getQueryResult() {
         return new SortSegmentDetailResultSet(fetchSize, columnList, filter, sorts);
     }
 }

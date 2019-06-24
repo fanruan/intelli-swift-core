@@ -2,12 +2,15 @@ package com.fr.swift.result.node.resultset;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRS;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/12/19
  */
-public class NodeQueryResultSetMerger implements INodeQueryResultSetMerger<GroupNode> {
+public class NodeQueryResultSetMerger implements QueryResultSetMerger<QueryResultSet<GroupPage>>, Serializable {
 
     private static final long serialVersionUID = 4561111090120768112L;
     private int fetchSize;
@@ -33,11 +36,11 @@ public class NodeQueryResultSetMerger implements INodeQueryResultSetMerger<Group
     }
 
     @Override
-    public NodeMergeQRS<GroupNode> merge(List<NodeMergeQRS<GroupNode>> resultSets) {
+    public QueryResultSet<GroupPage> merge(List<QueryResultSet<GroupPage>> resultSets) {
         return new ChainedNodeMergeQRS(fetchSize, isGlobalIndexed, resultSets, aggregators, getComparators(), this);
     }
 
-    private List<Comparator<GroupNode>> getComparators() {
+    private List<Comparator<SwiftNode>> getComparators() {
         List<Comparator> list = new ArrayList<Comparator>();
         for (Pair<SortType, ColumnTypeConstants.ClassType> pair : comparators) {
             boolean isAsc = pair.getKey() == SortType.ASC;
@@ -56,11 +59,11 @@ public class NodeQueryResultSetMerger implements INodeQueryResultSetMerger<Group
                     list.add(isAsc ? Comparators.STRING_ASC : Comparators.reverse(Comparators.STRING_ASC));
             }
         }
-        List<Comparator<GroupNode>> result = new ArrayList<Comparator<GroupNode>>();
+        List<Comparator<SwiftNode>> result = new ArrayList<Comparator<SwiftNode>>();
         for (final Comparator comparator : list) {
-            result.add(new Comparator<GroupNode>() {
+            result.add(new Comparator<SwiftNode>() {
                 @Override
-                public int compare(GroupNode o1, GroupNode o2) {
+                public int compare(SwiftNode o1, SwiftNode o2) {
                     return comparator.compare(o1.getData(), o2.getData());
                 }
             });

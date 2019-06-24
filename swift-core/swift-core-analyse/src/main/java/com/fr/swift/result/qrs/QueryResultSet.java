@@ -13,7 +13,18 @@ public interface QueryResultSet<T> extends Pagination<T>, Closable {
 
     int getFetchSize();
 
-    <Q extends QueryResultSet<T>> QueryResultSetMerger<T, Q> getMerger();
+    /**
+     * @return
+     * @deprecated 独立出去，解耦
+     */
+    @Deprecated
+    <Q extends QueryResultSet<T>> QueryResultSetMerger<Q> getMerger();
 
+    /**
+     * @param metaData
+     * @return
+     * @deprecated 独立出去，解耦
+     */
+    @Deprecated
     SwiftResultSet convert(SwiftMetaData metaData);
 }

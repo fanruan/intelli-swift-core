@@ -25,10 +25,9 @@ import com.fr.swift.query.info.bean.parser.FilterInfoParser;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
-import com.fr.swift.query.segment.SegmentQuery;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -57,7 +56,7 @@ import java.util.Set;
  * @author Lucifer
  * @description
  */
-public class FunnelSegmentQuery implements SegmentQuery {
+public class FunnelSegmentQuery implements Query<FunnelQueryResultSet> {
 
     // TODO: 2018/12/28
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -102,7 +101,7 @@ public class FunnelSegmentQuery implements SegmentQuery {
     }
 
     @Override
-    public QueryResultSet getQueryResult() {
+    public FunnelQueryResultSet getQueryResult() {
         Set<Integer> steps = getSteps(bean.getAggregation().getFunnelEvents());
         IStep step = createStep(bean.getAggregation().getFunnelEvents());
         ITimeWindowFilter filter = createTimeWindowFilter(step, bean, segment);
@@ -169,7 +168,7 @@ public class FunnelSegmentQuery implements SegmentQuery {
     }
 
     private FunnelGroupKey createGroupKey(int postGroupStep, List<double[]> rangePairs, IHead head) {
-        FunnelGroupKey groupKey = null;
+        FunnelGroupKey groupKey;
         Object groupValue = head.getGroupValue();
         if (postGroupStep != -1) {
             if (rangePairs.size() == 0) {
@@ -315,8 +314,8 @@ public class FunnelSegmentQuery implements SegmentQuery {
 
     private boolean[] getFlags(FunnelQueryBean bean, List<Integer> steps) {
         boolean[] flags = new boolean[bean.getAggregation().getFunnelEvents().size()];
-        for (int i = 0; i < steps.size(); i++) {
-            flags[steps.get(i)] = true;
+        for (Integer step : steps) {
+            flags[step] = true;
         }
         return flags;
     }
@@ -339,8 +338,8 @@ public class FunnelSegmentQuery implements SegmentQuery {
 
     private Set<Integer> getSteps(List<String> stepNames) {
         Set<Integer> steps = new HashSet<Integer>();
-        for (int i = 0; i < stepNames.size(); i++) {
-            steps.add((int) (long) globalDic.get(stepNames.get(i)));
+        for (String stepName : stepNames) {
+            steps.add((int) (long) globalDic.get(stepName));
         }
         return steps;
     }

@@ -4,7 +4,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.AggregatorValueUtils;
 import com.fr.swift.query.aggregator.Combiner;
-import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ public class GroupNodeMergeUtils {
 
     // TODO: 2018/7/24 是否根据全局字典进行合并只要处理好nodeComparator就好了
     // TODO: 2018/7/24 同时这边的合并仅处理根节点或者叶子节点的聚合值合并，其他维度节点默认为空
-    public static GroupNode merge(List<GroupNode> roots, List<Comparator<GroupNode>> nodeComparators,
+    public static SwiftNode merge(List<SwiftNode> roots, List<Comparator<SwiftNode>> nodeComparators,
                                   List<Aggregator> aggregators) {
 //        if (roots.size() == 1) {
 //            return roots.get(0);
 //        }
-        GroupNode mergeRoot = roots.get(0);
+        SwiftNode mergeRoot = roots.get(0);
         AggregatorValue[] mergeRootValues = mergeRoot.getAggregatorValue();
         for (int i = 1; i < roots.size(); i++) {
             AggregatorValue[] values = roots.get(i).getAggregatorValue();
@@ -35,8 +35,8 @@ public class GroupNodeMergeUtils {
         }
         // 从新设置一下值
         mergeRoot.setAggregatorValue(mergeRootValues);
-        List<Iterator<GroupNode>> iterators = new ArrayList<Iterator<GroupNode>>();
-        for (GroupNode node : roots) {
+        List<Iterator<SwiftNode>> iterators = new ArrayList<Iterator<SwiftNode>>();
+        for (SwiftNode node : roots) {
             if (node.getChildrenSize() == 0) {
                 // 跳过为空的root
                 continue;
@@ -46,7 +46,7 @@ public class GroupNodeMergeUtils {
         if (iterators.isEmpty()) {
             return mergeRoot;
         }
-        Iterator<GroupNode> iterator = SortedListMergingUtils.mergeIterator(iterators, nodeComparators.get(0),
+        Iterator<SwiftNode> iterator = SortedListMergingUtils.mergeIterator(iterators, nodeComparators.get(0),
                 new NodeCombiner(1, aggregators, nodeComparators));
         mergeRoot.clearChildren();
         while (iterator.hasNext()) {
@@ -66,20 +66,20 @@ public class GroupNodeMergeUtils {
         return result;
     }
 
-    private static class NodeCombiner implements Combiner<GroupNode> {
-
+    private static class NodeCombiner implements Combiner<SwiftNode> {
+        private static final long serialVersionUID = 4120194941494959923L;
         private int childrenDimensionIndex;
         private List<Aggregator> aggregators;
-        private List<Comparator<GroupNode>> comparators;
+        private List<Comparator<SwiftNode>> comparators;
 
-        public NodeCombiner(int childrenDimensionIndex, List<Aggregator> aggregators, List<Comparator<GroupNode>> comparators) {
+        NodeCombiner(int childrenDimensionIndex, List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
             this.childrenDimensionIndex = childrenDimensionIndex;
             this.aggregators = aggregators;
             this.comparators = comparators;
         }
 
         @Override
-        public void combine(GroupNode current, GroupNode other) {
+        public void combine(SwiftNode current, SwiftNode other) {
             AggregatorValue[] currentValues = current.getAggregatorValue();
             AggregatorValue[] otherValues = other.getAggregatorValue();
             // 合并两个节点，并把合并结果设置到current节点
@@ -89,10 +89,10 @@ public class GroupNodeMergeUtils {
                 return;
             }
             // 合并两个节点的子节点
-            List<Iterator<GroupNode>> iterators = new ArrayList<Iterator<GroupNode>>();
+            List<Iterator<SwiftNode>> iterators = new ArrayList<Iterator<SwiftNode>>();
             iterators.add(current.getChildren().iterator());
             iterators.add(other.getChildren().iterator());
-            Iterator<GroupNode> iterator = SortedListMergingUtils.mergeIterator(iterators, comparators.get(childrenDimensionIndex),
+            Iterator<SwiftNode> iterator = SortedListMergingUtils.mergeIterator(iterators, comparators.get(childrenDimensionIndex),
                     new NodeCombiner(childrenDimensionIndex + 1, aggregators, comparators));
             current.clearChildren();
             while (iterator.hasNext()) {

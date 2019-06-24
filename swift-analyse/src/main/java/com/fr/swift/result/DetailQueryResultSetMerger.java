@@ -1,8 +1,10 @@
 package com.fr.swift.result;
 
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.Row;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
  * @author yee
  * @date 2018-12-16
  */
-public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
+public class DetailQueryResultSetMerger implements QueryResultSetMerger<DetailQueryResultSet>, Serializable {
 
     private static final long serialVersionUID = -324445209089300987L;
     private int fetchSize;
@@ -35,7 +37,7 @@ public class DetailQueryResultSetMerger implements IDetailQueryResultSetMerger {
         private List<DetailQueryResultSet> resultSets;
         private Iterator<Row> iterator;
 
-        public DetailRowIterator(List<DetailQueryResultSet> resultSets) {
+        DetailRowIterator(List<DetailQueryResultSet> resultSets) {
             this.resultSets = resultSets;
             this.iterator = new ArrayList<Row>().iterator();
         }

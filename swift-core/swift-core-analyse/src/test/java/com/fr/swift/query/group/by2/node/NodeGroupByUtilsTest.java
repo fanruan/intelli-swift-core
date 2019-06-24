@@ -11,10 +11,9 @@ import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
@@ -32,14 +31,14 @@ import java.util.Map;
  */
 public class NodeGroupByUtilsTest extends TestCase {
 
-    private Iterator<NodeMergeQRS<GroupNode>> iterator;
+    private Iterator<QueryResultSet<GroupPage>> iterator;
     private List<Pair<Column, IndexInfo>> dimensions;
     private Column metric;
     private Map<List<String>, Double> expected;
     private int rowCount = 10000;
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         CubeData cubeData = new CubeData(2, 1, rowCount);
         dimensions = cubeData.getDimensions();
         metric = cubeData.getMetrics().get(0);
@@ -72,7 +71,7 @@ public class NodeGroupByUtilsTest extends TestCase {
 
     public void test() {
         assertTrue(iterator.hasNext());
-        GroupNode root = iterator.next().getPage().getKey();
+        SwiftNode root = iterator.next().getPage().getRoot();
         assertNotNull(root);
         Iterator<List<SwiftNode>> it = SwiftNodeUtils.node2RowListIterator(root);
         assertTrue(it.hasNext());

@@ -15,7 +15,7 @@ public class DetailSerializableQRS extends BaseSerializableQRS<List<Row>> implem
 
     private int rowCount;
 
-    public DetailSerializableQRS(int fetchSize, int rowCount, QueryResultSetMerger merger,
+    public DetailSerializableQRS(int fetchSize, int rowCount, QueryResultSetMerger<DetailQueryResultSet> merger,
                                  List<Row> page, boolean originHasNextPage) {
         super(fetchSize, merger, page, originHasNextPage);
         this.rowCount = rowCount;

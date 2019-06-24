@@ -21,7 +21,7 @@ public abstract class BaseNodeQRS implements NodeQRS {
     }
 
     @Override
-    public <Q extends QueryResultSet<SwiftNode>> QueryResultSetMerger<SwiftNode, Q> getMerger() {
+    public QueryResultSetMerger<QueryResultSet<SwiftNode>> getMerger() {
         throw new UnsupportedOperationException();
     }
 

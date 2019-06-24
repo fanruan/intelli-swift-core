@@ -27,9 +27,9 @@ public class FunnelQueryResultSet implements QueryResultSet<FunnelResultSet>, Se
     private static final long serialVersionUID = 5730624500314766659L;
 
     private FunnelResultSet funnelResultSet;
-    private QueryResultSetMerger merger;
+    private QueryResultSetMerger<FunnelQueryResultSet> merger;
 
-    public FunnelQueryResultSet(FunnelResultSet funnelResultSet, QueryResultSetMerger merger) {
+    public FunnelQueryResultSet(FunnelResultSet funnelResultSet, QueryResultSetMerger<FunnelQueryResultSet> merger) {
         this.funnelResultSet = funnelResultSet;
         this.merger = merger;
     }
@@ -50,7 +50,7 @@ public class FunnelQueryResultSet implements QueryResultSet<FunnelResultSet>, Se
     }
 
     @Override
-    public <Q extends QueryResultSet<FunnelResultSet>> QueryResultSetMerger<FunnelResultSet, Q> getMerger() {
+    public QueryResultSetMerger<FunnelQueryResultSet> getMerger() {
         return merger;
     }
 

@@ -5,8 +5,8 @@ import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -19,13 +19,13 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-public class FunnelPostQuery implements PostQuery<QueryResultSet> {
+public class FunnelPostQuery implements Query<FunnelQueryResultSet> {
 
     private boolean calMedian;
     private int timeWindow;
-    private PostQuery postQuery;
+    private Query<FunnelQueryResultSet> postQuery;
 
-    public FunnelPostQuery(PostQuery<QueryResultSet> postQuery, FunnelQueryBean queryBean) {
+    public FunnelPostQuery(Query<FunnelQueryResultSet> postQuery, FunnelQueryBean queryBean) {
         this.calMedian = isCalMedian(queryBean);
         this.timeWindow = queryBean.getAggregation().getTimeWindow();
         this.postQuery = postQuery;
@@ -42,8 +42,8 @@ public class FunnelPostQuery implements PostQuery<QueryResultSet> {
     }
 
     @Override
-    public QueryResultSet getQueryResult() throws SQLException {
-        FunnelQueryResultSet resultSet = (FunnelQueryResultSet) postQuery.getQueryResult();
+    public FunnelQueryResultSet getQueryResult() throws SQLException {
+        FunnelQueryResultSet resultSet = postQuery.getQueryResult();
         if (calMedian) {
             int[] helpArray = new int[timeWindow + 1];
             Map<FunnelGroupKey, FunnelAggValue> map = resultSet.getPage().getResult();
@@ -85,7 +85,8 @@ public class FunnelPostQuery implements PostQuery<QueryResultSet> {
                 median = (double) m;
             } else {
                 int m1 = m;
-                while (helperArray[--m1] == 0) ;
+                while (helperArray[--m1] == 0) {
+                }
                 median = ((double) m + (double) m1) / 2;
             }
         } else {
