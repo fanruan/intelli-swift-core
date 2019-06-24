@@ -141,7 +141,7 @@ public class InitResultSetUtils {
 
 
     /* 用于平衡测试
-    id   age
+    userId   age
     0    age0
     1    age1
     2    age2
@@ -151,9 +151,9 @@ public class InitResultSetUtils {
     public static SwiftResultSet makeResultSetIdAndAge1() {
         //构建SwiftResultSet2 一对一
         List<SwiftMetaDataColumn> swiftMetaDataColumns = Arrays.asList(
-                new MetaDataColumnBean("id", Types.INTEGER),
+                new MetaDataColumnBean("userId", Types.INTEGER),
                 new MetaDataColumnBean("age", Types.VARCHAR));
-        SwiftMetaData metaData = new SwiftMetaDataBean("id_age", swiftMetaDataColumns);
+        SwiftMetaData metaData = new SwiftMetaDataBean("userId_age", swiftMetaDataColumns);
         List<Row> rowList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             List<Object> values = new ArrayList<>();
@@ -170,7 +170,7 @@ public class InitResultSetUtils {
 
 
     /* 用于右边溢出测试
-    id   age
+    userId   age
     0    age0
     1    age1
     2    age2
@@ -182,9 +182,9 @@ public class InitResultSetUtils {
     public static SwiftResultSet makeResultSetIdAndAge11() {
         //构建SwiftResultSet2 一对一
         List<SwiftMetaDataColumn> swiftMetaDataColumns = Arrays.asList(
-                new MetaDataColumnBean("id", Types.INTEGER),
+                new MetaDataColumnBean("userId", Types.INTEGER),
                 new MetaDataColumnBean("age", Types.VARCHAR));
-        SwiftMetaData metaData = new SwiftMetaDataBean("id_age", swiftMetaDataColumns);
+        SwiftMetaData metaData = new SwiftMetaDataBean("userId_age", swiftMetaDataColumns);
         List<Row> rowList = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             if (i == 5 || i == 6) {
@@ -204,7 +204,7 @@ public class InitResultSetUtils {
 
     //用于平衡测试 一对多
     /*
-    id  age
+    userId  age
     0   age00
     0   age01
     1   age10
@@ -220,9 +220,9 @@ public class InitResultSetUtils {
         //id_age
         //多对多用的swiftResultSet
         List<SwiftMetaDataColumn> swiftMetaDataColumns = Arrays.asList(
-                new MetaDataColumnBean("id", Types.INTEGER),
+                new MetaDataColumnBean("userId", Types.INTEGER),
                 new MetaDataColumnBean("age", Types.VARCHAR));
-        SwiftMetaData metaData = new SwiftMetaDataBean("id_age", swiftMetaDataColumns);
+        SwiftMetaData metaData = new SwiftMetaDataBean("userId_age", swiftMetaDataColumns);
         List<Row> rowList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             List<Object> values1 = new ArrayList<>();
@@ -249,7 +249,7 @@ public class InitResultSetUtils {
 
     //用于右边溢出
     /*
-    id  age
+    userId  age
     0   age00
     0   age01
     1   age10
@@ -269,9 +269,9 @@ public class InitResultSetUtils {
         //id_age
         //多对多用的swiftResultSet
         List<SwiftMetaDataColumn> swiftMetaDataColumns = Arrays.asList(
-                new MetaDataColumnBean("id", Types.INTEGER),
+                new MetaDataColumnBean("userId", Types.INTEGER),
                 new MetaDataColumnBean("age", Types.VARCHAR));
-        SwiftMetaData metaData = new SwiftMetaDataBean("id_age", swiftMetaDataColumns);
+        SwiftMetaData metaData = new SwiftMetaDataBean("userId_age", swiftMetaDataColumns);
         List<Row> rowList = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             if (i == 5 || i == 6) {
@@ -298,6 +298,58 @@ public class InitResultSetUtils {
         SwiftResultSet resultSet = new RowSwiftResultSet(metaData, rowList);
         return resultSet;
     }
+
+
+    //用于右边溢出
+    /*
+    id    name     userId         age
+    0     li         0           age00
+    1     fan        0           age01
+    2     li         1           age10
+    3     fan        1           age11
+    4     li         2           age20
+    5     fan        2           age21
+    6     li         3           age30
+    7     fan        3           age31
+    8     li         3           age40
+    9     fan        4           age41
+    10     li        4            age70
+    11     fan       5            age71
+    12     li        5            age80
+    13     fan       5            age81
+     */
+    public static SwiftResultSet makeResultSetIdUserIdAndAge() {
+        //id_age
+        //多对多用的swiftResultSet
+        List<SwiftMetaDataColumn> swiftMetaDataColumns = Arrays.asList(
+                new MetaDataColumnBean("id", Types.INTEGER),
+                new MetaDataColumnBean("name", Types.VARCHAR),
+                new MetaDataColumnBean("userId",Types.INTEGER),
+                new MetaDataColumnBean("age", Types.VARCHAR));
+        SwiftMetaData metaData = new SwiftMetaDataBean("id_userId_age", swiftMetaDataColumns);
+        List<Row> rowList = new ArrayList<>();
+
+        String[] data = {"0,li,0,age00","1,fan,0,age01","2,li,1,age10","3,fan,1,age11","4,li,2,age20","5,fan,2,age21","6,li,3,age30",
+                "7,fan,3,age31","8,li,3,age40","9,fan,4,age41","10,li,4,age70","11,fan,5,age71","12,li,5,age80","13,fan,5,age81"};
+        for(String str:data){
+            List<Object> value = new ArrayList<>();
+            ListBasedRow row = new ListBasedRow();
+            String[] elements = str.split(",");
+            for (int i = 0; i < elements.length; i++) {
+                if(i==0||i==2){
+                    value.add(Integer.valueOf(elements[i]));
+                }else{
+                    value.add(elements[i]);
+                }
+            }
+            row.setValues(value);
+            rowList.add(row);
+        }
+
+        SwiftResultSet resultSet = new RowSwiftResultSet(metaData, rowList);
+        return resultSet;
+    }
+
 
 
 }
