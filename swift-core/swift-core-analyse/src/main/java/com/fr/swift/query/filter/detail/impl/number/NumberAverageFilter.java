@@ -61,14 +61,16 @@ public class NumberAverageFilter extends NumberInRangeFilter {
             AggregatorValueRow row = set.next();
             Object data = row.getValue(targetIndex).calculateValue();
             if (data == null) {
-                row.setValid(false);
+                set.remove();
                 continue;
             }
             double value = ((Number) data).doubleValue();
             boolean match = (minIncluded ? value >= minValue : value > minValue) &&
                     (maxIncluded ? value <= maxValue : value < maxValue);
             matches |= match;
-            row.setValid(match);
+            if (!match) {
+                set.remove();
+            }
         }
         set.reset();
         return matches;

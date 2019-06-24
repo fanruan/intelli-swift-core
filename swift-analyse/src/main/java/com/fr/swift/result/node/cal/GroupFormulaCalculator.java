@@ -1,9 +1,8 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by Lyon on 2018/5/3.
@@ -13,10 +12,10 @@ public class GroupFormulaCalculator implements TargetCalculator {
     private String expression;
     private int[] paramIndexes;
     private int resultIndex;
-    private Iterator<List<AggregatorValue[]>> iterator;
+    private Iterator<AggregatorValueSet> iterator;
 
     public GroupFormulaCalculator(int[] paramIndexes, int resultIndex, String formula,
-                                  Iterator<List<AggregatorValue[]>> iterator) {
+                                  Iterator<AggregatorValueSet> iterator) {
         this.paramIndexes = paramIndexes;
         this.resultIndex = resultIndex;
         this.expression = formula;
@@ -37,7 +36,7 @@ public class GroupFormulaCalculator implements TargetCalculator {
 //        String[] paramNames = paramNames();
 //        String formula = FormulaUtils.getParameterIndexEncodedFormula(expression);
 //        while (iterator.hasNext()) {
-//            List<AggregatorValue[]> row = iterator.next();
+//            AggregatorValueSet row = iterator.next();
 //            for (AggregatorValue[] values : row) {
 //                updateParameter(calculator, paramNames, values);
 //                Object result = calculator.eval(formula);

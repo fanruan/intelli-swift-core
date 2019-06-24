@@ -88,12 +88,20 @@ public class GroupNodeAggregateUtils {
                                 AggregatorValueSet valuesOfChild, List<Aggregator> aggregators) {
         for (int i = 0; i < aggregators.size(); i++) {
             Aggregator aggregator = aggregators.get(i);
-            if (valuesOfParent[i] == null) {
-                valuesOfParent[i] = valuesOfChild[i] == null ? null : aggregator.createAggregatorValue(valuesOfChild[i]);
-            } else {
-                // TODO: 2018/5/7 如果没有切换汇总方式，用明细的方式合计还是在明细汇总的基础上合计？
-                valuesOfParent[i] = AggregatorValueUtils.combine(valuesOfParent[i], valuesOfChild[i], aggregator);
+            while (valuesOfParent.hasNext()) {
+                AggregatorValueRow parentRow = valuesOfParent.next();
+                AggregatorValue parent = parentRow.getValue(i);
+                AggregatorValueRow childRow = valuesOfChild.next();
+                AggregatorValue child = childRow.getValue(i);
+                if (parent == null) {
+                    parent = child == null ? null : aggregator.createAggregatorValue(child);
+                } else {
+                    // TODO: 2018/5/7 如果没有切换汇总方式，用明细的方式合计还是在明细汇总的基础上合计？
+                    parent = AggregatorValueUtils.combine(parent, child, aggregator);
+                }
+                parentRow.setValue(i, parent);
             }
+
         }
     }
 

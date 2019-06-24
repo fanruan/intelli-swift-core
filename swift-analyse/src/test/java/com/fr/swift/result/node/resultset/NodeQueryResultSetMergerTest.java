@@ -4,6 +4,8 @@ import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
+import com.fr.swift.query.aggregator.ListAggregatorValueRow;
+import com.fr.swift.query.aggregator.SingleAggregatorValueSet;
 import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.BaseNodeMergeQRS;
@@ -73,7 +75,8 @@ public class NodeQueryResultSetMergerTest extends TestCase {
         GroupNode root = new GroupNode(-1, null);
         for (int i = 0; i < keys.length; i++) {
             GroupNode child = new GroupNode(0, keys[i]);
-            child.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(values[i])});
+            child.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(
+                    new AggregatorValue[]{new DoubleAmountAggregatorValue(values[i])})));
             root.addChild(child);
         }
         return root;

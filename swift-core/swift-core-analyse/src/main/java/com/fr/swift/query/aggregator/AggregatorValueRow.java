@@ -7,12 +7,11 @@ import com.fr.swift.source.Row;
  * @date 2019-06-24
  */
 public interface AggregatorValueRow<T extends AggregatorValue> extends Row {
-    boolean isValid();
-
-    void setValid(boolean valid);
 
     void setValue(int i, T value);
 
     @Override
     T getValue(int i);
+
+    Row data();
 }

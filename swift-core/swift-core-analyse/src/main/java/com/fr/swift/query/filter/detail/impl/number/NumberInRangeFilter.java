@@ -128,13 +128,15 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
             AggregatorValueRow row = set.next();
             Object data = row.getValue(targetIndex).calculateValue();
             if (data == null) {
-                row.setValid(false);
+                set.remove();
                 continue;
             }
             double value = ((Number) data).doubleValue();
             boolean match = match(value);
             matches |= match;
-            row.setValid(match);
+            if (!match) {
+                set.remove();
+            }
         }
         set.reset();
         return matches;
