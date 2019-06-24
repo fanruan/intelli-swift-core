@@ -1,5 +1,6 @@
 package com.fr.swift.query.builder;
 
+import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
 import com.fr.swift.query.info.group.post.FunnelPostQueryInfo;
@@ -12,11 +13,13 @@ import com.fr.swift.query.info.group.post.TreeSortQueryInfo;
 import com.fr.swift.query.post.FieldCalQuery;
 import com.fr.swift.query.post.FunnelPostQuery;
 import com.fr.swift.query.post.HavingFilterQuery;
-import com.fr.swift.query.post.PostQuery;
 import com.fr.swift.query.post.RowSortQuery;
 import com.fr.swift.query.post.TreeAggregationQuery;
 import com.fr.swift.query.post.TreeFilterQuery;
 import com.fr.swift.query.post.TreeSortQuery;
+import com.fr.swift.query.query.Query;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.funnel.FunnelQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.List;
@@ -26,30 +29,25 @@ import java.util.List;
  */
 class PostQueryBuilder {
 
-    static PostQuery<QueryResultSet> buildQuery(PostQuery<QueryResultSet> tmpQuery, List<PostQueryInfo> postQueryInfoList) {
+    static <Q extends QueryResultSet<?>> Query<Q> buildQuery(Query<Q> tmpQuery, List<PostQueryInfo> postQueryInfoList) {
         for (PostQueryInfo postQueryInfo : postQueryInfoList) {
             PostQueryType type = postQueryInfo.getType();
             switch (type) {
                 case CAL_FIELD:
-                    tmpQuery = new FieldCalQuery(tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfo());
-                    break;
+                    return (Query<Q>) new FieldCalQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfo());
                 case HAVING_FILTER:
-                    tmpQuery = new HavingFilterQuery(tmpQuery, ((HavingFilterQueryInfo) postQueryInfo).getMatchFilterList());
-                    break;
+                    return (Query<Q>) new HavingFilterQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((HavingFilterQueryInfo) postQueryInfo).getMatchFilterList());
                 case TREE_FILTER:
-                    tmpQuery = new TreeFilterQuery(tmpQuery, ((TreeFilterQueryInfo) postQueryInfo).getMatchFilterList());
-                    break;
+                    return (Query<Q>) new TreeFilterQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((TreeFilterQueryInfo) postQueryInfo).getMatchFilterList());
                 case TREE_AGGREGATION:
-                    tmpQuery = new TreeAggregationQuery(tmpQuery, ((TreeAggregationQueryInfo) postQueryInfo).getAggregators());
-                    break;
+                    return (Query<Q>) new TreeAggregationQuery((Query<QueryResultSet<GroupPage>>) tmpQuery, ((TreeAggregationQueryInfo) postQueryInfo).getAggregators());
                 case TREE_SORT:
-                    tmpQuery = new TreeSortQuery(tmpQuery, ((TreeSortQueryInfo) postQueryInfo).getSortList());
-                    break;
+                    return (Query<Q>) new TreeSortQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((TreeSortQueryInfo) postQueryInfo).getSortList());
                 case ROW_SORT:
-                    tmpQuery = new RowSortQuery(tmpQuery, ((RowSortQueryInfo) postQueryInfo).getSortList());
-                    break;
+                    return (Query<Q>) new RowSortQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((RowSortQueryInfo) postQueryInfo).getSortList());
                 case FUNNEL_MEDIAN:
-                    tmpQuery = new FunnelPostQuery(tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getQueryBean());
+                    return (Query<Q>) new FunnelPostQuery((Query<FunnelQueryResultSet>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getQueryBean());
+                default:
             }
         }
         return tmpQuery;

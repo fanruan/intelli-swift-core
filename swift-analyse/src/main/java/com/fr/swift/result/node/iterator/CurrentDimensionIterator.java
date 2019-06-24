@@ -1,7 +1,7 @@
 package com.fr.swift.result.node.iterator;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
@@ -17,19 +17,19 @@ public class CurrentDimensionIterator implements Iterator<List<AggregatorValue[]
 
     private Iterator<List<AggregatorValue[]>> rows;
 
-    public CurrentDimensionIterator(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> fn) {
+    public CurrentDimensionIterator(SwiftNode root, Function<SwiftNode, List<AggregatorValue[]>> fn) {
         init(root, fn);
     }
 
-    private void init(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> fn) {
-        Iterator<GroupNode> iterator = root.getChildren().iterator();
-        FilteredIterator<GroupNode> filteredIterator = new FilteredIterator<GroupNode>(iterator, new Filter<GroupNode>() {
+    private void init(SwiftNode root, Function<SwiftNode, List<AggregatorValue[]>> fn) {
+        Iterator<SwiftNode> iterator = root.getChildren().iterator();
+        FilteredIterator<SwiftNode> filteredIterator = new FilteredIterator<SwiftNode>(iterator, new Filter<SwiftNode>() {
             @Override
-            public boolean accept(GroupNode biGroupNode) {
+            public boolean accept(SwiftNode biGroupNode) {
                 return biGroupNode.getChildrenSize() == 0;
             }
         });
-        rows = new MapperIterator<GroupNode, List<AggregatorValue[]>>(filteredIterator, fn);
+        rows = new MapperIterator<SwiftNode, List<AggregatorValue[]>>(filteredIterator, fn);
     }
 
     @Override

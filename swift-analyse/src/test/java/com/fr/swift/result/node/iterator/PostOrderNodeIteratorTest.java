@@ -1,6 +1,7 @@
 package com.fr.swift.result.node.iterator;
 
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import junit.framework.TestCase;
 
 import java.util.Iterator;
@@ -13,7 +14,7 @@ public class PostOrderNodeIteratorTest extends TestCase {
     private GroupNode node;
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         // 定义 T = { key, C }, C = {T1, T2, ...}, Ti E T
         // node = {'a', {{'b', {}}, {'c', {'e', {}}}, {'d', {}}}}
         node = new GroupNode(-1, "a");
@@ -25,7 +26,7 @@ public class PostOrderNodeIteratorTest extends TestCase {
     }
 
     public void test() {
-        Iterator<GroupNode> iterator = new PostOrderNodeIterator<GroupNode>(3, node);
+        Iterator<SwiftNode> iterator = new PostOrderNodeIterator(3, node);
         assertTrue(iterator.hasNext());
         assertTrue(iterator.next().getData().equals("b"));
         assertTrue(iterator.next().getData().equals("e"));

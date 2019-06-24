@@ -14,7 +14,7 @@ import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.SortDetailResultQuery;
 import com.fr.swift.query.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
@@ -36,12 +36,12 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
 
     private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
-    protected LocalDetailGroupQueryBuilder() {
+    LocalDetailGroupQueryBuilder() {
     }
 
     @Override
-    public Query<QueryResultSet> buildLocalQuery(DetailQueryInfo info) {
-        List<Query<QueryResultSet>> queries = new ArrayList<Query<QueryResultSet>>();
+    public Query<DetailQueryResultSet> buildLocalQuery(DetailQueryInfo info) {
+        List<Query<DetailQueryResultSet>> queries = new ArrayList<Query<DetailQueryResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         List<Dimension> dimensions = info.getDimensions();
         for (Segment segment : segments) {
@@ -67,7 +67,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
     }
 
     private static ColumnTypeConstants.ClassType getClassType(SourceKey table, String columnName) {
-        SwiftMetaDataColumn column = null;
+        SwiftMetaDataColumn column;
         try {
             column = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(columnName);
         } catch (SQLException e) {

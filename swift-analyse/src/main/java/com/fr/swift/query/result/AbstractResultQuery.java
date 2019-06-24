@@ -9,7 +9,7 @@ import java.util.List;
  * Created by pony on 2017/11/27.
  * 处理结果的query
  */
-public abstract class AbstractResultQuery<T extends QueryResultSet> implements ResultQuery<T> {
+public abstract class AbstractResultQuery<T extends QueryResultSet<?>> implements Query<T> {
 
     protected int fetchSize;
     /**
@@ -17,7 +17,7 @@ public abstract class AbstractResultQuery<T extends QueryResultSet> implements R
      */
     protected List<Query<T>> queryList;
 
-    public AbstractResultQuery(int fetchSize, List<Query<T>> queryList) {
+    protected AbstractResultQuery(int fetchSize, List<Query<T>> queryList) {
         this.fetchSize = fetchSize;
         this.queryList = queryList;
     }

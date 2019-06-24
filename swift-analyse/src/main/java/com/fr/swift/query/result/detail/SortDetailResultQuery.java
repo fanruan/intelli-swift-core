@@ -3,8 +3,8 @@ package com.fr.swift.query.result.detail;
 import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.result.SortedDetailResultSetMerger;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
@@ -18,19 +18,19 @@ public class SortDetailResultQuery extends AbstractDetailResultQuery {
 
     private List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators;
 
-    public SortDetailResultQuery(int fetchSize, List<Query<QueryResultSet>> queries, List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
+    public SortDetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries, List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
         super(fetchSize, queries);
         this.comparators = comparators;
     }
 
-    public SortDetailResultQuery(int fetchSize, List<Query<QueryResultSet>> queries, List<DetailTarget> targets,
+    public SortDetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries, List<DetailTarget> targets,
                                  List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
         super(fetchSize, queries, targets);
         this.comparators = comparators;
     }
 
     @Override
-    protected QueryResultSetMerger createMerger() {
+    protected QueryResultSetMerger<DetailQueryResultSet> createMerger() {
         return new SortedDetailResultSetMerger(fetchSize, comparators);
     }
 }

@@ -14,12 +14,12 @@ public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Seria
     private static final long serialVersionUID = 3284100787389755050L;
 
     private int fetchSize;
-    private QueryResultSetMerger merger;
-    protected T page;
-    protected boolean originHasNextPage;
+    private QueryResultSetMerger<? extends QueryResultSet<T>> merger;
+    private T page;
+    private boolean originHasNextPage;
     private transient SyncInvoker invoker;
 
-    public BaseSerializableQRS(int fetchSize, QueryResultSetMerger merger, T page, boolean originHasNextPage) {
+    BaseSerializableQRS(int fetchSize, QueryResultSetMerger<? extends QueryResultSet<T>> merger, T page, boolean originHasNextPage) {
         this.fetchSize = fetchSize;
         this.merger = merger;
         this.page = page;
@@ -36,8 +36,8 @@ public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Seria
     }
 
     @Override
-    public <Q extends QueryResultSet<T>> QueryResultSetMerger<T, Q> getMerger() {
-        return merger;
+    public <Q extends QueryResultSet<T>> QueryResultSetMerger<Q> getMerger() {
+        return (QueryResultSetMerger<Q>) merger;
     }
 
     @Override
@@ -45,8 +45,8 @@ public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Seria
         T ret = page;
         page = null;
         if (hasNextPage() && invoker != null) {
-            BaseSerializableQRS qrs = invoker.invoke();
-            page = (T) qrs.page;
+            BaseSerializableQRS<T> qrs = invoker.invoke();
+            page = qrs.page;
             originHasNextPage = qrs.originHasNextPage;
         } else {
             originHasNextPage = false;

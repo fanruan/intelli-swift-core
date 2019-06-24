@@ -2,9 +2,10 @@ package com.fr.swift.result.node.resultset;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRS;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
 import org.junit.Before;
@@ -24,10 +25,10 @@ public class ChainedNodeMergeQRSTest {
     private ChainedNodeMergeQRS rs;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         int fetchSize = 10;
-        rs = new ChainedNodeMergeQRS(fetchSize, new boolean[0], new ArrayList<NodeMergeQRS<GroupNode>>(),
-                new ArrayList<Aggregator>(), new ArrayList<Comparator<GroupNode>>(),
+        rs = new ChainedNodeMergeQRS(fetchSize, new boolean[0], new ArrayList<QueryResultSet<GroupPage>>(),
+                new ArrayList<Aggregator>(), new ArrayList<Comparator<SwiftNode>>(),
                 new NodeQueryResultSetMerger(fetchSize, new boolean[0], new ArrayList<Aggregator>(),
                         new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>()));
     }

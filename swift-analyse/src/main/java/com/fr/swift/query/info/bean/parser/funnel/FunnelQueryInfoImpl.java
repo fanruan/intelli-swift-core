@@ -2,7 +2,6 @@ package com.fr.swift.query.info.bean.parser.funnel;
 
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.query.QueryType;
-import com.fr.swift.result.FunnelResultSet;
 
 import java.util.Set;
 
@@ -12,7 +11,7 @@ import java.util.Set;
  * @author Lucifer
  * @description
  */
-public class FunnelQueryInfoImpl implements FunnelQueryInfo<FunnelResultSet> {
+public class FunnelQueryInfoImpl implements FunnelQueryInfo {
 
     private String queryId;
     private Set<String> querySegments;

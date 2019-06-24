@@ -1,28 +1,27 @@
 package com.fr.swift.result;
 
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Xiaolei.Liu on 2018/1/24
+ *
  * @author yee
  */
 public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
 
     private int rowCount;
     private Iterator<List<Row>> mergerIterator;
-    private IDetailQueryResultSetMerger merger;
+    private QueryResultSetMerger<DetailQueryResultSet> merger;
 
     public SortMultiSegmentDetailResultSet(int fetchSize, int rowCount,
                                            SortedDetailResultSetMerger.SortedRowIterator mergerIterator,
-                                           IDetailQueryResultSetMerger merger) {
+                                           QueryResultSetMerger<DetailQueryResultSet> merger) {
         super(fetchSize);
         this.rowCount = rowCount;
         this.mergerIterator = mergerIterator;
@@ -43,8 +42,8 @@ public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
     }
 
     @Override
-    public <Q extends QueryResultSet<List<Row>>> QueryResultSetMerger<List<Row>, Q> getMerger() {
-        return (QueryResultSetMerger<List<Row>, Q>) merger;
+    public QueryResultSetMerger<DetailQueryResultSet> getMerger() {
+        return merger;
     }
 
     @Override
@@ -86,22 +85,22 @@ public class SortMultiSegmentDetailResultSet extends BaseDetailQueryResultSet {
             }
 
             @Override
-            public SwiftMetaData getMetaData() throws SQLException {
+            public SwiftMetaData getMetaData() {
                 return metaData;
             }
 
             @Override
-            public boolean hasNext() throws SQLException {
+            public boolean hasNext() {
                 return iterator.hasNext();
             }
 
             @Override
-            public Row getNextRow() throws SQLException {
+            public Row getNextRow() {
                 return iterator.next();
             }
 
             @Override
-            public void close() throws SQLException {
+            public void close() {
 
             }
         };

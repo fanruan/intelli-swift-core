@@ -4,12 +4,14 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.IteratorUtils;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,7 +22,7 @@ import java.util.List;
  * @author yee
  * @date 2018-12-17
  */
-public class SortedDetailResultSetMerger implements IDetailQueryResultSetMerger {
+public class SortedDetailResultSetMerger implements QueryResultSetMerger<DetailQueryResultSet>, Serializable {
 
     private static final long serialVersionUID = -6390000892109475367L;
     private int fetchSize;
@@ -55,6 +57,7 @@ public class SortedDetailResultSetMerger implements IDetailQueryResultSetMerger 
             @Override
             public int compare(Row o1, Row o2) {
                 for (Pair<Sort, ColumnTypeConstants.ClassType> pair : comparators) {
+                    // TODO: 2019/6/10 anchore 每次compare都get一组comparator不会慢吗
                     Comparator comparator = getComparator(pair);
                     int result = comparator.compare(o1.getValue(pair.getKey().getTargetIndex()), o2.getValue(pair.getKey().getTargetIndex()));
                     if (result != 0) {
