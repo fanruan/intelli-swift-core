@@ -1,6 +1,8 @@
 package com.fr.swift.query.filter.detail.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -31,6 +33,15 @@ public class NullFilter extends AbstractDetailFilter {
         if (targetIndex == -1) {
             return node.getData() == null;
         }
-        return node.getAggregatorValue(targetIndex).calculateValue() == null;
+        boolean matches = false;
+        AggregatorValueSet set = node.getAggregatorValue();
+        while (set.hasNext()) {
+            AggregatorValueRow next = set.next();
+            boolean match = next.getValue(targetIndex).calculateValue() == null;
+            matches |= match;
+            next.setValid(match);
+        }
+        set.reset();
+        return matches;
     }
 }

@@ -1,5 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 
@@ -24,11 +26,17 @@ public class NumberAverageFilter extends NumberInRangeFilter {
 
     private static Double average(SwiftNode node, int targetIndex) {
         List<SwiftNode> children = node.getParent().getChildren();
-        Double sum = .0;
+        double sum = .0;
+        long size = 0L;
         for (int i = 0; i < children.size(); i++) {
-            sum += children.get(i).getAggregatorValue()[targetIndex].calculate();
+            AggregatorValueSet set = children.get(i).getAggregatorValue();
+            while (set.hasNext()) {
+                sum += set.next().getValue(targetIndex).calculate();
+                size++;
+            }
+            set.reset();
         }
-        return sum / children.size();
+        return sum / size;
     }
 
     @Override
@@ -45,14 +53,24 @@ public class NumberAverageFilter extends NumberInRangeFilter {
         if (!cacheMap.containsKey(valueList)) {
             cacheMap.put(valueList, average(node, targetIndex));
         }
-        Object data = node.getAggregatorValue(targetIndex).calculateValue();
-        if (data == null) {
-            return false;
-        }
-        double value = ((Number) data).doubleValue();
+        AggregatorValueSet set = node.getAggregatorValue();
+        boolean matches = false;
         double minValue = min.doubleValue() != Double.NEGATIVE_INFINITY ? cacheMap.get(valueList) : min.doubleValue();
         double maxValue = max.doubleValue() != Double.POSITIVE_INFINITY ? cacheMap.get(valueList) : max.doubleValue();
-        return (minIncluded ? value >= minValue : value > minValue) &&
-                (maxIncluded ? value <= maxValue : value < maxValue);
+        while (set.hasNext()) {
+            AggregatorValueRow row = set.next();
+            Object data = row.getValue(targetIndex).calculateValue();
+            if (data == null) {
+                row.setValid(false);
+                continue;
+            }
+            double value = ((Number) data).doubleValue();
+            boolean match = (minIncluded ? value >= minValue : value > minValue) &&
+                    (maxIncluded ? value <= maxValue : value < maxValue);
+            matches |= match;
+            row.setValid(match);
+        }
+        set.reset();
+        return matches;
     }
 }

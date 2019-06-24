@@ -1,6 +1,9 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -42,7 +45,16 @@ public class TopNFilter extends AbstractNFilter {
             return (size - index) <= topN;
         } else {
             Double value = getValue(node, targetIndex);
-            return node.getAggregatorValue(targetIndex).calculate() >= value;
+            AggregatorValueSet set = node.getAggregatorValue();
+            boolean matches = false;
+            while (set.hasNext()) {
+                AggregatorValueRow next = set.next();
+                boolean match = ((AggregatorValue<Double>) next.getValue(targetIndex)).calculateValue() >= value;
+                matches |= match;
+                next.setValid(match);
+            }
+            set.reset();
+            return matches;
         }
     }
 

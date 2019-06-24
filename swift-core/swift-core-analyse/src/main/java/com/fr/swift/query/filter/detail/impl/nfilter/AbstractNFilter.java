@@ -1,5 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -59,8 +61,14 @@ public abstract class AbstractNFilter extends AbstractDetailFilter {
         NTree<Double> nTree = getNTree();
         List<SwiftNode> children = node.getParent().getChildren();
         for (SwiftNode n : children) {
-            Object value = n.getAggregatorValue(targetIndex).calculateValue();
-            nTree.add(value == null ? null : ((Number) value).doubleValue());
+            AggregatorValueSet aggregatorValue = n.getAggregatorValue();
+            while (aggregatorValue.hasNext()) {
+                AggregatorValueRow next = aggregatorValue.next();
+                Object value = next.getValue(targetIndex).calculateValue();
+                nTree.add(value == null ? null : ((Number) value).doubleValue());
+            }
+            aggregatorValue.reset();
+//            Object value = n.getAggregatorValue(targetIndex).calculateValue();
         }
         return nTree.getLineValue();
     }

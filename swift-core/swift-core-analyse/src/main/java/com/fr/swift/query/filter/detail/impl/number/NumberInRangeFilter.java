@@ -4,6 +4,8 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.query.filter.match.MatchConverter;
@@ -120,11 +122,21 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
-        Object data = node.getAggregatorValue(targetIndex).calculateValue();
-        if (data == null) {
-            return false;
+        AggregatorValueSet set = node.getAggregatorValue();
+        boolean matches = false;
+        while (set.hasNext()) {
+            AggregatorValueRow row = set.next();
+            Object data = row.getValue(targetIndex).calculateValue();
+            if (data == null) {
+                row.setValid(false);
+                continue;
+            }
+            double value = ((Number) data).doubleValue();
+            boolean match = match(value);
+            matches |= match;
+            row.setValid(match);
         }
-        double value = ((Number) data).doubleValue();
-        return match(value);
+        set.reset();
+        return matches;
     }
 }
