@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter.match;
 
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.SwiftNode;
@@ -27,8 +28,12 @@ public class NodeSorter {
                     @Override
                     public int compare(SwiftNode o1, SwiftNode o2) {
 
-                        Number v1 = (Number) o1.getAggregatorValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
-                        Number v2 = (Number) o2.getAggregatorValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
+                        AggregatorValueSet set1 = o1.getAggregatorValue();
+                        Number v1 = (Number) set1.next().getValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
+                        set1.reset();
+                        AggregatorValueSet set2 = o2.getAggregatorValue();
+                        Number v2 = (Number) set2.next().getValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
+                        set2.reset();
                         if (v1 == null) {
                             return 1;
                         }
