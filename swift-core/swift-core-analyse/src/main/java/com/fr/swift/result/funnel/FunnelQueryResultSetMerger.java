@@ -6,6 +6,7 @@ import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +18,7 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelQueryResultSet> {
-
+public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelQueryResultSet>, Serializable {
     private static final long serialVersionUID = -8191094955432120770L;
     private int numberOfSteps;
 
