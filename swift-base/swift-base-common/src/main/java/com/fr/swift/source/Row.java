@@ -15,6 +15,4 @@ public interface Row {
     <V> V getValue(int index);
 
     int getSize();
-
-    List<?> getValues();
 }
