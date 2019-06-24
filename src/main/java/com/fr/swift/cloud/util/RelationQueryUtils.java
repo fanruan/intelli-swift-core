@@ -73,10 +73,15 @@ public class RelationQueryUtils {
         List<SwiftMetaDataColumn> swiftMetaDataColumns = new ArrayList<>();
 
         for (SwiftResultSet resultSet:resultSets) {
-            for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
-                swiftMetaDataColumns.add(resultSet.getMetaData().getColumn(i));
+            try {
+                SwiftMetaData metaData = resultSet.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                for (int i = 1; i <= columnCount; i++) {
+                    swiftMetaDataColumns.add(metaData.getColumn(i));
+                }
+            } finally {
+                resultSet.close();
             }
-            resultSet.close();
         }
 
         SwiftMetaData metaData = new SwiftMetaDataBean("table", swiftMetaDataColumns);
