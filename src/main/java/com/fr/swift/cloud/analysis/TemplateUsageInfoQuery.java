@@ -45,6 +45,8 @@ public class TemplateUsageInfoQuery {
             Row row = tNumResultSet.getNextRow();
             tNum = row.getValue(0) != null ? ((Double) row.getValue(0)).intValue() : 0;
         }
+
+        //todo bug
         GroupQueryInfoBean tvNumBean = GroupQueryInfoBean.builder("execution")
                 .setAggregations(new MetricBean("id", AggregatorType.DISTINCT), new MetricBean("userId", AggregatorType.DISTINCT))
                 .setFilter(filter).build();
