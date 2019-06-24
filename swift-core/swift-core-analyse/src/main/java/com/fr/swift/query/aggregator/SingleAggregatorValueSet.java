@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -8,6 +9,6 @@ import java.util.Collections;
  */
 public class SingleAggregatorValueSet extends ListAggregatorValueSet {
     public SingleAggregatorValueSet(AggregatorValueRow row) {
-        super(Collections.singletonList(row));
+        super(new ArrayList<AggregatorValueRow>(Collections.singleton(row)));
     }
 }

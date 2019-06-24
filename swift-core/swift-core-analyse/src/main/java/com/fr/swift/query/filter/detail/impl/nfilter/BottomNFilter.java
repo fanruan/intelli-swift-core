@@ -50,7 +50,9 @@ public class BottomNFilter extends AbstractNFilter {
                 AggregatorValueRow next = set.next();
                 boolean match = ((AggregatorValue<Double>) next.getValue(targetIndex)).calculateValue() <= value;
                 matches |= match;
-                next.setValid(match);
+                if (!match) {
+                    set.remove();
+                }
             }
             set.reset();
             return matches;

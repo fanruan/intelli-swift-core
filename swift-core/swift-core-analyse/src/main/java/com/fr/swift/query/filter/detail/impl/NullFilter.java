@@ -39,7 +39,9 @@ public class NullFilter extends AbstractDetailFilter {
             AggregatorValueRow next = set.next();
             boolean match = next.getValue(targetIndex).calculateValue() == null;
             matches |= match;
-            next.setValid(match);
+            if (!match) {
+                set.remove();
+            }
         }
         set.reset();
         return matches;

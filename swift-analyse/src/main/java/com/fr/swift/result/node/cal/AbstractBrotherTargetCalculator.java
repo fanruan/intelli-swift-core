@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.structure.Pair;
@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by pony on 2018/5/16.
  */
 public abstract class AbstractBrotherTargetCalculator extends AbstractRelationTargetCalculator {
-    AbstractBrotherTargetCalculator(int[] paramIndex, int resultIndex, SwiftNode groupNode, List<Map<Integer, Object>> dic, Function<SwiftNode, List<AggregatorValue[]>> aggFunc, List<Pair<Integer, GroupType>> brotherGroupIndex) {
+    AbstractBrotherTargetCalculator(int[] paramIndex, int resultIndex, SwiftNode groupNode, List<Map<Integer, Object>> dic, Function<SwiftNode, AggregatorValueSet> aggFunc, List<Pair<Integer, GroupType>> brotherGroupIndex) {
         super(paramIndex, resultIndex, groupNode, dic, aggFunc, brotherGroupIndex);
     }
 
