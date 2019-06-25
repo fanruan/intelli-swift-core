@@ -29,14 +29,18 @@ public class MergeSortedDetailQueryResultSet implements DetailQueryResultSet {
 
     public MergeSortedDetailQueryResultSet(int pageSize, Comparator<Row> comparator, List<DetailQueryResultSet> resultSets) {
         this.pageSize = pageSize;
+        this.rowCount = getRowCount(resultSets);
+        this.comparator = comparator;
+        this.resultSets = resultSets;
+        this.lastRowOfPrevPage = new Row[resultSets.size()];
+    }
+
+    private int getRowCount(List<DetailQueryResultSet> resultSets) {
         int rowCount = 0;
         for (DetailQueryResultSet queryResultSet : resultSets) {
             rowCount += queryResultSet.getRowCount();
         }
-        this.rowCount = rowCount;
-        this.comparator = comparator;
-        this.resultSets = resultSets;
-        this.lastRowOfPrevPage = new Row[resultSets.size()];
+        return rowCount;
     }
 
     /**

@@ -26,13 +26,17 @@ public class MergeDetailQueryResultSet extends BaseDetailQueryResultSet {
 
     public MergeDetailQueryResultSet(int fetchSize, List<DetailQueryResultSet> queryResultSets) {
         super(fetchSize);
+        resultSets = queryResultSets;
+        this.rowCount = getRowCount(queryResultSets);
+        this.mergeIterator = new DetailRowIterator();
+    }
+
+    private static int getRowCount(List<DetailQueryResultSet> queryResultSets) {
         int rowCount = 0;
         for (DetailQueryResultSet queryResultSet : queryResultSets) {
             rowCount += queryResultSet.getRowCount();
         }
-        resultSets = queryResultSets;
-        this.rowCount = rowCount;
-        this.mergeIterator = new DetailRowIterator();
+        return rowCount;
     }
 
     @Override

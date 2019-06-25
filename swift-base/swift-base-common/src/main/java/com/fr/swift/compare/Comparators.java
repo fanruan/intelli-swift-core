@@ -10,6 +10,13 @@ import java.util.Comparator;
  */
 public class Comparators {
     /**
+     * todo fr还是用pinyin，开源版本开放spi，由用户自定义排序方式
+     */
+    public static final Comparator<String> STRING_ASC = Comparators.asc();
+
+    public static final Comparator<Number> NUMBER_ASC = NumberAsc.INSTANCE;
+
+    /**
      * 升序
      * <p>
      * examples:
@@ -43,13 +50,6 @@ public class Comparators {
     public static final String MAX_INFINITY_STRING = "I am MAX_INFINITY_STRING";
 
     private static final Comparator<? extends Comparable<?>> COMPARABLE_DESC = reverse(ComparableAsc.INSTANCE);
-
-    public static final Comparator<Number> NUMBER_ASC = NumberAsc.INSTANCE;
-
-    /**
-     * todo fr还是用pinyin，开源版本开放spi，由用户自定义排序方式
-     */
-    public static final Comparator<String> STRING_ASC = Comparators.asc();
 
     private enum ComparableAsc implements Comparator<Comparable<?>> {
         //
