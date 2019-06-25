@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Created by lyon on 2018/12/30.
  */
-public class NodeQueryResultSetMergerTest extends TestCase {
+public class GroupQueryResultSetMergerTest extends TestCase {
 
     public void testMerge() {
         int fetchSize = 3;
@@ -49,7 +49,7 @@ public class NodeQueryResultSetMergerTest extends TestCase {
             }
             resultSets.add(new TestNodeQRS(fetchSize, pages));
         }
-        NodeQueryResultSetMerger merger = new NodeQueryResultSetMerger(fetchSize, new boolean[]{false},
+        GroupQueryResultSetMerger merger = GroupQueryResultSetMerger.ofCompareInfo(fetchSize, new boolean[]{false},
                 Collections.singletonList(AggregatorFactory.createAggregator(AggregatorType.COUNT)),
                 Collections.singletonList(Pair.of(SortType.ASC, ClassType.STRING)));
         QueryResultSet<GroupPage> resultSet = merger.merge(resultSets);
