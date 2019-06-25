@@ -21,7 +21,7 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.result.serialize.BaseSerializableQRS;
-import com.fr.swift.result.EmptyDetailQueryResultSet;
+import com.fr.swift.result.qrs.EmptyQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
@@ -62,7 +62,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
     }
 
     @Override
-    public Object processResult(final Method method, Target[] targets, Object... args) throws Throwable {
+    public QueryResultSet<?> processResult(final Method method, Target[] targets, Object... args) throws Throwable {
         String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
         queryBean.setQueryId(UUID.randomUUID().toString());
@@ -92,11 +92,11 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                             BaseSerializableQRS qrs = (BaseSerializableQRS) rs;
                             BaseSerializableQRS.SyncInvoker syncInvoker = new BaseSerializableQRS.SyncInvoker() {
                                 @Override
-                                public <D, T extends BaseSerializableQRS<D>> T invoke() {
+                                public <D> BaseSerializableQRS<D> invoke() {
                                     Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
                                     Invocation invocation = new SwiftInvocation(method, new Object[]{query});
                                     try {
-                                        return (T) invoker.invoke(invocation).recreate();
+                                        return (BaseSerializableQRS<D>) invoker.invoke(invocation).recreate();
                                     } catch (Throwable throwable) {
                                         return Crasher.crash(throwable);
                                     }
@@ -121,7 +121,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         }
         latch.await();
         if (resultSets.isEmpty()) {
-            return new EmptyDetailQueryResultSet();
+            return EmptyQueryResultSet.get();
         }
         QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.get(0).getMerger());
         Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
@@ -129,7 +129,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
     }
 
     @Override
-    protected Object mergeResult(List resultList, Object... args) throws Throwable {
+    protected Object mergeResult(List resultList, Object... args) {
         return ((QueryResultSetMerger) args[0]).merge(resultList);
     }
 

@@ -8,9 +8,6 @@ import java.util.Comparator;
  * @author Daniel
  */
 public class Comparators {
-
-
-
     /**
      * 升序
      * <p>
