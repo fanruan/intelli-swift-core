@@ -1,10 +1,12 @@
 package com.fr.swift.result;
 
+import com.fr.swift.util.Closable;
+
 /**
  * @author yee
  * @date 2018-12-25
  */
-public interface Pagination<T> {
+public interface Pagination<T> extends Closable {
     /**
      * 获取一页数据，类似buffer的作用
      *

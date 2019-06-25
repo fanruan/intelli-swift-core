@@ -47,8 +47,8 @@ public class DetailSerializableQRSTest {
         qrs = new DetailSerializableQRS(fetchSize, rowCount, merger, page, true);
         qrs.setInvoker(new BaseSerializableQRS.SyncInvoker() {
             @Override
-            public <D, T extends BaseSerializableQRS<D>> T invoke() {
-                return (T) next;
+            public BaseSerializableQRS<?> invoke() {
+                return next;
             }
         });
         assertTrue(qrs.hasNextPage());

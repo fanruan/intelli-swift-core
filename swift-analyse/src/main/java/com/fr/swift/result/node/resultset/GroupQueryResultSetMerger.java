@@ -19,29 +19,45 @@ import java.util.List;
  * @author anchore
  * @date 2018/12/19
  */
-public class NodeQueryResultSetMerger implements QueryResultSetMerger<QueryResultSet<GroupPage>>, Serializable {
+public class GroupQueryResultSetMerger implements QueryResultSetMerger<QueryResultSet<GroupPage>>, Serializable {
 
     private static final long serialVersionUID = 4561111090120768112L;
     private int fetchSize;
     private boolean[] isGlobalIndexed;
     private List<Aggregator> aggregators;
-    private List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators;
+    private List<Comparator<SwiftNode>> comparators;
 
-    public NodeQueryResultSetMerger(int fetchSize, boolean[] isGlobalIndexed, List<Aggregator> aggregators,
-                                    List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators) {
+    private GroupQueryResultSetMerger(int fetchSize,
+                                      boolean[] isGlobalIndexed,
+                                      List<Aggregator> aggregators,
+                                      List<Comparator<SwiftNode>> comparators) {
         this.fetchSize = fetchSize;
         this.isGlobalIndexed = isGlobalIndexed;
         this.aggregators = aggregators;
         this.comparators = comparators;
     }
 
-    @Override
-    public QueryResultSet<GroupPage> merge(List<QueryResultSet<GroupPage>> resultSets) {
-        return new ChainedNodeMergeQRS(fetchSize, isGlobalIndexed, resultSets, aggregators, getComparators(), this);
+    public static GroupQueryResultSetMerger ofCompareInfo(int fetchSize,
+                                                          boolean[] isGlobalIndexed,
+                                                          List<Aggregator> aggregators,
+                                                          List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators) {
+        return ofComparator(fetchSize, isGlobalIndexed, aggregators, getComparators(comparators));
     }
 
-    private List<Comparator<SwiftNode>> getComparators() {
-        List<Comparator> list = new ArrayList<Comparator>();
+    public static GroupQueryResultSetMerger ofComparator(int fetchSize,
+                                                         boolean[] isGlobalIndexed,
+                                                         List<Aggregator> aggregators,
+                                                         List<Comparator<SwiftNode>> comparators) {
+        return new GroupQueryResultSetMerger(fetchSize, isGlobalIndexed, aggregators, comparators);
+    }
+
+    @Override
+    public QueryResultSet<GroupPage> merge(List<QueryResultSet<GroupPage>> resultSets) {
+        return new MergeGroupQueryResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, comparators);
+    }
+
+    private static List<Comparator<SwiftNode>> getComparators(List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators) {
+        List<Comparator<?>> list = new ArrayList<Comparator<?>>();
         for (Pair<SortType, ColumnTypeConstants.ClassType> pair : comparators) {
             boolean isAsc = pair.getKey() == SortType.ASC;
             switch (pair.getValue()) {

@@ -3,9 +3,7 @@ package com.fr.swift.result.node.resultset;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.result.group.GroupNodeMergeUtils;
-import com.fr.swift.result.NodeMergeQRSImpl;
 import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -16,30 +14,28 @@ import java.util.Map;
 
 /**
  * Created by Lyon on 2018/7/27.
+ *
+ *
  */
-class MergeOperator implements Function<List<QueryResultSet<GroupPage>>, QueryResultSet<GroupPage>> {
-
-    private int fetchSize;
-    private List<Aggregator> aggregators;
+class GroupPageMerger implements Function<List<GroupPage>, GroupPage> {
+    List<Aggregator> aggregators;
     private List<Comparator<SwiftNode>> comparators;
 
-    MergeOperator(int fetchSize, List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
-        this.fetchSize = fetchSize;
+    GroupPageMerger(List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
         this.aggregators = aggregators;
         this.comparators = comparators;
     }
 
     @Override
-    public QueryResultSet<GroupPage> apply(List<QueryResultSet<GroupPage>> groupByResultSets) {
+    public GroupPage apply(List<GroupPage> groupByResultSets) {
         List<SwiftNode> roots = new ArrayList<SwiftNode>();
         List<Map<Integer, Object>> totalDictionaries = new ArrayList<Map<Integer, Object>>();
-        for (QueryResultSet<GroupPage> resultSet : groupByResultSets) {
-            GroupPage pair = resultSet.getPage();
-            roots.add(pair.getRoot());
-            addDictionaries(pair.getGlobalDicts(), totalDictionaries);
+        for (GroupPage page : groupByResultSets) {
+            roots.add(page.getRoot());
+            addDictionaries(page.getGlobalDicts(), totalDictionaries);
         }
         SwiftNode mergeNode = GroupNodeMergeUtils.merge(roots, comparators, aggregators);
-        return new NodeMergeQRSImpl(fetchSize, mergeNode, totalDictionaries);
+        return new GroupPage(mergeNode, totalDictionaries);
     }
 
     private void addDictionaries(List<Map<Integer, Object>> dictionaries,
