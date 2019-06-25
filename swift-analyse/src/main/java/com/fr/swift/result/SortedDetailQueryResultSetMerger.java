@@ -1,42 +1,46 @@
-package com.fr.swift.query.result.detail;
+package com.fr.swift.result;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.query.info.element.target.DetailTarget;
-import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.DetailQueryResultSet;
-import com.fr.swift.result.MergeSortedDetailQueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * @author pony
- * @date 2017/11/27
+ * @author yee
+ * @date 2018-12-17
  */
-public class SortDetailResultQuery extends AbstractDetailResultQuery {
+public class SortedDetailQueryResultSetMerger implements QueryResultSetMerger<DetailQueryResultSet>, Serializable {
 
-    private List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators;
+    private static final long serialVersionUID = -6390000892109475367L;
+    private int fetchSize;
+    private Comparator<Row> comparators;
 
-    public SortDetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries, List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
-        super(fetchSize, queries);
+    private SortedDetailQueryResultSetMerger(int fetchSize, Comparator<Row> comparators) {
+        this.fetchSize = fetchSize;
         this.comparators = comparators;
     }
 
-    public SortDetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries, List<DetailTarget> targets,
-                                 List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
-        super(fetchSize, queries, targets);
-        this.comparators = comparators;
+    public static SortedDetailQueryResultSetMerger ofCompareInfo(int fetchSize,
+                                                                 List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
+        return ofComparator(fetchSize, createRowComparator(comparators));
+    }
+
+    public static SortedDetailQueryResultSetMerger ofComparator(int fetchSize,
+                                                                Comparator<Row> comparators) {
+        return new SortedDetailQueryResultSetMerger(fetchSize, comparators);
     }
 
     @Override
     public DetailQueryResultSet merge(List<DetailQueryResultSet> queryResultSets) {
-        return new MergeSortedDetailQueryResultSet(fetchSize, createRowComparator(comparators), queryResultSets);
+        return new MergeSortedDetailQueryResultSet(fetchSize, comparators, queryResultSets);
     }
 
     private static Comparator<Row> createRowComparator(final List<Pair<Sort, ColumnTypeConstants.ClassType>> comparators) {
