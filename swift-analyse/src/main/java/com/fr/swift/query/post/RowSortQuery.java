@@ -1,6 +1,6 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.query.aggregator.AggregatorValueSet;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
@@ -46,13 +46,11 @@ public class RowSortQuery implements Query<QueryResultSet<SwiftNode>> {
         Collections.sort(rows, new Comparator<List<SwiftNode>>() {
             @Override
             public int compare(List<SwiftNode> o1, List<SwiftNode> o2) {
-                AggregatorValueSet values1 = o1.get(o1.size() - 1).getAggregatorValue();
-                AggregatorValueSet values2 = o2.get(o2.size() - 1).getAggregatorValue();
                 for (Sort sort : sorts) {
+                    Iterator<AggregatorValueRow> values1 = o1.get(o1.size() - 1).getAggregatorValue().iterator();
+                    Iterator<AggregatorValueRow> values2 = o2.get(o2.size() - 1).getAggregatorValue().iterator();
                     Number v1 = (Number) values1.next().getValue(sort.getTargetIndex() - dimensionSize).calculateValue();
-                    values1.reset();
                     Number v2 = (Number) values2.next().getValue(sort.getTargetIndex() - dimensionSize).calculateValue();
-                    values2.reset();
                     if (v1 == null) {
                         return 1;
                     }

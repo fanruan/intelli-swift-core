@@ -88,10 +88,10 @@ public class GroupNodeAggregateUtils {
                                 AggregatorValueSet valuesOfChild, List<Aggregator> aggregators) {
         for (int i = 0; i < aggregators.size(); i++) {
             Aggregator aggregator = aggregators.get(i);
-            while (valuesOfParent.hasNext()) {
-                AggregatorValueRow parentRow = valuesOfParent.next();
+            Iterator<AggregatorValueRow> childIt = valuesOfChild.iterator();
+            for (AggregatorValueRow parentRow : valuesOfParent) {
+                AggregatorValueRow childRow = childIt.next();
                 AggregatorValue parent = parentRow.getValue(i);
-                AggregatorValueRow childRow = valuesOfChild.next();
                 AggregatorValue child = childRow.getValue(i);
                 if (parent == null) {
                     parent = child == null ? null : aggregator.createAggregatorValue(child);
@@ -110,8 +110,7 @@ public class GroupNodeAggregateUtils {
 
         List<AggregatorValueRow> rows = new ArrayList<AggregatorValueRow>();
         int size = valuesOfFirstChild.size();
-        while (valuesOfFirstChild.hasNext()) {
-            AggregatorValueRow row = valuesOfFirstChild.next();
+        for (AggregatorValueRow row : valuesOfFirstChild) {
             AggregatorValue[] values = new AggregatorValue[size];
             for (int i = 0; i < aggregators.size(); i++) {
                 Aggregator aggregator = aggregators.get(i);
@@ -120,7 +119,6 @@ public class GroupNodeAggregateUtils {
             }
             rows.add(new ListAggregatorValueRow(values));
         }
-        valuesOfFirstChild.reset();
         return new ListAggregatorValueSet(rows);
     }
 }

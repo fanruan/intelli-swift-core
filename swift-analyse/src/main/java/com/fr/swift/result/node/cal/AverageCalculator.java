@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.cal;
 
+import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 
@@ -30,12 +31,11 @@ public class AverageCalculator extends AbstractTargetCalculator {
                     sum = row.isEmpty() ? new Double[0] : new Double[row.size()];
                 }
                 int i = 0;
-                while (row.hasNext()) {
+                for (AggregatorValueRow item : row) {
                     sum[i] = sum[i] == null ? .0 : sum[i];
                     // 空值怎么处理呢？
-                    sum[i++] += row.next().getValue(paramIndex).calculate();
+                    sum[i++] += item.getValue(paramIndex).calculate();
                 }
-                row.reset();
             }
             Double[] average = new Double[sum.length];
             for (int i = 0; i < average.length; i++) {
@@ -43,10 +43,9 @@ public class AverageCalculator extends AbstractTargetCalculator {
             }
             for (AggregatorValueSet row : rows) {
                 int i = 0;
-                while (row.hasNext()) {
-                    row.next().setValue(resultIndex, new DoubleAmountAggregatorValue(average[i++]));
+                for (AggregatorValueRow item : row) {
+                    item.setValue(resultIndex, new DoubleAmountAggregatorValue(average[i++]));
                 }
-                row.reset();
             }
         }
         return null;

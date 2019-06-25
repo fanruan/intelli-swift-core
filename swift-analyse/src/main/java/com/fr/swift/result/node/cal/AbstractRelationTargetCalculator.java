@@ -74,7 +74,7 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         });
         while (filteredIterator.hasNext()) {
             SwiftNode last = filteredIterator.next();
-            AggregatorValueSet rows = aggFunc.apply(last);
+            Iterator<AggregatorValueRow> rows = aggFunc.apply(last).iterator();
             int i = 0;
             while (rows.hasNext()) {
                 AggregatorValueRow row = rows.next();
@@ -86,7 +86,6 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
                     }
                 }
             }
-            rows.reset();
         }
         return null;
     }
@@ -99,10 +98,13 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
             return null;
         }
         AggregatorValueSet rows = aggFunc.apply(node);
-        // TODO 2019/06/24这里只取了第一个
-        Double value = (Double) rows.next().getValue(paramIndex).calculateValue();
-        rows.reset();
-        return value;
+        Iterator<AggregatorValueRow> iterator = rows.iterator();
+        AggregatorValueRow value = null;
+        for (int j = 0; j < i && iterator.hasNext(); j++) {
+            value = iterator.next();
+        }
+
+        return null == value ? Double.NaN : (Double) iterator.next().getValue(paramIndex).calculateValue();
     }
 
     private SwiftNode getNode(SwiftNode last) {

@@ -3,6 +3,7 @@ package com.fr.swift.structure.iterator;
 import java.util.Iterator;
 
 /**
+ * 链式Iterator
  * @author yee
  * @date 2019-06-25
  */
@@ -17,10 +18,10 @@ public class IteratorChain<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        if (null == this.current) {
+        if (null == this.current || !this.current.hasNext()) {
             return iterator.hasNext() && (this.current = iterator.next()).hasNext();
         }
-        return this.current.hasNext();
+        return true;
     }
 
     @Override

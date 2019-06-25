@@ -1,6 +1,7 @@
 package com.fr.swift.result.node.cal;
 
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 
@@ -30,13 +31,14 @@ public class MaxOrMinCalculator extends AbstractTargetCalculator {
             Double[] values = null;
             while (iterator.hasNext()) {
                 AggregatorValueSet row = iterator.next();
+                Iterator<AggregatorValueRow> rowIt = row.iterator();
                 rows.add(row);
                 if (values == null) {
                     values = row.isEmpty() ? null : new Double[row.size()];
                 }
                 int i = 0;
-                while (row.hasNext()) {
-                    Double v = row.next().getValue(paramIndex).calculate();
+                while (rowIt.hasNext()) {
+                    Double v = rowIt.next().getValue(paramIndex).calculate();
                     // 跳过空值
                     if (Double.isNaN(v)) {
                         continue;
@@ -49,14 +51,12 @@ public class MaxOrMinCalculator extends AbstractTargetCalculator {
                         values[i++] = v;
                     }
                 }
-                row.reset();
             }
             for (AggregatorValueSet row : rows) {
                 int i = 0;
-                while (row.hasNext()) {
-                    row.next().setValue(resultIndex, new DoubleAmountAggregatorValue(values[i++]));
+                for (AggregatorValueRow aggregatorValueRow : row) {
+                    aggregatorValueRow.setValue(resultIndex, new DoubleAmountAggregatorValue(values[i++]));
                 }
-                row.reset();
             }
         }
         return null;

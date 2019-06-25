@@ -1,8 +1,5 @@
 package com.fr.swift.query.aggregator;
 
-import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.Row;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,14 +34,14 @@ public class ListAggregatorValueRow implements AggregatorValueRow<AggregatorValu
     }
 
     @Override
-    public Row data() {
+    public List<Object> data() {
         List<Object> objects = new ArrayList<Object>();
         if (list != null) {
             for (AggregatorValue value : list) {
                 objects.add(value == null ? null : value.calculateValue());
             }
         }
-        return new ListBasedRow(objects);
+        return objects;
     }
 
     @Override

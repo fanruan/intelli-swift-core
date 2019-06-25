@@ -33,14 +33,15 @@ public class RankCalculator extends AbstractTargetCalculator {
             List<AggregatorValueSet> rows = new ArrayList<AggregatorValueSet>();
             while (iterator.hasNext()) {
                 AggregatorValueSet row = iterator.next();
+                Iterator<AggregatorValueRow> it = row.iterator();
                 rows.add(row);
                 if (maps == null) {
                     maps = row.isEmpty() ? null : initMaps(row.size(), asc ? Comparators.<Double>asc() : Comparators.<Double>desc());
                 }
                 int i = 0;
-                while (row.hasNext()) {
+                while (it.hasNext()) {
                     // TODO: 2018/5/2 空值问题处理
-                    Double key = row.next().getValue(paramIndex).calculate();
+                    Double key = it.next().getValue(paramIndex).calculate();
                     // 跳过空值
                     if (Double.isNaN(key)) {
                         continue;
@@ -53,7 +54,6 @@ public class RankCalculator extends AbstractTargetCalculator {
                         maps.get(i).put(key, count + 1);
                     }
                 }
-                row.reset();
             }
             int rank = 1;
             for (Map<Double, Integer> map : maps) {
@@ -66,16 +66,15 @@ public class RankCalculator extends AbstractTargetCalculator {
             }
             for (AggregatorValueSet row : rows) {
                 int i = 0;
-                while (row.hasNext()) {
+                for (AggregatorValueRow aggregatorValueRow : row) {
                     if (maps.get(i++).isEmpty()) {
                         // 跳过没有值的情况
                         continue;
                     }
                     // 设置排名
-                    AggregatorValueRow next = row.next();
+                    AggregatorValueRow next = aggregatorValueRow;
                     next.setValue(resultIndex, new DoubleAmountAggregatorValue(maps.get(i).get(next.getValue(paramIndex).calculate())));
                 }
-                row.reset();
             }
         }
         return null;

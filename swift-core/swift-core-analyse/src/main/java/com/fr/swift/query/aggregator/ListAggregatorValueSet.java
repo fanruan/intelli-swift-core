@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
@@ -15,20 +16,13 @@ import java.util.List;
 public class ListAggregatorValueSet implements AggregatorValueSet {
 
     private List<AggregatorValueRow> rows;
-    private Iterator<AggregatorValueRow> iterator;
 
     public ListAggregatorValueSet(List<AggregatorValueRow> rows) {
         this.rows = rows;
-        this.reset();
     }
 
     public ListAggregatorValueSet() {
         this.rows = new ArrayList<AggregatorValueRow>();
-    }
-
-    @Override
-    public void reset() {
-        this.iterator = this.rows.iterator();
     }
 
     @Override
@@ -39,15 +33,15 @@ public class ListAggregatorValueSet implements AggregatorValueSet {
     @Override
     public void clear() {
         this.rows.clear();
-        this.iterator = rows.iterator();
+
     }
 
     @Override
     public Iterator<Row> data() {
-        return new MapperIterator<AggregatorValueRow, Row>(this, new Function<AggregatorValueRow, Row>() {
+        return new MapperIterator<AggregatorValueRow, Row>(iterator(), new Function<AggregatorValueRow, Row>() {
             @Override
             public Row apply(AggregatorValueRow param) {
-                return param.data();
+                return new ListBasedRow(param.data());
             }
         });
     }
@@ -57,18 +51,9 @@ public class ListAggregatorValueSet implements AggregatorValueSet {
         return rows.isEmpty();
     }
 
-    @Override
-    public boolean hasNext() {
-        return iterator.hasNext();
-    }
 
     @Override
-    public AggregatorValueRow next() {
-        return iterator.next();
-    }
-
-    @Override
-    public void remove() {
-        iterator.remove();
+    public Iterator<AggregatorValueRow> iterator() {
+        return rows.iterator();
     }
 }

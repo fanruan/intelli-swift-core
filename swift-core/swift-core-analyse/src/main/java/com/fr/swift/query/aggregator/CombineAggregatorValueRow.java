@@ -1,6 +1,5 @@
 package com.fr.swift.query.aggregator;
 
-import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
@@ -41,7 +40,7 @@ public class CombineAggregatorValueRow implements AggregatorValueRow<AggregatorV
     }
 
     @Override
-    public Row data() {
+    public List<Object> data() {
         initCombineRow();
         return combineRow.data();
     }

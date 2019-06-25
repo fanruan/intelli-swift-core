@@ -9,6 +9,8 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.util.Iterator;
+
 /**
  * Created by Lyon on 2017/12/5.
  */
@@ -35,15 +37,15 @@ public class NullFilter extends AbstractDetailFilter {
         }
         boolean matches = false;
         AggregatorValueSet set = node.getAggregatorValue();
-        while (set.hasNext()) {
-            AggregatorValueRow next = set.next();
+        Iterator<AggregatorValueRow> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            AggregatorValueRow next = iterator.next();
             boolean match = next.getValue(targetIndex).calculateValue() == null;
             matches |= match;
             if (!match) {
-                set.remove();
+                iterator.remove();
             }
         }
-        set.reset();
         return matches;
     }
 }

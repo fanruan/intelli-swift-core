@@ -1,6 +1,7 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.source.Row;
+import com.fr.swift.structure.iterator.IteratorUtils;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -10,10 +11,6 @@ import java.util.Iterator;
  * @date 2019-06-25
  */
 public class EmptyAggregatorValueSet implements AggregatorValueSet {
-    @Override
-    public void reset() {
-
-    }
 
     @Override
     public int size() {
@@ -36,17 +33,7 @@ public class EmptyAggregatorValueSet implements AggregatorValueSet {
     }
 
     @Override
-    public boolean hasNext() {
-        return false;
-    }
-
-    @Override
-    public AggregatorValueRow next() {
-        return null;
-    }
-
-    @Override
-    public void remove() {
-
+    public Iterator<AggregatorValueRow> iterator() {
+        return IteratorUtils.emptyIterator();
     }
 }

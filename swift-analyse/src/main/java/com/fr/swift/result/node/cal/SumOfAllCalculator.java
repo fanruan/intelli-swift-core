@@ -35,8 +35,7 @@ public class SumOfAllCalculator extends AbstractTargetCalculator {
                     values = row.isEmpty() ? null : new Double[row.size()];
                 }
                 int i = 0;
-                while (row.hasNext()) {
-                    AggregatorValueRow valueRow = row.next();
+                for (AggregatorValueRow valueRow : row) {
                     Double v = valueRow.getValue(paramIndex).calculate();
                     // 跳过空值
                     if (Double.isNaN(v)) {
@@ -46,17 +45,14 @@ public class SumOfAllCalculator extends AbstractTargetCalculator {
                         values[i] = v;
                         continue;
                     }
-                    values[i] += v;
-                    i++;
+                    values[i++] += v;
                 }
-                row.reset();
             }
             for (AggregatorValueSet row : rows) {
                 int i = 0;
-                while (row.hasNext()) {
-                    row.next().setValue(resultIndex, new DoubleAmountAggregatorValue(values[i++]));
+                for (AggregatorValueRow value : row) {
+                    value.setValue(resultIndex, new DoubleAmountAggregatorValue(values[i++]));
                 }
-                row.reset();
             }
         }
         return null;
