@@ -1,6 +1,7 @@
 package com.fr.swift.cloud.result.table;
 
 import com.fr.swift.cloud.util.TimeUtils;
+import com.fr.swift.source.Row;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,15 +57,17 @@ public class TemplateUsageInfo implements Serializable {
     @Column(name = "appId")
     private String appId;
 
-    public TemplateUsageInfo(int tNum, int tvNum, int MAU, int linkVisit, int platformVisit, int sumVisit, int visitDay, String yearMonth, String appId) {
-        this.tNum = tNum;
-        this.tvNum = tvNum;
-        this.MAU = MAU;
-        this.linkVisit = linkVisit;
-        this.platformVisit = platformVisit;
-        this.sumVisit = sumVisit;
+
+    public TemplateUsageInfo(Row row, int visitDay, String yearMonth, String appId) {
+        this.tNum = row.getValue(1) != null ? ((Double) row.getValue(1)).intValue() : 0;
+        this.tvNum = row.getValue(3) != null ? ((Double) row.getValue(3)).intValue() : 0;
+        this.MAU = row.getValue(4) != null ? ((Double) row.getValue(4)).intValue() : 0;
+        this.linkVisit = row.getValue(7) != null ? ((Double) row.getValue(7)).intValue() : 0;
+        this.platformVisit = row.getValue(9) != null ? ((Double) row.getValue(9)).intValue() : 0;
+        this.sumVisit = row.getValue(5) != null ? ((Double) row.getValue(5)).intValue() : 0;
         this.visitDay = visitDay;
         this.yearMonth = TimeUtils.yearMonth2Date(yearMonth);
         this.appId = appId;
     }
+
 }
