@@ -5,7 +5,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.node.resultset.NodeQueryResultSetMerger;
+import com.fr.swift.result.node.resultset.GroupQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ColumnTypeConstants;
@@ -31,7 +31,7 @@ public class NodeSerializableQRSTest {
 
     @Before
     public void setUp() {
-        qrs = new NodeSerializableQRS(fetchSize, new NodeQueryResultSetMerger(fetchSize, new boolean[0],
+        qrs = new NodeSerializableQRS(fetchSize, GroupQueryResultSetMerger.ofCompareInfo(fetchSize, new boolean[0],
                 new ArrayList<Aggregator>(), new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>()),
                 new GroupPage(null, null), false);
     }
@@ -39,14 +39,14 @@ public class NodeSerializableQRSTest {
     @Test
     public void setInvoker() {
         GroupPage page = new GroupPage(new GroupNode(), null);
-        QueryResultSetMerger<QueryResultSet<GroupPage>> merger = new NodeQueryResultSetMerger(fetchSize, new boolean[0],
+        QueryResultSetMerger<QueryResultSet<GroupPage>> merger = GroupQueryResultSetMerger.ofCompareInfo(fetchSize, new boolean[0],
                 new ArrayList<Aggregator>(), new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>());
         final NodeSerializableQRS next = new NodeSerializableQRS(fetchSize, merger, page, false);
         qrs = new NodeSerializableQRS(fetchSize, merger, page, true);
         qrs.setInvoker(new BaseSerializableQRS.SyncInvoker() {
             @Override
-            public <D, T extends BaseSerializableQRS<D>> T invoke() {
-                return (T) next;
+            public BaseSerializableQRS<?> invoke() {
+                return next;
             }
         });
         assertTrue(qrs.hasNextPage());
