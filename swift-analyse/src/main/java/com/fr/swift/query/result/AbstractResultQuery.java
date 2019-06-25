@@ -6,7 +6,9 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import java.util.List;
 
 /**
- * Created by pony on 2017/11/27.
+ *
+ * @author pony
+ * @date 2017/11/27
  * 处理结果的query
  */
 public abstract class AbstractResultQuery<T extends QueryResultSet<?>> implements Query<T> {

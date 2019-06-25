@@ -53,4 +53,17 @@ public class ComparatorsTest {
         assertEquals(1, c.compare(d1, null));
         assertEquals(-1, c.compare(null, l1));
     }
+
+    @Test
+    public void stringAsc() {
+        Comparator<String> c = Comparators.STRING_ASC;
+        Object[][] data = {
+                {-1, "1", "2"},
+                {0, "1", "1"},
+                {1, "2", "1"},
+        };
+        for (Object[] datum : data) {
+            assertEquals(datum[0], c.compare((String) datum[1], (String) datum[2]));
+        }
+    }
 }

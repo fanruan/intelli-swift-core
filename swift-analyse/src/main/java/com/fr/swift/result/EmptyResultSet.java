@@ -4,14 +4,12 @@ import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
-
 /**
  * @author yee
  * @date 2018/8/29
  */
 public enum EmptyResultSet implements SwiftResultSet {
-
+    //
     INSTANCE;
 
     @Override
@@ -20,22 +18,22 @@ public enum EmptyResultSet implements SwiftResultSet {
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return new SwiftMetaDataBean();
     }
 
     @Override
-    public boolean hasNext() throws SQLException {
+    public boolean hasNext() {
         return false;
     }
 
     @Override
-    public Row getNextRow() throws SQLException {
+    public Row getNextRow() {
         return null;
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
 
     }
 }
