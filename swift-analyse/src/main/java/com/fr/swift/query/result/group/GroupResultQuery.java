@@ -1,19 +1,19 @@
 package com.fr.swift.query.result.group;
 
-import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.AbstractResultQuery;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.node.resultset.GroupQueryResultSetMerger;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.node.resultset.MergeGroupQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,20 +36,38 @@ public class GroupResultQuery extends AbstractResultQuery<QueryResultSet<GroupPa
     }
 
     @Override
-    public QueryResultSet<GroupPage> getQueryResult() throws SQLException {
-        List<QueryResultSet<GroupPage>> resultSets = new ArrayList<QueryResultSet<GroupPage>>();
-        for (Query<QueryResultSet<GroupPage>> query : queryList) {
-            QueryResultSet<GroupPage> resultSet = query.getQueryResult();
-            if (resultSet == null) {
-                SwiftLoggers.getLogger().info("failed to get result from query: ", query.toString());
-            } else {
-                resultSets.add(resultSet);
-            }
-        }
-        return createMerger().merge(resultSets);
+    public QueryResultSet<GroupPage> merge(List<QueryResultSet<GroupPage>> resultSets) {
+        return new MergeGroupQueryResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, getComparators(comparators));
     }
 
-    private QueryResultSetMerger<QueryResultSet<GroupPage>> createMerger() {
-        return GroupQueryResultSetMerger.ofCompareInfo(fetchSize, isGlobalIndexed, aggregators, comparators);
+    private static List<Comparator<SwiftNode>> getComparators(List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators) {
+        List<Comparator<?>> list = new ArrayList<Comparator<?>>();
+        for (Pair<SortType, ColumnTypeConstants.ClassType> pair : comparators) {
+            boolean isAsc = pair.getKey() == SortType.ASC;
+            switch (pair.getValue()) {
+                case DOUBLE:
+                    list.add(isAsc ? Comparators.<Double>asc() : Comparators.<Double>desc());
+                    break;
+                case LONG:
+                case DATE:
+                    list.add(isAsc ? Comparators.<Long>asc() : Comparators.<Long>desc());
+                    break;
+                case INTEGER:
+                    list.add(isAsc ? Comparators.<Integer>asc() : Comparators.<Integer>desc());
+                    break;
+                default:
+                    list.add(isAsc ? Comparators.STRING_ASC : Comparators.reverse(Comparators.STRING_ASC));
+            }
+        }
+        List<Comparator<SwiftNode>> result = new ArrayList<Comparator<SwiftNode>>();
+        for (final Comparator comparator : list) {
+            result.add(new Comparator<SwiftNode>() {
+                @Override
+                public int compare(SwiftNode o1, SwiftNode o2) {
+                    return comparator.compare(o1.getData(), o2.getData());
+                }
+            });
+        }
+        return result;
     }
 }
