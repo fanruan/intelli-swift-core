@@ -6,7 +6,7 @@ import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.AbstractResultQuery;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.node.resultset.NodeQueryResultSetMerger;
+import com.fr.swift.result.node.resultset.GroupQueryResultSetMerger;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ColumnTypeConstants;
@@ -50,6 +50,6 @@ public class GroupResultQuery extends AbstractResultQuery<QueryResultSet<GroupPa
     }
 
     private QueryResultSetMerger<QueryResultSet<GroupPage>> createMerger() {
-        return new NodeQueryResultSetMerger(fetchSize, isGlobalIndexed, aggregators, comparators);
+        return GroupQueryResultSetMerger.ofCompareInfo(fetchSize, isGlobalIndexed, aggregators, comparators);
     }
 }

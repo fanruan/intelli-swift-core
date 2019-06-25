@@ -8,7 +8,9 @@ import com.fr.swift.source.SwiftMetaData;
 import java.io.Serializable;
 
 /**
- * Created by lyon on 2018/12/29.
+ *
+ * @author lyon
+ * @date 2018/12/29
  */
 public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Serializable {
     private static final long serialVersionUID = 3284100787389755050L;
@@ -71,6 +73,6 @@ public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Seria
 
     public interface SyncInvoker {
 
-        <D, T extends BaseSerializableQRS<D>> T invoke();
+        <D> BaseSerializableQRS<D> invoke();
     }
 }
