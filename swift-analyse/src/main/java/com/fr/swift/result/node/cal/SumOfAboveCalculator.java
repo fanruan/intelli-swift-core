@@ -19,25 +19,19 @@ public class SumOfAboveCalculator extends AbstractTargetCalculator {
     public Object call() {
         while (iterators.hasNext()) {
             Iterator<AggregatorValueSet> iterator = iterators.next();
-            AggregatorValueSet lastRow = null;
+            Iterator<AggregatorValueRow> lastRow = null;
             while (iterator.hasNext()) {
                 AggregatorValueSet row = iterator.next();
-                int i = 0;
-                while (row.hasNext()) {
+                for (AggregatorValueRow current : row) {
                     Double lastSum = lastRow == null ? 0 : lastRow.next().getValue(resultIndex).calculate();
-                    AggregatorValueRow next = row.next();
-                    Double value = next.getValue(paramIndex).calculate();
+                    Double value = current.getValue(paramIndex).calculate();
                     // 跳过空值
                     if (Double.isNaN(value)) {
                         continue;
                     }
-                    next.setValue(resultIndex, new DoubleAmountAggregatorValue(lastSum + value));
+                    current.setValue(resultIndex, new DoubleAmountAggregatorValue(lastSum + value));
                 }
-                row.reset();
-                if (null != lastRow) {
-                    lastRow.reset();
-                }
-                lastRow = row;
+                lastRow = row.iterator();
             }
         }
         return null;

@@ -21,17 +21,15 @@ public class DimensionPercentCalculator extends AbstractTargetCalculator {
             Iterator<AggregatorValueSet> iterator = iterators.next();
             while (iterator.hasNext()) {
                 AggregatorValueSet row = iterator.next();
-                while (row.hasNext()) {
-                    AggregatorValueRow next = row.next();
-                    Double value = next.getValue(paramIndex).calculate();
+                for (AggregatorValueRow item : row) {
+                    Double value = item.getValue(paramIndex).calculate();
                     // 跳过空值
                     if (Double.isNaN(value)) {
                         continue;
                     }
-                    Double sum = getSum(next);
-                    next.setValue(resultIndex, new DoubleAmountAggregatorValue(value / sum));
+                    Double sum = getSum(item);
+                    item.setValue(resultIndex, new DoubleAmountAggregatorValue(value / sum));
                 }
-                row.reset();
             }
         }
         return null;

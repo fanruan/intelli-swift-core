@@ -69,10 +69,11 @@ public class TargetCalculatorFactory {
             case ARITHMETIC_MUL:
             case ARITHMETIC_SUB:
                 LeafNodeIterator leafNodeIterator = new LeafNodeIterator(groupNode);
-                MapperIterator<SwiftNode, AggregatorValueSet> sub = new MapperIterator<SwiftNode, AggregatorValueSet>(leafNodeIterator, new Function<SwiftNode, AggregatorValueSet>() {
+                MapperIterator<SwiftNode, Iterator<AggregatorValueRow>> sub = new MapperIterator<SwiftNode, Iterator<AggregatorValueRow>>(leafNodeIterator,
+                        new Function<SwiftNode, Iterator<AggregatorValueRow>>() {
                     @Override
-                    public AggregatorValueSet apply(SwiftNode p) {
-                        return p.getAggregatorValue();
+                    public Iterator<AggregatorValueRow> apply(SwiftNode p) {
+                        return p.getAggregatorValue().iterator();
                     }
                 });
                 IteratorChain<AggregatorValueRow> chain = new IteratorChain<AggregatorValueRow>(sub);

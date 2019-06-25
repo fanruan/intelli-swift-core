@@ -79,7 +79,7 @@ public class NodeGroupByUtilsTest extends TestCase {
             List<SwiftNode> row = it.next();
             List<String> key = getKey(row);
             assertTrue(expected.containsKey(key));
-            assertEquals(expected.get(key), row.get(row.size() - 1).getAggregatorValue().next().getValue(0).calculateValue());
+            assertEquals(expected.get(key), row.get(row.size() - 1).getAggregatorValue().iterator().next().getValue(0).calculateValue());
         }
     }
 

@@ -1,12 +1,12 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.query.aggregator.AggregatorValueRow;
-import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +29,11 @@ public class NumberAverageFilter extends NumberInRangeFilter {
         double sum = .0;
         long size = 0L;
         for (int i = 0; i < children.size(); i++) {
-            AggregatorValueSet set = children.get(i).getAggregatorValue();
-            while (set.hasNext()) {
-                sum += set.next().getValue(targetIndex).calculate();
+            Iterator<AggregatorValueRow> iterator = children.get(i).getAggregatorValue().iterator();
+            while (iterator.hasNext()) {
+                sum += iterator.next().getValue(targetIndex).calculate();
                 size++;
             }
-            set.reset();
         }
         return sum / size;
     }
@@ -53,15 +52,15 @@ public class NumberAverageFilter extends NumberInRangeFilter {
         if (!cacheMap.containsKey(valueList)) {
             cacheMap.put(valueList, average(node, targetIndex));
         }
-        AggregatorValueSet set = node.getAggregatorValue();
+        Iterator<AggregatorValueRow> iterator = node.getAggregatorValue().iterator();
         boolean matches = false;
         double minValue = min.doubleValue() != Double.NEGATIVE_INFINITY ? cacheMap.get(valueList) : min.doubleValue();
         double maxValue = max.doubleValue() != Double.POSITIVE_INFINITY ? cacheMap.get(valueList) : max.doubleValue();
-        while (set.hasNext()) {
-            AggregatorValueRow row = set.next();
+        while (iterator.hasNext()) {
+            AggregatorValueRow row = iterator.next();
             Object data = row.getValue(targetIndex).calculateValue();
             if (data == null) {
-                set.remove();
+                iterator.remove();
                 continue;
             }
             double value = ((Number) data).doubleValue();
@@ -69,10 +68,9 @@ public class NumberAverageFilter extends NumberInRangeFilter {
                     (maxIncluded ? value <= maxValue : value < maxValue);
             matches |= match;
             if (!match) {
-                set.remove();
+                iterator.remove();
             }
         }
-        set.reset();
         return matches;
     }
 }

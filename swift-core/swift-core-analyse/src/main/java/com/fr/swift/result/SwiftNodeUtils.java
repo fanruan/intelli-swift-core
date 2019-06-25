@@ -1,8 +1,6 @@
 package com.fr.swift.result;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.AggregatorValueRow;
-import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorChain;
@@ -91,34 +89,17 @@ public class SwiftNodeUtils {
         }
         if (null != row) {
             SwiftNode leafNode = row.get(row.size() - 1);
-            return new MapperIterator<AggregatorValueRow, Row>(leafNode.getAggregatorValue(), new Function<AggregatorValueRow, Row>() {
+            return new MapperIterator<AggregatorValueRow, Row>(leafNode.getAggregatorValue().iterator(), new Function<AggregatorValueRow, Row>() {
                 @Override
                 public Row apply(AggregatorValueRow p) {
                     List<Object> result = new ArrayList<Object>(data);
-                    Row subRow = p.data();
-                    for (int i = 0; i < subRow.getSize(); i++) {
-                        result.add(subRow.getValue(i));
-                    }
+                    result.addAll(p.data());
                     return new ListBasedRow(result);
                 }
             });
         } else {
             return Collections.<Row>singleton(new ListBasedRow(data)).iterator();
         }
-    }
-
-    private static Iterator<Row> noGroupRowsIterator(AggregatorValueSet set) {
-        return set.data();
-    }
-
-    private static List<Object> aggValue2Object(AggregatorValue[] values) {
-        List<Object> objects = new ArrayList<Object>();
-        if (values != null) {
-            for (AggregatorValue value : values) {
-                objects.add(value == null ? null : value.calculateValue());
-            }
-        }
-        return objects;
     }
 
     public static SwiftNode[] splitNode(SwiftNode root, int numberOfNodes, int rowCount) {

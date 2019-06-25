@@ -29,8 +29,8 @@ public class TargetPercentCalculator extends AbstractTargetCalculator{
                     values = row.isEmpty() ? null : new Double[row.size()];
                 }
                 int i = 0;
-                while (row.hasNext()) {
-                    Double v = row.next().getValue(paramIndex).calculate();
+                for (AggregatorValueRow aggregatorValueRow : row) {
+                    Double v = aggregatorValueRow.getValue(paramIndex).calculate();
                     // 跳过空值
                     if (Double.isNaN(v)) {
                         continue;
@@ -41,19 +41,16 @@ public class TargetPercentCalculator extends AbstractTargetCalculator{
                     }
                     values[i] += v;
                 }
-                row.reset();
             }
             for (AggregatorValueSet row : rows) {
                 int i = 0;
-                while (row.hasNext()) {
-                    AggregatorValueRow next = row.next();
-                    Double v = next.getValue(paramIndex).calculate();
+                for (AggregatorValueRow aggregatorValueRow : row) {
+                    Double v = aggregatorValueRow.getValue(paramIndex).calculate();
                     if (Double.isNaN(v)) {
                         continue;
                     }
-                    next.setValue(resultIndex, new DoubleAmountAggregatorValue(v / values[i++]));
+                    aggregatorValueRow.setValue(resultIndex, new DoubleAmountAggregatorValue(v / values[i++]));
                 }
-                row.reset();
             }
         }
         return null;

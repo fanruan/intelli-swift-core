@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.iterator.MapperIterator;
@@ -30,12 +31,6 @@ public class CombineAggregatorSet implements AggregatorValueSet {
     }
 
     @Override
-    public void reset() {
-        current.reset();
-        other.reset();
-    }
-
-    @Override
     public int size() {
         return 0;
     }
@@ -48,10 +43,10 @@ public class CombineAggregatorSet implements AggregatorValueSet {
 
     @Override
     public Iterator<Row> data() {
-        return new MapperIterator<AggregatorValueRow, Row>(this, new Function<AggregatorValueRow, Row>() {
+        return new MapperIterator<AggregatorValueRow, Row>(iterator(), new Function<AggregatorValueRow, Row>() {
             @Override
             public Row apply(AggregatorValueRow p) {
-                return p.data();
+                return new ListBasedRow(p.data());
             }
         });
     }
@@ -61,18 +56,27 @@ public class CombineAggregatorSet implements AggregatorValueSet {
         return current.isEmpty();
     }
 
-    @Override
-    public boolean hasNext() {
-        return current.hasNext();
-    }
 
     @Override
-    public AggregatorValueRow next() {
-        return new CombineAggregatorValueRow(current.next(), other.next(), aggregators, fn);
-    }
+    public Iterator<AggregatorValueRow> iterator() {
+        return new Iterator<AggregatorValueRow>() {
+            private Iterator<AggregatorValueRow> currentIt = current.iterator();
+            private Iterator<AggregatorValueRow> otherIt = other.iterator();
 
-    @Override
-    public void remove() {
+            @Override
+            public boolean hasNext() {
+                return currentIt.hasNext();
+            }
 
+            @Override
+            public AggregatorValueRow next() {
+                return new CombineAggregatorValueRow(currentIt.next(), otherIt.next(), aggregators, fn);
+            }
+
+            @Override
+            public void remove() {
+
+            }
+        };
     }
 }
