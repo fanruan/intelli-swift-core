@@ -46,14 +46,12 @@ public class TemplateUsageInfoQuery {
                 .setAggregations(new MetricBean("id", AggregatorType.DISTINCT), new MetricBean("userId", AggregatorType.DISTINCT), new MetricBean("reportId", AggregatorType.DISTINCT))
                 .setFilter(filter).build();
 
-
         FilterInfoBean integrationFilter = new AndFilterBean(
                 Arrays.asList(
                         filter,
                         new InFilterBean("source", "integration")
                 ));
         GroupQueryInfoBean linkVisitBean = GroupQueryInfoBean.builder("execution").setDimensions(new DimensionBean(DimensionType.GROUP, "appId")).setAggregations(new MetricBean("source", AggregatorType.COUNT)).setFilter(integrationFilter).build();
-        //appId,861.0
 
         FilterInfoBean singleFilter = new AndFilterBean(
                 Arrays.asList(
