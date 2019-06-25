@@ -1,14 +1,15 @@
 package com.fr.swift.api.result;
 
 import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.SwiftRowIterator;
 import com.fr.swift.result.SwiftRowIteratorImpl;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.IoUtil;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +19,12 @@ import java.util.Map;
  */
 public abstract class BaseApiResultSet<T> implements SwiftApiResultSet<T> {
     private static final long serialVersionUID = -4562401863852149125L;
-    protected List<Row> rows;
+    private List<Row> rows;
     private SwiftMetaData metaData;
     private int rowCount;
     private boolean hasNextPage = true;
     private boolean originHasNextPage;
-    private transient Iterator<Row> rowIterator;
+    private transient SwiftRowIterator rowIterator;
     private T queryObject;
 
     public BaseApiResultSet(T queryObject, SwiftMetaData metaData, List<Row> rows, int rowCount, boolean originHasNextPage) {
@@ -94,16 +95,12 @@ public abstract class BaseApiResultSet<T> implements SwiftApiResultSet<T> {
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return metaData;
     }
 
     @Override
-    public void setMetaData(SwiftMetaData metaData) {
-    }
-
-    @Override
-    public boolean hasNext() throws SQLException {
+    public boolean hasNext() {
         if (rowIterator == null) {
             rowIterator = new SwiftRowIteratorImpl<DetailResultSet>(this);
         }
@@ -111,12 +108,12 @@ public abstract class BaseApiResultSet<T> implements SwiftApiResultSet<T> {
     }
 
     @Override
-    public Row getNextRow() throws SQLException {
+    public Row getNextRow() {
         return rowIterator.next();
     }
 
     @Override
-    public void close() throws SQLException {
-
+    public void close() {
+        IoUtil.close(rowIterator);
     }
 }

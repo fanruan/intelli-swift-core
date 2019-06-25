@@ -8,12 +8,6 @@ import java.util.Comparator;
  * @author Daniel
  */
 public class Comparators {
-
-    /**
-     * todo fr还是用pinyin，开源版本开放spi，由用户自定义排序方式
-     */
-    public static final Comparator<String> STRING_ASC = Comparators.asc();
-
     /**
      * 升序
      * <p>
@@ -101,4 +95,9 @@ public class Comparators {
             throw new IllegalArgumentException(String.format("cannot compare %s with %s", a.getClass(), b.getClass()));
         }
     };
+
+    /**
+     * todo fr还是用pinyin，开源版本开放spi，由用户自定义排序方式
+     */
+    public static final Comparator<String> STRING_ASC = Comparators.asc();
 }

@@ -12,7 +12,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Created by pony on 2017/11/27.
+ *
+ * @author pony
+ * @date 2017/11/27
  */
 public abstract class AbstractDetailResultQuery extends AbstractResultQuery<DetailQueryResultSet> {
 
