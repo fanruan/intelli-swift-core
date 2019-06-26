@@ -1,5 +1,6 @@
 package com.fr.swift.result;
 
+import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.aggregator.AggregatorValueSet;
 
 import java.io.Serializable;
@@ -9,6 +10,13 @@ import java.io.Serializable;
  * 保存聚合结果的容器
  */
 public interface AggregatorValueContainer extends Serializable {
+
+    /**
+     * 方便单行值的
+     *
+     * @return
+     */
+    AggregatorValueRow asSingleAggRowValue();
 
     AggregatorValueSet getAggregatorValue();
 

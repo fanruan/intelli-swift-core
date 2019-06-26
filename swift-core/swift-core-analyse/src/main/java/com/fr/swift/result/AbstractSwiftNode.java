@@ -1,6 +1,8 @@
 package com.fr.swift.result;
 
+import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.aggregator.AggregatorValueSet;
+import com.fr.swift.query.aggregator.EmptyAggregatorValueRow;
 
 /**
  * Created by pony on 2017/12/8.
@@ -37,10 +39,13 @@ public abstract class AbstractSwiftNode implements SwiftNode {
     }
 
 
-//    @Override
-//    public AggregatorValue getAggregatorValue(int key) {
-//        return aggregatorValues[key];
-//    }
+    @Override
+    public AggregatorValueRow asSingleAggRowValue() {
+        if (null == aggregatorValues || aggregatorValues.isEmpty()) {
+            return new EmptyAggregatorValueRow();
+        }
+        return aggregatorValues.iterator().next();
+    }
 
     @Override
     public AggregatorValueSet getAggregatorValue() {

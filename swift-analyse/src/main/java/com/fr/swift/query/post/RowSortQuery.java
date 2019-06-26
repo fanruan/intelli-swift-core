@@ -47,10 +47,10 @@ public class RowSortQuery implements Query<QueryResultSet<SwiftNode>> {
             @Override
             public int compare(List<SwiftNode> o1, List<SwiftNode> o2) {
                 for (Sort sort : sorts) {
-                    Iterator<AggregatorValueRow> values1 = o1.get(o1.size() - 1).getAggregatorValue().iterator();
-                    Iterator<AggregatorValueRow> values2 = o2.get(o2.size() - 1).getAggregatorValue().iterator();
-                    Number v1 = (Number) values1.next().getValue(sort.getTargetIndex() - dimensionSize).calculateValue();
-                    Number v2 = (Number) values2.next().getValue(sort.getTargetIndex() - dimensionSize).calculateValue();
+                    AggregatorValueRow values1 = o1.get(o1.size() - 1).asSingleAggRowValue();
+                    AggregatorValueRow values2 = o2.get(o2.size() - 1).asSingleAggRowValue();
+                    Number v1 = (Number) values1.getValue(sort.getTargetIndex() - dimensionSize).calculateValue();
+                    Number v2 = (Number) values2.getValue(sort.getTargetIndex() - dimensionSize).calculateValue();
                     if (v1 == null) {
                         return 1;
                     }
