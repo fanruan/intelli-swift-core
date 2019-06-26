@@ -2,12 +2,16 @@ package com.fr.swift.result.node;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.aggregator.AggregatorValueUtils;
+import com.fr.swift.query.aggregator.ListAggregatorValueRow;
+import com.fr.swift.query.aggregator.ListAggregatorValueSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.iterator.LeafNodeIterator;
 import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -70,36 +74,51 @@ public class GroupNodeAggregateUtils {
         Iterator<SwiftNode> iterator = new LeafNodeIterator(groupNode);
         // 默认清空父节点的值。
         // FIXME: 2018/5/4 多个segment同时有expander的情况下父节点有可能不为空的，这时就有bug了！
-        AggregatorValue[] valuesOfParent = createAggregateValues(iterator.next().getAggregatorValue(), aggregators);
+        AggregatorValueSet valuesOfParent = createAggregateValues(iterator.next().getAggregatorValue(), aggregators);
         // aggregator的个数和values的长度要想等，不管是哪种类型的value，都要有个对应的aggregator
-        assert aggregators.size() == valuesOfParent.length;
+        assert aggregators.size() == valuesOfParent.size();
         while (iterator.hasNext()) {
-            AggregatorValue[] valuesOfChild = iterator.next().getAggregatorValue();
+            AggregatorValueSet valuesOfChild = iterator.next().getAggregatorValue();
             combine(valuesOfParent, valuesOfChild, aggregators);
         }
         groupNode.setAggregatorValue(valuesOfParent);
     }
 
-    private static void combine(AggregatorValue[] valuesOfParent,
-                                AggregatorValue[] valuesOfChild, List<Aggregator> aggregators) {
+    private static void combine(AggregatorValueSet valuesOfParent,
+                                AggregatorValueSet valuesOfChild, List<Aggregator> aggregators) {
         for (int i = 0; i < aggregators.size(); i++) {
             Aggregator aggregator = aggregators.get(i);
-            if (valuesOfParent[i] == null) {
-                valuesOfParent[i] = valuesOfChild[i] == null ? null : aggregator.createAggregatorValue(valuesOfChild[i]);
-            } else {
-                // TODO: 2018/5/7 如果没有切换汇总方式，用明细的方式合计还是在明细汇总的基础上合计？
-                valuesOfParent[i] = AggregatorValueUtils.combine(valuesOfParent[i], valuesOfChild[i], aggregator);
+            Iterator<AggregatorValueRow> childIt = valuesOfChild.iterator();
+            for (AggregatorValueRow parentRow : valuesOfParent) {
+                AggregatorValueRow childRow = childIt.next();
+                AggregatorValue parent = parentRow.getValue(i);
+                AggregatorValue child = childRow.getValue(i);
+                if (parent == null) {
+                    parent = child == null ? null : aggregator.createAggregatorValue(child);
+                } else {
+                    // TODO: 2018/5/7 如果没有切换汇总方式，用明细的方式合计还是在明细汇总的基础上合计？
+                    parent = AggregatorValueUtils.combine(parent, child, aggregator);
+                }
+                parentRow.setValue(i, parent);
             }
+
         }
     }
 
-    private static AggregatorValue[] createAggregateValues(AggregatorValue[] valuesOfFirstChild,
-                                                           List<Aggregator> aggregators) {
-        AggregatorValue[] values = Arrays.copyOf(valuesOfFirstChild, valuesOfFirstChild.length);
-        for (int i = 0; i < aggregators.size(); i++) {
-            Aggregator aggregator = aggregators.get(i);
-            values[i] = valuesOfFirstChild[i] == null ? null : aggregator.createAggregatorValue(valuesOfFirstChild[i]);
+    private static AggregatorValueSet createAggregateValues(AggregatorValueSet valuesOfFirstChild,
+                                                            List<Aggregator> aggregators) {
+
+        List<AggregatorValueRow> rows = new ArrayList<AggregatorValueRow>();
+        int size = valuesOfFirstChild.size();
+        for (AggregatorValueRow row : valuesOfFirstChild) {
+            AggregatorValue[] values = new AggregatorValue[size];
+            for (int i = 0; i < aggregators.size(); i++) {
+                Aggregator aggregator = aggregators.get(i);
+                AggregatorValue value = row.getValue(i);
+                values[i] = value == null ? null : aggregator.createAggregatorValue(value);
+            }
+            rows.add(new ListAggregatorValueRow(values));
         }
-        return values;
+        return new ListAggregatorValueSet(rows);
     }
 }
