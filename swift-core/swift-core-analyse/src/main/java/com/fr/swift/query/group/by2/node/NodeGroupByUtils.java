@@ -1,6 +1,7 @@
 package com.fr.swift.query.group.by2.node;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueCombiner;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
@@ -45,8 +46,17 @@ public class NodeGroupByUtils {
     }
 
     private static void aggregateRoot(GroupNode root, RowTraversal traversal, MetricInfo metricInfo) {
-        AggregatorValue[] values = RowMapper.aggregateRow(traversal, metricInfo.getTargetLength(),
+//        AggregatorValue[] values = RowMapper.aggregateRow(traversal, metricInfo.getTargetLength(),
+//                metricInfo.getMetrics(), metricInfo.getAggregators());
+        AggregatorValueCombiner values = RowMapper.aggregatorValueCombiner(traversal, metricInfo.getTargetLength(),
                 metricInfo.getMetrics(), metricInfo.getAggregators());
-        root.setAggregatorValue(values);
+        if (values.isNeedCombine()) {
+            Iterator<AggregatorValue[]> combineIterator = values.getCombineIterator();
+            GroupNode child = new GroupNode(root.getDepth() + 1, null);
+            child.setAggregatorValue(combineIterator.next());
+            root.addChild(child);
+        } else {
+            root.setAggregatorValue(values.getAggregatorValue());
+        }
     }
 }
