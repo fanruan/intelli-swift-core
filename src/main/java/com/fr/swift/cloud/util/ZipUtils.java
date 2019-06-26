@@ -91,8 +91,7 @@ public class ZipUtils {
             if (gcFiles.length != 0) {
                 //mv gclog
                 for (File file : gcFiles) {
-                    String destinationFile = destinationPath + "/" + file.getName();
-                    file.renameTo(new File(destinationFile));
+                    file.renameTo(new File(destinationPath, file.getName()));
                 }
             }
         }
