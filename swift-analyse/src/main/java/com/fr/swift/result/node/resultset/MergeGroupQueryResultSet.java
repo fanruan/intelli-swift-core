@@ -26,9 +26,10 @@ import java.util.concurrent.Future;
 
 
 /**
- * Created by Lyon on 2018/7/26.
+ * @author Lyon
+ * @date 2018/7/26
  */
-class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
+public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
     private static final ExecutorService EXEC = SwiftExecutors.newFixedThreadPool(new PoolThreadFactory(MergeGroupQueryResultSet.class));
 
     private int fetchSize;
@@ -43,8 +44,8 @@ class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
     private List<SwiftNode> theRowOfRemainNode;
     private List<List<SwiftNode>> lastRowOfPrevPages;
 
-    MergeGroupQueryResultSet(int fetchSize, boolean[] isGlobalIndexed, List<QueryResultSet<GroupPage>> sources,
-                             List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
+    public MergeGroupQueryResultSet(int fetchSize, boolean[] isGlobalIndexed, List<QueryResultSet<GroupPage>> sources,
+                                    List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
         this.fetchSize = fetchSize;
         this.isGlobalIndexed = isGlobalIndexed;
         this.sources = sources;
