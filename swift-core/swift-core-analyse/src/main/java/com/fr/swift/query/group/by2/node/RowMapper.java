@@ -2,8 +2,6 @@ package com.fr.swift.query.group.by2.node;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.aggregator.ListAggregatorValueRow;
-import com.fr.swift.query.aggregator.SingleAggregatorValueSet;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
@@ -46,7 +44,7 @@ class RowMapper implements BinaryFunction<GroupByEntry, GroupNode, GroupNode> {
     @Override
     public GroupNode apply(GroupByEntry groupByEntry, GroupNode node) {
         AggregatorValue[] values = aggregateRow(groupByEntry.getTraversal(), targetLength, metrics, aggregators);
-        node.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(values)));
+        node.setAggregatorValue(values);
         return node;
     }
 }

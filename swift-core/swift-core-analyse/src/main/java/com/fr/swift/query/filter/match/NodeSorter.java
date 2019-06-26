@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * TODO 2019/06/23 这里只取了一条
  * Created by pony on 2018/5/4.
  */
 public class NodeSorter {
@@ -28,8 +27,8 @@ public class NodeSorter {
                     @Override
                     public int compare(SwiftNode o1, SwiftNode o2) {
 
-                        Number v1 = (Number) o1.asSingleAggRowValue().getValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
-                        Number v2 = (Number) o2.asSingleAggRowValue().getValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
+                        Number v1 = (Number) o1.getAggregatorValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
+                        Number v2 = (Number) o2.getAggregatorValue(sort.getTargetIndex() - dimensionSorts.size()).calculateValue();
                         if (v1 == null) {
                             return 1;
                         }

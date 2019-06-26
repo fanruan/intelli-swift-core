@@ -2,15 +2,10 @@ package com.fr.swift.query.result.group;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.aggregator.AggregatorValueUtils;
-import com.fr.swift.query.aggregator.CombineAggregatorSet;
 import com.fr.swift.query.aggregator.Combiner;
-import com.fr.swift.query.aggregator.EmptyAggregatorValueSet;
 import com.fr.swift.result.SwiftNode;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
-import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,10 +25,10 @@ public class GroupNodeMergeUtils {
 //            return roots.get(0);
 //        }
         SwiftNode mergeRoot = roots.get(0);
-        AggregatorValueSet mergeRootValues = mergeRoot.getAggregatorValue();
+        AggregatorValue[] mergeRootValues = mergeRoot.getAggregatorValue();
         for (int i = 1; i < roots.size(); i++) {
-            AggregatorValueSet values = roots.get(i).getAggregatorValue();
-            if (values.size() == 0) {
+            AggregatorValue[] values = roots.get(i).getAggregatorValue();
+            if (values.length == 0) {
                 continue;
             }
             mergeRootValues = aggregateValues(aggregators, mergeRootValues, values);
@@ -60,17 +55,15 @@ public class GroupNodeMergeUtils {
         return mergeRoot;
     }
 
-    private static AggregatorValueSet aggregateValues(List<Aggregator> aggregators, AggregatorValueSet current, AggregatorValueSet other) {
-        if (current.size() == 0 && other.size() == 0) {
-            return new EmptyAggregatorValueSet();
+    private static AggregatorValue[] aggregateValues(List<Aggregator> aggregators, AggregatorValue[] current, AggregatorValue[] other) {
+        if (current.length == 0 && other.length == 0) {
+            return new AggregatorValue[0];
         }
-        return new CombineAggregatorSet(current, other, aggregators, new Function<Pair<Aggregator, List<AggregatorValue>>, AggregatorValue>() {
-            @Override
-            public AggregatorValue apply(Pair<Aggregator, List<AggregatorValue>> p) {
-                List<AggregatorValue> value = p.getValue();
-                return AggregatorValueUtils.combine(value.get(0), value.get(1), p.getKey());
-            }
-        });
+        AggregatorValue[] result = new AggregatorValue[current.length];
+        for (int i = 0; i < aggregators.size(); i++) {
+            result[i] = AggregatorValueUtils.combine(current[i], other[i], aggregators.get(i));
+        }
+        return result;
     }
 
     private static class NodeCombiner implements Combiner<SwiftNode> {
@@ -87,8 +80,8 @@ public class GroupNodeMergeUtils {
 
         @Override
         public void combine(SwiftNode current, SwiftNode other) {
-            AggregatorValueSet currentValues = current.getAggregatorValue();
-            AggregatorValueSet otherValues = other.getAggregatorValue();
+            AggregatorValue[] currentValues = current.getAggregatorValue();
+            AggregatorValue[] otherValues = other.getAggregatorValue();
             // 合并两个节点，并把合并结果设置到current节点
             current.setAggregatorValue(aggregateValues(aggregators, currentValues, otherValues));
             if (current.getChildrenSize() == 0 && other.getChildrenSize() == 0) {

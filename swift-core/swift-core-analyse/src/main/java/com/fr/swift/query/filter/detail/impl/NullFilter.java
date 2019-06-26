@@ -1,15 +1,11 @@
 package com.fr.swift.query.filter.detail.impl;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.query.aggregator.AggregatorValueRow;
-import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
-
-import java.util.Iterator;
 
 /**
  * Created by Lyon on 2017/12/5.
@@ -35,17 +31,6 @@ public class NullFilter extends AbstractDetailFilter {
         if (targetIndex == -1) {
             return node.getData() == null;
         }
-        boolean matches = false;
-        AggregatorValueSet set = node.getAggregatorValue();
-        Iterator<AggregatorValueRow> iterator = set.iterator();
-        while (iterator.hasNext()) {
-            AggregatorValueRow next = iterator.next();
-            boolean match = next.getValue(targetIndex).calculateValue() == null;
-            matches |= match;
-            if (!match) {
-                iterator.remove();
-            }
-        }
-        return matches;
+        return node.getAggregatorValue(targetIndex).calculateValue() == null;
     }
 }
