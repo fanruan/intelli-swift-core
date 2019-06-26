@@ -69,5 +69,9 @@ public class DetailQueryResultSetMergerTest extends TestCase {
         public boolean hasNextPage() {
             return iterator.hasNext();
         }
+
+        @Override
+        public void close() {
+        }
     }
 }
