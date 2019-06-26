@@ -116,7 +116,7 @@ public class CustomerBaseInfo implements Serializable {
         this.buildNO = (String) map.get("buildNO");
         this.licType = (String) map.get("licType");
         this.expireTime = (String) map.get("expireTime");
-        this.productionVersion = (String) map.get("productionVersion");
+        this.productionVersion = (String) map.get("productVersion");
         this.company = (String) map.get("company");
         this.projectName = (String) map.get("projectName");
         Set<String> functionPossessSet = new HashSet<>();

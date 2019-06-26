@@ -29,11 +29,11 @@ public class CustomBaseInfoQuery {
 
     public CustomerBaseInfo query(String appId, String yearMonth) throws Exception {
         FilterInfoBean filter = new AndFilterBean(
-                Arrays.<FilterInfoBean>asList(
+                Arrays.asList(
                         new InFilterBean("appId", appId),
                         new InFilterBean("yearMonth", yearMonth)
                 ));
-
+        //在container_message表中查找最新的time  maxTimeBean
         GroupQueryInfoBean maxTimeBean = GroupQueryInfoBean.builder("container_message")
                 .setAggregations(new MetricBean("time", AggregatorType.MAX))
                 .setFilter(filter).build();
@@ -43,9 +43,10 @@ public class CustomBaseInfoQuery {
             Row row = maxTimeResultSet.getNextRow();
             time = row.getValue(0) == null ? 0 : row.getValue(0);
         }
+        //在container_message表中查询最新时间的所有字段明细 containerMessageBean
         FilterInfoBean timeFilter = new InFilterBean("time", (long) time);
         FilterInfoBean andFilter = new AndFilterBean(
-                Arrays.<FilterInfoBean>asList(filter, timeFilter)
+                Arrays.asList(filter, timeFilter)
         );
         DetailQueryInfoBean containerMessageBean = DetailQueryInfoBean.builder("container_message")
                 .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN)).setFilter(andFilter).build();
@@ -54,6 +55,8 @@ public class CustomBaseInfoQuery {
         while (containerMessageResult.hasNext()) {
             rowList.add(containerMessageResult.getNextRow());
         }
+
+        // 在function_possess表中 查询所有字段明细
         DetailQueryInfoBean functionPossessBean = DetailQueryInfoBean.builder("function_possess")
                 .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN)).setFilter(filter).build();
         List<Row> functionPossessRowList = new ArrayList<>();
@@ -62,6 +65,7 @@ public class CustomBaseInfoQuery {
             functionPossessRowList.add(functionPossessResultSet.getNextRow());
         }
         CustomerBaseInfo customerBaseInfo = new CustomerBaseInfo(rowList, functionPossessRowList, appId, yearMonth);
+
         return customerBaseInfo;
     }
 }
