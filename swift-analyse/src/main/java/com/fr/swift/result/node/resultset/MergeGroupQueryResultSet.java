@@ -4,13 +4,15 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRSImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,31 +26,31 @@ import java.util.concurrent.Future;
 
 
 /**
- * Created by Lyon on 2018/7/26.
+ * @author Lyon
+ * @date 2018/7/26
  */
-class NodeResultSetMerger implements Iterator<QueryResultSet<GroupPage>> {
-
-    private static ExecutorService service = SwiftExecutors.newFixedThreadPool(10, new PoolThreadFactory(NodeResultSetMerger.class));
+public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
+    private static final ExecutorService EXEC = SwiftExecutors.newFixedThreadPool(new PoolThreadFactory(MergeGroupQueryResultSet.class));
 
     private int fetchSize;
     private boolean[] isGlobalIndexed;
     private List<QueryResultSet<GroupPage>> sources;
     private List<Comparator<SwiftNode>> comparators;
-    private Function<List<QueryResultSet<GroupPage>>, QueryResultSet<GroupPage>> operator;
-    private QueryResultSet<GroupPage> remainResultSet;
+    private GroupPageMerger pageMerger;
+    private GroupPage remainResultSet;
     /**
      * 用于判断是否从源resultSet中更新数据。remainRowCount >= fetchSize不为空，否则为空
      */
     private List<SwiftNode> theRowOfRemainNode;
     private List<List<SwiftNode>> lastRowOfPrevPages;
 
-    NodeResultSetMerger(int fetchSize, boolean[] isGlobalIndexed, List<QueryResultSet<GroupPage>> sources,
-                        List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
+    public MergeGroupQueryResultSet(int fetchSize, boolean[] isGlobalIndexed, List<QueryResultSet<GroupPage>> sources,
+                                    List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
         this.fetchSize = fetchSize;
         this.isGlobalIndexed = isGlobalIndexed;
         this.sources = sources;
         this.comparators = comparators;
-        this.operator = new MergeOperator(fetchSize, aggregators, comparators);
+        this.pageMerger = new GroupPageMerger(aggregators, comparators);
         init();
     }
 
@@ -59,74 +61,75 @@ class NodeResultSetMerger implements Iterator<QueryResultSet<GroupPage>> {
         }
     }
 
-    private QueryResultSet<GroupPage> updateAll() {
-        final List<QueryResultSet<GroupPage>> resultSets = new ArrayList<QueryResultSet<GroupPage>>();
-        List<Future<QueryResultSet<GroupPage>>> futures = new ArrayList<Future<QueryResultSet<GroupPage>>>();
+    private GroupPage updateAll() {
+        final List<GroupPage> pages = new ArrayList<GroupPage>();
+        List<Future<GroupPage>> pageFutures = new ArrayList<Future<GroupPage>>();
         for (int i = 0; i < sources.size(); i++) {
             final int finalI = i;
-            futures.add(service.submit(new Callable<QueryResultSet<GroupPage>>() {
+            pageFutures.add(EXEC.submit(new Callable<GroupPage>() {
                 @Override
-                public QueryResultSet<GroupPage> call() {
+                public GroupPage call() {
                     if (sources.get(finalI).hasNextPage()) {
                         GroupPage pair = sources.get(finalI).getPage();
                         if (pair == null) {
-                            SwiftLoggers.getLogger().error("NodeResultSetMerger#updateAll: invalid page data!");
+                            SwiftLoggers.getLogger().error("MergeGroupQueryResultSet#updateAll: invalid page data!");
                             return null;
                         }
                         SwiftNode node = pair.getRoot();
                         lastRowOfPrevPages.set(finalI, SwiftNodeUtils.getLastRow(node));
-                        return new NodeMergeQRSImpl(fetchSize, node, pair.getGlobalDicts());
+                        return new GroupPage(node, pair.getGlobalDicts());
                     }
                     return null;
                 }
             }));
         }
-        for (Future<QueryResultSet<GroupPage>> future : futures) {
+        for (Future<GroupPage> future : pageFutures) {
             try {
-                QueryResultSet<GroupPage> rs = future.get();
+                GroupPage rs = future.get();
                 if (rs != null) {
-                    resultSets.add(rs);
+                    pages.add(rs);
                 }
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e.getMessage(), e);
             }
         }
         if (remainResultSet != null) {
-            resultSets.add(remainResultSet);
+            pages.add(remainResultSet);
         }
-        QueryResultSet<GroupPage> mergeResultSet = operator.apply(resultSets);
+        GroupPage mergeResultSet = pageMerger.apply(pages);
         return getPage(mergeResultSet);
     }
 
-    private QueryResultSet<GroupPage> getNext() {
+    @Override
+    public GroupPage getPage() {
         if (theRowOfRemainNode == null) {
             return updateAll();
         }
-        List<QueryResultSet<GroupPage>> newPages = new ArrayList<QueryResultSet<GroupPage>>();
+        List<GroupPage> newPages = new ArrayList<GroupPage>();
         for (int i = 0; i < sources.size(); i++) {
             if (sources.get(i).hasNextPage()) {
                 if (shouldUpdate(lastRowOfPrevPages.get(i))) {
                     GroupPage pair = sources.get(i).getPage();
                     SwiftNode node = pair.getRoot();
                     List<Map<Integer, Object>> dict = pair.getGlobalDicts();
-                    newPages.add(new NodeMergeQRSImpl(fetchSize, node, dict));
+                    newPages.add(new GroupPage(node, dict));
                     List<SwiftNode> lastRow = SwiftNodeUtils.getLastRow(node);
                     lastRowOfPrevPages.set(i, lastRow);
                 }
             }
         }
-        QueryResultSet<GroupPage> mergeResultSet;
+        GroupPage mergeResultSet;
         if (!newPages.isEmpty()) {
             newPages.add(remainResultSet);
-            mergeResultSet = operator.apply(newPages);
+            mergeResultSet = pageMerger.apply(newPages);
         } else {
             mergeResultSet = remainResultSet;
         }
-        QueryResultSet<GroupPage> page = getPage(mergeResultSet);
-        if (SwiftNodeUtils.countRows(page.getPage().getRoot()) < fetchSize && hasNext()) {
+        GroupPage page = getPage(mergeResultSet);
+        if (SwiftNodeUtils.countRows(page.getRoot()) < fetchSize && hasNextPage()) {
             // 按照前面的规则更新了，但是不满一页，并且源结果集还有剩余，继续取下一页
             remainResultSet = page;
-            return getNext();
+            return getPage();
         }
         return page;
     }
@@ -146,9 +149,8 @@ class NodeResultSetMerger implements Iterator<QueryResultSet<GroupPage>> {
      * @param mergeResultSet
      * @return
      */
-    private QueryResultSet<GroupPage> getPage(QueryResultSet<GroupPage> mergeResultSet) {
-        GroupPage pair = mergeResultSet.getPage();
-        SwiftNode root = pair.getRoot();
+    private GroupPage getPage(GroupPage mergeResultSet) {
+        SwiftNode root = mergeResultSet.getRoot();
         SwiftNode[] nodes = SwiftNodeUtils.splitNode(root, 2, fetchSize);
         SwiftNode remainNode = null;
         theRowOfRemainNode = null;
@@ -158,16 +160,16 @@ class NodeResultSetMerger implements Iterator<QueryResultSet<GroupPage>> {
                 theRowOfRemainNode = SwiftNodeUtils.getRow(remainNode, fetchSize - 1);
             }
         }
-        List<Map<Integer, Object>> oldDictionary = pair.getGlobalDicts();
+        List<Map<Integer, Object>> oldDictionary = mergeResultSet.getGlobalDicts();
         remainResultSet = null;
         if (remainNode != null) {
-            remainResultSet = new NodeMergeQRSImpl(fetchSize, remainNode, getDictionary(remainNode, oldDictionary));
+            remainResultSet = new GroupPage(remainNode, getDictionary(remainNode, oldDictionary));
         }
         SwiftNode page = nodes[0];
         if (root.getChildrenSize() == 0) {
             page = root;
         }
-        return new NodeMergeQRSImpl(fetchSize, page, getDictionary(page, oldDictionary));
+        return new GroupPage(page, getDictionary(page, oldDictionary));
     }
 
     private List<Map<Integer, Object>> getDictionary(SwiftNode root, List<Map<Integer, Object>> oldDictionary) {
@@ -196,7 +198,7 @@ class NodeResultSetMerger implements Iterator<QueryResultSet<GroupPage>> {
     }
 
     @Override
-    public boolean hasNext() {
+    public boolean hasNextPage() {
         if (remainResultSet != null) {
             return true;
         }
@@ -209,12 +211,22 @@ class NodeResultSetMerger implements Iterator<QueryResultSet<GroupPage>> {
     }
 
     @Override
-    public QueryResultSet<GroupPage> next() {
-        return getNext();
+    public int getFetchSize() {
+        return fetchSize;
     }
 
     @Override
-    public void remove() {
+    public <Q extends QueryResultSet<GroupPage>> QueryResultSetMerger<Q> getMerger() {
+        return (QueryResultSetMerger<Q>) GroupQueryResultSetMerger.ofComparator(fetchSize, isGlobalIndexed, pageMerger.aggregators, comparators);
+    }
 
+    @Override
+    public SwiftResultSet convert(SwiftMetaData metaData) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void close() {
+        IoUtil.close(sources);
     }
 }

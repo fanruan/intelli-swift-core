@@ -1,6 +1,7 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class SumOfAllCalculator extends AbstractTargetCalculator {
     private Double[] summaryValue;
 
     public SumOfAllCalculator(int paramIndex, int resultIndex,
-                              Iterator<Iterator<List<AggregatorValue[]>>> iterators, Double[] summaryValue) {
+                              Iterator<Iterator<AggregatorValueSet>> iterators, Double[] summaryValue) {
         super(paramIndex, resultIndex, iterators);
         this.summaryValue = summaryValue;
     }
@@ -24,17 +25,18 @@ public class SumOfAllCalculator extends AbstractTargetCalculator {
     @Override
     public Object call() {
         while (iterators.hasNext()) {
-            Iterator<List<AggregatorValue[]>> iterator = iterators.next();
-            List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
+            Iterator<AggregatorValueSet> iterator = iterators.next();
+            List<AggregatorValueSet> rows = new ArrayList<AggregatorValueSet>();
             Double[] values = null;
             while (iterator.hasNext()) {
-                List<AggregatorValue[]> row = iterator.next();
+                AggregatorValueSet row = iterator.next();
                 rows.add(row);
                 if (values == null) {
                     values = row.isEmpty() ? null : new Double[row.size()];
                 }
-                for (int i = 0; i < row.size(); i++) {
-                    Double v = row.get(i)[paramIndex].calculate();
+                int i = 0;
+                for (AggregatorValueRow valueRow : row) {
+                    Double v = valueRow.getValue(paramIndex).calculate();
                     // 跳过空值
                     if (Double.isNaN(v)) {
                         continue;
@@ -43,12 +45,13 @@ public class SumOfAllCalculator extends AbstractTargetCalculator {
                         values[i] = v;
                         continue;
                     }
-                    values[i] += v;
+                    values[i++] += v;
                 }
             }
-            for (List<AggregatorValue[]> row : rows) {
-                for (int i = 0; i < row.size(); i++) {
-                    row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(values[i]);
+            for (AggregatorValueSet row : rows) {
+                int i = 0;
+                for (AggregatorValueRow value : row) {
+                    value.setValue(resultIndex, new DoubleAmountAggregatorValue(values[i++]));
                 }
             }
         }

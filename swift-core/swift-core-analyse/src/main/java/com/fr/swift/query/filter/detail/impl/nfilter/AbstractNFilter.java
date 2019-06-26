@@ -55,11 +55,24 @@ public abstract class AbstractNFilter extends AbstractDetailFilter {
         return lineCacheMap.get(valueList);
     }
 
+    /**
+     * 安老师说大多是单行的，以后有多行需求再改
+     * 改成单行好理解
+     * TODO 2019/06/26 多行处理
+     *
+     * @param node
+     * @param targetIndex
+     * @return
+     */
     private Double calculateValue(SwiftNode node, int targetIndex) {
         NTree<Double> nTree = getNTree();
         List<SwiftNode> children = node.getParent().getChildren();
         for (SwiftNode n : children) {
-            Object value = n.getAggregatorValue(targetIndex).calculateValue();
+//            for (AggregatorValueRow next : n.getAggregatorValue()) {
+//                Object value = next.getValue(targetIndex).calculateValue();
+//                nTree.add(value == null ? null : ((Number) value).doubleValue());
+//            }
+            Object value = n.asSingleAggRowValue().getValue(targetIndex).calculateValue();
             nTree.add(value == null ? null : ((Number) value).doubleValue());
         }
         return nTree.getLineValue();

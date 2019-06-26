@@ -1,5 +1,6 @@
 package com.fr.swift.compare;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -8,11 +9,12 @@ import java.util.Comparator;
  * @author Daniel
  */
 public class Comparators {
-
     /**
      * todo fr还是用pinyin，开源版本开放spi，由用户自定义排序方式
      */
     public static final Comparator<String> STRING_ASC = Comparators.asc();
+
+    public static final Comparator<Number> NUMBER_ASC = NumberAsc.INSTANCE;
 
     /**
      * 升序
@@ -28,7 +30,7 @@ public class Comparators {
      * @return result
      */
     public static <T extends Comparable<T>> Comparator<T> asc() {
-        return (Comparator<T>) COMPARABLE_ASC;
+        return (Comparator<T>) ComparableAsc.INSTANCE;
     }
 
     public static <T extends Comparable<T>> Comparator<T> desc() {
@@ -36,12 +38,7 @@ public class Comparators {
     }
 
     public static <T> Comparator<T> reverse(final Comparator<T> c) {
-        return new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                return c.compare(o2, o1);
-            }
-        };
+        return new ReverseComparator<T>(c);
     }
 
     private Comparators() {
@@ -52,7 +49,12 @@ public class Comparators {
 
     public static final String MAX_INFINITY_STRING = "I am MAX_INFINITY_STRING";
 
-    private static final Comparator<Comparable<? extends Comparable<?>>> COMPARABLE_ASC = new Comparator<Comparable<? extends Comparable<?>>>() {
+    private static final Comparator<? extends Comparable<?>> COMPARABLE_DESC = reverse(ComparableAsc.INSTANCE);
+
+    private enum ComparableAsc implements Comparator<Comparable<?>> {
+        //
+        INSTANCE;
+
         @Override
         public int compare(Comparable o1, Comparable o2) {
             if (o1 == o2) {
@@ -66,11 +68,12 @@ public class Comparators {
             }
             return o1.compareTo(o2);
         }
-    };
+    }
 
-    private static final Comparator<Comparable<? extends Comparable<?>>> COMPARABLE_DESC = reverse(COMPARABLE_ASC);
+    private enum NumberAsc implements Comparator<Number> {
+        //
+        INSTANCE;
 
-    public static final Comparator<Number> NUMBER_ASC = new Comparator<Number>() {
         @Override
         public int compare(Number a, Number b) {
             if (a == b) {
@@ -100,5 +103,19 @@ public class Comparators {
             }
             throw new IllegalArgumentException(String.format("cannot compare %s with %s", a.getClass(), b.getClass()));
         }
-    };
+    }
+
+    private static class ReverseComparator<T> implements Comparator<T>, Serializable {
+        private static final long serialVersionUID = 1835859514430760373L;
+        private final Comparator<T> c;
+
+        public ReverseComparator(Comparator<T> c) {
+            this.c = c;
+        }
+
+        @Override
+        public int compare(T o1, T o2) {
+            return c.compare(o2, o1);
+        }
+    }
 }
