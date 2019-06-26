@@ -5,7 +5,6 @@ import com.fr.swift.cloud.bean.TreasureBean;
 import com.fr.swift.cloud.load.FileImportUtils;
 import com.fr.swift.cloud.util.CloudLogUtils;
 import com.fr.swift.cloud.util.ZipUtils;
-import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Strings;
@@ -59,7 +58,7 @@ public class TreasureImportJob extends BaseJob<Boolean, TreasureBean> {
             CloudLogUtils.logStartJob(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion(), "import");
             FileImportUtils.load(downloadPath, treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());
             new TreasureAnalysisTask(treasureBean).getJob().call();
-            TaskProducer.produceTask(new TreasureAnalysisTask(treasureBean));
+//            TaskProducer.produceTask(new TreasureAnalysisTask(treasureBean));
         } else {
             throw new RuntimeException("Download link is empty");
         }
