@@ -73,13 +73,16 @@ public class CloudMetadataCreatorV2_0 {
         public SwiftMetaDataColumn sumAfter = new MetaDataColumnBean("sumAfter", Types.BIGINT);
         public SwiftMetaDataColumn sumTotal = new MetaDataColumnBean("sumTotal", Types.BIGINT);
 
+        public SwiftMetaDataColumn node = new MetaDataColumnBean("node", Types.VARCHAR);
+
         public SwiftMetaDataColumn appId = new MetaDataColumnBean("appId", Types.VARCHAR);
         public SwiftMetaDataColumn yearMonth = new MetaDataColumnBean("yearMonth", Types.VARCHAR);
+
 
         public SwiftMetaData getMetadata() {
             List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
             columnList.addAll(Arrays.asList(gcStartTime, gcType, pid, duration, youngBefore, youngAfter, youngTotal, oldBefore, oldAfter, oldTotal,
-                    metaspaceBefore, metaspaceAfter, metaspaceTotal, sumBefore, sumAfter, sumTotal, appId, yearMonth));
+                    metaspaceBefore, metaspaceAfter, metaspaceTotal, sumBefore, sumAfter, sumTotal, appId, yearMonth, node));
             return new SwiftMetaDataBean(tableName, null, tableName, null, columnList);
         }
     }

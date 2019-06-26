@@ -82,4 +82,19 @@ public class ZipUtils {
             }
         }
     }
+
+    public static void moveGCFiles(String gcLogsPath, String destinationPath) {
+        File gcLogs = new File(gcLogsPath);
+        //gcLogs文件夹存在
+        if (gcLogs.isDirectory()) {
+            File[] gcFiles = gcLogs.listFiles();
+            if (gcFiles.length != 0) {
+                //mv gclog
+                for (File file : gcFiles) {
+                    String destinationFile = destinationPath + "/" + file.getName();
+                    file.renameTo(new File(destinationFile));
+                }
+            }
+        }
+    }
 }

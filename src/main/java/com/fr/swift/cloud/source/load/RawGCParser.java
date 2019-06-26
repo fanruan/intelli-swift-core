@@ -77,6 +77,8 @@ public class RawGCParser implements LineParser<String> {
                 } else {
                     fillMap(map, "SUM", element);
                 }
+            } else if (element.contains("node")) {
+                map.put("node", element.substring(("node:").length()).trim());
             }
         }
         return map;
