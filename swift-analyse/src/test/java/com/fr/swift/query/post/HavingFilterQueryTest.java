@@ -3,8 +3,6 @@ package com.fr.swift.query.post;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.query.aggregator.ListAggregatorValueRow;
-import com.fr.swift.query.aggregator.SingleAggregatorValueSet;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
 import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
@@ -49,8 +47,7 @@ public class HavingFilterQueryTest {
                 expected.add(new ListBasedRow(Arrays.asList(dims[i], (double) i)));
             }
             GroupNode child = new GroupNode(0, dims[i]);
-            child.setAggregatorValue(new SingleAggregatorValueSet(
-                    new ListAggregatorValueRow(new AggregatorValue[]{new DoubleAmountAggregatorValue(i)})));
+            child.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(i)});
             root.addChild(child);
         }
         QueryResultSet<SwiftNode> rs = new NodeQRSImpl(200, root);

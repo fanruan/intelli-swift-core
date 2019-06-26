@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter.match;
 
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.SwiftNode;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class NodeFilter {
 
         SwiftNode parent = node.getParent();
         //BI-21146,空节点清空汇总值
-        node.getAggregatorValue().clear();
+        node.setAggregatorValue(new AggregatorValue[node.getAggregatorValue().length]);
         if (parent != null) {
             List<SwiftNode> children = parent.getChildren();
             parent.clearChildren();
