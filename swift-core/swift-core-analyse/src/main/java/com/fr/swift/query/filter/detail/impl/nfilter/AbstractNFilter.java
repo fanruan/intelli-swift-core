@@ -56,7 +56,7 @@ public abstract class AbstractNFilter extends AbstractDetailFilter {
     }
 
     /**
-     * 安老师说大多是单行的，所以先不考虑多行
+     * 安老师说大多是单行的，以后有多行需求再改
      * 改成单行好理解
      * TODO 2019/06/26 多行处理
      *
