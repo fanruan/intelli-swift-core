@@ -1,42 +1,44 @@
 package com.fr.swift.result.node.cal;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by pony on 2018/5/16.
  */
 public class DimensionPercentCalculator extends AbstractTargetCalculator {
-    public DimensionPercentCalculator(int paramIndex, int resultIndex, Iterator<Iterator<List<AggregatorValue[]>>> iterators) {
+    public DimensionPercentCalculator(int paramIndex, int resultIndex, Iterator<Iterator<AggregatorValueSet>> iterators) {
         super(paramIndex, resultIndex, iterators);
     }
 
     @Override
     public Object call() throws Exception {
         while (iterators.hasNext()) {
-            Iterator<List<AggregatorValue[]>> iterator = iterators.next();
+            Iterator<AggregatorValueSet> iterator = iterators.next();
             while (iterator.hasNext()) {
-                List<AggregatorValue[]> row = iterator.next();
-                for (int i = 0; i < row.size(); i++) {
-                    Double value = row.get(i)[paramIndex].calculate();
+                AggregatorValueSet row = iterator.next();
+                for (AggregatorValueRow item : row) {
+                    Double value = item.getValue(paramIndex).calculate();
                     // 跳过空值
                     if (Double.isNaN(value)) {
                         continue;
                     }
-                    Double sum = getSum(row.get(i));
-                    row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(value / sum);
+                    Double sum = getSum(item);
+                    item.setValue(resultIndex, new DoubleAmountAggregatorValue(value / sum));
                 }
             }
         }
         return null;
     }
 
-    private Double getSum(AggregatorValue[] aggregatorValues) {
+    private Double getSum(AggregatorValueRow aggregatorValues) {
         double d = 0;
-        for (AggregatorValue value : aggregatorValues){
+        for (int i = 0; i < aggregatorValues.getSize(); i++) {
+            AggregatorValue value = aggregatorValues.getValue(i);
             if (value != null){
                 Object result = value.calculateValue();
                 if (result != null){

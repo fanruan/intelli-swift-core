@@ -155,7 +155,7 @@ public class FunnelSegmentQuery implements Query<FunnelQueryResultSet> {
             return null;
         }
         Column a0 = segment.getColumn(new ColumnKey(groupBean.getColumn()));
-        return new Column[]{a0};
+        return new Column[]{a0, null};
     }
 
     private DictionaryEncodedColumn[] createAssociatedColumn() {

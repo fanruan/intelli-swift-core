@@ -1,10 +1,12 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
+import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +26,16 @@ public class NumberAverageFilter extends NumberInRangeFilter {
 
     private static Double average(SwiftNode node, int targetIndex) {
         List<SwiftNode> children = node.getParent().getChildren();
-        Double sum = .0;
+        double sum = .0;
+        long size = 0L;
         for (int i = 0; i < children.size(); i++) {
-            sum += children.get(i).getAggregatorValue()[targetIndex].calculate();
+            Iterator<AggregatorValueRow> iterator = children.get(i).getAggregatorValue().iterator();
+            while (iterator.hasNext()) {
+                sum += iterator.next().getValue(targetIndex).calculate();
+                size++;
+            }
         }
-        return sum / children.size();
+        return sum / size;
     }
 
     @Override
@@ -45,14 +52,25 @@ public class NumberAverageFilter extends NumberInRangeFilter {
         if (!cacheMap.containsKey(valueList)) {
             cacheMap.put(valueList, average(node, targetIndex));
         }
-        Object data = node.getAggregatorValue(targetIndex).calculateValue();
-        if (data == null) {
-            return false;
-        }
-        double value = ((Number) data).doubleValue();
+        Iterator<AggregatorValueRow> iterator = node.getAggregatorValue().iterator();
+        boolean matches = false;
         double minValue = min.doubleValue() != Double.NEGATIVE_INFINITY ? cacheMap.get(valueList) : min.doubleValue();
         double maxValue = max.doubleValue() != Double.POSITIVE_INFINITY ? cacheMap.get(valueList) : max.doubleValue();
-        return (minIncluded ? value >= minValue : value > minValue) &&
-                (maxIncluded ? value <= maxValue : value < maxValue);
+        while (iterator.hasNext()) {
+            AggregatorValueRow row = iterator.next();
+            Object data = row.getValue(targetIndex).calculateValue();
+            if (data == null) {
+                iterator.remove();
+                continue;
+            }
+            double value = ((Number) data).doubleValue();
+            boolean match = (minIncluded ? value >= minValue : value > minValue) &&
+                    (maxIncluded ? value <= maxValue : value < maxValue);
+            matches |= match;
+            if (!match) {
+                iterator.remove();
+            }
+        }
+        return matches;
     }
 }

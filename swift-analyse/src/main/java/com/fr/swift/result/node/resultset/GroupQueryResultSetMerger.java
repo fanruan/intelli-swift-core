@@ -51,11 +51,6 @@ public class GroupQueryResultSetMerger implements QueryResultSetMerger<QueryResu
         return new GroupQueryResultSetMerger(fetchSize, isGlobalIndexed, aggregators, comparators);
     }
 
-    @Override
-    public QueryResultSet<GroupPage> merge(List<QueryResultSet<GroupPage>> resultSets) {
-        return new MergeGroupQueryResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, comparators);
-    }
-
     private static List<Comparator<SwiftNode>> getComparators(List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators) {
         List<Comparator<?>> list = new ArrayList<Comparator<?>>();
         for (Pair<SortType, ColumnTypeConstants.ClassType> pair : comparators) {
@@ -85,5 +80,10 @@ public class GroupQueryResultSetMerger implements QueryResultSetMerger<QueryResu
             });
         }
         return result;
+    }
+
+    @Override
+    public QueryResultSet<GroupPage> merge(List<QueryResultSet<GroupPage>> resultSets) {
+        return new MergeGroupQueryResultSet(fetchSize, isGlobalIndexed, resultSets, aggregators, comparators);
     }
 }
