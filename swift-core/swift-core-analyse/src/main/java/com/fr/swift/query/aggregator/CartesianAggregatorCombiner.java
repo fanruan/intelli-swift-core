@@ -74,7 +74,7 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
                         }
                     }
                 } else if (i == lastIterator) {
-                    iterators[i] = ((Iterable) source[i]).iterator();
+                    iterators[i] = ((IterableAggregatorValue) source[i]).iterator();
                     tmp[i] = iterators[i].next();
                     if (preLastIterator == -1) {
                         preLastIterator = lastIterator;
