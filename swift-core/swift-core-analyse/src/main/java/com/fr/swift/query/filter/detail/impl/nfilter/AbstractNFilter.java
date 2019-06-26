@@ -1,13 +1,11 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
-import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,16 +55,25 @@ public abstract class AbstractNFilter extends AbstractDetailFilter {
         return lineCacheMap.get(valueList);
     }
 
+    /**
+     * 安老师说大多是单行的，所以先不考虑多行
+     * 改成单行好理解
+     * TODO 2019/06/26 多行处理
+     *
+     * @param node
+     * @param targetIndex
+     * @return
+     */
     private Double calculateValue(SwiftNode node, int targetIndex) {
         NTree<Double> nTree = getNTree();
         List<SwiftNode> children = node.getParent().getChildren();
         for (SwiftNode n : children) {
-            Iterator<AggregatorValueRow> iterator = n.getAggregatorValue().iterator();
-            while (iterator.hasNext()) {
-                AggregatorValueRow next = iterator.next();
-                Object value = next.getValue(targetIndex).calculateValue();
-                nTree.add(value == null ? null : ((Number) value).doubleValue());
-            }
+//            for (AggregatorValueRow next : n.getAggregatorValue()) {
+//                Object value = next.getValue(targetIndex).calculateValue();
+//                nTree.add(value == null ? null : ((Number) value).doubleValue());
+//            }
+            Object value = n.asSingleAggRowValue().getValue(targetIndex).calculateValue();
+            nTree.add(value == null ? null : ((Number) value).doubleValue());
         }
         return nTree.getLineValue();
     }
