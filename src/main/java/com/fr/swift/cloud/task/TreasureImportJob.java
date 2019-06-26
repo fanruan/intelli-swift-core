@@ -49,8 +49,8 @@ public class TreasureImportJob extends BaseJob<Boolean, TreasureBean> {
             String downloadPath = SwiftCloudConstants.ZIP_FILE_PATH + File.separator + treasureBean.getClientId() + File.separator + treasureBean.getClientAppId() + File.separator + treasureBean.getYearMonth();
             ZipUtils.unzip(inputStream, new File(downloadPath));
 
-            String treasurePath = downloadPath + "/treas" + treasureBean.getYearMonth();
-            String gcLogsPath = treasurePath + "/logs/gclogs";
+            String treasurePath = downloadPath + File.separator + "treas" + treasureBean.getYearMonth();
+            String gcLogsPath = treasurePath + File.separator + "logs" + File.separator + "gclogs";
             //把gclogs目录下的所有gc文件都移动到downloadPath下
             ZipUtils.moveGCFiles(gcLogsPath, downloadPath);
 
