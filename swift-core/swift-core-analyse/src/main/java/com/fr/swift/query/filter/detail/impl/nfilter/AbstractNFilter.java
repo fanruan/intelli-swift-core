@@ -1,11 +1,13 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
+import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,8 +61,12 @@ public abstract class AbstractNFilter extends AbstractDetailFilter {
         NTree<Double> nTree = getNTree();
         List<SwiftNode> children = node.getParent().getChildren();
         for (SwiftNode n : children) {
-            Object value = n.getAggregatorValue(targetIndex).calculateValue();
-            nTree.add(value == null ? null : ((Number) value).doubleValue());
+            Iterator<AggregatorValueRow> iterator = n.getAggregatorValue().iterator();
+            while (iterator.hasNext()) {
+                AggregatorValueRow next = iterator.next();
+                Object value = next.getValue(targetIndex).calculateValue();
+                nTree.add(value == null ? null : ((Number) value).doubleValue());
+            }
         }
         return nTree.getLineValue();
     }

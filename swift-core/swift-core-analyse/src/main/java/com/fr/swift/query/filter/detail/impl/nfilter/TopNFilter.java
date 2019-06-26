@@ -1,6 +1,8 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.filter.match.MatchConverter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -9,6 +11,8 @@ import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.Assert;
+
+import java.util.Iterator;
 
 /**
  * 取字典排序中最大的N个
@@ -42,7 +46,17 @@ public class TopNFilter extends AbstractNFilter {
             return (size - index) <= topN;
         } else {
             Double value = getValue(node, targetIndex);
-            return node.getAggregatorValue(targetIndex).calculate() >= value;
+            Iterator<AggregatorValueRow> iterator = node.getAggregatorValue().iterator();
+            boolean matches = false;
+            while (iterator.hasNext()) {
+                AggregatorValueRow next = iterator.next();
+                boolean match = ((AggregatorValue<Double>) next.getValue(targetIndex)).calculateValue() >= value;
+                matches |= match;
+                if (!match) {
+                    iterator.remove();
+                }
+            }
+            return matches;
         }
     }
 

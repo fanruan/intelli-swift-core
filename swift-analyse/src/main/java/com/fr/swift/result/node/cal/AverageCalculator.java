@@ -1,6 +1,7 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueRow;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 
 import java.util.ArrayList;
@@ -12,36 +13,38 @@ import java.util.List;
  */
 public class AverageCalculator extends AbstractTargetCalculator {
 
-    public AverageCalculator(int paramIndex, int resultIndex, Iterator<Iterator<List<AggregatorValue[]>>> iterators) {
+    public AverageCalculator(int paramIndex, int resultIndex, Iterator<Iterator<AggregatorValueSet>> iterators) {
         super(paramIndex, resultIndex, iterators);
     }
 
     @Override
     public Object call() {
         while (iterators.hasNext()) {
-            Iterator<List<AggregatorValue[]>> iterator = iterators.next();
-            List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
+            Iterator<AggregatorValueSet> iterator = iterators.next();
+            List<AggregatorValueSet> rows = new ArrayList<AggregatorValueSet>();
             // 交叉表的一行，一个配置计算要计算row.size()次
             Double[] sum = null;
             while (iterator.hasNext()) {
-                List<AggregatorValue[]> row = iterator.next();
+                AggregatorValueSet row = iterator.next();
                 rows.add(row);
                 if (sum == null) {
-                    sum = row.isEmpty() ? null : new Double[row.size()];
+                    sum = row.isEmpty() ? new Double[0] : new Double[row.size()];
                 }
-                for (int i = 0; i < row.size(); i++) {
+                int i = 0;
+                for (AggregatorValueRow item : row) {
                     sum[i] = sum[i] == null ? .0 : sum[i];
                     // 空值怎么处理呢？
-                    sum[i] += row.get(i)[paramIndex].calculate();
+                    sum[i++] += item.getValue(paramIndex).calculate();
                 }
             }
             Double[] average = new Double[sum.length];
             for (int i = 0; i < average.length; i++) {
                 average[i] = rows.isEmpty() ? .0 : sum[i] / rows.size();
             }
-            for (List<AggregatorValue[]> row : rows) {
-                for (int i = 0; i < average.length; i++) {
-                    row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(average[i]);
+            for (AggregatorValueSet row : rows) {
+                int i = 0;
+                for (AggregatorValueRow item : row) {
+                    item.setValue(resultIndex, new DoubleAmountAggregatorValue(average[i++]));
                 }
             }
         }

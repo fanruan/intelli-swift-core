@@ -1,6 +1,6 @@
 package com.fr.swift.result;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.AggregatorValueSet;
 
 /**
  * Created by pony on 2017/12/8.
@@ -9,14 +9,11 @@ public abstract class AbstractSwiftNode implements SwiftNode {
     private static final long serialVersionUID = -1451247093003530849L;
     private SwiftNode parent;
     private SwiftNode sibling;
-    private AggregatorValue[] aggregatorValues;
+    private AggregatorValueSet aggregatorValues;
 
-    public AbstractSwiftNode(int sumLength) {
-        this.aggregatorValues = new AggregatorValue[sumLength];
-    }
 
     AbstractSwiftNode() {
-        this.aggregatorValues = new AggregatorValue[0];
+//        this.aggregatorValues = new AggregatorValue[0];
     }
 
     @Override
@@ -39,23 +36,19 @@ public abstract class AbstractSwiftNode implements SwiftNode {
         this.parent = parent;
     }
 
-    @Override
-    public void setAggregatorValue(int key, AggregatorValue value) {
-        aggregatorValues[key] = value;
-    }
+
+//    @Override
+//    public AggregatorValue getAggregatorValue(int key) {
+//        return aggregatorValues[key];
+//    }
 
     @Override
-    public AggregatorValue getAggregatorValue(int key) {
-        return aggregatorValues[key];
-    }
-
-    @Override
-    public AggregatorValue[] getAggregatorValue() {
+    public AggregatorValueSet getAggregatorValue() {
         return aggregatorValues;
     }
 
     @Override
-    public void setAggregatorValue(AggregatorValue[] aggregatorValues) {
+    public void setAggregatorValue(AggregatorValueSet aggregatorValues) {
         this.aggregatorValues = aggregatorValues;
     }
 }
