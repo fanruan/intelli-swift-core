@@ -48,6 +48,12 @@ public class TreasureImportJob extends BaseJob<Boolean, TreasureBean> {
             }
             String downloadPath = SwiftCloudConstants.ZIP_FILE_PATH + File.separator + treasureBean.getClientId() + File.separator + treasureBean.getClientAppId() + File.separator + treasureBean.getYearMonth();
             ZipUtils.unzip(inputStream, new File(downloadPath));
+
+            String treasurePath = downloadPath + File.separator + "treas" + treasureBean.getYearMonth();
+            String gcLogsPath = treasurePath + File.separator + "logs" + File.separator + "gclogs";
+            //把gclogs目录下的所有gc文件都移动到downloadPath下
+            ZipUtils.moveGCFiles(gcLogsPath, downloadPath);
+
             // 先导入csv文件数据到cube，然后生成分析结果，并保存到数据库
             CloudLogUtils.logStartJob(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion(), "import");
             FileImportUtils.load(downloadPath, treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion());

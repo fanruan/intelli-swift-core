@@ -937,6 +937,12 @@ fanruan.gc.log: !com.fr.swift.base.meta.SwiftMetaDataBean
       precision: 255
       scale: 15
       type: 12
+    - !com.fr.swift.base.meta.MetaDataColumnBean
+      columnId: node
+      name: node
+      precision: 255
+      scale: 15
+      type: 12
   id: gc_record
   swiftDatabase: *63
   tableName: gc_record
