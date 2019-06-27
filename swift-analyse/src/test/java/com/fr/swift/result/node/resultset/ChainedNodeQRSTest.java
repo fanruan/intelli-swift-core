@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Created by lyon on 2019/1/8.
@@ -46,7 +45,7 @@ public class ChainedNodeQRSTest {
     private ChainedNodeQRS rs;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         rs = new ChainedNodeQRS(new SwiftNodeOperator() {
             @Override
             public SwiftNode apply(SwiftNode p) {
@@ -82,14 +81,5 @@ public class ChainedNodeQRSTest {
     @Test
     public void getFetchSize() {
         assertEquals(fetchSize, rs.getFetchSize());
-    }
-
-    @Test
-    public void getMerger() {
-        try {
-            rs.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
     }
 }

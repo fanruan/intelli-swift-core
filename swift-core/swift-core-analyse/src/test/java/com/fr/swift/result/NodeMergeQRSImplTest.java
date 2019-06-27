@@ -21,7 +21,7 @@ public class NodeMergeQRSImplTest {
     private NodeMergeQRSImpl rs;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         rs = new NodeMergeQRSImpl(fetchSize, new GroupNode(), new ArrayList<Map<Integer, Object>>());
     }
 
@@ -30,15 +30,6 @@ public class NodeMergeQRSImplTest {
         assertTrue(rs.hasNextPage());
         assertNotNull(rs.getPage());
         assertFalse(rs.hasNextPage());
-    }
-
-    @Test
-    public void getMerger() {
-        try {
-            rs.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
     }
 
     @Test

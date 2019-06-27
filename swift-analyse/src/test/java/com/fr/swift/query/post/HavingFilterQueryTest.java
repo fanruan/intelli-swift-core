@@ -29,7 +29,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Created by lyon on 2019/1/11.
@@ -66,11 +65,6 @@ public class HavingFilterQueryTest {
     public void getQueryResult() throws SQLException {
         QueryResultSet<SwiftNode> resultSet = query.getQueryResult();
         assertTrue(resultSet.hasNextPage());
-        try {
-            resultSet.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
         List<Row> rows = new ArrayList<Row>();
         while (resultSet.hasNextPage()) {
             rows.addAll(IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(resultSet.getPage())));

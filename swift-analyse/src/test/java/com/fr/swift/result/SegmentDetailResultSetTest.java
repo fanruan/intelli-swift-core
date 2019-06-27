@@ -24,7 +24,7 @@ public class SegmentDetailResultSetTest {
     private SegmentDetailResultSet rs;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         CubeData cubeData = new CubeData(1, 0, 100);
         DetailFilter filter = EasyMock.createMock(DetailFilter.class);
         EasyMock.expect(filter.createFilterIndex()).andReturn(BitMaps.newAllShowBitMap(rowCount)).anyTimes();
@@ -47,15 +47,6 @@ public class SegmentDetailResultSetTest {
     @Test
     public void getRowCount() {
         assertEquals(rowCount, rs.getRowCount());
-    }
-
-    @Test
-    public void getMerger() {
-        try {
-            rs.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
     }
 
     @Test
