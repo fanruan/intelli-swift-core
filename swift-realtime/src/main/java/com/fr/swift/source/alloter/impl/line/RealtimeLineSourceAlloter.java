@@ -32,7 +32,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
     }
 
     @Override
-    protected SegmentState getInsertableSeg() {
+    protected SegmentState getInsertableSeg(int logicOrder) {
         Map<SourceKey, List<SegmentKey>> keyListMap = SEG_SVC.getOwnSegments();
         List<SegmentKey> segKeys = keyListMap.get(tableKey);
         segKeys = segKeys == null ? new ArrayList<SegmentKey>() : segKeys;

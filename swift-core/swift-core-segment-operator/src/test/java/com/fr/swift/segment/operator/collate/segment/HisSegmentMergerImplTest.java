@@ -113,7 +113,7 @@ public class HisSegmentMergerImplTest {
         });
         mockExpectedColumn(seg0);
         HisSegmentMerger merger = new HisSegmentMergerImpl();
-        List<SegmentKey> keys = merger.merge(dataSource, Collections.singletonList(testSeg0), alloter);
+        List<SegmentKey> keys = merger.merge(dataSource, Collections.singletonList(testSeg0), alloter, -1);
         assertEquals(1, keys.size());
         check0(seg0);
 
@@ -130,7 +130,7 @@ public class HisSegmentMergerImplTest {
             }
         });
         mockExpectedColumn(seg1);
-        keys = merger.merge(dataSource, Collections.singletonList(testSeg1), alloter);
+        keys = merger.merge(dataSource, Collections.singletonList(testSeg1), alloter, -1);
         assertEquals(1, keys.size());
         check1(seg1);
 
@@ -148,7 +148,7 @@ public class HisSegmentMergerImplTest {
         when(SegmentUtils.newSegment(ArgumentMatchers.<IResourceLocation>any(), ArgumentMatchers.<SwiftMetaData>any())).thenReturn(seg2, seg3);
         mockExpectedColumn(seg2);
         mockExpectedColumn(seg3);
-        keys = merger.merge(dataSource, Arrays.asList(testSeg2, testSeg3), alloter);
+        keys = merger.merge(dataSource, Arrays.asList(testSeg2, testSeg3), alloter, -1);
         assertEquals(2, keys.size());
         check2(seg2);
         check3(seg3);
