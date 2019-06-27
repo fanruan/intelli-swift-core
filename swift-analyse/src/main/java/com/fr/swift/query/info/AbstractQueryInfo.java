@@ -2,7 +2,6 @@ package com.fr.swift.query.info;
 
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.SourceKey;
 
 import java.util.HashSet;
@@ -13,7 +12,7 @@ import java.util.Set;
  * @author pony
  * @date 2017/12/15
  */
-public abstract class AbstractQueryInfo<T extends QueryResultSet> implements SingleTableQueryInfo<T> {
+public abstract class AbstractQueryInfo implements SingleTableQueryInfo {
 
     private String id;
     private int fetchSize;
@@ -64,7 +63,7 @@ public abstract class AbstractQueryInfo<T extends QueryResultSet> implements Sin
             return false;
         }
 
-        AbstractQueryInfo<?> that = (AbstractQueryInfo<?>) o;
+        AbstractQueryInfo that = (AbstractQueryInfo) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;

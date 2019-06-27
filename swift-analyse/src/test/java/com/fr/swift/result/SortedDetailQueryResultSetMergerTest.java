@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by lyon on 2018/12/30.
  */
-public class SortedDetailResultSetMergerTest extends TestCase {
+public class SortedDetailQueryResultSetMergerTest extends TestCase {
 
     public void testMerge() {
         int fetchSize = 5;
@@ -38,7 +38,7 @@ public class SortedDetailResultSetMergerTest extends TestCase {
         for (int i = 0; i < numberOfQRS; i++) {
             resultSets.add(new DetailQueryResultSetMergerTest.TestDetailQRS(pageSize, rowCount, pages));
         }
-        SortedDetailResultSetMerger merger = new SortedDetailResultSetMerger(fetchSize,
+        SortedDetailQueryResultSetMerger merger = SortedDetailQueryResultSetMerger.ofCompareInfo(fetchSize,
                 Arrays.asList(Pair.of((Sort) new AscSort(0), ColumnTypeConstants.ClassType.INTEGER)));
         DetailQueryResultSet resultSet = merger.merge(resultSets);
         assertEquals(numberOfQRS * rowCount, resultSet.getRowCount());

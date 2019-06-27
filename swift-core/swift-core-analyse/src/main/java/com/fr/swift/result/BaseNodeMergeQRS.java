@@ -1,18 +1,15 @@
 package com.fr.swift.result;
 
+import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.structure.Pair;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author anchore
  * @date 12/11/2018
  */
-public abstract class BaseNodeMergeQRS<T extends SwiftNode> implements NodeMergeQRS<T> {
+public abstract class BaseNodeMergeQRS implements QueryResultSet<GroupPage> {
 
     private int fetchSize;
 
@@ -26,7 +23,7 @@ public abstract class BaseNodeMergeQRS<T extends SwiftNode> implements NodeMerge
     }
 
     @Override
-    public <Q extends QueryResultSet<Pair<T, List<Map<Integer, Object>>>>> QueryResultSetMerger<Pair<T, List<Map<Integer, Object>>>, Q> getMerger() {
+    public QueryResultSetMerger<QueryResultSet<GroupPage>> getMerger() {
         throw new UnsupportedOperationException();
     }
 

@@ -4,7 +4,7 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.DetailQueryResultSet;
 
 /**
  * Created by pony on 2017/12/13.
@@ -17,9 +17,9 @@ class DetailQueryBuilder {
      * @param bean
      * @return
      */
-    static <T extends QueryResultSet> Query<T> buildQuery(DetailQueryInfoBean bean) throws Exception {
+    static Query<DetailQueryResultSet> buildQuery(DetailQueryInfoBean bean) {
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(bean);
-        Query<T> query;
+        Query<DetailQueryResultSet> query;
         if (info.hasSort()) {
             query = LocalDetailQueryBuilder.GROUP.buildLocalQuery(info);
         } else {
