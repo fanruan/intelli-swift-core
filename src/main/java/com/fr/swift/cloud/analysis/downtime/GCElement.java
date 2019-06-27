@@ -16,13 +16,15 @@ public class GCElement extends AbstractDowntimeElement {
     private long startTime;
     private long duration;
     private long pid;
+    private String node;
 
     public GCElement(Row row) {
-        super(row.getValue(4), row.getValue(5));
+        super(row.getValue(5), row.getValue(6));
         this.startTime = row.getValue(0);
         this.gcType = GcType.getGcType(row.getValue(1));
         this.duration = row.getValue(2);
         this.pid = row.getValue(3);
+        this.node = row.getValue(4);
     }
 
     @Override
@@ -42,6 +44,11 @@ public class GCElement extends AbstractDowntimeElement {
     @Override
     public ElementType type() {
         return ElementType.GC;
+    }
+
+    @Override
+    public String node() {
+        return node;
     }
 
     public GcType getGcType() {
@@ -72,8 +79,9 @@ public class GCElement extends AbstractDowntimeElement {
         DimensionBean dimensionBean2 = new DimensionBean(DimensionType.DETAIL, "gcType");
         DimensionBean dimensionBean3 = new DimensionBean(DimensionType.DETAIL, "duration");
         DimensionBean dimensionBean4 = new DimensionBean(DimensionType.DETAIL, "pid");
-        DimensionBean dimensionBean5 = new DimensionBean(DimensionType.DETAIL, "appId");
-        DimensionBean dimensionBean6 = new DimensionBean(DimensionType.DETAIL, "yearMonth");
-        return new DimensionBean[]{dimensionBean1, dimensionBean2, dimensionBean3, dimensionBean4, dimensionBean5, dimensionBean6};
+        DimensionBean dimensionBean5 = new DimensionBean(DimensionType.DETAIL, "node");
+        DimensionBean dimensionBean6 = new DimensionBean(DimensionType.DETAIL, "appId");
+        DimensionBean dimensionBean7 = new DimensionBean(DimensionType.DETAIL, "yearMonth");
+        return new DimensionBean[]{dimensionBean1, dimensionBean2, dimensionBean3, dimensionBean4, dimensionBean5, dimensionBean6, dimensionBean7};
     }
 }
