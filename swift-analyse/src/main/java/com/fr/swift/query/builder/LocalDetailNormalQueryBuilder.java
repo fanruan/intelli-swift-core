@@ -9,7 +9,7 @@ import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.NormalDetailResultQuery;
 import com.fr.swift.query.segment.detail.NormalDetailSegmentQuery;
-import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
@@ -27,12 +27,12 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
 
     private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
-    protected LocalDetailNormalQueryBuilder() {
+    LocalDetailNormalQueryBuilder() {
     }
 
     @Override
-    public Query<QueryResultSet> buildLocalQuery(DetailQueryInfo info) {
-        List<Query<QueryResultSet>> queries = new ArrayList<Query<QueryResultSet>>();
+    public Query<DetailQueryResultSet> buildLocalQuery(DetailQueryInfo info) {
+        List<Query<DetailQueryResultSet>> queries = new ArrayList<Query<DetailQueryResultSet>>();
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();

@@ -20,7 +20,7 @@ public class ComparatorsTest {
         short s1 = Short.MAX_VALUE, s2 = Short.MIN_VALUE;
         byte b1 = Byte.MAX_VALUE, b2 = Byte.MIN_VALUE;
 
-        Comparator<Number> c = Comparators.numberAsc();
+        Comparator<Number> c = Comparators.NUMBER_ASC;
 
         assertEquals(0, c.compare(d1, d1));
         assertEquals(0, c.compare(l1, l1));
@@ -52,5 +52,18 @@ public class ComparatorsTest {
         assertEquals(0, c.compare(null, null));
         assertEquals(1, c.compare(d1, null));
         assertEquals(-1, c.compare(null, l1));
+    }
+
+    @Test
+    public void stringAsc() {
+        Comparator<String> c = Comparators.STRING_ASC;
+        Object[][] data = {
+                {-1, "1", "2"},
+                {0, "1", "1"},
+                {1, "2", "1"},
+        };
+        for (Object[] datum : data) {
+            assertEquals(datum[0], c.compare((String) datum[1], (String) datum[2]));
+        }
     }
 }

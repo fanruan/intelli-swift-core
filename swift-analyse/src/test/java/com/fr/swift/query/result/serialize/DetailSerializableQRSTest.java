@@ -1,15 +1,15 @@
 package com.fr.swift.query.result.serialize;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.result.DetailQueryResultSetMerger;
-import com.fr.swift.result.IDetailQueryResultSetMerger;
+import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,12 +24,12 @@ import static org.junit.Assert.fail;
  */
 public class DetailSerializableQRSTest {
 
-    int fetchSize = 1;
-    int rowCount = 3;
+    private int fetchSize = 1;
+    private int rowCount = 3;
     private DetailSerializableQRS qrs;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         qrs = new DetailSerializableQRS(fetchSize, rowCount, new DetailQueryResultSetMerger(fetchSize),
                 new ArrayList<Row>(), false);
     }
@@ -41,14 +41,14 @@ public class DetailSerializableQRSTest {
 
     @Test
     public void setInvoker() {
-        List<Row> page = new ArrayList<Row>(Collections.singleton(new ListBasedRow(Arrays.asList("a"))));
-        IDetailQueryResultSetMerger merger = new DetailQueryResultSetMerger(fetchSize);
+        List<Row> page = new ArrayList<Row>(Collections.singleton(new ListBasedRow(Collections.singletonList("a"))));
+        QueryResultSetMerger<DetailQueryResultSet> merger = new DetailQueryResultSetMerger(fetchSize);
         final DetailSerializableQRS next = new DetailSerializableQRS(fetchSize, rowCount, merger, page, false);
         qrs = new DetailSerializableQRS(fetchSize, rowCount, merger, page, true);
         qrs.setInvoker(new BaseSerializableQRS.SyncInvoker() {
             @Override
-            public <D, T extends BaseSerializableQRS<D>> T invoke() {
-                return (T) next;
+            public BaseSerializableQRS<?> invoke() {
+                return next;
             }
         });
         assertTrue(qrs.hasNextPage());

@@ -19,7 +19,7 @@ import java.util.List;
  * @author pony
  * @date 2017/12/18
  */
-public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryBuilder {
+abstract class AbstractLocalGroupQueryBuilder {
 
     static boolean[] isGlobalIndexed(List<Dimension> dimensions) {
         boolean[] booleans = new boolean[dimensions.size()];
@@ -38,7 +38,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
             Group group = dimension.getGroup();
             GroupOperator operator = null;
             Sort sort = dimension.getSort();
-            if(sort != null && sort.getColumnKey() != null) {
+            if (sort != null && sort.getColumnKey() != null) {
                 columnList.add(segment.getColumn(sort.getColumnKey()));
             }
             if (group != null) {
@@ -52,7 +52,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
         return dimensionColumns;
     }
 
-    protected List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
+    List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
         List<Column> metricColumns = new ArrayList<Column>();
         for (Metric metric : metrics) {
             Column column = metric.getColumn(segment);
@@ -61,7 +61,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
         return metricColumns;
     }
 
-    protected List<Aggregator> getAggregators(List<Metric> metrics) {
+    List<Aggregator> getAggregators(List<Metric> metrics) {
         List<Aggregator> aggregators = new ArrayList<Aggregator>();
         for (Metric metric : metrics) {
             aggregators.add(metric.getAggregator());
@@ -72,9 +72,7 @@ public abstract class AbstractLocalGroupQueryBuilder implements LocalGroupQueryB
     protected List<GroupTarget> getTargets(List<GroupTarget> targets) {
         List<GroupTarget> targetList = new ArrayList<GroupTarget>();
         if (targets != null) {
-            for (GroupTarget target : targets) {
-                targetList.add(target);
-            }
+            targetList.addAll(targets);
         }
         return targetList;
     }

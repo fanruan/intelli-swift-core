@@ -3,8 +3,10 @@ package com.fr.swift.result.funnel;
 import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.result.FunnelResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +18,7 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelResultSet, FunnelQueryResultSet> {
-
+public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelQueryResultSet>, Serializable {
     private static final long serialVersionUID = -8191094955432120770L;
     private int numberOfSteps;
 
@@ -28,7 +29,7 @@ public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelRe
     @Override
     public FunnelQueryResultSet merge(List<FunnelQueryResultSet> resultSets) {
         Map<FunnelGroupKey, FunnelAggValue> map = new HashMap<FunnelGroupKey, FunnelAggValue>();
-        for (FunnelQueryResultSet resultSet : resultSets) {
+        for (QueryResultSet<FunnelResultSet> resultSet : resultSets) {
             Map<FunnelGroupKey, FunnelAggValue> result = resultSet.getPage().getResult();
             for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : result.entrySet()) {
                 FunnelAggValue contestAggValue = map.get(entry.getKey());

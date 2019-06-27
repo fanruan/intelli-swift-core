@@ -43,6 +43,10 @@ public class SwiftExecutors {
         return fixedThreadPool;
     }
 
+    public static ExecutorService newFixedThreadPool(ThreadFactory threadFactory) {
+        return newFixedThreadPool(Runtime.getRuntime().availableProcessors(), threadFactory);
+    }
+
     public static ExecutorService newSingleThreadExecutor() {
         return newSingleThreadExecutor(new PoolThreadFactory(SwiftExecutors.class));
     }

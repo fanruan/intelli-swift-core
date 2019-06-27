@@ -9,7 +9,6 @@ import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.group.FunnelResultQuery;
 import com.fr.swift.query.segment.group.FunnelSegmentQuery;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
@@ -23,15 +22,15 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class FunnelQueryBuilder {
+class FunnelQueryBuilder {
 
 
-    static Query<QueryResultSet> buildQuery(FunnelQueryBean bean) throws Exception {
+    static Query<FunnelQueryResultSet> buildQuery(FunnelQueryBean bean) {
         FunnelQueryInfo info = (FunnelQueryInfo) QueryInfoParser.parse(bean);
         SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-        List<Segment> Segments = localSegmentProvider.getSegment(new SourceKey(bean.getTableName()));
+        List<Segment> segments = localSegmentProvider.getSegment(new SourceKey(bean.getTableName()));
         List<Query<FunnelQueryResultSet>> queries = new ArrayList<Query<FunnelQueryResultSet>>();
-        for (Segment segment : Segments) {
+        for (Segment segment : segments) {
             queries.add(new FunnelSegmentQuery(segment, info.getQueryBean()));
         }
         SwiftLoggers.getLogger().debug("number of segment queries: {}", queries.size());
