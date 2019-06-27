@@ -1,37 +1,37 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.query.aggregator.AggregatorValueRow;
-import com.fr.swift.query.aggregator.AggregatorValueSet;
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/4.
  */
 public class SumOfAboveCalculator extends AbstractTargetCalculator {
 
-    public SumOfAboveCalculator(int paramIndex, int resultIndex, Iterator<Iterator<AggregatorValueSet>> iterators) {
+    public SumOfAboveCalculator(int paramIndex, int resultIndex, Iterator<Iterator<List<AggregatorValue[]>>> iterators) {
         super(paramIndex, resultIndex, iterators);
     }
 
     @Override
     public Object call() {
         while (iterators.hasNext()) {
-            Iterator<AggregatorValueSet> iterator = iterators.next();
-            Iterator<AggregatorValueRow> lastRow = null;
+            Iterator<List<AggregatorValue[]>> iterator = iterators.next();
+            List<AggregatorValue[]> lastRow = null;
             while (iterator.hasNext()) {
-                AggregatorValueSet row = iterator.next();
-                for (AggregatorValueRow current : row) {
-                    Double lastSum = lastRow == null ? 0 : lastRow.next().getValue(resultIndex).calculate();
-                    Double value = current.getValue(paramIndex).calculate();
+                List<AggregatorValue[]> row = iterator.next();
+                for (int i = 0; i < row.size(); i++) {
+                    Double lastSum = lastRow == null ? 0 : lastRow.get(i)[resultIndex].calculate();
+                    Double value = row.get(i)[paramIndex].calculate();
                     // 跳过空值
                     if (Double.isNaN(value)) {
                         continue;
                     }
-                    current.setValue(resultIndex, new DoubleAmountAggregatorValue(lastSum + value));
+                    row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(lastSum + value);
                 }
-                lastRow = row.iterator();
+                lastRow = row;
             }
         }
         return null;

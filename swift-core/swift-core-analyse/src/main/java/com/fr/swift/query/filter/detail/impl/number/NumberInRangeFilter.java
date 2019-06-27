@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.query.aggregator.AggregatorValueRow;
 import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.query.filter.match.MatchConverter;
@@ -17,8 +16,6 @@ import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.ArrayLookupHelper;
 import com.fr.swift.util.MatchAndIndex;
-
-import java.util.Iterator;
 
 /**
  * Created by Lyon on 2017/11/27.
@@ -123,22 +120,12 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
 
     @Override
     public boolean matches(SwiftNode node, int targetIndex, MatchConverter converter) {
-        Iterator<AggregatorValueRow> iterator = node.getAggregatorValue().iterator();
-        boolean matches = false;
-        while (iterator.hasNext()) {
-            AggregatorValueRow row = iterator.next();
-            Object data = row.getValue(targetIndex).calculateValue();
-            if (data == null) {
-                iterator.remove();
-                continue;
-            }
-            double value = ((Number) data).doubleValue();
-            boolean match = match(value);
-            matches |= match;
-            if (!match) {
-                iterator.remove();
-            }
+        Object data = node.getAggregatorValue(targetIndex).calculateValue();
+        if (data == null) {
+            return false;
         }
-        return matches;
+        double value = ((Number) data).doubleValue();
+        return match(value);
     }
 }
+
