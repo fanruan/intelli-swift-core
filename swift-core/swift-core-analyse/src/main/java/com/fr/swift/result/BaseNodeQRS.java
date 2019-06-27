@@ -1,11 +1,10 @@
 package com.fr.swift.result;
 
-import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.SwiftMetaData;
 
 /**
- * Created by lyon on 2018/12/29.
+ * @author lyon
+ * @date 2018/12/29
  */
 public abstract class BaseNodeQRS implements NodeQRS {
 
@@ -18,11 +17,6 @@ public abstract class BaseNodeQRS implements NodeQRS {
     @Override
     public int getFetchSize() {
         return fetchSize;
-    }
-
-    @Override
-    public QueryResultSetMerger<QueryResultSet<SwiftNode>> getMerger() {
-        throw new UnsupportedOperationException();
     }
 
     @Override

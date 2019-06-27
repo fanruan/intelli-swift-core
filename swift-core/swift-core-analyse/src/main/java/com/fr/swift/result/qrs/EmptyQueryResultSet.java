@@ -27,11 +27,6 @@ public class EmptyQueryResultSet<T> implements QueryResultSet<T>, Serializable {
     }
 
     @Override
-    public <Q extends QueryResultSet<T>> QueryResultSetMerger<Q> getMerger() {
-        return null;
-    }
-
-    @Override
     public SwiftResultSet convert(SwiftMetaData metaData) {
         return null;
     }

@@ -24,7 +24,7 @@ public class FakeNodeQRSTest {
     private FakeNodeQRS rs;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         rs = new FakeNodeQRS(new SwiftRowOperator<Row>() {
             @Override
             public List<Row> operate(SwiftNode node) {
@@ -46,15 +46,6 @@ public class FakeNodeQRSTest {
     @Test
     public void getFetchSize() {
         assertEquals(ChainedNodeQRSTest.fetchSize, rs.getFetchSize());
-    }
-
-    @Test
-    public void getMerger() {
-        try {
-            rs.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
     }
 
     @Test

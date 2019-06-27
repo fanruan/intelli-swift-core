@@ -11,14 +11,6 @@ import com.fr.swift.source.SwiftMetaData;
 public interface QueryResultSet<T> extends Pagination<T> {
 
     int getFetchSize();
-
-    /**
-     * @return
-     * @deprecated 独立出去，解耦
-     */
-    @Deprecated
-    <Q extends QueryResultSet<T>> QueryResultSetMerger<Q> getMerger();
-
     /**
      * @param metaData
      * @return

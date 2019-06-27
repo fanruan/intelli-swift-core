@@ -1,11 +1,11 @@
 package com.fr.swift.query.result.group;
 
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.funnel.FunnelQueryResultSet;
-import com.fr.swift.result.funnel.FunnelQueryResultSetMerger;
+import com.fr.swift.query.result.AbstractResultQuery;
+import com.fr.swift.result.FunnelResultSet;
+import com.fr.swift.result.funnel.MergeFunnelQueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,23 +14,18 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class FunnelResultQuery implements Query<FunnelQueryResultSet> {
+public class FunnelResultQuery extends AbstractResultQuery<QueryResultSet<FunnelResultSet>> {
 
     private int numberOfSteps;
-    private List<Query<FunnelQueryResultSet>> queries;
 
-    public FunnelResultQuery(int numberOfSteps, List<Query<FunnelQueryResultSet>> queries) {
+    public FunnelResultQuery(int numberOfSteps, List<Query<QueryResultSet<FunnelResultSet>>> queries) {
+        super(Integer.MAX_VALUE, queries);
         this.numberOfSteps = numberOfSteps;
         this.queries = queries;
     }
 
     @Override
-    public FunnelQueryResultSet getQueryResult() throws SQLException {
-        List<FunnelQueryResultSet> resultList = new ArrayList<FunnelQueryResultSet>();
-        for (final Query<FunnelQueryResultSet> query : queries) {
-            resultList.add(query.getQueryResult());
-        }
-        FunnelQueryResultSetMerger merger = new FunnelQueryResultSetMerger(numberOfSteps);
-        return merger.merge(resultList);
+    public QueryResultSet<FunnelResultSet> merge(List<QueryResultSet<FunnelResultSet>> resultSets) {
+        return new MergeFunnelQueryResultSet(resultSets, numberOfSteps);
     }
 }

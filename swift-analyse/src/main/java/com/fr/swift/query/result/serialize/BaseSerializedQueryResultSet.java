@@ -2,30 +2,26 @@ package com.fr.swift.query.result.serialize;
 
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.SwiftMetaData;
 
 import java.io.Serializable;
 
 /**
- *
  * @author lyon
  * @date 2018/12/29
  */
-public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Serializable {
+public abstract class BaseSerializedQueryResultSet<T> implements QueryResultSet<T>, Serializable {
     private static final long serialVersionUID = 3284100787389755050L;
 
     private int fetchSize;
-    private QueryResultSetMerger<? extends QueryResultSet<T>> merger;
     private T page;
-    private boolean originHasNextPage;
+    private boolean hasNextPage;
     private transient SyncInvoker invoker;
 
-    BaseSerializableQRS(int fetchSize, QueryResultSetMerger<? extends QueryResultSet<T>> merger, T page, boolean originHasNextPage) {
+    BaseSerializedQueryResultSet(int fetchSize, T page, boolean hasNextPage) {
         this.fetchSize = fetchSize;
-        this.merger = merger;
         this.page = page;
-        this.originHasNextPage = originHasNextPage;
+        this.hasNextPage = hasNextPage;
     }
 
     public void setInvoker(SyncInvoker invoker) {
@@ -38,20 +34,15 @@ public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Seria
     }
 
     @Override
-    public <Q extends QueryResultSet<T>> QueryResultSetMerger<Q> getMerger() {
-        return (QueryResultSetMerger<Q>) merger;
-    }
-
-    @Override
     public T getPage() {
         T ret = page;
         page = null;
         if (hasNextPage() && invoker != null) {
-            BaseSerializableQRS<T> qrs = invoker.invoke();
+            BaseSerializedQueryResultSet<T> qrs = invoker.invoke();
             page = qrs.page;
-            originHasNextPage = qrs.originHasNextPage;
+            hasNextPage = qrs.hasNextPage;
         } else {
-            originHasNextPage = false;
+            hasNextPage = false;
         }
         return ret;
     }
@@ -68,11 +59,11 @@ public abstract class BaseSerializableQRS<T> implements QueryResultSet<T>, Seria
 
     @Override
     public boolean hasNextPage() {
-        return page != null || originHasNextPage;
+        return page != null || hasNextPage;
     }
 
     public interface SyncInvoker {
 
-        <D> BaseSerializableQRS<D> invoke();
+        <D> BaseSerializedQueryResultSet<D> invoke();
     }
 }

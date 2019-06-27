@@ -6,7 +6,6 @@ import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.RowSwiftResultSet;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -27,11 +26,9 @@ public class FunnelQueryResultSet implements QueryResultSet<FunnelResultSet>, Se
     private static final long serialVersionUID = 5730624500314766659L;
 
     private FunnelResultSet funnelResultSet;
-    private QueryResultSetMerger<FunnelQueryResultSet> merger;
 
-    public FunnelQueryResultSet(FunnelResultSet funnelResultSet, QueryResultSetMerger<FunnelQueryResultSet> merger) {
+    public FunnelQueryResultSet(FunnelResultSet funnelResultSet) {
         this.funnelResultSet = funnelResultSet;
-        this.merger = merger;
     }
 
     @Override
@@ -50,16 +47,11 @@ public class FunnelQueryResultSet implements QueryResultSet<FunnelResultSet>, Se
     }
 
     @Override
-    public QueryResultSetMerger<FunnelQueryResultSet> getMerger() {
-        return merger;
-    }
-
-    @Override
     public SwiftResultSet convert(SwiftMetaData metaData) {
         List<Row> rows = new ArrayList<Row>();
         Map<FunnelGroupKey, FunnelAggValue> map = funnelResultSet.getResult();
         for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : map.entrySet()) {
-            List list = new ArrayList();
+            List<Object> list = new ArrayList<Object>();
             FunnelGroupKey key = entry.getKey();
             list.add(key.getDate());
             FunnelGroupKey.GroupType type = key.getType();

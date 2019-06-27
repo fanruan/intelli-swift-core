@@ -1,8 +1,6 @@
 package com.fr.swift.result;
 
 import com.fr.swift.result.MergeDetailQueryResultSet.DetailResultSetImpl;
-import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.iterator.IteratorUtils;
@@ -20,22 +18,22 @@ import java.util.List;
  */
 public class MergeSortedDetailQueryResultSet implements DetailQueryResultSet {
 
-    private int pageSize;
+    private int fetchSize;
     private List<DetailQueryResultSet> resultSets;
     private final int rowCount;
     private Comparator<Row> comparator;
     private List<Row> remainRows = new ArrayList<Row>(0);
     private Row[] lastRowOfPrevPage;
 
-    public MergeSortedDetailQueryResultSet(int pageSize, Comparator<Row> comparator, List<DetailQueryResultSet> resultSets) {
-        this.pageSize = pageSize;
+    public MergeSortedDetailQueryResultSet(int fetchSize, Comparator<Row> comparator, List<DetailQueryResultSet> resultSets) {
+        this.fetchSize = fetchSize;
         this.rowCount = getRowCount(resultSets);
         this.comparator = comparator;
         this.resultSets = resultSets;
         this.lastRowOfPrevPage = new Row[resultSets.size()];
     }
 
-    private int getRowCount(List<DetailQueryResultSet> resultSets) {
+    private static int getRowCount(List<DetailQueryResultSet> resultSets) {
         int rowCount = 0;
         for (DetailQueryResultSet queryResultSet : resultSets) {
             rowCount += queryResultSet.getRowCount();
@@ -73,10 +71,10 @@ public class MergeSortedDetailQueryResultSet implements DetailQueryResultSet {
      */
     @Override
     public List<Row> getPage() {
-        if (remainRows.size() < pageSize) {
+        if (remainRows.size() < fetchSize) {
             return updateAll();
         }
-        Row lastRow = remainRows.get(pageSize - 1);
+        Row lastRow = remainRows.get(fetchSize - 1);
         List<List<Row>> newPages = new ArrayList<List<Row>>();
         for (int i = 0; i < resultSets.size(); i++) {
             if (resultSets.get(i).hasNextPage()) {
@@ -93,7 +91,7 @@ public class MergeSortedDetailQueryResultSet implements DetailQueryResultSet {
             iterator = remainRows.iterator();
         }
         List<Row> page = getPage(iterator);
-        if (page.size() < pageSize && remainRows.isEmpty() && hasNextPage()) {
+        if (page.size() < fetchSize && remainRows.isEmpty() && hasNextPage()) {
             // 按照前面的规则更新了，但是不满一页，并且源结果集还有剩余，继续取下一页
             remainRows = page;
             return getPage();
@@ -116,7 +114,7 @@ public class MergeSortedDetailQueryResultSet implements DetailQueryResultSet {
     private List<Row> getPage(Iterator<Row> iterator) {
         List<Row> ret = new ArrayList<Row>();
         remainRows = new ArrayList<Row>();
-        int count = pageSize;
+        int count = fetchSize;
         while (iterator.hasNext()) {
             if (count-- > 0) {
                 ret.add(iterator.next());
@@ -142,12 +140,7 @@ public class MergeSortedDetailQueryResultSet implements DetailQueryResultSet {
 
     @Override
     public int getFetchSize() {
-        return pageSize;
-    }
-
-    @Override
-    public <Q extends QueryResultSet<List<Row>>> QueryResultSetMerger<Q> getMerger() {
-        return (QueryResultSetMerger<Q>) SortedDetailQueryResultSetMerger.ofComparator(pageSize, comparator);
+        return fetchSize;
     }
 
     @Override
@@ -165,4 +158,7 @@ public class MergeSortedDetailQueryResultSet implements DetailQueryResultSet {
         return rowCount;
     }
 
+    public Comparator<Row> getComparator() {
+        return comparator;
+    }
 }
