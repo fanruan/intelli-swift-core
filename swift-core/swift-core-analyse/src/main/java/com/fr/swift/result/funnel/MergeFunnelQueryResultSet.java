@@ -3,8 +3,10 @@ package com.fr.swift.result.funnel;
 import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.result.FunnelResultSet;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.IoUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,21 +15,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class created on 2018/12/14
- *
- * @author Lucifer
- * @description
+ * @author anchore
+ * @date 2019/6/26
+ * TODO: 2019/6/26 anchore 结构不好，改！
  */
-public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelQueryResultSet>, Serializable {
-    private static final long serialVersionUID = -8191094955432120770L;
-    private int numberOfSteps;
+public class MergeFunnelQueryResultSet implements QueryResultSet<FunnelResultSet>, Serializable {
+    private static final long serialVersionUID = -6167409943891683732L;
 
-    public FunnelQueryResultSetMerger(int numberOfSteps) {
-        this.numberOfSteps = numberOfSteps;
+    private int stepCount;
+    private FunnelQueryResultSet mergeResultSet;
+
+    public MergeFunnelQueryResultSet(List<QueryResultSet<FunnelResultSet>> resultSets, int numberOfSteps) {
+        stepCount = numberOfSteps;
+        init(resultSets, numberOfSteps);
     }
 
-    @Override
-    public FunnelQueryResultSet merge(List<FunnelQueryResultSet> resultSets) {
+    private void init(List<QueryResultSet<FunnelResultSet>> resultSets, int numberOfSteps) {
         Map<FunnelGroupKey, FunnelAggValue> map = new HashMap<FunnelGroupKey, FunnelAggValue>();
         for (QueryResultSet<FunnelResultSet> resultSet : resultSets) {
             Map<FunnelGroupKey, FunnelAggValue> result = resultSet.getPage().getResult();
@@ -54,7 +57,8 @@ public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelQu
                 }
             }
         }
-        return new FunnelQueryResultSet(new FunnelResultSet(map), this);
+
+        mergeResultSet = new FunnelQueryResultSet(new FunnelResultSet(map));
     }
 
     private List<List<Integer>> createList(int len) {
@@ -63,5 +67,34 @@ public class FunnelQueryResultSetMerger implements QueryResultSetMerger<FunnelQu
             lists.add(new ArrayList<Integer>());
         }
         return lists;
+    }
+
+    @Override
+    public int getFetchSize() {
+        return mergeResultSet.getFetchSize();
+    }
+
+    @Override
+    public SwiftResultSet convert(SwiftMetaData metaData) {
+        return mergeResultSet.convert(metaData);
+    }
+
+    @Override
+    public FunnelResultSet getPage() {
+        return mergeResultSet.getPage();
+    }
+
+    @Override
+    public boolean hasNextPage() {
+        return mergeResultSet.hasNextPage();
+    }
+
+    @Override
+    public void close() {
+        IoUtil.close(mergeResultSet);
+    }
+
+    public int getStepCount() {
+        return stepCount;
     }
 }

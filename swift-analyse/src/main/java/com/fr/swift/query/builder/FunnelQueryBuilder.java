@@ -8,7 +8,8 @@ import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.group.FunnelResultQuery;
 import com.fr.swift.query.segment.group.FunnelSegmentQuery;
-import com.fr.swift.result.funnel.FunnelQueryResultSet;
+import com.fr.swift.result.FunnelResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
@@ -25,11 +26,11 @@ import java.util.List;
 class FunnelQueryBuilder {
 
 
-    static Query<FunnelQueryResultSet> buildQuery(FunnelQueryBean bean) {
+    static Query<QueryResultSet<FunnelResultSet>> buildQuery(FunnelQueryBean bean) {
         FunnelQueryInfo info = (FunnelQueryInfo) QueryInfoParser.parse(bean);
         SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         List<Segment> segments = localSegmentProvider.getSegment(new SourceKey(bean.getTableName()));
-        List<Query<FunnelQueryResultSet>> queries = new ArrayList<Query<FunnelQueryResultSet>>();
+        List<Query<QueryResultSet<FunnelResultSet>>> queries = new ArrayList<Query<QueryResultSet<FunnelResultSet>>>();
         for (Segment segment : segments) {
             queries.add(new FunnelSegmentQuery(segment, info.getQueryBean()));
         }

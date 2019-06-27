@@ -1,6 +1,5 @@
 package com.fr.swift.result;
 
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.IoUtil;
@@ -27,8 +26,8 @@ public class MergeDetailQueryResultSet extends BaseDetailQueryResultSet {
     public MergeDetailQueryResultSet(int fetchSize, List<DetailQueryResultSet> queryResultSets) {
         super(fetchSize);
         resultSets = queryResultSets;
-        this.rowCount = getRowCount(queryResultSets);
-        this.mergeIterator = new DetailRowIterator();
+        rowCount = getRowCount(queryResultSets);
+        mergeIterator = new DetailRowIterator();
     }
 
     private static int getRowCount(List<DetailQueryResultSet> queryResultSets) {
@@ -57,11 +56,6 @@ public class MergeDetailQueryResultSet extends BaseDetailQueryResultSet {
     @Override
     public int getRowCount() {
         return rowCount;
-    }
-
-    @Override
-    public QueryResultSetMerger<DetailQueryResultSet> getMerger() {
-        return new DetailQueryResultSetMerger(fetchSize);
     }
 
     @Override

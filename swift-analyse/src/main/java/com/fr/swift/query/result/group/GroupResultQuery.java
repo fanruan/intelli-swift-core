@@ -12,6 +12,7 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -46,28 +47,36 @@ public class GroupResultQuery extends AbstractResultQuery<QueryResultSet<GroupPa
             boolean isAsc = pair.getKey() == SortType.ASC;
             switch (pair.getValue()) {
                 case DOUBLE:
-                    list.add(isAsc ? Comparators.<Double>asc() : Comparators.<Double>desc());
-                    break;
                 case LONG:
                 case DATE:
-                    list.add(isAsc ? Comparators.<Long>asc() : Comparators.<Long>desc());
-                    break;
                 case INTEGER:
-                    list.add(isAsc ? Comparators.<Integer>asc() : Comparators.<Integer>desc());
+                    list.add(isAsc ? Comparators.asc() : Comparators.desc());
+                    break;
+                case STRING:
+                    list.add(isAsc ? Comparators.STRING_ASC : Comparators.reverse(Comparators.STRING_ASC));
                     break;
                 default:
-                    list.add(isAsc ? Comparators.STRING_ASC : Comparators.reverse(Comparators.STRING_ASC));
+                    throw new IllegalArgumentException(String.format("unsupported type %s", pair.getValue()));
             }
         }
         List<Comparator<SwiftNode>> result = new ArrayList<Comparator<SwiftNode>>();
         for (final Comparator comparator : list) {
-            result.add(new Comparator<SwiftNode>() {
-                @Override
-                public int compare(SwiftNode o1, SwiftNode o2) {
-                    return comparator.compare(o1.getData(), o2.getData());
-                }
-            });
+            result.add(new SwiftNodeDataComparator(comparator));
         }
         return result;
+    }
+
+    private static class SwiftNodeDataComparator implements Comparator<SwiftNode>, Serializable {
+        private static final long serialVersionUID = 4839755197721755766L;
+        private final Comparator<Object> comparator;
+
+        SwiftNodeDataComparator(Comparator<Object> comparator) {
+            this.comparator = comparator;
+        }
+
+        @Override
+        public int compare(SwiftNode o1, SwiftNode o2) {
+            return comparator.compare(o1.getData(), o2.getData());
+        }
     }
 }
