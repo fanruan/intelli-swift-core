@@ -8,7 +8,6 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
@@ -33,9 +32,8 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
     private static final ExecutorService EXEC = SwiftExecutors.newFixedThreadPool(new PoolThreadFactory(MergeGroupQueryResultSet.class));
 
     private int fetchSize;
-    private boolean[] isGlobalIndexed;
+    private boolean[] globalIndexed;
     private List<QueryResultSet<GroupPage>> sources;
-    private List<Comparator<SwiftNode>> comparators;
     private GroupPageMerger pageMerger;
     private GroupPage remainResultSet;
     /**
@@ -44,12 +42,11 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
     private List<SwiftNode> theRowOfRemainNode;
     private List<List<SwiftNode>> lastRowOfPrevPages;
 
-    public MergeGroupQueryResultSet(int fetchSize, boolean[] isGlobalIndexed, List<QueryResultSet<GroupPage>> sources,
+    public MergeGroupQueryResultSet(int fetchSize, boolean[] globalIndexed, List<QueryResultSet<GroupPage>> sources,
                                     List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
         this.fetchSize = fetchSize;
-        this.isGlobalIndexed = isGlobalIndexed;
+        this.globalIndexed = globalIndexed;
         this.sources = sources;
-        this.comparators = comparators;
         this.pageMerger = new GroupPageMerger(aggregators, comparators);
         init();
     }
@@ -135,8 +132,8 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
     }
 
     private boolean shouldUpdate(List<SwiftNode> lastRowOfPage) {
-        for (int i = 0; i < comparators.size(); i++) {
-            if (comparators.get(i).compare(theRowOfRemainNode.get(i), lastRowOfPage.get(i)) > 0) {
+        for (int i = 0; i < pageMerger.comparators.size(); i++) {
+            if (pageMerger.comparators.get(i).compare(theRowOfRemainNode.get(i), lastRowOfPage.get(i)) > 0) {
                 return true;
             }
         }
@@ -185,7 +182,7 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
             List<SwiftNode> row = rows.next();
             for (int i = 0; i < row.size(); i++) {
                 GroupNode node = (GroupNode) row.get(i);
-                if (!isGlobalIndexed[i]) {
+                if (!globalIndexed[i]) {
                     continue;
                 }
                 if (dictionary.get(i) == null) {
@@ -215,9 +212,16 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
         return fetchSize;
     }
 
-    @Override
-    public <Q extends QueryResultSet<GroupPage>> QueryResultSetMerger<Q> getMerger() {
-        return (QueryResultSetMerger<Q>) GroupQueryResultSetMerger.ofComparator(fetchSize, isGlobalIndexed, pageMerger.aggregators, comparators);
+    public boolean[] getGlobalIndexed() {
+        return globalIndexed;
+    }
+
+    public List<Aggregator> getAggragators() {
+        return pageMerger.aggregators;
+    }
+
+    public List<Comparator<SwiftNode>> getComparators() {
+        return pageMerger.comparators;
     }
 
     @Override

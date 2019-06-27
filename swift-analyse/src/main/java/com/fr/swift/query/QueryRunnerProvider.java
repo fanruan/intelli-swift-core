@@ -9,7 +9,7 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryIndexRunner;
-import com.fr.swift.query.result.SwiftResultSetUtils;
+import com.fr.swift.query.result.QueryResultSetSerializer;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.SwiftResultSet;
@@ -52,7 +52,7 @@ public class QueryRunnerProvider {
             }
         }
         ServiceContext serviceContext = ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class);
-        resultSet = SwiftResultSetUtils.toSwiftResultSet(
+        resultSet = QueryResultSetSerializer.toSwiftResultSet(
                 serviceContext.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
         if (Strings.isNotEmpty(queryId)) {
             sessionFactory.openSession(queryId).putObject(queryId, resultSet);

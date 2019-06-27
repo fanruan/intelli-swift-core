@@ -28,6 +28,7 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -56,7 +57,7 @@ import java.util.Set;
  * @author Lucifer
  * @description
  */
-public class FunnelSegmentQuery implements Query<FunnelQueryResultSet> {
+public class FunnelSegmentQuery implements Query<QueryResultSet<FunnelResultSet>> {
 
     // TODO: 2018/12/28
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -146,7 +147,7 @@ public class FunnelSegmentQuery implements Query<FunnelQueryResultSet> {
             filter.reset();
         }
         SwiftLoggers.getLogger().debug("segment result: {}", results.toString());
-        return new FunnelQueryResultSet(new FunnelResultSet(results), null);
+        return new FunnelQueryResultSet(new FunnelResultSet(results));
     }
 
     private Column[] createPostGroupColumn() {
