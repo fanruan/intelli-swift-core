@@ -3,8 +3,6 @@ package com.fr.swift.query.post;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.query.aggregator.ListAggregatorValueRow;
-import com.fr.swift.query.aggregator.SingleAggregatorValueSet;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
@@ -45,8 +43,7 @@ public class RowSortQueryTest {
         for (int i = 0; i < dims.length; i++) {
             expected.add(new ListBasedRow(Arrays.asList(dims[i], (double) i)));
             GroupNode child = new GroupNode(0, dims[i]);
-            child.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(
-                    new AggregatorValue[]{new DoubleAmountAggregatorValue(i)})));
+            child.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(i)});
             root.addChild(child);
         }
         Collections.reverse(expected);

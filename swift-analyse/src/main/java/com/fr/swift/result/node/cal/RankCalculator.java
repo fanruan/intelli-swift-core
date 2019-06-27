@@ -1,8 +1,7 @@
 package com.fr.swift.result.node.cal;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.query.aggregator.AggregatorValueRow;
-import com.fr.swift.query.aggregator.AggregatorValueSet;
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class RankCalculator extends AbstractTargetCalculator {
     private boolean asc;
 
     public RankCalculator(int paramIndex, int resultIndex,
-                          Iterator<Iterator<AggregatorValueSet>> iterators, boolean asc) {
+                          Iterator<Iterator<List<AggregatorValue[]>>> iterators, boolean asc) {
         super(paramIndex, resultIndex, iterators);
         this.asc = asc;
     }
@@ -28,20 +27,18 @@ public class RankCalculator extends AbstractTargetCalculator {
     @Override
     public Object call() {
         while (iterators.hasNext()) {
-            Iterator<AggregatorValueSet> iterator = iterators.next();
+            Iterator<List<AggregatorValue[]>> iterator = iterators.next();
             List<Map<Double, Integer>> maps = null;
-            List<AggregatorValueSet> rows = new ArrayList<AggregatorValueSet>();
+            List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
             while (iterator.hasNext()) {
-                AggregatorValueSet row = iterator.next();
-                Iterator<AggregatorValueRow> it = row.iterator();
+                List<AggregatorValue[]> row = iterator.next();
                 rows.add(row);
                 if (maps == null) {
                     maps = row.isEmpty() ? null : initMaps(row.size(), asc ? Comparators.<Double>asc() : Comparators.<Double>desc());
                 }
-                int i = 0;
-                while (it.hasNext()) {
+                for (int i = 0; i < row.size(); i++) {
                     // TODO: 2018/5/2 空值问题处理
-                    Double key = it.next().getValue(paramIndex).calculate();
+                    Double key = row.get(i)[paramIndex].calculate();
                     // 跳过空值
                     if (Double.isNaN(key)) {
                         continue;
@@ -64,16 +61,14 @@ public class RankCalculator extends AbstractTargetCalculator {
                     rank += value;
                 }
             }
-            for (AggregatorValueSet row : rows) {
-                int i = 0;
-                for (AggregatorValueRow aggregatorValueRow : row) {
-                    if (maps.get(i++).isEmpty()) {
+            for (List<AggregatorValue[]> row : rows) {
+                for (int i = 0; i < row.size(); i++) {
+                    if (maps.get(i).isEmpty()) {
                         // 跳过没有值的情况
                         continue;
                     }
                     // 设置排名
-                    AggregatorValueRow next = aggregatorValueRow;
-                    next.setValue(resultIndex, new DoubleAmountAggregatorValue(maps.get(i).get(next.getValue(paramIndex).calculate())));
+                    row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(maps.get(i).get(row.get(i)[paramIndex].calculate()));
                 }
             }
         }
