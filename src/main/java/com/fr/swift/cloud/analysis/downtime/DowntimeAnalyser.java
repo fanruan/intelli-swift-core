@@ -50,7 +50,7 @@ public class DowntimeAnalyser {
 
         SwiftLoggers.getLogger().info("Start downtime analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
         FilterInfoBean filter = new AndFilterBean(
-                Arrays.<FilterInfoBean>asList(
+                Arrays.asList(
                         new InFilterBean("appId", appId),
                         new InFilterBean("yearMonth", yearMonth))
         );
@@ -168,10 +168,12 @@ public class DowntimeAnalyser {
                 if (((RealtimeUsageElement) downtimeElement).cpu() >= CPU_OVERLOAD_RATE) {
                     overloadCpuTimes++;
                 }
-                if (downtimeResult.getNode() == null) {
-                    downtimeResult.setNode(((RealtimeUsageElement) downtimeElement).node());
-                }
+
             }
+            if (downtimeResult.getNode() == null) {
+                downtimeResult.setNode(downtimeElement.node());
+            }
+
         }
         downtimeResult.setFullGcTime(totalFullGcTime);
         if (totalFullGcTime >= FULL_GC_TIME) {
@@ -224,18 +226,14 @@ public class DowntimeAnalyser {
             return false;
         }
         if (gcTimes > 20) {
-            if (volatility < -0.2d) {
-                //GC次数频繁但内存持续下降
-                return false;
-            } else {
-                //GC次数频繁但内存波动不大
-                return true;
-            }
+            //GC次数频繁但内存持续下降
+            //GC次数频繁但内存波动不大
+            return !(volatility < -0.2d);
         }
         return true;
     }
 
-    public double calcMemSlope(int n, int x[], double y[]) {
+    public double calcMemSlope(int n, int[] x, double[] y) {
         int sumxx = 0, sumx = 0, sumxy = 0, sumy = 0;
         for (int i = 0; i < n; i++) {
             sumxx += x[i] * x[i]; //x平方求和
@@ -271,7 +269,7 @@ public class DowntimeAnalyser {
         NumberInRangeFilterBean executionFilterBean = NumberInRangeFilterBean.builder("time").setStart(String.valueOf(startTime), true).setEnd(String.valueOf(endTime), true).build();
 
         FilterInfoBean executionFilter = new AndFilterBean(
-                Arrays.<FilterInfoBean>asList(
+                Arrays.asList(
                         baseFilter,
                         executionFilterBean));
         DetailQueryInfoBean executionBean = DetailQueryInfoBean.builder(execution).setDimensions(DowntimeExecutionResult.getDimensions()).setFilter(executionFilter).build();
@@ -282,7 +280,7 @@ public class DowntimeAnalyser {
             DowntimeExecutionResult downtimeExecutionResult = new DowntimeExecutionResult(executionRow, downtimeResult.getId(), downtimeResult.getAppId(), downtimeResult.getYearMonth());
 
             FilterInfoBean executionSqlFilter = new AndFilterBean(
-                    Arrays.<FilterInfoBean>asList(
+                    Arrays.asList(
                             baseFilter,
                             new InFilterBean("executionId", downtimeExecutionResult.getId())));
             DetailQueryInfoBean bean = DetailQueryInfoBean.builder(executionSql).setDimensions(ExecutionSqlData.getDimensions()).setFilter(executionSqlFilter).build();

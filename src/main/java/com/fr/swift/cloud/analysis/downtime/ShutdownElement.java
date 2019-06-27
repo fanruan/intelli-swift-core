@@ -48,6 +48,11 @@ public class ShutdownElement extends AbstractDowntimeElement {
         return ElementType.SHUTDOWN;
     }
 
+    @Override
+    public String node() {
+        return node;
+    }
+
     public static DimensionBean[] getDimensions() {
         DimensionBean dimensionBean1 = new DimensionBean(DimensionType.DETAIL, "time");
         DimensionBean dimensionBean2 = new DimensionBean(DimensionType.DETAIL, "node");
