@@ -2,8 +2,6 @@ package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.query.aggregator.ListAggregatorValueRow;
-import com.fr.swift.query.aggregator.SingleAggregatorValueSet;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.BaseFilterTest;
 import com.fr.swift.result.GroupNode;
@@ -60,23 +58,21 @@ public class NumberInRangeFilterTest extends BaseFilterTest {
     public void testMatch() {
         DetailFilter filter = new NumberInRangeFilter(2, 3, true, false, intColumn, rowCount);
         SwiftNode node = new GroupNode();
-        AggregatorValue[] match2 = {new DoubleAmountAggregatorValue(2)};
-        node.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(match2)));
+        node.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(2)});
         assertTrue(filter.matches(node, 0, null));
-        AggregatorValue[] match3 = {new DoubleAmountAggregatorValue(3)};
-        node.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(match3)));
+        node.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(3)});
         assertFalse(filter.matches(node, 0, null));
 
         filter = new NumberInRangeFilter(2, 3, false, true, intColumn, rowCount);
-        node.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(match2)));
+        node.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(2)});
         assertFalse(filter.matches(node, 0, null));
-        node.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(match3)));
+        node.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(3)});
         assertTrue(filter.matches(node, 0, null));
 
         filter = new NumberInRangeFilter(2, 3, true, true, intColumn, rowCount);
-        node.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(match2)));
+        node.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(2)});
         assertTrue(filter.matches(node, 0, null));
-        node.setAggregatorValue(new SingleAggregatorValueSet(new ListAggregatorValueRow(match3)));
+        node.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(3)});
         assertTrue(filter.matches(node, 0, null));
     }
 

@@ -1,7 +1,6 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.query.aggregator.AggregatorValueRow;
-import com.fr.swift.query.aggregator.AggregatorValueSet;
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.result.SwiftNode;
@@ -23,13 +22,13 @@ import java.util.Map;
  */
 public abstract class AbstractRelationTargetCalculator extends AbstractTargetCalculator {
     private SwiftNode root;
-    private Function<SwiftNode, AggregatorValueSet> aggFunc;
+    private Function<SwiftNode, List<AggregatorValue[]>> aggFunc;
     Pair<Integer, GroupType> decrease;
     GroupType decType;
     private List<Map<Integer, Object>> dic;
     private Decreaser decreaser;
 
-    AbstractRelationTargetCalculator(int[] paramIndex, int resultIndex, SwiftNode root, List<Map<Integer, Object>> dic, Function<SwiftNode, AggregatorValueSet> aggFunc, List<Pair<Integer, GroupType>> brotherGroupIndex) {
+    AbstractRelationTargetCalculator(int[] paramIndex, int resultIndex, SwiftNode root, List<Map<Integer, Object>> dic, Function<SwiftNode, List<AggregatorValue[]>> aggFunc, List<Pair<Integer, GroupType>> brotherGroupIndex) {
         super(paramIndex[0], resultIndex, null);
         this.root = root;
         this.dic = dic;
@@ -74,15 +73,13 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         });
         while (filteredIterator.hasNext()) {
             SwiftNode last = filteredIterator.next();
-            Iterator<AggregatorValueRow> rows = aggFunc.apply(last).iterator();
-            int i = 0;
-            while (rows.hasNext()) {
-                AggregatorValueRow row = rows.next();
+            List<AggregatorValue[]> rows = aggFunc.apply(last);
+            for (int i = 0; i < rows.size(); i++) {
                 Double value = getRelationValue(i, last);
                 if (value != null) {
-                    Double result = getValue(value, (Double) row.getValue(paramIndex).calculateValue());
+                    Double result = getValue(value, (Double) rows.get(i)[paramIndex].calculateValue());
                     if (result != null) {
-                        row.setValue(resultIndex, new DoubleAmountAggregatorValue(result));
+                        rows.get(i)[resultIndex] = new DoubleAmountAggregatorValue(result);
                     }
                 }
             }
@@ -97,14 +94,8 @@ public abstract class AbstractRelationTargetCalculator extends AbstractTargetCal
         if (node == null) {
             return null;
         }
-        AggregatorValueSet rows = aggFunc.apply(node);
-        Iterator<AggregatorValueRow> iterator = rows.iterator();
-        AggregatorValueRow value = null;
-        for (int j = 0; j < i && iterator.hasNext(); j++) {
-            value = iterator.next();
-        }
-
-        return null == value ? Double.NaN : (Double) iterator.next().getValue(paramIndex).calculateValue();
+        List<AggregatorValue[]> rows = aggFunc.apply(node);
+        return (Double) rows.get(i)[paramIndex].calculateValue();
     }
 
     private SwiftNode getNode(SwiftNode last) {

@@ -1,6 +1,6 @@
 package com.fr.swift.result;
 
-import com.fr.swift.query.aggregator.AggregatorValueSet;
+import com.fr.swift.query.aggregator.AggregatorValue;
 
 import java.io.Serializable;
 
@@ -10,7 +10,12 @@ import java.io.Serializable;
  */
 public interface AggregatorValueContainer extends Serializable {
 
-    AggregatorValueSet getAggregatorValue();
+    void setAggregatorValue(int key, AggregatorValue value);
 
-    void setAggregatorValue(AggregatorValueSet aggregatorValues);
+    AggregatorValue getAggregatorValue(int key);
+
+
+    AggregatorValue[] getAggregatorValue();
+
+    void setAggregatorValue(AggregatorValue[] aggregatorValues);
 }
