@@ -49,6 +49,7 @@ public class GroupResultQuery extends AbstractResultQuery<QueryResultSet<GroupPa
                 case DOUBLE:
                 case LONG:
                 case DATE:
+                case INTEGER:
                     list.add(isAsc ? Comparators.asc() : Comparators.desc());
                     break;
                 case STRING:
