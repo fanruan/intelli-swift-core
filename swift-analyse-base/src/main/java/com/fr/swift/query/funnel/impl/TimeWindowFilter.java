@@ -1,15 +1,16 @@
-package com.fr.swift.query.aggregator.funnel.impl;
+package com.fr.swift.query.funnel.impl;
 
-import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.aggregator.funnel.IHead;
-import com.fr.swift.query.aggregator.funnel.IStep;
-import com.fr.swift.query.aggregator.funnel.ITimeWindowFilter;
+import com.fr.swift.query.funnel.IHead;
+import com.fr.swift.query.funnel.IStep;
+import com.fr.swift.query.funnel.ITimeWindowFilter;
+import com.fr.swift.query.funnel.TimeWindowBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.TimeFilterInfo;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -21,12 +22,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimeWindowFilter implements ITimeWindowFilter {
 
-    private static final int DAY_SECONDS = 86400;
-    private final int dayWindow;
+    private final long dayWindow;
 
-    private int timeWindow;
+    private long timeWindow;
     private long dateStart;
     private int numberOfDates;
+    private TimeFilterInfo filter;
 
     // 漏斗定义的顺序步骤
     private IStep step;
@@ -48,17 +49,14 @@ public class TimeWindowFilter implements ITimeWindowFilter {
     private boolean[] finished;
     private boolean hasNoHeadBefore = true;
 
-    public TimeWindowFilter(int timeWindow, String dateStart, int numberOfDates, IStep step,
+    public TimeWindowFilter(TimeWindowBean timeWindow, TimeFilterInfo info, IStep step,
                             int firstAssociatedIndex, boolean[] associatedEvents,
                             DictionaryEncodedColumn associatedPropertyColumn) {
-        this.timeWindow = timeWindow;
-        this.dayWindow = timeWindow / DAY_SECONDS + 1;
-        try {
-            this.dateStart = sdf.parse(dateStart).getTime();
-        } catch (ParseException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-        this.numberOfDates = numberOfDates;
+        this.timeWindow = timeWindow.toMillis();
+        this.dayWindow = this.timeWindow / info.timeSegment() + 1;
+        this.filter = info;
+        this.dateStart = info.getTimeStart();
+        this.numberOfDates = info.getTimeSegCount();
         this.step = step;
         this.firstAssociatedIndex = firstAssociatedIndex;
         this.associatedEvents = associatedEvents;
@@ -80,20 +78,34 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         this.associatedColumnSize = size;
     }
 
+    private static boolean isRightHead(long[] a, long[] b) {
+        long at = a[a.length - 1];
+        long bt = b[b.length - 1];
+        if (at < bt) {
+            return true;
+        }
+        if (at != bt) {
+            return false;
+        }
+        for (int i = a.length - 2; i >= 0; i--) {
+            if (a[i] > b[i]) {
+                return true;
+            } else if (a[i] < b[i]) {
+                return false;
+            }
+        }
+        return false;
+    }
+
     @Override
-    public void add(int event, int timestamp, String date, int associatedValue, Object groupValue) {
+    public void add(int event, long timestamp, int associatedValue, Object groupValue) {
         // 事件有序进入
         // 更新临时对象: 从后往前, 并根据条件适当跳出
         if (hasNoHeadBefore && !step.isEqual(0, event)) {
             return;
         }
-        int dateIndex = 0;
-        try {
-            dateIndex = (int) TimeUnit.MILLISECONDS.toDays(sdf.parse(date).getTime() - dateStart);
-        } catch (ParseException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-        int minDay = Math.max(0, dateIndex - dayWindow);
+        int dateIndex = getDateIndex(timestamp);
+        int minDay = (int) Math.max(0, dateIndex - dayWindow);
         for (; dateIndex >= minDay; dateIndex--) {
             if (finished[dateIndex]) {
                 break;
@@ -101,7 +113,7 @@ public class TimeWindowFilter implements ITimeWindowFilter {
             temp = lists.get(dateIndex);
             if (step.isEqual(0, event)) {
                 hasNoHeadBefore = false;
-                createHead(date, timestamp, associatedValue, groupValue);
+                createHead(timestamp, associatedValue, groupValue);
                 //重复事件是head
                 if (!hasAnotherStep0) {
                     break;
@@ -135,7 +147,7 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         }
     }
 
-    private void nextEvent(int nextEventIndex, int timestamp, int associatedValue, Object groupValue, IHead head) {
+    private void nextEvent(int nextEventIndex, long timestamp, int associatedValue, Object groupValue, IHead head) {
         // 检查漏斗关联属性
         if (associatedEvents[nextEventIndex]) {
             if (firstAssociatedIndex == nextEventIndex) {
@@ -151,7 +163,7 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         head.addStep(timestamp, groupValue);
     }
 
-    private boolean updateEvent(int index, int timestamp, int associatedValue, Object groupValue, IHead head, boolean copied) {
+    private boolean updateEvent(int index, long timestamp, int associatedValue, Object groupValue, IHead head, boolean copied) {
         // 对应文档A类：漏斗基础规则#优先选择更靠近最终转化目标的事件作为转化事件
         // 相同的属性要取最近的事件
         int currentIndex = head.getSize() - 1;
@@ -174,7 +186,7 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         return false;
     }
 
-    private boolean copyHead(int i, int event, int timestamp, int associatedValue, Object groupValue, IHead head) {
+    private boolean copyHead(int i, int event, long timestamp, int associatedValue, Object groupValue, IHead head) {
         // 有结果分组的情况下。 1,2,3,2,3,4这种情况，出现第二个2的时候要做一次拷贝
         int index = 0;
         for (int j = 1; j < head.getSize() - 1; j++) {
@@ -209,9 +221,9 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         return true;
     }
 
-    private void createHead(String date, int timestamp, int associatedValue, Object groupValue) {
+    private void createHead(long timestamp, int associatedValue, Object groupValue) {
         // 当前事务没有被使用且属于第一个事件，则新建临时IHead对象
-        IHead newHead = new Head(step.size(), date, associatedValue, associatedColumnSize);
+        IHead newHead = new Head(step.size(), sdf.format(new Date(timestamp)), associatedValue, associatedColumnSize);
         newHead.addStep(timestamp, groupValue);
         temp.add(newHead);
     }
@@ -232,8 +244,8 @@ public class TimeWindowFilter implements ITimeWindowFilter {
                     ret = head;
                 } else if (head.getSize() == ret.getSize() && head.getSize() < step.size()) {
                     int size = head.getSize();
-                    int[] h = head.getTimestamps();
-                    int[] r = ret.getTimestamps();
+                    long[] h = head.getTimestamps();
+                    long[] r = ret.getTimestamps();
                     for (int j = size - 1; j >= 0; j--) {
                         if (h[j] > r[j]) {
                             ret = head;
@@ -249,25 +261,6 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         return result;
     }
 
-    private static boolean isRightHead(int[] a, int[] b) {
-        long at = a[a.length - 1];
-        long bt = b[b.length - 1];
-        if (at < bt) {
-            return true;
-        }
-        if (at != bt) {
-            return false;
-        }
-        for (int i = a.length - 2; i >= 0; i--) {
-            if (a[i] > b[i]) {
-                return true;
-            } else if (a[i] < b[i]) {
-                return false;
-            }
-        }
-        return false;
-    }
-
     @Override
     public void reset() {
         for (int i = 0; i < numberOfDates; i++) {
@@ -275,5 +268,22 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         }
         Arrays.fill(finished, false);
         hasNoHeadBefore = true;
+    }
+
+    private int getDateIndex(long timestamp) {
+        int dateIndex = 0;
+        switch (filter.getType()) {
+            case DAY:
+                dateIndex = (int) TimeUnit.MILLISECONDS.toDays(timestamp - dateStart);
+                break;
+            case HOER:
+                dateIndex = (int) TimeUnit.MILLISECONDS.toHours(timestamp - dateStart);
+                break;
+            case MINUTE:
+                dateIndex = (int) TimeUnit.MILLISECONDS.toMinutes(timestamp - dateStart);
+                break;
+            default:
+        }
+        return dateIndex;
     }
 }

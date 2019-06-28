@@ -7,7 +7,7 @@ import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 /**
  * Created by Lyon on 2018/6/2.
  */
-public class MetricBean {
+public class MetricBean implements AggregationBean {
 
     @JsonProperty
     private AggregatorType type;
@@ -28,6 +28,7 @@ public class MetricBean {
     public MetricBean() {
     }
 
+    @Override
     public AggregatorType getType() {
         return type;
     }
@@ -36,6 +37,7 @@ public class MetricBean {
         this.type = type;
     }
 
+    @Override
     public String getColumn() {
         return column;
     }
@@ -60,6 +62,7 @@ public class MetricBean {
         this.filter = filter;
     }
 
+    @Override
     public Object[] getParams() {
         return params;
     }

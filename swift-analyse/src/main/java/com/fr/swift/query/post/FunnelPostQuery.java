@@ -2,11 +2,11 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.group.FunnelGroupKey;
-import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
-import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -19,7 +19,7 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-public class FunnelPostQuery implements Query<FunnelQueryResultSet> {
+public class FunnelPostQuery implements Query<QueryResultSet<FunnelResultSet>> {
 
     private boolean calMedian;
     private int timeWindow;
@@ -32,18 +32,18 @@ public class FunnelPostQuery implements Query<FunnelQueryResultSet> {
     }
 
     private boolean isCalMedian(FunnelQueryBean queryBean) {
-        List<PostQueryInfoBean> beans = queryBean.getPostAggregations();
-        for (PostQueryInfoBean bean : beans) {
-            if (bean.getType() == PostQueryType.FUNNEL_MEDIAN) {
-                return true;
-            }
-        }
+//        List<PostQueryInfoBean> beans = queryBean.getPostAggregations();
+//        for (PostQueryInfoBean bean : beans) {
+//            if (bean.getType() == PostQueryType.FUNNEL_MEDIAN) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
     @Override
-    public FunnelQueryResultSet getQueryResult() throws SQLException {
-        FunnelQueryResultSet resultSet = postQuery.getQueryResult();
+    public QueryResultSet<FunnelResultSet> getQueryResult() throws SQLException {
+        QueryResultSet<FunnelResultSet> resultSet = postQuery.getQueryResult();
         if (calMedian) {
             int[] helpArray = new int[timeWindow + 1];
             Map<FunnelGroupKey, FunnelAggValue> map = resultSet.getPage().getResult();

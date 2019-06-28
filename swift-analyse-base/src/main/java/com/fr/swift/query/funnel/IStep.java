@@ -1,4 +1,4 @@
-package com.fr.swift.query.aggregator.funnel;
+package com.fr.swift.query.funnel;
 
 /**
  * This class created on 2018/12/13

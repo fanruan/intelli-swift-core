@@ -1,9 +1,12 @@
 package com.fr.swift.query.aggregator;
 
 /**
- * Created by pony on 2018/3/26.
+ *
+ * @author pony
+ * @date 2018/3/26
  */
 public enum AggregatorType {
+    // normal
     SUM, MAX, MIN, AVERAGE, COUNT,
     DISTINCT,
     HLL_DISTINCT,
@@ -13,5 +16,8 @@ public enum AggregatorType {
 
     // extension
     DISTINCT_DATE_YMD,
-    TOP_PERCENTILE
+    TOP_PERCENTILE,
+
+    // FUNNEL
+    FUNNEL, FUNNEL_PATHS
 }

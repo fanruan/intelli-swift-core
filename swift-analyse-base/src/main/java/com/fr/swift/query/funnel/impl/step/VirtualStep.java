@@ -1,6 +1,6 @@
-package com.fr.swift.query.aggregator.funnel.impl.step;
+package com.fr.swift.query.funnel.impl.step;
 
-import com.fr.swift.query.aggregator.funnel.IStep;
+import com.fr.swift.query.funnel.IStep;
 
 import java.util.Arrays;
 
@@ -47,7 +47,8 @@ public class VirtualStep implements IStep {
         if (hasRepeatedEvents) {
             throw new UnsupportedOperationException();
         }
-        int[] eventMap = new int[15];
+        int[] eventMap = new int[steps[0].length];
+
         Arrays.fill(eventMap, -1);
         for (int i = 0; i < steps.length; i++) {
             for (int j = 0; j < steps[i].length; j++) {
