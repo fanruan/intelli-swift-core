@@ -1,5 +1,10 @@
 package com.fr.swift.util;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * @author anchore
  */
@@ -46,6 +51,56 @@ public final class Util {
             return false;
         }
         return o1.equals(o2);
+    }
+
+
+    public static boolean isEqualCollection(final Collection a, final Collection b) {
+        if (a != null) {
+            if (b == null) {
+                return false;
+            }
+            if (a.size() != b.size()) {
+                return false;
+            } else {
+                Map mapa = getCardinalityMap(a);
+                Map mapb = getCardinalityMap(b);
+                if (mapa.size() != mapb.size()) {
+                    return false;
+                } else {
+                    Iterator it = mapa.keySet().iterator();
+                    while (it.hasNext()) {
+                        Object obj = it.next();
+                        if (getFreq(obj, mapa) != getFreq(obj, mapb)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return b == null;
+    }
+
+    public static Map getCardinalityMap(final Collection coll) {
+        Map count = new HashMap();
+        for (Iterator it = coll.iterator(); it.hasNext(); ) {
+            Object obj = it.next();
+            Integer c = (Integer) (count.get(obj));
+            if (c == null) {
+                count.put(obj, 1);
+            } else {
+                count.put(obj, c.intValue() + 1);
+            }
+        }
+        return count;
+    }
+
+    private static final int getFreq(final Object obj, final Map freqMap) {
+        Integer count = (Integer) freqMap.get(obj);
+        if (count != null) {
+            return count.intValue();
+        }
+        return 0;
     }
 
     public static int hashCode(Object o) {

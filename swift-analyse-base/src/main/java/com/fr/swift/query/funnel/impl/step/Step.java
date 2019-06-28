@@ -1,6 +1,6 @@
-package com.fr.swift.query.aggregator.funnel.impl.step;
+package com.fr.swift.query.funnel.impl.step;
 
-import com.fr.swift.query.aggregator.funnel.IStep;
+import com.fr.swift.query.funnel.IStep;
 
 import java.util.Arrays;
 

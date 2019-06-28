@@ -3,8 +3,8 @@ package com.fr.swift.query.segment.group;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.aggregator.funnel.IStep;
-import com.fr.swift.query.aggregator.funnel.ITimeWindowFilter;
+import com.fr.swift.query.funnel.IStep;
+import com.fr.swift.query.funnel.ITimeWindowFilter;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
@@ -142,8 +142,7 @@ public class MergeIterator {
             public void actionPerformed(int row) {
                 int timestamp = (int) timestampDetails[i].getLong(row);
                 int event = eventDicts[i].getIndexByRow(row);
-                String value = (String) dateColumns[i].getValueByRow(row);
-                filter.add(event, timestamp, value,
+                filter.add(event, timestamp,
                         associatedColumns == null ? -1 : associatedColumns[i].getIndex(row),
                         postGroupIndex == -1 ? null : step.isEqual(postGroupIndex, event) ? groupColumns[i].getValue(row) : null);
             }
@@ -181,7 +180,7 @@ public class MergeIterator {
         int timestamp = (int) timestamps[i];
         int event = events[i];
 
-        filter.add(event, timestamp, dates[i],
+        filter.add(event, timestamp,
                 associatedColumns == null ? -1 : associatedColumns[i].getIndex(rows[i]),
                 postGroupIndex == -1 ? null : step.isEqual(postGroupIndex, event) ? groupColumns[i].getValue(rows[i]) : null);
         if (++indexes[i] < lists[i].size()) {

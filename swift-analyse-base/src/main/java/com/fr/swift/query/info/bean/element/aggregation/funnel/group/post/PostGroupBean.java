@@ -1,4 +1,4 @@
-package com.fr.swift.query.info.bean.element.aggregation.funnel;
+package com.fr.swift.query.info.bean.element.aggregation.funnel.group.post;
 
 import com.fr.swift.base.json.annotation.JsonProperty;
 
