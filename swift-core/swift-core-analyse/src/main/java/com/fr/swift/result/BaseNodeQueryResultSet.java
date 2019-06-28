@@ -1,18 +1,16 @@
 package com.fr.swift.result;
 
-import com.fr.swift.query.group.by2.node.GroupPage;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.SwiftMetaData;
 
 /**
- * @author anchore
- * @date 12/11/2018
+ * @author lyon
+ * @date 2018/12/29
  */
-public abstract class BaseNodeMergeQRS implements QueryResultSet<GroupPage> {
+public abstract class BaseNodeQueryResultSet implements NodeQueryResultSet {
 
     private int fetchSize;
 
-    public BaseNodeMergeQRS(int fetchSize) {
+    protected BaseNodeQueryResultSet(int fetchSize) {
         this.fetchSize = fetchSize;
     }
 
@@ -28,6 +26,6 @@ public abstract class BaseNodeMergeQRS implements QueryResultSet<GroupPage> {
 
     @Override
     public void close() {
-        // todo
+
     }
 }

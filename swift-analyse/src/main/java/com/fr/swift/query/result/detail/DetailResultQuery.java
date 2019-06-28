@@ -3,7 +3,7 @@ package com.fr.swift.query.result.detail;
 import com.fr.swift.query.info.element.target.DetailTarget;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.DetailQueryResultSet;
-import com.fr.swift.result.MergeDetailQueryResultSet;
+import com.fr.swift.result.detail.MergeDetailQueryResultSet;
 
 import java.util.List;
 
@@ -11,13 +11,13 @@ import java.util.List;
  * @author pony
  * @date 2017/11/27
  */
-public class NormalDetailResultQuery extends AbstractDetailResultQuery {
+public class DetailResultQuery extends AbstractDetailResultQuery {
 
-    public NormalDetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries) {
+    public DetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries) {
         super(fetchSize, queries);
     }
 
-    public NormalDetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries, List<DetailTarget> targets) {
+    public DetailResultQuery(int fetchSize, List<Query<DetailQueryResultSet>> queries, List<DetailTarget> targets) {
         super(fetchSize, queries, targets);
     }
 

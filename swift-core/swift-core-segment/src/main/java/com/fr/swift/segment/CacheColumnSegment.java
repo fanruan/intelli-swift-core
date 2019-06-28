@@ -60,7 +60,7 @@ public class CacheColumnSegment extends BaseSegment {
         try {
             super.release();
         } finally {
-            for (Column column : columns.values()) {
+            for (Column<?> column : columns.values()) {
                 SegmentUtils.releaseHisColumn(column);
             }
         }
