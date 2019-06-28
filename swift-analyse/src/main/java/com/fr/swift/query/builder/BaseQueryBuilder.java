@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author pony
- * @date 2017/12/18
+ * @author anchore
+ * @date 2019/6/27
  */
-abstract class AbstractLocalGroupQueryBuilder {
+class BaseQueryBuilder {
 
     static boolean[] isGlobalIndexed(List<Dimension> dimensions) {
         boolean[] booleans = new boolean[dimensions.size()];
@@ -52,7 +52,7 @@ abstract class AbstractLocalGroupQueryBuilder {
         return dimensionColumns;
     }
 
-    List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
+    static List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
         List<Column> metricColumns = new ArrayList<Column>();
         for (Metric metric : metrics) {
             Column column = metric.getColumn(segment);
@@ -61,7 +61,7 @@ abstract class AbstractLocalGroupQueryBuilder {
         return metricColumns;
     }
 
-    List<Aggregator> getAggregators(List<Metric> metrics) {
+    static List<Aggregator> getAggregators(List<Metric> metrics) {
         List<Aggregator> aggregators = new ArrayList<Aggregator>();
         for (Metric metric : metrics) {
             aggregators.add(metric.getAggregator());
@@ -69,7 +69,7 @@ abstract class AbstractLocalGroupQueryBuilder {
         return aggregators;
     }
 
-    protected List<GroupTarget> getTargets(List<GroupTarget> targets) {
+    static List<GroupTarget> getTargets(List<GroupTarget> targets) {
         List<GroupTarget> targetList = new ArrayList<GroupTarget>();
         if (targets != null) {
             targetList.addAll(targets);

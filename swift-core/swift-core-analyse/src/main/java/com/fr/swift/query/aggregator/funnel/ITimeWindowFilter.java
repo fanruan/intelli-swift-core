@@ -16,7 +16,8 @@ public interface ITimeWindowFilter {
 
     /**
      * 添加一条明细记录
-     * @param event 事件
+     *
+     * @param event     事件
      * @param timestamp 时间戳
      * @return 如果已经得到完整步骤，则返回true，否则返回false
      */

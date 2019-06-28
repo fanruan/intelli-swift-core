@@ -1,5 +1,10 @@
-package com.fr.swift.result;
+package com.fr.swift.result.detail;
 
+import com.fr.swift.result.BaseDetailQueryResultSet;
+import com.fr.swift.result.DetailQueryResultSet;
+import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.SwiftRowIteratorImpl;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.IoUtil;

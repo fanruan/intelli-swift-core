@@ -1,16 +1,13 @@
-package com.fr.swift.query.result;
+package com.fr.swift.query.result.serialize;
 
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.post.meta.SwiftMetaDataUtils;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
-import com.fr.swift.query.result.serialize.SerializedDetailQueryResultSet;
-import com.fr.swift.query.result.serialize.SerializedGroupQueryResultSet;
-import com.fr.swift.query.result.serialize.SerializedSortedDetailQueryResultSet;
 import com.fr.swift.result.DetailQueryResultSet;
-import com.fr.swift.result.MergeSortedDetailQueryResultSet;
 import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.detail.MergeSortedDetailQueryResultSet;
 import com.fr.swift.result.node.resultset.MergeGroupQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.SwiftMetaData;
