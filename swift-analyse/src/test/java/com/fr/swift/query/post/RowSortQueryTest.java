@@ -59,11 +59,6 @@ public class RowSortQueryTest {
         QueryResultSet resultSet = query.getQueryResult();
         assertTrue(resultSet.hasNextPage());
         try {
-            resultSet.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
-        try {
             resultSet.getPage();
             fail();
         } catch (Exception ignored) {

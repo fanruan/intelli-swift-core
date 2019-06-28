@@ -1,9 +1,6 @@
 package com.fr.swift.query.result.serialize;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
-import com.fr.swift.result.DetailQueryResultSet;
-import com.fr.swift.result.DetailQueryResultSetMerger;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import org.junit.Before;
@@ -26,12 +23,11 @@ public class DetailSerializableQRSTest {
 
     private int fetchSize = 1;
     private int rowCount = 3;
-    private DetailSerializableQRS qrs;
+    private SerializedDetailQueryResultSet qrs;
 
     @Before
     public void setUp() {
-        qrs = new DetailSerializableQRS(fetchSize, rowCount, new DetailQueryResultSetMerger(fetchSize),
-                new ArrayList<Row>(), false);
+        qrs = new SerializedDetailQueryResultSet(fetchSize, rowCount, new ArrayList<Row>(), false);
     }
 
     @Test
@@ -42,12 +38,11 @@ public class DetailSerializableQRSTest {
     @Test
     public void setInvoker() {
         List<Row> page = new ArrayList<Row>(Collections.singleton(new ListBasedRow(Collections.singletonList("a"))));
-        QueryResultSetMerger<DetailQueryResultSet> merger = new DetailQueryResultSetMerger(fetchSize);
-        final DetailSerializableQRS next = new DetailSerializableQRS(fetchSize, rowCount, merger, page, false);
-        qrs = new DetailSerializableQRS(fetchSize, rowCount, merger, page, true);
-        qrs.setInvoker(new BaseSerializableQRS.SyncInvoker() {
+        final SerializedDetailQueryResultSet next = new SerializedDetailQueryResultSet(fetchSize, rowCount, page, false);
+        qrs = new SerializedDetailQueryResultSet(fetchSize, rowCount, page, true);
+        qrs.setInvoker(new BaseSerializedQueryResultSet.SyncInvoker() {
             @Override
-            public BaseSerializableQRS<?> invoke() {
+            public BaseSerializedQueryResultSet<?> invoke() {
                 return next;
             }
         });
@@ -61,11 +56,6 @@ public class DetailSerializableQRSTest {
     @Test
     public void getFetchSize() {
         assertEquals(fetchSize, qrs.getFetchSize());
-    }
-
-    @Test
-    public void getMerger() {
-        assertNotNull(qrs.getMerger());
     }
 
     @Test

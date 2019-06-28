@@ -20,10 +20,11 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.serialize.BaseSerializableQRS;
+import com.fr.swift.query.query.QueryType;
+import com.fr.swift.query.result.SerializedQueryResultSetMerger;
+import com.fr.swift.query.result.serialize.BaseSerializedQueryResultSet;
 import com.fr.swift.result.qrs.EmptyQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.selector.ClusterSelector;
@@ -50,7 +51,7 @@ import java.util.concurrent.CountDownLatch;
 @SwiftBean
 @SwiftScope("prototype")
 @RegisteredHandler(QueryableProcessHandler.class)
-public class SwiftQueryableProcessHandler extends BaseProcessHandler implements QueryableProcessHandler {
+class SwiftQueryableProcessHandler extends BaseProcessHandler implements QueryableProcessHandler {
 
     public SwiftQueryableProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
@@ -89,14 +90,14 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                         case DETAIL_SORT:
                         case DETAIL:
                         case GROUP: {
-                            BaseSerializableQRS qrs = (BaseSerializableQRS) rs;
-                            BaseSerializableQRS.SyncInvoker syncInvoker = new BaseSerializableQRS.SyncInvoker() {
+                            BaseSerializedQueryResultSet qrs = (BaseSerializedQueryResultSet) rs;
+                            BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
                                 @Override
-                                public <D> BaseSerializableQRS<D> invoke() {
+                                public <D> BaseSerializedQueryResultSet<D> invoke() {
                                     Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
                                     Invocation invocation = new SwiftInvocation(method, new Object[]{query});
                                     try {
-                                        return (BaseSerializableQRS<D>) invoker.invoke(invocation).recreate();
+                                        return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
                                     } catch (Throwable throwable) {
                                         return Crasher.crash(throwable);
                                     }
@@ -123,14 +124,14 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         if (resultSets.isEmpty()) {
             return EmptyQueryResultSet.get();
         }
-        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.get(0).getMerger());
+        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, queryBean.getQueryType());
         Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
     }
 
     @Override
     protected Object mergeResult(List resultList, Object... args) {
-        return ((QueryResultSetMerger) args[0]).merge(resultList);
+        return SerializedQueryResultSetMerger.merge((QueryType) args[0], resultList);
     }
 
     @Override

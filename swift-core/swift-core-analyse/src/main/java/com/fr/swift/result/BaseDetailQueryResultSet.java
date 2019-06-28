@@ -1,6 +1,5 @@
 package com.fr.swift.result;
 
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.source.SwiftMetaData;
 
 /**
@@ -12,11 +11,6 @@ public abstract class BaseDetailQueryResultSet implements DetailQueryResultSet {
 
     public BaseDetailQueryResultSet(int fetchSize) {
         this.fetchSize = fetchSize;
-    }
-
-    @Override
-    public QueryResultSetMerger<DetailQueryResultSet> getMerger() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
