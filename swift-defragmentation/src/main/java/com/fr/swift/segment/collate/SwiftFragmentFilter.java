@@ -9,14 +9,14 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * @author anchore
  * @date 2018/7/27
  */
-public class SwiftFragmentCollectRule implements FragmentCollectRule {
-
+public class SwiftFragmentFilter implements FragmentFilter {
 
     /**
      * 碎片块数 》= 10
@@ -27,12 +27,12 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
 
     private SwiftSourceAlloter alloter;
 
-    public SwiftFragmentCollectRule(SwiftSourceAlloter alloter) {
+    public SwiftFragmentFilter(SwiftSourceAlloter alloter) {
         this.alloter = alloter;
     }
 
     @Override
-    public List<SegmentKey> collect(List<SegmentKey> segKeys) {
+    public List<SegmentKey> filter(Collection<SegmentKey> segKeys) {
         int fragmentSize = alloter.getAllotRule().getCapacity() * 2 / 3;
         List<SegmentKey> fragmentKeys = new ArrayList<SegmentKey>();
         for (SegmentKey segKey : segKeys) {
@@ -67,6 +67,8 @@ public class SwiftFragmentCollectRule implements FragmentCollectRule {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return false;
+        } finally {
+            seg.release();
         }
     }
 }

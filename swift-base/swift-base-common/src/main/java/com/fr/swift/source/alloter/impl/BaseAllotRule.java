@@ -15,9 +15,11 @@ public abstract class BaseAllotRule implements AllotRule {
     @JsonProperty("capacity")
     private int capacity;
 
+    public BaseAllotRule() {
+    }
+
     public BaseAllotRule(int capacity) {
         Assert.isTrue(capacity > 0);
-
         this.capacity = capacity;
     }
 
@@ -27,7 +29,6 @@ public abstract class BaseAllotRule implements AllotRule {
     }
 
     public enum AllotType implements Type {
-        //
         LINE, HASH
     }
 }

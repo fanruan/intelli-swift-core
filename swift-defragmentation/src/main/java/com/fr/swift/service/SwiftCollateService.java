@@ -4,7 +4,11 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -19,8 +23,8 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.collate.FragmentCollectRule;
-import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
+import com.fr.swift.segment.collate.SwiftFragmentClassify;
+import com.fr.swift.segment.collate.SwiftFragmentFilter;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.collate.segment.HisSegmentMerger;
@@ -28,6 +32,9 @@ import com.fr.swift.segment.operator.collate.segment.HisSegmentMergerImpl;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.impl.BaseAllotRule;
+import com.fr.swift.source.alloter.impl.hash.HashAllotRule;
+import com.fr.swift.source.alloter.impl.hash.HistoryHashSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.util.concurrent.CommonExecutor;
@@ -35,6 +42,7 @@ import com.fr.swift.util.concurrent.CommonExecutor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018/7/9
@@ -55,6 +63,10 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private transient SwiftSegmentService swiftSegmentService;
 
+    private SwiftSegmentBucketService bucketService;
+
+    private SwiftTableAllotRuleService allotRuleService;
+
     private SwiftCollateService() {
     }
 
@@ -64,6 +76,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         database = SwiftDatabase.getInstance();
         swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
+        allotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
         return true;
     }
 
@@ -73,6 +87,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentManager = null;
         database = null;
         swiftSegmentService = null;
+        bucketService = null;
+        allotRuleService = null;
         return true;
     }
 
@@ -87,35 +103,47 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys) throws Exception {
-        SwiftSourceAlloter alloter = new HistoryLineSourceAlloter(tableKey, new LineAllotRule(LineAllotRule.STEP));
-        collateSegments(tableKey, collateSegKeys, alloter);
+        SwiftTableAllotRule allotRule = allotRuleService.getAllotRuleByTable(tableKey);
+        SwiftSegmentBucket segmentBucket = bucketService.getBucketByTable(tableKey);
+        SwiftSourceAlloter alloter;
+        if (allotRule == null) {
+            alloter = new HistoryLineSourceAlloter(tableKey, new LineAllotRule());
+        } else {
+            if (allotRule.getAllotRule().getType() == BaseAllotRule.AllotType.HASH) {
+                alloter = new HistoryHashSourceAlloter(tableKey, (HashAllotRule) allotRule.getAllotRule());
+            } else {
+                alloter = new HistoryLineSourceAlloter(tableKey, (LineAllotRule) allotRule.getAllotRule());
+            }
+        }
+        collateSegments(tableKey, collateSegKeys, alloter, segmentBucket);
     }
 
-    private void collateSegments(SourceKey tableKey, final List<SegmentKey> allCollateSegKeys, SwiftSourceAlloter alloter) throws Exception {
-        FragmentCollectRule collectRule = new SwiftFragmentCollectRule(alloter);
-        List<SegmentKey> collateSegKeys = collectRule.collect(allCollateSegKeys);
-        if (collateSegKeys.isEmpty()) {
-            return;
-        }
+    private void collateSegments(SourceKey tableKey, final List<SegmentKey> allCollateSegKeys, SwiftSourceAlloter alloter, SwiftSegmentBucket segmentBucket) throws Exception {
         if (!database.existsTable(tableKey)) {
             throw new TableNotExistException(tableKey);
         }
         Table table = database.getTable(tableKey);
 
-        HisSegmentMerger merger = new HisSegmentMergerImpl();
-        List<Segment> segments = getSegmentsByKeys(collateSegKeys);
-        if (!collateSegKeys.isEmpty() && segments.isEmpty()) {
-            // 要合并的块全部标记删除了
+        List<SegmentKey> filterFragments = new SwiftFragmentFilter(alloter).filter(allCollateSegKeys);
+        Map<Integer, List<SegmentKey>> classifiedFragments = new SwiftFragmentClassify(segmentBucket).classify(filterFragments);
+
+        for (Map.Entry<Integer, List<SegmentKey>> classifiedFragmentEntry : classifiedFragments.entrySet()) {
+            List<SegmentKey> collateSegKeys = classifiedFragmentEntry.getValue();
+            HisSegmentMerger merger = new HisSegmentMergerImpl();
+            List<Segment> segments = getSegmentsByKeys(collateSegKeys);
+            if (!collateSegKeys.isEmpty() && segments.isEmpty()) {
+                // 要合并的块全部标记删除了
+                clearCollatedSegment(collateSegKeys, tableKey);
+                continue;
+            }
+            List<SegmentKey> newSegmentKeys = merger.merge(table, segments, alloter, classifiedFragmentEntry.getKey());
+            if (newSegmentKeys.isEmpty()) {
+                // 合并失败
+                continue;
+            }
+            fireUploadHistory(newSegmentKeys);
             clearCollatedSegment(collateSegKeys, tableKey);
-            return;
         }
-        List<SegmentKey> newSegmentKeys = merger.merge(table, segments, alloter);
-        if (newSegmentKeys.isEmpty()) {
-            // 合并失败
-            return;
-        }
-        fireUploadHistory(newSegmentKeys);
-        clearCollatedSegment(collateSegKeys, tableKey);
     }
 
     private List<Segment> getSegmentsByKeys(List<SegmentKey> segmentKeys) {
