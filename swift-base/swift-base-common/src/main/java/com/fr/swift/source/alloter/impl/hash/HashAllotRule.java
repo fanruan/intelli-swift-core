@@ -10,7 +10,7 @@ import com.fr.swift.source.alloter.impl.hash.function.JdkHashFunction;
  * @date 2018/6/5
  */
 public class HashAllotRule extends BaseAllotRule {
-    public static final int HASH_PARTATIONS = 64;
+    public static final int HASH_PARTITIONS = 64;
 
     @JsonProperty("fieldIndex")
     private int fieldIndex;
@@ -23,7 +23,7 @@ public class HashAllotRule extends BaseAllotRule {
     }
 
     public HashAllotRule(int fieldIndex) {
-        this(fieldIndex, HASH_PARTATIONS);
+        this(fieldIndex, HASH_PARTITIONS);
     }
 
     public HashAllotRule(int fieldIndex, int partitions) {
