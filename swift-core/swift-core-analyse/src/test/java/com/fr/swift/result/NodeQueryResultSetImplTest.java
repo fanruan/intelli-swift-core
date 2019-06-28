@@ -12,14 +12,14 @@ import static org.junit.Assert.fail;
 /**
  * Created by lyon on 2019/1/11.
  */
-public class NodeQRSImplTest {
+public class NodeQueryResultSetImplTest {
 
     private int fetchSize = 200;
-    private NodeQRS rs;
+    private NodeQueryResultSet rs;
 
     @Before
     public void setUp() {
-        rs = new NodeQRSImpl(fetchSize, new GroupNode());
+        rs = new NodeQueryResultSetImpl(fetchSize, new GroupNode());
     }
 
     @Test

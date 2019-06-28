@@ -5,7 +5,7 @@ import com.fr.swift.query.aggregator.AggregatorValueCombiner;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRSImpl;
+import com.fr.swift.result.NodeMergeQueryResultSetImpl;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.structure.iterator.RowTraversal;
 
@@ -31,7 +31,7 @@ public class NodeGroupByUtils {
             // 只有指标的情况
             final GroupNode root = new GroupNode(-1, null);
             List<QueryResultSet<GroupPage>> list = new ArrayList<QueryResultSet<GroupPage>>();
-            list.add(new NodeMergeQRSImpl(groupByInfo.getFetchSize(), root, null) {
+            list.add(new NodeMergeQueryResultSetImpl(groupByInfo.getFetchSize(), root, null) {
                 @Override
                 public GroupPage getPage() {
                     // 只有一页，适配ChainedResultSet

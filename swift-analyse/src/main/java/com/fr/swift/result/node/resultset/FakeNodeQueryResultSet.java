@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
-import com.fr.swift.result.BaseNodeQRS;
+import com.fr.swift.result.BaseNodeQueryResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.SwiftRowOperator;
@@ -16,12 +16,12 @@ import java.util.List;
  * @author Lyon
  * @date 2018/6/13
  */
-public class FakeNodeQRS extends BaseNodeQRS {
+public class FakeNodeQueryResultSet extends BaseNodeQueryResultSet {
 
     private SwiftRowOperator<Row> operator;
     private QueryResultSet<SwiftNode> source;
 
-    public FakeNodeQRS(SwiftRowOperator<Row> operator, QueryResultSet<SwiftNode> source) {
+    public FakeNodeQueryResultSet(SwiftRowOperator<Row> operator, QueryResultSet<SwiftNode> source) {
         super(source.getFetchSize());
         this.operator = operator;
         this.source = source;
@@ -47,6 +47,6 @@ public class FakeNodeQRS extends BaseNodeQRS {
     @Override
     public SwiftResultSet convert(SwiftMetaData metaData) {
         Iterator<Row> iterator = getPageData().iterator();
-        return ChainedNodeQRS.create(getFetchSize(), iterator, metaData);
+        return ChainedNodeQueryResultSet.create(getFetchSize(), iterator, metaData);
     }
 }

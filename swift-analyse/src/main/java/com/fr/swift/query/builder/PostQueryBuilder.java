@@ -25,7 +25,9 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import java.util.List;
 
 /**
- * Created by Lyon on 2018/6/6.
+ *
+ * @author Lyon
+ * @date 2018/6/6
  */
 class PostQueryBuilder {
 

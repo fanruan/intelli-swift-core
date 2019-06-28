@@ -7,7 +7,7 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.QueryResultSetSerializer;
+import com.fr.swift.query.result.serialize.QueryResultSetSerializer;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.query.session.factory.SessionFactoryImpl;
 import com.fr.swift.result.SwiftResultSet;

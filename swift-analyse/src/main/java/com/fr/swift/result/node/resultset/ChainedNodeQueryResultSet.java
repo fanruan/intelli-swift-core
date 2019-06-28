@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
-import com.fr.swift.result.BaseNodeQRS;
+import com.fr.swift.result.BaseNodeQueryResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNode2RowIterator;
 import com.fr.swift.result.SwiftNodeOperator;
@@ -9,19 +9,18 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 
 /**
  * @author Lyon
  * @date 2018/6/12
  */
-public class ChainedNodeQRS extends BaseNodeQRS {
+public class ChainedNodeQueryResultSet extends BaseNodeQueryResultSet {
 
     private SwiftNodeOperator operator;
     private QueryResultSet<SwiftNode> source;
 
-    public ChainedNodeQRS(SwiftNodeOperator operator, QueryResultSet<SwiftNode> source) {
+    public ChainedNodeQueryResultSet(SwiftNodeOperator operator, QueryResultSet<SwiftNode> source) {
         super(source.getFetchSize());
         this.operator = operator;
         this.source = source;
@@ -55,22 +54,22 @@ public class ChainedNodeQRS extends BaseNodeQRS {
             }
 
             @Override
-            public SwiftMetaData getMetaData() throws SQLException {
+            public SwiftMetaData getMetaData() {
                 return metaData;
             }
 
             @Override
-            public boolean hasNext() throws SQLException {
+            public boolean hasNext() {
                 return iterator.hasNext();
             }
 
             @Override
-            public Row getNextRow() throws SQLException {
+            public Row getNextRow() {
                 return iterator.next();
             }
 
             @Override
-            public void close() throws SQLException {
+            public void close() {
 
             }
         };

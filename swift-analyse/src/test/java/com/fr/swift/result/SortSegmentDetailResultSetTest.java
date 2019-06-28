@@ -7,6 +7,7 @@ import com.fr.swift.query.group.by.CubeData;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.detail.SortSegmentDetailResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;

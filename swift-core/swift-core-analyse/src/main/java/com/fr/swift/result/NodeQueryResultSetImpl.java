@@ -1,14 +1,16 @@
 package com.fr.swift.result;
 
 /**
- * Created by lyon on 2019/1/11.
+ *
+ * @author lyon
+ * @date 2019/1/11
  */
-public class NodeQRSImpl extends BaseNodeQRS {
+public class NodeQueryResultSetImpl extends BaseNodeQueryResultSet {
 
     private SwiftNode root;
     private boolean hasNextPage = true;
 
-    public NodeQRSImpl(int fetchSize, SwiftNode root) {
+    public NodeQueryResultSetImpl(int fetchSize, SwiftNode root) {
         super(fetchSize);
         this.root = root;
     }

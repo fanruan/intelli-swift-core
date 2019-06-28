@@ -24,7 +24,7 @@ public class DistinctAggregateTest extends TestCase {
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
 
         expect(column.getDictionaryEncodedColumn()).andReturn(dic).anyTimes();
-        expect(dic.getValueByRow(0)).andReturn(1<<18).anyTimes();
+        expect(dic.getValueByRow(0)).andReturn(1 << 18).anyTimes();
         expect(dic.getValueByRow(1)).andReturn(3).anyTimes();
         expect(dic.getValueByRow(2)).andReturn(4).anyTimes();
         expect(dic.getValueByRow(3)).andReturn(7).anyTimes();
@@ -33,10 +33,10 @@ public class DistinctAggregateTest extends TestCase {
         control.replay();
 
         double count = 5;
-        DistinctAggregate distinctCalculator = (DistinctAggregate)DistinctAggregate.INSTANCE;
+        DistinctAggregate distinctCalculator = (DistinctAggregate) DistinctAggregate.INSTANCE;
         an = distinctCalculator.aggregate(traversal, column);
 
-        assertEquals(true, an.getBitMap().contains(1<<18));
+        assertEquals(true, an.getBitMap().contains(1 << 18));
         assertEquals(true, an.getBitMap().contains(3));
         assertEquals(true, an.getBitMap().contains(4));
         assertEquals(false, an.getBitMap().contains(5));
@@ -68,7 +68,7 @@ public class DistinctAggregateTest extends TestCase {
         other.setBitMap(set2);
 
         double expect = 6.0;
-        DistinctAggregate distinctCalculator = (DistinctAggregate)DistinctAggregate.INSTANCE;
+        DistinctAggregate distinctCalculator = (DistinctAggregate) DistinctAggregate.INSTANCE;
         distinctCalculator.combine(value, other);
 
         assertEquals(true, value.getBitMap().contains(1));

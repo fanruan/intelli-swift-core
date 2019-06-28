@@ -17,6 +17,7 @@ import static org.easymock.EasyMock.expect;
 public class VarianceAggregateTest extends TestCase {
 
     private double precision = 0.00000001;
+
     public void testAggregateInt() {
 
         RowTraversal bitMap = AllShowBitMap.of(4);
