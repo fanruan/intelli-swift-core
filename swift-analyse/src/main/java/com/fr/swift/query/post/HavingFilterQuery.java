@@ -5,7 +5,7 @@ import com.fr.swift.query.filter.match.NodeFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
-import com.fr.swift.result.node.resultset.ChainedNodeQRS;
+import com.fr.swift.result.node.resultset.ChainedNodeQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
@@ -33,6 +33,6 @@ public class HavingFilterQuery implements Query<QueryResultSet<SwiftNode>> {
                 return node;
             }
         };
-        return new ChainedNodeQRS(operator, query.getQueryResult());
+        return new ChainedNodeQueryResultSet(operator, query.getQueryResult());
     }
 }

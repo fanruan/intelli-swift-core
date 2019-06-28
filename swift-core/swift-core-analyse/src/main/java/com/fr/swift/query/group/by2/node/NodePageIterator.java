@@ -6,7 +6,7 @@ import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRSImpl;
+import com.fr.swift.result.NodeMergeQueryResultSetImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -40,7 +40,7 @@ class NodePageIterator implements Iterator<QueryResultSet<GroupPage>> {
 
     private QueryResultSet<GroupPage> getNext() {
         GroupNode root = iterator.next();
-        return new NodeMergeQRSImpl(groupByInfo.getFetchSize(), root, getGlobalDictionaries(root));
+        return new NodeMergeQueryResultSetImpl(groupByInfo.getFetchSize(), root, getGlobalDictionaries(root));
     }
 
     @Override

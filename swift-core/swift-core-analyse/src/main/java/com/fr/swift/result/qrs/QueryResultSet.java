@@ -9,8 +9,13 @@ import com.fr.swift.source.SwiftMetaData;
  * @date 2018/11/21
  */
 public interface QueryResultSet<T> extends Pagination<T> {
-
+    /**
+     * 一次取多少条，一页大小
+     *
+     * @return fetch size
+     */
     int getFetchSize();
+
     /**
      * @param metaData
      * @return

@@ -13,7 +13,6 @@ import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.util.Crasher;
 
 import java.util.List;
 
@@ -34,13 +33,13 @@ public final class QueryBuilder {
         QueryInfoBean bean = QueryBeanFactory.create(queryString);
         switch (bean.getQueryType()) {
             case DETAIL:
-                return (Query<T>) DetailQueryBuilder.buildQuery((DetailQueryInfoBean) bean);
+                return (Query<T>) DetailQueryBuilder.get().buildQuery((DetailQueryInfoBean) bean);
             case GROUP:
                 return (Query<T>) GroupQueryBuilder.get().buildQuery((GroupQueryInfoBean) bean);
             case FUNNEL:
                 return (Query<T>) FunnelQueryBuilder.buildQuery((FunnelQueryBean) bean);
             default:
-                return Crasher.crash(new UnsupportedOperationException("unsupported Query type!"));
+                throw new IllegalArgumentException(String.format("unsupported Query type! %s", bean.getQueryType()));
         }
     }
 

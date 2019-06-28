@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.CubeData;
+import com.fr.swift.result.detail.SegmentDetailResultSet;
 import com.fr.swift.source.Row;
 import org.easymock.EasyMock;
 import org.junit.Before;
