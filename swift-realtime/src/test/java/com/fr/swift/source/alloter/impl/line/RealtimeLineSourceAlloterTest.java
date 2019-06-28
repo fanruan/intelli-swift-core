@@ -148,7 +148,7 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
 
         doReturn(mock(Segment.class)).when(alloter).newSeg(segKey);
 
-        alloter.getInsertableSeg();
+        alloter.getInsertableSeg(0);
 
         verify(segmentService, never()).tryAppendSegment(tableKey, StoreType.MEMORY);
     }

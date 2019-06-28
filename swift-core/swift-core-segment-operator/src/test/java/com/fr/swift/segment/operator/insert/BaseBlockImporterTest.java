@@ -2,6 +2,8 @@ package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.SwiftSchema;
@@ -25,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -64,6 +67,9 @@ public class BaseBlockImporterTest {
 
     @Test
     public void importData() throws Exception {
+        SwiftTableAllotRuleService allotRuleService = mock(SwiftTableAllotRuleService.class);
+        when(SwiftContext.get().getBean(SwiftTableAllotRuleService.class)).thenReturn(allotRuleService);
+
         DataSource dataSource = mock(DataSource.class, RETURNS_DEEP_STUBS);
         SwiftSourceAlloter alloter = mock(SwiftSourceAlloter.class);
 
@@ -90,6 +96,8 @@ public class BaseBlockImporterTest {
         //verify persist meta
         verify(SwiftDatabase.getInstance()).existsTable(dataSource.getSourceKey());
         verify(SwiftDatabase.getInstance()).createTable(dataSource.getSourceKey(), dataSource.getMetadata());
+        verify(allotRuleService).getAllotRuleByTable(dataSource.getSourceKey());
+        verify(allotRuleService).saveAllotRule(Mockito.any(SwiftTableAllotRule.class));
 
         verify(resultSet, times(4)).hasNext();
         verify(resultSet, times(3)).getNextRow();

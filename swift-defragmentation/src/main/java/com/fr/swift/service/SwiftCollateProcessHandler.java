@@ -16,7 +16,7 @@ import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
+import com.fr.swift.segment.collate.SwiftFragmentFilter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
 
@@ -72,7 +72,7 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
             URL url = factory.getURL(allEntry.getKey());
             List<SegmentKey> segmentKeyList = allEntry.getValue();
             segmentKeyList.removeAll(collatedSegKeys);
-            if (segmentKeyList.size() >= SwiftFragmentCollectRule.FRAGMENT_NUMBER) {
+            if (segmentKeyList.size() >= SwiftFragmentFilter.FRAGMENT_NUMBER) {
                 collateMap.put(url, new ArrayList<SegmentKey>());
                 collateMap.get(url).addAll(segmentKeyList);
                 collatedSegKeys.addAll(segmentKeyList);
