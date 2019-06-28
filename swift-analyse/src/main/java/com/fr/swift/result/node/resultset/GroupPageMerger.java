@@ -19,7 +19,7 @@ import java.util.Map;
  */
 class GroupPageMerger implements Function<List<GroupPage>, GroupPage> {
     List<Aggregator> aggregators;
-    private List<Comparator<SwiftNode>> comparators;
+    List<Comparator<SwiftNode>> comparators;
 
     GroupPageMerger(List<Aggregator> aggregators, List<Comparator<SwiftNode>> comparators) {
         this.aggregators = aggregators;
