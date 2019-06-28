@@ -10,7 +10,7 @@ import com.fr.swift.source.SwiftMetaData;
  */
 public interface QueryResultSet<T> extends Pagination<T> {
     /**
-     * 一次取多少页
+     * 一次取多少条，一页大小
      *
      * @return fetch size
      */
