@@ -1,6 +1,8 @@
-package com.fr.swift.result;
+package com.fr.swift.result.detail;
 
-import com.fr.swift.result.MergeDetailQueryResultSet.DetailResultSetImpl;
+import com.fr.swift.result.DetailQueryResultSet;
+import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.detail.MergeDetailQueryResultSet.DetailResultSetImpl;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.iterator.IteratorUtils;

@@ -18,11 +18,11 @@ import static org.junit.Assert.fail;
 public class NodeMergeQRSImplTest {
 
     private int fetchSize = 200;
-    private NodeMergeQRSImpl rs;
+    private NodeMergeQueryResultSetImpl rs;
 
     @Before
     public void setUp() {
-        rs = new NodeMergeQRSImpl(fetchSize, new GroupNode(), new ArrayList<Map<Integer, Object>>());
+        rs = new NodeMergeQueryResultSetImpl(fetchSize, new GroupNode(), new ArrayList<Map<Integer, Object>>());
     }
 
     @Test

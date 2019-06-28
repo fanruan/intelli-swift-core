@@ -1,4 +1,4 @@
-package com.fr.swift.result;
+package com.fr.swift.result.detail;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -11,6 +11,7 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
+import com.fr.swift.result.BaseDetailQueryResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.Pair;
@@ -128,11 +129,11 @@ public class SortSegmentDetailResultSet extends BaseDetailQueryResultSet {
             rows = iterator.hasNext() ? BitMaps.traversal2Array(iterator.next()) : new HeapIntArray(0);
         }
 
-        public boolean hasNext() {
+        boolean hasNext() {
             return rowCursor < rows.size();
         }
 
-        public int next() {
+        int next() {
             int row = rows.get(rowCursor++);
             if (rowCursor >= rows.size() && iterator.hasNext()) {
                 init();

@@ -6,7 +6,7 @@ import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.cal.TargetCalculatorUtils;
-import com.fr.swift.result.node.resultset.ChainedNodeQRS;
+import com.fr.swift.result.node.resultset.ChainedNodeQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.util.Crasher;
 
@@ -42,6 +42,6 @@ public class FieldCalQuery implements Query<QueryResultSet<SwiftNode>> {
                 return node;
             }
         };
-        return new ChainedNodeQRS(operator, query.getQueryResult());
+        return new ChainedNodeQueryResultSet(operator, query.getQueryResult());
     }
 }

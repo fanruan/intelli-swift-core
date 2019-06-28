@@ -6,20 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author Lyon
  * @date 2018/4/27
- *
+ * <p>
  * todo 改名single page吧
  */
-public class NodeMergeQRSImpl extends BaseNodeMergeQRS {
+public class NodeMergeQueryResultSetImpl extends BaseNodeMergeQueryResultSet {
 
     private SwiftNode root;
     private List<Map<Integer, Object>> rowGlobalDictionaries;
 
     protected boolean hasNextPage = true;
 
-    public NodeMergeQRSImpl(int fetchSize, SwiftNode root, List<Map<Integer, Object>> rowGlobalDictionaries) {
+    public NodeMergeQueryResultSetImpl(int fetchSize, SwiftNode root, List<Map<Integer, Object>> rowGlobalDictionaries) {
         super(fetchSize);
         this.root = root;
         this.rowGlobalDictionaries = rowGlobalDictionaries;

@@ -144,19 +144,19 @@ public class SegmentUtils {
      * 释放历史块column
      *
      * @param column 列
-     * @param <T>    数据类型
+     * @param <C>    column
      */
-    public static <T> void releaseHisColumn(Column<T> column) {
+    public static <C extends Column<?>> void releaseHisColumn(C column) {
         if (column != null && column.getLocation().getStoreType().isPersistent()) {
             IoUtil.release(column.getDetailColumn(), column.getDictionaryEncodedColumn(), column.getBitmapIndex());
         }
     }
 
-    public static <T> void releaseHisColumn(List<Column<T>> columns) {
+    public static <C extends Column<?>> void releaseHisColumn(List<C> columns) {
         if (columns == null) {
             return;
         }
-        for (Column<T> column : columns) {
+        for (C column : columns) {
             releaseHisColumn(column);
         }
     }
