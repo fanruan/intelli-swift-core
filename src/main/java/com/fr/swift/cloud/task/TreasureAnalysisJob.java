@@ -59,6 +59,7 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
         String yearMonth = treasureBean.getYearMonth();
 
         CloudLogUtils.logStartJob(treasureBean.getClientId(), appId, yearMonth, treasureBean.getVersion(), "analysis");
+
         // 为了避免重复，先清除数据
         try {
             deleteIfExisting(appId, yearMonth);
@@ -69,7 +70,8 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
         if (!treasureBean.getVersion().equals("1.0")) {
             downtimeResultList.addAll(new DowntimeAnalyser().downtimeAnalyse(appId, yearMonth));
         }
-        saveCustomerInfo(treasureBean.getClientId(), appId, yearMonth);
+
+        saveCustomerInfo(treasureBean.getClientId(), appId, yearMonth, treasureBean.getCustomerId(), treasureBean.getType());
 
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         Transaction transaction = session.beginTransaction();
@@ -102,7 +104,7 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
 
         CloudLogUtils.logStartJob(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion(), "send message");
         TreasureAnalysisBean treasureAnalysisBean = new TreasureAnalysisBean(treasureBean.getClientId(), treasureBean.getClientAppId()
-                , treasureBean.getYearMonth(), treasureBean.getVersion(), treasureBean.getType());
+                , treasureBean.getYearMonth(), treasureBean.getVersion(), treasureBean.getType(), treasureBean.getCustomerId());
         messageProducer.produce(CloudProperty.getProperty().getTreasureAnalysisTopic(), treasureAnalysisBean);
         return true;
     }
@@ -129,14 +131,14 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
         session.close();
     }
 
-    public static void saveCustomerInfo(String clientId, String appId, String yearMonth) {
+    public static void saveCustomerInfo(String clientId, String appId, String yearMonth, String customerId, String type) {
         if (isExisted(clientId, appId)) {
             return;
         }
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         try {
             Transaction transaction = session.beginTransaction();
-            CustomerInfo customerInfo = new CustomerInfo(clientId, appId, yearMonth);
+            CustomerInfo customerInfo = new CustomerInfo(clientId, customerId, appId, yearMonth, type);
             session.saveOrUpdate(customerInfo);
             transaction.commit();
         } catch (Exception ignored) {
