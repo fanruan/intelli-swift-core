@@ -8,6 +8,7 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.config.SwiftConfigRegistryImpl;
 import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
@@ -38,6 +39,22 @@ import java.util.Map;
  * @description
  */
 public class BootRegister {
+
+    public static void registerEntity(ClassLoader loader) throws ClassNotFoundException {
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentEntity", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftColumnIndexingConf", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftConfigEntity", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentLocationEntity", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftServiceInfoEntity", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTableAllotConf", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTablePathEntity", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.base.meta.SwiftMetaDataBean", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.SwiftExecutorTaskEntity", loader);
+
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentBucketElement", loader);
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTableAllotRule", loader);
+
+    }
 
     public static void registerExecutorTask() {
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.REALTIME, RealtimeInsertExecutorTask.class);

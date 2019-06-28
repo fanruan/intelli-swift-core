@@ -8,7 +8,7 @@ import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeQRSImpl;
+import com.fr.swift.result.NodeQueryResultSetImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -49,7 +49,7 @@ public class HavingFilterQueryTest {
             child.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(i)});
             root.addChild(child);
         }
-        QueryResultSet<SwiftNode> rs = new NodeQRSImpl(200, root);
+        QueryResultSet<SwiftNode> rs = new NodeQueryResultSetImpl(200, root);
         Query<QueryResultSet<SwiftNode>> postQuery = EasyMock.createMock(Query.class);
         EasyMock.expect(postQuery.getQueryResult()).andReturn(rs).anyTimes();
         EasyMock.replay(postQuery);

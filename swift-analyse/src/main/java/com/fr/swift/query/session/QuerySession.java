@@ -4,7 +4,7 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.QueryResultSetSerializer;
+import com.fr.swift.query.result.serialize.QueryResultSetSerializer;
 import com.fr.swift.query.session.exception.SessionClosedException;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.core.MD5Utils;

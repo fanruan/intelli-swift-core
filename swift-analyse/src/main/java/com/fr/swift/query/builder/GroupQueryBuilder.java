@@ -43,7 +43,7 @@ import java.util.List;
  * @author pony
  * @date 2017/12/15
  */
-public class GroupQueryBuilder extends AbstractLocalGroupQueryBuilder {
+public class GroupQueryBuilder extends BaseQueryBuilder {
     private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     private static boolean isPagingQuery(GroupQueryInfo info) {

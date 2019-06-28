@@ -5,9 +5,9 @@ import com.fr.swift.query.group.by2.node.NodeGroupByUtils;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.BaseNodeMergeQRS;
+import com.fr.swift.result.BaseNodeMergeQueryResultSet;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRSImpl;
+import com.fr.swift.result.NodeMergeQueryResultSetImpl;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class GroupSegmentQuery implements Query<QueryResultSet<GroupPage>> {
     public QueryResultSet<GroupPage> getQueryResult() {
         final Iterator<QueryResultSet<GroupPage>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
         if (paged) {
-            return new BaseNodeMergeQRS(groupByInfo.getFetchSize()) {
+            return new BaseNodeMergeQueryResultSet(groupByInfo.getFetchSize()) {
                 @Override
                 public GroupPage getPage() {
                     QueryResultSet<GroupPage> resultSet = iterator.next();
@@ -56,7 +56,7 @@ public class GroupSegmentQuery implements Query<QueryResultSet<GroupPage>> {
                 }
             };
         } else {
-            return (iterator.hasNext() ? iterator.next() : new NodeMergeQRSImpl(groupByInfo.getFetchSize(),
+            return (iterator.hasNext() ? iterator.next() : new NodeMergeQueryResultSetImpl(groupByInfo.getFetchSize(),
                     new GroupNode(-1, null), new ArrayList<Map<Integer, Object>>()));
         }
     }

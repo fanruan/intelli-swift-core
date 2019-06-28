@@ -7,7 +7,7 @@ import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeQRSImpl;
+import com.fr.swift.result.NodeQueryResultSetImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -47,7 +47,7 @@ public class RowSortQueryTest {
             root.addChild(child);
         }
         Collections.reverse(expected);
-        QueryResultSet<SwiftNode> rs = new NodeQRSImpl(200, root);
+        QueryResultSet<SwiftNode> rs = new NodeQueryResultSetImpl(200, root);
         Query<QueryResultSet<SwiftNode>> postQuery = EasyMock.createMock(Query.class);
         EasyMock.expect(postQuery.getQueryResult()).andReturn(rs).anyTimes();
         EasyMock.replay(postQuery);

@@ -16,9 +16,9 @@ import org.easymock.IMocksControl;
 
 import static org.easymock.EasyMock.expectLastCall;
 
-public class MaxAggregateTest extends TestCase{
+public class MaxAggregateTest extends TestCase {
 
-    private MaxAggregate max = (MaxAggregate)MaxAggregate.INSTANCE;
+    private MaxAggregate max = (MaxAggregate) MaxAggregate.INSTANCE;
 
 //    BILogger log = new BILogger();
 
@@ -103,7 +103,7 @@ public class MaxAggregateTest extends TestCase{
         otherTest1.setValue(-2);
         otherTest2.setValue(20);
 
-        MaxAggregate max = (MaxAggregate)MaxAggregate.INSTANCE;
+        MaxAggregate max = (MaxAggregate) MaxAggregate.INSTANCE;
         max.combine(valueTest1, otherTest1);
         max.combine(valueTest2, otherTest2);
 
