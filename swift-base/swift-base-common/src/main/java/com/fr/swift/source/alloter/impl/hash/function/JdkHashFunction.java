@@ -1,7 +1,6 @@
 package com.fr.swift.source.alloter.impl.hash.function;
 
 import com.fr.swift.base.json.annotation.JsonProperty;
-import com.fr.swift.log.SwiftLoggers;
 
 /**
  * @author lucifer
@@ -23,15 +22,10 @@ public class JdkHashFunction implements HashFunction {
 
     @Override
     public int indexOf(Object key) {
-        try {
-            int h;
-            int hashCode = (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
-            int index = (partitions - 1) & hashCode;
-            return index;
-        } catch (Exception warn) {
-            SwiftLoggers.getLogger().warn(warn);
-            return 0;
-        }
+        int h;
+        int hashCode = (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+        int index = (partitions - 1) & hashCode;
+        return index;
     }
 
     @Override
