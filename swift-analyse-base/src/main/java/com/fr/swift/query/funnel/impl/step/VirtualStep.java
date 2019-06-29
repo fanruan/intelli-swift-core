@@ -52,7 +52,9 @@ public class VirtualStep implements IStep {
         Arrays.fill(eventMap, -1);
         for (int i = 0; i < steps.length; i++) {
             for (int j = 0; j < steps[i].length; j++) {
-                eventMap[j] = i;
+                if (steps[i][j]) {
+                    eventMap[j] = i;
+                }
             }
         }
         return new NoRepeatedStep(eventMap, steps);

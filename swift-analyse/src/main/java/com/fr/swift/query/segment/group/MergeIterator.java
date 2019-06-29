@@ -140,7 +140,7 @@ public class MergeIterator {
         travels[i].traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                int timestamp = (int) timestampDetails[i].getLong(row);
+                long timestamp = timestampDetails[i].getLong(row);
                 int event = eventDicts[i].getIndexByRow(row);
                 filter.add(event, timestamp,
                         associatedColumns == null ? -1 : associatedColumns[i].getIndex(row),
@@ -177,7 +177,7 @@ public class MergeIterator {
     }
 
     private void filter(int i) {
-        int timestamp = (int) timestamps[i];
+        long timestamp = timestamps[i];
         int event = events[i];
 
         filter.add(event, timestamp,
