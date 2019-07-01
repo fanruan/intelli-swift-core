@@ -5,6 +5,7 @@ import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.EmptyDetailFilter;
 import com.fr.swift.query.filter.detail.impl.InFilter;
 import com.fr.swift.query.filter.detail.impl.NullFilter;
+import com.fr.swift.query.filter.detail.impl.date.WorkDayFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.BottomNFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.TopNFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
@@ -79,6 +80,8 @@ public class DetailFilterFactory {
                 return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
             case EMPTY:
                 return new EmptyDetailFilter();
+            case WORK_DAY:
+                return new WorkDayFilter(column);
             default:
                 return new AllShowDetailFilter(segment);
         }

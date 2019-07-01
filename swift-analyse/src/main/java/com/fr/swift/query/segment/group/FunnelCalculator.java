@@ -94,7 +94,7 @@ public class FunnelCalculator {
                 new DetailColumn[]{combineColumn, null},
                 new DictionaryEncodedColumn[]{event.getDictionaryEncodedColumn(), null},
                 new DictionaryEncodedColumn[]{date,},
-                createAssociatedColumn(), createPostGroupColumn(), -1/*getPostGroupStep()*/);
+                createAssociatedColumn(), createPostGroupColumn(), getPostGroupStep());
 
         Map<FunnelGroupKey, FunnelAggValue> results = new HashMap<FunnelGroupKey, FunnelAggValue>();
 
@@ -108,13 +108,17 @@ public class FunnelCalculator {
     }
 
     private Column[] createPostGroupColumn() {
-//        PostGroupBean groupBean = bean.getAggregation().getPostGroup();
-//        if (groupBean == null) {
-//            return null;
-//        }
-//        Column a0 = segment.getColumn(new ColumnKey(groupBean.getColumn()));
-//        return new Column[]{a0, null};
-        return null;
+        PostGroupBean postGroup = bean.getPostGroup();
+        if (null == postGroup) {
+            return null;
+        }
+
+        return new Column[]{segment.getColumn(new ColumnKey(postGroup.getColumn())), null};
+    }
+
+    private int getPostGroupStep() {
+        PostGroupBean postGroup = bean.getPostGroup();
+        return null != postGroup ? postGroup.getFunnelIndex() : -1;
     }
 
     private DictionaryEncodedColumn[] createAssociatedColumn() {
@@ -176,8 +180,8 @@ public class FunnelCalculator {
     private void aggregate(Map<FunnelGroupKey, FunnelAggValue> result, FunnelAggregationBean bean, List<IHead> heads) {
         int numberOfSteps = bean.getEvents().size();
         boolean calMedian = false;//isCalMedian();
-        int postGroupStep = -1;//getPostGroupStep();
-        PostGroupBean groupBean = null;// bean.getAggregation().getPostGroup();
+        int postGroupStep = getPostGroupStep();
+        PostGroupBean groupBean = bean.getPostGroup();
         List<double[]> rangePairs = groupBean == null ? new ArrayList<double[]>() : groupBean.getRangePairs();
 
         for (IHead head : heads) {
@@ -229,7 +233,7 @@ public class FunnelCalculator {
         boolean repeated = step.hasRepeatedEvents();
         if (!repeated) {
             step = step.toNoRepeatedStep();
-            return new GroupTWFilter(bean.getTimeWindow(), dayFilterBean,
+            return new GroupTWFilter(bean.getTimeWindow(), bean.getTimeGroup(), dayFilterBean,
                     step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
         }
         return new TimeWindowFilter(bean.getTimeWindow(), dayFilterBean,

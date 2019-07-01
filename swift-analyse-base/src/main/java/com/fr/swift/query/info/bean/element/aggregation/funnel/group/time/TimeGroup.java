@@ -1,24 +1,44 @@
 package com.fr.swift.query.info.bean.element.aggregation.funnel.group.time;
 
-import com.fr.swift.base.json.annotation.JsonSubTypes;
-import com.fr.swift.base.json.annotation.JsonTypeInfo;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.query.info.bean.element.filter.impl.AllShowFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.WorkDayFilterInfoBean;
 
 /**
- * 时间分组
- * TODO 暂时只知道Type，不连续的需要考虑下
- *
  * @author yee
  * @date 2019-06-28
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", defaultImpl = ContinousTimeGroup.class)
-@JsonSubTypes({
-        @JsonSubTypes.Type(name = "WORK_DAY", value = ContinousTimeGroup.class)
-})
-public interface TimeGroup {
+public enum TimeGroup {
     /**
-     * 时间分组类型
-     *
-     * @return
+     * Continuous Time Group
      */
-    TimeGroupType getType();
+    MINUTES("yyyyMMddHHmm"),
+    HOURS("yyyyMMddHH"),
+    DAYS("yyyyMMdd"),
+    MOUTHS("yyyyMM"),
+    YEARS("yyyy"),
+
+    /**
+     * Discrete Time Group
+     */
+    WORK_DAY("yyyyMMdd") {
+        @Override
+        public FilterInfoBean filter() {
+            return new WorkDayFilterInfoBean();
+        }
+    };
+
+    private String datePattern;
+
+    TimeGroup(String datePattern) {
+        this.datePattern = datePattern;
+    }
+
+    public String getDatePattern() {
+        return datePattern;
+    }
+
+    public FilterInfoBean filter() {
+        return new AllShowFilterBean();
+    }
 }

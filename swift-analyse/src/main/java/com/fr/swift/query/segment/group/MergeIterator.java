@@ -54,9 +54,10 @@ public class MergeIterator {
             columns[0] = groupColumns[0].getDictionaryEncodedColumn();
             columns[1] = groupColumns[1] == null ? null : groupColumns[1].getDictionaryEncodedColumn();
             return merge(columns);
+        } else {
+            return new IMergeColumn[]{new DetailOrigineColumn(groupColumns[0].getDetailColumn()),
+                    groupColumns[1] == null ? null : new DetailOrigineColumn(groupColumns[1].getDetailColumn())};
         }
-        return new IMergeColumn[]{new DetailOrigineColumn(groupColumns[0].getDetailColumn()),
-                groupColumns[1] == null ? null : new DetailOrigineColumn(groupColumns[1].getDetailColumn())};
     }
 
     private void move(int index) {
