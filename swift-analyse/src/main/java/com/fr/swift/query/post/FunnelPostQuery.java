@@ -41,33 +41,10 @@ public class FunnelPostQuery implements Query<QueryResultSet<FunnelResultSet>> {
         return false;
     }
 
-    @Override
-    public QueryResultSet<FunnelResultSet> getQueryResult() throws SQLException {
-        QueryResultSet<FunnelResultSet> resultSet = postQuery.getQueryResult();
-        if (calMedian) {
-            int[] helpArray = new int[timeWindow + 1];
-            Map<FunnelGroupKey, FunnelAggValue> map = resultSet.getPage().getResult();
-            for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : map.entrySet()) {
-                List<List<Integer>> periods = entry.getValue().getPeriods();
-                double[] medians = new double[periods.size()];
-                for (int i = 0; i < periods.size(); i++) {
-                    List<Integer> list = periods.get(i);
-                    if (list.isEmpty()) {
-                        medians[i] = Double.NaN;
-                        continue;
-                    }
-                    medians[i] = calMedian(list, helpArray);
-                }
-                entry.getValue().setMedians(medians);
-            }
-        }
-        return resultSet;
-    }
-
-    private static double calMedian(List<Integer> list, int[] helperArray) {
+    private static double calMedian(List<Long> list, int[] helperArray) {
         Arrays.fill(helperArray, 0);
-        for (int i : list) {
-            helperArray[i]++;
+        for (long i : list) {
+            helperArray[(int) i]++;
         }
         int half = list.size() / 2;
         int count = 0;
@@ -93,5 +70,28 @@ public class FunnelPostQuery implements Query<QueryResultSet<FunnelResultSet>> {
             median = (double) m;
         }
         return median;
+    }
+
+    @Override
+    public QueryResultSet<FunnelResultSet> getQueryResult() throws SQLException {
+        QueryResultSet<FunnelResultSet> resultSet = postQuery.getQueryResult();
+        if (calMedian) {
+            int[] helpArray = new int[timeWindow + 1];
+            Map<FunnelGroupKey, FunnelAggValue> map = resultSet.getPage().getResult();
+            for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : map.entrySet()) {
+                List<List<Long>> periods = entry.getValue().getPeriods();
+                double[] medians = new double[periods.size()];
+                for (int i = 0; i < periods.size(); i++) {
+                    List<Long> list = periods.get(i);
+                    if (list.isEmpty()) {
+                        medians[i] = Double.NaN;
+                        continue;
+                    }
+                    medians[i] = calMedian(list, helpArray);
+                }
+                entry.getValue().setMedians(medians);
+            }
+        }
+        return resultSet;
     }
 }

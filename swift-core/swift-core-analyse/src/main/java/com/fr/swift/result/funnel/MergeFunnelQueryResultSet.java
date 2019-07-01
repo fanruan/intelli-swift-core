@@ -38,7 +38,7 @@ public class MergeFunnelQueryResultSet implements QueryResultSet<FunnelResultSet
                 FunnelAggValue contestAggValue = map.get(entry.getKey());
                 if (contestAggValue == null) {
                     int[] counter = new int[numberOfSteps];
-                    List<List<Integer>> periods = createList(numberOfSteps - 1);
+                    List<List<Long>> periods = createList(numberOfSteps - 1);
                     contestAggValue = new FunnelAggValue(counter, periods);
                     map.put(entry.getKey(), contestAggValue);
                 }
@@ -47,8 +47,8 @@ public class MergeFunnelQueryResultSet implements QueryResultSet<FunnelResultSet
                 for (int i = 0; i < values.length; i++) {
                     counters[i] += values[i];
                 }
-                List<List<Integer>> valuePeriods = entry.getValue().getPeriods();
-                List<List<Integer>> lists = contestAggValue.getPeriods();
+                List<List<Long>> valuePeriods = entry.getValue().getPeriods();
+                List<List<Long>> lists = contestAggValue.getPeriods();
                 // TODO: 2018/9/25 可以做好一部分排序，以及使用基本类型
                 for (int i = 0; i < valuePeriods.size(); i++) {
                     for (int j = 0; j < valuePeriods.get(i).size(); j++) {
@@ -61,10 +61,10 @@ public class MergeFunnelQueryResultSet implements QueryResultSet<FunnelResultSet
         mergeResultSet = new FunnelQueryResultSet(new FunnelResultSet(map));
     }
 
-    private List<List<Integer>> createList(int len) {
-        List<List<Integer>> lists = new ArrayList<List<Integer>>();
+    private List<List<Long>> createList(int len) {
+        List<List<Long>> lists = new ArrayList<List<Long>>();
         for (int i = 0; i < len; i++) {
-            lists.add(new ArrayList<Integer>());
+            lists.add(new ArrayList<Long>());
         }
         return lists;
     }
