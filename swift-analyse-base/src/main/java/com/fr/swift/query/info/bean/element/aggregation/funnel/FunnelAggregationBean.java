@@ -20,6 +20,8 @@ public class FunnelAggregationBean extends FunnelPathsAggregationBean {
     private TimeGroup timeGroup;
     @JsonProperty("postGroup")
     private PostGroupBean postGroup;
+    @JsonProperty("calculateTime")
+    private boolean calculateTime;
 
 
     public void setTimeGroup(TimeGroup timeGroup) {
@@ -36,6 +38,14 @@ public class FunnelAggregationBean extends FunnelPathsAggregationBean {
 
     public void setPostGroup(PostGroupBean postGroup) {
         this.postGroup = postGroup;
+    }
+
+    public boolean isCalculateTime() {
+        return calculateTime;
+    }
+
+    public void setCalculateTime(boolean calculateTime) {
+        this.calculateTime = calculateTime;
     }
 
     @Override

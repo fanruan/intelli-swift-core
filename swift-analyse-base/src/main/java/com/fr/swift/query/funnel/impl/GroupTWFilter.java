@@ -29,7 +29,6 @@ public class GroupTWFilter implements ITimeWindowFilter {
     private long dateStart;
     private int numberOfDates;
     private TimeFilterInfo filter;
-    private TimeGroup timeGroup;
     private SimpleDateFormat simpleDateFormat;
 
     // 漏斗定义的顺序步骤
@@ -51,7 +50,6 @@ public class GroupTWFilter implements ITimeWindowFilter {
                          DictionaryEncodedColumn associatedPropertyColumn) {
         this.timeWindow = timeWindow.toMillis();
         this.dayWindow = this.timeWindow / info.timeSegment() + 1;
-        this.timeGroup = timeGroup;
         this.simpleDateFormat = new SimpleDateFormat(timeGroup.getDatePattern());
         this.filter = info;
         this.dateStart = info.getTimeStart();

@@ -135,7 +135,7 @@ public class FunnelCalculator {
         FunnelGroupKey groupKey;
         Object groupValue = head.getGroupValue();
         if (postGroupStep != -1) {
-            if (rangePairs.size() == 0) {
+            if (null == rangePairs || rangePairs.isEmpty()) {
                 if (groupValue != null) {
                     groupKey = new FunnelGroupKey(head.getDate(), 0, (String) groupValue);
                 } else {
@@ -162,24 +162,9 @@ public class FunnelCalculator {
         return groupKey;
     }
 
-//    private boolean isCalMedian() {
-//        List<PostQueryInfoBean> beans = bean.getPostAggregations();
-//        for (PostQueryInfoBean postQueryInfoBean : beans) {
-//            if (postQueryInfoBean.getType() == PostQueryType.FUNNEL_MEDIAN) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    private int getPostGroupStep() {
-//        PostGroupBean groupBean = bean.getAggregation().getPostGroup();
-//        return groupBean == null ? -1 : groupBean.getFunnelIndex();
-//    }
-
     private void aggregate(Map<FunnelGroupKey, FunnelAggValue> result, FunnelAggregationBean bean, List<IHead> heads) {
         int numberOfSteps = bean.getEvents().size();
-        boolean calMedian = false;//isCalMedian();
+        boolean calMedian = bean.isCalculateTime();
         int postGroupStep = getPostGroupStep();
         PostGroupBean groupBean = bean.getPostGroup();
         List<double[]> rangePairs = groupBean == null ? new ArrayList<double[]>() : groupBean.getRangePairs();
@@ -189,7 +174,7 @@ public class FunnelCalculator {
             FunnelAggValue contestAggValue = result.get(groupKey);
             if (contestAggValue == null) {
                 int[] counter = new int[numberOfSteps];
-                List<List<Integer>> lists = new ArrayList<List<Integer>>();
+                List<List<Long>> lists = new ArrayList<List<Long>>();
                 if (calMedian) {
                     lists = createList(numberOfSteps - 1);
                 }
@@ -201,20 +186,20 @@ public class FunnelCalculator {
             for (int i = 0; i < size; i++) {
                 counter[i]++;
             }
-//            if (calMedian) {
-//                List<List<Integer>> lists = contestAggValue.getPeriods();
-//                long[] timestamps = head.getTimestamps();
-//                for (int i = 1; i < size; i++) {
-//                    lists.get(i - 1).add((timestamps[i] - timestamps[i - 1]));
-//                }
-//            }
+            if (calMedian) {
+                List<List<Long>> lists = contestAggValue.getPeriods();
+                long[] timestamps = head.getTimestamps();
+                for (int i = 1; i < size; i++) {
+                    lists.get(i - 1).add((timestamps[i] - timestamps[i - 1]));
+                }
+            }
         }
     }
 
-    private List<List<Integer>> createList(int len) {
-        List<List<Integer>> lists = new ArrayList<List<Integer>>();
+    private List<List<Long>> createList(int len) {
+        List<List<Long>> lists = new ArrayList<List<Long>>();
         for (int i = 0; i < len; i++) {
-            lists.add(new ArrayList<Integer>());
+            lists.add(new ArrayList<Long>());
         }
         return lists;
     }
@@ -228,7 +213,6 @@ public class FunnelCalculator {
 //            associatedPropertyColumn = segment.getColumn(new ColumnKey(association.getColumn())).getDictionaryEncodedColumn();
 //        }
         TimeFilterInfo dayFilterBean = bean.getTimeFilter();
-//        int dateStart = getDateStart(dayFilterBean.getTimeStart());
         int firstAssociatedIndex = -1;//(association == null || association.getEvents().size() == 0) ? -1 : association.getEvents().get(0);
         boolean repeated = step.hasRepeatedEvents();
         if (!repeated) {
