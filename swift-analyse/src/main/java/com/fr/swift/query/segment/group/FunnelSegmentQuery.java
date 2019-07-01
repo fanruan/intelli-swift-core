@@ -1,14 +1,13 @@
 package com.fr.swift.query.segment.group;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.funnel.TimeWindowBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelEventBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.DayFilterInfo;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.ContinousTimeGroup;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.TimeGroupType;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.TimeGroup;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.FunnelResultSet;
@@ -17,7 +16,6 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,22 +30,22 @@ public class FunnelSegmentQuery implements Query<QueryResultSet<FunnelResultSet>
 
     public FunnelSegmentQuery(Segment segment, FunnelQueryBean bean) {
         FunnelAggregationBean funnelAggregationBean = new FunnelAggregationBean();
-        funnelAggregationBean.setTimeGroup(new ContinousTimeGroup(TimeGroupType.DAYS));
+        funnelAggregationBean.setTimeGroup(TimeGroup.WORK_DAY);
         funnelAggregationBean.setColumn("eventType");
-        funnelAggregationBean.setType(AggregatorType.FUNNEL_PATHS);
         funnelAggregationBean.setColumns(new ParameterColumnsBean("id", "eventType", "currentTime", "date"));
         FunnelEventBean first = new FunnelEventBean();
         first.setName("login");
-        first.setSteps(Collections.singletonList("login"));
+        first.setSteps(Arrays.asList("login", "searchGoods"));
         FunnelEventBean second = new FunnelEventBean();
-        second.setName("browseGoods");
-        second.setSteps(Collections.singletonList("browseGoods"));
+        second.setName("searchGoods");
+        second.setSteps(Arrays.asList("browseGoods"));
         funnelAggregationBean.setEvents(Arrays.asList(first, second));
         TimeWindowBean timeWindow = new TimeWindowBean();
         timeWindow.setDuration(30);
         timeWindow.setUnit(TimeUnit.DAYS);
         funnelAggregationBean.setTimeWindow(timeWindow);
         funnelAggregationBean.setTimeFilter(new DayFilterInfo("currentTime", "20180601", 30));
+        funnelAggregationBean.setPostGroup(new PostGroupBean(1, "city", null));
         calculator = new FunnelCalculator(segment, funnelAggregationBean);
 //        this.bean = bean;
 //        this.segment = segment;

@@ -5,6 +5,7 @@ import com.fr.swift.query.funnel.IStep;
 import com.fr.swift.query.funnel.ITimeWindowFilter;
 import com.fr.swift.query.funnel.TimeWindowBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.TimeFilterInfo;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.TimeGroup;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.text.SimpleDateFormat;
@@ -28,10 +29,8 @@ public class GroupTWFilter implements ITimeWindowFilter {
     private long dateStart;
     private int numberOfDates;
     private TimeFilterInfo filter;
-    /**
-     * TODO@yee 2019/06/18 暂时先这样 format应该支持自定义或者直接不需要format，从timestamp解析应该就可以
-     */
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    private TimeGroup timeGroup;
+    private SimpleDateFormat simpleDateFormat;
 
     // 漏斗定义的顺序步骤
     private IStep step;
@@ -47,11 +46,13 @@ public class GroupTWFilter implements ITimeWindowFilter {
     private boolean[] finished;
     private boolean hasNoHeadBefore = true;
 
-    public GroupTWFilter(TimeWindowBean timeWindow, TimeFilterInfo info, IStep step,
+    public GroupTWFilter(TimeWindowBean timeWindow, TimeGroup timeGroup, TimeFilterInfo info, IStep step,
                          int firstAssociatedIndex, boolean[] associatedEvents,
                          DictionaryEncodedColumn associatedPropertyColumn) {
         this.timeWindow = timeWindow.toMillis();
         this.dayWindow = this.timeWindow / info.timeSegment() + 1;
+        this.timeGroup = timeGroup;
+        this.simpleDateFormat = new SimpleDateFormat(timeGroup.getDatePattern());
         this.filter = info;
         this.dateStart = info.getTimeStart();
         this.numberOfDates = info.getTimeSegCount();
@@ -252,7 +253,7 @@ public class GroupTWFilter implements ITimeWindowFilter {
 
     private void createHead(long timestamp, int associatedValue, Object groupValue, IStepContainer container) {
         // 当前事务没有被使用且属于第一个事件，则新建临时IHead对象
-        IHead newHead = new AHead(step.size(), sdf.format(new Date(timestamp)), associatedValue);
+        IHead newHead = new AHead(step.size(), simpleDateFormat.format(new Date(timestamp)), associatedValue);
         newHead.addStep(timestamp, groupValue);
         container.add(associatedValue, newHead);
         // head只能添加在某一天，所以这里要跳出
