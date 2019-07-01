@@ -1,7 +1,6 @@
 package com.fr.swift.query.info.bean.element.aggregation.funnel;
 
 import com.fr.swift.base.json.annotation.JsonProperty;
-import com.fr.swift.util.Util;
 
 import java.util.List;
 
@@ -39,19 +38,14 @@ public class FunnelEventBean {
                 '}';
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof FunnelEventBean)) return false;
 
         FunnelEventBean that = (FunnelEventBean) o;
 
-        return Util.isEqualCollection(that.steps, that.steps);
+        return steps != null ? steps.equals(that.steps) : that.steps == null;
     }
 
     @Override
