@@ -4,6 +4,8 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.filter.FilterBuilder;
+import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.funnel.IHead;
 import com.fr.swift.query.funnel.IStep;
 import com.fr.swift.query.funnel.ITimeWindowFilter;
@@ -13,7 +15,6 @@ import com.fr.swift.query.funnel.impl.step.VirtualStep;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
-import com.fr.swift.query.group.by.GroupByResult;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAssociationBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelEventBean;
@@ -68,32 +69,12 @@ public class FunnelCalculator {
                         bean.getFilter())).createFilterIndex();
         SwiftLoggers.getLogger().debug("seg rows: {}", rowTraversal.getCardinality());
         DetailColumn combineColumn = segment.getColumn(new ColumnKey(params.getTimestamp())).getDetailColumn();
-        DictionaryEncodedColumn date = segment.getColumn(new ColumnKey(params.getDate())).getDictionaryEncodedColumn();
         Column idColumn = segment.getColumn(new ColumnKey(params.getUserId()));
         Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(idColumn, rowTraversal, true);
-        MergeIterator mergeIterator;
-        Iterator<GroupByEntry> empty = new GroupByResult() {
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public GroupByEntry next() {
-                return null;
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
-        mergeIterator = new MergeIterator(filter, step, new Iterator[]{iterator, empty},
-                new DictionaryEncodedColumn[]{idColumn.getDictionaryEncodedColumn(),
-                        null},
-                new DetailColumn[]{combineColumn, null},
-                new DictionaryEncodedColumn[]{event.getDictionaryEncodedColumn(), null},
-                new DictionaryEncodedColumn[]{date,},
+        MergeIterator mergeIterator = new MergeIterator(filter, step, iterator,
+                idColumn.getDictionaryEncodedColumn(),
+                combineColumn,
+                event.getDictionaryEncodedColumn(),
                 createAssociatedColumn(), createPostGroupColumn(), getPostGroupStep());
 
         Map<FunnelGroupKey, FunnelAggValue> results = new HashMap<FunnelGroupKey, FunnelAggValue>();
@@ -107,13 +88,13 @@ public class FunnelCalculator {
         return new FunnelQueryResultSet(new FunnelResultSet(results));
     }
 
-    private Column[] createPostGroupColumn() {
+    private Column createPostGroupColumn() {
         PostGroupBean postGroup = bean.getPostGroup();
         if (null == postGroup) {
             return null;
         }
 
-        return new Column[]{segment.getColumn(new ColumnKey(postGroup.getColumn())), null};
+        return segment.getColumn(new ColumnKey(postGroup.getColumn()));
     }
 
     private int getPostGroupStep() {
@@ -121,7 +102,7 @@ public class FunnelCalculator {
         return null != postGroup ? postGroup.getFunnelIndex() : -1;
     }
 
-    private DictionaryEncodedColumn[] createAssociatedColumn() {
+    private DictionaryEncodedColumn createAssociatedColumn() {
 //        List<FunnelAssociationBean> associationFilterBean = bean.getAssociations();
 //        if (associationFilterBean == null) {
 //            return null;
@@ -217,7 +198,9 @@ public class FunnelCalculator {
         boolean repeated = step.hasRepeatedEvents();
         if (!repeated) {
             step = step.toNoRepeatedStep();
-            return new GroupTWFilter(bean.getTimeWindow(), bean.getTimeGroup(), dayFilterBean,
+            FilterInfo filterInfo = FilterInfoParser.parse(new SourceKey(segment.getMetaData().getId()), bean.getTimeGroup().filter());
+            MatchFilter matchFilter = FilterBuilder.buildMatchFilter(filterInfo);
+            return new GroupTWFilter(bean.getTimeWindow(), bean.getTimeGroup(), matchFilter, dayFilterBean,
                     step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
         }
         return new TimeWindowFilter(bean.getTimeWindow(), dayFilterBean,
