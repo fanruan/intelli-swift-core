@@ -31,10 +31,10 @@ public class FunnelSegmentQuery implements Query<QueryResultSet<FunnelResultSet>
 
     public FunnelSegmentQuery(Segment segment, FunnelQueryBean bean) {
         FunnelAggregationBean funnelAggregationBean = new FunnelAggregationBean();
-        funnelAggregationBean.setTimeGroup(TimeGroup.DAYS);
+        funnelAggregationBean.setTimeGroup(TimeGroup.WORK_DAY);
         funnelAggregationBean.setColumn("eventType");
         funnelAggregationBean.setType(AggregatorType.FUNNEL_PATHS);
-        funnelAggregationBean.setColumns(new ParameterColumnsBean("id", "eventType", "currentTime", "date"));
+        funnelAggregationBean.setColumns(new ParameterColumnsBean("id", "currentTime"));
         FunnelEventBean first = new FunnelEventBean();
         first.setName("login");
         first.setSteps(Collections.singletonList("login"));

@@ -1,11 +1,13 @@
 package com.fr.swift.query.funnel.impl;
 
+import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.funnel.IHead;
 import com.fr.swift.query.funnel.IStep;
 import com.fr.swift.query.funnel.ITimeWindowFilter;
 import com.fr.swift.query.funnel.TimeWindowBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.TimeFilterInfo;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.TimeGroup;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.text.SimpleDateFormat;
@@ -30,6 +32,7 @@ public class GroupTWFilter implements ITimeWindowFilter {
     private int numberOfDates;
     private TimeFilterInfo filter;
     private SimpleDateFormat simpleDateFormat;
+    private MatchFilter timeGroupMatchFilter;
 
     // 漏斗定义的顺序步骤
     private IStep step;
@@ -45,13 +48,14 @@ public class GroupTWFilter implements ITimeWindowFilter {
     private boolean[] finished;
     private boolean hasNoHeadBefore = true;
 
-    public GroupTWFilter(TimeWindowBean timeWindow, TimeGroup timeGroup, TimeFilterInfo info, IStep step,
+    public GroupTWFilter(TimeWindowBean timeWindow, TimeGroup timeGroup, MatchFilter timeGroupMatchFilter, TimeFilterInfo info, IStep step,
                          int firstAssociatedIndex, boolean[] associatedEvents,
                          DictionaryEncodedColumn associatedPropertyColumn) {
         this.timeWindow = timeWindow.toMillis();
         this.dayWindow = this.timeWindow / info.timeSegment() + 1;
         this.simpleDateFormat = new SimpleDateFormat(timeGroup.getDatePattern());
         this.filter = info;
+        this.timeGroupMatchFilter = timeGroupMatchFilter;
         this.dateStart = info.getTimeStart();
         this.numberOfDates = info.getTimeSegCount();
         this.step = step;
@@ -105,7 +109,9 @@ public class GroupTWFilter implements ITimeWindowFilter {
             return;
         }
         int dateIndex = getDateIndex(timestamp);
-        if (eventIndex == 0) {
+        GroupNode node = new GroupNode();
+        node.setData(timestamp);
+        if (eventIndex == 0 && timeGroupMatchFilter.matches(node)) {
             createHead(timestamp, associatedValue, groupValue, lists.get(dateIndex).get(0));
             hasNoHeadBefore = false;
             return;

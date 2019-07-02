@@ -81,6 +81,10 @@ public class FunnelPathsAggregationBean extends MetricBean {
     public FilterInfoBean getFilter() {
         AndFilterBean andFilterBean = new AndFilterBean();
         List<FilterInfoBean> filters = new ArrayList<FilterInfoBean>();
+        FilterInfoBean superFilter = super.getFilter();
+        if (null != superFilter) {
+            filters.add(superFilter);
+        }
         if (null != timeFilter) {
             try {
                 filters.add(timeFilter.createFilter());
