@@ -2,10 +2,10 @@
 //
 //import com.fr.swift.base.json.JsonBuilder;
 //import com.fr.swift.query.info.bean.element.aggregation.FunnelFunctionBean;
-//import com.fr.swift.query.info.bean.element.aggregation.funnel.AssociationFilterBean;
-//import com.fr.swift.query.info.bean.element.aggregation.funnel.DayFilterBean;
+//import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAssociationBean;
+//import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.DayFilterInfo;
 //import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
-//import com.fr.swift.query.info.bean.element.aggregation.funnel.PostGroupBean;
+//import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
 //import com.fr.swift.query.info.bean.post.FunnelMedianInfoBean;
 //import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 //import com.fr.swift.query.info.bean.query.FunnelQueryBean;
@@ -36,18 +36,18 @@
 //        FunnelFunctionBean functionBean = new FunnelFunctionBean();
 //        functionBean.setTimeWindow(timeWindow);
 //        functionBean.setFunnelEvents(funnelEvents);
-//        AssociationFilterBean associationFilterBean = new AssociationFilterBean();
+//        FunnelAssociationBean associationFilterBean = new FunnelAssociationBean();
 //        associationFilterBean.setColumn(associatedColumn);
-//        associationFilterBean.setFunnelIndexes(associatedIndexes);
+//        associationFilterBean.setEvents(associatedIndexes);
 //        functionBean.setAssociatedFilter(associationFilterBean);
 //        ParameterColumnsBean parameterColumnsBean = new ParameterColumnsBean();
 //        parameterColumnsBean.setTimestamp("combine");
 //        parameterColumnsBean.setEvent("event_type");
 //        parameterColumnsBean.setUserId("userId");
 //        functionBean.setColumns(parameterColumnsBean);
-//        DayFilterBean dayFilterBean = new DayFilterBean();
-//        dayFilterBean.setDayStart("20180601");
-//        dayFilterBean.setNumberOfDays(10);
+//        DayFilterInfo dayFilterBean = new DayFilterInfo();
+//        dayFilterBean.setTimeStart("20180601");
+//        dayFilterBean.setTimeSegCount(10);
 //        functionBean.setDayFilter(dayFilterBean);
 //        PostGroupBean postGroupBean = new PostGroupBean();
 //        postGroupBean.setColumn("good_name");
@@ -65,7 +65,7 @@
 //        functionBean = bean.getAggregation();
 //        assertEquals(funnelEvents, functionBean.getFunnelEvents());
 //        assertEquals(associatedColumn, functionBean.getAssociatedFilter().getColumn());
-//        assertEquals(associatedIndexes, functionBean.getAssociatedFilter().getFunnelIndexes());
+//        assertEquals(associatedIndexes, functionBean.getAssociatedFilter().getEvents());
 //
 //        parameterColumnsBean = bean.getAggregation().getColumns();
 //        assertEquals("combine", parameterColumnsBean.getCombine());

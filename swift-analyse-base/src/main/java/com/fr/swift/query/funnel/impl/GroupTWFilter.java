@@ -1,15 +1,19 @@
-package com.fr.swift.query.aggregator.funnel.impl;
+package com.fr.swift.query.funnel.impl;
 
-import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.aggregator.funnel.IHead;
-import com.fr.swift.query.aggregator.funnel.IStep;
-import com.fr.swift.query.aggregator.funnel.ITimeWindowFilter;
+import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.funnel.IHead;
+import com.fr.swift.query.funnel.IStep;
+import com.fr.swift.query.funnel.ITimeWindowFilter;
+import com.fr.swift.query.funnel.TimeWindowBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.TimeFilterInfo;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.TimeGroup;
+import com.fr.swift.result.GroupNode;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -21,16 +25,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class GroupTWFilter implements ITimeWindowFilter {
 
-    private static final int DAY_SECONDS = 86400;
-    private final int dayWindow;
+    private final long dayWindow;
 
-    private int timeWindow;
+    private long timeWindow;
     private long dateStart;
     private int numberOfDates;
-    /**
-     * TODO@yee 2019/06/18 暂时先这样 format应该支持自定义或者直接不需要format，从timestamp解析应该就可以
-     */
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    private TimeFilterInfo filter;
+    private SimpleDateFormat simpleDateFormat;
+    private MatchFilter timeGroupMatchFilter;
 
     // 漏斗定义的顺序步骤
     private IStep step;
@@ -46,17 +48,16 @@ public class GroupTWFilter implements ITimeWindowFilter {
     private boolean[] finished;
     private boolean hasNoHeadBefore = true;
 
-    public GroupTWFilter(int timeWindow, String dateStart, int numberOfDates, IStep step,
+    public GroupTWFilter(TimeWindowBean timeWindow, TimeGroup timeGroup, MatchFilter timeGroupMatchFilter, TimeFilterInfo info, IStep step,
                          int firstAssociatedIndex, boolean[] associatedEvents,
                          DictionaryEncodedColumn associatedPropertyColumn) {
-        this.timeWindow = timeWindow;
-        this.dayWindow = timeWindow / DAY_SECONDS + 1;
-        try {
-            this.dateStart = sdf.parse(dateStart).getTime();
-        } catch (ParseException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-        this.numberOfDates = numberOfDates;
+        this.timeWindow = timeWindow.toMillis();
+        this.dayWindow = this.timeWindow / info.timeSegment() + 1;
+        this.simpleDateFormat = new SimpleDateFormat(timeGroup.getDatePattern());
+        this.filter = info;
+        this.timeGroupMatchFilter = timeGroupMatchFilter;
+        this.dateStart = info.getTimeStart();
+        this.numberOfDates = info.getTimeSegCount();
         this.step = step;
         this.firstAssociatedIndex = firstAssociatedIndex;
         this.associatedEvents = associatedEvents;
@@ -100,25 +101,22 @@ public class GroupTWFilter implements ITimeWindowFilter {
     }
 
     @Override
-    public void add(int event, int timestamp, String date, int associatedValue, Object groupValue) {
+    public void add(int event, long timestamp, int associatedValue, Object groupValue) {
         // 事件有序进入
         // 更新临时对象: 从后往前, 并根据条件适当跳出
         int eventIndex = step.getEventIndex(event);
         if (hasNoHeadBefore && eventIndex != 0) {
             return;
         }
-        int dateIndex = 0;
-        try {
-            dateIndex = (int) TimeUnit.MILLISECONDS.toDays(sdf.parse(date).getTime() - dateStart);
-        } catch (ParseException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-        if (eventIndex == 0) {
-            createHead(date, timestamp, associatedValue, groupValue, lists.get(dateIndex).get(0));
+        int dateIndex = getDateIndex(timestamp);
+        GroupNode node = new GroupNode();
+        node.setData(timestamp);
+        if (eventIndex == 0 && timeGroupMatchFilter.matches(node)) {
+            createHead(timestamp, associatedValue, groupValue, lists.get(dateIndex).get(0));
             hasNoHeadBefore = false;
             return;
         }
-        int minDay = Math.max(0, dateIndex - dayWindow);
+        int minDay = (int) Math.max(0, dateIndex - dayWindow);
         for (; dateIndex >= minDay; dateIndex--) {
             if (finished[dateIndex]) {
                 break;
@@ -133,7 +131,24 @@ public class GroupTWFilter implements ITimeWindowFilter {
         }
     }
 
-    private void updateStep(int eventIndex, int timestamp, int associatedValue, Object groupValue, IStepContainer currentHeads) {
+    private int getDateIndex(long timestamp) {
+        int dateIndex = 0;
+        switch (filter.getType()) {
+            case DAY:
+                dateIndex = (int) TimeUnit.MILLISECONDS.toDays(timestamp - dateStart);
+                break;
+            case HOER:
+                dateIndex = (int) TimeUnit.MILLISECONDS.toHours(timestamp - dateStart);
+                break;
+            case MINUTE:
+                dateIndex = (int) TimeUnit.MILLISECONDS.toMinutes(timestamp - dateStart);
+                break;
+            default:
+        }
+        return dateIndex;
+    }
+
+    private void updateStep(int eventIndex, long timestamp, int associatedValue, Object groupValue, IStepContainer currentHeads) {
         if (!iterableEvents[eventIndex]) {
             IHead head = currentHeads.getHead(associatedValue);
             if (head == null) {
@@ -158,7 +173,7 @@ public class GroupTWFilter implements ITimeWindowFilter {
         }
     }
 
-    private boolean newStep(int eventIndex, int dateIndex, int timestamp, int associatedValue, Object groupValue,
+    private boolean newStep(int eventIndex, int dateIndex, long timestamp, int associatedValue, Object groupValue,
                             IStepContainer prevHeads, IStepContainer currentHeads) {
         if (!iterableEvents[eventIndex]) {
             IHead prevHead = prevHeads.getHead(associatedValue);
@@ -193,7 +208,7 @@ public class GroupTWFilter implements ITimeWindowFilter {
         return false;
     }
 
-    private void updateEvent(int timestamp, int associatedValue, Object groupValue, IHead head, IStepContainer container) {
+    private void updateEvent(long timestamp, int associatedValue, Object groupValue, IHead head, IStepContainer container) {
         // 对应文档A类：漏斗基础规则#优先选择更靠近最终转化目标的事件作为转化事件
         // 相同的属性要取最近的事件
         int currentIndex = head.getSize() - 1;
@@ -221,7 +236,7 @@ public class GroupTWFilter implements ITimeWindowFilter {
         }
     }
 
-    private boolean nextEvent(int nextEventIndex, int timestamp, IHead head, int associatedValue, Object groupValue, IStepContainer container) {
+    private boolean nextEvent(int nextEventIndex, long timestamp, IHead head, int associatedValue, Object groupValue, IStepContainer container) {
         // 检查漏斗关联属性
         if (associatedEvents[nextEventIndex]) {
             if (firstAssociatedIndex != nextEventIndex && associatedValue != head.getAssociatedProperty()) {
@@ -240,9 +255,9 @@ public class GroupTWFilter implements ITimeWindowFilter {
         return true;
     }
 
-    private void createHead(String date, int timestamp, int associatedValue, Object groupValue, IStepContainer container) {
+    private void createHead(long timestamp, int associatedValue, Object groupValue, IStepContainer container) {
         // 当前事务没有被使用且属于第一个事件，则新建临时IHead对象
-        IHead newHead = new AHead(step.size(), date, associatedValue);
+        IHead newHead = new AHead(step.size(), simpleDateFormat.format(new Date(timestamp)), associatedValue);
         newHead.addStep(timestamp, groupValue);
         container.add(associatedValue, newHead);
         // head只能添加在某一天，所以这里要跳出
