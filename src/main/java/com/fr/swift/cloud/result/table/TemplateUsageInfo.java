@@ -1,6 +1,7 @@
 package com.fr.swift.cloud.result.table;
 
 import com.fr.swift.cloud.util.TimeUtils;
+import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 
 import javax.persistence.Column;
@@ -59,6 +60,10 @@ public class TemplateUsageInfo implements Serializable {
 
 
     public TemplateUsageInfo(Row row, int visitDay, String yearMonth, String appId) {
+        //兼容没有字段的数据。
+        if (row == null) {
+            row = new ListBasedRow(new Object[10]);
+        }
         this.tNum = row.getValue(1) != null ? ((Double) row.getValue(1)).intValue() : 0;
         this.tvNum = row.getValue(3) != null ? ((Double) row.getValue(3)).intValue() : 0;
         this.MAU = row.getValue(4) != null ? ((Double) row.getValue(4)).intValue() : 0;

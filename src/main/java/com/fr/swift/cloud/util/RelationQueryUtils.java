@@ -25,24 +25,24 @@ import java.util.Map;
  */
 public class RelationQueryUtils {
     /**
-     * @description 对多表进行关联  columnNames的元素个数要比queryBeans的元素个数少一个
      * @param columnNames 关联表的关联字段名
-     * @param queryBeans 被关联的querybeans
+     * @param queryBeans  被关联的querybeans
      * @return SwiftResultSet的结果集
      * @throws Exception
+     * @description 对多表进行关联  columnNames的元素个数要比queryBeans的元素个数少一个
      */
     public static SwiftResultSet relationAllTablesDFS(List<String[]> columnNames, List<SingleInfoBean> queryBeans) throws Exception {
         List<Row> res = new ArrayList<>();
         //初始化resultset
         List<SwiftResultSet> resultSets = new ArrayList<>();
-        for(QueryBean queryBean:queryBeans){
+        for (QueryBean queryBean : queryBeans) {
             SwiftResultSet resultSet = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(queryBean));
             resultSets.add(resultSet);
         }
 
         List<Map> maps = new ArrayList<>(); //只存从第一个开始的resultset
         int index = 0;//第几个关联
-        for (int i=1;i<resultSets.size();i++) {
+        for (int i = 1; i < resultSets.size(); i++) {
             SwiftResultSet originResultSet = resultSets.get(i);
             Map<Object, List<Row>> map = new HashMap<>();
             //计算字段所在第几列
@@ -65,14 +65,14 @@ public class RelationQueryUtils {
         }
 
         SwiftResultSet firstResultSet = resultSets.get(0);
-        while(firstResultSet.hasNext()) {
+        while (firstResultSet.hasNext()) {
             Row row = firstResultSet.getNextRow();
-            DFS(columnNames, res, 0, maps,row,row,resultSets);
+            DFS(columnNames, res, 0, maps, row, row, resultSets);
         }
         //构建返回的结果SwiftResultSet  使用result1和result2的metadatacolumn
         List<SwiftMetaDataColumn> swiftMetaDataColumns = new ArrayList<>();
 
-        for (SwiftResultSet resultSet:resultSets) {
+        for (SwiftResultSet resultSet : resultSets) {
             try {
                 SwiftMetaData metaData = resultSet.getMetaData();
                 int columnCount = metaData.getColumnCount();
@@ -90,49 +90,56 @@ public class RelationQueryUtils {
     }
 
     /**
-     * @description 深度遍历算法 实现多表关联
-     * @param columnNames 关联字段
-     * @param res 结果集
+     * @param columnNames    关联字段
+     * @param res            结果集
      * @param resultSetIndex 遍历到第几个resultSet
-     * @param maps 把从第二个resultset开始的结果集放到map中便于查询
-     * @param row 已经关联累加的行
-     * @param previousRow 上一个row
-     * @param resultSets 所有结果集列表
+     * @param maps           把从第二个resultset开始的结果集放到map中便于查询
+     * @param row            已经关联累加的行
+     * @param previousRow    上一个row
+     * @param resultSets     所有结果集列表
      * @throws SQLException
+     * @description 深度遍历算法 实现多表关联
      */
-    private static void DFS(List<String[]> columnNames, List<Row> res, int resultSetIndex, List<Map> maps, Row row,Row previousRow,
+    private static void DFS(List<String[]> columnNames, List<Row> res, int resultSetIndex, List<Map> maps, Row row, Row previousRow,
                             List<SwiftResultSet> resultSets) throws SQLException {
-        if(resultSetIndex==columnNames.size()){
+        if (resultSetIndex == columnNames.size()) {
             return;
         }
         SwiftResultSet previousResultSet = resultSets.get(resultSetIndex);//下一个需要被关联的resultset
-        int relationIndex = previousResultSet.getMetaData().getColumnIndex(columnNames.get(resultSetIndex)[0])-1;//被关联字段所在位置
-        Map<Object,List<Row>> map = maps.get(resultSetIndex);//获取对应的map
+        int relationIndex = previousResultSet.getMetaData().getColumnIndex(columnNames.get(resultSetIndex)[0]) - 1;//被关联字段所在位置
+        Map<Object, List<Row>> map = maps.get(resultSetIndex);//获取对应的map
         List<Row> rowList = map.get(previousRow.getValue(relationIndex)); //获取关联的List<Row>
-        if(rowList==null){
-            res.add(row);
+        if (rowList == null) {
+            ListMutableRow pRow = new ListMutableRow(row);
+            for (int i = resultSetIndex + 1; i < resultSets.size(); i++) {
+                int columnCount = resultSets.get(i).getMetaData().getColumnCount();
+                Object[] obj = new Object[columnCount];
+                MutableRow addRow = new ListMutableRow(obj);
+                pRow.addAllRowElement(addRow);
+            }
+            res.add(pRow);
             return;
         }
-        for (Row row1:rowList){
+        for (Row row1 : rowList) {
             //row1 = row+row1
             MutableRow newRow = new ListMutableRow(row);
             MutableRow newRow1 = new ListMutableRow(row1);
             newRow.addAllRowElement(newRow1);//变成新的row
-            if (resultSetIndex==columnNames.size()-1){
+            if (resultSetIndex == columnNames.size() - 1) {
                 res.add(newRow);
                 continue;
             }
-            DFS(columnNames,res,resultSetIndex+1,maps,newRow,row1,resultSets);
+            DFS(columnNames, res, resultSetIndex + 1, maps, newRow, row1, resultSets);
         }
     }
 
 
     /**
-     * @description 对多表进行关联
      * @param columnNames 关联表的关联字段名
-     * @param queryBeans 被关联的querybeans
+     * @param queryBeans  被关联的querybeans
      * @return SwiftResultSet的结果集
      * @throws Exception
+     * @description 对多表进行关联
      */
     @Deprecated
     @Negative(until = "201907")
@@ -148,13 +155,13 @@ public class RelationQueryUtils {
     }
 
     /**
-     * @description 根据queryBean和关联字段两表关联
      * @param columnName1 第一个表的关联字段
      * @param columnName2 第二个表的关联字段
-     * @param q1 第一个querybean
-     * @param q2 第二个querybean
+     * @param q1          第一个querybean
+     * @param q2          第二个querybean
      * @return 结果集
      * @throws Exception
+     * @description 根据queryBean和关联字段两表关联
      */
     @Deprecated
     @Negative(until = "201907")
@@ -165,22 +172,22 @@ public class RelationQueryUtils {
     }
 
     /**
-     * @description 根据SwiftResultSet和关联字段 进行关联
      * @param columnName1
      * @param columnName2
      * @param resultSet1
      * @param resultSet2
      * @return 关联后的结果集
      * @throws Exception
+     * @description 根据SwiftResultSet和关联字段 进行关联
      */
     @Deprecated
     @Negative(until = "201907")
     public static SwiftResultSet relation(String columnName1, String columnName2, SwiftResultSet resultSet1, SwiftResultSet resultSet2) throws Exception {
 
         //第一个关联字段在第一张表的列数
-        int index1 = resultSet1.getMetaData().getColumnIndex(columnName1)-1;
+        int index1 = resultSet1.getMetaData().getColumnIndex(columnName1) - 1;
         //第二个关联字段在第二张表的列数
-        int index2 = resultSet2.getMetaData().getColumnIndex(columnName2)-1;
+        int index2 = resultSet2.getMetaData().getColumnIndex(columnName2) - 1;
         //联表后结果字段名 resultColumnName
         List<String> resultColumnName = resultSet1.getMetaData().getFieldNames();
         List<String> resultColumn2 = resultSet2.getMetaData().getFieldNames();
@@ -201,7 +208,7 @@ public class RelationQueryUtils {
             Object columnData = row1.getValue(index1);
             for (MutableRow row2 : rowList) {
                 //把关联字段对应数据组后 存放到新的row中并加入到结果集中
-                if(row2.getValue(index2)!=null) {
+                if (row2.getValue(index2) != null) {
                     if (row2.getValue(index2).equals(columnData)) {
                         MutableRow newRow = new ListMutableRow(row1);
                         newRow.addAllRowElement(row2);
@@ -213,10 +220,10 @@ public class RelationQueryUtils {
 
         //构建返回的结果SwiftResultSet  使用result1和result2的metadatacolumn
         List<SwiftMetaDataColumn> swiftMetaDataColumns = new ArrayList<>();
-        for (int i=1;i<=resultSet1.getMetaData().getColumnCount();i++){
+        for (int i = 1; i <= resultSet1.getMetaData().getColumnCount(); i++) {
             swiftMetaDataColumns.add(resultSet1.getMetaData().getColumn(i));
         }
-        for(int i=1;i<=resultSet2.getMetaData().getColumnCount();i++){
+        for (int i = 1; i <= resultSet2.getMetaData().getColumnCount(); i++) {
             swiftMetaDataColumns.add(resultSet2.getMetaData().getColumn(i));
         }
         resultSet1.close();

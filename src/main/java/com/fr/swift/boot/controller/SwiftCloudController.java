@@ -72,7 +72,8 @@ public class SwiftCloudController {
         String appId = map.get("appId");
         String clientId = map.get("clientId");
         String yearMonth = map.get("yearMonth");
-        TreasureBean treasureBean = new TreasureBean("__fine_intelli_treasure_upload__", null, null, clientId, appId, yearMonth, "2.0", System.currentTimeMillis(), "TreasureAnalyze");
+        String customerId = map.get("customerId");
+        TreasureBean treasureBean = new TreasureBean("__fine_intelli_treasure_upload__", null, null, clientId, appId, yearMonth, "2.0", System.currentTimeMillis(), "TreasureAnalyze", customerId);
         TreasureAnalysisTask treasureAnalysisTask = new TreasureAnalysisTask(treasureBean);
         treasureAnalysisTask.getJob().call();
         return true;
