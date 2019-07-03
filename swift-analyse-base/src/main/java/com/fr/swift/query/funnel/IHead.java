@@ -1,4 +1,4 @@
-package com.fr.swift.query.aggregator.funnel;
+package com.fr.swift.query.funnel;
 
 /**
  * This class created on 2018/12/13
@@ -26,18 +26,18 @@ public interface IHead {
      */
     void reset(int size);
 
-    void addStep(int timestamp, Object groupValue);
+    void addStep(long timestamp, Object groupValue);
 
-    void setStep(int index, int timestamp, Object groupValue);
+    void setStep(int index, long timestamp, Object groupValue);
 
-    int[] getTimestamps();
+    long[] getTimestamps();
 
     /**
      * 起始步骤的时间戳
      *
      * @return
      */
-    int getTimestamp();
+    long getTimestamp();
 
     Object getGroupValue();
 

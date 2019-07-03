@@ -1,6 +1,6 @@
-package com.fr.swift.query.aggregator.funnel.impl.step;
+package com.fr.swift.query.funnel.impl.step;
 
-import com.fr.swift.query.aggregator.funnel.IStep;
+import com.fr.swift.query.funnel.IStep;
 
 /**
  * This class created on 2018/12/13

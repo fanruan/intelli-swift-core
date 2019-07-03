@@ -1,6 +1,6 @@
-package com.fr.swift.query.aggregator.funnel.impl.step;
+package com.fr.swift.query.funnel.impl.step;
 
-import com.fr.swift.query.aggregator.funnel.IStep;
+import com.fr.swift.query.funnel.IStep;
 
 import java.util.Arrays;
 
@@ -10,13 +10,13 @@ import java.util.Arrays;
  * @author Lucifer
  * @description
  */
-public class Step implements IStep {
+public class VirtualStep implements IStep {
 
-    private int[] steps;
+    private boolean[][] steps;
     private boolean isHeadRepeated;
     private boolean hasRepeatedEvents;
 
-    public Step(int[] steps, boolean isHeadRepeated, boolean hasRepeatedEvents) {
+    public VirtualStep(boolean[][] steps, boolean isHeadRepeated, boolean hasRepeatedEvents) {
         this.steps = steps;
         this.isHeadRepeated = isHeadRepeated;
         this.hasRepeatedEvents = hasRepeatedEvents;
@@ -24,7 +24,7 @@ public class Step implements IStep {
 
     @Override
     public boolean isEqual(int eventIndex, int event) {
-        return steps[eventIndex] == event;
+        return steps[eventIndex][event];
     }
 
     @Override
@@ -44,16 +44,20 @@ public class Step implements IStep {
 
     @Override
     public IStep toNoRepeatedStep() {
-        int[] eventMap = new int[15];
-        boolean[][] flags = new boolean[steps.length][];
+        if (hasRepeatedEvents) {
+            throw new UnsupportedOperationException();
+        }
+        int[] eventMap = new int[steps[0].length];
+
         Arrays.fill(eventMap, -1);
         for (int i = 0; i < steps.length; i++) {
-            boolean[] flag = new boolean[15];
-            flag[steps[i]] = true;
-            flags[i] = flag;
-            eventMap[steps[i]] = i;
+            for (int j = 0; j < steps[i].length; j++) {
+                if (steps[i][j]) {
+                    eventMap[j] = i;
+                }
+            }
         }
-        return new NoRepeatedStep(eventMap, flags);
+        return new NoRepeatedStep(eventMap, steps);
     }
 
     @Override
