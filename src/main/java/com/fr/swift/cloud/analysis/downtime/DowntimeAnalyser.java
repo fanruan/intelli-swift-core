@@ -81,7 +81,7 @@ public class DowntimeAnalyser {
         Collections.sort(analysisList, new Comparator<DowntimeElement>() {
             @Override
             public int compare(DowntimeElement o1, DowntimeElement o2) {
-                return (int) (o1.recordTime() - o2.recordTime());
+                return Long.compare(o1.recordTime(), o2.recordTime());
             }
         });
         // TODO: 2019/5/24 by lucifer 不同进程  pid相同的情况

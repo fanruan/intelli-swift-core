@@ -40,10 +40,10 @@ public class TemplateUsageInfoQuery {
                         new InFilterBean("appId", appId),
                         new InFilterBean("yearMonth", yearMonth)
                 ));
-        GroupQueryInfoBean tNumBean = GroupQueryInfoBean.builder("template_info").setDimensions(new DimensionBean(DimensionType.GROUP, "appId")).setAggregations(new MetricBean("id", AggregatorType.DISTINCT)).setFilter(filter).build();
+        GroupQueryInfoBean tNumBean = GroupQueryInfoBean.builder("template_info").setDimensions(new DimensionBean(DimensionType.GROUP, "appId")).setAggregations(new MetricBean("tName", AggregatorType.DISTINCT)).setFilter(filter).build();
 
         GroupQueryInfoBean tvNumBean = GroupQueryInfoBean.builder("execution").setDimensions(new DimensionBean(DimensionType.GROUP, "appId"))
-                .setAggregations(new MetricBean("id", AggregatorType.DISTINCT), new MetricBean("userId", AggregatorType.DISTINCT), new MetricBean("reportId", AggregatorType.DISTINCT))
+                .setAggregations(new MetricBean("tName", AggregatorType.DISTINCT), new MetricBean("userId", AggregatorType.DISTINCT), new MetricBean("id", AggregatorType.DISTINCT))
                 .setFilter(filter).build();
 
         FilterInfoBean integrationFilter = new AndFilterBean(
