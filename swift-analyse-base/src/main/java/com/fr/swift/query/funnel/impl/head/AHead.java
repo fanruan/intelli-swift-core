@@ -1,4 +1,4 @@
-package com.fr.swift.query.funnel.impl;
+package com.fr.swift.query.funnel.impl.head;
 
 import com.fr.swift.query.funnel.IHead;
 

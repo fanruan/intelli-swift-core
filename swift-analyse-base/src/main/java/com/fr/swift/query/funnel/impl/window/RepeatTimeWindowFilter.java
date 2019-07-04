@@ -1,10 +1,13 @@
-package com.fr.swift.query.funnel.impl;
+package com.fr.swift.query.funnel.impl.window;
 
+import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.funnel.BaseTimeWindowFilter;
 import com.fr.swift.query.funnel.IHead;
 import com.fr.swift.query.funnel.IStep;
-import com.fr.swift.query.funnel.ITimeWindowFilter;
 import com.fr.swift.query.funnel.TimeWindowBean;
+import com.fr.swift.query.funnel.impl.head.Head;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.TimeFilterInfo;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.TimeGroup;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.text.SimpleDateFormat;
@@ -12,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class created on 2018/12/13
@@ -20,17 +22,8 @@ import java.util.concurrent.TimeUnit;
  * @author Lucifer
  * @description
  */
-public class TimeWindowFilter implements ITimeWindowFilter {
+public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
 
-    private final long dayWindow;
-
-    private long timeWindow;
-    private long dateStart;
-    private int numberOfDates;
-    private TimeFilterInfo filter;
-
-    // 漏斗定义的顺序步骤
-    private IStep step;
     private boolean hasAnotherStep0;
     /**
      * TODO@yee 2019/06/18 暂时先这样 format应该支持自定义或者直接不需要format，从timestamp解析应该就可以
@@ -49,15 +42,10 @@ public class TimeWindowFilter implements ITimeWindowFilter {
     private boolean[] finished;
     private boolean hasNoHeadBefore = true;
 
-    public TimeWindowFilter(TimeWindowBean timeWindow, TimeFilterInfo info, IStep step,
-                            int firstAssociatedIndex, boolean[] associatedEvents,
-                            DictionaryEncodedColumn associatedPropertyColumn) {
-        this.timeWindow = timeWindow.toMillis();
-        this.dayWindow = this.timeWindow / info.timeSegment() + 1;
-        this.filter = info;
-        this.dateStart = info.getTimeStart();
-        this.numberOfDates = info.getTimeSegCount();
-        this.step = step;
+    public RepeatTimeWindowFilter(TimeWindowBean timeWindow, TimeGroup timeGroup, MatchFilter timeGroupMatchFilter, TimeFilterInfo info, IStep step,
+                                  int firstAssociatedIndex, boolean[] associatedEvents,
+                                  DictionaryEncodedColumn associatedPropertyColumn) {
+        super(timeWindow, timeGroup, timeGroupMatchFilter, info, step);
         this.firstAssociatedIndex = firstAssociatedIndex;
         this.associatedEvents = associatedEvents;
 //        this.associatedColumnSize = associatedPropertyColumn == null ? 0 : associatedPropertyColumn.size();
@@ -270,20 +258,4 @@ public class TimeWindowFilter implements ITimeWindowFilter {
         hasNoHeadBefore = true;
     }
 
-    private int getDateIndex(long timestamp) {
-        int dateIndex = 0;
-        switch (filter.getType()) {
-            case DAY:
-                dateIndex = (int) TimeUnit.MILLISECONDS.toDays(timestamp - dateStart);
-                break;
-            case HOER:
-                dateIndex = (int) TimeUnit.MILLISECONDS.toHours(timestamp - dateStart);
-                break;
-            case MINUTE:
-                dateIndex = (int) TimeUnit.MILLISECONDS.toMinutes(timestamp - dateStart);
-                break;
-            default:
-        }
-        return dateIndex;
-    }
 }
