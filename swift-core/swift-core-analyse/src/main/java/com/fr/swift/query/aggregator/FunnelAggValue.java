@@ -14,10 +14,10 @@ public class FunnelAggValue implements Serializable {
 
     private static final long serialVersionUID = 8578072541928721092L;
     private int[] count;
-    private List<List<Integer>> periods;
+    private List<List<Long>> periods;
     private double[] medians = new double[0];
 
-    public FunnelAggValue(int[] count, List<List<Integer>> periods) {
+    public FunnelAggValue(int[] count, List<List<Long>> periods) {
         this.count = count;
         this.periods = periods;
     }
@@ -26,7 +26,7 @@ public class FunnelAggValue implements Serializable {
         return count;
     }
 
-    public List<List<Integer>> getPeriods() {
+    public List<List<Long>> getPeriods() {
         return periods;
     }
 

@@ -48,6 +48,7 @@ public final class Util {
         return o1.equals(o2);
     }
 
+
     public static int hashCode(Object o) {
         return o == null ? 0 : o.hashCode();
     }

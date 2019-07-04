@@ -1,8 +1,10 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.dao.SwiftSegmentBucketDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
+import com.fr.swift.config.dao.impl.SwiftSegmentBucketDaoImpl;
 import com.fr.swift.config.dao.impl.SwiftSegmentDaoImpl;
 import com.fr.swift.config.dao.impl.SwiftSegmentLocationDaoImpl;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
@@ -80,6 +82,7 @@ public class SwiftSegmentServiceImplTest extends BaseServiceTest {
 
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftMetaDataService.class))).andReturn(mockSwiftMetaDataService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentDao.class))).andReturn(new SwiftSegmentDaoImpl()).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentBucketDao.class))).andReturn(new SwiftSegmentBucketDaoImpl()).anyTimes();
         PowerMock.replay(mockSwiftContext, mockSwiftMetaDataService, mockSwiftMetaData);
         service = new SwiftSegmentServiceImpl();
     }

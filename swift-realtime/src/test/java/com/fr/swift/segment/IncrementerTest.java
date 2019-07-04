@@ -1,5 +1,8 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
@@ -8,6 +11,7 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -30,8 +34,15 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({Incrementer.class, SegmentUtils.class, SwiftEventDispatcher.class, BaseBlockImporter.class, SwiftInserter.class})
+@PrepareForTest({SwiftContext.class, Incrementer.class, SegmentUtils.class, SwiftEventDispatcher.class, BaseBlockImporter.class, SwiftInserter.class})
 public class IncrementerTest {
+
+    @Before
+    public void setUp() throws Exception {
+        mockStatic(SwiftContext.class);
+        when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
+        when(SwiftContext.get().getBean(SwiftTableAllotRuleService.class)).thenReturn(mock(SwiftTableAllotRuleService.class));
+    }
 
     @Test
     public void getInserting() {
