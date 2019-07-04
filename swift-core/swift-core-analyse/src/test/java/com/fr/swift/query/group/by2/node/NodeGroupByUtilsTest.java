@@ -13,7 +13,6 @@ import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
@@ -31,7 +30,7 @@ import java.util.Map;
  */
 public class NodeGroupByUtilsTest extends TestCase {
 
-    private Iterator<QueryResultSet<GroupPage>> iterator;
+    private Iterator<GroupPage> iterator;
     private List<Pair<Column, IndexInfo>> dimensions;
     private Column metric;
     private Map<List<String>, Double> expected;
@@ -56,8 +55,8 @@ public class NodeGroupByUtilsTest extends TestCase {
         expected = new HashMap<List<String>, Double>();
         for (int i = 0; i < rowCount; i++) {
             List<String> keys = new ArrayList<String>();
-            for (int j = 0; j < dimensions.size(); j++) {
-                String value = (String) dimensions.get(j).getKey().getDetailColumn().get(i);
+            for (Pair<Column, IndexInfo> dimension : dimensions) {
+                String value = (String) dimension.getKey().getDetailColumn().get(i);
                 keys.add(value);
             }
             Double value = expected.get(keys);
@@ -71,7 +70,7 @@ public class NodeGroupByUtilsTest extends TestCase {
 
     public void test() {
         assertTrue(iterator.hasNext());
-        SwiftNode root = iterator.next().getPage().getRoot();
+        SwiftNode root = iterator.next().getRoot();
         assertNotNull(root);
         Iterator<List<SwiftNode>> it = SwiftNodeUtils.node2RowListIterator(root);
         assertTrue(it.hasNext());
@@ -85,8 +84,8 @@ public class NodeGroupByUtilsTest extends TestCase {
 
     private List<String> getKey(List<SwiftNode> row) {
         List<String> key = new ArrayList<String>();
-        for (int i = 0; i < row.size(); i++) {
-            key.add((String) row.get(i).getData());
+        for (SwiftNode swiftNode : row) {
+            key.add((String) swiftNode.getData());
         }
         return key;
     }
