@@ -54,8 +54,8 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
      *
-     * @param bean
-     * @return
+     * @param bean group query bean
+     * @return query
      */
     public Query<QueryResultSet<GroupPage>> buildQuery(GroupQueryInfoBean bean) {
         GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(bean);
@@ -75,7 +75,7 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
                     dimensionColumns, rowDetailFilter, rowIndexSorts, null);
             MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators,
                     metrics.size() + countCalFields(info.getPostQueryInfoList()));
-            queries.add(new GroupSegmentQuery(rowGroupByInfo, metricInfo, pagingQuery));
+            queries.add(new GroupSegmentQuery(rowGroupByInfo, metricInfo));
         }
         return new GroupResultQuery(
                 info.getFetchSize(), queries,
