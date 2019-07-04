@@ -3,7 +3,7 @@ package com.fr.swift.query.segment.group;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.funnel.IStep;
-import com.fr.swift.query.funnel.ITimeWindowFilter;
+import com.fr.swift.query.funnel.TimeWindowFilter;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * @description
  */
 public class MergeIterator {
-    private final ITimeWindowFilter filter;
+    private final TimeWindowFilter filter;
     private final IStep step;
     private int postGroupIndex;
 
@@ -33,7 +33,7 @@ public class MergeIterator {
     private IntListRowTraversal travels;
     private String values;
 
-    public MergeIterator(ITimeWindowFilter filter, IStep step, Iterator<GroupByEntry> iterator,
+    public MergeIterator(TimeWindowFilter filter, IStep step, Iterator<GroupByEntry> iterator,
                          DictionaryEncodedColumn<String> recordDic, DetailColumn timestamp,
                          DictionaryEncodedColumn eventDicts,
                          DictionaryEncodedColumn associatedColumns, Column groupColumns,

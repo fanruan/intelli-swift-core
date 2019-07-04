@@ -8,10 +8,10 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.funnel.IHead;
 import com.fr.swift.query.funnel.IStep;
-import com.fr.swift.query.funnel.ITimeWindowFilter;
-import com.fr.swift.query.funnel.impl.GroupTWFilter;
-import com.fr.swift.query.funnel.impl.TimeWindowFilter;
+import com.fr.swift.query.funnel.TimeWindowFilter;
 import com.fr.swift.query.funnel.impl.step.VirtualStep;
+import com.fr.swift.query.funnel.impl.window.NoRepeatTimeWindowFilter;
+import com.fr.swift.query.funnel.impl.window.RepeatTimeWindowFilter;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
@@ -61,7 +61,7 @@ public class FunnelCalculator {
 
     public FunnelQueryResultSet getQueryResult() throws SwiftMetaDataException {
         IStep step = createStep(bean.getEvents());
-        ITimeWindowFilter filter = createTimeWindowFilter(step, bean, segment);
+        TimeWindowFilter filter = createTimeWindowFilter(step, bean, segment);
         ParameterColumnsBean params = bean.getColumns();
         Column event = segment.getColumn(new ColumnKey(bean.getColumn()));
         RowTraversal rowTraversal =
@@ -186,7 +186,7 @@ public class FunnelCalculator {
     }
 
 
-    private ITimeWindowFilter createTimeWindowFilter(IStep step, FunnelAggregationBean bean, Segment segment) {
+    private TimeWindowFilter createTimeWindowFilter(IStep step, FunnelAggregationBean bean, Segment segment) {
         List<FunnelAssociationBean> association = bean.getAssociations();
         boolean[] associatedProperty = new boolean[bean.getEvents().size()];//getFlags(bean, association == null ? new ArrayList<Integer>() : association.getEvents());
         DictionaryEncodedColumn associatedPropertyColumn = null;
@@ -196,14 +196,14 @@ public class FunnelCalculator {
         TimeFilterInfo dayFilterBean = bean.getTimeFilter();
         int firstAssociatedIndex = -1;//(association == null || association.getEvents().size() == 0) ? -1 : association.getEvents().get(0);
         boolean repeated = step.hasRepeatedEvents();
+        FilterInfo filterInfo = FilterInfoParser.parse(new SourceKey(segment.getMetaData().getId()), bean.getTimeGroup().filter());
+        MatchFilter matchFilter = FilterBuilder.buildMatchFilter(filterInfo);
         if (!repeated) {
             step = step.toNoRepeatedStep();
-            FilterInfo filterInfo = FilterInfoParser.parse(new SourceKey(segment.getMetaData().getId()), bean.getTimeGroup().filter());
-            MatchFilter matchFilter = FilterBuilder.buildMatchFilter(filterInfo);
-            return new GroupTWFilter(bean.getTimeWindow(), bean.getTimeGroup(), matchFilter, dayFilterBean,
+            return new NoRepeatTimeWindowFilter(bean.getTimeWindow(), bean.getTimeGroup(), matchFilter, dayFilterBean,
                     step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
         }
-        return new TimeWindowFilter(bean.getTimeWindow(), dayFilterBean,
+        return new RepeatTimeWindowFilter(bean.getTimeWindow(), bean.getTimeGroup(), matchFilter, dayFilterBean,
                 step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
     }
 
