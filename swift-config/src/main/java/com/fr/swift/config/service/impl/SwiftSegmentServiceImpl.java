@@ -3,6 +3,7 @@ package com.fr.swift.config.service.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.dao.SwiftSegmentBucketDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
@@ -48,6 +49,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
     private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
     private SwiftSegmentDao swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
+    private SwiftSegmentBucketDao segmentBucketDao = SwiftContext.get().getBean(SwiftSegmentBucketDao.class);
 
     @Override
     public boolean saveOrUpdate(SegmentKey obj) {
@@ -107,6 +109,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                     for (String key : sourceKey) {
                         segmentLocationDao.deleteBySourceKey(session, key);
                         swiftSegmentDao.deleteBySourceKey(session, key);
+                        segmentBucketDao.deleteBySourceKey(session, key);
                         for (SegmentContainer value : SegmentContainer.values()) {
                             value.remove(new SourceKey(key));
                         }
@@ -138,6 +141,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                                 }
                             }
                             swiftSegmentDao.deleteById(session, segmentKey.getId());
+                            segmentBucketDao.deleteBySegmentKey(session, segmentKey.getId());
                         }
                     } catch (Throwable e) {
                         throw new SQLException(e);
@@ -166,6 +170,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                                 }
                             }
                             swiftSegmentDao.deleteById(session, segmentKey);
+                            segmentBucketDao.deleteBySegmentKey(session, segmentKey);
                         }
                     } catch (Throwable e) {
                         throw new SQLException(e);

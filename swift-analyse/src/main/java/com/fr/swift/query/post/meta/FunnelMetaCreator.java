@@ -5,7 +5,6 @@ import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.PostGroupBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
-import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 

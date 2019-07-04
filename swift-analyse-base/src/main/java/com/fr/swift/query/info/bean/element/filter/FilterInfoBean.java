@@ -14,6 +14,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.OrFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.StringOneValueFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.WorkDayFilterInfoBean;
 import com.fr.swift.query.query.FilterBean;
 
 /**
@@ -36,6 +37,7 @@ import com.fr.swift.query.query.FilterBean;
         @JsonSubTypes.Type(value = AndFilterBean.class, name = "AND"),
         @JsonSubTypes.Type(value = OrFilterBean.class, name = "OR"),
         @JsonSubTypes.Type(value = NotFilterBean.class, name = "NOT"),
+        @JsonSubTypes.Type(value = WorkDayFilterInfoBean.class, name = "WORK_DAY"),
         @JsonSubTypes.Type(value = AllShowFilterBean.class, name = "ALL_SHOW"),
         @JsonSubTypes.Type(value = EmptyFilterBean.class, name = "EMPTY")
 })

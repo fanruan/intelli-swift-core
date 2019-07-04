@@ -21,5 +21,5 @@ public interface HisSegmentMerger {
      * @return 新块的SegmentKey
      * @throws Exception
      */
-    List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter);
+    List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter, int index);
 }

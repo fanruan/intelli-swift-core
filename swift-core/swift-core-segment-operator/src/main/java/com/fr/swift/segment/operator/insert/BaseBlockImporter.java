@@ -1,6 +1,9 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -46,6 +49,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     private List<SegmentKey> importSegKeys = new ArrayList<SegmentKey>();
 
+    protected SwiftTableAllotRuleService swiftTableAllotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
+
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
         this.alloter = alloter;
@@ -57,6 +62,10 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         // todo 分布式导入可能有多线程坑
         if (!db.existsTable(tableKey)) {
             db.createTable(tableKey, dataSource.getMetadata());
+        }
+        if (swiftTableAllotRuleService.getAllotRuleByTable(dataSource.getSourceKey()) == null) {
+            SwiftTableAllotRule swiftTableAllotRule = new SwiftTableAllotRule(dataSource.getSourceKey().getId(), alloter.getAllotRule().getType().name(), alloter.getAllotRule());
+            swiftTableAllotRuleService.saveAllotRule(swiftTableAllotRule);
         }
     }
 

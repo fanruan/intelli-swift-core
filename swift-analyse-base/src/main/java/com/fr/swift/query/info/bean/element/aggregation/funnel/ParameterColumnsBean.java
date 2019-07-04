@@ -10,20 +10,14 @@ public class ParameterColumnsBean {
     @JsonProperty
     private String userId;
     @JsonProperty
-    private String event;
-    @JsonProperty
     private String timestamp;
-    @JsonProperty
-    private String date;
 
     public ParameterColumnsBean() {
     }
 
-    public ParameterColumnsBean(String userId, String event, String timestamp, String date) {
+    public ParameterColumnsBean(String userId, String timestamp) {
         this.userId = userId;
-        this.event = event;
         this.timestamp = timestamp;
-        this.date = date;
     }
 
     public String getUserId() {
@@ -34,13 +28,6 @@ public class ParameterColumnsBean {
         this.userId = userId;
     }
 
-    public String getEvent() {
-        return event;
-    }
-
-    public void setEvent(String event) {
-        this.event = event;
-    }
 
     public String getTimestamp() {
         return timestamp;
@@ -50,11 +37,4 @@ public class ParameterColumnsBean {
         this.timestamp = timestamp;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 }
