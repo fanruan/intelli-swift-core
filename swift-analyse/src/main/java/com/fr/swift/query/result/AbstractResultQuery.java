@@ -35,9 +35,9 @@ public abstract class AbstractResultQuery<T extends QueryResultSet<?>> implement
                 resultSets.add(query.getQueryResult());
             }
             return merge(resultSets);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             IoUtil.close(resultSets);
-            throw e;
+            throw new SQLException(e);
         }
     }
 }

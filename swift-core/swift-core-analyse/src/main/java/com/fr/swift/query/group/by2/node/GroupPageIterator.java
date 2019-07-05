@@ -6,10 +6,8 @@ import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQueryResultSetImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.Pair;
@@ -24,23 +22,18 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/7/25.
  */
-class NodePageIterator implements Iterator<QueryResultSet<GroupPage>> {
+class GroupPageIterator implements Iterator<GroupPage> {
 
     private int dimensionSize;
     private GroupByInfo groupByInfo;
     private Iterator<GroupNode> iterator;
 
-    NodePageIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
+    GroupPageIterator(int pageSize, GroupByInfo groupByInfo, MetricInfo metricInfo) {
         this.dimensionSize = groupByInfo.getDimensions().size();
         this.groupByInfo = groupByInfo;
         this.iterator = new GroupNodeIterator(dimensionSize, pageSize,
                 new DFTIterator(dimensionSize, new ItCreator(groupByInfo)),
                 new ItemMapper(groupByInfo.getDimensions()), new RowMapper(metricInfo));
-    }
-
-    private QueryResultSet<GroupPage> getNext() {
-        GroupNode root = iterator.next();
-        return new NodeMergeQueryResultSetImpl(groupByInfo.getFetchSize(), root, getGlobalDictionaries(root));
     }
 
     @Override
@@ -49,12 +42,14 @@ class NodePageIterator implements Iterator<QueryResultSet<GroupPage>> {
     }
 
     @Override
-    public QueryResultSet<GroupPage> next() {
-        return getNext();
+    public GroupPage next() {
+        GroupNode root = iterator.next();
+        return new GroupPage(root, getGlobalDictionaries(root));
     }
 
     @Override
     public void remove() {
+        throw new UnsupportedOperationException();
     }
 
     private List<Map<Integer, Object>> getGlobalDictionaries(GroupNode root) {

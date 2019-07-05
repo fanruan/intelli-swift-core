@@ -5,14 +5,11 @@ import com.fr.swift.query.group.by2.node.NodeGroupByUtils;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.BaseNodeMergeQueryResultSet;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQueryResultSetImpl;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
+import com.fr.swift.source.SwiftMetaData;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * @author pony
@@ -23,41 +20,50 @@ public class GroupSegmentQuery implements Query<QueryResultSet<GroupPage>> {
 
     private MetricInfo metricInfo;
 
-    private final boolean paged;
-
-    public GroupSegmentQuery(GroupByInfo groupByInfo, MetricInfo metricInfo, boolean paged) {
+    public GroupSegmentQuery(GroupByInfo groupByInfo, MetricInfo metricInfo) {
         this.groupByInfo = groupByInfo;
         this.metricInfo = metricInfo;
-        this.paged = paged;
-    }
-
-    public static GroupSegmentQuery ofPaged(GroupByInfo groupByInfo, MetricInfo metricInfo) {
-        return new GroupSegmentQuery(groupByInfo, metricInfo, true);
-    }
-
-    public static GroupSegmentQuery ofAll(GroupByInfo groupByInfo, MetricInfo metricInfo) {
-        return new GroupSegmentQuery(groupByInfo, metricInfo, false);
     }
 
     @Override
     public QueryResultSet<GroupPage> getQueryResult() {
-        final Iterator<QueryResultSet<GroupPage>> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
-        if (paged) {
-            return new BaseNodeMergeQueryResultSet(groupByInfo.getFetchSize()) {
-                @Override
-                public GroupPage getPage() {
-                    QueryResultSet<GroupPage> resultSet = iterator.next();
-                    return resultSet.getPage();
-                }
+        Iterator<GroupPage> iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
+        return new IteratorAdapter<GroupPage>(iterator, groupByInfo.getFetchSize());
+    }
 
-                @Override
-                public boolean hasNextPage() {
-                    return iterator.hasNext();
-                }
-            };
-        } else {
-            return (iterator.hasNext() ? iterator.next() : new NodeMergeQueryResultSetImpl(groupByInfo.getFetchSize(),
-                    new GroupNode(-1, null), new ArrayList<Map<Integer, Object>>()));
+    private static class IteratorAdapter<P> implements QueryResultSet<P> {
+        Iterator<P> pageItr;
+        int fetchSize;
+
+        IteratorAdapter(Iterator<P> pageItr, int fetchSize) {
+            this.pageItr = pageItr;
+            this.fetchSize = fetchSize;
+        }
+
+        @Override
+        public int getFetchSize() {
+            return fetchSize;
+        }
+
+        @Override
+        public SwiftResultSet convert(SwiftMetaData metaData) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public P getPage() {
+            return pageItr.next();
+        }
+
+        @Override
+        public boolean hasNextPage() {
+            return pageItr.hasNext();
+        }
+
+        @Override
+        public void close() {
+            // TODO: 2019-07-01 anchore 要将close传递到groupby内部，真正的释放资源
+            throw new UnsupportedOperationException();
         }
     }
 }
