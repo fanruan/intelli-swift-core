@@ -1,12 +1,12 @@
 package com.fr.swift.query.group.by2.node;
 
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.AggregatorValueCombiner;
 import com.fr.swift.query.aggregator.CartesianAggregatorCombiner;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.function.BinaryFunction;
@@ -65,11 +65,9 @@ class RowMapper implements BinaryFunction<GroupByEntry, GroupNode, GroupNode> {
 //        node.setAggregatorValue(values);
         AggregatorValueCombiner combiner = aggregatorValueCombiner(groupByEntry.getTraversal(), targetLength, metrics, aggregators);
         if (combiner.isNeedCombine()) {
-            Iterator<AggregatorValue[]> combineIterator = combiner.getCombineIterator();
+            Iterator<SwiftNode> combineIterator = combiner.getSwiftNodeIterator(node.getDepth());
             while (combineIterator.hasNext()) {
-                GroupNode child = new GroupNode(node.getDepth() + 1, null);
-                child.setAggregatorValue(combineIterator.next());
-                node.addChild(child);
+                node.addChild(combineIterator.next());
             }
         } else {
             node.setAggregatorValue(combiner.getAggregatorValue());

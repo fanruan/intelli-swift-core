@@ -71,4 +71,6 @@ public interface SwiftMetaData {
     List<String> getFieldNames();
 
     String getId();
+
+    SwiftMetaData clone();
 }

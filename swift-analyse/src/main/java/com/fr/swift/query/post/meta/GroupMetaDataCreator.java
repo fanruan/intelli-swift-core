@@ -9,6 +9,9 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.info.bean.element.CalculatedFieldBean;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.MetricBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAggregationBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelEventBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
 import com.fr.swift.query.info.bean.post.CalculatedFieldQueryInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
@@ -22,35 +25,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by lyon on 2018/11/28.
+ *
+ * @author lyon
+ * @date 2018/11/28
  */
-public class GroupMetaDataCreator implements MetaDataCreator<GroupQueryInfoBean> {
+public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean> {
+    private List<SwiftMetaDataColumn> dimensionColumns;
 
     @Override
     public SwiftMetaData create(GroupQueryInfoBean queryBean) throws SwiftMetaDataException {
         final String tableName = queryBean.getTableName();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(queryBean.getTableName());
         SwiftSchema schema = meta.getSwiftSchema();
-        List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
         List<DimensionBean> dimensionBeans = queryBean.getDimensions();
-        for (DimensionBean dimensionBean : dimensionBeans) {
-            String alias = dimensionBean.getAlias();
-            String column = dimensionBean.getColumn();
-            SwiftMetaDataColumn metaDataColumn = meta.getColumn(column);
-            String name = alias == null ? column : alias;
-            metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
-                    metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
-        }
+        dimensionColumns = createDimension(meta, dimensionBeans);
         List<MetricBean> metricBeans = queryBean.getAggregations();
-        for (MetricBean metricBean : metricBeans) {
-            String alias = metricBean.getAlias();
-            String column = metricBean.getColumn();
-            SwiftMetaDataColumn metaDataColumn = Strings.isEmpty(column) ?
-                    new MetaDataColumnBean(Strings.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
-            String name = alias == null ? column : alias;
-            metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
-                    metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
-        }
+        List<SwiftMetaDataColumn> metricColumns = createMetricBeanColumn(meta, metricBeans);
+        List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>(dimensionColumns);
+        metaDataColumns.addAll(metricColumns);
         List<PostQueryInfoBean> postQueryInfoBeans = queryBean.getPostAggregations();
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
             if (postQueryInfoBean.getType() != PostQueryType.CAL_FIELD) {
@@ -62,4 +54,50 @@ public class GroupMetaDataCreator implements MetaDataCreator<GroupQueryInfoBean>
         }
         return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
     }
+
+    private List<SwiftMetaDataColumn> createMetricBeanColumn(SwiftMetaData meta, List<MetricBean> metricBeans) throws SwiftMetaDataException {
+        List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
+        for (MetricBean metricBean : metricBeans) {
+            switch (metricBean.getType()) {
+                case FUNNEL:
+                    createFunnelColumns((FunnelAggregationBean) metricBean, dimensionColumns, metaDataColumns);
+                    break;
+                case FUNNEL_PATHS:
+                    dimensionColumns.add(new MetaDataColumnBean("funnel_time", null, Types.VARCHAR, null));
+                    dimensionColumns.add(new MetaDataColumnBean("funnel_path", null, Types.VARCHAR, null));
+                    metaDataColumns.add(new MetaDataColumnBean("conversion_rate", null, Types.BIGINT, null));
+                    break;
+                default:
+                    String alias = metricBean.getAlias();
+                    String column = metricBean.getColumn();
+                    SwiftMetaDataColumn metaDataColumn = Strings.isEmpty(column) ?
+                            new MetaDataColumnBean(Strings.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
+                    String name = alias == null ? column : alias;
+                    metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
+                            metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
+            }
+
+        }
+        return metaDataColumns;
+    }
+
+    private void createFunnelColumns(FunnelAggregationBean funnelBean, List<SwiftMetaDataColumn> dimensionColumns, List<SwiftMetaDataColumn> metricColumns) {
+        dimensionColumns.add(new MetaDataColumnBean("funnel_time", null, Types.VARCHAR, null));
+        PostGroupBean postGroup = funnelBean.getPostGroup();
+        if (null != postGroup) {
+            dimensionColumns.add(new MetaDataColumnBean(postGroup.getColumn(), null, Types.VARCHAR, null));
+        }
+        List<FunnelEventBean> events = funnelBean.getEvents();
+        for (int i = 0; i < events.size(); i++) {
+            FunnelEventBean event = events.get(i);
+            String name = null;
+            if (Strings.isEmpty(event.getName())) {
+                name = "funnel_event_" + (i + 1);
+            } else {
+                name = event.getName();
+            }
+            metricColumns.add(new MetaDataColumnBean(name, null, Types.BIGINT, null));
+        }
+    }
+
 }
