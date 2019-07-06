@@ -1,6 +1,12 @@
 package com.fr.swift.query.aggregator;
 
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * 笛卡尔积合并
@@ -15,11 +21,12 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
     }
 
     @Override
-    public Iterator<AggregatorValue[]> getCombineIterator() {
-        return new CartesianCombineIterator(getAggregatorValue());
+    public Iterator<SwiftNode> getSwiftNodeIterator(int depth) {
+        return new CartesianCombineIterator(depth, getAggregatorValue());
     }
 
-    private class CartesianCombineIterator implements Iterator<AggregatorValue[]> {
+    private class CartesianCombineIterator implements Iterator<SwiftNode> {
+        private int depth;
         private Iterator<AggregatorValue>[] iterators;
         private AggregatorValue[] source;
         private AggregatorValue[] tmp;
@@ -27,8 +34,8 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
         private int preLastIterator = -1;
 
 
-        public CartesianCombineIterator(final AggregatorValue[] source) {
-
+        public CartesianCombineIterator(int depth, AggregatorValue[] source) {
+            this.depth = depth;
             this.source = source;
             this.tmp = new AggregatorValue[source.length];
             init();
@@ -55,7 +62,7 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
         }
 
         @Override
-        public AggregatorValue[] next() {
+        public SwiftNode next() {
             for (int i = tmp.length - 1; i >= 0; i--) {
                 if (iterators[i] == null) {
                     tmp[i] = source[i];
@@ -83,7 +90,30 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
                 }
 
             }
-            return tmp;
+            return calculateAggregatorNode();
+        }
+
+        private SwiftNode calculateAggregatorNode() {
+            List<AggregatorValue> list = new ArrayList<AggregatorValue>();
+            SwiftNode swiftNode = null;
+            SwiftNode leafNode = null;
+            for (AggregatorValue value : tmp) {
+                if (value instanceof SwiftNodeNodeAggregatorValue) {
+                    SwiftNodeNodeAggregatorValue groupValue = (SwiftNodeNodeAggregatorValue) value;
+                    swiftNode = groupValue.calculateValue(depth);
+                    leafNode = groupValue.getLeafNode();
+                    list.addAll(Arrays.asList(leafNode.getAggregatorValue()));
+                } else {
+                    list.add(value);
+                }
+            }
+            if (null == swiftNode) {
+                swiftNode = new GroupNode(depth + 1, null);
+                swiftNode.setAggregatorValue(list.toArray(new AggregatorValue[0]));
+            } else {
+                leafNode.setAggregatorValue(list.toArray(new AggregatorValue[0]));
+            }
+            return swiftNode;
         }
 
         @Override
