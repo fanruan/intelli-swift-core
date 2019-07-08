@@ -98,8 +98,8 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
             SwiftNode swiftNode = null;
             SwiftNode leafNode = null;
             for (AggregatorValue value : tmp) {
-                if (value instanceof SwiftNodeNodeAggregatorValue) {
-                    SwiftNodeNodeAggregatorValue groupValue = (SwiftNodeNodeAggregatorValue) value;
+                if (value instanceof SwiftNodeAggregatorValue) {
+                    SwiftNodeAggregatorValue groupValue = (SwiftNodeAggregatorValue) value;
                     swiftNode = groupValue.calculateValue(depth);
                     leafNode = groupValue.getLeafNode();
                     list.addAll(Arrays.asList(leafNode.getAggregatorValue()));
