@@ -83,8 +83,8 @@ public class SwiftCloudController {
         List<ICloudQuery> queries = TreasureAnalysisJob.getQueries(objectMap, queryList);
 
         for (int i = 0; i < appIds.size(); i++) {
-            String appId = String.valueOf(appIds.get(i));
-            String yearMonth = String.valueOf(yearMonths.get(i));
+            String appId = appIds.get(i);
+            String yearMonth = yearMonths.get(i);
             for (ICloudQuery query : queries) {
                 TreasureAnalysisJob.deleteIfExisting(appId, yearMonth, query.getTableName());
                 query.calculate(appId, yearMonth);

@@ -2,6 +2,7 @@ package com.fr.swift.cloud.analysis;
 
 
 import com.fr.swift.cloud.result.ArchiveDBManager;
+import com.fr.swift.log.SwiftLoggers;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -23,14 +24,14 @@ public abstract class AbstractSaveQueryResult<T> {
                     session.clear();
                 }
             }
-        } catch (Exception ignore) {
-
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         } finally {
             transaction.commit();
             try {
                 session.close();
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
             }
         }
     }
