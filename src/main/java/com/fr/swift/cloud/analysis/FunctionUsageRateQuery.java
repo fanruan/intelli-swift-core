@@ -1,6 +1,8 @@
 package com.fr.swift.cloud.analysis;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cloud.result.table.FunctionUsageRate;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -20,9 +22,14 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class FunctionUsageRateQuery {
+@SwiftBean
+@CloudQuery(name = "functionUsageRateQuery")
+public class FunctionUsageRateQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public List<FunctionUsageRate> query(String appId, String yearMonth) throws Exception {
+    public final static String tableName = FunctionUsageRate.class.getSimpleName();
+
+    public void calculate(String appId, String yearMonth) throws Exception {
+        SwiftLoggers.getLogger().info("=====  start FunctionUsageRateQuery Analysis  ======");
         List<FunctionUsageRate> functionUsageRateList = new ArrayList<>();
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.<FilterInfoBean>asList(
@@ -38,6 +45,14 @@ public class FunctionUsageRateQuery {
             FunctionUsageRate usageRate = new FunctionUsageRate(row, appId, yearMonth);
             functionUsageRateList.add(usageRate);
         }
-        return functionUsageRateList;
+        super.saveResult(functionUsageRateList);
+        SwiftLoggers.getLogger().info("=====  finished FunctionUsageRateQuery Analysis  ======");
     }
+
+    @Override
+    public String getTableName() {
+        return tableName;
+    }
+
+
 }

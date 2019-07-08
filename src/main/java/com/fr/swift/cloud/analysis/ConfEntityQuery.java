@@ -1,6 +1,8 @@
 package com.fr.swift.cloud.analysis;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cloud.result.table.ConfEntity;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -21,9 +23,16 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-public class ConfEntityQuery {
+@SwiftBean
+@CloudQuery(name = "confEntityQuery")
+public class ConfEntityQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public List<ConfEntity> query(String appId, String yearMonth) throws Exception {
+    public final static String tableName = ConfEntity.class.getSimpleName();
+
+    public void calculate(String appId, String yearMonth) throws Exception {
+
+        SwiftLoggers.getLogger().info("=====  start CustomBaseInfoQuery Analysis  ======");
+
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.<FilterInfoBean>asList(
                         new InFilterBean("appId", appId),
@@ -44,6 +53,13 @@ public class ConfEntityQuery {
             }
         }
         List<ConfEntity> confEntityList = new ArrayList<>(map.values());
-        return confEntityList;
+        super.saveResult(confEntityList);
+
+        SwiftLoggers.getLogger().info("=====  finished CustomBaseInfoQuery Analysis  ======");
+    }
+
+    @Override
+    public String getTableName() {
+        return tableName;
     }
 }

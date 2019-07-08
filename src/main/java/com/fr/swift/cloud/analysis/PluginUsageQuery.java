@@ -1,6 +1,8 @@
 package com.fr.swift.cloud.analysis;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cloud.result.table.PluginUsage;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -19,9 +21,14 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class PluginUsageQuery {
+@SwiftBean
+@CloudQuery(name = "pluginUsageQuery")
+public class PluginUsageQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public List<PluginUsage> query(String appId, String yearMonth) throws Exception {
+    public final static String tableName = PluginUsage.class.getSimpleName();
+
+    public void calculate(String appId, String yearMonth) throws Exception {
+        SwiftLoggers.getLogger().info("=====  start PluginUsageQuery Analysis  ======");
         List<PluginUsage> pluginUsageList = new ArrayList<>();
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.<FilterInfoBean>asList(
@@ -34,6 +41,14 @@ public class PluginUsageQuery {
             PluginUsage pluginUsage = new PluginUsage(resultSet.getNextRow(), appId, yearMonth);
             pluginUsageList.add(pluginUsage);
         }
-        return pluginUsageList;
+        super.saveResult(pluginUsageList);
+        SwiftLoggers.getLogger().info("=====  finished PluginUsageQuery Analysis  ======");
     }
+
+    @Override
+    public String getTableName() {
+        return tableName;
+    }
+
+
 }

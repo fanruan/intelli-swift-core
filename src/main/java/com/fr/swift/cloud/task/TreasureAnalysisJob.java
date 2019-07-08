@@ -1,13 +1,9 @@
 package com.fr.swift.cloud.task;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cloud.CloudProperty;
-import com.fr.swift.cloud.analysis.ConfEntityQuery;
-import com.fr.swift.cloud.analysis.CustomBaseInfoQuery;
-import com.fr.swift.cloud.analysis.FunctionUsageRateQuery;
-import com.fr.swift.cloud.analysis.PluginUsageQuery;
-import com.fr.swift.cloud.analysis.SystemUsageInfoQuery;
-import com.fr.swift.cloud.analysis.TemplateUsageInfoQuery;
-import com.fr.swift.cloud.analysis.downtime.DowntimeAnalyser;
+import com.fr.swift.cloud.analysis.CloudQuery;
+import com.fr.swift.cloud.analysis.ICloudQuery;
 import com.fr.swift.cloud.analysis.template.TemplateAnalysisUtils;
 import com.fr.swift.cloud.bean.TreasureAnalysisBean;
 import com.fr.swift.cloud.bean.TreasureBean;
@@ -37,6 +33,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2019/6/12
@@ -44,10 +41,22 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
+
 public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
 
     private TreasureBean treasureBean;
     private static MessageProducer messageProducer = new MessageProducer();
+    private static Map<String, Object> objectMap = SwiftContext.get().getBeansByAnnotations(CloudQuery.class);
+    private static List<String> queryList = new ArrayList<>();
+
+    static {
+        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
+            CloudQuery cloudQuery = entry.getValue().getClass().getAnnotation(CloudQuery.class);
+            if (cloudQuery != null) {
+                queryList.add(cloudQuery.name());
+            }
+        }
+    }
 
     public TreasureAnalysisJob(TreasureBean treasureBean) {
         this.treasureBean = treasureBean;
@@ -62,44 +71,19 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
 
         // 为了避免重复，先清除数据
         try {
-            deleteIfExisting(appId, yearMonth);
+            for (String table : tables) {
+                deleteIfExisting(appId, yearMonth, table);
+            }
         } catch (Exception ignored) {
         }
-        TemplateAnalysisUtils.tplAnalysis(appId, yearMonth);
-        List<DowntimeResult> downtimeResultList = new ArrayList<>();
-        if (!treasureBean.getVersion().equals("1.0")) {
-            downtimeResultList.addAll(new DowntimeAnalyser().downtimeAnalyse(appId, yearMonth));
-        }
 
+        TemplateAnalysisUtils.tplAnalysis(appId, yearMonth);
         saveCustomerInfo(treasureBean.getClientId(), appId, yearMonth, treasureBean.getCustomerId(), treasureBean.getType());
 
-        Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            List<Object> saveList = new ArrayList<>();
-            saveList.addAll(new ConfEntityQuery().query(appId, yearMonth));
-            saveList.addAll(new PluginUsageQuery().query(appId, yearMonth));
-            saveList.addAll((new FunctionUsageRateQuery().query(appId, yearMonth)));
-            saveList.add(new CustomBaseInfoQuery().query(appId, yearMonth));
-            saveList.add(new TemplateUsageInfoQuery().query(appId, yearMonth));
-            saveList.add(new SystemUsageInfoQuery().query(appId, yearMonth, downtimeResultList));
-            for (int i = 0; i < saveList.size(); i++) {
-                try {
-                    session.save(saveList.get(i));
-                    if (i % 20 == 0) {
-                        session.flush();
-                        session.clear();
-                    }
-                } catch (Exception ignore) {
-
-                }
-            }
-        } finally {
-            transaction.commit();
-            try {
-                session.close();
-            } catch (Exception ignored) {
-            }
+        //对所有的queries查询 计算分析 写入数据库
+        List<ICloudQuery> queries = getQueries(objectMap, queryList);
+        for (ICloudQuery query : queries) {
+            query.calculate(appId, yearMonth);
         }
 
         CloudLogUtils.logStartJob(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion(), "send message");
@@ -114,19 +98,28 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
         return treasureBean;
     }
 
-    public static void deleteIfExisting(String appId, String yearMonth) throws Exception {
+    public static List<ICloudQuery> getQueries(Map<String, Object> objectMap, List<String> queryList) {
+        List<ICloudQuery> queries = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
+            CloudQuery cloudQuery = entry.getValue().getClass().getAnnotation(CloudQuery.class);
+            if (queryList.contains(cloudQuery.name())) {
+                queries.add((ICloudQuery) entry.getValue());
+            }
+        }
+        return queries;
+    }
+
+    public static void deleteIfExisting(String appId, String yearMonth, String tableName) throws Exception {
         Date date = TimeUtils.yearMonth2Date(yearMonth);
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
-        for (String table : tables) {
-            try {
-                Transaction transaction = session.beginTransaction();
-                Query query = session.createQuery(deleteSql(table));
-                query.setParameter("appId", appId);
-                query.setParameter("yearMonth", date);
-                query.executeUpdate();
-                transaction.commit();
-            } catch (Exception ignored) {
-            }
+        try {
+            Transaction transaction = session.beginTransaction();
+            Query query = session.createQuery(deleteSql(tableName));
+            query.setParameter("appId", appId);
+            query.setParameter("yearMonth", date);
+            query.executeUpdate();
+            transaction.commit();
+        } catch (Exception ignored) {
         }
         session.close();
     }
