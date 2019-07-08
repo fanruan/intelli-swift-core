@@ -1,6 +1,9 @@
 package com.fr.swift.query.funnel.impl.step;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.funnel.IStep;
+
+import java.util.List;
 
 /**
  * This class created on 2018/12/13
@@ -12,15 +15,17 @@ public class NoRepeatedStep implements IStep {
 
     private int[] eventMap;
     private boolean[][] steps;
+    private List<ImmutableBitMap> filters;
 
-    public NoRepeatedStep(int[] eventMap, boolean[][] steps) {
+    public NoRepeatedStep(int[] eventMap, boolean[][] steps, List<ImmutableBitMap> filters) {
         this.eventMap = eventMap;
         this.steps = steps;
+        this.filters = filters;
     }
 
     @Override
-    public boolean isEqual(int eventIndex, int event) {
-        return steps[eventIndex][event];
+    public boolean isEqual(int eventIndex, int event, int row) {
+        return steps[eventIndex][event] && matches(eventIndex, row);
     }
 
     @Override
@@ -46,5 +51,10 @@ public class NoRepeatedStep implements IStep {
     @Override
     public int getEventIndex(int event) {
         return eventMap[event];
+    }
+
+    @Override
+    public boolean matches(int eventIndex, int row) {
+        return filters.get(eventIndex).contains(row);
     }
 }

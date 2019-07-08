@@ -86,10 +86,10 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
     }
 
     @Override
-    public void add(int event, long timestamp, int associatedValue, Object groupValue) {
+    public void add(int event, long timestamp, int associatedValue, Object groupValue, int row) {
         // 事件有序进入
         // 更新临时对象: 从后往前, 并根据条件适当跳出
-        if (hasNoHeadBefore && !step.isEqual(0, event)) {
+        if (hasNoHeadBefore && !step.isEqual(0, event, row)) {
             return;
         }
         int dateIndex = getDateIndex(timestamp);
@@ -99,7 +99,7 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
                 break;
             }
             temp = lists.get(dateIndex);
-            if (step.isEqual(0, event)) {
+            if (step.isEqual(0, event, row)) {
                 hasNoHeadBefore = false;
                 createHead(timestamp, associatedValue, groupValue);
                 //重复事件是head
@@ -118,15 +118,15 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
                 if (nextEventIndex >= step.size()) {
                     finished[dateIndex] = true;
                     break;
-                } else if (step.isEqual(nextEventIndex, event)) {
+                } else if (step.isEqual(nextEventIndex, event, row)) {
                     nextEvent(nextEventIndex, timestamp, associatedValue, groupValue, head);
-                } else if (head.getSize() > 1 && step.isEqual(head.getSize() - 1, event)) {
+                } else if (head.getSize() > 1 && step.isEqual(head.getSize() - 1, event, row)) {
                     if (updateEvent(i, timestamp, associatedValue, groupValue, head, copied)) {
                         copied = true;
                     }
                 } else {
                     if (!copied) {
-                        if (copyHead(i, event, timestamp, associatedValue, groupValue, head)) {
+                        if (copyHead(i, event, timestamp, associatedValue, groupValue, head, row)) {
                             copied = true;
                         }
                     }
@@ -174,11 +174,11 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
         return false;
     }
 
-    private boolean copyHead(int i, int event, long timestamp, int associatedValue, Object groupValue, IHead head) {
+    private boolean copyHead(int i, int event, long timestamp, int associatedValue, Object groupValue, IHead head, int row) {
         // 有结果分组的情况下。 1,2,3,2,3,4这种情况，出现第二个2的时候要做一次拷贝
         int index = 0;
         for (int j = 1; j < head.getSize() - 1; j++) {
-            if (step.isEqual(j, event)) {
+            if (step.isEqual(j, event, row)) {
                 index = j;
                 break;
             }

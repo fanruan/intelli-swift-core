@@ -13,9 +13,23 @@ import java.util.List;
  */
 public interface Importer {
 
+    /**
+     * 导入数据
+     *
+     * @param swiftResultSet 承载数据的resultSet
+     * @throws Exception
+     */
     void importData(SwiftResultSet swiftResultSet) throws Exception;
 
+    /**
+     * 获取字段
+     * @return
+     */
     List<String> getFields();
 
+    /**
+     * 导入的Segment
+     * @return
+     */
     List<SegmentKey> getImportSegments();
 }

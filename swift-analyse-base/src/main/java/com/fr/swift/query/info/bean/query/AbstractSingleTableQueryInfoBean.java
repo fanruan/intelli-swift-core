@@ -22,6 +22,7 @@ public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfo
     @JsonProperty
     private List<SortBean> sorts = new ArrayList<SortBean>(0);
 
+    @Override
     public String getTableName() {
         return tableName;
     }

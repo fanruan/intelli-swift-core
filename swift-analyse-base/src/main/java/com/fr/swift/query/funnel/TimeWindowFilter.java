@@ -21,7 +21,7 @@ public interface TimeWindowFilter {
      * @param timestamp 时间戳
      * @return 如果已经得到完整步骤，则返回true，否则返回false
      */
-    void add(int event, long timestamp, int associatedValue, Object groupValue);
+    void add(int event, long timestamp, int associatedValue, Object groupValue, int row);
 
     /**
      * 返回结果

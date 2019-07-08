@@ -5,16 +5,29 @@ import com.fr.swift.query.info.bean.type.DimensionType;
 
 
 /**
- * Created by Lyon on 2018/6/2.
+ *
+ * @author Lyon
+ * @date 2018/6/2
  */
 public class DimensionBean {
-
+    /**
+     * 原始表中的字段名
+     */
     @JsonProperty
-    private String column;  // 原始表中的字段名
+    private String column;
+    /**
+     * 客户端定义的转译名
+     */
     @JsonProperty
-    private String alias;    // 客户端定义的转移名
+    private String alias;
+    /**
+     * 排序信息
+     */
     @JsonProperty
     private SortBean sortBean;
+    /**
+     * 字段类型
+     */
     @JsonProperty
     private DimensionType type;
 
