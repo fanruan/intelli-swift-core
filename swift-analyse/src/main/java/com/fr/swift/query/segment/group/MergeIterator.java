@@ -96,7 +96,7 @@ public class MergeIterator {
                 int event = eventDicts.getIndexByRow(row);
                 filter.add(event, timestamp,
                         associatedColumns == null ? -1 : associatedColumns.getIndex(row),
-                        postGroupIndex == -1 ? null : step.isEqual(postGroupIndex, event) ? groupColumns.getValue(row) : null);
+                        postGroupIndex == -1 ? null : step.isEqual(postGroupIndex, event, row) ? groupColumns.getValue(row) : null, row);
             }
         });
     }

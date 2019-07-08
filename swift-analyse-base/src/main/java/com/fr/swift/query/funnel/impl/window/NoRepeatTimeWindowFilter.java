@@ -82,10 +82,13 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
     }
 
     @Override
-    public void add(int event, long timestamp, int associatedValue, Object groupValue) {
+    public void add(int event, long timestamp, int associatedValue, Object groupValue, int row) {
         // 事件有序进入
         // 更新临时对象: 从后往前, 并根据条件适当跳出
         int eventIndex = step.getEventIndex(event);
+        if (!step.matches(eventIndex, row)) {
+            return;
+        }
         if (hasNoHeadBefore && eventIndex != 0) {
             return;
         }
