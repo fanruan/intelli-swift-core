@@ -52,19 +52,19 @@ public class FunnelCalculator {
 
     private FunnelAggregationBean bean;
     private Segment segment;
-    private Map<String, Column> dictMap;
+    private Map<String, Column> columnMap;
 
     public FunnelCalculator(Segment segment, FunnelAggregationBean bean) {
         this.bean = bean;
         this.segment = segment;
-        this.dictMap = new HashMap<String, Column>();
+        this.columnMap = new HashMap<String, Column>();
         Column event = segment.getColumn(new ColumnKey(bean.getColumn()));
-        this.dictMap.put("event", event);
-        this.dictMap.put("id", segment.getColumn(new ColumnKey(bean.getColumns().getUserId())));
-        this.dictMap.put("timestamp", segment.getColumn(new ColumnKey(bean.getColumns().getTimestamp())));
+        this.columnMap.put("event", event);
+        this.columnMap.put("id", segment.getColumn(new ColumnKey(bean.getColumns().getUserId())));
+        this.columnMap.put("timestamp", segment.getColumn(new ColumnKey(bean.getColumns().getTimestamp())));
         PostGroupBean postGroup = bean.getPostGroup();
         if (null != postGroup) {
-            this.dictMap.put("postGroup", segment.getColumn(new ColumnKey(postGroup.getColumn())));
+            this.columnMap.put("postGroup", segment.getColumn(new ColumnKey(postGroup.getColumn())));
         }
     }
 
@@ -75,12 +75,12 @@ public class FunnelCalculator {
                 FilterBuilder.buildDetailFilter(segment, FilterInfoParser.parse(new SourceKey(segment.getMetaData().getTableName()),
                         bean.getFilter())).createFilterIndex();
         SwiftLoggers.getLogger().debug("seg rows: {}", rowTraversal.getCardinality());
-        Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(dictMap.get("id"), rowTraversal, true);
+        Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(columnMap.get("id"), rowTraversal, true);
         MergeIterator mergeIterator = new MergeIterator(filter, step, iterator,
-                dictMap.get("id").getDictionaryEncodedColumn(),
-                dictMap.get("timestamp").getDetailColumn(),
-                dictMap.get("event").getDictionaryEncodedColumn(),
-                createAssociatedColumn(), dictMap.get("postGroup"), getPostGroupStep());
+                columnMap.get("id").getDictionaryEncodedColumn(),
+                columnMap.get("timestamp").getDetailColumn(),
+                columnMap.get("event").getDictionaryEncodedColumn(),
+                createAssociatedColumn(), columnMap.get("postGroup"), getPostGroupStep());
 
         Map<FunnelGroupKey, FunnelAggValue> results = new HashMap<FunnelGroupKey, FunnelAggValue>();
 
@@ -215,7 +215,7 @@ public class FunnelCalculator {
         Set<FunnelEventBean> names = new HashSet<FunnelEventBean>();
         names.add(stepNames.get(0));
         boolean isHeadRepeated = false;
-        DictionaryEncodedColumn eventDict = dictMap.get("event").getDictionaryEncodedColumn();
+        DictionaryEncodedColumn eventDict = columnMap.get("event").getDictionaryEncodedColumn();
         boolean[][] steps = new boolean[stepNames.size()][eventDict.size()];
         List<ImmutableBitMap> events = new ArrayList<ImmutableBitMap>();
         for (int i = 0; i < stepNames.size(); i++) {
