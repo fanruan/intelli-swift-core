@@ -32,7 +32,7 @@ import java.util.List;
 @CloudQuery(name = "customBaseInfoQuery")
 public class CustomBaseInfoQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public final static String tableName = CustomerBaseInfo.class.getSimpleName();
+    private final static String TABLE_NAME = CustomerBaseInfo.class.getSimpleName();
 
     public void calculate(String appId, String yearMonth) throws Exception {
 
@@ -83,7 +83,7 @@ public class CustomBaseInfoQuery extends AbstractSaveQueryResult implements IClo
 
     @Override
     public String getTableName() {
-        return tableName;
+        return TABLE_NAME;
     }
 
 

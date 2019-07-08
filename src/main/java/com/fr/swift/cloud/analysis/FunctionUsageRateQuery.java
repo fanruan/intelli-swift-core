@@ -26,7 +26,7 @@ import java.util.List;
 @CloudQuery(name = "functionUsageRateQuery")
 public class FunctionUsageRateQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public final static String tableName = FunctionUsageRate.class.getSimpleName();
+    private final static String TABLE_NAME = FunctionUsageRate.class.getSimpleName();
 
     public void calculate(String appId, String yearMonth) throws Exception {
         SwiftLoggers.getLogger().info("start FunctionUsageRateQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
@@ -51,7 +51,7 @@ public class FunctionUsageRateQuery extends AbstractSaveQueryResult implements I
 
     @Override
     public String getTableName() {
-        return tableName;
+        return TABLE_NAME;
     }
 
 

@@ -9,6 +9,8 @@ import java.util.List;
 
 public abstract class AbstractSaveQueryResult<T> {
 
+    private static final int SESSION_SIZE = 20;
+
     //把分析结果写入数据库
     public void saveResult(List<T> queryResult) {
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
@@ -16,7 +18,7 @@ public abstract class AbstractSaveQueryResult<T> {
         try {
             for (int i = 0; i < queryResult.size(); i++) {
                 session.save(queryResult.get(i));
-                if (i % 20 == 0) {
+                if (i % SESSION_SIZE == 0) {
                     session.flush();
                     session.clear();
                 }

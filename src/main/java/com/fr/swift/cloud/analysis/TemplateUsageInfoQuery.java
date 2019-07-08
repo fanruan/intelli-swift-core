@@ -40,7 +40,7 @@ import java.util.Set;
 @CloudQuery(name = "templateUsageInfoQuery")
 public class TemplateUsageInfoQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public final static String tableName = TemplateUsageInfo.class.getSimpleName();
+    private final static String TABLE_NAME = TemplateUsageInfo.class.getSimpleName();
 
     public void calculate(String appId, String yearMonth) throws Exception {
 
@@ -102,7 +102,7 @@ public class TemplateUsageInfoQuery extends AbstractSaveQueryResult implements I
 
     @Override
     public String getTableName() {
-        return tableName;
+        return TABLE_NAME;
     }
 
     private int calcDays(List<Long> timeList) {

@@ -27,7 +27,7 @@ import java.util.Map;
 @CloudQuery(name = "confEntityQuery")
 public class ConfEntityQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public final static String tableName = ConfEntity.class.getSimpleName();
+    private final static String TABLE_NAME = ConfEntity.class.getSimpleName();
 
     public void calculate(String appId, String yearMonth) throws Exception {
         SwiftLoggers.getLogger().info("start ConfEntityQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
@@ -60,6 +60,6 @@ public class ConfEntityQuery extends AbstractSaveQueryResult implements ICloudQu
 
     @Override
     public String getTableName() {
-        return tableName;
+        return TABLE_NAME;
     }
 }

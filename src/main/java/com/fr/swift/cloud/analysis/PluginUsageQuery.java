@@ -25,7 +25,7 @@ import java.util.List;
 @CloudQuery(name = "pluginUsageQuery")
 public class PluginUsageQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public final static String tableName = PluginUsage.class.getSimpleName();
+    private final static String TABLE_NAME = PluginUsage.class.getSimpleName();
 
     public void calculate(String appId, String yearMonth) throws Exception {
 
@@ -49,7 +49,7 @@ public class PluginUsageQuery extends AbstractSaveQueryResult implements ICloudQ
 
     @Override
     public String getTableName() {
-        return tableName;
+        return TABLE_NAME;
     }
 
 
