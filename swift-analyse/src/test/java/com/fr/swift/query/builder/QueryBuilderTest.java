@@ -36,9 +36,6 @@ public class QueryBuilderTest {
         String queryBean = PowerMockito.mock(String.class);
         PowerMockito.mockStatic(QueryBeanFactory.class);
 
-//        QueryInfoBean queryInfoBean = PowerMockito.mock(QueryInfoBean.class);
-//        PowerMockito.when(QueryBeanFactory.create(queryBean)).thenReturn(queryInfoBean);
-
         QueryType detail = QueryType.DETAIL;
         QueryType group = QueryType.GROUP;
         QueryType funnel = QueryType.FUNNEL;
@@ -46,11 +43,11 @@ public class QueryBuilderTest {
         QueryInfoBean detailQueryInfoBean = PowerMockito.mock(DetailQueryInfoBean.class);
         PowerMockito.when(QueryBeanFactory.create(queryBean)).thenReturn(detailQueryInfoBean);
         PowerMockito.when(detailQueryInfoBean.getQueryType()).thenReturn(detail);
-        PowerMockito.mockStatic(DetailQueryBuilder.class);
         DetailQueryBuilder detailQueryBuilder = PowerMockito.mock(DetailQueryBuilder.class);
-        PowerMockito.when(DetailQueryBuilder.get()).thenReturn(detailQueryBuilder);
+        PowerMockito.mockStatic(DetailQueryBuilder.class);
+        PowerMockito.when(DetailQueryBuilder.of((DetailQueryInfoBean) detailQueryInfoBean)).thenReturn(detailQueryBuilder);
         Query detailQuery = PowerMockito.mock(Query.class);
-        PowerMockito.when(detailQueryBuilder.buildQuery((DetailQueryInfoBean) detailQueryInfoBean)).thenReturn(detailQuery);
+        PowerMockito.when(detailQueryBuilder.buildQuery()).thenReturn(detailQuery);
         Assert.assertEquals(detailQuery, QueryBuilder.buildQuery(queryBean));
 
         QueryInfoBean groupQueryInfoBean = PowerMockito.mock(GroupQueryInfoBean.class);
@@ -70,6 +67,7 @@ public class QueryBuilderTest {
         Query funnelQuery = PowerMockito.mock(Query.class);
         PowerMockito.when(FunnelQueryBuilder.buildQuery((FunnelQueryBean) funnelQueryInfoBean)).thenReturn(funnelQuery);
         Assert.assertEquals(funnelQuery, QueryBuilder.buildQuery(queryBean));
+
     }
 
     @Test
