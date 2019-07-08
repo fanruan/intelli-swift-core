@@ -30,8 +30,7 @@ public class ConfEntityQuery extends AbstractSaveQueryResult implements ICloudQu
     public final static String tableName = ConfEntity.class.getSimpleName();
 
     public void calculate(String appId, String yearMonth) throws Exception {
-
-        SwiftLoggers.getLogger().info("=====  start CustomBaseInfoQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("start ConfEntityQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.<FilterInfoBean>asList(
@@ -55,7 +54,8 @@ public class ConfEntityQuery extends AbstractSaveQueryResult implements ICloudQu
         List<ConfEntity> confEntityList = new ArrayList<>(map.values());
         super.saveResult(confEntityList);
 
-        SwiftLoggers.getLogger().info("=====  finished CustomBaseInfoQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("finished ConfEntityQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
+
     }
 
     @Override

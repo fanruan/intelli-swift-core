@@ -29,7 +29,7 @@ public class FunctionUsageRateQuery extends AbstractSaveQueryResult implements I
     public final static String tableName = FunctionUsageRate.class.getSimpleName();
 
     public void calculate(String appId, String yearMonth) throws Exception {
-        SwiftLoggers.getLogger().info("=====  start FunctionUsageRateQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("start FunctionUsageRateQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
         List<FunctionUsageRate> functionUsageRateList = new ArrayList<>();
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.<FilterInfoBean>asList(
@@ -46,7 +46,7 @@ public class FunctionUsageRateQuery extends AbstractSaveQueryResult implements I
             functionUsageRateList.add(usageRate);
         }
         super.saveResult(functionUsageRateList);
-        SwiftLoggers.getLogger().info("=====  finished FunctionUsageRateQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("finished FunctionUsageRateQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
 
     @Override

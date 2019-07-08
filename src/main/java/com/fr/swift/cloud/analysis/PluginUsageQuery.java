@@ -28,7 +28,9 @@ public class PluginUsageQuery extends AbstractSaveQueryResult implements ICloudQ
     public final static String tableName = PluginUsage.class.getSimpleName();
 
     public void calculate(String appId, String yearMonth) throws Exception {
-        SwiftLoggers.getLogger().info("=====  start PluginUsageQuery Analysis  ======");
+
+        SwiftLoggers.getLogger().info("start PluginUsageQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
+
         List<PluginUsage> pluginUsageList = new ArrayList<>();
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.<FilterInfoBean>asList(
@@ -42,7 +44,7 @@ public class PluginUsageQuery extends AbstractSaveQueryResult implements ICloudQ
             pluginUsageList.add(pluginUsage);
         }
         super.saveResult(pluginUsageList);
-        SwiftLoggers.getLogger().info("=====  finished PluginUsageQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("finished PluginUsageQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
 
     @Override

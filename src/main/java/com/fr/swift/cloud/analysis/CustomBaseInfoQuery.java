@@ -19,6 +19,7 @@ import com.fr.swift.source.Row;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,7 +36,8 @@ public class CustomBaseInfoQuery extends AbstractSaveQueryResult implements IClo
 
     public void calculate(String appId, String yearMonth) throws Exception {
 
-        SwiftLoggers.getLogger().info("=====  start CustomBaseInfoQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("start CustomBaseInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
+
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.asList(
                         new InFilterBean("appId", appId),
@@ -73,10 +75,10 @@ public class CustomBaseInfoQuery extends AbstractSaveQueryResult implements IClo
             functionPossessRowList.add(functionPossessResultSet.getNextRow());
         }
         CustomerBaseInfo customerBaseInfo = new CustomerBaseInfo(rowList, functionPossessRowList, appId, yearMonth);
-        List<CustomerBaseInfo> customerBaseInfoList = Arrays.asList(customerBaseInfo);
+        List<CustomerBaseInfo> customerBaseInfoList = Collections.singletonList(customerBaseInfo);
         super.saveResult(customerBaseInfoList);
 
-        SwiftLoggers.getLogger().info("=====  finished CustomBaseInfoQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("finished CustomBaseInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
 
     @Override

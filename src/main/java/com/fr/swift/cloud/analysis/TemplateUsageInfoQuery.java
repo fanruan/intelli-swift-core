@@ -22,6 +22,7 @@ import com.fr.swift.source.Row;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -43,7 +44,7 @@ public class TemplateUsageInfoQuery extends AbstractSaveQueryResult implements I
 
     public void calculate(String appId, String yearMonth) throws Exception {
 
-        SwiftLoggers.getLogger().info("=====  start TemplateUsageInfoQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("start TemplateUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.asList(
@@ -93,10 +94,10 @@ public class TemplateUsageInfoQuery extends AbstractSaveQueryResult implements I
         }
         int visitDay = calcDays(timeList);
         TemplateUsageInfo templateUsageInfo = new TemplateUsageInfo(row, visitDay, yearMonth, appId);
-        List<TemplateUsageInfo> templateUsageInfoList = Arrays.asList(templateUsageInfo);
+        List<TemplateUsageInfo> templateUsageInfoList = Collections.singletonList(templateUsageInfo);
         super.saveResult(templateUsageInfoList);
 
-        SwiftLoggers.getLogger().info("=====  finished TemplateUsageInfoQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("finished TemplateUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
 
     @Override

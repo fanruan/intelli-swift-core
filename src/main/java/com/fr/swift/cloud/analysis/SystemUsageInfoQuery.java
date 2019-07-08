@@ -16,6 +16,7 @@ import com.fr.swift.source.Row;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class SystemUsageInfoQuery extends AbstractSaveQueryResult implements ICl
 
     public void calculate(String appId, String yearMonth) throws Exception {
 
-        SwiftLoggers.getLogger().info("=====  start SystemUsageInfoQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("start SystemUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
         List<DowntimeResult> downtimeResultList = new ArrayList<>();
         downtimeResultList.addAll(new DowntimeAnalyser().downtimeAnalyse(appId, yearMonth));
@@ -62,10 +63,10 @@ public class SystemUsageInfoQuery extends AbstractSaveQueryResult implements ICl
             stopTime++;
         }
         SystemUsageInfo systemUsageInfo = new SystemUsageInfo(row, appId, yearMonth, downTime, stopTime);
-        List<SystemUsageInfo> systemUsageInfoList = Arrays.asList(systemUsageInfo);
+        List<SystemUsageInfo> systemUsageInfoList = Collections.singletonList(systemUsageInfo);
         super.saveResult(systemUsageInfoList);
 
-        SwiftLoggers.getLogger().info("=====  finished SystemUsageInfoQuery Analysis  ======");
+        SwiftLoggers.getLogger().info("finished SystemUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
 
     @Override

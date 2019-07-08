@@ -75,8 +75,8 @@ public class SwiftCloudController {
         //functionUsageRateQuery,confEntityQuery,customBaseInfoQuery,pluginUsageQuery,templateUsageInfoQuery
         List<String> queryInfos = map.get("queries");
         List<String> queryList = new ArrayList<>();
-        for (String str : queryInfos) {
-            queryList.add(str);
+        for (String queryInfo : queryInfos) {
+            queryList.add(queryInfo);
         }
 
         Map<String, Object> objectMap = SwiftContext.get().getBeansByAnnotations(CloudQuery.class);
