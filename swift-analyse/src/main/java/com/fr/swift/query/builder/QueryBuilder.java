@@ -33,7 +33,7 @@ public final class QueryBuilder {
         QueryInfoBean bean = QueryBeanFactory.create(queryString);
         switch (bean.getQueryType()) {
             case DETAIL:
-                return (Query<T>) DetailQueryBuilder.get().buildQuery((DetailQueryInfoBean) bean);
+                return (Query<T>) DetailQueryBuilder.of((DetailQueryInfoBean) bean).buildQuery();
             case GROUP:
                 return (Query<T>) GroupQueryBuilder.get().buildQuery((GroupQueryInfoBean) bean);
             case FUNNEL:
