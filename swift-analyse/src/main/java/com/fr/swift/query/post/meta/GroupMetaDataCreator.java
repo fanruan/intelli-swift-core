@@ -6,11 +6,13 @@ import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.CalculatedFieldBean;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelEventBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelPathsAggregationBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
 import com.fr.swift.query.info.bean.post.CalculatedFieldQueryInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
@@ -25,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author lyon
  * @date 2018/11/28
  */
@@ -45,14 +46,44 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
         metaDataColumns.addAll(metricColumns);
         List<PostQueryInfoBean> postQueryInfoBeans = queryBean.getPostAggregations();
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
-            if (postQueryInfoBean.getType() != PostQueryType.CAL_FIELD) {
-                continue;
+            PostQueryType type = postQueryInfoBean.getType();
+            switch (type) {
+                case FUNNEL_TIME_AVG:
+                case FUNNEL_CONVERSION_RATE:
+                case FUNNEL_TIME_MEDIAN:
+                    FunnelPathsAggregationBean funnelMetric = getFunnelMetric(metricBeans);
+                    if (null == funnelMetric) {
+                        continue;
+                    }
+                    List<FunnelEventBean> events = funnelMetric.getEvents();
+                    for (int i = 0; i < events.size() - 1; i++) {
+                        FunnelEventBean event1 = events.get(i);
+                        FunnelEventBean event2 = events.get(i + 1);
+                        metaDataColumns.add(new MetaDataColumnBean(event1.getName() + "-" + event2.getName(), null, Types.DOUBLE, null));
+                    }
+                    break;
+                case CAL_FIELD:
+                    continue;
+                default:
+                    CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
+                    String name = calculatedFieldBean.getName();
+                    metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
             }
-            CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
-            String name = calculatedFieldBean.getName();
-            metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
         }
         return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
+    }
+
+    private FunnelPathsAggregationBean getFunnelMetric(List<MetricBean> metricBeans) {
+        for (MetricBean metricBean : metricBeans) {
+            AggregatorType aggregatorType = metricBean.getType();
+            switch (aggregatorType) {
+                case FUNNEL:
+                case FUNNEL_PATHS:
+                    return (FunnelPathsAggregationBean) metricBean;
+                default:
+            }
+        }
+        return null;
     }
 
     private List<SwiftMetaDataColumn> createMetricBeanColumn(SwiftMetaData meta, List<MetricBean> metricBeans) throws SwiftMetaDataException {
