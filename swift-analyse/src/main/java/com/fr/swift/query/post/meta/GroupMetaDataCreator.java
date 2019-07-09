@@ -48,6 +48,8 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
             PostQueryType type = postQueryInfoBean.getType();
             switch (type) {
+                case CAL_FIELD:
+                    break;
                 case FUNNEL_TIME_AVG:
                 case FUNNEL_CONVERSION_RATE:
                 case FUNNEL_TIME_MEDIAN:
@@ -62,8 +64,6 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                         metaDataColumns.add(new MetaDataColumnBean(event1.getName() + "-" + event2.getName(), null, Types.DOUBLE, null));
                     }
                     break;
-                case CAL_FIELD:
-                    continue;
                 default:
                     CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
                     String name = calculatedFieldBean.getName();
