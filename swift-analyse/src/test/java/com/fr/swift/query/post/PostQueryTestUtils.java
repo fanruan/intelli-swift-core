@@ -116,6 +116,11 @@ public class PostQueryTestUtils {
             public String getId() {
                 return null;
             }
+
+            @Override
+            public SwiftMetaData clone() {
+                return this;
+            }
         };
     }
 

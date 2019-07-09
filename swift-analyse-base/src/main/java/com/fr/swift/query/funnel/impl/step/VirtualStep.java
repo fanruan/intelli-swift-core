@@ -1,8 +1,10 @@
 package com.fr.swift.query.funnel.impl.step;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.funnel.IStep;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class created on 2018/12/13
@@ -15,16 +17,18 @@ public class VirtualStep implements IStep {
     private boolean[][] steps;
     private boolean isHeadRepeated;
     private boolean hasRepeatedEvents;
+    private List<ImmutableBitMap> filters;
 
-    public VirtualStep(boolean[][] steps, boolean isHeadRepeated, boolean hasRepeatedEvents) {
+    public VirtualStep(boolean[][] steps, boolean isHeadRepeated, boolean hasRepeatedEvents, List<ImmutableBitMap> events) {
         this.steps = steps;
         this.isHeadRepeated = isHeadRepeated;
         this.hasRepeatedEvents = hasRepeatedEvents;
+        this.filters = events;
     }
 
     @Override
-    public boolean isEqual(int eventIndex, int event) {
-        return steps[eventIndex][event];
+    public boolean isEqual(int eventIndex, int event, int row) {
+        return steps[eventIndex][event] && matches(eventIndex, row);
     }
 
     @Override
@@ -57,11 +61,16 @@ public class VirtualStep implements IStep {
                 }
             }
         }
-        return new NoRepeatedStep(eventMap, steps);
+        return new NoRepeatedStep(eventMap, steps, filters);
     }
 
     @Override
     public int getEventIndex(int event) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean matches(int eventIndex, int row) {
+        return filters.get(eventIndex).contains(row);
     }
 }
