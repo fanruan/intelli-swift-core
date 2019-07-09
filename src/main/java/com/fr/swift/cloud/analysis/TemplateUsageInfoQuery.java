@@ -1,7 +1,9 @@
 package com.fr.swift.cloud.analysis;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cloud.result.table.TemplateUsageInfo;
 import com.fr.swift.cloud.util.RelationQueryUtils;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
@@ -20,10 +22,12 @@ import com.fr.swift.source.Row;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 /**
  * This class created on 2019/6/12
@@ -31,9 +35,16 @@ import java.util.Set;
  * @author Lucifer
  * @description
  */
-public class TemplateUsageInfoQuery {
 
-    public TemplateUsageInfo query(String appId, String yearMonth) throws Exception {
+@SwiftBean
+@CloudQuery(name = "templateUsageInfoQuery")
+public class TemplateUsageInfoQuery extends AbstractSaveQueryResult implements ICloudQuery {
+
+    private final static String TABLE_NAME = TemplateUsageInfo.class.getSimpleName();
+
+    public void calculate(String appId, String yearMonth) throws Exception {
+
+        SwiftLoggers.getLogger().info("start TemplateUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.asList(
@@ -82,8 +93,16 @@ public class TemplateUsageInfoQuery {
             timeList.add(visitDayResult.getNextRow().getValue(0));
         }
         int visitDay = calcDays(timeList);
+        TemplateUsageInfo templateUsageInfo = new TemplateUsageInfo(row, visitDay, yearMonth, appId);
+        List<TemplateUsageInfo> templateUsageInfoList = Collections.singletonList(templateUsageInfo);
+        super.saveResult(templateUsageInfoList);
 
-        return new TemplateUsageInfo(row, visitDay, yearMonth, appId);
+        SwiftLoggers.getLogger().info("finished TemplateUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
+    }
+
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
     }
 
     private int calcDays(List<Long> timeList) {

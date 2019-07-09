@@ -1,6 +1,8 @@
 package com.fr.swift.cloud.analysis;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cloud.result.table.CustomerBaseInfo;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.DimensionBean;
@@ -17,6 +19,7 @@ import com.fr.swift.source.Row;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,9 +28,16 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class CustomBaseInfoQuery {
+@SwiftBean
+@CloudQuery(name = "customBaseInfoQuery")
+public class CustomBaseInfoQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public CustomerBaseInfo query(String appId, String yearMonth) throws Exception {
+    private final static String TABLE_NAME = CustomerBaseInfo.class.getSimpleName();
+
+    public void calculate(String appId, String yearMonth) throws Exception {
+
+        SwiftLoggers.getLogger().info("start CustomBaseInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
+
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.asList(
                         new InFilterBean("appId", appId),
@@ -65,7 +75,16 @@ public class CustomBaseInfoQuery {
             functionPossessRowList.add(functionPossessResultSet.getNextRow());
         }
         CustomerBaseInfo customerBaseInfo = new CustomerBaseInfo(rowList, functionPossessRowList, appId, yearMonth);
+        List<CustomerBaseInfo> customerBaseInfoList = Collections.singletonList(customerBaseInfo);
+        super.saveResult(customerBaseInfoList);
 
-        return customerBaseInfo;
+        SwiftLoggers.getLogger().info("finished CustomBaseInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
+
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
+    }
+
+
 }

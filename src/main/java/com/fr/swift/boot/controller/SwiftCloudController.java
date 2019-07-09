@@ -2,9 +2,10 @@ package com.fr.swift.boot.controller;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.Inside;
-import com.fr.swift.cloud.bean.TreasureBean;
+import com.fr.swift.cloud.analysis.CloudQuery;
+import com.fr.swift.cloud.analysis.ICloudQuery;
 import com.fr.swift.cloud.load.CloudVersionProperty;
-import com.fr.swift.cloud.task.TreasureAnalysisTask;
+import com.fr.swift.cloud.task.TreasureAnalysisJob;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.config.ExecutorTaskService;
@@ -66,16 +67,29 @@ public class SwiftCloudController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/cloud/tpl/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/cloud/custom/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @Inside
-    public boolean reAnalyseTpl(@RequestBody Map<String, String> map) throws Exception {
-        String appId = map.get("appId");
-        String clientId = map.get("clientId");
-        String yearMonth = map.get("yearMonth");
-        String customerId = map.get("customerId");
-        TreasureBean treasureBean = new TreasureBean("__fine_intelli_treasure_upload__", null, null, clientId, appId, yearMonth, "2.0", System.currentTimeMillis(), "TreasureAnalyze", customerId);
-        TreasureAnalysisTask treasureAnalysisTask = new TreasureAnalysisTask(treasureBean);
-        treasureAnalysisTask.getJob().call();
+    public boolean reAnalyseTpl(@RequestBody Map<String, List<String>> map) throws Exception {
+        List<String> appIds = map.get("appId");
+        List<String> yearMonths = map.get("yearMonth");
+        //functionUsageRateQuery,confEntityQuery,customBaseInfoQuery,pluginUsageQuery,templateUsageInfoQuery
+        List<String> queryInfos = map.get("queries");
+        List<String> queryList = new ArrayList<>();
+        for (String queryInfo : queryInfos) {
+            queryList.add(queryInfo);
+        }
+
+        Map<String, Object> objectMap = SwiftContext.get().getBeansByAnnotations(CloudQuery.class);
+        List<ICloudQuery> queries = TreasureAnalysisJob.getQueries(objectMap, queryList);
+
+        for (int i = 0; i < appIds.size(); i++) {
+            String appId = appIds.get(i);
+            String yearMonth = yearMonths.get(i);
+            for (ICloudQuery query : queries) {
+                TreasureAnalysisJob.deleteIfExisting(appId, yearMonth, query.getTableName());
+                query.calculate(appId, yearMonth);
+            }
+        }
         return true;
     }
 

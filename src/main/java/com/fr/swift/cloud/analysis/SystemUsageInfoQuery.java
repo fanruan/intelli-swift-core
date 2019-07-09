@@ -1,7 +1,10 @@
 package com.fr.swift.cloud.analysis;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.cloud.analysis.downtime.DowntimeAnalyser;
 import com.fr.swift.cloud.result.table.SystemUsageInfo;
 import com.fr.swift.cloud.result.table.downtime.DowntimeResult;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
@@ -11,7 +14,9 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,9 +25,19 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class SystemUsageInfoQuery {
+@SwiftBean
+@CloudQuery(name = "systemUsageInfoQuery")
+public class SystemUsageInfoQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    public SystemUsageInfo query(String appId, String yearMonth, List<DowntimeResult> downtimeResultList) throws Exception {
+    private final static String TABLE_NAME = SystemUsageInfo.class.getSimpleName();
+
+    public void calculate(String appId, String yearMonth) throws Exception {
+
+        SwiftLoggers.getLogger().info("start SystemUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
+
+        List<DowntimeResult> downtimeResultList = new ArrayList<>();
+        downtimeResultList.addAll(new DowntimeAnalyser().downtimeAnalyse(appId, yearMonth));
+
         FilterInfoBean filter = new AndFilterBean(
                 Arrays.<FilterInfoBean>asList(
                         new InFilterBean("appId", appId),
@@ -47,6 +62,17 @@ public class SystemUsageInfoQuery {
             }
             stopTime++;
         }
-        return new SystemUsageInfo(row, appId, yearMonth, downTime, stopTime);
+        SystemUsageInfo systemUsageInfo = new SystemUsageInfo(row, appId, yearMonth, downTime, stopTime);
+        List<SystemUsageInfo> systemUsageInfoList = Collections.singletonList(systemUsageInfo);
+        super.saveResult(systemUsageInfoList);
+
+        SwiftLoggers.getLogger().info("finished SystemUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
+
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
+    }
+
+
 }
