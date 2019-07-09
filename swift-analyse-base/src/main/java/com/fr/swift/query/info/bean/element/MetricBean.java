@@ -5,18 +5,35 @@ import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 
 /**
- * Created by Lyon on 2018/6/2.
+ *
+ * @author Lyon
+ * @date 2018/6/2
  */
 public class MetricBean implements AggregationBean {
 
+    /**
+     * 聚合类型
+     */
     @JsonProperty
     private AggregatorType type;
+    /**
+     * 原始表中的字段名
+     */
     @JsonProperty
-    private String column;  // 原始表中的字段名
+    private String column;
+    /**
+     * 客户端定义的转译名
+     */
     @JsonProperty
-    private String alias;    // 客户端定义的转移名
+    private String alias;
+    /**
+     * 指标过滤
+     */
     @JsonProperty
     private FilterInfoBean filter;
+    /**
+     * 聚合参数
+     */
     @JsonProperty
     private Object[] params;
 

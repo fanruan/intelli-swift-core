@@ -1,6 +1,7 @@
 package com.fr.swift.query.info.bean.element.aggregation.funnel;
 
 import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class FunnelEventBean {
     private String name;
     @JsonProperty("steps")
     private List<String> steps;
+    @JsonProperty("filter")
+    private FilterInfoBean filter;
 
     public String getName() {
         return name;
@@ -30,6 +33,14 @@ public class FunnelEventBean {
         this.steps = steps;
     }
 
+    public FilterInfoBean getFilter() {
+        return filter;
+    }
+
+    public void setFilter(FilterInfoBean filter) {
+        this.filter = filter;
+    }
+
     @Override
     public String toString() {
         return "FunnelEventBean{" +
@@ -40,16 +51,25 @@ public class FunnelEventBean {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FunnelEventBean)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FunnelEventBean)) {
+            return false;
+        }
 
         FunnelEventBean that = (FunnelEventBean) o;
 
-        return steps != null ? steps.equals(that.steps) : that.steps == null;
+        if (steps != null ? !steps.equals(that.steps) : that.steps != null) {
+            return false;
+        }
+        return filter != null ? filter.equals(that.filter) : that.filter == null;
     }
 
     @Override
     public int hashCode() {
-        return steps != null ? steps.hashCode() : 0;
+        int result = steps != null ? steps.hashCode() : 0;
+        result = 31 * result + (filter != null ? filter.hashCode() : 0);
+        return result;
     }
 }
