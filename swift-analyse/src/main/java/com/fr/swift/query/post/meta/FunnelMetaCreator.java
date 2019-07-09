@@ -13,8 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by lyon on 2018/12/28.
+ *
+ * @author lyon
+ * @date 2018/12/28
  */
+@Deprecated
 public class FunnelMetaCreator implements MetaDataCreator<FunnelQueryBean> {
     @Override
     public SwiftMetaData create(FunnelQueryBean queryBean) throws SwiftMetaDataException {
