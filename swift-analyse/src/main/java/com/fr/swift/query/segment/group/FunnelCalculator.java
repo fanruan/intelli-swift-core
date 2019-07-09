@@ -1,26 +1,29 @@
 package com.fr.swift.query.segment.group;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.filter.FilterBuilder;
+import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.funnel.IHead;
 import com.fr.swift.query.funnel.IStep;
-import com.fr.swift.query.funnel.ITimeWindowFilter;
-import com.fr.swift.query.funnel.impl.GroupTWFilter;
-import com.fr.swift.query.funnel.impl.TimeWindowFilter;
+import com.fr.swift.query.funnel.TimeWindowFilter;
 import com.fr.swift.query.funnel.impl.step.VirtualStep;
+import com.fr.swift.query.funnel.impl.window.NoRepeatTimeWindowFilter;
+import com.fr.swift.query.funnel.impl.window.RepeatTimeWindowFilter;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAssociationBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelEventBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.TimeFilterInfo;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
+import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.parser.FilterInfoParser;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.result.FunnelResultSet;
@@ -28,7 +31,6 @@ import com.fr.swift.result.funnel.FunnelQueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.iterator.RowTraversal;
@@ -50,32 +52,35 @@ public class FunnelCalculator {
 
     private FunnelAggregationBean bean;
     private Segment segment;
-    private DictionaryEncodedColumn eventDict;
+    private Map<String, Column> columnMap;
 
     public FunnelCalculator(Segment segment, FunnelAggregationBean bean) {
         this.bean = bean;
         this.segment = segment;
+        this.columnMap = new HashMap<String, Column>();
         Column event = segment.getColumn(new ColumnKey(bean.getColumn()));
-        this.eventDict = event.getDictionaryEncodedColumn();
+        this.columnMap.put("event", event);
+        this.columnMap.put("id", segment.getColumn(new ColumnKey(bean.getColumns().getUserId())));
+        this.columnMap.put("timestamp", segment.getColumn(new ColumnKey(bean.getColumns().getTimestamp())));
+        PostGroupBean postGroup = bean.getPostGroup();
+        if (null != postGroup) {
+            this.columnMap.put("postGroup", segment.getColumn(new ColumnKey(postGroup.getColumn())));
+        }
     }
 
     public FunnelQueryResultSet getQueryResult() throws SwiftMetaDataException {
-        IStep step = createStep(bean.getEvents());
-        ITimeWindowFilter filter = createTimeWindowFilter(step, bean, segment);
-        ParameterColumnsBean params = bean.getColumns();
-        Column event = segment.getColumn(new ColumnKey(bean.getColumn()));
+        IStep step = createStep(bean.getEvents(), segment);
+        TimeWindowFilter filter = createTimeWindowFilter(step, bean, segment);
         RowTraversal rowTraversal =
                 FilterBuilder.buildDetailFilter(segment, FilterInfoParser.parse(new SourceKey(segment.getMetaData().getTableName()),
                         bean.getFilter())).createFilterIndex();
         SwiftLoggers.getLogger().debug("seg rows: {}", rowTraversal.getCardinality());
-        DetailColumn combineColumn = segment.getColumn(new ColumnKey(params.getTimestamp())).getDetailColumn();
-        Column idColumn = segment.getColumn(new ColumnKey(params.getUserId()));
-        Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(idColumn, rowTraversal, true);
+        Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(columnMap.get("id"), rowTraversal, true);
         MergeIterator mergeIterator = new MergeIterator(filter, step, iterator,
-                idColumn.getDictionaryEncodedColumn(),
-                combineColumn,
-                event.getDictionaryEncodedColumn(),
-                createAssociatedColumn(), createPostGroupColumn(), getPostGroupStep());
+                columnMap.get("id").getDictionaryEncodedColumn(),
+                columnMap.get("timestamp").getDetailColumn(),
+                columnMap.get("event").getDictionaryEncodedColumn(),
+                createAssociatedColumn(), columnMap.get("postGroup"), getPostGroupStep());
 
         Map<FunnelGroupKey, FunnelAggValue> results = new HashMap<FunnelGroupKey, FunnelAggValue>();
 
@@ -86,15 +91,6 @@ public class FunnelCalculator {
         }
         SwiftLoggers.getLogger().debug("segment result: {}", results.toString());
         return new FunnelQueryResultSet(new FunnelResultSet(results));
-    }
-
-    private Column createPostGroupColumn() {
-        PostGroupBean postGroup = bean.getPostGroup();
-        if (null == postGroup) {
-            return null;
-        }
-
-        return segment.getColumn(new ColumnKey(postGroup.getColumn()));
     }
 
     private int getPostGroupStep() {
@@ -186,7 +182,7 @@ public class FunnelCalculator {
     }
 
 
-    private ITimeWindowFilter createTimeWindowFilter(IStep step, FunnelAggregationBean bean, Segment segment) {
+    private TimeWindowFilter createTimeWindowFilter(IStep step, FunnelAggregationBean bean, Segment segment) {
         List<FunnelAssociationBean> association = bean.getAssociations();
         boolean[] associatedProperty = new boolean[bean.getEvents().size()];//getFlags(bean, association == null ? new ArrayList<Integer>() : association.getEvents());
         DictionaryEncodedColumn associatedPropertyColumn = null;
@@ -196,14 +192,14 @@ public class FunnelCalculator {
         TimeFilterInfo dayFilterBean = bean.getTimeFilter();
         int firstAssociatedIndex = -1;//(association == null || association.getEvents().size() == 0) ? -1 : association.getEvents().get(0);
         boolean repeated = step.hasRepeatedEvents();
+        FilterInfo filterInfo = FilterInfoParser.parse(new SourceKey(segment.getMetaData().getId()), bean.getTimeGroup().filter());
+        MatchFilter matchFilter = FilterBuilder.buildMatchFilter(filterInfo);
         if (!repeated) {
             step = step.toNoRepeatedStep();
-            FilterInfo filterInfo = FilterInfoParser.parse(new SourceKey(segment.getMetaData().getId()), bean.getTimeGroup().filter());
-            MatchFilter matchFilter = FilterBuilder.buildMatchFilter(filterInfo);
-            return new GroupTWFilter(bean.getTimeWindow(), bean.getTimeGroup(), matchFilter, dayFilterBean,
+            return new NoRepeatTimeWindowFilter(bean.getTimeWindow(), bean.getTimeGroup(), matchFilter, dayFilterBean,
                     step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
         }
-        return new TimeWindowFilter(bean.getTimeWindow(), dayFilterBean,
+        return new RepeatTimeWindowFilter(bean.getTimeWindow(), bean.getTimeGroup(), matchFilter, dayFilterBean,
                 step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
     }
 
@@ -215,25 +211,34 @@ public class FunnelCalculator {
         return flags;
     }
 
-    private IStep createStep(List<FunnelEventBean> stepNames) {
+    private IStep createStep(List<FunnelEventBean> stepNames, Segment segment) throws SwiftMetaDataException {
         Set<FunnelEventBean> names = new HashSet<FunnelEventBean>();
         names.add(stepNames.get(0));
         boolean isHeadRepeated = false;
+        DictionaryEncodedColumn eventDict = columnMap.get("event").getDictionaryEncodedColumn();
         boolean[][] steps = new boolean[stepNames.size()][eventDict.size()];
+        List<ImmutableBitMap> events = new ArrayList<ImmutableBitMap>();
         for (int i = 0; i < stepNames.size(); i++) {
             FunnelEventBean eventBean = stepNames.get(i);
             if (i > 0 && names.contains(eventBean)) {
                 isHeadRepeated = true;
             }
             List<String> eventStep = eventBean.getSteps();
-            for (int j = 0; j < eventStep.size(); j++) {
-                int index = eventDict.getIndex(eventStep.get(j));
+            for (String s : eventStep) {
+                int index = eventDict.getIndex(s);
                 steps[i][index] = true;
+            }
+            FilterInfoBean filter = eventBean.getFilter();
+            if (null != filter) {
+                DetailFilter detailFilter = FilterBuilder.buildDetailFilter(segment, FilterInfoParser.parse(new SourceKey(segment.getMetaData().getTableName()), filter));
+                events.add(detailFilter.createFilterIndex());
+            } else {
+                events.add(AllShowBitMap.of(segment.getRowCount()));
             }
         }
         names.clear();
         names.addAll(stepNames);
-        return new VirtualStep(steps, isHeadRepeated, names.size() < stepNames.size());
+        return new VirtualStep(steps, isHeadRepeated, names.size() < stepNames.size(), events);
     }
 
 }
