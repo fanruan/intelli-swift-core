@@ -1,11 +1,13 @@
 package com.fr.swift.query.aggregator;
 
 
+import java.io.Serializable;
+
 /**
  * @author Xiaolei.liu
  */
 
-public class DoubleAverageAggregatorValue implements AggregatorValue<Double> {
+public class DoubleAverageAggregatorValue implements AggregatorValue<Double>, Serializable {
 
     private static final long serialVersionUID = -1192534798672195823L;
     private int rowCount;

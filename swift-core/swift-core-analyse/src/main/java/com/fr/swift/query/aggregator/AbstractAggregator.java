@@ -5,12 +5,12 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 /**
- * Created by pony on 2018/3/27.
+ * @author pony
+ * @date 2018/3/27
  */
-public abstract class AbstractAggregator<T extends AggregatorValue> implements Aggregator<T> {
-    private static final long serialVersionUID = -4795472056172909847L;
+public abstract class AbstractAggregator<T extends AggregatorValue<?>> extends SingleColumnAggregator<T> {
 
-    protected RowTraversal getNotNullTraversal(RowTraversal traversal, Column column) {
+    protected RowTraversal getNotNullTraversal(RowTraversal traversal, Column<?> column) {
         ImmutableBitMap nullIndex = column.getBitmapIndex().getNullIndex();
         if (nullIndex != null && !nullIndex.isEmpty()) {
             traversal = traversal.toBitMap().getAndNot(nullIndex);
@@ -19,7 +19,7 @@ public abstract class AbstractAggregator<T extends AggregatorValue> implements A
     }
 
     @Override
-    public T createAggregatorValue(AggregatorValue value) {
+    public T createAggregatorValue(AggregatorValue<?> value) {
         return (T) new DoubleAmountAggregatorValue(value.calculate());
     }
 }

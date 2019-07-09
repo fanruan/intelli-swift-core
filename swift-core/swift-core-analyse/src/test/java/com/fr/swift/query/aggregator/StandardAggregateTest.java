@@ -32,7 +32,7 @@ public class StandardAggregateTest extends TestCase {
         expect(mockColumn.getDetailColumn()).andReturn(detailColumn).anyTimes();
         control.replay();
 
-        StandardAggregatorValue value = (StandardAggregatorValue) StandarDeviationAggregate.INSTANCE.aggregate(bitMap, mockColumn);
+        StandardAggregatorValue value = StandardDeviationAggregator.INSTANCE.aggregate(bitMap, mockColumn);
         assertEquals(value.calculateValue(), Math.sqrt(48.75 / 4));
     }
 
@@ -51,7 +51,7 @@ public class StandardAggregateTest extends TestCase {
         v2.setCount(3);
         v2.setVariance(2);
         s2.setVariance(v2);
-        StandarDeviationAggregate.INSTANCE.combine(s1, s2);
+        StandardDeviationAggregator.INSTANCE.combine(s1, s2);
 
         assertEquals(s1.calculateValue(), Math.sqrt(52.0 / 49));
 

@@ -7,6 +7,7 @@ import com.fr.swift.query.aggregator.Combiner;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -66,7 +67,7 @@ public class GroupNodeMergeUtils {
         return result;
     }
 
-    private static class NodeCombiner implements Combiner<SwiftNode> {
+    private static class NodeCombiner implements Combiner<SwiftNode>, Serializable {
         private static final long serialVersionUID = 4120194941494959923L;
         private int childrenDimensionIndex;
         private List<Aggregator> aggregators;

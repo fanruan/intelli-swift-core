@@ -8,10 +8,13 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+
 /**
- * Created by lyon on 2019/1/23.
+ * @author lyon
+ * @date 2019/1/23
  */
-public class TopPercentileAggregator extends AbstractAggregator<TopPercentileAggregatorValue> {
+public class TopPercentileAggregator extends AbstractAggregator<TopPercentileAggregatorValue> implements Serializable {
 
     private static final long serialVersionUID = 3239591363978300191L;
 
@@ -31,7 +34,7 @@ public class TopPercentileAggregator extends AbstractAggregator<TopPercentileAgg
     }
 
     @Override
-    public TopPercentileAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public TopPercentileAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
         final DetailColumn detailColumn = column.getDetailColumn();
         final TopPercentileAggregatorValue value = new TopPercentileAggregatorValue(percentile, numberOfSignificantValueDigits);
         traversal = getNotNullTraversal(traversal, column);
@@ -45,7 +48,7 @@ public class TopPercentileAggregator extends AbstractAggregator<TopPercentileAgg
     }
 
     @Override
-    public TopPercentileAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public TopPercentileAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         throw new UnsupportedOperationException();
     }
 
