@@ -4,16 +4,18 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+
 /**
  * @author Xiaolei.liu
  */
-public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregatorValue> {
+public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregatorValue> implements Serializable {
 
     protected static final Aggregator INSTANCE = new AverageAggregate();
     private static final long serialVersionUID = 8294759910803617178L;
 
     @Override
-    public DoubleAverageAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public DoubleAverageAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
 
         DoubleAverageAggregatorValue averageValue = new DoubleAverageAggregatorValue();
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
@@ -23,7 +25,7 @@ public class AverageAggregate extends AbstractAggregator<DoubleAverageAggregator
     }
 
     @Override
-    public DoubleAverageAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public DoubleAverageAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
 
         DoubleAverageAggregatorValue averageAggregatorValue = new DoubleAverageAggregatorValue();
         if (value.calculateValue() == null) {
