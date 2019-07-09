@@ -29,7 +29,7 @@ public class FunnelMetaCreator implements MetaDataCreator<FunnelQueryBean> {
             metaDataColumns.add(new MetaDataColumnBean(event, Types.BIGINT));
         }
 //        if (!queryBean.getPostAggregations().isEmpty()
-//                && queryBean.getPostAggregations().get(0).getType() == PostQueryType.FUNNEL_MEDIAN) {
+//                && queryBean.getPostAggregations().get(0).getType() == PostQueryType.FUNNEL_TIME_MEDIAN) {
 //            metaDataColumns.add(new MetaDataColumnBean("median", Types.DOUBLE));
 //        }
         return new SwiftMetaDataBean(queryBean.getTableName(), metaDataColumns);

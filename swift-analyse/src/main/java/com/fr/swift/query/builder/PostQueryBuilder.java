@@ -11,7 +11,9 @@ import com.fr.swift.query.info.group.post.TreeAggregationQueryInfo;
 import com.fr.swift.query.info.group.post.TreeFilterQueryInfo;
 import com.fr.swift.query.info.group.post.TreeSortQueryInfo;
 import com.fr.swift.query.post.FieldCalQuery;
-import com.fr.swift.query.post.FunnelPostQuery;
+import com.fr.swift.query.post.FunnelConversionRatePostQuery;
+import com.fr.swift.query.post.FunnelTimeAvgPostQuery;
+import com.fr.swift.query.post.FunnelTimeMedianPostQuery;
 import com.fr.swift.query.post.HavingFilterQuery;
 import com.fr.swift.query.post.RowSortQuery;
 import com.fr.swift.query.post.TreeAggregationQuery;
@@ -47,8 +49,12 @@ class PostQueryBuilder {
                     return (Query<Q>) new TreeSortQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((TreeSortQueryInfo) postQueryInfo).getSortList());
                 case ROW_SORT:
                     return (Query<Q>) new RowSortQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((RowSortQueryInfo) postQueryInfo).getSortList());
-                case FUNNEL_MEDIAN:
-                    return (Query<Q>) new FunnelPostQuery((Query<FunnelQueryResultSet>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getQueryBean());
+                case FUNNEL_TIME_MEDIAN:
+                    return (Query<Q>) new FunnelTimeMedianPostQuery((Query<FunnelQueryResultSet>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
+                case FUNNEL_CONVERSION_RATE:
+                    return (Query<Q>) new FunnelConversionRatePostQuery((Query<FunnelQueryResultSet>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
+                case FUNNEL_TIME_AVG:
+                    return (Query<Q>) new FunnelTimeAvgPostQuery((Query<FunnelQueryResultSet>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
                 default:
             }
         }
