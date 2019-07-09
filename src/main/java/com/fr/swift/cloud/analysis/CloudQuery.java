@@ -15,5 +15,10 @@ import java.lang.annotation.Target;
 public @interface CloudQuery {
     String name();
 
+    /**
+     * query需要提前删除和分析的表
+     *
+     * @return
+     */
     String[] tables() default {};
 }
