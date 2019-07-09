@@ -216,4 +216,18 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
         return String.format("{%s, %s, %s}", swiftSchema, tableName, fields);
     }
 
+    @Override
+    public SwiftMetaData clone() {
+        SwiftMetaDataBean bean = new SwiftMetaDataBean();
+        bean.id = this.id;
+        bean.remark = this.remark;
+        bean.schemaName = this.schemaName;
+        bean.swiftSchema = this.swiftSchema;
+        bean.tableName = this.tableName;
+        bean.fields = new ArrayList<SwiftMetaDataColumn>();
+        for (SwiftMetaDataColumn field : this.fields) {
+            bean.fields.add(new MetaDataColumnBean(field.getName(), field.getRemark(), field.getType(), field.getPrecision(), field.getScale(), field.getColumnId()));
+        }
+        return bean;
+    }
 }

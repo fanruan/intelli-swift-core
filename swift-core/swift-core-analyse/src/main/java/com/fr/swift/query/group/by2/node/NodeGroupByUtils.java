@@ -1,10 +1,10 @@
 package com.fr.swift.query.group.by2.node;
 
-import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.AggregatorValueCombiner;
 import com.fr.swift.query.group.info.GroupByInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.Collections;
@@ -40,10 +40,11 @@ public class NodeGroupByUtils {
         AggregatorValueCombiner values = RowMapper.aggregatorValueCombiner(traversal, metricInfo.getTargetLength(),
                 metricInfo.getMetrics(), metricInfo.getAggregators());
         if (values.isNeedCombine()) {
-            Iterator<AggregatorValue[]> combineIterator = values.getCombineIterator();
-            GroupNode child = new GroupNode(root.getDepth() + 1, null);
-            child.setAggregatorValue(combineIterator.next());
-            root.addChild(child);
+            Iterator<SwiftNode> combineIterator = values.getSwiftNodeIterator(root.getDepth());
+            while (combineIterator.hasNext()) {
+                root.addChild(combineIterator.next());
+            }
+
         } else {
             root.setAggregatorValue(values.getAggregatorValue());
         }

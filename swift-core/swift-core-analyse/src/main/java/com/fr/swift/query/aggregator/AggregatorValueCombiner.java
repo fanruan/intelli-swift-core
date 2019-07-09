@@ -1,5 +1,7 @@
 package com.fr.swift.query.aggregator;
 
+import com.fr.swift.result.SwiftNode;
+
 import java.util.Iterator;
 
 /**
@@ -29,7 +31,7 @@ public interface AggregatorValueCombiner {
      *
      * @return
      */
-    Iterator<AggregatorValue[]> getCombineIterator();
+    Iterator<SwiftNode> getSwiftNodeIterator(int depth);
 
     /**
      * 不需要合并直接取出来就可以了

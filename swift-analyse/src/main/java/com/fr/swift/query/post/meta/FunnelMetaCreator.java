@@ -3,7 +3,7 @@ package com.fr.swift.query.post.meta;
 import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.PostGroupBean;
+import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -28,10 +28,10 @@ public class FunnelMetaCreator implements MetaDataCreator<FunnelQueryBean> {
         for (String event : funnelEvents) {
             metaDataColumns.add(new MetaDataColumnBean(event, Types.BIGINT));
         }
-        if (!queryBean.getPostAggregations().isEmpty()
-                && queryBean.getPostAggregations().get(0).getType() == PostQueryType.FUNNEL_MEDIAN) {
-            metaDataColumns.add(new MetaDataColumnBean("median", Types.DOUBLE));
-        }
+//        if (!queryBean.getPostAggregations().isEmpty()
+//                && queryBean.getPostAggregations().get(0).getType() == PostQueryType.FUNNEL_MEDIAN) {
+//            metaDataColumns.add(new MetaDataColumnBean("median", Types.DOUBLE));
+//        }
         return new SwiftMetaDataBean(queryBean.getTableName(), metaDataColumns);
     }
 }

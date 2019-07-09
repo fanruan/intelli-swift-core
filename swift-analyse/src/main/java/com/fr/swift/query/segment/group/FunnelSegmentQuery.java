@@ -8,6 +8,7 @@ import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelEventBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.DayFilterInfo;
 import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.TimeGroup;
+import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.FunnelResultSet;
@@ -38,6 +39,7 @@ public class FunnelSegmentQuery implements Query<QueryResultSet<FunnelResultSet>
         FunnelEventBean first = new FunnelEventBean();
         first.setName("login");
         first.setSteps(Collections.singletonList("login"));
+        first.setFilter(new InFilterBean("city", "深圳"));
         FunnelEventBean second = new FunnelEventBean();
         second.setName("browseGoods");
         second.setSteps(Collections.singletonList("searchGoods"));

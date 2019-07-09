@@ -1,8 +1,10 @@
 package com.fr.swift.query.funnel.impl.step;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.funnel.IStep;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * This class created on 2018/12/13
@@ -23,7 +25,7 @@ public class Step implements IStep {
     }
 
     @Override
-    public boolean isEqual(int eventIndex, int event) {
+    public boolean isEqual(int eventIndex, int event, int row) {
         return steps[eventIndex] == event;
     }
 
@@ -53,11 +55,16 @@ public class Step implements IStep {
             flags[i] = flag;
             eventMap[steps[i]] = i;
         }
-        return new NoRepeatedStep(eventMap, flags);
+        return new NoRepeatedStep(eventMap, flags, Collections.<ImmutableBitMap>emptyList());
     }
 
     @Override
     public int getEventIndex(int event) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean matches(int eventIndex, int row) {
+        return true;
     }
 }

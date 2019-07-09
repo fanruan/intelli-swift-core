@@ -13,7 +13,7 @@ public interface IStep {
      * @param event      事件全局字典序号
      * @return
      */
-    boolean isEqual(int eventIndex, int event);
+    boolean isEqual(int eventIndex, int event, int row);
 
     int size();
 
@@ -24,4 +24,6 @@ public interface IStep {
     IStep toNoRepeatedStep();
 
     int getEventIndex(int event);
+
+    boolean matches(int eventIndex, int row);
 }
