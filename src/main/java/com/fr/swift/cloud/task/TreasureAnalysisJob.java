@@ -4,34 +4,22 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.cloud.CloudProperty;
 import com.fr.swift.cloud.analysis.CloudQuery;
 import com.fr.swift.cloud.analysis.ICloudQuery;
-import com.fr.swift.cloud.analysis.template.TemplateAnalysisUtils;
 import com.fr.swift.cloud.bean.TreasureAnalysisBean;
 import com.fr.swift.cloud.bean.TreasureBean;
 import com.fr.swift.cloud.kafka.MessageProducer;
 import com.fr.swift.cloud.result.ArchiveDBManager;
-import com.fr.swift.cloud.result.table.ConfEntity;
-import com.fr.swift.cloud.result.table.CustomerBaseInfo;
 import com.fr.swift.cloud.result.table.CustomerInfo;
-import com.fr.swift.cloud.result.table.FunctionUsageRate;
-import com.fr.swift.cloud.result.table.PluginUsage;
-import com.fr.swift.cloud.result.table.SystemUsageInfo;
-import com.fr.swift.cloud.result.table.TemplateUsageInfo;
-import com.fr.swift.cloud.result.table.downtime.DowntimeExecutionResult;
-import com.fr.swift.cloud.result.table.downtime.DowntimeResult;
-import com.fr.swift.cloud.result.table.template.ExecutionMetric;
-import com.fr.swift.cloud.result.table.template.LatencyTopPercentileStatistic;
-import com.fr.swift.cloud.result.table.template.TemplateAnalysisResult;
-import com.fr.swift.cloud.result.table.template.TemplateProperty;
-import com.fr.swift.cloud.result.table.template.TemplatePropertyRatio;
 import com.fr.swift.cloud.util.CloudLogUtils;
 import com.fr.swift.cloud.util.TimeUtils;
 import com.fr.swift.executor.task.job.BaseJob;
+import com.fr.swift.log.SwiftLoggers;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +29,6 @@ import java.util.Map;
  * @author Lucifer
  * @description
  */
-
 public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
 
     private TreasureBean treasureBean;
@@ -66,26 +53,15 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
     public Boolean call() throws Exception {
         String appId = treasureBean.getClientAppId();
         String yearMonth = treasureBean.getYearMonth();
-
         CloudLogUtils.logStartJob(treasureBean.getClientId(), appId, yearMonth, treasureBean.getVersion(), "analysis");
 
-        // 为了避免重复，先清除数据
-        try {
-            for (String table : tables) {
-                deleteIfExisting(appId, yearMonth, table);
-            }
-        } catch (Exception ignored) {
-        }
-
-        TemplateAnalysisUtils.tplAnalysis(appId, yearMonth);
         saveCustomerInfo(treasureBean.getClientId(), appId, yearMonth, treasureBean.getCustomerId(), treasureBean.getType());
-
         //对所有的queries查询 计算分析 写入数据库
-        List<ICloudQuery> queries = getQueries(objectMap, queryList);
-        for (ICloudQuery query : queries) {
-            query.calculate(appId, yearMonth);
+        Map<ICloudQuery, String[]> queryMap = getQueries(objectMap, queryList);
+        for (Map.Entry<ICloudQuery, String[]> queryEntry : queryMap.entrySet()) {
+            deleteIfExisting(appId, yearMonth, queryEntry.getValue());
+            queryEntry.getKey().queryAndSave(appId, yearMonth);
         }
-
         CloudLogUtils.logStartJob(treasureBean.getClientId(), treasureBean.getClientAppId(), treasureBean.getYearMonth(), treasureBean.getVersion(), "send message");
         TreasureAnalysisBean treasureAnalysisBean = new TreasureAnalysisBean(treasureBean.getClientId(), treasureBean.getClientAppId()
                 , treasureBean.getYearMonth(), treasureBean.getVersion(), treasureBean.getType(), treasureBean.getCustomerId());
@@ -98,28 +74,30 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
         return treasureBean;
     }
 
-    public static List<ICloudQuery> getQueries(Map<String, Object> objectMap, List<String> queryList) {
-        List<ICloudQuery> queries = new ArrayList<>();
+    public static Map<ICloudQuery, String[]> getQueries(Map<String, Object> objectMap, List<String> queryList) {
+        Map<ICloudQuery, String[]> queryMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
             CloudQuery cloudQuery = entry.getValue().getClass().getAnnotation(CloudQuery.class);
             if (queryList.contains(cloudQuery.name())) {
-                queries.add((ICloudQuery) entry.getValue());
+                queryMap.put((ICloudQuery) entry.getValue(), cloudQuery.tables());
             }
         }
-        return queries;
+        return queryMap;
     }
 
-    public static void deleteIfExisting(String appId, String yearMonth, String tableName) throws Exception {
+    public static void deleteIfExisting(String appId, String yearMonth, String... tableNames) throws Exception {
         Date date = TimeUtils.yearMonth2Date(yearMonth);
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         try {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createQuery(deleteSql(tableName));
-            query.setParameter("appId", appId);
-            query.setParameter("yearMonth", date);
-            query.executeUpdate();
+            for (String tableName : tableNames) {
+                SwiftLoggers.getLogger().info("Delete table {} with appId: {}, yearMonth: {}!", tableName, appId, yearMonth);
+                Query query = session.createSQLQuery(deleteSql(tableName, appId, new java.sql.Date(date.getTime())));
+                query.executeUpdate();
+            }
             transaction.commit();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("Delete table error with appId: {}, yearMonth: {}!", appId, yearMonth, e);
         }
         session.close();
     }
@@ -156,23 +134,7 @@ public class TreasureAnalysisJob extends BaseJob<Boolean, TreasureBean> {
         return "select 1 from " + tableName + " where clientId = :clientId and appId = :appId";
     }
 
-    private static String[] tables = new String[]{
-            ExecutionMetric.class.getSimpleName(),
-            LatencyTopPercentileStatistic.class.getSimpleName(),
-            TemplateAnalysisResult.class.getSimpleName(),
-            TemplateProperty.class.getSimpleName(),
-            TemplatePropertyRatio.class.getSimpleName(),
-            DowntimeResult.class.getSimpleName(),
-            DowntimeExecutionResult.class.getSimpleName(),
-            ConfEntity.class.getSimpleName(),
-            CustomerBaseInfo.class.getSimpleName(),
-            FunctionUsageRate.class.getSimpleName(),
-            PluginUsage.class.getSimpleName(),
-            SystemUsageInfo.class.getSimpleName(),
-            TemplateUsageInfo.class.getSimpleName()
-    };
-
-    private static String deleteSql(String tableName) {
-        return "delete from " + tableName + " where appId = :appId and yearMonth = :yearMonth";
+    private static String deleteSql(String tableName, String appId, Date yearMonth) {
+        return "delete from " + tableName + " where appId = '" + appId + "' and yearMonth = '" + yearMonth + "'";
     }
 }

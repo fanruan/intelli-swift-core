@@ -24,12 +24,10 @@ import java.util.Map;
  * @description
  */
 @SwiftBean
-@CloudQuery(name = "confEntityQuery")
+@CloudQuery(name = "confEntityQuery", tables = {"conf_entity"})
 public class ConfEntityQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    private final static String TABLE_NAME = ConfEntity.class.getSimpleName();
-
-    public void calculate(String appId, String yearMonth) throws Exception {
+    public void queryAndSave(String appId, String yearMonth) throws Exception {
         SwiftLoggers.getLogger().info("start ConfEntityQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
         FilterInfoBean filter = new AndFilterBean(
@@ -56,10 +54,5 @@ public class ConfEntityQuery extends AbstractSaveQueryResult implements ICloudQu
 
         SwiftLoggers.getLogger().info("finished ConfEntityQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
-    }
-
-    @Override
-    public String getTableName() {
-        return TABLE_NAME;
     }
 }

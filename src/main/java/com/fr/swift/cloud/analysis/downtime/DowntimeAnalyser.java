@@ -257,7 +257,8 @@ public class DowntimeAnalyser {
      * @description 宕机时间点前模版访问情况
      */
     private List<DowntimeExecutionResult> analyseExecutionInfo(DowntimeResult downtimeResult, FilterInfoBean baseFilter, List<DowntimeElement> downtimeElementList) throws Exception {
-        if (downtimeElementList.size() < 2) {
+        if ((downtimeResult.getPredictDownType() == DowntimeResult.SignalName.TERM.name()
+                || (downtimeElementList.size() < 2))) {
             return Collections.EMPTY_LIST;
         }
         long startTime = downtimeElementList.get(0).recordTime();

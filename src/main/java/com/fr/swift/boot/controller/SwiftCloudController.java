@@ -80,14 +80,14 @@ public class SwiftCloudController {
         }
 
         Map<String, Object> objectMap = SwiftContext.get().getBeansByAnnotations(CloudQuery.class);
-        List<ICloudQuery> queries = TreasureAnalysisJob.getQueries(objectMap, queryList);
+        Map<ICloudQuery, String[]> queryMap = TreasureAnalysisJob.getQueries(objectMap, queryList);
 
         for (int i = 0; i < appIds.size(); i++) {
             String appId = appIds.get(i);
             String yearMonth = yearMonths.get(i);
-            for (ICloudQuery query : queries) {
-                TreasureAnalysisJob.deleteIfExisting(appId, yearMonth, query.getTableName());
-                query.calculate(appId, yearMonth);
+            for (Map.Entry<ICloudQuery, String[]> queryEntry : queryMap.entrySet()) {
+                TreasureAnalysisJob.deleteIfExisting(appId, yearMonth, queryEntry.getValue());
+                queryEntry.getKey().queryAndSave(appId, yearMonth);
             }
         }
         return true;

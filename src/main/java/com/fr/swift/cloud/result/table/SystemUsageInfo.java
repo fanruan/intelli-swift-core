@@ -63,7 +63,7 @@ public class SystemUsageInfo implements Serializable {
     private int stopTime;
 
     public SystemUsageInfo(Row row, String appId, String yearMonth, int downTime, int stopTime) {
-        if(row != null) {
+        if (row != null) {
             this.node = row.getValue(0);
             this.avgCpu = row.getValue(1);
             this.avgMem = row.getValue(2);
@@ -81,7 +81,7 @@ public class SystemUsageInfo implements Serializable {
     }
 
     public static DimensionBean[] getDimensions() {
-        DimensionBean dimensionBean1 = new DimensionBean(DimensionType.DETAIL, "node");
+        DimensionBean dimensionBean1 = new DimensionBean(DimensionType.GROUP, "node");
         return new DimensionBean[]{dimensionBean1};
     }
 
@@ -94,7 +94,6 @@ public class SystemUsageInfo implements Serializable {
         MetricBean maxMemBean = new MetricBean("memory", AggregatorType.MAX);
         MetricBean maxOnlineBean = new MetricBean("onlinenum", AggregatorType.MAX);
         MetricBean maxSessionBean = new MetricBean("sessionnum", AggregatorType.MAX);
-
         return new MetricBean[]{avgCpuBean, avgMemBean, avgOnlineBean, avgSessionBean, maxCpuBean, maxMemBean, maxOnlineBean, maxSessionBean};
     }
 }

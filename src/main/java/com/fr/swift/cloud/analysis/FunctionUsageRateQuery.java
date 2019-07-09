@@ -23,12 +23,10 @@ import java.util.List;
  * @description
  */
 @SwiftBean
-@CloudQuery(name = "functionUsageRateQuery")
+@CloudQuery(name = "functionUsageRateQuery", tables = {"function_usage_rate"})
 public class FunctionUsageRateQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    private final static String TABLE_NAME = FunctionUsageRate.class.getSimpleName();
-
-    public void calculate(String appId, String yearMonth) throws Exception {
+    public void queryAndSave(String appId, String yearMonth) throws Exception {
         SwiftLoggers.getLogger().info("start FunctionUsageRateQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
         List<FunctionUsageRate> functionUsageRateList = new ArrayList<>();
         FilterInfoBean filter = new AndFilterBean(
@@ -48,11 +46,4 @@ public class FunctionUsageRateQuery extends AbstractSaveQueryResult implements I
         super.saveResult(functionUsageRateList);
         SwiftLoggers.getLogger().info("finished FunctionUsageRateQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
-
-    @Override
-    public String getTableName() {
-        return TABLE_NAME;
-    }
-
-
 }

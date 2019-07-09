@@ -14,4 +14,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface CloudQuery {
     String name();
+
+    String[] tables() default {};
 }

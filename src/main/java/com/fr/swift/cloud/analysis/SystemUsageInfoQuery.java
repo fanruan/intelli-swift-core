@@ -13,10 +13,10 @@ import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
+import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,12 +26,10 @@ import java.util.List;
  * @description
  */
 @SwiftBean
-@CloudQuery(name = "systemUsageInfoQuery")
+@CloudQuery(name = "systemUsageInfoQuery", tables = {"system_usage_info", "downtime_result", "downtime_execution_result"})
 public class SystemUsageInfoQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    private final static String TABLE_NAME = SystemUsageInfo.class.getSimpleName();
-
-    public void calculate(String appId, String yearMonth) throws Exception {
+    public void queryAndSave(String appId, String yearMonth) throws Exception {
 
         SwiftLoggers.getLogger().info("start SystemUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
@@ -49,30 +47,33 @@ public class SystemUsageInfoQuery extends AbstractSaveQueryResult implements ICl
                 .setAggregations(SystemUsageInfo.getAggregations())
                 .setFilter(filter).build();
         SwiftResultSet maxTimeResultSet = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(maxTimeBean));
-        Row row = null;
+        List<Row> rowList = new ArrayList<>();
         while (maxTimeResultSet.hasNext()) {
-            row = maxTimeResultSet.getNextRow();
-            break;
+            rowList.add(maxTimeResultSet.getNextRow());
         }
-        int downTime = 0;
-        int stopTime = 0;
-        for (DowntimeResult downtimeResult : downtimeResultList) {
-            if (DowntimeResult.SignalName.valueOf(downtimeResult.getPredictDownType()) != DowntimeResult.SignalName.TERM) {
-                downTime++;
-            }
-            stopTime++;
-        }
-        SystemUsageInfo systemUsageInfo = new SystemUsageInfo(row, appId, yearMonth, downTime, stopTime);
-        List<SystemUsageInfo> systemUsageInfoList = Collections.singletonList(systemUsageInfo);
-        super.saveResult(systemUsageInfoList);
 
+        List<SystemUsageInfo> systemUsageInfoList = new ArrayList<>();
+        if (rowList.isEmpty()) {
+            rowList.add(null);
+        }
+        for (Row row : rowList) {
+            String node = Strings.EMPTY;
+            if (row != null) {
+                node = row.getValue(0) == null ? Strings.EMPTY : row.getValue(0);
+            }
+            int downTime = 0;
+            int stopTime = 0;
+            for (DowntimeResult downtimeResult : downtimeResultList) {
+                if (node.equals(downtimeResult.getNode()) || node.equals(Strings.EMPTY)) {
+                    if (DowntimeResult.SignalName.valueOf(downtimeResult.getPredictDownType()) != DowntimeResult.SignalName.TERM) {
+                        downTime++;
+                    }
+                    stopTime++;
+                }
+            }
+            systemUsageInfoList.add(new SystemUsageInfo(row, appId, yearMonth, downTime, stopTime));
+        }
+        super.saveResult(systemUsageInfoList);
         SwiftLoggers.getLogger().info("finished SystemUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
-
-    @Override
-    public String getTableName() {
-        return TABLE_NAME;
-    }
-
-
 }

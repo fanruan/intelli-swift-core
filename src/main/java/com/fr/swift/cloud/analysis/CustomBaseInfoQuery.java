@@ -16,11 +16,14 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.type.DimensionType;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
+import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2019/6/12
@@ -29,12 +32,10 @@ import java.util.List;
  * @description
  */
 @SwiftBean
-@CloudQuery(name = "customBaseInfoQuery")
+@CloudQuery(name = "customBaseInfoQuery", tables = {"customer_base_info"})
 public class CustomBaseInfoQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    private final static String TABLE_NAME = CustomerBaseInfo.class.getSimpleName();
-
-    public void calculate(String appId, String yearMonth) throws Exception {
+    public void queryAndSave(String appId, String yearMonth) throws Exception {
 
         SwiftLoggers.getLogger().info("start CustomBaseInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
@@ -45,25 +46,30 @@ public class CustomBaseInfoQuery extends AbstractSaveQueryResult implements IClo
                 ));
         //在container_message表中查找最新的time  maxTimeBean
         GroupQueryInfoBean maxTimeBean = GroupQueryInfoBean.builder("container_message")
+                .setDimensions(new DimensionBean(DimensionType.GROUP, "node"))
                 .setAggregations(new MetricBean("time", AggregatorType.MAX))
                 .setFilter(filter).build();
         SwiftResultSet maxTimeResultSet = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(maxTimeBean));
-        double time = 0;
+        Map<String, List<Row>> nodeContainerMessageRows = new HashMap<>();
         while (maxTimeResultSet.hasNext()) {
             Row row = maxTimeResultSet.getNextRow();
-            time = row.getValue(0) == null ? 0 : row.getValue(0);
+            double time = row.getValue(1) == null ? 0 : row.getValue(1);
+            //在container_message表中查询最新时间的所有字段明细 containerMessageBean
+            FilterInfoBean timeFilter = new InFilterBean("time", (long) time);
+            FilterInfoBean andFilter = new AndFilterBean(
+                    Arrays.asList(filter, timeFilter)
+            );
+            DetailQueryInfoBean containerMessageBean = DetailQueryInfoBean.builder("container_message")
+                    .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN)).setFilter(andFilter).build();
+            List<Row> rowList = new ArrayList<>();
+            SwiftResultSet containerMessageResult = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(containerMessageBean));
+            while (containerMessageResult.hasNext()) {
+                rowList.add(containerMessageResult.getNextRow());
+            }
+            nodeContainerMessageRows.put(row.getValue(0), rowList);
         }
-        //在container_message表中查询最新时间的所有字段明细 containerMessageBean
-        FilterInfoBean timeFilter = new InFilterBean("time", (long) time);
-        FilterInfoBean andFilter = new AndFilterBean(
-                Arrays.asList(filter, timeFilter)
-        );
-        DetailQueryInfoBean containerMessageBean = DetailQueryInfoBean.builder("container_message")
-                .setDimensions(new DimensionBean(DimensionType.DETAIL_ALL_COLUMN)).setFilter(andFilter).build();
-        List<Row> rowList = new ArrayList<>();
-        SwiftResultSet containerMessageResult = QueryRunnerProvider.getInstance().query(QueryBeanFactory.queryBean2String(containerMessageBean));
-        while (containerMessageResult.hasNext()) {
-            rowList.add(containerMessageResult.getNextRow());
+        if (nodeContainerMessageRows.isEmpty()) {
+            nodeContainerMessageRows.put(Strings.EMPTY, Collections.emptyList());
         }
 
         // 在function_possess表中 查询所有字段明细
@@ -74,17 +80,13 @@ public class CustomBaseInfoQuery extends AbstractSaveQueryResult implements IClo
         while (functionPossessResultSet.hasNext()) {
             functionPossessRowList.add(functionPossessResultSet.getNextRow());
         }
-        CustomerBaseInfo customerBaseInfo = new CustomerBaseInfo(rowList, functionPossessRowList, appId, yearMonth);
-        List<CustomerBaseInfo> customerBaseInfoList = Collections.singletonList(customerBaseInfo);
+
+        List<CustomerBaseInfo> customerBaseInfoList = new ArrayList<>();
+        for (Map.Entry<String, List<Row>> containerMessageEntry : nodeContainerMessageRows.entrySet()) {
+            customerBaseInfoList.add(new CustomerBaseInfo(containerMessageEntry.getValue(), functionPossessRowList, appId, yearMonth));
+        }
         super.saveResult(customerBaseInfoList);
 
         SwiftLoggers.getLogger().info("finished CustomBaseInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
-
-    @Override
-    public String getTableName() {
-        return TABLE_NAME;
-    }
-
-
 }
