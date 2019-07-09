@@ -37,5 +37,13 @@ public enum PostQueryType {
     /**
      * 漏斗中位数计算。
      */
-    FUNNEL_MEDIAN
+    FUNNEL_TIME_MEDIAN,
+    /**
+     * 时间平均数
+     */
+    FUNNEL_TIME_AVG,
+    /**
+     * 事件转化率
+     */
+    FUNNEL_CONVERSION_RATE
 }
