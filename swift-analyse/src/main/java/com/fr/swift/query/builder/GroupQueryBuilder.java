@@ -2,7 +2,6 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.FunnelAggregator;
 import com.fr.swift.query.aggregator.FunnelPathsAggregator;
@@ -91,7 +90,6 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
                 return funnelPath;
             case FUNNEL:
                 FunnelAggregator funnel = (FunnelAggregator) metric.getAggregator();
-                SwiftLoggers.getLogger().error(funnel.toString());
                 FunnelMetric funnelMetric = (FunnelMetric) metric;
                 funnel.setEventFilters(funnelMetric.getEventFilter(segment));
                 funnel.setTimeGroupFilter(funnelMetric.getTimeGroupFilter(new SourceKey(segment.getMetaData().getId())));
