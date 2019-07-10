@@ -1,20 +1,24 @@
 package com.fr.swift.query.aggregator.funnel;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
+import com.fr.swift.query.aggregator.ExtensionAggregatorValue;
 import com.fr.swift.query.aggregator.FunnelAggValue;
+import com.fr.swift.query.aggregator.FunnelAggregatorValue;
 import com.fr.swift.query.aggregator.SwiftNodeAggregatorValue;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2019-07-10
  */
-public class FunnelNodeAggregatorValue implements SwiftNodeAggregatorValue {
+public class FunnelNodeAggregatorValue implements SwiftNodeAggregatorValue, ExtensionAggregatorValue<SwiftNode> {
     private FunnelGroupKey key;
     private FunnelAggValue value;
     private SwiftNode leaf;
@@ -45,12 +49,8 @@ public class FunnelNodeAggregatorValue implements SwiftNodeAggregatorValue {
                 leaf = node;
                 break;
         }
-        int[] count = value.getCount();
-        AggregatorValue[] values = new AggregatorValue[count.length];
-        for (int i = 0; i < count.length; i++) {
-            values[i] = new DoubleAmountAggregatorValue(count[i]);
-        }
-        leaf.setAggregatorValue(values);
+        leaf.setAggregatorValue(new AggregatorValue[]{new FunnelAggregatorValue(
+                new HashMap<FunnelGroupKey, FunnelAggValue>(Collections.singletonMap(key, value)))});
         return node;
     }
 
@@ -72,5 +72,15 @@ public class FunnelNodeAggregatorValue implements SwiftNodeAggregatorValue {
     @Override
     public Object clone() {
         return new FunnelNodeAggregatorValue(key, value);
+    }
+
+    @Override
+    public List calculateAndExtension() {
+        int[] count = value.getCount();
+        List<Integer> result = new ArrayList<Integer>();
+        for (int i : count) {
+            result.add(i);
+        }
+        return result;
     }
 }

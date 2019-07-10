@@ -54,7 +54,8 @@ public class FunnelPathsMetric extends AbstractMetric {
         for (FunnelEventBean event : bean.getEvents()) {
             if (null != event.getFilter()) {
                 try {
-                    result.add(FilterBuilder.buildDetailFilter(segment, FilterInfoParser.parse(new SourceKey(segment.getMetaData().getTableName()), bean.getFilter())));
+                    result.add(FilterBuilder.buildDetailFilter(segment,
+                            FilterInfoParser.parse(new SourceKey(segment.getMetaData().getTableName()), event.getFilter())));
                 } catch (SwiftMetaDataException e) {
                     SwiftLoggers.getLogger().warn("Funnel get event filter error. using all show", e);
                     result.add(new AllShowDetailFilter(segment));

@@ -110,7 +110,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
 
     @Override
     public void combine(FunnelAggregatorValue current, FunnelAggregatorValue other) {
-
+        current.combine(other);
     }
 
     public void setEventFilters(List<DetailFilter> eventFilters) {
