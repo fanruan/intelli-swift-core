@@ -13,7 +13,6 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
-import com.fr.swift.query.info.group.post.FunnelPostQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
@@ -27,7 +26,6 @@ import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,14 +48,7 @@ public class QueryInfoParser {
     }
 
     public static List<PostQueryInfo> parsePostQuery(QueryInfoBean queryInfoBean) {
-        switch (queryInfoBean.getQueryType()) {
-            case GROUP:
-                return ((GroupQueryInfo) parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean)).getPostQueryInfoList();
-            case FUNNEL:
-                PostQueryInfo postQueryInfo = new FunnelPostQueryInfo((FunnelQueryBean) queryInfoBean);
-                return Collections.singletonList(postQueryInfo);
-        }
-        return new ArrayList<PostQueryInfo>();
+        return ((GroupQueryInfo) parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean)).getPostQueryInfoList();
     }
 
     private static QueryInfo parseGroupQueryInfo(GroupQueryInfoBean bean) {
@@ -66,7 +57,7 @@ public class QueryInfoParser {
         FilterInfo filterInfo = FilterInfoParser.parse(table, bean.getFilter());
         List<Dimension> dimensions = DimensionParser.parse(table, bean.getDimensions(), bean.getSorts());
         List<Metric> metrics = MetricParser.parse(table, bean.getAggregations());
-        List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(table, bean.getPostAggregations(), dimensions, bean.getAggregations());
+        List<PostQueryInfo> postQueryInfoList = PostQueryInfoParser.parse(table, bean, dimensions);
         if (!isPageable(postQueryInfoList)) {
             // 全部计算
             bean.setFetchSize(Integer.MAX_VALUE);
