@@ -15,6 +15,7 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.FunnelMetric;
@@ -98,6 +99,48 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         }
     }
 
+    private static List<Pair<SortType, ColumnTypeConstants.ClassType>> getComparatorsForMerging(SourceKey table, List<Dimension> dimensions, List<Metric> metrics) {
+        SwiftMetaData metaData = SwiftDatabase.getInstance().getTable(table).getMetadata();
+        List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators = new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>();
+        for (Dimension dimension : dimensions) {
+            Sort sort = dimension.getSort();
+            SortType type = sort == null || sort.getSortType() == SortType.ASC ? SortType.ASC : SortType.DESC;
+            if (dimension.getIndexInfo().isGlobalIndexed()) {
+                comparators.add(Pair.of(type, ColumnTypeConstants.ClassType.INTEGER));
+            } else {
+                comparators.add(Pair.of(type, getComparatorByColumn(metaData, dimension.getColumnKey().getName())));
+            }
+        }
+        for (Metric metric : metrics) {
+            if (metric.getMetricType() == MetricType.FUNNEL) {
+                FunnelMetric funnelMetric = (FunnelMetric) metric;
+                comparators.add(Pair.of(SortType.ASC, ColumnTypeConstants.ClassType.STRING));
+                if (funnelMetric.isPostGroup()) {
+                    comparators.add(Pair.of(SortType.ASC, ColumnTypeConstants.ClassType.STRING));
+                }
+            } else if (metric.getMetricType() == MetricType.FUNNEL_PATHS) {
+                comparators.add(Pair.of(SortType.ASC, ColumnTypeConstants.ClassType.STRING));
+            } else {
+                // do nothing
+            }
+        }
+        return comparators;
+    }
+
+    /**
+     * 维度的明细排序，按照维度值的字典排序
+     */
+    private static List<Sort> getSegmentIndexSorts(List<Dimension> dimensions) {
+        List<Sort> indexSorts = new ArrayList<Sort>();
+        for (Dimension dimension : dimensions) {
+            Sort sort = dimension.getSort();
+            if (sort != null && sort.getTargetIndex() == dimension.getIndex()) {
+                indexSorts.add(sort);
+            }
+        }
+        return indexSorts;
+    }
+
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
      *
@@ -127,37 +170,8 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         return new GroupResultQuery(
                 info.getFetchSize(), queries,
                 getAggregators(metrics),
-                getComparatorsForMerging(info.getTable(), dimensions),
+                getComparatorsForMerging(info.getTable(), dimensions, metrics),
                 isGlobalIndexed(info.getDimensions()));
-    }
-
-    /**
-     * 维度的明细排序，按照维度值的字典排序
-     */
-    private static List<Sort> getSegmentIndexSorts(List<Dimension> dimensions) {
-        List<Sort> indexSorts = new ArrayList<Sort>();
-        for (Dimension dimension : dimensions) {
-            Sort sort = dimension.getSort();
-            if (sort != null && sort.getTargetIndex() == dimension.getIndex()) {
-                indexSorts.add(sort);
-            }
-        }
-        return indexSorts;
-    }
-
-    private static List<Pair<SortType, ColumnTypeConstants.ClassType>> getComparatorsForMerging(SourceKey table, List<Dimension> dimensions) {
-        SwiftMetaData metaData = SwiftDatabase.getInstance().getTable(table).getMetadata();
-        List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators = new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>();
-        for (Dimension dimension : dimensions) {
-            Sort sort = dimension.getSort();
-            SortType type = sort == null || sort.getSortType() == SortType.ASC ? SortType.ASC : SortType.DESC;
-            if (dimension.getIndexInfo().isGlobalIndexed()) {
-                comparators.add(Pair.of(type, ColumnTypeConstants.ClassType.INTEGER));
-            } else {
-                comparators.add(Pair.of(type, getComparatorByColumn(metaData, dimension.getColumnKey().getName())));
-            }
-        }
-        return comparators;
     }
 
     private static ColumnTypeConstants.ClassType getComparatorByColumn(SwiftMetaData metaData, String columnName) {
