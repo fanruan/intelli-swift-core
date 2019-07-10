@@ -39,4 +39,8 @@ public class FunnelMetric extends FunnelPathsMetric {
         FilterInfo parse = FilterInfoParser.parse(sourceKey, funnelBean.getTimeGroup().filter());
         return FilterBuilder.buildMatchFilter(parse);
     }
+
+    public boolean isPostGroup() {
+        return ((FunnelAggregationBean) bean).getPostGroup() != null;
+    }
 }
