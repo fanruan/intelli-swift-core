@@ -2,7 +2,6 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
-import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -28,7 +27,7 @@ import java.util.List;
 
 @RunWith(PowerMockRunner.class)
 @SuppressStaticInitializationFor("com.fr.swift.query.builder.DetailQueryBuilder")
-@PrepareForTest({QueryBeanFactory.class, DetailQueryBuilder.class, GroupQueryBuilder.class, FunnelQueryBuilder.class, QueryInfoParser.class, QueryBuilder.class, PostQueryBuilder.class})
+@PrepareForTest({QueryBeanFactory.class, DetailQueryBuilder.class, GroupQueryBuilder.class, QueryInfoParser.class, QueryBuilder.class, PostQueryBuilder.class})
 public class QueryBuilderTest {
 
     @Test
@@ -38,7 +37,6 @@ public class QueryBuilderTest {
 
         QueryType detail = QueryType.DETAIL;
         QueryType group = QueryType.GROUP;
-        QueryType funnel = QueryType.FUNNEL;
 
         QueryInfoBean detailQueryInfoBean = PowerMockito.mock(DetailQueryInfoBean.class);
         PowerMockito.when(QueryBeanFactory.create(queryBean)).thenReturn(detailQueryInfoBean);
@@ -59,15 +57,6 @@ public class QueryBuilderTest {
         Query groupQuery = PowerMockito.mock(Query.class);
         PowerMockito.when(groupQueryBuilder.buildQuery((GroupQueryInfoBean) groupQueryInfoBean)).thenReturn(groupQuery);
         Assert.assertEquals(groupQuery, QueryBuilder.buildQuery(queryBean));
-
-        QueryInfoBean funnelQueryInfoBean = PowerMockito.mock(FunnelQueryBean.class);
-        PowerMockito.when(QueryBeanFactory.create(queryBean)).thenReturn(funnelQueryInfoBean);
-        PowerMockito.when(funnelQueryInfoBean.getQueryType()).thenReturn(funnel);
-        PowerMockito.mockStatic(FunnelQueryBuilder.class);
-        Query funnelQuery = PowerMockito.mock(Query.class);
-        PowerMockito.when(FunnelQueryBuilder.buildQuery((FunnelQueryBean) funnelQueryInfoBean)).thenReturn(funnelQuery);
-        Assert.assertEquals(funnelQuery, QueryBuilder.buildQuery(queryBean));
-
     }
 
     @Test

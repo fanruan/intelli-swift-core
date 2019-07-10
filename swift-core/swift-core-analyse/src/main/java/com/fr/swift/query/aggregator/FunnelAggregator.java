@@ -90,6 +90,14 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
         return null;
     }
 
+    private boolean[] getFlags(List<Integer> steps) {
+        boolean[] flags = new boolean[bean.getEvents().size()];
+        for (Integer step : steps) {
+            flags[step] = true;
+        }
+        return flags;
+    }
+
     private Column getPostGroupColumn(Map<ColumnKey, Column<?>> columns) {
         PostGroupBean postGroup = bean.getPostGroup();
         if (null != postGroup) {
