@@ -3,8 +3,8 @@ package com.fr.swift.query.post.meta;
 import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
+import com.fr.swift.query.info.funnel.group.post.PostGroupBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 

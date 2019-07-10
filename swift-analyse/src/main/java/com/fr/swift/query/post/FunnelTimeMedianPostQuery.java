@@ -1,9 +1,9 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.aggregator.FunnelAggValue;
-import com.fr.swift.query.funnel.TimeWindowBean;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.funnel.TimeWindowBean;
 import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;

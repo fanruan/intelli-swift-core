@@ -8,11 +8,13 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lyon on 2018/4/27.
@@ -20,7 +22,7 @@ import java.util.List;
 class RowMapper implements BinaryFunction<GroupByEntry, GroupNode, GroupNode> {
 
     private int targetLength;
-    private List<Column> metrics;
+    private List<Map<ColumnKey, Column>> metrics;
     private List<Aggregator> aggregators;
 
     public RowMapper(MetricInfo metricInfo) {
@@ -45,7 +47,7 @@ class RowMapper implements BinaryFunction<GroupByEntry, GroupNode, GroupNode> {
 //    }
 
     static AggregatorValueCombiner aggregatorValueCombiner(RowTraversal traversal, int targetLength,
-                                                           List<Column> metrics, List<Aggregator> aggregators) {
+                                                           List<Map<ColumnKey, Column>> metrics, List<Aggregator> aggregators) {
         AggregatorValueCombiner values = new CartesianAggregatorCombiner(targetLength);
         for (int i = 0; i < metrics.size(); i++) {
             if (traversal.isEmpty()) {

@@ -1,7 +1,7 @@
 package com.fr.swift.query.info.group.post;
 
-import com.fr.swift.query.funnel.TimeWindowBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
+import com.fr.swift.query.query.funnel.TimeWindowBean;
 
 /**
  * This class created on 2018/12/14

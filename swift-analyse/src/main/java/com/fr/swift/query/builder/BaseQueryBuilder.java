@@ -5,15 +5,20 @@ import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.metric.FunnelPathsMetric;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author anchore
@@ -52,11 +57,24 @@ class BaseQueryBuilder {
         return dimensionColumns;
     }
 
-    static List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
-        List<Column> metricColumns = new ArrayList<Column>();
+    static List<Map<ColumnKey, Column>> getMetricSegments(Segment segment, List<Metric> metrics) {
+        List<Map<ColumnKey, Column>> metricColumns = new ArrayList<Map<ColumnKey, Column>>();
         for (Metric metric : metrics) {
-            Column column = metric.getColumn(segment);
-            metricColumns.add(column);
+            switch (metric.getMetricType()) {
+                case FUNNEL:
+                case FUNNEL_PATHS:
+                    Map<ColumnKey, Column> columnMap = new HashMap<ColumnKey, Column>();
+                    FunnelPathsMetric pathsMetric = (FunnelPathsMetric) metric;
+                    for (ColumnKey columnKey : pathsMetric.getColumnKeys()) {
+                        columnMap.put(columnKey, segment.getColumn(columnKey));
+                    }
+                    metricColumns.add(columnMap);
+                    break;
+                default:
+                    metricColumns.add(Collections.singletonMap((ColumnKey) null, metric.getColumn(segment)));
+            }
+
+
         }
         return metricColumns;
     }
