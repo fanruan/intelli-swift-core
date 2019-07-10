@@ -53,7 +53,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
     @Override
     public FunnelAggregatorValue aggregate(RowTraversal traversal, Map<ColumnKey, Column<?>> columns) {
         IStep step = createStep(bean.getEvents(), columns);
-        TimeWindowFilter filter = createTimeWindowFilter(step);
+        TimeWindowFilter filter = createTimeWindowFilter(step, columns);
         SwiftLoggers.getLogger().debug("seg rows: {}", traversal.getCardinality());
         ParameterColumnsBean paramColumn = bean.getColumns();
         Column<String> idColumn = (Column<String>) columns.get(new ColumnKey(paramColumn.getUserId()));
@@ -62,7 +62,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
                 idColumn.getDictionaryEncodedColumn(),
                 columns.get(new ColumnKey(paramColumn.getTimestamp())).getDetailColumn(),
                 columns.get(eventKey).getDictionaryEncodedColumn(),
-                createAssociatedColumn(), getPostGroupColumn(columns), getPostGroupStep());
+                createAssociatedColumn(columns), getPostGroupColumn(columns), getPostGroupStep());
 
         Map<FunnelGroupKey, FunnelAggValue> results = new HashMap<FunnelGroupKey, FunnelAggValue>();
 
@@ -80,14 +80,12 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
         return null != postGroup ? postGroup.getFunnelIndex() : -1;
     }
 
-    private DictionaryEncodedColumn createAssociatedColumn() {
-//        List<FunnelAssociationBean> associationFilterBean = bean.getAssociations();
-//        if (associationFilterBean == null) {
-//            return null;
-//        }
-//        DictionaryEncodedColumn a0 = segment.getColumn(new ColumnKey(associationFilterBean.getColumn())).getDictionaryEncodedColumn();
-//        return new DictionaryEncodedColumn[]{null};
-        return null;
+    private DictionaryEncodedColumn createAssociatedColumn(Map<ColumnKey, Column<?>> columns) {
+        FunnelAssociationBean associationFilterBean = bean.getAssociation();
+        if (associationFilterBean == null) {
+            return null;
+        }
+        return columns.get(new ColumnKey(associationFilterBean.getColumn())).getDictionaryEncodedColumn();
     }
 
     private boolean[] getFlags(List<Integer> steps) {
@@ -153,15 +151,15 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
         return new VirtualStep(steps, isHeadRepeated, names.size() < stepNames.size(), events);
     }
 
-    private TimeWindowFilter createTimeWindowFilter(IStep step) {
-        List<FunnelAssociationBean> association = bean.getAssociations();
-        boolean[] associatedProperty = new boolean[bean.getEvents().size()];//getFlags(bean, association == null ? new ArrayList<Integer>() : association.getEvents());
+    private TimeWindowFilter createTimeWindowFilter(IStep step, Map<ColumnKey, Column<?>> columns) {
+        FunnelAssociationBean association = bean.getAssociation();
+        boolean[] associatedProperty = getFlags(association == null ? new ArrayList<Integer>() : association.getEvents());
         DictionaryEncodedColumn associatedPropertyColumn = null;
-//        if (association != null && association.getColumn() != null) {
-//            associatedPropertyColumn = segment.getColumn(new ColumnKey(association.getColumn())).getDictionaryEncodedColumn();
-//        }
+        if (association != null && association.getColumn() != null) {
+            associatedPropertyColumn = columns.get(new ColumnKey(association.getColumn())).getDictionaryEncodedColumn();
+        }
         TimeFilterInfo dayFilterBean = bean.getTimeFilter();
-        int firstAssociatedIndex = -1;//(association == null || association.getEvents().size() == 0) ? -1 : association.getEvents().get(0);
+        int firstAssociatedIndex = (association == null || association.getEvents().size() == 0) ? -1 : association.getEvents().get(0);
         boolean repeated = step.hasRepeatedEvents();
         if (!repeated) {
             step = step.toNoRepeatedStep();

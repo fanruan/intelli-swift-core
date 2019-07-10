@@ -24,8 +24,8 @@ public class FunnelPathsAggregationBean implements AggregationBean {
     protected ParameterColumnsBean columns;
     @JsonProperty("events")
     private List<FunnelEventBean> events;
-    @JsonProperty("associations")
-    private List<FunnelAssociationBean> associations;
+    @JsonProperty("association")
+    private FunnelAssociationBean association;
     @JsonProperty("timeWindow")
     private TimeWindowBean timeWindow;
     @JsonProperty("timeFilter")
@@ -88,12 +88,12 @@ public class FunnelPathsAggregationBean implements AggregationBean {
         this.events = events;
     }
 
-    public List<FunnelAssociationBean> getAssociations() {
-        return associations;
+    public FunnelAssociationBean getAssociation() {
+        return association;
     }
 
-    public void setAssociations(List<FunnelAssociationBean> associations) {
-        this.associations = associations;
+    public void setAssociation(FunnelAssociationBean association) {
+        this.association = association;
     }
 
     public TimeWindowBean getTimeWindow() {

@@ -58,11 +58,9 @@ class MetricParser {
         columnKeys.add(new ColumnKey(columns.getTimestamp()));
         columnKeys.add(new ColumnKey(columns.getUserId()));
 
-        List<FunnelAssociationBean> associations = bean.getAssociations();
-        if (null != associations) {
-            for (FunnelAssociationBean association : associations) {
-                columnKeys.add(new ColumnKey(association.getColumn()));
-            }
+        FunnelAssociationBean association = bean.getAssociation();
+        if (null != association) {
+            columnKeys.add(new ColumnKey(association.getColumn()));
         }
 
         if (bean.getType() == AggregatorType.FUNNEL) {
