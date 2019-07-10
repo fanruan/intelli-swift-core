@@ -97,7 +97,9 @@ class PostQueryInfoParser {
                 for (AggregationBean aggregation : aggregations) {
                     AggregatorType aggregationType = aggregation.getType();
                     if (aggregationType == AggregatorType.FUNNEL || aggregationType == AggregatorType.FUNNEL_PATHS) {
-                        return new FunnelPostQueryInfo(((FunnelPathsAggregationBean) aggregation).getTimeWindow());
+                        FunnelPostQueryInfo postInfo = new FunnelPostQueryInfo(((FunnelPathsAggregationBean) aggregation).getTimeWindow());
+                        postInfo.setType(type);
+                        return postInfo;
                     }
                 }
             default:

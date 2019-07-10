@@ -9,6 +9,9 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
  */
 public class FunnelPostInfoBean extends AbstractPostQueryInfoBean {
 
+    public FunnelPostInfoBean() {
+    }
+
     public FunnelPostInfoBean(PostQueryType type) {
         this.type = type;
     }

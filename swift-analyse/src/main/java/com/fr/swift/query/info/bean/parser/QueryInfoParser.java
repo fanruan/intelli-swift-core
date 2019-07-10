@@ -2,9 +2,7 @@ package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.element.SortBean;
-import com.fr.swift.query.info.bean.parser.funnel.FunnelQueryInfoImpl;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
-import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
@@ -40,8 +38,6 @@ public class QueryInfoParser {
                 return parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean);
             case DETAIL:
                 return parseDetailQueryInfo((DetailQueryInfoBean) queryInfoBean);
-            case FUNNEL:
-                return parseFunnelQueryInfo((FunnelQueryBean) queryInfoBean);
             default:
         }
         return Crasher.crash(new UnsupportedOperationException("Unsupported query type!"));
@@ -76,9 +72,6 @@ public class QueryInfoParser {
         return true;
     }
 
-    private static QueryInfo parseFunnelQueryInfo(FunnelQueryBean bean) {
-        return new FunnelQueryInfoImpl(bean.getQueryId(), bean.getSegments(), bean);
-    }
 
 //    private static QueryInfo parseResultJoinQueryInfo(ResultJoinQueryInfoBean bean) {
 //        String queryId = bean.getQueryId();
