@@ -7,13 +7,17 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+
 /**
  * 这边用的是这个库https://github.com/addthis/stream-lib中提供的实现
  * 该库包含其他统计流数据的基于概率数据结构的算法实现，后面相关需求可以该库加进来
  * <p>
- * Created by Lyon on 2018/7/13.
+ *
+ * @author Lyon
+ * @date 2018/7/13
  */
-public class HLLDistinctAggregator implements Aggregator<HLLAggregatorValue> {
+public class HLLDistinctAggregator extends SingleColumnAggregator<HLLAggregatorValue> implements Serializable {
 
     protected static final Aggregator INSTANCE = new HLLDistinctAggregator();
     private static final long serialVersionUID = 4052363273023659470L;
@@ -63,7 +67,7 @@ public class HLLDistinctAggregator implements Aggregator<HLLAggregatorValue> {
     }
 
     @Override
-    public HLLAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public HLLAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
         final DictionaryEncodedColumn dictionaryEncodedColumn = column.getDictionaryEncodedColumn();
         final ColumnTypeConstants.ClassType type = dictionaryEncodedColumn.getType();
         switch (type) {
@@ -79,7 +83,7 @@ public class HLLDistinctAggregator implements Aggregator<HLLAggregatorValue> {
     }
 
     @Override
-    public HLLAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public HLLAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         return new HLLAggregatorValue();
     }
 

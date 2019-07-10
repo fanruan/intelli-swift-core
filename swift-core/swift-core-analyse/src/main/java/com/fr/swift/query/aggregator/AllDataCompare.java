@@ -6,6 +6,8 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+
 import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 import static com.fr.swift.cube.io.IOConstant.NULL_INT;
 import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
@@ -14,12 +16,12 @@ import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
 /**
  * @author Xiaolei.liu
  */
-public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggregatorValue> {
+public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggregatorValue> implements Serializable {
 
     private static final long serialVersionUID = -8853595719196731039L;
 
     @Override
-    public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
 
         final DoubleAmountAggregatorValue minOrMaxValue = new DoubleAmountAggregatorValue();
         final DetailColumn getter = column.getDetailColumn();

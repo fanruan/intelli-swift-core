@@ -3,19 +3,21 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+
 /**
  * @author Xiaolei.liu
  * 试着写的标准差，方差的计算和平均数计算基本一样，只是求和的数据有差别，
  * 标准差可以由方差得到，中位数需要排序
  */
 
-public class StandarDeviationAggregate implements Aggregator<StandardAggregatorValue> {
+public class StandardDeviationAggregator extends SingleColumnAggregator<StandardAggregatorValue> implements Serializable {
 
-    protected static final Aggregator INSTANCE = new StandarDeviationAggregate();
+    protected static final StandardDeviationAggregator INSTANCE = new StandardDeviationAggregator();
     private static final long serialVersionUID = -785212630235138823L;
 
     @Override
-    public StandardAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public StandardAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
         Aggregator va = VarianceAggregate.INSTANCE;
         StandardAggregatorValue value = new StandardAggregatorValue();
         value.setVariance(((VarianceAggregate) va).aggregate(traversal, column));
@@ -23,7 +25,7 @@ public class StandarDeviationAggregate implements Aggregator<StandardAggregatorV
     }
 
     @Override
-    public StandardAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public StandardAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         StandardAggregatorValue standardAggregatorValue = new StandardAggregatorValue();
 //        standardAggregatorValue.setCount(1);
 //        standardAggregatorValue.setSum(value.calculate());

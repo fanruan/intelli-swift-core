@@ -9,6 +9,7 @@ import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.segment.column.impl.base.LongDetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 
@@ -17,13 +18,13 @@ import java.util.Arrays;
  * 方差的计算和平均数计算基本一样，只是求和的数据有差别，
  * 标准差可以由方差得到
  */
-public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValue> {
+public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValue> implements Serializable {
 
     protected static final Aggregator INSTANCE = new VarianceAggregate();
     private static final long serialVersionUID = -2346803621309661900L;
 
     @Override
-    public VarianceAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public VarianceAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
         final VarianceAggregatorValue varianceValue = new VarianceAggregatorValue();
         final DetailColumn detailColumn = column.getDetailColumn();
         final Aggregator avg = AverageAggregate.INSTANCE;
@@ -135,7 +136,7 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
     }
 
     @Override
-    public VarianceAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public VarianceAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         if (value.calculateValue() == null) {
             return new VarianceAggregatorValue();
         }

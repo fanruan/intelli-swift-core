@@ -1,13 +1,19 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.iterator.RowTraversal;
+
+import java.io.Serializable;
+import java.util.Map;
 
 /**
  * 用于结果合并的聚合器
- * Created by Lyon on 2018/5/9.
+ *
+ * @author Lyon
+ * @date 2018/5/9
  */
-public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<T> {
+public class WrappedAggregator<T extends AggregatorValue<?>> implements Aggregator<T>, Serializable {
 
     private static final long serialVersionUID = -499945849290982910L;
     private Aggregator metricAgg;
@@ -23,12 +29,17 @@ public class WrappedAggregator<T extends AggregatorValue> implements Aggregator<
     }
 
     @Override
-    public T aggregate(RowTraversal traversal, Column column) {
+    public T aggregate(RowTraversal traversal, Map<ColumnKey, Column<?>> columns) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public T createAggregatorValue(AggregatorValue value) {
+    public T aggregate(RowTraversal traversal, Column<?> column) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public T createAggregatorValue(AggregatorValue<?> value) {
         return (T) (changedAgg != null ? changedAgg.createAggregatorValue(value) : value.clone());
     }
 

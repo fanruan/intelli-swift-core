@@ -5,6 +5,7 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.HLLAggregatorValue;
+import com.fr.swift.query.aggregator.SingleColumnAggregator;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
@@ -12,10 +13,13 @@ import com.fr.swift.segment.column.impl.DateDerivers;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.function.Function;
 
+import java.io.Serializable;
+
 /**
- * Created by lyon on 2018/10/24.
+ * @author lyon
+ * @date 2018/10/24
  */
-public class DistinctDateYMD implements Aggregator<HLLAggregatorValue> {
+public class DistinctDateYMD extends SingleColumnAggregator<HLLAggregatorValue> implements Serializable {
 
     public static final Aggregator INSTANCE = new DistinctDateYMD();
     private static final long serialVersionUID = 2185374277400248976L;
@@ -23,7 +27,7 @@ public class DistinctDateYMD implements Aggregator<HLLAggregatorValue> {
     private static Function<Long, Long> fn = DateDerivers.newDeriver(GroupType.Y_M_D);
 
     @Override
-    public HLLAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public HLLAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
         final DetailColumn detailColumn = column.getDetailColumn();
         final HLLAggregatorValue aggregatorValue = new HLLAggregatorValue();
         traversal.traversal(new TraversalAction() {
@@ -36,7 +40,7 @@ public class DistinctDateYMD implements Aggregator<HLLAggregatorValue> {
     }
 
     @Override
-    public HLLAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public HLLAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         return new HLLAggregatorValue();
     }
 

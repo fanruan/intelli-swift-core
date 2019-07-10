@@ -5,6 +5,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,13 +16,13 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
  * @author Xiaolei.liu
  */
 
-public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
+public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> implements Serializable {
 
     protected static final Aggregator INSTANCE = new MedianAggregate();
     private static final long serialVersionUID = -3176813043384218661L;
 
     @Override
-    public MedianAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public MedianAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
 
         final MedianAggregatorValue valueAmount = new MedianAggregatorValue();
         final DictionaryEncodedColumn diColumn = column.getDictionaryEncodedColumn();
@@ -124,7 +125,7 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
     }
 
     @Override
-    public MedianAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public MedianAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         if (value.calculateValue() == null) {
             return new MedianAggregatorValue();
         }
