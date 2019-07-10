@@ -7,6 +7,7 @@ import com.fr.swift.util.function.Function;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,7 +28,7 @@ public class FunnelAggregatorValue implements IterableAggregatorValue<SwiftNodeA
 
     @Override
     public SwiftNodeAggregatorValue calculateValue() {
-        throw new UnsupportedOperationException();
+        return iterator().next();
     }
 
     @Override
@@ -45,5 +46,32 @@ public class FunnelAggregatorValue implements IterableAggregatorValue<SwiftNodeA
                 return new FunnelNodeAggregatorValue(p.getKey(), p.getValue());
             }
         });
+    }
+
+    public Map<FunnelGroupKey, FunnelAggValue> getValueMap() {
+        return valueMap;
+    }
+
+    public void combine(FunnelAggregatorValue value) {
+        for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : value.getValueMap().entrySet()) {
+            FunnelAggValue contestAggValue = valueMap.get(entry.getKey());
+            if (contestAggValue == null) {
+                valueMap.put(entry.getKey(), new FunnelAggValue(contestAggValue.getCount(), contestAggValue.getPeriods()));
+                continue;
+            }
+            int[] values = entry.getValue().getCount();
+            int[] counters = contestAggValue.getCount();
+            for (int i = 0; i < values.length; i++) {
+                counters[i] += values[i];
+            }
+            List<List<Long>> valuePeriods = entry.getValue().getPeriods();
+            List<List<Long>> lists = contestAggValue.getPeriods();
+            // TODO: 2018/9/25 可以做好一部分排序，以及使用基本类型
+            for (int i = 0; i < valuePeriods.size(); i++) {
+                for (int j = 0; j < valuePeriods.get(i).size(); j++) {
+                    lists.get(i).add(valuePeriods.get(i).get(j));
+                }
+            }
+        }
     }
 }

@@ -26,10 +26,22 @@ import java.util.Map;
  */
 class BaseQueryBuilder {
 
-    static boolean[] isGlobalIndexed(List<Dimension> dimensions) {
+    static boolean[] isGlobalIndexed(List<Dimension> dimensions, List<Metric> metrics) {
         boolean[] booleans = new boolean[dimensions.size()];
         for (int i = 0; i < dimensions.size(); i++) {
             booleans[i] = dimensions.get(i).getIndexInfo().isGlobalIndexed();
+        }
+        for (Metric metric : metrics) {
+            switch (metric.getMetricType()) {
+                case FUNNEL:
+                case FUNNEL_PATHS:
+                    boolean[] target = new boolean[booleans.length + 1];
+                    System.arraycopy(booleans, 0, target, 0, booleans.length);
+                    target[booleans.length] = false;
+                    booleans = target;
+                    break;
+                default:
+            }
         }
         return booleans;
     }

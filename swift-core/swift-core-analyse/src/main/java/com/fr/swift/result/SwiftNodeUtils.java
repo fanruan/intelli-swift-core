@@ -1,6 +1,7 @@
 package com.fr.swift.result;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.ExtensionAggregatorValue;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
@@ -97,10 +98,28 @@ public class SwiftNodeUtils {
         List<Object> objects = new ArrayList<Object>();
         if (values != null) {
             for (AggregatorValue value : values) {
-                objects.add(value == null ? null : value.calculateValue());
+                if (null == value) {
+                    objects.add(null);
+                } else if (value instanceof ExtensionAggregatorValue) {
+                    objects.addAll(((ExtensionAggregatorValue) value).calculateAndExtension());
+                } else {
+                    objects.addAll(aggValue2Object(value));
+                }
             }
         }
         return objects;
+    }
+
+    private static List<Object> aggValue2Object(AggregatorValue value) {
+        if (value instanceof ExtensionAggregatorValue) {
+            return ((ExtensionAggregatorValue) value).calculateAndExtension();
+        } else {
+            Object o = value.calculateValue();
+            if (o instanceof AggregatorValue) {
+                return aggValue2Object((AggregatorValue) o);
+            }
+            return Collections.singletonList(o);
+        }
     }
 
     public static SwiftNode[] splitNode(SwiftNode root, int numberOfNodes, int rowCount) {
