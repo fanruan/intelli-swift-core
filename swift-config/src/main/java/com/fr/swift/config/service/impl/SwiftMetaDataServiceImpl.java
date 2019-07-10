@@ -101,7 +101,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (SourceKey sourceKey : sourceKeys) {
                         swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey.getId());
-                        metaDataCache.remove(sourceKey);
+                        metaDataCache.remove(sourceKey.getId());
                     }
                     // 集群情况下才去发rpc
                     // 现在日志这边没必要
