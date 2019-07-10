@@ -1,6 +1,6 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.query.info.bean.query.FunnelQueryBean;
+import com.fr.swift.query.funnel.TimeWindowBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
@@ -12,7 +12,7 @@ import com.fr.swift.query.info.group.post.TreeAggregationQueryInfo;
 import com.fr.swift.query.info.group.post.TreeFilterQueryInfo;
 import com.fr.swift.query.info.group.post.TreeSortQueryInfo;
 import com.fr.swift.query.post.FieldCalQuery;
-import com.fr.swift.query.post.FunnelPostQuery;
+import com.fr.swift.query.post.FunnelTimeMedianPostQuery;
 import com.fr.swift.query.post.HavingFilterQuery;
 import com.fr.swift.query.post.RowSortQuery;
 import com.fr.swift.query.post.TreeAggregationQuery;
@@ -158,13 +158,13 @@ public class PostQueryBuilderTest {
         //mock postQueryInfo
         List<PostQueryInfo> postQueryInfoList = new ArrayList<PostQueryInfo>();
         FunnelPostQueryInfo postQueryInfo = mock(FunnelPostQueryInfo.class);
-        PostQueryType type = PostQueryType.FUNNEL_MEDIAN;
+        PostQueryType type = PostQueryType.FUNNEL_TIME_MEDIAN;
         when(postQueryInfo.getType()).thenReturn(type);
         postQueryInfoList.add(postQueryInfo);
-        FunnelQueryBean funnelQueryBean = mock(FunnelQueryBean.class);
-        when(postQueryInfo.getQueryBean()).thenReturn(funnelQueryBean);
-        FunnelPostQuery funnelPostQuery = mock(FunnelPostQuery.class);
-        whenNew(FunnelPostQuery.class).withArguments(tmpQuery, funnelQueryBean).thenReturn(funnelPostQuery);
+        TimeWindowBean funnelQueryBean = mock(TimeWindowBean.class);
+        when(postQueryInfo.getTimeWindowBean()).thenReturn(funnelQueryBean);
+        FunnelTimeMedianPostQuery funnelPostQuery = mock(FunnelTimeMedianPostQuery.class);
+        whenNew(FunnelTimeMedianPostQuery.class).withArguments(tmpQuery, funnelQueryBean).thenReturn(funnelPostQuery);
         Assert.assertEquals(funnelPostQuery, PostQueryBuilder.buildQuery(tmpQuery, postQueryInfoList));
     }
 

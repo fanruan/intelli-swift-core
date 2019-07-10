@@ -1,8 +1,8 @@
 package com.fr.swift.query.post;
 
 import com.fr.swift.query.aggregator.FunnelAggValue;
+import com.fr.swift.query.funnel.TimeWindowBean;
 import com.fr.swift.query.group.FunnelGroupKey;
-import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
@@ -15,31 +15,20 @@ import java.util.Map;
 
 /**
  * This class created on 2018/12/13
- *
+ * TODO 2019/07/09 这个因为FunnelAggregatorValue调整这个也要变动，等Value写好之后再改
  * @author Lucifer
  * @description
  */
-public class FunnelPostQuery implements Query<QueryResultSet<FunnelResultSet>> {
+public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<FunnelResultSet>> {
 
-    private boolean calMedian;
     private int timeWindow;
     private Query<FunnelQueryResultSet> postQuery;
 
-    public FunnelPostQuery(Query<FunnelQueryResultSet> postQuery, FunnelQueryBean queryBean) {
-        this.calMedian = isCalMedian(queryBean);
-        this.timeWindow = queryBean.getAggregation().getTimeWindow();
+    public FunnelTimeMedianPostQuery(Query<FunnelQueryResultSet> postQuery, TimeWindowBean timeWindowBean) {
+        this.timeWindow = (int) timeWindowBean.toMillis();
         this.postQuery = postQuery;
     }
 
-    private boolean isCalMedian(FunnelQueryBean queryBean) {
-//        List<PostQueryInfoBean> beans = queryBean.getPostAggregations();
-//        for (PostQueryInfoBean bean : beans) {
-//            if (bean.getType() == PostQueryType.FUNNEL_MEDIAN) {
-//                return true;
-//            }
-//        }
-        return false;
-    }
 
     private static double calMedian(List<Long> list, int[] helperArray) {
         Arrays.fill(helperArray, 0);
@@ -75,22 +64,20 @@ public class FunnelPostQuery implements Query<QueryResultSet<FunnelResultSet>> {
     @Override
     public QueryResultSet<FunnelResultSet> getQueryResult() throws SQLException {
         QueryResultSet<FunnelResultSet> resultSet = postQuery.getQueryResult();
-        if (calMedian) {
-            int[] helpArray = new int[timeWindow + 1];
-            Map<FunnelGroupKey, FunnelAggValue> map = resultSet.getPage().getResult();
-            for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : map.entrySet()) {
-                List<List<Long>> periods = entry.getValue().getPeriods();
-                double[] medians = new double[periods.size()];
-                for (int i = 0; i < periods.size(); i++) {
-                    List<Long> list = periods.get(i);
-                    if (list.isEmpty()) {
-                        medians[i] = Double.NaN;
-                        continue;
-                    }
-                    medians[i] = calMedian(list, helpArray);
+        int[] helpArray = new int[timeWindow + 1];
+        Map<FunnelGroupKey, FunnelAggValue> map = resultSet.getPage().getResult();
+        for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : map.entrySet()) {
+            List<List<Long>> periods = entry.getValue().getPeriods();
+            double[] medians = new double[periods.size()];
+            for (int i = 0; i < periods.size(); i++) {
+                List<Long> list = periods.get(i);
+                if (list.isEmpty()) {
+                    medians[i] = Double.NaN;
+                    continue;
                 }
-                entry.getValue().setMedians(medians);
+                medians[i] = calMedian(list, helpArray);
             }
+            entry.getValue().setMedians(medians);
         }
         return resultSet;
     }

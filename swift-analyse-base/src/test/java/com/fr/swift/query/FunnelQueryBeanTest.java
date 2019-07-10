@@ -6,7 +6,7 @@
 //import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.DayFilterInfo;
 //import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
 //import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
-//import com.fr.swift.query.info.bean.post.FunnelMedianInfoBean;
+//import com.fr.swift.query.info.bean.post.FunnelPostInfoBean;
 //import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 //import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 //import com.fr.swift.query.info.bean.type.PostQueryType;
@@ -54,7 +54,7 @@
 //        postGroupBean.setFunnelIndex(1);
 //        functionBean.setPostGroup(postGroupBean);
 //        bean.setAggregation(functionBean);
-//        PostQueryInfoBean postQueryInfoBean = new FunnelMedianInfoBean();
+//        PostQueryInfoBean postQueryInfoBean = new FunnelPostInfoBean();
 //        bean.setPostAggregations(Arrays.asList(postQueryInfoBean));
 //        String queryString = JsonBuilder.writeJsonString(bean);
 //        System.out.println(queryString);
@@ -77,7 +77,7 @@
 //        assertEquals(1, postGroupBean.getFunnelIndex());
 //
 //        assertTrue(bean.getPostAggregations().size() == 1);
-//        assertEquals(PostQueryType.FUNNEL_MEDIAN, bean.getPostAggregations().get(0).getType());
+//        assertEquals(PostQueryType.FUNNEL_TIME_MEDIAN, bean.getPostAggregations().get(0).getType());
 //
 //        bean = JsonBuilder.readValue(funnelQuery, FunnelQueryBean.class);
 //        assertNotNull(bean);
