@@ -32,7 +32,7 @@ public class AggregatorFactory {
             case VARIANCE:
                 return VarianceAggregate.INSTANCE;
             case STANDARD_DEVIATION:
-                return StandarDeviationAggregate.INSTANCE;
+                return StandardDeviationAggregator.INSTANCE;
             case COUNT:
                 return CountAggregator.INSTANCE;
 

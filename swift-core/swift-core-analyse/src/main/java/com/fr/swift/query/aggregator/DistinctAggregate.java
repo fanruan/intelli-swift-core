@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
  * @author Xiaolei.liu
  */
 
-public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValue> {
+public class DistinctAggregate extends SingleColumnAggregator<DistinctCountAggregatorValue> implements Serializable {
 
     protected static final Aggregator INSTANCE = new DistinctAggregate();
     private static final long serialVersionUID = -6095081218942328474L;
@@ -32,12 +33,12 @@ public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValu
                 set.add(column.getDictionaryEncodedColumn().getValueByRow(row));
             }
         });
-        distinctCount.setBitMap(set);
+        distinctCount.setValues(set);
         return distinctCount;
     }
 
     @Override
-    public DistinctCountAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public DistinctCountAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         return new DistinctCountAggregatorValue();
     }
 
@@ -48,6 +49,6 @@ public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValu
 
     @Override
     public void combine(DistinctCountAggregatorValue value, DistinctCountAggregatorValue other) {
-        value.getBitMap().addAll(other.getBitMap());
+        value.getValues().addAll(other.getValues());
     }
 }
