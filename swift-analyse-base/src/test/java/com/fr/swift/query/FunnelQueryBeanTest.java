@@ -2,10 +2,10 @@
 //
 //import com.fr.swift.base.json.JsonBuilder;
 //import com.fr.swift.query.info.bean.element.aggregation.FunnelFunctionBean;
-//import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAssociationBean;
-//import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.DayFilterInfo;
-//import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
-//import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
+//import FunnelAssociationBean;
+//import DayFilterInfo;
+//import ParameterColumnsBean;
+//import PostGroupBean;
 //import com.fr.swift.query.info.bean.post.FunnelPostInfoBean;
 //import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 //import com.fr.swift.query.info.bean.query.FunnelQueryBean;

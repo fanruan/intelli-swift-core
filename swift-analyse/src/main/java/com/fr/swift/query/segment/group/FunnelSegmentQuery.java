@@ -1,16 +1,15 @@
 package com.fr.swift.query.segment.group;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.query.aggregator.AggregatorType;
-import com.fr.swift.query.funnel.TimeWindowBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAggregationBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelEventBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.ParameterColumnsBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.filter.DayFilterInfo;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.group.time.TimeGroup;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.query.FunnelQueryBean;
+import com.fr.swift.query.info.funnel.FunnelAggregationBean;
+import com.fr.swift.query.info.funnel.FunnelEventBean;
+import com.fr.swift.query.info.funnel.ParameterColumnsBean;
+import com.fr.swift.query.info.funnel.filter.DayFilterInfo;
+import com.fr.swift.query.info.funnel.group.time.TimeGroup;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.funnel.TimeWindowBean;
 import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.funnel.FunnelQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -34,7 +33,6 @@ public class FunnelSegmentQuery implements Query<QueryResultSet<FunnelResultSet>
         FunnelAggregationBean funnelAggregationBean = new FunnelAggregationBean();
         funnelAggregationBean.setTimeGroup(TimeGroup.WORK_DAY);
         funnelAggregationBean.setColumn("eventType");
-        funnelAggregationBean.setType(AggregatorType.FUNNEL_PATHS);
         funnelAggregationBean.setColumns(new ParameterColumnsBean("id", "currentTime"));
         FunnelEventBean first = new FunnelEventBean();
         first.setName("login");

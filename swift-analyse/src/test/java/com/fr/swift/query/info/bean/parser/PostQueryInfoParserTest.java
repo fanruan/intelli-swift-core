@@ -7,6 +7,7 @@ import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
 import com.fr.swift.query.group.info.IndexInfoImpl;
+import com.fr.swift.query.info.bean.element.AggregationBean;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -60,7 +61,7 @@ public class PostQueryInfoParserTest {
         metricBean.setColumn("a");
         metricBean.setType(AggregatorType.SUM);
         GroupQueryInfoBean mock = Mockito.mock(GroupQueryInfoBean.class);
-        Mockito.when(mock.getAggregations()).thenReturn(Collections.<MetricBean>emptyList());
+        Mockito.when(mock.getAggregations()).thenReturn(Collections.<AggregationBean>emptyList());
         Mockito.when(mock.getPostAggregations()).thenReturn(Collections.<PostQueryInfoBean>emptyList());
         List<PostQueryInfo> infoList = PostQueryInfoParser.parse(null, mock,
                 Collections.singletonList(dimension));
@@ -93,7 +94,7 @@ public class PostQueryInfoParserTest {
                 .anyTimes();
         PowerMock.replay(FilterInfoParser.class);
         GroupQueryInfoBean mock = Mockito.mock(GroupQueryInfoBean.class);
-        Mockito.when(mock.getAggregations()).thenReturn(Collections.<MetricBean>emptyList());
+        Mockito.when(mock.getAggregations()).thenReturn(Collections.<AggregationBean>emptyList());
         Mockito.when(mock.getPostAggregations()).thenReturn(Collections.<PostQueryInfoBean>emptyList());
         List<PostQueryInfo> infoList = PostQueryInfoParser.parse(null, mock,
                 Collections.singletonList(dimension));

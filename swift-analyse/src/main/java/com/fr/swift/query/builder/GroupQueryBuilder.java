@@ -3,6 +3,8 @@ package com.fr.swift.query.builder;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.aggregator.FunnelAggregator;
+import com.fr.swift.query.aggregator.FunnelPathsAggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by2.node.GroupPage;
@@ -15,6 +17,8 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.metric.FunnelMetric;
+import com.fr.swift.query.info.element.metric.FunnelPathsMetric;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
@@ -27,6 +31,7 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
@@ -38,6 +43,7 @@ import com.fr.swift.util.Crasher;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author pony
@@ -49,6 +55,47 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
     private static boolean isPagingQuery(GroupQueryInfo info) {
         // TODO: 2018/6/14 暂时只要有postQuery都不分页，后面再细分
         return info.getPostQueryInfoList().isEmpty();
+    }
+
+    private static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
+        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        for (Metric metric : metrics) {
+            Aggregator aggregator = handleFunnelAggregator(metric, segment);
+            if (metric.getFilter() != null) {
+                aggregators.add(new MetricFilterAggregator(aggregator, FilterBuilder.buildDetailFilter(segment, metric.getFilter())));
+            } else {
+                aggregators.add(aggregator);
+            }
+        }
+        return aggregators;
+    }
+
+    private static int countCalFields(List<PostQueryInfo> postQueryInfoList) {
+        int count = 0;
+        for (PostQueryInfo postQueryInfo : postQueryInfoList) {
+            if (postQueryInfo.getType() == PostQueryType.CAL_FIELD) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
+    private static Aggregator handleFunnelAggregator(Metric metric, Segment segment) {
+        switch (metric.getMetricType()) {
+            case FUNNEL_PATHS:
+                FunnelPathsAggregator funnelPath = (FunnelPathsAggregator) metric.getAggregator();
+                FunnelPathsMetric funnelPathsMetric = (FunnelPathsMetric) metric;
+                funnelPath.setEventFilters(funnelPathsMetric.getEventFilter(segment));
+                return funnelPath;
+            case FUNNEL:
+                FunnelAggregator funnel = (FunnelAggregator) metric.getAggregator();
+                FunnelMetric funnelMetric = (FunnelMetric) metric;
+                funnel.setEventFilters(funnelMetric.getEventFilter(segment));
+                funnel.setTimeGroupFilter(funnelMetric.getTimeGroupFilter(new SourceKey(segment.getMetaData().getId())));
+                return funnel;
+            default:
+                return metric.getAggregator();
+        }
     }
 
     /**
@@ -66,7 +113,7 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
             List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
-            List<Column> metricColumns = getMetricSegments(segment, metrics);
+            List<Map<ColumnKey, Column>> metricColumns = getMetricSegments(segment, metrics);
             List<Aggregator> aggregators = getFilterAggregators(metrics, segment);
             List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensions);
             DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
@@ -82,28 +129,6 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
                 getAggregators(metrics),
                 getComparatorsForMerging(info.getTable(), dimensions),
                 isGlobalIndexed(info.getDimensions()));
-    }
-
-    private static int countCalFields(List<PostQueryInfo> postQueryInfoList) {
-        int count = 0;
-        for (PostQueryInfo postQueryInfo : postQueryInfoList) {
-            if (postQueryInfo.getType() == PostQueryType.CAL_FIELD) {
-                count += 1;
-            }
-        }
-        return count;
-    }
-
-    private static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
-        List<Aggregator> aggregators = new ArrayList<Aggregator>();
-        for (Metric metric : metrics) {
-            if (metric.getFilter() != null) {
-                aggregators.add(new MetricFilterAggregator(metric.getAggregator(), FilterBuilder.buildDetailFilter(segment, metric.getFilter())));
-            } else {
-                aggregators.add(metric.getAggregator());
-            }
-        }
-        return aggregators;
     }
 
     /**
