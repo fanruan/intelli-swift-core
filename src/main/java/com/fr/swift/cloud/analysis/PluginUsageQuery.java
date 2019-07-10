@@ -22,12 +22,10 @@ import java.util.List;
  * @description
  */
 @SwiftBean
-@CloudQuery(name = "pluginUsageQuery")
+@CloudQuery(name = "pluginUsageQuery", tables = {"plugin_usage"})
 public class PluginUsageQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    private final static String TABLE_NAME = PluginUsage.class.getSimpleName();
-
-    public void calculate(String appId, String yearMonth) throws Exception {
+    public void queryAndSave(String appId, String yearMonth) throws Exception {
 
         SwiftLoggers.getLogger().info("start PluginUsageQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
@@ -46,11 +44,4 @@ public class PluginUsageQuery extends AbstractSaveQueryResult implements ICloudQ
         super.saveResult(pluginUsageList);
         SwiftLoggers.getLogger().info("finished PluginUsageQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
-
-    @Override
-    public String getTableName() {
-        return TABLE_NAME;
-    }
-
-
 }

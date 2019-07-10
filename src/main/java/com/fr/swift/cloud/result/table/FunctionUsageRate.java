@@ -66,10 +66,10 @@ public class FunctionUsageRate implements Serializable {
     }
 
     public static DimensionBean[] getDimensions() {
-        DimensionBean dimension1 = new DimensionBean(DimensionType.DETAIL, "id");
-        DimensionBean dimension2 = new DimensionBean(DimensionType.DETAIL, "source");
-        DimensionBean dimension3 = new DimensionBean(DimensionType.DETAIL, "text");
-        DimensionBean dimension4 = new DimensionBean(DimensionType.DETAIL, "body");
+        DimensionBean dimension1 = new DimensionBean(DimensionType.GROUP, "id");
+        DimensionBean dimension2 = new DimensionBean(DimensionType.GROUP, "source");
+        DimensionBean dimension3 = new DimensionBean(DimensionType.GROUP, "text");
+        DimensionBean dimension4 = new DimensionBean(DimensionType.GROUP, "body");
         return new DimensionBean[]{dimension1, dimension2, dimension3, dimension4};
     }
 

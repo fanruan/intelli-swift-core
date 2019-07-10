@@ -37,12 +37,10 @@ import java.util.Set;
  */
 
 @SwiftBean
-@CloudQuery(name = "templateUsageInfoQuery")
+@CloudQuery(name = "templateUsageInfoQuery", tables = {"template_usage_info"})
 public class TemplateUsageInfoQuery extends AbstractSaveQueryResult implements ICloudQuery {
 
-    private final static String TABLE_NAME = TemplateUsageInfo.class.getSimpleName();
-
-    public void calculate(String appId, String yearMonth) throws Exception {
+    public void queryAndSave(String appId, String yearMonth) throws Exception {
 
         SwiftLoggers.getLogger().info("start TemplateUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
@@ -98,11 +96,6 @@ public class TemplateUsageInfoQuery extends AbstractSaveQueryResult implements I
         super.saveResult(templateUsageInfoList);
 
         SwiftLoggers.getLogger().info("finished TemplateUsageInfoQuery analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
-    }
-
-    @Override
-    public String getTableName() {
-        return TABLE_NAME;
     }
 
     private int calcDays(List<Long> timeList) {
