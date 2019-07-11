@@ -18,10 +18,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
- * This class created on 2018/12/13
- *
+ * 算时间中位数
+ * 这边只能转化成秒来算，毫秒精度太细数组元素很多并且容易oom
+ * 另外如果用Map之类的容器效率很差
  * @author yee
  * @description
  */
@@ -31,7 +33,7 @@ public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<SwiftNode
     private Query<QueryResultSet<SwiftNode>> postQuery;
 
     public FunnelTimeMedianPostQuery(Query<QueryResultSet<SwiftNode>> postQuery, TimeWindowBean timeWindowBean) {
-        this.timeWindow = (int) timeWindowBean.toMillis();
+        this.timeWindow = (int) TimeUnit.MILLISECONDS.toSeconds(timeWindowBean.toMillis());
         this.postQuery = postQuery;
     }
 
@@ -39,7 +41,7 @@ public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<SwiftNode
     private static double calMedian(List<Long> list, int[] helperArray) {
         Arrays.fill(helperArray, 0);
         for (long i : list) {
-            helperArray[(int) i]++;
+            helperArray[(int) TimeUnit.MILLISECONDS.toSeconds(i)]++;
         }
         int half = list.size() / 2;
         int count = 0;
