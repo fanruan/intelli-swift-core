@@ -30,13 +30,13 @@ public class FunnelPathsAggregationBean implements AggregationBean {
     private TimeWindowBean timeWindow;
     @JsonProperty("timeFilter")
     private TimeFilterInfo timeFilter;
-    @JsonProperty
+    @JsonProperty("type")
     protected AggregatorType type;
-    @JsonProperty
+    @JsonProperty("filter")
     protected FilterInfoBean filter;
-    @JsonProperty
+    @JsonProperty("params")
     private Object[] params;
-    @JsonProperty
+    @JsonProperty("alias")
     private String alias;
     /**
      * 原始表中的字段名

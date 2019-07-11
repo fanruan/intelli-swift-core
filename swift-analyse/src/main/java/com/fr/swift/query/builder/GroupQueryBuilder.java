@@ -27,7 +27,6 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
@@ -39,7 +38,6 @@ import com.fr.swift.util.Crasher;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author pony
@@ -122,7 +120,7 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
             List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
-            List<Map<ColumnKey, Column>> metricColumns = getMetricSegments(segment, metrics);
+            List<Column> metricColumns = getMetricSegments(segment, metrics);
             List<Aggregator> aggregators = getFilterAggregators(metrics, segment);
             List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensions);
             DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());

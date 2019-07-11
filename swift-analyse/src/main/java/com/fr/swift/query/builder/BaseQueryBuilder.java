@@ -1,6 +1,7 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.aggregator.funnel.FunnelComplexColumn;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.info.IndexInfo;
@@ -15,7 +16,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,21 +69,21 @@ class BaseQueryBuilder {
         return dimensionColumns;
     }
 
-    static List<Map<ColumnKey, Column>> getMetricSegments(Segment segment, List<Metric> metrics) {
-        List<Map<ColumnKey, Column>> metricColumns = new ArrayList<Map<ColumnKey, Column>>();
+    static List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
+        List<Column> metricColumns = new ArrayList<Column>();
         for (Metric metric : metrics) {
             switch (metric.getMetricType()) {
                 case FUNNEL:
                 case FUNNEL_PATHS:
-                    Map<ColumnKey, Column> columnMap = new HashMap<ColumnKey, Column>();
+                    Map<ColumnKey, Column<?>> columnMap = new HashMap<ColumnKey, Column<?>>();
                     FunnelPathsMetric pathsMetric = (FunnelPathsMetric) metric;
                     for (ColumnKey columnKey : pathsMetric.getColumnKeys()) {
                         columnMap.put(columnKey, segment.getColumn(columnKey));
                     }
-                    metricColumns.add(columnMap);
+                    metricColumns.add(new FunnelComplexColumn(pathsMetric.getColumn(segment), columnMap));
                     break;
                 default:
-                    metricColumns.add(Collections.singletonMap((ColumnKey) null, metric.getColumn(segment)));
+                    metricColumns.add(metric.getColumn(segment));
             }
 
 
