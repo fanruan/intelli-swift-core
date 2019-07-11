@@ -3,8 +3,6 @@ package com.fr.swift.query.builder;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.aggregator.FunnelAggregator;
-import com.fr.swift.query.aggregator.FunnelPathsAggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by2.node.GroupPage;
@@ -15,11 +13,8 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
-import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.query.info.element.metric.FunnelMetric;
-import com.fr.swift.query.info.element.metric.FunnelPathsMetric;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
@@ -61,7 +56,7 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
     private static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
         List<Aggregator> aggregators = new ArrayList<Aggregator>();
         for (Metric metric : metrics) {
-            Aggregator aggregator = handleFunnelAggregator(metric, segment);
+            Aggregator aggregator = FunnelAggregatorUtil.handleFunnelAggregator(metric, segment);
             if (metric.getFilter() != null) {
                 aggregators.add(new MetricFilterAggregator(aggregator, FilterBuilder.buildDetailFilter(segment, metric.getFilter())));
             } else {
@@ -81,24 +76,6 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         return count;
     }
 
-    private static Aggregator handleFunnelAggregator(Metric metric, Segment segment) {
-        switch (metric.getMetricType()) {
-            case FUNNEL_PATHS:
-                FunnelPathsAggregator funnelPath = (FunnelPathsAggregator) metric.getAggregator();
-                FunnelPathsMetric funnelPathsMetric = (FunnelPathsMetric) metric;
-                funnelPath.setEventFilters(funnelPathsMetric.getEventFilter(segment));
-                return funnelPath;
-            case FUNNEL:
-                FunnelAggregator funnel = (FunnelAggregator) metric.getAggregator();
-                FunnelMetric funnelMetric = (FunnelMetric) metric;
-                funnel.setEventFilters(funnelMetric.getEventFilter(segment));
-                funnel.setTimeGroupFilter(funnelMetric.getTimeGroupFilter(new SourceKey(segment.getMetaData().getId())));
-                return funnel;
-            default:
-                return metric.getAggregator();
-        }
-    }
-
     private static List<Pair<SortType, ColumnTypeConstants.ClassType>> getComparatorsForMerging(SourceKey table, List<Dimension> dimensions, List<Metric> metrics) {
         SwiftMetaData metaData = SwiftDatabase.getInstance().getTable(table).getMetadata();
         List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators = new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>();
@@ -111,21 +88,10 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
                 comparators.add(Pair.of(type, getComparatorByColumn(metaData, dimension.getColumnKey().getName())));
             }
         }
-        for (Metric metric : metrics) {
-            if (metric.getMetricType() == MetricType.FUNNEL) {
-                FunnelMetric funnelMetric = (FunnelMetric) metric;
-                comparators.add(Pair.of(SortType.ASC, ColumnTypeConstants.ClassType.STRING));
-                if (funnelMetric.isPostGroup()) {
-                    comparators.add(Pair.of(SortType.ASC, ColumnTypeConstants.ClassType.STRING));
-                }
-            } else if (metric.getMetricType() == MetricType.FUNNEL_PATHS) {
-                comparators.add(Pair.of(SortType.ASC, ColumnTypeConstants.ClassType.STRING));
-            } else {
-                // do nothing
-            }
-        }
+        comparators.addAll(FunnelAggregatorUtil.createMetricComparatorsForMerging(metrics));
         return comparators;
     }
+
 
     /**
      * 维度的明细排序，按照维度值的字典排序
