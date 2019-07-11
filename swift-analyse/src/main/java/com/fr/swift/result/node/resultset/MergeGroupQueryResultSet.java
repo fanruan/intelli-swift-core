@@ -185,6 +185,9 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
                 if (!globalIndexed[i]) {
                     continue;
                 }
+                if (i == dictionary.size()) {
+                    dictionary.add(new HashMap<Integer, Object>());
+                }
                 if (dictionary.get(i) == null) {
                     dictionary.set(i, new HashMap<Integer, Object>());
                 }

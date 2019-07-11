@@ -3,7 +3,6 @@ package com.fr.swift.query.builder;
 import com.fr.swift.query.group.by2.node.GroupPage;
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
-import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
@@ -36,8 +35,6 @@ public final class QueryBuilder {
                 return (Query<T>) DetailQueryBuilder.of((DetailQueryInfoBean) bean).buildQuery();
             case GROUP:
                 return (Query<T>) GroupQueryBuilder.get().buildQuery((GroupQueryInfoBean) bean);
-            case FUNNEL:
-                return (Query<T>) FunnelQueryBuilder.buildQuery((FunnelQueryBean) bean);
             default:
                 throw new IllegalArgumentException(String.format("unsupported Query type! %s", bean.getQueryType()));
         }

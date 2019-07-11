@@ -4,18 +4,19 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.aggregator.SingleColumnAggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author pony
  * @date 2018/4/17
  */
-public class MetricFilterAggregator extends SingleColumnAggregator<AggregatorValue<?>> implements Serializable {
+public class MetricFilterAggregator implements Serializable, Aggregator<AggregatorValue<?>> {
 
     private static final long serialVersionUID = 7648446984086973413L;
     private Aggregator aggregator;
@@ -25,6 +26,12 @@ public class MetricFilterAggregator extends SingleColumnAggregator<AggregatorVal
     public MetricFilterAggregator(Aggregator aggregator, DetailFilter filter) {
         this.aggregator = aggregator;
         this.bitMap = filter.createFilterIndex();
+    }
+
+    @Override
+    public AggregatorValue aggregate(RowTraversal traversal, Map<ColumnKey, Column<?>> columns) {
+        traversal = bitMap == null ? traversal : bitMap.getAnd(traversal.toBitMap());
+        return aggregator.aggregate(traversal, columns);
     }
 
     @Override

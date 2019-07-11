@@ -21,7 +21,6 @@ import com.fr.swift.query.post.TreeFilterQuery;
 import com.fr.swift.query.post.TreeSortQuery;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.SwiftNode;
-import com.fr.swift.result.funnel.FunnelQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.util.List;
@@ -50,11 +49,11 @@ class PostQueryBuilder {
                 case ROW_SORT:
                     return (Query<Q>) new RowSortQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((RowSortQueryInfo) postQueryInfo).getSortList());
                 case FUNNEL_TIME_MEDIAN:
-                    return (Query<Q>) new FunnelTimeMedianPostQuery((Query<FunnelQueryResultSet>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
+                    return (Query<Q>) new FunnelTimeMedianPostQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
                 case FUNNEL_CONVERSION_RATE:
-                    return (Query<Q>) new FunnelConversionRatePostQuery((Query<FunnelQueryResultSet>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
+                    return (Query<Q>) new FunnelConversionRatePostQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery);
                 case FUNNEL_TIME_AVG:
-                    return (Query<Q>) new FunnelTimeAvgPostQuery((Query<FunnelQueryResultSet>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
+                    return (Query<Q>) new FunnelTimeAvgPostQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery);
                 default:
             }
         }
