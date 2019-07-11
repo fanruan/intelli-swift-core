@@ -37,10 +37,14 @@ public class FunnelConversionRatePostQuery implements Query<QueryResultSet<Swift
             @Override
             public SwiftNode apply(SwiftNode p) {
                 GroupNode node = new GroupNode(p.getDepth(), p.getData());
-                for (SwiftNode next : p.getChildren()) {
+                if (p.getChildrenSize() > 0) {
+                    for (SwiftNode child : p.getChildren()) {
+                        node.addChild(apply(child));
+                    }
+                } else {
                     List<AggregatorValue> aggregatorValues = new ArrayList<AggregatorValue>();
                     List<AggregatorValue> postAggregatorValues = new ArrayList<AggregatorValue>();
-                    for (AggregatorValue value : next.getAggregatorValue()) {
+                    for (AggregatorValue value : p.getAggregatorValue()) {
                         aggregatorValues.add(value);
                         if (value instanceof FunnelAggregatorValue) {
                             FunnelAggregatorValue funnelValue = (FunnelAggregatorValue) value;
@@ -57,8 +61,7 @@ public class FunnelConversionRatePostQuery implements Query<QueryResultSet<Swift
                         }
                     }
                     aggregatorValues.addAll(postAggregatorValues);
-                    next.setAggregatorValue(aggregatorValues.toArray(new AggregatorValue[0]));
-                    node.addChild(next);
+                    node.setAggregatorValue(aggregatorValues.toArray(new AggregatorValue[0]));
                 }
                 return node;
             }
