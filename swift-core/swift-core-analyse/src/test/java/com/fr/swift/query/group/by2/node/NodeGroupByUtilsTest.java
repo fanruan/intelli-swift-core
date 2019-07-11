@@ -14,7 +14,6 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -46,7 +45,7 @@ public class NodeGroupByUtilsTest extends TestCase {
         EasyMock.expect(filter.createFilterIndex()).andReturn(BitMaps.newAllShowBitMap(rowCount)).anyTimes();
         EasyMock.replay(filter);
         GroupByInfo groupByInfo = new GroupByInfoImpl(Integer.MAX_VALUE, dimensions, filter, new ArrayList<Sort>(), null);
-        MetricInfo metricInfo = new MetricInfoImpl(Collections.singletonList(Collections.singletonMap((ColumnKey) null, metric)),
+        MetricInfo metricInfo = new MetricInfoImpl(Collections.singletonList(metric),
                 Collections.singletonList(AggregatorFactory.createAggregator(AggregatorType.SUM)), 1);
         iterator = NodeGroupByUtils.groupBy(groupByInfo, metricInfo);
         prepareExpected();

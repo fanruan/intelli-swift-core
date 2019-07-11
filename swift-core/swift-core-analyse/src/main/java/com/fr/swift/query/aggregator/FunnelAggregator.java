@@ -3,6 +3,7 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.funnel.MergeIterator;
+import com.fr.swift.query.column.ComplexColumn;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.group.FunnelGroupKey;
@@ -73,6 +74,11 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
         }
         SwiftLoggers.getLogger().debug("segment result: {}", results.toString());
         return new FunnelAggregatorValue(results);
+    }
+
+    @Override
+    public FunnelAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
+        return aggregate(traversal, ((ComplexColumn) column).getColumns());
     }
 
     private int getPostGroupStep() {

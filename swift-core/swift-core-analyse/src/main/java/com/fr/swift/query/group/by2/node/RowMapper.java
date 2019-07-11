@@ -8,13 +8,11 @@ import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.function.BinaryFunction;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Lyon on 2018/4/27.
@@ -22,7 +20,7 @@ import java.util.Map;
 class RowMapper implements BinaryFunction<GroupByEntry, GroupNode, GroupNode> {
 
     private int targetLength;
-    private List<Map<ColumnKey, Column>> metrics;
+    private List<Column> metrics;
     private List<Aggregator> aggregators;
 
     public RowMapper(MetricInfo metricInfo) {
@@ -31,23 +29,8 @@ class RowMapper implements BinaryFunction<GroupByEntry, GroupNode, GroupNode> {
         this.aggregators = metricInfo.getAggregators();
     }
 
-//    static AggregatorValue[] aggregateRow(RowTraversal traversal, int targetLength,
-//                                          List<Column> metrics, List<Aggregator> aggregators) {
-//        AggregatorValue[] values = new AggregatorValue[targetLength];
-//        for (int i = 0; i < metrics.size(); i++) {
-//            if (traversal.isEmpty()) {
-//                // 索引为空跳过，这边设置aggregatorValue为null，合并的时候另外判断是否为空
-//                values[i] = null;
-//                continue;
-//            }
-//            // 如果指标比较多，这边也可以增加多线程计算
-//            values[i] = aggregators.get(i).aggregate(traversal, metrics.get(i));
-//        }
-//        return values;
-//    }
-
     static AggregatorValueCombiner aggregatorValueCombiner(RowTraversal traversal, int targetLength,
-                                                           List<Map<ColumnKey, Column>> metrics, List<Aggregator> aggregators) {
+                                                           List<Column> metrics, List<Aggregator> aggregators) {
         AggregatorValueCombiner values = new CartesianAggregatorCombiner(targetLength);
         for (int i = 0; i < metrics.size(); i++) {
             if (traversal.isEmpty()) {
