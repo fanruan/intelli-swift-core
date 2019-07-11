@@ -71,14 +71,17 @@ public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<SwiftNode
     public QueryResultSet<SwiftNode> getQueryResult() throws SQLException {
         final int[] helpArray = new int[timeWindow + 1];
         SwiftNodeOperator operator = new SwiftNodeOperator() {
-
             @Override
             public SwiftNode apply(SwiftNode p) {
                 GroupNode node = new GroupNode(p.getDepth(), p.getData());
-                for (SwiftNode child : p.getChildren()) {
+                if (p.getChildrenSize() > 0) {
+                    for (SwiftNode child : p.getChildren()) {
+                        node.addChild(apply(child));
+                    }
+                } else {
                     List<AggregatorValue> aggregatorValues = new ArrayList<AggregatorValue>();
                     List<AggregatorValue> postAggregatorValues = new ArrayList<AggregatorValue>();
-                    for (AggregatorValue value : child.getAggregatorValue()) {
+                    for (AggregatorValue value : p.getAggregatorValue()) {
                         aggregatorValues.add(value);
                         if (value instanceof FunnelAggregatorValue) {
                             FunnelAggregatorValue funnelValue = (FunnelAggregatorValue) value;
@@ -96,8 +99,7 @@ public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<SwiftNode
                         }
                     }
                     aggregatorValues.addAll(postAggregatorValues);
-                    child.setAggregatorValue(aggregatorValues.toArray(new AggregatorValue[0]));
-                    node.addChild(child);
+                    node.setAggregatorValue(aggregatorValues.toArray(new AggregatorValue[0]));
                 }
 
                 return node;

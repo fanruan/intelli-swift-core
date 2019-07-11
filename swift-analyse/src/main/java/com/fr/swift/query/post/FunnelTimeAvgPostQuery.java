@@ -37,12 +37,16 @@ public class FunnelTimeAvgPostQuery implements Query<QueryResultSet<SwiftNode>> 
 
         SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
-            public SwiftNode apply(SwiftNode p) {
-                GroupNode node = new GroupNode(p.getDepth(), p.getData());
-                for (SwiftNode next : p.getChildren()) {
+            public SwiftNode apply(SwiftNode node) {
+                GroupNode current = new GroupNode(node.getDepth(), node.getData());
+                if (node.getChildrenSize() > 0) {
+                    for (SwiftNode child : node.getChildren()) {
+                        current.addChild(apply(child));
+                    }
+                } else {
                     List<AggregatorValue> aggregatorValues = new ArrayList<AggregatorValue>();
                     List<AggregatorValue> postAggregatorValues = new ArrayList<AggregatorValue>();
-                    for (AggregatorValue value : next.getAggregatorValue()) {
+                    for (AggregatorValue value : node.getAggregatorValue()) {
                         aggregatorValues.add(value);
                         if (value instanceof FunnelAggregatorValue) {
                             FunnelAggregatorValue funnelValue = (FunnelAggregatorValue) value;
@@ -60,10 +64,9 @@ public class FunnelTimeAvgPostQuery implements Query<QueryResultSet<SwiftNode>> 
                         }
                     }
                     aggregatorValues.addAll(postAggregatorValues);
-                    next.setAggregatorValue(aggregatorValues.toArray(new AggregatorValue[0]));
-                    node.addChild(next);
+                    current.setAggregatorValue(aggregatorValues.toArray(new AggregatorValue[0]));
                 }
-                return node;
+                return current;
             }
         };
         return new ChainedNodeQueryResultSet(operator, postQuery.getQueryResult());
