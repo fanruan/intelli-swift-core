@@ -5,10 +5,8 @@ import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.result.serialize.SerializedGroupQueryResultSet;
 import com.fr.swift.query.result.serialize.SerializedSortedDetailQueryResultSet;
 import com.fr.swift.result.DetailQueryResultSet;
-import com.fr.swift.result.FunnelResultSet;
 import com.fr.swift.result.detail.MergeDetailQueryResultSet;
 import com.fr.swift.result.detail.MergeSortedDetailQueryResultSet;
-import com.fr.swift.result.funnel.MergeFunnelQueryResultSet;
 import com.fr.swift.result.node.resultset.MergeGroupQueryResultSet;
 import com.fr.swift.result.qrs.EmptyQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -54,14 +52,6 @@ public class SerializedQueryResultSetMerger {
                 }
                 SerializedSortedDetailQueryResultSet first = (SerializedSortedDetailQueryResultSet) serializedResultSets.get(0);
                 return new MergeSortedDetailQueryResultSet(first.getFetchSize(), first.getComparator(), serializedResultSets);
-            }
-            case FUNNEL: {
-                List<QueryResultSet<FunnelResultSet>> serializedResultSets = new ArrayList<QueryResultSet<FunnelResultSet>>(resultSets.size());
-                for (QueryResultSet<?> resultSet : resultSets) {
-                    serializedResultSets.add((QueryResultSet<FunnelResultSet>) resultSet);
-                }
-                MergeFunnelQueryResultSet first = (MergeFunnelQueryResultSet) serializedResultSets.get(0);
-                return new MergeFunnelQueryResultSet(serializedResultSets, first.getStepCount());
             }
             default:
                 return EmptyQueryResultSet.get();

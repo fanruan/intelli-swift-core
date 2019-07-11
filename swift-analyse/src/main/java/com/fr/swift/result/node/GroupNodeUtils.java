@@ -20,7 +20,7 @@ public class GroupNodeUtils {
             @Override
             public SwiftNode apply(SwiftNode p) {
                 // 设置节点的data
-                if (p.getDepth() != -1 && dictionaries.get(p.getDepth()) != null) {
+                if (p.getDepth() != -1 && !dictionaries.isEmpty() && dictionaries.get(p.getDepth()) != null) {
                     p.setData(dictionaries.get(p.getDepth()).get(p.getDictionaryIndex()));
                 }
                 return p;

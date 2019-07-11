@@ -7,17 +7,17 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.AggregatorType;
+import com.fr.swift.query.info.bean.element.AggregationBean;
 import com.fr.swift.query.info.bean.element.CalculatedFieldBean;
 import com.fr.swift.query.info.bean.element.DimensionBean;
-import com.fr.swift.query.info.bean.element.MetricBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelAggregationBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelEventBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelPathsAggregationBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.group.post.PostGroupBean;
 import com.fr.swift.query.info.bean.post.CalculatedFieldQueryInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
+import com.fr.swift.query.info.funnel.FunnelAggregationBean;
+import com.fr.swift.query.info.funnel.FunnelEventBean;
+import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
+import com.fr.swift.query.info.funnel.group.post.PostGroupBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Strings;
@@ -40,7 +40,7 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
         SwiftSchema schema = meta.getSwiftSchema();
         List<DimensionBean> dimensionBeans = queryBean.getDimensions();
         dimensionColumns = createDimension(meta, dimensionBeans);
-        List<MetricBean> metricBeans = queryBean.getAggregations();
+        List<AggregationBean> metricBeans = queryBean.getAggregations();
         List<SwiftMetaDataColumn> metricColumns = createMetricBeanColumn(meta, metricBeans);
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>(dimensionColumns);
         metaDataColumns.addAll(metricColumns);
@@ -73,8 +73,8 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
         return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
     }
 
-    private FunnelPathsAggregationBean getFunnelMetric(List<MetricBean> metricBeans) {
-        for (MetricBean metricBean : metricBeans) {
+    private FunnelPathsAggregationBean getFunnelMetric(List<AggregationBean> metricBeans) {
+        for (AggregationBean metricBean : metricBeans) {
             AggregatorType aggregatorType = metricBean.getType();
             switch (aggregatorType) {
                 case FUNNEL:
@@ -86,9 +86,9 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
         return null;
     }
 
-    private List<SwiftMetaDataColumn> createMetricBeanColumn(SwiftMetaData meta, List<MetricBean> metricBeans) throws SwiftMetaDataException {
+    private List<SwiftMetaDataColumn> createMetricBeanColumn(SwiftMetaData meta, List<AggregationBean> metricBeans) throws SwiftMetaDataException {
         List<SwiftMetaDataColumn> metaDataColumns = new ArrayList<SwiftMetaDataColumn>();
-        for (MetricBean metricBean : metricBeans) {
+        for (AggregationBean metricBean : metricBeans) {
             switch (metricBean.getType()) {
                 case FUNNEL:
                     createFunnelColumns((FunnelAggregationBean) metricBean, dimensionColumns, metaDataColumns);
