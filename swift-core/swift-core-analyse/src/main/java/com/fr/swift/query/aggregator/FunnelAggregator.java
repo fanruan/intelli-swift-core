@@ -59,7 +59,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
     @Override
     public FunnelAggregatorValue aggregate(RowTraversal traversal, Map<ColumnKey, Column<?>> columns) {
         ParameterColumnsBean paramColumn = bean.getColumns();
-        // TODO 2019/07/11 这边依赖分组排序有风险，排序可能不准确导致数据出错
+        // FIXME 2019/07/11 这边依赖分组排序有风险，排序可能不准确导致数据出错
         GroupByResult groupByResult = GroupBy.createGroupByResult(columns.get(new ColumnKey(paramColumn.getTimestamp())), traversal, true);
         final IntList intList = IntListFactory.createIntList();
         while (groupByResult.hasNext()) {
