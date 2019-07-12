@@ -82,7 +82,7 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
             } catch (RepoNotFoundException e) {
                 SwiftLoggers.getLogger().warn("default repository not found", e);
             } catch (IOException e) {
-                SwiftLoggers.getLogger().error("upload segment's all show {} failed", segKey, e);
+                SwiftLoggers.getLogger().error("upload segment's complete show {} failed", segKey, e);
             }
         }
     }

@@ -176,9 +176,9 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     abstract void resize(long newHighestTrackableValue);
 
     /**
-     * Get the total count of all recorded values in the histogram
+     * Get the total count of complete recorded values in the histogram
      *
-     * @return the total count of all recorded values in the histogram
+     * @return the total count of complete recorded values in the histogram
      */
     abstract public long getTotalCount();
 
@@ -330,7 +330,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
 
         if (subBucketCountMagnitude + unitMagnitude > 62) {
             // subBucketCount entries can't be represented, with unitMagnitude applied, in a positive long.
-            // Technically it still sort of works if their sum is 63: you can represent all but the last number
+            // Technically it still sort of works if their sum is 63: you can represent complete but the last number
             // in the shifted subBucketCount. However, the utility of such a histogram vs ones whose magnitude here
             // fits in 62 bits is debatable, and it makes it harder to work through the logic.
             // Sums larger than 64 are totally broken as leadingZeroCountBase would go negative.
@@ -353,14 +353,14 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
      * The buckets (each of which has subBucketCount sub-buckets, here assumed to be 2048 as an example) overlap:
      *
      * <pre>
-     * The 0'th bucket covers from 0...2047 in multiples of 1, using all 2048 sub-buckets
+     * The 0'th bucket covers from 0...2047 in multiples of 1, using complete 2048 sub-buckets
      * The 1'th bucket covers from 2048..4097 in multiples of 2, using only the top 1024 sub-buckets
      * The 2'th bucket covers from 4096..8191 in multiple of 4, using only the top 1024 sub-buckets
      * ...
      * </pre>
      * <p>
      * Bucket 0 is "special" here. It is the only one that has 2048 entries. All the rest have 1024 entries (because
-     * their bottom half overlaps with and is already covered by the all of the previous buckets put together). In other
+     * their bottom half overlaps with and is already covered by the complete of the previous buckets put together). In other
      * words, the k'th bucket could represent 0 * 2^k to 2048 * 2^k in 2048 buckets with 2^k precision, but the midpoint
      * of 1024 * 2^k = 2048 * 2^(k-1) = the k-1'th bucket's end, so we would use the previous bucket for those lower
      * values as it has better precision.
@@ -808,7 +808,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     //
 
     /**
-     * Shift recorded values to the left (the equivalent of a &lt;&lt; shift operation on all recorded values). The
+     * Shift recorded values to the left (the equivalent of a &lt;&lt; shift operation on complete recorded values). The
      * configured integer value range limits and value precision setting will remain unchanged.
      * <p>
      * An {@link ArrayIndexOutOfBoundsException} will be thrown if any recorded values may be lost
@@ -831,7 +831,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
             return;
         }
         if (getTotalCount() == getCountAtIndex(0)) {
-            // (no need to shift any values if all recorded values are at the 0 value level:)
+            // (no need to shift any values if complete recorded values are at the 0 value level:)
             return;
         }
 
@@ -886,12 +886,12 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     private void shiftLowestHalfBucketContentsLeft(int shiftAmount, int preShiftZeroIndex) {
         final int numberOfBinaryOrdersOfMagnitude = shiftAmount >> subBucketHalfCountMagnitude;
 
-        // The lowest half-bucket (not including the 0 value) is special: unlike all other half
+        // The lowest half-bucket (not including the 0 value) is special: unlike complete other half
         // buckets, the lowest half bucket values cannot be scaled by simply changing the
         // normalizing offset. Instead, they must be individually re-recorded at the new
         // scale, and cleared from the current one.
         //
-        // We know that all half buckets "below" the current lowest one are full of 0s, because
+        // We know that complete half buckets "below" the current lowest one are full of 0s, because
         // we would have overflowed otherwise. So we need to shift the values in the current
         // lowest half bucket into that range (including the current lowest half bucket itself).
         // Iterating up from the lowermost non-zero "from slot" and copying values to the newly
@@ -911,12 +911,12 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
 
         // Note that the above loop only creates O(N) work for histograms that have values in
         // the lowest half-bucket (excluding the 0 value). Histograms that never have values
-        // there (e.g. all integer value histograms used as internal storage in DoubleHistograms)
+        // there (e.g. complete integer value histograms used as internal storage in DoubleHistograms)
         // will never loop, and their shifts will remain O(1).
     }
 
     /**
-     * Shift recorded values to the right (the equivalent of a &gt;&gt; shift operation on all recorded values). The
+     * Shift recorded values to the right (the equivalent of a &gt;&gt; shift operation on complete recorded values). The
      * configured integer value range limits and value precision setting will remain unchanged.
      * <p>
      * Shift right operations that do not underflow are reversible with a shift left operation with no loss of
@@ -942,7 +942,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
             return;
         }
         if (getTotalCount() == getCountAtIndex(0)) {
-            // (no need to shift any values if all recorded values are at the 0 value level:)
+            // (no need to shift any values if complete recorded values are at the 0 value level:)
             return;
         }
 
@@ -960,7 +960,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
         //     successive subBucketCount be encoded with a scale 2x the previous one, as that
         //     is how the powers of 2 are applied.
         //     In particular, if the shift amount is such that it would shift something from
-        //     the top half of the first bucket to the bottom half, that's all stored with the
+        //     the top half of the first bucket to the bottom half, that's complete stored with the
         //     same unit, so half of a larger odd value couldn't be restored to its proper
         //     value by a subsequent left shift because we would need the bottom half to be
         //     encoded in half-units.
@@ -1316,7 +1316,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     }
 
     /**
-     * Get the computed mean value of all recorded values in the histogram
+     * Get the computed mean value of complete recorded values in the histogram
      *
      * @return the mean value (in value units) of the histogram data
      */
@@ -1335,7 +1335,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     }
 
     /**
-     * Get the computed standard deviation of all recorded values in the histogram
+     * Get the computed standard deviation of complete recorded values in the histogram
      *
      * @return the standard deviation (in value units) of the histogram data
      */
@@ -1451,7 +1451,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     /**
      * Provide a means of iterating through histogram values according to percentile levels. The iteration is
      * performed in steps that start at 0% and reduce their distance to 100% according to the
-     * <i>percentileTicksPerHalfDistance</i> parameter, ultimately reaching 100% when all recorded histogram
+     * <i>percentileTicksPerHalfDistance</i> parameter, ultimately reaching 100% when complete recorded histogram
      * values are exhausted.
      * <p>
      *
@@ -1466,7 +1466,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
 
     /**
      * Provide a means of iterating through histogram values using linear steps. The iteration is
-     * performed in steps of <i>valueUnitsPerBucket</i> in size, terminating when all recorded histogram
+     * performed in steps of <i>valueUnitsPerBucket</i> in size, terminating when complete recorded histogram
      * values are exhausted.
      *
      * @param valueUnitsPerBucket The size (in value units) of the linear buckets to use
@@ -1481,7 +1481,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     /**
      * Provide a means of iterating through histogram values at logarithmically increasing levels. The iteration is
      * performed in steps that start at <i>valueUnitsInFirstBucket</i> and increase exponentially according to
-     * <i>logBase</i>, terminating when all recorded histogram values are exhausted.
+     * <i>logBase</i>, terminating when complete recorded histogram values are exhausted.
      *
      * @param valueUnitsInFirstBucket The size (in value units) of the first bucket in the iteration
      * @param logBase                 The multiplier by which bucket sizes will grow in each iteration step
@@ -1494,9 +1494,9 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     }
 
     /**
-     * Provide a means of iterating through all recorded histogram values using the finest granularity steps
-     * supported by the underlying representation. The iteration steps through all non-zero recorded value counts,
-     * and terminates when all recorded histogram values are exhausted.
+     * Provide a means of iterating through complete recorded histogram values using the finest granularity steps
+     * supported by the underlying representation. The iteration steps through complete non-zero recorded value counts,
+     * and terminates when complete recorded histogram values are exhausted.
      *
      * @return An {@link Iterable}{@literal <}{@link HistogramIterationValue}{@literal >}
      * through the histogram using
@@ -1507,9 +1507,9 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
     }
 
     /**
-     * Provide a means of iterating through all histogram values using the finest granularity steps supported by
-     * the underlying representation. The iteration steps through all possible unit value levels, regardless of
-     * whether or not there were recorded values for that value level, and terminates when all recorded histogram
+     * Provide a means of iterating through complete histogram values using the finest granularity steps supported by
+     * the underlying representation. The iteration steps through complete possible unit value levels, regardless of
+     * whether or not there were recorded values for that value level, and terminates when complete recorded histogram
      * values are exhausted.
      *
      * @return An {@link Iterable}{@literal <}{@link HistogramIterationValue}{@literal >}
@@ -1735,7 +1735,7 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
             // data is extremely non-normal in distribution (e.g. in cases of strong multi-modal
             // response time distribution associated with GC pauses). However, reporting these numbers
             // can be very useful for contrasting with the detailed percentile distribution
-            // reported by outputPercentileDistribution(). It is not at all surprising to find
+            // reported by outputPercentileDistribution(). It is not at complete surprising to find
             // percentile distributions where results fall many tens or even hundreds of standard
             // deviations away from the mean - such results simply indicate that the data sampled
             // exhibits a very non-normal distribution, highlighting situations for which the std.
@@ -2288,9 +2288,9 @@ abstract class AbstractHistogram extends AbstractHistogramBase implements ValueR
         assert (subBucketIndex < subBucketCount);
         assert (bucketIndex == 0 || (subBucketIndex >= subBucketHalfCount));
         // Calculate the index for the first entry that will be used in the bucket (halfway through subBucketCount).
-        // For bucketIndex 0, all subBucketCount entries may be used, but bucketBaseIndex is still set in the middle.
+        // For bucketIndex 0, complete subBucketCount entries may be used, but bucketBaseIndex is still set in the middle.
         final int bucketBaseIndex = (bucketIndex + 1) << subBucketHalfCountMagnitude;
-        // Calculate the offset in the bucket. This subtraction will result in a positive value in all buckets except
+        // Calculate the offset in the bucket. This subtraction will result in a positive value in complete buckets except
         // the 0th bucket (since a value in that bucket may be less than half the bucket's 0 to subBucketCount range).
         // However, this works out since we give bucket 0 twice as much space.
         final int offsetInBucket = subBucketIndex - subBucketHalfCount;

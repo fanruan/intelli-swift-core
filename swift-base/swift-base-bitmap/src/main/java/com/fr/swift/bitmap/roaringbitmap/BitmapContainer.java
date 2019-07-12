@@ -39,7 +39,7 @@ public final class BitmapContainer extends Container implements Cloneable {
     int cardinality;
 
     /**
-     * Create a bitmap container with all bits set to false
+     * Create a bitmap container with complete bits set to false
      */
     public BitmapContainer() {
         this.cardinality = 0;

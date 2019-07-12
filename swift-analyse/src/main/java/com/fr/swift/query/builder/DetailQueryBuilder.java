@@ -77,7 +77,7 @@ class DetailQueryBuilder extends BaseQueryBuilder {
     /**
      * 子类SortedDetailQueryBuilder会重写此方法
      *
-     * @param queries all segment queries
+     * @param queries complete segment queries
      * @return merged result query
      */
     Query<DetailQueryResultSet> getResultQuery(List<Query<DetailQueryResultSet>> queries) {

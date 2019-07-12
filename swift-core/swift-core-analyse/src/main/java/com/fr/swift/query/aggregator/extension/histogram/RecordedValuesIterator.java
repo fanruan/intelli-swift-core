@@ -10,9 +10,9 @@ package com.fr.swift.query.aggregator.extension.histogram;
 import java.util.Iterator;
 
 /**
- * Used for iterating through all recorded histogram values using the finest granularity steps supported by the
- * underlying representation. The iteration steps through all non-zero recorded value counts, and terminates when
- * all recorded histogram values are exhausted.
+ * Used for iterating through complete recorded histogram values using the finest granularity steps supported by the
+ * underlying representation. The iteration steps through complete non-zero recorded value counts, and terminates when
+ * complete recorded histogram values are exhausted.
  */
 
 class RecordedValuesIterator extends AbstractHistogramIterator implements Iterator<HistogramIterationValue> {

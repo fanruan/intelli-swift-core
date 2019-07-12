@@ -143,7 +143,7 @@ public class CompatibleHistorySegmentTest {
 
         CompatibleHistorySegment seg = new CompatibleHistorySegment(new ResourceLocation("/"), mock(SwiftMetaData.class));
         assertEquals(bitmap, seg.getAllShowIndex());
-        // cache all show
+        // cache complete show
         assertEquals(bitmap, seg.getAllShowIndex());
     }
 

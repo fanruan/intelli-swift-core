@@ -42,7 +42,7 @@ public final class MappeableBitmapContainer extends MappeableContainer implement
     int cardinality;
 
     /**
-     * Create a bitmap container with all bits set to false
+     * Create a bitmap container with complete bits set to false
      */
     public MappeableBitmapContainer() {
         this.cardinality = 0;

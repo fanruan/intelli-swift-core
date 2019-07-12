@@ -12,8 +12,8 @@ import java.util.Iterator;
 
 /**
  * Used for iterating through histogram values using the finest granularity steps supported by the underlying
- * representation. The iteration steps through all possible unit value levels, regardless of whether or not
- * there were recorded values for that value level, and terminates when all recorded histogram values are exhausted.
+ * representation. The iteration steps through complete possible unit value levels, regardless of whether or not
+ * there were recorded values for that value level, and terminates when complete recorded histogram values are exhausted.
  */
 
 class AllValuesIterator extends AbstractHistogramIterator implements Iterator<HistogramIterationValue> {

@@ -608,7 +608,7 @@ public final class MappeableRunContainer extends MappeableContainer implements C
         return answer;
     }
 
-    // Append a value length with all values until a given value
+    // Append a value length with complete values until a given value
     private void appendValueLength(int value, int index) {
         int previousValue = BufferUtil.toIntUnsigned(getValue(index));
         int length = BufferUtil.toIntUnsigned(getLength(index));
@@ -684,7 +684,7 @@ public final class MappeableRunContainer extends MappeableContainer implements C
         return this;
     }
 
-    // Push all values length to the end of the array (resize array if needed)
+    // Push complete values length to the end of the array (resize array if needed)
     private void copyToOffset(int offset) {
         final int minCapacity = 2 * (offset + nbrruns);
         if (valueslength.capacity() < minCapacity) {
@@ -1305,7 +1305,7 @@ public final class MappeableRunContainer extends MappeableContainer implements C
         final int xnbrruns = x.nbrruns;
         final int offset = Math.max(nbrruns, xnbrruns);
 
-        // Push all values length to the end of the array (resize array if needed)
+        // Push complete values length to the end of the array (resize array if needed)
         copyToOffset(offset);
 
         // Aggregate and store the result at the beginning of the array
@@ -1778,7 +1778,7 @@ public final class MappeableRunContainer extends MappeableContainer implements C
         return answer.toBitmapIfNeeded();
     }
 
-    // Prepend a value length with all values starting from a given value
+    // Prepend a value length with complete values starting from a given value
     private void prependValueLength(int value, int index) {
         int initialValue = BufferUtil.toIntUnsigned(getValue(index));
         int length = BufferUtil.toIntUnsigned(getLength(index));
@@ -2396,7 +2396,7 @@ public final class MappeableRunContainer extends MappeableContainer implements C
                         xend = xstart + BufferUtil.toIntUnsigned(x.getLength(xrlepos)) + 1;
                     }
                 }
-                // earliestend - lateststart are all values that are true.
+                // earliestend - lateststart are complete values that are true.
                 cardinality += (short) (earliestend - lateststart);
             }
         }

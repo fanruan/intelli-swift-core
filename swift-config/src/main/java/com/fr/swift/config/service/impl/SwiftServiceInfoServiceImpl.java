@@ -94,7 +94,7 @@ class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
                 }
             });
         } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("get all ServiceInfo error!", e);
+            SwiftLoggers.getLogger().warn("get complete ServiceInfo error!", e);
             return new ArrayList<SwiftServiceInfoEntity>();
         }
     }
