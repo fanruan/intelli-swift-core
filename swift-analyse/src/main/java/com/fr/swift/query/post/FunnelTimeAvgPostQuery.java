@@ -12,7 +12,6 @@ import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.resultset.ChainedNodeQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +72,10 @@ public class FunnelTimeAvgPostQuery implements Query<QueryResultSet<SwiftNode>> 
     }
 
     private double calAvg(List<Long> list) {
-        BigDecimal sum = new BigDecimal(0L);
+        double sum = 0D;
         for (Long aLong : list) {
-            sum.add(new BigDecimal(aLong));
+            sum += aLong;
         }
-        return sum.divide(new BigDecimal(list.size())).doubleValue();
+        return sum / list.size();
     }
 }

@@ -33,30 +33,40 @@ import java.util.List;
 class PostQueryBuilder {
 
     static <Q extends QueryResultSet<?>> Query<Q> buildQuery(Query<Q> tmpQuery, List<PostQueryInfo> postQueryInfoList) {
+        Query<Q> result = tmpQuery;
         for (PostQueryInfo postQueryInfo : postQueryInfoList) {
             PostQueryType type = postQueryInfo.getType();
             switch (type) {
                 case CAL_FIELD:
-                    return (Query<Q>) new FieldCalQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfo());
+                    result = (Query<Q>) new FieldCalQuery((Query<QueryResultSet<SwiftNode>>) result, ((CalculatedFieldQueryInfo) postQueryInfo).getCalInfo());
+                    break;
                 case HAVING_FILTER:
-                    return (Query<Q>) new HavingFilterQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((HavingFilterQueryInfo) postQueryInfo).getMatchFilterList());
+                    result = (Query<Q>) new HavingFilterQuery((Query<QueryResultSet<SwiftNode>>) result, ((HavingFilterQueryInfo) postQueryInfo).getMatchFilterList());
+                    break;
                 case TREE_FILTER:
-                    return (Query<Q>) new TreeFilterQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((TreeFilterQueryInfo) postQueryInfo).getMatchFilterList());
+                    result = (Query<Q>) new TreeFilterQuery((Query<QueryResultSet<SwiftNode>>) result, ((TreeFilterQueryInfo) postQueryInfo).getMatchFilterList());
+                    break;
                 case TREE_AGGREGATION:
-                    return (Query<Q>) new TreeAggregationQuery((Query<QueryResultSet<GroupPage>>) tmpQuery, ((TreeAggregationQueryInfo) postQueryInfo).getAggregators());
+                    result = (Query<Q>) new TreeAggregationQuery((Query<QueryResultSet<GroupPage>>) result, ((TreeAggregationQueryInfo) postQueryInfo).getAggregators());
+                    break;
                 case TREE_SORT:
-                    return (Query<Q>) new TreeSortQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((TreeSortQueryInfo) postQueryInfo).getSortList());
+                    result = (Query<Q>) new TreeSortQuery((Query<QueryResultSet<SwiftNode>>) result, ((TreeSortQueryInfo) postQueryInfo).getSortList());
+                    break;
                 case ROW_SORT:
-                    return (Query<Q>) new RowSortQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((RowSortQueryInfo) postQueryInfo).getSortList());
+                    result = (Query<Q>) new RowSortQuery((Query<QueryResultSet<SwiftNode>>) result, ((RowSortQueryInfo) postQueryInfo).getSortList());
+                    break;
                 case FUNNEL_TIME_MEDIAN:
-                    return (Query<Q>) new FunnelTimeMedianPostQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
+                    result = (Query<Q>) new FunnelTimeMedianPostQuery((Query<QueryResultSet<SwiftNode>>) result, ((FunnelPostQueryInfo) postQueryInfo).getTimeWindowBean());
+                    break;
                 case FUNNEL_CONVERSION_RATE:
-                    return (Query<Q>) new FunnelConversionRatePostQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery);
+                    result = (Query<Q>) new FunnelConversionRatePostQuery((Query<QueryResultSet<SwiftNode>>) result);
+                    break;
                 case FUNNEL_TIME_AVG:
-                    return (Query<Q>) new FunnelTimeAvgPostQuery((Query<QueryResultSet<SwiftNode>>) tmpQuery);
+                    result = (Query<Q>) new FunnelTimeAvgPostQuery((Query<QueryResultSet<SwiftNode>>) result);
+                    break;
                 default:
             }
         }
-        return tmpQuery;
+        return result;
     }
 }
