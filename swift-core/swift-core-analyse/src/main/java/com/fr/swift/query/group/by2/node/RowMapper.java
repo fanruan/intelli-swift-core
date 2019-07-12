@@ -29,21 +29,6 @@ class RowMapper implements BinaryFunction<GroupByEntry, GroupNode, GroupNode> {
         this.aggregators = metricInfo.getAggregators();
     }
 
-//    static AggregatorValue[] aggregateRow(RowTraversal traversal, int targetLength,
-//                                          List<Column> metrics, List<Aggregator> aggregators) {
-//        AggregatorValue[] values = new AggregatorValue[targetLength];
-//        for (int i = 0; i < metrics.size(); i++) {
-//            if (traversal.isEmpty()) {
-//                // 索引为空跳过，这边设置aggregatorValue为null，合并的时候另外判断是否为空
-//                values[i] = null;
-//                continue;
-//            }
-//            // 如果指标比较多，这边也可以增加多线程计算
-//            values[i] = aggregators.get(i).aggregate(traversal, metrics.get(i));
-//        }
-//        return values;
-//    }
-
     static AggregatorValueCombiner aggregatorValueCombiner(RowTraversal traversal, int targetLength,
                                                            List<Column> metrics, List<Aggregator> aggregators) {
         AggregatorValueCombiner values = new CartesianAggregatorCombiner(targetLength);

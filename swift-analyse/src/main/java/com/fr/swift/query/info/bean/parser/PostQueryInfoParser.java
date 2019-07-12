@@ -4,10 +4,9 @@ import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.info.bean.element.AggregationBean;
 import com.fr.swift.query.info.bean.element.CalculatedFieldBean;
-import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.SortBean;
-import com.fr.swift.query.info.bean.element.aggregation.funnel.FunnelPathsAggregationBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.post.CalculatedFieldQueryInfoBean;
 import com.fr.swift.query.info.bean.post.HavingFilterQueryInfoBean;
@@ -17,6 +16,7 @@ import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
 import com.fr.swift.query.info.group.post.FunnelPostQueryInfo;
 import com.fr.swift.query.info.group.post.HavingFilterQueryInfo;
@@ -41,7 +41,7 @@ class PostQueryInfoParser {
     static List<PostQueryInfo> parse(SourceKey table, GroupQueryInfoBean queryInfoBean,
                                      List<Dimension> dimensions) {
         List<PostQueryInfoBean> postAggregations = queryInfoBean.getPostAggregations();
-        List<MetricBean> aggregations = queryInfoBean.getAggregations();
+        List<AggregationBean> aggregations = queryInfoBean.getAggregations();
         Map<String, Integer> fieldIndexMap = getFieldIndexMap(postAggregations, aggregations);
         List<PostQueryInfo> postQueryInfoList = new ArrayList<PostQueryInfo>();
         for (PostQueryInfoBean bean : postAggregations) {
@@ -53,9 +53,9 @@ class PostQueryInfoParser {
     /**
      * 取出所有指标字段的IndexMap，当前计算指标字段的依赖关系只能是后面依赖前面（客户端写查询信息的时候要注意）
      */
-    private static Map<String, Integer> getFieldIndexMap(List<PostQueryInfoBean> postQueryInfoBeans, List<MetricBean> metrics) {
+    private static Map<String, Integer> getFieldIndexMap(List<PostQueryInfoBean> postQueryInfoBeans, List<AggregationBean> metrics) {
         Map<String, Integer> fieldIndexMap = new HashMap<String, Integer>();
-        for (MetricBean metric : metrics) {
+        for (AggregationBean metric : metrics) {
             fieldIndexMap.put(metric.getAlias() == null ? metric.getColumn() : metric.getAlias(), fieldIndexMap.size());
         }
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
@@ -70,7 +70,7 @@ class PostQueryInfoParser {
     }
 
     private static PostQueryInfo parse(SourceKey table, int dimensionSize,
-                                       PostQueryInfoBean bean, Map<String, Integer> fieldIndexMap, List<MetricBean> aggregations) {
+                                       PostQueryInfoBean bean, Map<String, Integer> fieldIndexMap, List<AggregationBean> aggregations) {
         PostQueryType type = bean.getType();
         switch (type) {
             case CAL_FIELD:
@@ -94,10 +94,12 @@ class PostQueryInfoParser {
             case FUNNEL_TIME_AVG:
             case FUNNEL_CONVERSION_RATE:
             case FUNNEL_TIME_MEDIAN:
-                for (MetricBean aggregation : aggregations) {
+                for (AggregationBean aggregation : aggregations) {
                     AggregatorType aggregationType = aggregation.getType();
                     if (aggregationType == AggregatorType.FUNNEL || aggregationType == AggregatorType.FUNNEL_PATHS) {
-                        return new FunnelPostQueryInfo(((FunnelPathsAggregationBean) aggregation).getTimeWindow());
+                        FunnelPostQueryInfo postInfo = new FunnelPostQueryInfo(((FunnelPathsAggregationBean) aggregation).getTimeWindow());
+                        postInfo.setType(type);
+                        return postInfo;
                     }
                 }
             default:
