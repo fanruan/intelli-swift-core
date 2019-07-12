@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/6/7.
  */
-public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfoBean {
+public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfoBean implements SingleInfoBean{
 
     @JsonProperty
     private String tableName;
@@ -39,6 +39,7 @@ public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfo
         this.filter = filter;
     }
 
+    @Override
     public List<DimensionBean> getDimensions() {
         return dimensions;
     }
