@@ -30,5 +30,10 @@ public abstract class BaseAggregatorCombiner implements AggregatorValueCombiner 
         return aggregatorValues;
     }
 
-
+    public void setAggregatorValues(AggregatorValue[] aggregatorValues) {
+        this.aggregatorValues = aggregatorValues;
+        for (AggregatorValue value : aggregatorValues) {
+            this.needCombine |= value instanceof IterableAggregatorValue;
+        }
+    }
 }

@@ -2,8 +2,8 @@ package com.fr.swift.query.aggregator.funnel;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.ExtensionAggregatorValue;
-import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.aggregator.FunnelAggregatorValue;
+import com.fr.swift.query.aggregator.FunnelHelperValue;
 import com.fr.swift.query.aggregator.SwiftNodeAggregatorValue;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.result.GroupNode;
@@ -20,10 +20,10 @@ import java.util.List;
  */
 public class FunnelNodeAggregatorValue implements SwiftNodeAggregatorValue, ExtensionAggregatorValue<SwiftNode> {
     private FunnelGroupKey key;
-    private FunnelAggValue value;
+    private FunnelHelperValue value;
     private SwiftNode leaf;
 
-    public FunnelNodeAggregatorValue(FunnelGroupKey key, FunnelAggValue value) {
+    public FunnelNodeAggregatorValue(FunnelGroupKey key, FunnelHelperValue value) {
         this.key = key;
         this.value = value;
     }
@@ -50,7 +50,7 @@ public class FunnelNodeAggregatorValue implements SwiftNodeAggregatorValue, Exte
                 break;
         }
         leaf.setAggregatorValue(new AggregatorValue[]{new FunnelAggregatorValue(
-                new HashMap<FunnelGroupKey, FunnelAggValue>(Collections.singletonMap(key, value)))});
+                new HashMap<FunnelGroupKey, FunnelHelperValue>(Collections.singletonMap(key, value)))});
         return node;
     }
 
