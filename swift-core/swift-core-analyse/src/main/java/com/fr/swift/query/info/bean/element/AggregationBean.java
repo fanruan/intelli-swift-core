@@ -13,10 +13,26 @@ import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
         property = "type",
-        defaultImpl = MetricBean.class)
+        defaultImpl = AggregatorType.class)
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(name = "FUNNEL", value = FunnelAggregationBean.class),
-        @JsonSubTypes.Type(name = "FUNNEL_PATHS", value = FunnelPathsAggregationBean.class)
+        @JsonSubTypes.Type(name = "FUNNEL_PATHS", value = FunnelPathsAggregationBean.class),
+        @JsonSubTypes.Type(name = "SUM", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "MAX", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "MIN", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "AVERAGE", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "COUNT", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "DISTINCT", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "HLL_DISTINCT", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "STRING_COMBINE", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "DATE_MAX", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "DATE_MIN", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "MEDIAN", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "VARIANCE", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "STANDARD_DEVIATION", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "DUMMY", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "DISTINCT_DATE_YMD", value = MetricBean.class),
+        @JsonSubTypes.Type(name = "TOP_PERCENTILE", value = MetricBean.class)
 })
 public interface AggregationBean {
     AggregatorType getType();

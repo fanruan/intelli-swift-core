@@ -55,6 +55,6 @@ public class NoRepeatedStep implements IStep {
 
     @Override
     public boolean matches(int eventIndex, int row) {
-        return filters.get(eventIndex).contains(row);
+        return -1 != eventIndex && filters.get(eventIndex).contains(row);
     }
 }

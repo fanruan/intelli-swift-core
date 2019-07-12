@@ -1,6 +1,7 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.funnel.MergeIterator;
 import com.fr.swift.query.column.ComplexColumn;
@@ -9,6 +10,7 @@ import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
+import com.fr.swift.query.group.by.GroupByResult;
 import com.fr.swift.query.info.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.funnel.FunnelAssociationBean;
 import com.fr.swift.query.info.funnel.FunnelEventBean;
@@ -24,6 +26,9 @@ import com.fr.swift.query.query.funnel.impl.window.RepeatTimeWindowFilter;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.array.IntList;
+import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.ArrayList;
@@ -53,10 +58,22 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
 
     @Override
     public FunnelAggregatorValue aggregate(RowTraversal traversal, Map<ColumnKey, Column<?>> columns) {
+        ParameterColumnsBean paramColumn = bean.getColumns();
+        // FIXME 2019/07/11 这边依赖分组排序有风险，排序可能不准确导致数据出错
+        GroupByResult groupByResult = GroupBy.createGroupByResult(columns.get(new ColumnKey(paramColumn.getTimestamp())), traversal, true);
+        final IntList intList = IntListFactory.createIntList();
+        while (groupByResult.hasNext()) {
+            groupByResult.next().getTraversal().traversal(new TraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    intList.add(row);
+                }
+            });
+        }
+        traversal = new IntListRowTraversal(intList);
         IStep step = createStep(bean.getEvents(), columns);
         TimeWindowFilter filter = createTimeWindowFilter(step, columns);
         SwiftLoggers.getLogger().debug("seg rows: {}", traversal.getCardinality());
-        ParameterColumnsBean paramColumn = bean.getColumns();
         Column<String> idColumn = (Column<String>) columns.get(new ColumnKey(paramColumn.getUserId()));
         Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(idColumn, traversal, true);
         MergeIterator mergeIterator = new MergeIterator(filter, step, iterator,
