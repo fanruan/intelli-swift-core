@@ -63,7 +63,7 @@ public class GroupSegmentQuery implements Query<QueryResultSet<GroupPage>> {
         @Override
         public void close() {
             // TODO: 2019-07-01 anchore 要将close传递到groupby内部，真正的释放资源
-            throw new UnsupportedOperationException();
+//            throw new UnsupportedOperationException();
         }
     }
 }

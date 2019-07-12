@@ -1,6 +1,5 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.query.funnel.TimeWindowBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.group.post.CalculatedFieldQueryInfo;
@@ -19,6 +18,7 @@ import com.fr.swift.query.post.TreeAggregationQuery;
 import com.fr.swift.query.post.TreeFilterQuery;
 import com.fr.swift.query.post.TreeSortQuery;
 import com.fr.swift.query.query.Query;
+import com.fr.swift.query.query.funnel.TimeWindowBean;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.qrs.QueryResultSet;
 import org.junit.Assert;

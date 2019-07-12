@@ -1,31 +1,39 @@
 package com.fr.swift.query.post;
 
+import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.aggregator.FunnelAggValue;
-import com.fr.swift.query.funnel.TimeWindowBean;
+import com.fr.swift.query.aggregator.FunnelAggregatorValue;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.query.Query;
-import com.fr.swift.result.FunnelResultSet;
-import com.fr.swift.result.funnel.FunnelQueryResultSet;
+import com.fr.swift.query.query.funnel.TimeWindowBean;
+import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.result.SwiftNodeOperator;
+import com.fr.swift.result.node.resultset.ChainedNodeQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
- * This class created on 2018/12/13
- * TODO 2019/07/09 这个因为FunnelAggregatorValue调整这个也要变动，等Value写好之后再改
- * @author Lucifer
+ * 算时间中位数
+ * 这边只能转化成秒来算，毫秒精度太细数组元素很多并且容易oom
+ * 另外如果用Map之类的容器效率很差
+ * @author yee
  * @description
  */
-public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<FunnelResultSet>> {
+public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<SwiftNode>> {
 
     private int timeWindow;
-    private Query<FunnelQueryResultSet> postQuery;
+    private Query<QueryResultSet<SwiftNode>> postQuery;
 
-    public FunnelTimeMedianPostQuery(Query<FunnelQueryResultSet> postQuery, TimeWindowBean timeWindowBean) {
-        this.timeWindow = (int) timeWindowBean.toMillis();
+    public FunnelTimeMedianPostQuery(Query<QueryResultSet<SwiftNode>> postQuery, TimeWindowBean timeWindowBean) {
+        this.timeWindow = (int) TimeUnit.MILLISECONDS.toSeconds(timeWindowBean.toMillis());
         this.postQuery = postQuery;
     }
 
@@ -33,7 +41,7 @@ public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<FunnelRes
     private static double calMedian(List<Long> list, int[] helperArray) {
         Arrays.fill(helperArray, 0);
         for (long i : list) {
-            helperArray[(int) i]++;
+            helperArray[(int) TimeUnit.MILLISECONDS.toSeconds(i)]++;
         }
         int half = list.size() / 2;
         int count = 0;
@@ -62,23 +70,43 @@ public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<FunnelRes
     }
 
     @Override
-    public QueryResultSet<FunnelResultSet> getQueryResult() throws SQLException {
-        QueryResultSet<FunnelResultSet> resultSet = postQuery.getQueryResult();
-        int[] helpArray = new int[timeWindow + 1];
-        Map<FunnelGroupKey, FunnelAggValue> map = resultSet.getPage().getResult();
-        for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : map.entrySet()) {
-            List<List<Long>> periods = entry.getValue().getPeriods();
-            double[] medians = new double[periods.size()];
-            for (int i = 0; i < periods.size(); i++) {
-                List<Long> list = periods.get(i);
-                if (list.isEmpty()) {
-                    medians[i] = Double.NaN;
-                    continue;
+    public QueryResultSet<SwiftNode> getQueryResult() throws SQLException {
+        final int[] helpArray = new int[timeWindow + 1];
+        SwiftNodeOperator operator = new SwiftNodeOperator() {
+            @Override
+            public SwiftNode apply(SwiftNode p) {
+                GroupNode node = new GroupNode(p.getDepth(), p.getData());
+                if (p.getChildrenSize() > 0) {
+                    for (SwiftNode child : p.getChildren()) {
+                        node.addChild(apply(child));
+                    }
+                } else {
+                    List<AggregatorValue> aggregatorValues = new ArrayList<AggregatorValue>();
+                    List<AggregatorValue> postAggregatorValues = new ArrayList<AggregatorValue>();
+                    for (AggregatorValue value : p.getAggregatorValue()) {
+                        aggregatorValues.add(value);
+                        if (value instanceof FunnelAggregatorValue) {
+                            FunnelAggregatorValue funnelValue = (FunnelAggregatorValue) value;
+                            for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : funnelValue.getValueMap().entrySet()) {
+                                List<List<Long>> periods = entry.getValue().getPeriods();
+                                for (int i = 0; i < periods.size(); i++) {
+                                    List<Long> list = periods.get(i);
+                                    if (list.isEmpty()) {
+                                        postAggregatorValues.add(new DoubleAmountAggregatorValue(Double.NaN));
+                                        continue;
+                                    }
+                                    postAggregatorValues.add(new DoubleAmountAggregatorValue(calMedian(list, helpArray)));
+                                }
+                            }
+                        }
+                    }
+                    aggregatorValues.addAll(postAggregatorValues);
+                    node.setAggregatorValue(aggregatorValues.toArray(new AggregatorValue[0]));
                 }
-                medians[i] = calMedian(list, helpArray);
+
+                return node;
             }
-            entry.getValue().setMedians(medians);
-        }
-        return resultSet;
+        };
+        return new ChainedNodeQueryResultSet(operator, postQuery.getQueryResult());
     }
 }

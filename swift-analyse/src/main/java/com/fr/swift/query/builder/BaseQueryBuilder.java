@@ -1,19 +1,24 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.aggregator.funnel.FunnelComplexColumn;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.element.metric.FunnelPathsMetric;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author anchore
@@ -21,10 +26,22 @@ import java.util.List;
  */
 class BaseQueryBuilder {
 
-    static boolean[] isGlobalIndexed(List<Dimension> dimensions) {
+    static boolean[] isGlobalIndexed(List<Dimension> dimensions, List<Metric> metrics) {
         boolean[] booleans = new boolean[dimensions.size()];
         for (int i = 0; i < dimensions.size(); i++) {
             booleans[i] = dimensions.get(i).getIndexInfo().isGlobalIndexed();
+        }
+        for (Metric metric : metrics) {
+            switch (metric.getMetricType()) {
+                case FUNNEL:
+                case FUNNEL_PATHS:
+                    boolean[] target = new boolean[booleans.length + 1];
+                    System.arraycopy(booleans, 0, target, 0, booleans.length);
+                    target[booleans.length] = false;
+                    booleans = target;
+                    break;
+                default:
+            }
         }
         return booleans;
     }
@@ -55,8 +72,21 @@ class BaseQueryBuilder {
     static List<Column> getMetricSegments(Segment segment, List<Metric> metrics) {
         List<Column> metricColumns = new ArrayList<Column>();
         for (Metric metric : metrics) {
-            Column column = metric.getColumn(segment);
-            metricColumns.add(column);
+            switch (metric.getMetricType()) {
+                case FUNNEL:
+                case FUNNEL_PATHS:
+                    Map<ColumnKey, Column<?>> columnMap = new HashMap<ColumnKey, Column<?>>();
+                    FunnelPathsMetric pathsMetric = (FunnelPathsMetric) metric;
+                    for (ColumnKey columnKey : pathsMetric.getColumnKeys()) {
+                        columnMap.put(columnKey, segment.getColumn(columnKey));
+                    }
+                    metricColumns.add(new FunnelComplexColumn(pathsMetric.getColumn(segment), columnMap));
+                    break;
+                default:
+                    metricColumns.add(metric.getColumn(segment));
+            }
+
+
         }
         return metricColumns;
     }

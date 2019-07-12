@@ -20,6 +20,7 @@ import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitor;
 import com.fr.swift.jdbc.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.fr.swift.jdbc.druid.util.FnvHash;
 import com.fr.swift.query.aggregator.AggregatorType;
+import com.fr.swift.query.info.bean.element.AggregationBean;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.SortBean;
@@ -184,7 +185,7 @@ class QueryASTVisitorAdapter extends SQLASTVisitorAdapter implements SelectionBe
             visit((SQLExprTableSource) x.getFrom());
             bean.setTableName(table[0]);
             // dimensions and metrics
-            List<MetricBean> metricBeans = new ArrayList<MetricBean>();
+            List<AggregationBean> metricBeans = new ArrayList<AggregationBean>();
             List<DimensionBean> dimensionBeans = new ArrayList<DimensionBean>();
             List<Long> dimensionHashCodes = new ArrayList<Long>();
             List<SQLSelectItem> items = x.getSelectList();

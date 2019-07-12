@@ -51,6 +51,60 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         return info.getPostQueryInfoList().isEmpty();
     }
 
+    private static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
+        List<Aggregator> aggregators = new ArrayList<Aggregator>();
+        for (Metric metric : metrics) {
+            Aggregator aggregator = FunnelAggregatorUtil.handleFunnelAggregator(metric, segment);
+            if (metric.getFilter() != null) {
+                aggregators.add(new MetricFilterAggregator(aggregator, FilterBuilder.buildDetailFilter(segment, metric.getFilter())));
+            } else {
+                aggregators.add(aggregator);
+            }
+        }
+        return aggregators;
+    }
+
+    private static int countCalFields(List<PostQueryInfo> postQueryInfoList) {
+        int count = 0;
+        for (PostQueryInfo postQueryInfo : postQueryInfoList) {
+            if (postQueryInfo.getType() == PostQueryType.CAL_FIELD) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
+    private static List<Pair<SortType, ColumnTypeConstants.ClassType>> getComparatorsForMerging(SourceKey table, List<Dimension> dimensions, List<Metric> metrics) {
+        SwiftMetaData metaData = SwiftDatabase.getInstance().getTable(table).getMetadata();
+        List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators = new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>();
+        for (Dimension dimension : dimensions) {
+            Sort sort = dimension.getSort();
+            SortType type = sort == null || sort.getSortType() == SortType.ASC ? SortType.ASC : SortType.DESC;
+            if (dimension.getIndexInfo().isGlobalIndexed()) {
+                comparators.add(Pair.of(type, ColumnTypeConstants.ClassType.INTEGER));
+            } else {
+                comparators.add(Pair.of(type, getComparatorByColumn(metaData, dimension.getColumnKey().getName())));
+            }
+        }
+        comparators.addAll(FunnelAggregatorUtil.createMetricComparatorsForMerging(metrics));
+        return comparators;
+    }
+
+
+    /**
+     * 维度的明细排序，按照维度值的字典排序
+     */
+    private static List<Sort> getSegmentIndexSorts(List<Dimension> dimensions) {
+        List<Sort> indexSorts = new ArrayList<Sort>();
+        for (Dimension dimension : dimensions) {
+            Sort sort = dimension.getSort();
+            if (sort != null && sort.getTargetIndex() == dimension.getIndex()) {
+                indexSorts.add(sort);
+            }
+        }
+        return indexSorts;
+    }
+
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
      *
@@ -80,59 +134,8 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         return new GroupResultQuery(
                 info.getFetchSize(), queries,
                 getAggregators(metrics),
-                getComparatorsForMerging(info.getTable(), dimensions),
-                isGlobalIndexed(info.getDimensions()));
-    }
-
-    private static int countCalFields(List<PostQueryInfo> postQueryInfoList) {
-        int count = 0;
-        for (PostQueryInfo postQueryInfo : postQueryInfoList) {
-            if (postQueryInfo.getType() == PostQueryType.CAL_FIELD) {
-                count += 1;
-            }
-        }
-        return count;
-    }
-
-    private static List<Aggregator> getFilterAggregators(List<Metric> metrics, Segment segment) {
-        List<Aggregator> aggregators = new ArrayList<Aggregator>();
-        for (Metric metric : metrics) {
-            if (metric.getFilter() != null) {
-                aggregators.add(new MetricFilterAggregator(metric.getAggregator(), FilterBuilder.buildDetailFilter(segment, metric.getFilter())));
-            } else {
-                aggregators.add(metric.getAggregator());
-            }
-        }
-        return aggregators;
-    }
-
-    /**
-     * 维度的明细排序，按照维度值的字典排序
-     */
-    private static List<Sort> getSegmentIndexSorts(List<Dimension> dimensions) {
-        List<Sort> indexSorts = new ArrayList<Sort>();
-        for (Dimension dimension : dimensions) {
-            Sort sort = dimension.getSort();
-            if (sort != null && sort.getTargetIndex() == dimension.getIndex()) {
-                indexSorts.add(sort);
-            }
-        }
-        return indexSorts;
-    }
-
-    private static List<Pair<SortType, ColumnTypeConstants.ClassType>> getComparatorsForMerging(SourceKey table, List<Dimension> dimensions) {
-        SwiftMetaData metaData = SwiftDatabase.getInstance().getTable(table).getMetadata();
-        List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators = new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>();
-        for (Dimension dimension : dimensions) {
-            Sort sort = dimension.getSort();
-            SortType type = sort == null || sort.getSortType() == SortType.ASC ? SortType.ASC : SortType.DESC;
-            if (dimension.getIndexInfo().isGlobalIndexed()) {
-                comparators.add(Pair.of(type, ColumnTypeConstants.ClassType.INTEGER));
-            } else {
-                comparators.add(Pair.of(type, getComparatorByColumn(metaData, dimension.getColumnKey().getName())));
-            }
-        }
-        return comparators;
+                getComparatorsForMerging(info.getTable(), dimensions, metrics),
+                isGlobalIndexed(dimensions, metrics));
     }
 
     private static ColumnTypeConstants.ClassType getComparatorByColumn(SwiftMetaData metaData, String columnName) {
