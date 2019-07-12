@@ -26,7 +26,7 @@ public class CollateExecutorTask extends AbstractExecutorTask<Job> {
 
     public CollateExecutorTask(SourceKey sourceKey, List<SegmentKey> segmentKeys) throws Exception {
         super(sourceKey,
-                false,
+                true,
                 SwiftTaskType.COLLATE,
                 LockType.TABLE,
                 sourceKey.getId(),
