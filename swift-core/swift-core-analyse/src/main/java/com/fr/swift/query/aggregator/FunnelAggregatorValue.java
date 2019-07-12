@@ -15,9 +15,9 @@ import java.util.Map;
  * @date 2019-07-10
  */
 public class FunnelAggregatorValue implements IterableAggregatorValue<SwiftNodeAggregatorValue> {
-    private Map<FunnelGroupKey, FunnelAggValue> valueMap;
+    private Map<FunnelGroupKey, FunnelHelperValue> valueMap;
 
-    public FunnelAggregatorValue(Map<FunnelGroupKey, FunnelAggValue> valueMap) {
+    public FunnelAggregatorValue(Map<FunnelGroupKey, FunnelHelperValue> valueMap) {
         this.valueMap = valueMap;
     }
 
@@ -33,30 +33,30 @@ public class FunnelAggregatorValue implements IterableAggregatorValue<SwiftNodeA
 
     @Override
     public Object clone() {
-        return new FunnelAggregatorValue(new HashMap<FunnelGroupKey, FunnelAggValue>(valueMap));
+        return new FunnelAggregatorValue(new HashMap<FunnelGroupKey, FunnelHelperValue>(valueMap));
     }
 
 
     @Override
     public Iterator<SwiftNodeAggregatorValue> iterator() {
-        Iterator<Map.Entry<FunnelGroupKey, FunnelAggValue>> iterator = valueMap.entrySet().iterator();
-        return new MapperIterator<Map.Entry<FunnelGroupKey, FunnelAggValue>, SwiftNodeAggregatorValue>(iterator, new Function<Map.Entry<FunnelGroupKey, FunnelAggValue>, SwiftNodeAggregatorValue>() {
+        Iterator<Map.Entry<FunnelGroupKey, FunnelHelperValue>> iterator = valueMap.entrySet().iterator();
+        return new MapperIterator<Map.Entry<FunnelGroupKey, FunnelHelperValue>, SwiftNodeAggregatorValue>(iterator, new Function<Map.Entry<FunnelGroupKey, FunnelHelperValue>, SwiftNodeAggregatorValue>() {
             @Override
-            public SwiftNodeAggregatorValue apply(Map.Entry<FunnelGroupKey, FunnelAggValue> p) {
+            public SwiftNodeAggregatorValue apply(Map.Entry<FunnelGroupKey, FunnelHelperValue> p) {
                 return new FunnelNodeAggregatorValue(p.getKey(), p.getValue());
             }
         });
     }
 
-    public Map<FunnelGroupKey, FunnelAggValue> getValueMap() {
+    public Map<FunnelGroupKey, FunnelHelperValue> getValueMap() {
         return valueMap;
     }
 
     public void combine(FunnelAggregatorValue value) {
-        for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : value.getValueMap().entrySet()) {
-            FunnelAggValue contestAggValue = valueMap.get(entry.getKey());
+        for (Map.Entry<FunnelGroupKey, FunnelHelperValue> entry : value.getValueMap().entrySet()) {
+            FunnelHelperValue contestAggValue = valueMap.get(entry.getKey());
             if (contestAggValue == null) {
-                valueMap.put(entry.getKey(), new FunnelAggValue(contestAggValue.getCount(), contestAggValue.getPeriods()));
+                valueMap.put(entry.getKey(), new FunnelHelperValue(contestAggValue.getCount(), contestAggValue.getPeriods()));
                 continue;
             }
             int[] values = entry.getValue().getCount();

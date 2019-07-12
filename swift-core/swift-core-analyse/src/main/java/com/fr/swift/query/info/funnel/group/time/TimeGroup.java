@@ -17,6 +17,7 @@ public enum TimeGroup {
     DAYS("yyyyMMdd"),
     MOUTHS("yyyyMM"),
     YEARS("yyyy"),
+    ALL("NONE"),
 
     /**
      * Discrete Time Group

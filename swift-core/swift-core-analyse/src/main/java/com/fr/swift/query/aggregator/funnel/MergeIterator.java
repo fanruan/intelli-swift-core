@@ -29,13 +29,13 @@ public class MergeIterator {
     private final IMergeColumn associatedColumns;
     private final IMergeColumn groupColumns;
     private DetailColumn timestampDetails;
-    private DictionaryEncodedColumn eventDicts;
+    private DictionaryEncodedColumn eventDict;
     private IntListRowTraversal travels;
     private String values;
 
     public MergeIterator(TimeWindowFilter filter, IStep step, Iterator<GroupByEntry> iterator,
                          DictionaryEncodedColumn<String> recordDic, DetailColumn timestamp,
-                         DictionaryEncodedColumn eventDicts,
+                         DictionaryEncodedColumn eventDict,
                          DictionaryEncodedColumn associatedColumns, Column groupColumns,
                          int postGroupIndex) {
         this.filter = filter;
@@ -44,7 +44,7 @@ public class MergeIterator {
         this.recordDic = recordDic;
         SwiftLoggers.getLogger().debug("segment his recordDic size: {}", recordDic.size());
         this.timestampDetails = timestamp;
-        this.eventDicts = eventDicts;
+        this.eventDict = eventDict;
         this.associatedColumns = null == associatedColumns ? null : new OriginDecMergeColumn(associatedColumns);
         this.groupColumns = mergeGroupColumn(groupColumns);
         this.postGroupIndex = postGroupIndex;
@@ -93,7 +93,7 @@ public class MergeIterator {
             @Override
             public void actionPerformed(int row) {
                 long timestamp = timestampDetails.getLong(row);
-                int event = eventDicts.getIndexByRow(row);
+                int event = eventDict.getIndexByRow(row);
                 filter.add(event, timestamp,
                         associatedColumns == null ? -1 : associatedColumns.getIndex(row),
                         postGroupIndex == -1 ? null : step.isEqual(postGroupIndex, event, row) ? groupColumns.getValue(row) : null, row);

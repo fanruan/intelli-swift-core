@@ -32,6 +32,7 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
         private AggregatorValue[] tmp;
         private int lastIterator = -1;
         private int preLastIterator = -1;
+        private Iterator<SwiftNode> nodeIterator;
 
 
         public CartesianCombineIterator(int depth, AggregatorValue[] source) {
@@ -58,11 +59,14 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
                     return true;
                 }
             }
-            return false;
+            return null != nodeIterator && nodeIterator.hasNext();
         }
 
         @Override
         public SwiftNode next() {
+            if (null != nodeIterator && nodeIterator.hasNext()) {
+                return nodeIterator.next();
+            }
             for (int i = tmp.length - 1; i >= 0; i--) {
                 if (iterators[i] == null) {
                     tmp[i] = source[i];
@@ -97,6 +101,12 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
             List<AggregatorValue> list = new ArrayList<AggregatorValue>();
             SwiftNode swiftNode = null;
             SwiftNode leafNode = null;
+            CartesianAggregatorCombiner combiner = new CartesianAggregatorCombiner(tmp.length);
+            combiner.setAggregatorValues(tmp);
+            if (combiner.isNeedCombine()) {
+                nodeIterator = combiner.getSwiftNodeIterator(depth);
+                return nodeIterator.next();
+            }
             for (AggregatorValue value : tmp) {
                 if (value instanceof SwiftNodeAggregatorValue) {
                     SwiftNodeAggregatorValue groupValue = (SwiftNodeAggregatorValue) value;
@@ -107,6 +117,7 @@ public class CartesianAggregatorCombiner extends BaseAggregatorCombiner {
                     list.add(value);
                 }
             }
+
             if (null == swiftNode) {
                 swiftNode = new GroupNode(depth + 1, null);
                 swiftNode.setAggregatorValue(list.toArray(new AggregatorValue[0]));

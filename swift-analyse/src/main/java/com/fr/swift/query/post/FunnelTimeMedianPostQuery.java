@@ -2,8 +2,8 @@ package com.fr.swift.query.post;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
-import com.fr.swift.query.aggregator.FunnelAggValue;
 import com.fr.swift.query.aggregator.FunnelAggregatorValue;
+import com.fr.swift.query.aggregator.FunnelHelperValue;
 import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.funnel.TimeWindowBean;
@@ -87,7 +87,7 @@ public class FunnelTimeMedianPostQuery implements Query<QueryResultSet<SwiftNode
                         aggregatorValues.add(value);
                         if (value instanceof FunnelAggregatorValue) {
                             FunnelAggregatorValue funnelValue = (FunnelAggregatorValue) value;
-                            for (Map.Entry<FunnelGroupKey, FunnelAggValue> entry : funnelValue.getValueMap().entrySet()) {
+                            for (Map.Entry<FunnelGroupKey, FunnelHelperValue> entry : funnelValue.getValueMap().entrySet()) {
                                 List<List<Long>> periods = entry.getValue().getPeriods();
                                 for (int i = 0; i < periods.size(); i++) {
                                     List<Long> list = periods.get(i);
