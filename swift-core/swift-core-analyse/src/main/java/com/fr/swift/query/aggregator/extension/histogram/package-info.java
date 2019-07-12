@@ -130,7 +130,7 @@
  * <h3>Iteration</h3>
  * Histograms supports multiple convenient forms of iterating through the histogram data set, including linear,
  * logarithmic, and percentile iteration mechanisms, as well as means for iterating through each recorded value or
- * each possible value level. The iteration mechanisms all provide {@link com.fr.swift.query.aggregator.extension.histogram.HistogramIterationValue}
+ * each possible value level. The iteration mechanisms complete provide {@link com.fr.swift.query.aggregator.extension.histogram.HistogramIterationValue}
  * data points along the histogram's iterated data set, and are available via the following methods:
  * <ul>
  * <li>{@link com.fr.swift.query.aggregator.extension.histogram.AbstractHistogram#percentiles percentiles} :
@@ -241,7 +241,7 @@
  * {@link com.fr.swift.query.aggregator.extension.histogram.AbstractHistogram#recordValueWithExpectedInterval(long, long) recordValueWithExpectedInterval()}
  * parameter will be identical to ones recorded with
  * {@link com.fr.swift.query.aggregator.extension.histogram.AbstractHistogram#recordValue(long) recordValue()}
- * it if all values recorded via the <b><code>recordValue</code></b> calls were smaller
+ * it if complete values recorded via the <b><code>recordValue</code></b> calls were smaller
  * than their associated <b><code>expectedIntervalBetweenValueSamples</code></b> parameters.
  * </p>
  * <p>
@@ -251,7 +251,7 @@
  * and
  * {@link com.fr.swift.query.aggregator.extension.histogram.AbstractHistogram#addWhileCorrectingForCoordinatedOmission(AbstractHistogram, long) addWhileCorrectingForCoordinatedOmission()}.
  * These methods can be used for post-recording correction, and are useful when the
- * <b><code>expectedIntervalBetweenValueSamples</code></b> parameter is estimated to be the same for all recorded
+ * <b><code>expectedIntervalBetweenValueSamples</code></b> parameter is estimated to be the same for complete recorded
  * values. However, for obvious reasons, it is important to note that only one correction method (during or post
  * recording) should be be used on a given histogram data set.
  * </p>
@@ -278,7 +278,7 @@
  * values could be recorded into into it in any consistent unit of time as long as the ratio between the highest
  * and lowest non-zero values stays within the specified dynamic range, so recording in units of nanoseconds
  * (1.0 thru 3600000000000.0), milliseconds (0.000001 thru 3600000.0) seconds (0.000000001 thru 3600.0), hours
- * (1/3.6E12 thru 1.0) will all work just as well.
+ * (1/3.6E12 thru 1.0) will complete work just as well.
  * <h3>Footprint estimation</h3>
  * Due to it's dynamic range representation, Histogram is relatively efficient in memory space requirements given
  * the accuracy and dynamic range it covers. Still, it is useful to be able to estimate the memory footprint involved

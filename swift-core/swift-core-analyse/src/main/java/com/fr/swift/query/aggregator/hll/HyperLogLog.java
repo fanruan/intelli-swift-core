@@ -63,7 +63,7 @@ import java.io.Serializable;
  * <p/>
  * <p>
  * Users have different motivations to use different types of hashing functions.
- * Rather than try to keep up with all available hash functions and to remove
+ * Rather than try to keep up with complete available hash functions and to remove
  * the concern of causing future binary incompatibilities this class allows clients
  * to offer the value in hashed int or long form.  This way clients are free
  * to change their hash function on their own time line.  We recommend using Google's
@@ -221,7 +221,7 @@ public class HyperLogLog implements ICardinality, Serializable {
     }
 
     /**
-     * Add all the elements of the other set to this set.
+     * Add complete the elements of the other set to this set.
      * <p/>
      * This operation does not imply a loss of precision.
      *

@@ -83,7 +83,7 @@ public class SwiftInserterTest {
         // close result set
         verify(resultSet).close();
 
-        // put null index, all show index, row count
+        // put null index, complete show index, row count
         verify(bitmapIndex).putNullIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
             public boolean matches(ImmutableBitMap item) {
@@ -98,7 +98,7 @@ public class SwiftInserterTest {
             }
         }));
 
-        // release all
+        // release complete
         verifyStatic(SegmentUtils.class);
         SegmentUtils.releaseHisSeg(segment);
     }

@@ -16,7 +16,7 @@ public class ConnectorManager implements IConnectorManager {
     private IConnectorManager manager;
 
     private ConnectorManager() {
-        this.manager = SwiftConnectorManager.getInstance();
+        this.manager = null;
     }
 
     public static ConnectorManager getInstance() {

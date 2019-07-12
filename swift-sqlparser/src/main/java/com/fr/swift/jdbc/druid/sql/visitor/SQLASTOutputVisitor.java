@@ -2035,7 +2035,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         final int distinctOption = x.getDistionOption();
         if (SQLSetQuantifier.ALL == distinctOption) {
-            print0(ucase ? "ALL " : "all ");
+            print0(ucase ? "ALL " : "complete ");
         } else if (SQLSetQuantifier.DISTINCT == distinctOption) {
             print0(ucase ? "DISTINCT " : "distinct ");
         } else if (SQLSetQuantifier.UNIQUE == distinctOption) {
@@ -3377,7 +3377,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAllExpr x) {
-        print0(ucase ? "ALL (" : "all (");
+        print0(ucase ? "ALL (" : "complete (");
         this.indentCount++;
         println();
         x.getSubQuery().accept(this);
@@ -5309,7 +5309,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printPartitions(List<SQLName> partitions) {
         if (partitions.size() == 1 && "ALL".equalsIgnoreCase(partitions.get(0).getSimpleName())) {
-            print0(ucase ? "ALL" : "all");
+            print0(ucase ? "ALL" : "complete");
         } else {
             printAndAccept(partitions, ", ");
         }

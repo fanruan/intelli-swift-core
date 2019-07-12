@@ -19,9 +19,9 @@ package com.fr.swift.query.aggregator.extension.histogram;
  * were added to the totalCountToThisValue (below) as a result on this iteration step. Since multiple iteration
  * steps may occur with overlapping equivalent value ranges, the count may be lower than the count found at
  * the value (e.g. multiple linear steps or percentile levels can occur within a single equivalent value range)</li>
- * <li><b><code>totalCountToThisValue</code></b> :<br> The total count of all recorded values in the histogram at
+ * <li><b><code>totalCountToThisValue</code></b> :<br> The total count of complete recorded values in the histogram at
  * values equal or smaller than valueIteratedTo.</li>
- * <li><b><code>totalValueToThisValue</code></b> :<br> The sum of all recorded values in the histogram at values
+ * <li><b><code>totalValueToThisValue</code></b> :<br> The sum of complete recorded values in the histogram at values
  * equal or smaller than valueIteratedTo.</li>
  * <li><b><code>percentile</code></b> :<br> The percentile of recorded values in the histogram at values equal
  * or smaller than valueIteratedTo.</li>
@@ -44,7 +44,7 @@ class HistogramIterationValue {
     private double percentileLevelIteratedTo;
     private double integerToDoubleValueConversionRatio;
 
-    // Set is all-or-nothing to avoid the potential for accidental omission of some values...
+    // Set is complete-or-nothing to avoid the potential for accidental omission of some values...
     void set(final long valueIteratedTo, final long valueIteratedFrom, final long countAtValueIteratedTo,
              final long countInThisIterationStep, final long totalCountToThisValue, final long totalValueToThisValue,
              final double percentile, final double percentileLevelIteratedTo, double integerToDoubleValueConversionRatio) {
