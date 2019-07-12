@@ -1,4 +1,4 @@
-package com.fr.swift.cloud.result.table;
+package com.fr.swift.cloud.result.table.template;
 
 import com.fr.swift.source.Row;
 

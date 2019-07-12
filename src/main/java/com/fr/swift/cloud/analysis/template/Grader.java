@@ -1,4 +1,4 @@
-package com.fr.swift.cloud.analysis;
+package com.fr.swift.cloud.analysis.template;
 
 /**
  * Created by lyon on 2018/12/22.

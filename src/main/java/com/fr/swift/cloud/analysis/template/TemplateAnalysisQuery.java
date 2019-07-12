@@ -1,11 +1,15 @@
-package com.fr.swift.cloud.analysis;
+package com.fr.swift.cloud.analysis.template;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.cloud.analysis.CloudQuery;
+import com.fr.swift.cloud.analysis.ICloudQuery;
 import com.fr.swift.cloud.result.ArchiveDBManager;
-import com.fr.swift.cloud.result.table.ExecutionMetric;
-import com.fr.swift.cloud.result.table.LatencyTopPercentileStatistic;
-import com.fr.swift.cloud.result.table.TemplateAnalysisResult;
-import com.fr.swift.cloud.result.table.TemplateProperty;
-import com.fr.swift.cloud.result.table.TemplatePropertyRatio;
+import com.fr.swift.cloud.result.table.template.ExecutionMetric;
+import com.fr.swift.cloud.result.table.template.LatencyTopPercentileStatistic;
+import com.fr.swift.cloud.result.table.template.TemplateAnalysisResult;
+import com.fr.swift.cloud.result.table.template.TemplateProperty;
+import com.fr.swift.cloud.result.table.template.TemplatePropertyRatio;
+import com.fr.swift.cloud.util.TimeUtils;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -20,8 +24,6 @@ import com.fr.swift.source.Row;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import javax.persistence.Query;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,16 +34,17 @@ import java.util.UUID;
 /**
  * Created by lyon on 2019/3/1.
  */
-public class TemplateAnalysisUtils {
+@SwiftBean
+@CloudQuery(name = "templateAnalysisQuery", tables = {"execution_metric", "latency_top_percentile_statistic", "template_analysis_result", "template_property", "template_property_ratio"})
+public class TemplateAnalysisQuery implements ICloudQuery {
 
     private static final int PERCENT_START = 50;
     private static final int PERCENT_END = 100;
     private static final int PERCENT_STEP = 5;
     private static final int BATCH_SIZE = 20;
 
-    private static SimpleDateFormat format = new SimpleDateFormat("yyyyMM");
-
-    public static void tplAnalysis(String appId, String yearMonth) throws Exception {
+    @Override
+    public void queryAndSave(String appId, String yearMonth) throws Exception {
         SwiftLoggers.getLogger().info("Start template analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
 
         // 访问延时分位数统计图
@@ -57,7 +60,7 @@ public class TemplateAnalysisUtils {
         MetricQuery metricQuery = new GlobalAnalysisQuery(filter, appId, yearMonth);
         SwiftResultSet rs = metricQuery.getResult();
         Map<String, Integer> fieldIndexMap = fieldIndexMap(rs.getMetaData().getFieldNames());
-        Date date = format.parse(yearMonth);
+        Date date = TimeUtils.yearMonth2Date(yearMonth);
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         Transaction transaction = session.beginTransaction();
         int count = 1;
@@ -86,60 +89,26 @@ public class TemplateAnalysisUtils {
         SwiftLoggers.getLogger().info("finished template analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
     }
 
-    private static TemplateAnalysisResult createTemplateAnalysisResult(String tName, String appId, Date yearMonth, Row row,
-                                                                       Map<String, Integer> map) {
+    private TemplateAnalysisResult createTemplateAnalysisResult(String tName, String appId, Date yearMonth, Row row,
+                                                                Map<String, Integer> map) {
         return new TemplateAnalysisResult(tName, appId, yearMonth, row, map);
     }
 
-    private static TemplatePropertyRatio createTemplatePropertyRatio(String tName, String appId, Date yearMonth, Row row,
-                                                                     Map<String, Integer> map) {
+    private TemplatePropertyRatio createTemplatePropertyRatio(String tName, String appId, Date yearMonth, Row row,
+                                                              Map<String, Integer> map) {
         return new TemplatePropertyRatio(tName, row, map, appId, yearMonth);
     }
 
-    private static TemplateProperty createTemplateProperty(String tName, String appId, Date yearMonth, Row row,
-                                                           Map<String, Integer> map) {
+    private TemplateProperty createTemplateProperty(String tName, String appId, Date yearMonth, Row row,
+                                                    Map<String, Integer> map) {
         return new TemplateProperty(tName, row, map, appId, yearMonth);
     }
 
-    private static ExecutionMetric createExecutionMetric(String tName, String appId, Date yearMonth, Row row, Map<String, Integer> map) {
+    private ExecutionMetric createExecutionMetric(String tName, String appId, Date yearMonth, Row row, Map<String, Integer> map) {
         return new ExecutionMetric(tName, row, map, appId, yearMonth);
     }
 
-    @Deprecated
-    private static String[] getStringValues(String start, String end, Row row, Map<String, Integer> map) {
-        int s = map.get(start);
-        int e = map.get(end);
-        String[] values = new String[e - s + 1];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = row.getValue(i + s);
-        }
-        return values;
-    }
-
-    @Deprecated
-    private static long[] getLongValues(String start, String end, Row row, Map<String, Integer> map) {
-        int s = map.get(start);
-        int e = map.get(end);
-        long[] values = new long[e - s + 1];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = row.<Long>getValue(i + s);
-        }
-        return values;
-    }
-
-    @Deprecated
-    private static double[] getDoubleValues(String start, String end, Row row, Map<String, Integer> map) {
-        int s = map.get(start);
-        int e = map.get(end);
-        double[] values = new double[e - s + 1];
-        for (int i = 0; i < values.length; i++) {
-            Double value = row.<Double>getValue(i + s);
-            values[i] = value.isNaN() ? 0 : value;
-        }
-        return values;
-    }
-
-    private static Map<String, Integer> fieldIndexMap(List<String> fields) {
+    private Map<String, Integer> fieldIndexMap(List<String> fields) {
         Map<String, Integer> map = new HashMap<String, Integer>();
         for (int i = 0; i < fields.size(); i++) {
             map.put(fields.get(i), i);
@@ -147,12 +116,12 @@ public class TemplateAnalysisUtils {
         return map;
     }
 
-    private static void tpGraph(String appId, String yearMonth) throws Exception {
+    private void tpGraph(String appId, String yearMonth) throws Exception {
         FilterInfoBean filter = new AndFilterBean(Arrays.<FilterInfoBean>asList(
                 new InFilterBean("appId", appId),
                 new InFilterBean("yearMonth", yearMonth)
         ));
-        Date date = format.parse(yearMonth);
+        Date date = TimeUtils.yearMonth2Date(yearMonth);
         Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
         Transaction transaction = session.beginTransaction();
         try {
@@ -169,7 +138,7 @@ public class TemplateAnalysisUtils {
         }
     }
 
-    private static long tp(int percent, FilterInfoBean filter) throws Exception {
+    private long tp(int percent, FilterInfoBean filter) throws Exception {
         GroupQueryInfoBean query = GroupQueryInfoBean.builder("execution")
                 .setFilter(filter)
                 .setAggregations(MetricBean.builder("consume", AggregatorType.TOP_PERCENTILE)
@@ -185,7 +154,7 @@ public class TemplateAnalysisUtils {
         return value == null ? 0 : value.longValue();
     }
 
-    private static FilterInfoBean tp90(FilterInfoBean filter) throws Exception {
+    private FilterInfoBean tp90(FilterInfoBean filter) throws Exception {
         GroupQueryInfoBean query = new GroupQueryInfoBean();
         query.setQueryId(UUID.randomUUID().toString());
         query.setTableName("execution");

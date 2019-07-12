@@ -46,11 +46,11 @@ public class DowntimeAnalyser {
     private static final String execution = "execution";
     private static final String executionSql = "execution_sql";
 
-    public void downtimeAnalyse(String appId, String yearMonth) throws Exception {
+    public List<DowntimeResult> downtimeAnalyse(String appId, String yearMonth) throws Exception {
 
         SwiftLoggers.getLogger().info("Start downtime analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
         FilterInfoBean filter = new AndFilterBean(
-                Arrays.<FilterInfoBean>asList(
+                Arrays.asList(
                         new InFilterBean("appId", appId),
                         new InFilterBean("yearMonth", yearMonth))
         );
@@ -81,7 +81,7 @@ public class DowntimeAnalyser {
         Collections.sort(analysisList, new Comparator<DowntimeElement>() {
             @Override
             public int compare(DowntimeElement o1, DowntimeElement o2) {
-                return (int) (o1.recordTime() - o2.recordTime());
+                return Long.compare(o1.recordTime(), o2.recordTime());
             }
         });
         // TODO: 2019/5/24 by lucifer 不同进程  pid相同的情况
@@ -92,6 +92,7 @@ public class DowntimeAnalyser {
             }
             pidElementsMap.get(downtimeElement.pid()).add(downtimeElement);
         }
+        List<DowntimeResult> downtimeResultList = new ArrayList<>();
         for (Map.Entry<Integer, List<DowntimeElement>> entry : pidElementsMap.entrySet()) {
             int pid = entry.getKey();
             List<DowntimeElement> downtimeElementList = entry.getValue();
@@ -102,6 +103,7 @@ public class DowntimeAnalyser {
             analyseDowntimeType(downtimeElementList, downtimeResult, shutdownMap);
 
             List<DowntimeExecutionResult> downtimeExecutionResultList = analyseExecutionInfo(downtimeResult, filter, downtimeElementList);
+            downtimeResultList.add(downtimeResult);
 
             Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
             Transaction transaction = session.beginTransaction();
@@ -125,6 +127,7 @@ public class DowntimeAnalyser {
             }
         }
         SwiftLoggers.getLogger().info("finished downtime analysis task with appId: {}, yearMonth: {}", appId, yearMonth);
+        return downtimeResultList;
     }
 
     /**
@@ -165,10 +168,12 @@ public class DowntimeAnalyser {
                 if (((RealtimeUsageElement) downtimeElement).cpu() >= CPU_OVERLOAD_RATE) {
                     overloadCpuTimes++;
                 }
-                if (downtimeResult.getNode() == null) {
-                    downtimeResult.setNode(((RealtimeUsageElement) downtimeElement).node());
-                }
+
             }
+            if (downtimeResult.getNode() == null) {
+                downtimeResult.setNode(downtimeElement.node());
+            }
+
         }
         downtimeResult.setFullGcTime(totalFullGcTime);
         if (totalFullGcTime >= FULL_GC_TIME) {
@@ -176,15 +181,84 @@ public class DowntimeAnalyser {
         } else if (((double) overloadCpuTimes / totalCpuTimes) >= 0.8) {
             downtimeResult.setPredictDownType(DowntimeResult.SignalName.XCPU.name());
         } else {
-            downtimeResult.setPredictDownType(DowntimeResult.SignalName.TERM.name());
+            if (oomKiller(downtimeElementList)) {
+                downtimeResult.setPredictDownType(DowntimeResult.SignalName.OOM.name());
+            } else {
+                downtimeResult.setPredictDownType(DowntimeResult.SignalName.TERM.name());
+            }
         }
         if (shutdownMap.containsKey(downtimeResult.getPid())) {
             downtimeResult.setRecordDownType(shutdownMap.get(downtimeResult.getPid()).getSignalName());
         }
     }
 
+    /**
+     * @param downtimeElementList
+     * @return
+     * @description gc次数和内存波动
+     */
+    private boolean oomKiller(List<DowntimeElement> downtimeElementList) {
+        int gcTimes = 0;
+        List<Long> mems = new ArrayList<>();
+        for (DowntimeElement downtimeElement : downtimeElementList) {
+            if (downtimeElement.type() == AbstractDowntimeElement.ElementType.GC) {
+                gcTimes++;
+            } else if (downtimeElement.type() == AbstractDowntimeElement.ElementType.REALTIME_USAGE) {
+                mems.add(((RealtimeUsageElement) downtimeElement).memory());
+            }
+        }
+        int[] times = new int[mems.size()];
+        double[] memMbs = new double[mems.size()];
+        double totalMemMbs = 0;
+        for (int i = 0; i < mems.size(); i++) {
+            times[i] = i + 1;
+            memMbs[i] = mems.get(i) / 1024 / 1024;
+            totalMemMbs += memMbs[i];
+        }
+        double memSlope = calcMemSlope(times.length, times, memMbs);
+        double volatility = 0;
+        if (!Double.isNaN(memSlope)) {
+            volatility = memSlope / (totalMemMbs / times.length);
+        }
+        if (gcTimes < 10) {
+            //todo GC次数很少且内存持续很低
+            //todo GC次数很少但是内存持续很高
+            return false;
+        }
+        if (gcTimes > 20) {
+            //GC次数频繁但内存持续下降
+            //GC次数频繁但内存波动不大
+            return !(volatility < -0.2d);
+        }
+        return true;
+    }
+
+    public double calcMemSlope(int n, int[] x, double[] y) {
+        int sumxx = 0, sumx = 0, sumxy = 0, sumy = 0;
+        for (int i = 0; i < n; i++) {
+            sumxx += x[i] * x[i]; //x平方求和
+            sumx += x[i];        //x求和
+            sumxy += x[i] * y[i];  //xy求和
+            sumy += y[i];        //y求和
+        }
+
+        int fm = n * sumxx - sumx * sumx;
+        int fz1 = n * sumxy - sumx * sumy;
+        int fz2 = sumy * sumxx - sumx * sumxy;
+        return 1.0 * fz1 / fm;
+    }
+
+    /**
+     * @param downtimeResult
+     * @param baseFilter
+     * @param downtimeElementList
+     * @return
+     * @throws Exception
+     * @description 宕机时间点前模版访问情况
+     */
     private List<DowntimeExecutionResult> analyseExecutionInfo(DowntimeResult downtimeResult, FilterInfoBean baseFilter, List<DowntimeElement> downtimeElementList) throws Exception {
-        if (downtimeElementList.size() < 2) {
+        if ((downtimeResult.getPredictDownType().equals(DowntimeResult.SignalName.TERM.name())
+                || (downtimeElementList.size() < 2))) {
             return Collections.EMPTY_LIST;
         }
         long startTime = downtimeElementList.get(0).recordTime();
@@ -196,7 +270,7 @@ public class DowntimeAnalyser {
         NumberInRangeFilterBean executionFilterBean = NumberInRangeFilterBean.builder("time").setStart(String.valueOf(startTime), true).setEnd(String.valueOf(endTime), true).build();
 
         FilterInfoBean executionFilter = new AndFilterBean(
-                Arrays.<FilterInfoBean>asList(
+                Arrays.asList(
                         baseFilter,
                         executionFilterBean));
         DetailQueryInfoBean executionBean = DetailQueryInfoBean.builder(execution).setDimensions(DowntimeExecutionResult.getDimensions()).setFilter(executionFilter).build();
@@ -207,7 +281,7 @@ public class DowntimeAnalyser {
             DowntimeExecutionResult downtimeExecutionResult = new DowntimeExecutionResult(executionRow, downtimeResult.getId(), downtimeResult.getAppId(), downtimeResult.getYearMonth());
 
             FilterInfoBean executionSqlFilter = new AndFilterBean(
-                    Arrays.<FilterInfoBean>asList(
+                    Arrays.asList(
                             baseFilter,
                             new InFilterBean("executionId", downtimeExecutionResult.getId())));
             DetailQueryInfoBean bean = DetailQueryInfoBean.builder(executionSql).setDimensions(ExecutionSqlData.getDimensions()).setFilter(executionSqlFilter).build();

@@ -16,11 +16,12 @@ public class TreasureBean {
     private String version;
     private long timestamp;
     private String type;
+    private String customerId;
 
     public TreasureBean() {
     }
 
-    public TreasureBean(String topic, String key, String url, String clientId, String clientAppId, String yearMonth, String version, long timestamp, String type) {
+    public TreasureBean(String topic, String key, String url, String clientId, String clientAppId, String yearMonth, String version, long timestamp, String type, String customerId) {
         this.topic = topic;
         this.key = key;
         this.url = url;
@@ -30,6 +31,7 @@ public class TreasureBean {
         this.version = version;
         this.timestamp = timestamp;
         this.type = type;
+        this.customerId = customerId;
     }
 
     public String getTopic() {
@@ -66,5 +68,25 @@ public class TreasureBean {
 
     public String getType() {
         return type;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    @Override
+    public String toString() {
+        return "TreasureBean{" +
+                "topic='" + topic + '\'' +
+                ", key='" + key + '\'' +
+                ", url='" + url + '\'' +
+                ", clientId='" + clientId + '\'' +
+                ", clientAppId='" + clientAppId + '\'' +
+                ", yearMonth='" + yearMonth + '\'' +
+                ", version='" + version + '\'' +
+                ", timestamp=" + timestamp +
+                ", type='" + type + '\'' +
+                ", customerId='" + customerId + '\'' +
+                '}';
     }
 }

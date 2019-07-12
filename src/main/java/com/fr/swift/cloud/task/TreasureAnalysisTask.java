@@ -11,29 +11,29 @@ import com.fr.swift.executor.type.TaskType;
 import com.fr.swift.source.SourceKey;
 
 /**
- * This class created on 2019/5/9
+ * This class created on 2019/6/12
  *
  * @author Lucifer
  * @description
  */
 @TaskType(type = CloudTaskType.class)
-public class TreasureUploadTask extends AbstractExecutorTask<Job> {
+public class TreasureAnalysisTask extends AbstractExecutorTask<Job> {
 
-    public TreasureUploadTask(TreasureBean treasureBean) throws Exception {
-        super(new SourceKey(treasureBean.getTopic()),
+    public TreasureAnalysisTask(TreasureBean treasureBean) throws Exception {
+        super(new SourceKey(treasureBean.getTopic() + CloudTaskType.TREASURE_ANALYSIS.name()),
                 true,
-                CloudTaskType.TREASURE_UPLOAD,
+                CloudTaskType.TREASURE_ANALYSIS,
                 LockType.TABLE,
                 treasureBean.getTopic(),
                 DBStatusType.ACTIVE,
-                new TreasureUploadJob(treasureBean));
+                new TreasureAnalysisJob(treasureBean));
     }
 
-    public TreasureUploadTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                              String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
+    public TreasureAnalysisTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
+                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
         super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
 
         TreasureBean treasureBean = JsonBuilder.readValue(taskContent, TreasureBean.class);
-        this.job = new TreasureUploadJob(treasureBean);
+        this.job = new TreasureAnalysisJob(treasureBean);
     }
 }

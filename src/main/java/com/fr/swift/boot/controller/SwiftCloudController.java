@@ -2,20 +2,16 @@ package com.fr.swift.boot.controller;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.Inside;
-import com.fr.swift.annotation.Negative;
-import com.fr.swift.cloud.analysis.TemplateAnalysisUtils;
-import com.fr.swift.cloud.analysis.downtime.DowntimeAnalyser;
+import com.fr.swift.cloud.analysis.CloudQuery;
+import com.fr.swift.cloud.analysis.ICloudQuery;
 import com.fr.swift.cloud.load.CloudVersionProperty;
-import com.fr.swift.cloud.result.ArchiveDBManager;
-import com.fr.swift.cloud.result.table.CustomerInfo;
+import com.fr.swift.cloud.task.TreasureAnalysisJob;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.config.ExecutorTaskService;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.source.SwiftMetaData;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.Query;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -72,15 +67,29 @@ public class SwiftCloudController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/cloud/tpl/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/cloud/custom/analyse", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @Inside
-    public boolean reAnalyseTpl(@RequestBody Map<String, String> map) throws Exception {
-        String appId = map.get("appId");
-        String clientId = map.get("clientId");
-        String yearMonth = map.get("yearMonth");
-        TemplateAnalysisUtils.tplAnalysis(appId, yearMonth);
-        new DowntimeAnalyser().downtimeAnalyse(appId, yearMonth);
-        saveCustomerInfo(clientId, appId, yearMonth);
+    public boolean reAnalyseTpl(@RequestBody Map<String, List<String>> map) throws Exception {
+        List<String> appIds = map.get("appId");
+        List<String> yearMonths = map.get("yearMonth");
+        //functionUsageRateQuery,confEntityQuery,customBaseInfoQuery,pluginUsageQuery,templateUsageInfoQuery
+        List<String> queryInfos = map.get("queries");
+        List<String> queryList = new ArrayList<>();
+        for (String queryInfo : queryInfos) {
+            queryList.add(queryInfo);
+        }
+
+        Map<String, Object> objectMap = SwiftContext.get().getBeansByAnnotations(CloudQuery.class);
+        Map<ICloudQuery, String[]> queryMap = TreasureAnalysisJob.getQueries(objectMap, queryList);
+
+        for (int i = 0; i < appIds.size(); i++) {
+            String appId = appIds.get(i);
+            String yearMonth = yearMonths.get(i);
+            for (Map.Entry<ICloudQuery, String[]> queryEntry : queryMap.entrySet()) {
+                TreasureAnalysisJob.deleteIfExisting(appId, yearMonth, queryEntry.getValue());
+                queryEntry.getKey().queryAndSave(appId, yearMonth);
+            }
+        }
         return true;
     }
 
@@ -109,40 +118,5 @@ public class SwiftCloudController {
             statement.close();
             connection.close();
         }
-    }
-
-    @Negative(until = "2019-06-30")
-    private void saveCustomerInfo(String clientId, String appId, String yearMonth) {
-        if (isExisted(clientId, appId)) {
-            return;
-        }
-        Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
-        try {
-            Transaction transaction = session.beginTransaction();
-            CustomerInfo customerInfo = new CustomerInfo(clientId, appId, yearMonth);
-            session.saveOrUpdate(customerInfo);
-            transaction.commit();
-        } catch (Exception ignored) {
-        }
-        session.close();
-    }
-
-    @Negative(until = "2019-06-30")
-    private boolean isExisted(String clientId, String appId) {
-        Session session = ArchiveDBManager.INSTANCE.getFactory().openSession();
-        try {
-            Query query = session.createQuery(sql(CustomerInfo.class.getSimpleName()));
-            query.setParameter("clientId", clientId);
-            query.setParameter("appId", appId);
-            return ((org.hibernate.query.Query) query).uniqueResult() != null;
-        } catch (Exception ignored) {
-        }
-        session.close();
-        return false;
-    }
-
-    @Negative(until = "2019-06-30")
-    private String sql(String tableName) {
-        return "select 1 from " + tableName + " where clientId = :clientId and appId = :appId";
     }
 }

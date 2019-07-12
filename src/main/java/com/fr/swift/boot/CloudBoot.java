@@ -4,7 +4,8 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cloud.CloudProperty;
 import com.fr.swift.cloud.kafka.MessageConsumer;
 import com.fr.swift.cloud.task.CloudTaskType;
-import com.fr.swift.cloud.task.TreasureUploadTask;
+import com.fr.swift.cloud.task.TreasureAnalysisTask;
+import com.fr.swift.cloud.task.TreasureImportTask;
 import com.fr.swift.executor.task.ExecutorTypeContainer;
 
 /**
@@ -19,7 +20,8 @@ public class CloudBoot {
     private MessageConsumer consumer;
 
     public CloudBoot() {
-        ExecutorTypeContainer.getInstance().registerClass(CloudTaskType.TREASURE_UPLOAD, TreasureUploadTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(CloudTaskType.TREASURE_IMPORT, TreasureImportTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(CloudTaskType.TREASURE_ANALYSIS, TreasureAnalysisTask.class);
         consumer = new MessageConsumer(CloudProperty.getProperty().getTreasureUploadTopic());
         consumer.start();
     }

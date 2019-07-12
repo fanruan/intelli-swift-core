@@ -27,21 +27,31 @@ public class CustomerInfo {
     @Column(name = "appId")
     private String appId;
 
+    @Column(name = "customerId")
+    private String customerId;
+
     @Column(name = "customer")
     private String customer;
+
+    @Column(name = "type")
+    private String type;
 
     @Column(name = "yearMonth")
     private Date yearMonth;
 
-    public CustomerInfo(String clientId, String appId, String yearMonthStr) {
+    public CustomerInfo(String clientId, String customerId, String appId, String yearMonthStr, String type) {
         this.clientId = clientId;
         this.appId = appId;
         this.yearMonth = TimeUtils.yearMonth2Date(yearMonthStr);
+        this.customerId = customerId;
+        this.type = type;
     }
 
-    public CustomerInfo(String clientId, String appId, Date yearMonth) {
+    public CustomerInfo(String clientId, String customerId, String appId, Date yearMonth, String type) {
         this.clientId = clientId;
         this.appId = appId;
         this.yearMonth = yearMonth;
+        this.customerId = customerId;
+        this.type = type;
     }
 }

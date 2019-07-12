@@ -1,4 +1,4 @@
-package com.fr.swift.cloud.analysis;
+package com.fr.swift.cloud.analysis.template;
 
 import com.fr.swift.result.SwiftResultSet;
 

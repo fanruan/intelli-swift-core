@@ -3,7 +3,7 @@ package com.fr.swift.cloud.kafka;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.swift.cloud.CloudProperty;
 import com.fr.swift.cloud.bean.TreasureBean;
-import com.fr.swift.cloud.task.TreasureUploadTask;
+import com.fr.swift.cloud.task.TreasureImportTask;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
@@ -64,7 +64,7 @@ public class MessageConsumer extends ShutdownableThread {
             if (record.topic().equals(CloudProperty.getProperty().getTreasureUploadTopic())) {
                 try {
                     TreasureBean treasureBean = jsonMapper.readValue(record.value(), TreasureBean.class);
-                    ExecutorTask executorTask = new TreasureUploadTask(treasureBean);
+                    ExecutorTask executorTask = new TreasureImportTask(treasureBean);
                     executorTasks.add(executorTask);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);

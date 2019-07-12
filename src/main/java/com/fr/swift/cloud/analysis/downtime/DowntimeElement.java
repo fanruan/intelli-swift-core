@@ -17,4 +17,8 @@ public interface DowntimeElement {
     String yearMonth();
 
     AbstractDowntimeElement.ElementType type();
+
+    String node();
+
+
 }

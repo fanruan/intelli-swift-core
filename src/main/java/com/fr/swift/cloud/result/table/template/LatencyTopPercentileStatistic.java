@@ -1,4 +1,4 @@
-package com.fr.swift.cloud.result.table;
+package com.fr.swift.cloud.result.table.template;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -12,16 +12,21 @@ public class TreasureAnalysisBean {
     private String yearMonth;
     private String version;
     private long timestamp;
+    private String type;
+    private String customerId;
+
 
     public TreasureAnalysisBean() {
     }
 
-    public TreasureAnalysisBean(String clientId, String clientAppId, String yearMonth, String version) {
+    public TreasureAnalysisBean(String clientId, String clientAppId, String yearMonth, String version, String type, String customerId) {
         this.clientId = clientId;
         this.clientAppId = clientAppId;
         this.yearMonth = yearMonth;
         this.version = version;
         this.timestamp = System.currentTimeMillis();
+        this.type = type;
+        this.customerId = customerId;
     }
 
     public String getClientId() {
@@ -42,5 +47,26 @@ public class TreasureAnalysisBean {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    @Override
+    public String toString() {
+        return "TreasureAnalysisBean{" +
+                "clientId='" + clientId + '\'' +
+                ", clientAppId='" + clientAppId + '\'' +
+                ", yearMonth='" + yearMonth + '\'' +
+                ", version='" + version + '\'' +
+                ", timestamp=" + timestamp +
+                ", type='" + type + '\'' +
+                ", customerId='" + customerId + '\'' +
+                '}';
     }
 }
