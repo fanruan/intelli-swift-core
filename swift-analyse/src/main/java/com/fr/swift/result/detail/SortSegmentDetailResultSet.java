@@ -82,15 +82,15 @@ public class SortSegmentDetailResultSet extends BaseDetailQueryResultSet {
     public List<Row> getPage() {
         List<Row> rows = new ArrayList<Row>();
         int count = fetchSize;
-        List<Column> columns = getColumnList(columnList);
+        List<Column<?>> columns = getColumnList(columnList);
         while (rowNumberIterator.hasNext() && count-- > 0) {
             rows.add(SegmentDetailResultSet.readRow(rowNumberIterator.next(), columns));
         }
         return rows;
     }
 
-    static List<Column> getColumnList(List<Pair<Column, IndexInfo>> columnList) {
-        List<Column> columns = new ArrayList<Column>();
+    static List<Column<?>> getColumnList(List<Pair<Column, IndexInfo>> columnList) {
+        List<Column<?>> columns = new ArrayList<Column<?>>();
         for (Pair<Column, IndexInfo> pair : columnList) {
             columns.add(pair.getKey());
         }

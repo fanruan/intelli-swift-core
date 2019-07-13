@@ -12,7 +12,6 @@ import com.fr.swift.segment.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Assert;
-import com.fr.swift.util.IoUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,7 @@ public class ReadonlyMultiSegment implements Segment {
 
     @Override
     public void release() {
-        IoUtil.release(segs.toArray(new Segment[0]));
+        SegmentUtils.releaseHisSeg(segs);
     }
 
     @Override
