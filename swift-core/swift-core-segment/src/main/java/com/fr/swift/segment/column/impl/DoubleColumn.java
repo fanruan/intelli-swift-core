@@ -18,11 +18,11 @@ public class DoubleColumn extends BaseColumn<Double> {
 
     @Override
     public DictionaryEncodedColumn<Double> getDictionaryEncodedColumn() {
-        return dictColumn != null ? dictColumn : (dictColumn = new DoubleDictColumn(location, Comparators.<Double>asc()));
+        return dictColumn == null ? dictColumn = new DoubleDictColumn(location, Comparators.<Double>asc()) : dictColumn;
     }
 
     @Override
     public DetailColumn<Double> getDetailColumn() {
-        return detailColumn != null ? detailColumn : (detailColumn = new DoubleDetailColumn(location));
+        return detailColumn == null ? detailColumn = new DoubleDetailColumn(location) : detailColumn;
     }
 }

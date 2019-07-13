@@ -24,5 +24,10 @@ public abstract class AbstractBitMap implements ImmutableBitMap {
     }
 
     @Override
+    public IntIterator iterator() {
+        return intIterator();
+    }
+
+    @Override
     public abstract ImmutableBitMap clone();
 }
