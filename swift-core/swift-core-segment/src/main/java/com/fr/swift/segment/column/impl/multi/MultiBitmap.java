@@ -67,7 +67,7 @@ public class MultiBitmap extends AbstractBitMap {
     public ImmutableBitMap getNot(int bound) {
         ImmutableBitMap[] notBitmaps = new ImmutableBitMap[bitmaps.length];
         for (int i = 0; i < notBitmaps.length; i++) {
-            notBitmaps[i] = bitmaps[i].getNot(bound);
+            notBitmaps[i] = bitmaps[i].getNot(offsets[i + 1] - offsets[i]);
         }
 
         return new MultiBitmap(notBitmaps, offsets);
