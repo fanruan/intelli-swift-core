@@ -37,8 +37,8 @@ class DetailQueryBuilder extends BaseQueryBuilder {
     static DetailQueryBuilder of(DetailQueryInfoBean detailQueryInfoBean) {
         DetailQueryInfo queryInfo = (DetailQueryInfo) QueryInfoParser.parse(detailQueryInfoBean);
         return queryInfo.hasSort() ?
-                new DetailQueryBuilder(queryInfo) :
-                new SortedDetailQueryBuilder(queryInfo);
+                new SortedDetailQueryBuilder(queryInfo) :
+                new DetailQueryBuilder(queryInfo);
     }
 
     /**

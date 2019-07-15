@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Iterator;
 
 /**
  * @author anchore
@@ -150,7 +149,6 @@ public class RangeBitmap extends AbstractBitMap {
     @Override
     public IntIterator intIterator() {
         return new IntIterator() {
-
             private int cursor = start;
 
             @Override
@@ -162,21 +160,6 @@ public class RangeBitmap extends AbstractBitMap {
             public boolean hasNext() {
                 return cursor < end;
             }
-
-            @Override
-            public Integer next() {
-                return nextInt();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
         };
-    }
-
-    @Override
-    public Iterator<Integer> iterator() {
-        return intIterator();
     }
 }

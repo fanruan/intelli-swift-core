@@ -19,6 +19,7 @@ import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -131,7 +132,7 @@ public class SegmentUtils {
      *
      * @param segs
      */
-    public static void releaseHisSeg(List<Segment> segs) {
+    public static void releaseHisSeg(Collection<? extends Segment> segs) {
         if (segs == null) {
             return;
         }
@@ -144,19 +145,18 @@ public class SegmentUtils {
      * 释放历史块column
      *
      * @param column 列
-     * @param <C>    column
      */
-    public static <C extends Column<?>> void releaseHisColumn(C column) {
+    public static void releaseHisColumn(Column<?> column) {
         if (column != null && column.getLocation().getStoreType().isPersistent()) {
             IoUtil.release(column.getDetailColumn(), column.getDictionaryEncodedColumn(), column.getBitmapIndex());
         }
     }
 
-    public static <C extends Column<?>> void releaseHisColumn(List<C> columns) {
+    public static void releaseHisColumn(Collection<? extends Column<?>> columns) {
         if (columns == null) {
             return;
         }
-        for (C column : columns) {
+        for (Column<?> column : columns) {
             releaseHisColumn(column);
         }
     }
