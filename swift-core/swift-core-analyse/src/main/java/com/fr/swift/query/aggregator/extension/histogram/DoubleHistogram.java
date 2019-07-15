@@ -38,7 +38,7 @@ import java.util.zip.Deflater;
  * 3600000000000 (enough to track values from a nanosecond to an hour), values could be recorded into into it in any
  * consistent unit of time as long as the ratio between the highest and lowest non-zero values stays within the
  * specified dynamic range, so recording in units of nanoseconds (1.0 thru 3600000000000.0), milliseconds (0.000001
- * thru 3600000.0) seconds (0.000000001 thru 3600.0), hours (1/3.6E12 thru 1.0) will complete work just as well.
+ * thru 3600000.0) seconds (0.000000001 thru 3600.0), hours (1/3.6E12 thru 1.0) will all work just as well.
  * <p>
  * Auto-resizing: When constructed with no specified dynamic range (or when auto-resize is turned on with {@link
  * DoubleHistogram#setAutoResize}) a {@link DoubleHistogram} will auto-resize its dynamic range to
@@ -452,7 +452,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
             // Shift integer histogram left, increasing the recorded integer values for current recordings
             // by a factor of (1 << numberOfBinaryOrdersOfMagnitude):
 
-            // (no need to shift any values if complete recorded values are at the 0 value level:)
+            // (no need to shift any values if all recorded values are at the 0 value level:)
             if (getTotalCount() > integerValuesHistogram.getCountAtIndex(0)) {
                 // Apply the shift:
                 try {
@@ -512,7 +512,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
             // Shift integer histogram right, decreasing the recorded integer values for current recordings
             // by a factor of (1 << numberOfBinaryOrdersOfMagnitude):
 
-            // (no need to shift any values if complete recorded values are at the 0 value level:)
+            // (no need to shift any values if all recorded values are at the 0 value level:)
             if (getTotalCount() > integerValuesHistogram.getCountAtIndex(0)) {
                 // Apply the shift:
                 try {
@@ -789,9 +789,9 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
     //
 
     /**
-     * Get the total count of complete recorded values in the histogram
+     * Get the total count of all recorded values in the histogram
      *
-     * @return the total count of complete recorded values in the histogram
+     * @return the total count of all recorded values in the histogram
      */
     public long getTotalCount() {
         return integerValuesHistogram.getTotalCount();
@@ -1056,7 +1056,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
     }
 
     /**
-     * Get the computed mean value of complete recorded values in the histogram
+     * Get the computed mean value of all recorded values in the histogram
      *
      * @return the mean value (in value units) of the histogram data
      */
@@ -1065,7 +1065,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
     }
 
     /**
-     * Get the computed standard deviation of complete recorded values in the histogram
+     * Get the computed standard deviation of all recorded values in the histogram
      *
      * @return the standard deviation (in value units) of the histogram data
      */
@@ -1077,7 +1077,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
      * Get the value at a given percentile.
      * When the percentile is &gt; 0.0, the value returned is the value that the given the given
      * percentage of the overall recorded value entries in the histogram are either smaller than
-     * or equivalent to. When the percentile is 0.0, the value returned is the value that complete value
+     * or equivalent to. When the percentile is 0.0, the value returned is the value that all value
      * entries in the histogram are either larger than or equivalent to.
      * <p>
      * Note that two values are "equivalent" in this statement if
@@ -1086,7 +1086,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
      * @param percentile The percentile for which to return the associated value
      * @return The value that the given percentage of the overall recorded value entries in the
      * histogram are either smaller than or equivalent to. When the percentile is 0.0, returns the
-     * value that complete value entries in the histogram are either larger than or equivalent to.
+     * value that all value entries in the histogram are either larger than or equivalent to.
      */
     public double getValueAtPercentile(final double percentile) {
         return integerValuesHistogram.getValueAtPercentile(percentile) * getIntegerToDoubleValueConversionRatio();
@@ -1141,7 +1141,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
     /**
      * Provide a means of iterating through histogram values according to percentile levels. The iteration is
      * performed in steps that start at 0% and reduce their distance to 100% according to the
-     * <i>percentileTicksPerHalfDistance</i> parameter, ultimately reaching 100% when complete recorded histogram
+     * <i>percentileTicksPerHalfDistance</i> parameter, ultimately reaching 100% when all recorded histogram
      * values are exhausted.
      * <p>
      *
@@ -1156,7 +1156,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
 
     /**
      * Provide a means of iterating through histogram values using linear steps. The iteration is
-     * performed in steps of <i>valueUnitsPerBucket</i> in size, terminating when complete recorded histogram
+     * performed in steps of <i>valueUnitsPerBucket</i> in size, terminating when all recorded histogram
      * values are exhausted.
      *
      * @param valueUnitsPerBucket The size (in value units) of the linear buckets to use
@@ -1171,7 +1171,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
     /**
      * Provide a means of iterating through histogram values at logarithmically increasing levels. The iteration is
      * performed in steps that start at <i>valueUnitsInFirstBucket</i> and increase exponentially according to
-     * <i>logBase</i>, terminating when complete recorded histogram values are exhausted.
+     * <i>logBase</i>, terminating when all recorded histogram values are exhausted.
      *
      * @param valueUnitsInFirstBucket The size (in value units) of the first bucket in the iteration
      * @param logBase                 The multiplier by which bucket sizes will grow in each iteration step
@@ -1185,9 +1185,9 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
     }
 
     /**
-     * Provide a means of iterating through complete recorded histogram values using the finest granularity steps
-     * supported by the underlying representation. The iteration steps through complete non-zero recorded value counts,
-     * and terminates when complete recorded histogram values are exhausted.
+     * Provide a means of iterating through all recorded histogram values using the finest granularity steps
+     * supported by the underlying representation. The iteration steps through all non-zero recorded value counts,
+     * and terminates when all recorded histogram values are exhausted.
      *
      * @return An {@link Iterable}{@literal <}{@link DoubleHistogramIterationValue}{@literal >}
      * through the histogram using
@@ -1198,9 +1198,9 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
     }
 
     /**
-     * Provide a means of iterating through complete histogram values using the finest granularity steps supported by
-     * the underlying representation. The iteration steps through complete possible unit value levels, regardless of
-     * whether or not there were recorded values for that value level, and terminates when complete recorded histogram
+     * Provide a means of iterating through all histogram values using the finest granularity steps supported by
+     * the underlying representation. The iteration steps through all possible unit value levels, regardless of
+     * whether or not there were recorded values for that value level, and terminates when all recorded histogram
      * values are exhausted.
      *
      * @return An {@link Iterable}{@literal <}{@link DoubleHistogramIterationValue}{@literal >}
@@ -1630,7 +1630,7 @@ class DoubleHistogram extends EncodableHistogram implements DoubleValueRecorder,
         // We cannot use the bottom half of bucket 0 in an integer values histogram to represent double
         // values, because the required precision does not exist there. We therefore need the integer
         // range to be bigger, such that the entire double value range can fit in the upper halves of
-        // complete buckets. Compute the integer value range that will achieve this:
+        // all buckets. Compute the integer value range that will achieve this:
 
         long lowestTackingIntegerValue = AbstractHistogram.numberOfSubbuckets(numberOfSignificantValueDigits) / 2;
         long integerValueRange = lowestTackingIntegerValue * internalHighestToLowestValueRatio;

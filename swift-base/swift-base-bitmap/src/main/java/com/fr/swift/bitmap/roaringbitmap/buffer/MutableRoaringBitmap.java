@@ -85,7 +85,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Generate a new bitmap with complete integers in [rangeStart,rangeEnd) added.
+     * Generate a new bitmap with all integers in [rangeStart,rangeEnd) added.
      *
      * @param rb         initial bitmap (will not be modified)
      * @param rangeStart inclusive beginning of range
@@ -144,7 +144,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Generate a new bitmap with complete integers in [rangeStart,rangeEnd) added.
+     * Generate a new bitmap with all integers in [rangeStart,rangeEnd) added.
      *
      * @param rb         initial bitmap (will not be modified)
      * @param rangeStart inclusive beginning of range
@@ -460,7 +460,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Generate a new bitmap with complete integers in [rangeStart,rangeEnd) removed.
+     * Generate a new bitmap with all integers in [rangeStart,rangeEnd) removed.
      *
      * @param rb         initial bitmap (will not be modified)
      * @param rangeStart inclusive beginning of range
@@ -516,7 +516,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Generate a new bitmap with complete integers in [rangeStart,rangeEnd) removed.
+     * Generate a new bitmap with all integers in [rangeStart,rangeEnd) removed.
      *
      * @param rb         initial bitmap (will not be modified)
      * @param rangeStart inclusive beginning of range
@@ -611,7 +611,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Set complete the specified values  to true. This can be expected to be slightly
+     * Set all the specified values  to true. This can be expected to be slightly
      * faster than calling "add" repeatedly. The provided integers values don't
      * have to be in sorted order, but it may be preferable to sort them from a performance point of
      * view.
@@ -692,7 +692,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Add to the current bitmap complete integers in [rangeStart,rangeEnd).
+     * Add to the current bitmap all integers in [rangeStart,rangeEnd).
      *
      * @param rangeStart inclusive beginning of range
      * @param rangeEnd   exclusive ending of range
@@ -727,7 +727,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Add to the current bitmap complete integers in [rangeStart,rangeEnd).
+     * Add to the current bitmap all integers in [rangeStart,rangeEnd).
      *
      * @param rangeStart inclusive beginning of range
      * @param rangeEnd   exclusive ending of range
@@ -1205,7 +1205,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Remove from the current bitmap complete integers in [rangeStart,rangeEnd).
+     * Remove from the current bitmap all integers in [rangeStart,rangeEnd).
      *
      * @param rangeStart inclusive beginning of range
      * @param rangeEnd   exclusive ending of range
@@ -1266,7 +1266,7 @@ public class MutableRoaringBitmap extends ImmutableRoaringBitmap
     }
 
     /**
-     * Remove from the current bitmap complete integers in [rangeStart,rangeEnd).
+     * Remove from the current bitmap all integers in [rangeStart,rangeEnd).
      *
      * @param rangeStart inclusive beginning of range
      * @param rangeEnd   exclusive ending of range

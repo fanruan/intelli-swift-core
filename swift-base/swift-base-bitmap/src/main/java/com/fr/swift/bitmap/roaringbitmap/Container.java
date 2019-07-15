@@ -38,7 +38,7 @@ public abstract class Container implements Iterable<Short>, Cloneable, Externali
     }
 
     /**
-     * Return a new container with complete shorts in [begin,end) added using an unsigned interpretation.
+     * Return a new container with all shorts in [begin,end) added using an unsigned interpretation.
      *
      * @param begin start of range (inclusive)
      * @param end   end of range (exclusive)
@@ -275,7 +275,7 @@ public abstract class Container implements Iterable<Short>, Cloneable, Externali
     public abstract int getSizeInBytes();
 
     /**
-     * Add complete shorts in [begin,end) using an unsigned interpretation. May generate a new container.
+     * Add all shorts in [begin,end) using an unsigned interpretation. May generate a new container.
      *
      * @param begin start of range (inclusive)
      * @param end   end of range (exclusive)
@@ -677,7 +677,7 @@ public abstract class Container implements Iterable<Short>, Cloneable, Externali
     public abstract int rank(short lowbits);
 
     /**
-     * Return a new container with complete shorts in [begin,end) remove using an unsigned interpretation.
+     * Return a new container with all shorts in [begin,end) remove using an unsigned interpretation.
      *
      * @param begin start of range (inclusive)
      * @param end   end of range (exclusive)

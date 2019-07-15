@@ -48,7 +48,7 @@ public class UploadJobTest {
         verify(uploadService).upload(Collections.singleton(segKey));
 
         job = new UploadJob(segKey, false, mock(JobListener.class));
-        // 上传seg complete show index
+        // 上传seg all show index
         assertTrue(job.call());
         verify(uploadService).uploadAllShow(Collections.singleton(segKey));
 

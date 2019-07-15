@@ -37,7 +37,7 @@ public interface ImmutableBitmapDataProvider {
     public long getLongCardinality();
 
     /**
-     * Visit complete values in the bitmap and pass them to the consumer.
+     * Visit all values in the bitmap and pass them to the consumer.
      * <p>
      * * Usage:
      * <pre>
