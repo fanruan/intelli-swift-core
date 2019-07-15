@@ -13,7 +13,9 @@ public final class FasterAggregation {
     public static ImmutableBitMap or(Iterable<ImmutableBitMap> bitmaps) {
         MutableRoaringBitmap r = new MutableRoaringBitmap();
         for (ImmutableBitMap bitmap : bitmaps) {
-            r.naivelazyor(((BaseRoaringBitMap) bitmap).bitmap);
+            if (!bitmap.isEmpty()) {
+                r.naivelazyor(((BaseRoaringBitMap) bitmap).bitmap);
+            }
         }
         r.repairAfterLazy();
         return RoaringImmutableBitMap.of(r);
