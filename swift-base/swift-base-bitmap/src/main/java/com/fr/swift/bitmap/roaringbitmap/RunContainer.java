@@ -549,7 +549,7 @@ public final class RunContainer extends Container implements Cloneable {
                         xend = xstart + Util.toIntUnsigned(x.getLength(xrlepos)) + 1;
                     }
                 }
-                // earliestend - lateststart are complete values that are true.
+                // earliestend - lateststart are all values that are true.
                 cardinality += (short) (earliestend - lateststart);
             }
         }
@@ -673,7 +673,7 @@ public final class RunContainer extends Container implements Cloneable {
         return answer.toEfficientContainer();
     }
 
-    // Append a value length with complete values until a given value
+    // Append a value length with all values until a given value
     private void appendValueLength(int value, int index) {
         int previousValue = Util.toIntUnsigned(getValue(index));
         int length = Util.toIntUnsigned(getLength(index));
@@ -743,7 +743,7 @@ public final class RunContainer extends Container implements Cloneable {
     }
 
 
-    // Push complete values length to the end of the array (resize array if needed)
+    // Push all values length to the end of the array (resize array if needed)
     private void copyToOffset(int offset) {
         final int minCapacity = 2 * (offset + nbrruns);
         if (valueslength.length < minCapacity) {
@@ -1345,7 +1345,7 @@ public final class RunContainer extends Container implements Cloneable {
         final int xnbrruns = x.nbrruns;
         final int offset = Math.max(nbrruns, xnbrruns);
 
-        // Push complete values length to the end of the array (resize array if needed)
+        // Push all values length to the end of the array (resize array if needed)
         copyToOffset(offset);
         // Aggregate and store the result at the beginning of the array
         this.nbrruns = 0;
@@ -1442,7 +1442,7 @@ public final class RunContainer extends Container implements Cloneable {
 
             if (eIndex >= 0) { // end-1 is not before first run.
                 if (bIndex >= 0) { // nor is begin
-                    if (bIndex == eIndex) { // complete removal nested properly between
+                    if (bIndex == eIndex) { // all removal nested properly between
                         // one run start and the next
                         if (valueLengthContains(begin, bIndex)) {
                             if (valueLengthContains(end, eIndex)) {
@@ -1475,7 +1475,7 @@ public final class RunContainer extends Container implements Cloneable {
                     if (valueLengthContains(end, eIndex)) { // had been end-1
                         initValueLength(end, eIndex);
                         recoverRoomsInRange(bIndex, eIndex - 1);
-                    } else { // removed range includes complete the last run
+                    } else { // removed range includes all the last run
                         recoverRoomsInRange(bIndex, eIndex);
                     }
                 }
@@ -1800,7 +1800,7 @@ public final class RunContainer extends Container implements Cloneable {
         return answer.toBitmapIfNeeded();
     }
 
-    // Prepend a value length with complete values starting from a given value
+    // Prepend a value length with all values starting from a given value
     private void prependValueLength(int value, int index) {
         int initialValue = Util.toIntUnsigned(getValue(index));
         int length = Util.toIntUnsigned(getLength(index));

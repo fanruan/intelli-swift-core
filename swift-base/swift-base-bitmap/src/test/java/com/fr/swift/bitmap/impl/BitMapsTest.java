@@ -117,7 +117,7 @@ public class BitMapsTest {
         when(buf.getInt()).thenReturn(1);
 
         mockStatic(AllShowBitMap.class, RangeBitmap.class, IdBitMap.class, Crasher.class);
-        // complete show
+        // all show
         ImmutableBitMap bitmap = mock(ImmutableBitMap.class);
         when(AllShowBitMap.of(1)).thenReturn(bitmap);
 

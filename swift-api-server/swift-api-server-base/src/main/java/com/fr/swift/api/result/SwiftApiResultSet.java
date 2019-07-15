@@ -34,9 +34,9 @@ public interface SwiftApiResultSet<T> extends SerializableResultSet, DetailResul
     SwiftApiResultSet queryNextPage(T queryInfo) throws SQLException;
 
     /**
-     * get complete rows of current page
+     * get all rows of current page
      *
-     * @return complete date of current page
+     * @return all date of current page
      */
     List<Row> getRows();
 
