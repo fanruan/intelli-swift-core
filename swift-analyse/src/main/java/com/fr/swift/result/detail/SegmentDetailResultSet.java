@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by Xiaolei.Liu on 2018/1/18
+ *
  * @author yee
  */
 public class SegmentDetailResultSet extends BaseDetailQueryResultSet {
@@ -28,7 +29,7 @@ public class SegmentDetailResultSet extends BaseDetailQueryResultSet {
 
     private int rowCount;
 
-    private List<Column> columnList;
+    private List<Column<?>> columnList;
 
 
     public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
@@ -52,11 +53,11 @@ public class SegmentDetailResultSet extends BaseDetailQueryResultSet {
         return page;
     }
 
-    static Row readRow(int row, List<Column> columnList) {
+    static Row readRow(int row, List<Column<?>> columnList) {
         List<Object> values = new ArrayList<Object>();
-        for (Column column : columnList) {
-            DetailColumn dictionary = column.getDetailColumn();
-            Object val = dictionary.get(row);
+        for (Column<?> column : columnList) {
+            DetailColumn<?> detailColumn = column.getDetailColumn();
+            Object val = detailColumn.get(row);
             values.add(val);
         }
         return new ListBasedRow(values);
