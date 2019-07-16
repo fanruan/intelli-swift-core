@@ -1,7 +1,11 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
+import com.fr.swift.bitmap.traversal.TraversalAction;
+
+import java.util.List;
 
 /**
  * @author anchore
@@ -10,7 +14,13 @@ import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
  * 比FastAggregation还要快
  */
 public final class FasterAggregation {
-    public static ImmutableBitMap or(Iterable<ImmutableBitMap> bitmaps) {
+    public static ImmutableBitMap or(List<ImmutableBitMap> bitmaps) {
+        if (bitmaps == null || bitmaps.isEmpty()) {
+            return BitMaps.EMPTY_IMMUTABLE;
+        }
+        if (bitmaps.size() == 1) {
+            return bitmaps.get(0);
+        }
         MutableRoaringBitmap r = new MutableRoaringBitmap();
         for (ImmutableBitMap bitmap : bitmaps) {
             if (!bitmap.isEmpty()) {
@@ -19,6 +29,45 @@ public final class FasterAggregation {
         }
         r.repairAfterLazy();
         return RoaringImmutableBitMap.of(r);
+    }
+
+    public static ImmutableBitMap compose(List<ImmutableBitMap> bitmaps, final int[] offsets) {
+        if (bitmaps == null || bitmaps.size() == 0) {
+            return BitMaps.EMPTY_IMMUTABLE;
+        }
+        if (bitmaps.size() == 1) {
+            return bitmaps.get(0);
+        }
+        boolean allFull = true;
+        for (ImmutableBitMap bitmap : bitmaps) {
+            if (!bitmap.isFull()) {
+                allFull = false;
+                break;
+            }
+        }
+        if (allFull) {
+            return AllShowBitMap.of(offsets[offsets.length - 1]);
+        }
+        final MutableRoaringBitmap rb = new MutableRoaringBitmap();
+        for (int i = 0; i < bitmaps.size(); i++) {
+            if (i == 0 && bitmaps.get(i) instanceof BaseRoaringBitMap) {
+                // 第一个roaring可以直接or，后面的只能add了
+                rb.or(((BaseRoaringBitMap) bitmaps.get(i)).bitmap);
+            } else if (bitmaps.get(i) instanceof RangeBitmap) {
+                RangeBitmap rangeBitmap = (RangeBitmap) bitmaps.get(i);
+                rb.add((long) rangeBitmap.start + offsets[i], rangeBitmap.end + offsets[i]);
+            } else {
+                final int finalI = i;
+                bitmaps.get(i).traversal(new TraversalAction() {
+                    @Override
+                    public void actionPerformed(int row) {
+                        rb.add(row + offsets[finalI]);
+                    }
+                });
+            }
+        }
+
+        return RoaringImmutableBitMap.of(rb);
     }
 
     public static ImmutableBitMap or(RangeBitmap b1, RangeBitmap b2) {

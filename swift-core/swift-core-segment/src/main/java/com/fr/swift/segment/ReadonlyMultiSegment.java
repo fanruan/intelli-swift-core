@@ -1,11 +1,10 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.AllShowBitMap;
+import com.fr.swift.bitmap.impl.FasterAggregation;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.impl.multi.MultiBitmap;
 import com.fr.swift.segment.column.impl.multi.ReadonlyMultiColumn;
 import com.fr.swift.segment.relation.CubeMultiRelation;
 import com.fr.swift.segment.relation.CubeMultiRelationPath;
@@ -56,13 +55,11 @@ public class ReadonlyMultiSegment implements Segment {
 
     @Override
     public ImmutableBitMap getAllShowIndex() {
-        ImmutableBitMap[] bitmaps = new ImmutableBitMap[segs.size()];
-        boolean allFull = true;
-        for (int i = 0; i < bitmaps.length; i++) {
-            bitmaps[i] = segs.get(i).getAllShowIndex();
-            allFull &= bitmaps[i].isFull();
+        List<ImmutableBitMap> bitmaps = new ArrayList<ImmutableBitMap>();
+        for (Segment seg : segs) {
+            bitmaps.add(seg.getAllShowIndex());
         }
-        return allFull ? AllShowBitMap.of(getRowCount()) : new MultiBitmap(bitmaps, offsets);
+        return FasterAggregation.compose(bitmaps, offsets);
     }
 
     @Override
