@@ -5,10 +5,12 @@ import com.fr.swift.query.group.FunnelGroupKey;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author yee
@@ -18,7 +20,13 @@ public class FunnelAggregatorValue implements IterableAggregatorValue<SwiftNodeA
     private Map<FunnelGroupKey, FunnelHelperValue> valueMap;
 
     public FunnelAggregatorValue(Map<FunnelGroupKey, FunnelHelperValue> valueMap) {
-        this.valueMap = valueMap;
+        this.valueMap = new TreeMap<FunnelGroupKey, FunnelHelperValue>(new Comparator<FunnelGroupKey>() {
+            @Override
+            public int compare(FunnelGroupKey o1, FunnelGroupKey o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        this.valueMap.putAll(valueMap);
     }
 
     @Override
@@ -39,6 +47,7 @@ public class FunnelAggregatorValue implements IterableAggregatorValue<SwiftNodeA
 
     @Override
     public Iterator<SwiftNodeAggregatorValue> iterator() {
+
         Iterator<Map.Entry<FunnelGroupKey, FunnelHelperValue>> iterator = valueMap.entrySet().iterator();
         return new MapperIterator<Map.Entry<FunnelGroupKey, FunnelHelperValue>, SwiftNodeAggregatorValue>(iterator, new Function<Map.Entry<FunnelGroupKey, FunnelHelperValue>, SwiftNodeAggregatorValue>() {
             @Override
@@ -56,7 +65,7 @@ public class FunnelAggregatorValue implements IterableAggregatorValue<SwiftNodeA
         for (Map.Entry<FunnelGroupKey, FunnelHelperValue> entry : value.getValueMap().entrySet()) {
             FunnelHelperValue contestAggValue = valueMap.get(entry.getKey());
             if (contestAggValue == null) {
-                valueMap.put(entry.getKey(), new FunnelHelperValue(contestAggValue.getCount(), contestAggValue.getPeriods()));
+                valueMap.put(entry.getKey(), new FunnelHelperValue(entry.getValue().getCount(), entry.getValue().getPeriods()));
                 continue;
             }
             int[] values = entry.getValue().getCount();

@@ -65,7 +65,7 @@ public class MergeIterator {
         if (groupColumns instanceof StringColumn) {
             return new OriginDecMergeColumn(groupColumns.getDictionaryEncodedColumn());
         } else {
-            return new DetailOrigineColumn(groupColumns.getDetailColumn());
+            return new DetailOriginColumn(groupColumns.getDetailColumn());
         }
     }
 

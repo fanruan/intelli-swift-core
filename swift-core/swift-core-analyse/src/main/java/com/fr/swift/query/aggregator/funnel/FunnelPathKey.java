@@ -1,25 +1,32 @@
 package com.fr.swift.query.aggregator.funnel;
 
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.info.funnel.FunnelEventBean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author yee
  * @date 2019-07-12
  */
-public class FunnelPathKey {
+public class FunnelPathKey implements Serializable, Comparable<FunnelPathKey> {
+    private static final long serialVersionUID = 5665160665150096552L;
     private List<FunnelEventBean> paths;
-    private String path;
+    private final String path;
 
     public FunnelPathKey(List<FunnelEventBean> paths) {
         this.paths = paths;
+        this.path = init();
+    }
+
+    private String init() {
         StringBuilder stringBuilder = new StringBuilder();
         for (FunnelEventBean path : paths) {
             stringBuilder.append(path.getName()).append("-");
         }
         stringBuilder.setLength(stringBuilder.length() - 1);
-        path = stringBuilder.toString();
+        return stringBuilder.toString();
     }
 
     public int size() {
@@ -43,5 +50,10 @@ public class FunnelPathKey {
     @Override
     public int hashCode() {
         return path != null ? path.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(FunnelPathKey o) {
+        return Comparators.STRING_ASC.compare(path, o.path);
     }
 }
