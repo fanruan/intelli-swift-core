@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO 2019/07/11 这个本次冲刺不做，先占个坑
+ * 选出要执行计算的Path进行漏斗计算后，计算转化率
  * @author yee
  * @date 2019-07-10
  */
