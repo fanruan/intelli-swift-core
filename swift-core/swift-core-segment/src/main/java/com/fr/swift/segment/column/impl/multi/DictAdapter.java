@@ -14,8 +14,8 @@ import java.util.List;
  * @date 2019/7/16
  */
 class DictAdapter<T> extends AbstractList<Elem<T>> {
-    DictionaryEncodedColumn<T> dict;
-    int nthDict;
+    private DictionaryEncodedColumn<T> dict;
+    private int nthDict;
 
     DictAdapter(DictionaryEncodedColumn<T> dict, int nthDict) {
         this.dict = dict;
@@ -42,26 +42,26 @@ class DictAdapter<T> extends AbstractList<Elem<T>> {
             this.nthDicts.add(nthDict);
             this.localIndices.add(localIndex);
         }
+    }
 
-        static class ElemComparator<T> implements Comparator<Elem<T>> {
-            Comparator<T> c;
+    static class ElemComparator<T> implements Comparator<Elem<T>> {
+        Comparator<T> c;
 
-            ElemComparator(Comparator<T> c) {
-                this.c = c;
-            }
-
-            @Override
-            public int compare(Elem<T> o1, Elem<T> o2) {
-                return c.compare(o1.val, o2.val);
-            }
+        ElemComparator(Comparator<T> c) {
+            this.c = c;
         }
 
-        static class ElemCombiner<T> implements Combiner<Elem<T>> {
-            @Override
-            public void combine(Elem<T> current, Elem<T> other) {
-                current.nthDicts.addAll(other.nthDicts);
-                current.localIndices.addAll(other.localIndices);
-            }
+        @Override
+        public int compare(Elem<T> o1, Elem<T> o2) {
+            return c.compare(o1.val, o2.val);
+        }
+    }
+
+    static class ElemCombiner<T> implements Combiner<Elem<T>> {
+        @Override
+        public void combine(Elem<T> current, Elem<T> other) {
+            current.nthDicts.addAll(other.nthDicts);
+            current.localIndices.addAll(other.localIndices);
         }
     }
 }

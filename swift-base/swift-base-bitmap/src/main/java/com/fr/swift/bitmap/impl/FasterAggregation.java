@@ -35,9 +35,6 @@ public final class FasterAggregation {
         if (bitmaps == null || bitmaps.size() == 0) {
             return BitMaps.EMPTY_IMMUTABLE;
         }
-        if (bitmaps.size() == 1) {
-            return bitmaps.get(0);
-        }
         boolean allFull = true;
         for (ImmutableBitMap bitmap : bitmaps) {
             if (!bitmap.isFull()) {
