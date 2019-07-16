@@ -5,9 +5,11 @@ import com.fr.swift.query.aggregator.funnel.FunnelPathsNodeAggregatorValue;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author yee
@@ -18,7 +20,13 @@ public class FunnelPathsAggregatorValue implements IterableAggregatorValue<Funne
     private Map<FunnelPathKey, FunnelAggregatorValue> valueMap;
 
     public FunnelPathsAggregatorValue(Map<FunnelPathKey, FunnelAggregatorValue> valueMap) {
-        this.valueMap = valueMap;
+        this.valueMap = new TreeMap<FunnelPathKey, FunnelAggregatorValue>(new Comparator<FunnelPathKey>() {
+            @Override
+            public int compare(FunnelPathKey o1, FunnelPathKey o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        this.valueMap.putAll(valueMap);
     }
 
     @Override
