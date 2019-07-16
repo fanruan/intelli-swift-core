@@ -3,7 +3,8 @@ package com.fr.swift.segment.column.impl.multi;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.AbstractDictColumn;
 import com.fr.swift.segment.column.impl.multi.DictAdapter.Elem;
-import com.fr.swift.segment.column.impl.multi.DictAdapter.Elem.ElemComparator;
+import com.fr.swift.segment.column.impl.multi.DictAdapter.ElemCombiner;
+import com.fr.swift.segment.column.impl.multi.DictAdapter.ElemComparator;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 import com.fr.swift.util.IoUtil;
@@ -51,7 +52,7 @@ class ReadonlyMultiDictColumn<T> extends AbstractDictColumn<T> {
         Iterator<Elem<T>> globalDictValues = SortedListMergingUtils.mergeIterator(
                 dictItrs,
                 new ElemComparator<T>(getComparator()),
-                new Elem.ElemCombiner<T>());
+                new ElemCombiner<T>());
         // 处理0位的null值
         int globalIndex = 0;
         globalToLocalIndex.add(new int[segCount]);
