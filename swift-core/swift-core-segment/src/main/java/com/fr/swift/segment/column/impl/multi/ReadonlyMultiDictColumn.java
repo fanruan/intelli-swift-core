@@ -1,14 +1,16 @@
 package com.fr.swift.segment.column.impl.multi;
 
-import com.fr.swift.query.aggregator.Combiner;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.AbstractDictColumn;
+import com.fr.swift.segment.column.impl.multi.DictAdapter.Elem;
+import com.fr.swift.segment.column.impl.multi.DictAdapter.ElemCombiner;
+import com.fr.swift.segment.column.impl.multi.DictAdapter.ElemComparator;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
 import com.fr.swift.util.IoUtil;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -40,31 +42,34 @@ class ReadonlyMultiDictColumn<T> extends AbstractDictColumn<T> {
         int segCount = dicts.size();
 
         localToGlobalIndex = new int[segCount][];
-        List<Iterator<T>> dictItrs = new ArrayList<Iterator<T>>(segCount);
+        List<Iterator<Elem<T>>> dictItrs = new ArrayList<Iterator<Elem<T>>>(segCount);
         for (int i = 0; i < segCount; i++) {
             DictionaryEncodedColumn<T> dict = dicts.get(i);
             localToGlobalIndex[i] = new int[dict.size()];
-            dictItrs.add(new DictAdapter<T>(dict).iterator());
+            dictItrs.add(new DictAdapter<T>(dict, i).iterator());
         }
 
-        Iterator<T> globalDictValues = SortedListMergingUtils.mergeIterator(dictItrs, getComparator(), new EmptyCombiner<T>());
+        Iterator<Elem<T>> globalDictValues = SortedListMergingUtils.mergeIterator(
+                dictItrs,
+                new ElemComparator<T>(getComparator()),
+                new ElemCombiner<T>());
+        // 处理0位的null值
         int globalIndex = 0;
         globalToLocalIndex.add(new int[segCount]);
+
         while (globalDictValues.hasNext()) {
             globalIndex++;
 
-            T val = globalDictValues.next();
+            Elem<T> elem = globalDictValues.next();
 
             int[] localIndices = new int[segCount];
+            // 可能全局字典值在某块没有，所以先全部填-1
+            Arrays.fill(localIndices, -1);
             globalToLocalIndex.add(localIndices);
 
-            for (int i = 0; i < segCount; i++) {
-                DictionaryEncodedColumn<T> dict = dicts.get(i);
-                int localIndex = dict.getIndex(val);
-                localIndices[i] = localIndex;
-                if (localIndex != -1) {
-                    localToGlobalIndex[i][localIndex] = globalIndex;
-                }
+            for (int i = 0; i < elem.nthDicts.size(); i++) {
+                localToGlobalIndex[elem.nthDicts.get(i)][elem.localIndices.get(i)] = globalIndex;
+                localIndices[elem.nthDicts.get(i)] = elem.localIndices.get(i);
             }
         }
     }
@@ -132,32 +137,6 @@ class ReadonlyMultiDictColumn<T> extends AbstractDictColumn<T> {
     @Override
     public void release() {
         IoUtil.release(dicts.toArray(new DictionaryEncodedColumn[0]));
-    }
-
-    private static class DictAdapter<T> extends AbstractList<T> {
-
-        DictionaryEncodedColumn<T> dict;
-
-        private DictAdapter(DictionaryEncodedColumn<T> dict) {
-            this.dict = dict;
-        }
-
-        @Override
-        public T get(int index) {
-            return dict.getValue(index + 1);
-        }
-
-        @Override
-        public int size() {
-            return dict.size() - 1;
-        }
-
-    }
-
-    private static class EmptyCombiner<T> implements Combiner<T> {
-        @Override
-        public void combine(T current, T other) {
-        }
     }
 
     @Override
