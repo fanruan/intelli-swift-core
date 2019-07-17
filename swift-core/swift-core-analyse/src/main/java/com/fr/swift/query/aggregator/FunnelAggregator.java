@@ -82,7 +82,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
                 columns.get(eventKey).getDictionaryEncodedColumn(),
                 createAssociatedColumn(columns), getPostGroupColumn(columns), getPostGroupStep());
 
-        Map<FunnelGroupKey, FunnelAggValue> results = new HashMap<FunnelGroupKey, FunnelAggValue>();
+        Map<FunnelGroupKey, FunnelHelperValue> results = new HashMap<FunnelGroupKey, FunnelHelperValue>();
 
         while (mergeIterator.hasNext()) {
             mergeIterator.record();
@@ -190,10 +190,10 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
                     step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
         }
         return new RepeatTimeWindowFilter(bean.getTimeWindow(), bean.getTimeGroup(), timeGroupFilter, dayFilterBean,
-                step, firstAssociatedIndex, associatedProperty, associatedPropertyColumn);
+                step, firstAssociatedIndex, associatedProperty);
     }
 
-    private void aggregate(Map<FunnelGroupKey, FunnelAggValue> result, FunnelAggregationBean bean, List<IHead> heads) {
+    private void aggregate(Map<FunnelGroupKey, FunnelHelperValue> result, FunnelAggregationBean bean, List<IHead> heads) {
         int numberOfSteps = bean.getEvents().size();
         boolean calMedian = bean.isCalculateTime();
         int postGroupStep = getPostGroupStep();
@@ -202,14 +202,14 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
 
         for (IHead head : heads) {
             FunnelGroupKey groupKey = createGroupKey(postGroupStep, rangePairs, head);
-            FunnelAggValue contestAggValue = result.get(groupKey);
+            FunnelHelperValue contestAggValue = result.get(groupKey);
             if (contestAggValue == null) {
                 int[] counter = new int[numberOfSteps];
                 List<List<Long>> lists = new ArrayList<List<Long>>();
                 if (calMedian) {
                     lists = createList(numberOfSteps - 1);
                 }
-                contestAggValue = new FunnelAggValue(counter, lists);
+                contestAggValue = new FunnelHelperValue(counter, lists);
                 result.put(groupKey, contestAggValue);
             }
             int[] counter = contestAggValue.getCount();
