@@ -8,10 +8,10 @@ import com.fr.swift.segment.column.DetailColumn;
  * @author Lucifer
  * @description
  */
-public class DetailOrigineColumn implements IMergeColumn {
+public class DetailOriginColumn implements IMergeColumn {
     private DetailColumn column;
 
-    public DetailOrigineColumn(DetailColumn column) {
+    public DetailOriginColumn(DetailColumn column) {
         this.column = column;
     }
 

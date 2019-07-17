@@ -227,7 +227,7 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
 
     private void createHead(long timestamp, int associatedValue, Object groupValue, IStepContainer container) {
         // 当前事务没有被使用且属于第一个事件，则新建临时IHead对象
-        IHead newHead = new AHead(step.size(), simpleDateFormat.format(new Date(timestamp)), associatedValue);
+        IHead newHead = new AHead(step.size(), isAllTime() ? "ALL" : simpleDateFormat.format(new Date(timestamp)), associatedValue);
         newHead.addStep(timestamp, groupValue);
         container.add(associatedValue, newHead);
         // head只能添加在某一天，所以这里要跳出
