@@ -2,10 +2,12 @@ package com.fr.swift.segment.column.impl.multi;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.impl.FasterAggregation;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.impl.base.BaseBitmapColumn;
 import com.fr.swift.util.IoUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,14 +30,14 @@ class ReadonlyMultiBitmapColumn extends BaseBitmapColumn {
     @Override
     public ImmutableBitMap getBitMapIndex(int index) {
         int[] localIndices = globalDict.getLocalIndices(index);
-        ImmutableBitMap[] bitmaps = new ImmutableBitMap[indices.size()];
+        List<ImmutableBitMap> bitmaps = new ArrayList<ImmutableBitMap>();
         for (int i = 0; i < localIndices.length; i++) {
             int localIndex = localIndices[i];
-            bitmaps[i] = localIndex == -1 ?
+            bitmaps.add(localIndex == -1 ?
                     BitMaps.EMPTY_IMMUTABLE :
-                    indices.get(i).getBitMapIndex(localIndex);
+                    indices.get(i).getBitMapIndex(localIndex));
         }
-        return new MultiBitmap(bitmaps, offsets);
+        return FasterAggregation.compose(bitmaps, offsets);
     }
 
     @Override
