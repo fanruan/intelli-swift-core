@@ -1,6 +1,9 @@
 package com.fr.swift.query.group;
 
+import com.fr.swift.compare.Comparators;
+
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -9,8 +12,9 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class FunnelGroupKey implements Serializable {
+public class FunnelGroupKey implements Serializable, Comparable<FunnelGroupKey> {
     private static final long serialVersionUID = -3889379835138230758L;
+    private Comparator comparator = Comparators.STRING_ASC;
 
     private String date;
     private int priceGroup = -1;
@@ -88,6 +92,23 @@ public class FunnelGroupKey implements Serializable {
     public String toString() {
         return "groupKey[date=" + date + ", priceGroup=" + priceGroup + ", tempStrGroup="
                 + tempStrGroup + ", strGroup=" + strGroup + "]";
+    }
+
+    @Override
+    public int compareTo(FunnelGroupKey o) {
+        int compare = comparator.compare(date, o.date);
+        if (compare == 0) {
+            switch (type) {
+                case RANGE:
+                    String current = rangePair.get(0) + "-" + rangePair.get(1);
+                    String other = o.rangePair.get(0) + "-" + o.rangePair.get(1);
+                    return comparator.compare(current, other);
+                case NORMAL:
+                    return comparator.compare(strGroup, o.strGroup);
+                default:
+            }
+        }
+        return compare;
     }
 
     public enum GroupType {
