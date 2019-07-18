@@ -13,7 +13,7 @@ import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.by.GroupByResult;
 import com.fr.swift.query.info.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.funnel.FunnelAssociationBean;
-import com.fr.swift.query.info.funnel.FunnelEventBean;
+import com.fr.swift.query.info.funnel.FunnelVirtualEvent;
 import com.fr.swift.query.info.funnel.ParameterColumnsBean;
 import com.fr.swift.query.info.funnel.filter.TimeFilterInfo;
 import com.fr.swift.query.info.funnel.group.post.PostGroupBean;
@@ -58,7 +58,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
 
     @Override
     public FunnelAggregatorValue aggregate(RowTraversal traversal, Map<ColumnKey, Column<?>> columns) {
-        ParameterColumnsBean paramColumn = bean.getColumns();
+        ParameterColumnsBean paramColumn = bean.getParamColumns();
         // FIXME 2019/07/11 这边依赖分组排序有风险，排序可能不准确导致数据出错
         GroupByResult groupByResult = GroupBy.createGroupByResult(columns.get(new ColumnKey(paramColumn.getTimestamp())), traversal, true);
         final IntList intList = IntListFactory.createIntList();
@@ -71,7 +71,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
             });
         }
         traversal = new IntListRowTraversal(intList);
-        IStep step = createStep(bean.getEvents(), columns);
+        IStep step = createStep(bean.getSteps(), columns);
         TimeWindowFilter filter = createTimeWindowFilter(step, columns);
         SwiftLoggers.getLogger().debug("seg rows: {}", traversal.getCardinality());
         Column<String> idColumn = (Column<String>) columns.get(new ColumnKey(paramColumn.getId()));
@@ -112,7 +112,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
     }
 
     private boolean[] getFlags(List<Integer> steps) {
-        boolean[] flags = new boolean[bean.getEvents().size()];
+        boolean[] flags = new boolean[bean.getSteps().size()];
         for (Integer step : steps) {
             flags[step] = true;
         }
@@ -150,19 +150,19 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
         this.timeGroupFilter = timeGroupFilter;
     }
 
-    private IStep createStep(List<FunnelEventBean> stepNames, Map<ColumnKey, Column<?>> columns) {
-        Set<FunnelEventBean> names = new HashSet<FunnelEventBean>();
+    private IStep createStep(List<FunnelVirtualEvent> stepNames, Map<ColumnKey, Column<?>> columns) {
+        Set<FunnelVirtualEvent> names = new HashSet<FunnelVirtualEvent>();
         names.add(stepNames.get(0));
         boolean isHeadRepeated = false;
         DictionaryEncodedColumn eventDict = columns.get(eventKey).getDictionaryEncodedColumn();
         boolean[][] steps = new boolean[stepNames.size()][eventDict.size()];
         List<ImmutableBitMap> events = new ArrayList<ImmutableBitMap>();
         for (int i = 0; i < stepNames.size(); i++) {
-            FunnelEventBean eventBean = stepNames.get(i);
+            FunnelVirtualEvent eventBean = stepNames.get(i);
             if (i > 0 && names.contains(eventBean)) {
                 isHeadRepeated = true;
             }
-            List<String> eventStep = eventBean.getSteps();
+            List<String> eventStep = eventBean.getEvents();
             for (String s : eventStep) {
                 int index = eventDict.getIndex(s);
                 steps[i][index] = true;
@@ -194,7 +194,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
     }
 
     private void aggregate(Map<FunnelGroupKey, FunnelHelperValue> result, FunnelAggregationBean bean, List<IHead> heads) {
-        int numberOfSteps = bean.getEvents().size();
+        int numberOfSteps = bean.getSteps().size();
         boolean calMedian = bean.isCalculateTime();
         int postGroupStep = getPostGroupStep();
         PostGroupBean groupBean = bean.getPostGroup();

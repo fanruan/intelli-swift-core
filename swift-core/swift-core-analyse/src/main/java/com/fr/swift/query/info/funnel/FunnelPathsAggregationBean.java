@@ -20,10 +20,10 @@ import java.util.Set;
  */
 public class FunnelPathsAggregationBean implements AggregationBean {
 
-    @JsonProperty("columns")
-    protected ParameterColumnsBean columns;
-    @JsonProperty("events")
-    private List<FunnelEventBean> events;
+    @JsonProperty("paramColumns")
+    protected ParameterColumnsBean paramColumns;
+    @JsonProperty("steps")
+    private List<FunnelVirtualEvent> steps;
     @JsonProperty("association")
     private FunnelAssociationBean association;
     @JsonProperty("timeWindow")
@@ -80,12 +80,12 @@ public class FunnelPathsAggregationBean implements AggregationBean {
         this.alias = alias;
     }
 
-    public List<FunnelEventBean> getEvents() {
-        return events;
+    public List<FunnelVirtualEvent> getSteps() {
+        return steps;
     }
 
-    public void setEvents(List<FunnelEventBean> events) {
-        this.events = events;
+    public void setSteps(List<FunnelVirtualEvent> steps) {
+        this.steps = steps;
     }
 
     public FunnelAssociationBean getAssociation() {
@@ -112,12 +112,12 @@ public class FunnelPathsAggregationBean implements AggregationBean {
         this.timeFilter = timeFilter;
     }
 
-    public ParameterColumnsBean getColumns() {
-        return columns;
+    public ParameterColumnsBean getParamColumns() {
+        return paramColumns;
     }
 
-    public void setColumns(ParameterColumnsBean columns) {
-        this.columns = columns;
+    public void setParamColumns(ParameterColumnsBean paramColumns) {
+        this.paramColumns = paramColumns;
     }
 
     @Override
@@ -129,8 +129,8 @@ public class FunnelPathsAggregationBean implements AggregationBean {
                 filters.add(timeFilter.createFilter());
             }
             Set<String> eventFilterValue = new HashSet<String>();
-            for (FunnelEventBean event : events) {
-                eventFilterValue.addAll(event.getSteps());
+            for (FunnelVirtualEvent event : steps) {
+                eventFilterValue.addAll(event.getEvents());
             }
             filters.add(new InFilterBean(getColumn(), eventFilterValue.toArray()));
             andFilterBean.setFilterValue(filters);
