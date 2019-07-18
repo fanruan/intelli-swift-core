@@ -63,8 +63,6 @@ public abstract class BaseTimeWindowFilter implements TimeWindowFilter {
             case MINUTE:
                 dateIndex = (int) TimeUnit.MILLISECONDS.toMinutes(timestamp - dateStart);
                 break;
-            case MONTH:
-                dateIndex = (int) (TimeUnit.MILLISECONDS.toDays(timestamp - dateStart) / 30);
             default:
         }
         return dateIndex;
