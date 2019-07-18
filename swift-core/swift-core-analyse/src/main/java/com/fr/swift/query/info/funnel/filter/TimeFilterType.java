@@ -7,10 +7,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2019-06-28
  */
 public enum TimeFilterType {
-    /**
-     * 一个月以30天计算
-     */
-    MONTH(TimeUnit.DAYS),
+    //
     DAY(TimeUnit.DAYS),
     HOER(TimeUnit.HOURS),
     MINUTE(TimeUnit.MINUTES);
