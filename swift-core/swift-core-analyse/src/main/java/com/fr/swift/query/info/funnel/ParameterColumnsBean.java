@@ -8,24 +8,24 @@ import com.fr.swift.base.json.annotation.JsonProperty;
 public class ParameterColumnsBean {
 
     @JsonProperty
-    private String userId;
+    private String id;
     @JsonProperty
     private String timestamp;
 
     public ParameterColumnsBean() {
     }
 
-    public ParameterColumnsBean(String userId, String timestamp) {
-        this.userId = userId;
+    public ParameterColumnsBean(String id, String timestamp) {
+        this.id = id;
         this.timestamp = timestamp;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
 

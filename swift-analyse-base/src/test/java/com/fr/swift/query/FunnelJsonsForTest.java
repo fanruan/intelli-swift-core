@@ -16,7 +16,7 @@ public class FunnelJsonsForTest {
             "      \"funnelIndex\": 1\n" +
             "    },\n" +
             "    \"timeWindow\": 86400,\n" +
-            "    \"columns\": {\n" +
+            "    \"paramColumns\": {\n" +
             "      \"date\": \"date\",\n" +
             "      \"event\": \"event_type\",\n" +
             "      \"userId\": \"userId\",\n" +
