@@ -23,7 +23,7 @@ public class FunnelPathKey implements Serializable, Comparable<FunnelPathKey> {
     private String init() {
         StringBuilder stringBuilder = new StringBuilder();
         for (FunnelVirtualStep path : paths) {
-            stringBuilder.append(path.getName()).append("-");
+            stringBuilder.append(path.getName()).append("->");
         }
         stringBuilder.setLength(stringBuilder.length() - 1);
         return stringBuilder.toString();
