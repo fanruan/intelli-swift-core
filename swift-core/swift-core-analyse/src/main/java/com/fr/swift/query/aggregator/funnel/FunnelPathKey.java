@@ -1,7 +1,7 @@
 package com.fr.swift.query.aggregator.funnel;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.query.info.funnel.FunnelVirtualEvent;
+import com.fr.swift.query.info.funnel.FunnelVirtualStep;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,17 +12,17 @@ import java.util.List;
  */
 public class FunnelPathKey implements Serializable, Comparable<FunnelPathKey> {
     private static final long serialVersionUID = 5665160665150096552L;
-    private List<FunnelVirtualEvent> paths;
+    private List<FunnelVirtualStep> paths;
     private final String path;
 
-    public FunnelPathKey(List<FunnelVirtualEvent> paths) {
+    public FunnelPathKey(List<FunnelVirtualStep> paths) {
         this.paths = paths;
         this.path = init();
     }
 
     private String init() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (FunnelVirtualEvent path : paths) {
+        for (FunnelVirtualStep path : paths) {
             stringBuilder.append(path.getName()).append("-");
         }
         stringBuilder.setLength(stringBuilder.length() - 1);

@@ -9,7 +9,7 @@ import java.util.List;
  * @author yee
  * @date 2019-06-28
  */
-public class FunnelVirtualEvent {
+public class FunnelVirtualStep {
     @JsonProperty("name")
     private String name;
     @JsonProperty("events")
@@ -43,7 +43,7 @@ public class FunnelVirtualEvent {
 
     @Override
     public String toString() {
-        return "FunnelVirtualEvent{" +
+        return "FunnelVirtualStep{" +
                 "name='" + name + '\'' +
                 ", events=" + events +
                 '}';
@@ -52,9 +52,9 @@ public class FunnelVirtualEvent {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FunnelVirtualEvent)) return false;
+        if (!(o instanceof FunnelVirtualStep)) return false;
 
-        FunnelVirtualEvent that = (FunnelVirtualEvent) o;
+        FunnelVirtualStep that = (FunnelVirtualStep) o;
 
         return events != null ? events.equals(that.events) : that.events == null;
     }

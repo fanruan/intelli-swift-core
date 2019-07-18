@@ -6,7 +6,7 @@ import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.info.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
-import com.fr.swift.query.info.funnel.FunnelVirtualEvent;
+import com.fr.swift.query.info.funnel.FunnelVirtualStep;
 import com.fr.swift.query.info.funnel.group.time.TimeGroup;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -43,7 +43,7 @@ public class FunnelPathsAggregator extends MultiColumnAggregator<FunnelPathsAggr
             funnelAggregator.setEventFilters(eventFilters);
             funnelAggregator.setTimeGroupFilter(MatchFilter.TRUE);
             FunnelAggregatorValue aggregate = funnelAggregator.aggregate(traversal, columns);
-            List<FunnelVirtualEvent> events = next.getSteps();
+            List<FunnelVirtualStep> events = next.getSteps();
             for (int i = events.size(); i > 1; i--) {
                 FunnelPathKey key = new FunnelPathKey(events.subList(0, i));
                 value.put(key, aggregate);
@@ -80,7 +80,7 @@ public class FunnelPathsAggregator extends MultiColumnAggregator<FunnelPathsAggr
     private class FunnelAggregationIterator implements Iterator<FunnelAggregationBean> {
 
         private Iterator[] iterators;
-        private List<FunnelVirtualEvent> source;
+        private List<FunnelVirtualStep> source;
         private FunnelPathsAggregationBean bean;
         private String[] tmp;
         private int lastIterator = -1;
@@ -133,9 +133,9 @@ public class FunnelPathsAggregator extends MultiColumnAggregator<FunnelPathsAggr
 
             }
             FunnelAggregationBean result = new FunnelAggregationBean();
-            List<FunnelVirtualEvent> eventBeans = new ArrayList<FunnelVirtualEvent>();
+            List<FunnelVirtualStep> eventBeans = new ArrayList<FunnelVirtualStep>();
             for (String event : tmp) {
-                FunnelVirtualEvent eventBean = new FunnelVirtualEvent();
+                FunnelVirtualStep eventBean = new FunnelVirtualStep();
                 eventBean.setName(event);
                 eventBean.setEvents(Collections.singletonList(event));
                 eventBeans.add(eventBean);
