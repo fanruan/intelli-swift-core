@@ -5,8 +5,8 @@ import com.fr.swift.query.column.ComplexColumn;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.info.funnel.FunnelAggregationBean;
-import com.fr.swift.query.info.funnel.FunnelEventBean;
 import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
+import com.fr.swift.query.info.funnel.FunnelVirtualEvent;
 import com.fr.swift.query.info.funnel.group.time.TimeGroup;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -43,7 +43,7 @@ public class FunnelPathsAggregator extends MultiColumnAggregator<FunnelPathsAggr
             funnelAggregator.setEventFilters(eventFilters);
             funnelAggregator.setTimeGroupFilter(MatchFilter.TRUE);
             FunnelAggregatorValue aggregate = funnelAggregator.aggregate(traversal, columns);
-            List<FunnelEventBean> events = next.getEvents();
+            List<FunnelVirtualEvent> events = next.getSteps();
             for (int i = events.size(); i > 1; i--) {
                 FunnelPathKey key = new FunnelPathKey(events.subList(0, i));
                 value.put(key, aggregate);
@@ -80,7 +80,7 @@ public class FunnelPathsAggregator extends MultiColumnAggregator<FunnelPathsAggr
     private class FunnelAggregationIterator implements Iterator<FunnelAggregationBean> {
 
         private Iterator[] iterators;
-        private List<FunnelEventBean> source;
+        private List<FunnelVirtualEvent> source;
         private FunnelPathsAggregationBean bean;
         private String[] tmp;
         private int lastIterator = -1;
@@ -89,11 +89,11 @@ public class FunnelPathsAggregator extends MultiColumnAggregator<FunnelPathsAggr
 
         public FunnelAggregationIterator(FunnelPathsAggregationBean bean) {
             this.bean = bean;
-            this.source = bean.getEvents();
+            this.source = bean.getSteps();
             iterators = new Iterator[source.size()];
             this.tmp = new String[source.size()];
             for (int i = 0; i < source.size(); i++) {
-                iterators[i] = source.get(i).getSteps().iterator();
+                iterators[i] = source.get(i).getEvents().iterator();
             }
         }
 
@@ -123,7 +123,7 @@ public class FunnelPathsAggregator extends MultiColumnAggregator<FunnelPathsAggr
                         }
                     }
                 } else if (i == lastIterator) {
-                    iterators[i] = (source.get(i).getSteps()).iterator();
+                    iterators[i] = (source.get(i).getEvents()).iterator();
                     tmp[i] = (String) iterators[i].next();
                     if (preLastIterator == -1) {
                         preLastIterator = lastIterator;
@@ -133,20 +133,20 @@ public class FunnelPathsAggregator extends MultiColumnAggregator<FunnelPathsAggr
 
             }
             FunnelAggregationBean result = new FunnelAggregationBean();
-            List<FunnelEventBean> eventBeans = new ArrayList<FunnelEventBean>();
+            List<FunnelVirtualEvent> eventBeans = new ArrayList<FunnelVirtualEvent>();
             for (String event : tmp) {
-                FunnelEventBean eventBean = new FunnelEventBean();
+                FunnelVirtualEvent eventBean = new FunnelVirtualEvent();
                 eventBean.setName(event);
-                eventBean.setSteps(Collections.singletonList(event));
+                eventBean.setEvents(Collections.singletonList(event));
                 eventBeans.add(eventBean);
             }
-            result.setEvents(eventBeans);
+            result.setSteps(eventBeans);
             result.setTimeGroup(TimeGroup.ALL);
             result.setTimeFilter(bean.getTimeFilter());
             result.setTimeWindow(bean.getTimeWindow());
             result.setTimeFilter(bean.getTimeFilter());
             result.setAssociation(bean.getAssociation());
-            result.setColumns(bean.getColumns());
+            result.setParamColumns(bean.getParamColumns());
             result.setColumn(bean.getColumn());
             return result;
         }

@@ -15,8 +15,8 @@ import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.funnel.FunnelAggregationBean;
-import com.fr.swift.query.info.funnel.FunnelEventBean;
 import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
+import com.fr.swift.query.info.funnel.FunnelVirtualEvent;
 import com.fr.swift.query.info.funnel.group.post.PostGroupBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -57,10 +57,10 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                     if (null == funnelMetric) {
                         continue;
                     }
-                    List<FunnelEventBean> events = funnelMetric.getEvents();
+                    List<FunnelVirtualEvent> events = funnelMetric.getSteps();
                     for (int i = 0; i < events.size() - 1; i++) {
-                        FunnelEventBean event1 = events.get(i);
-                        FunnelEventBean event2 = events.get(i + 1);
+                        FunnelVirtualEvent event1 = events.get(i);
+                        FunnelVirtualEvent event2 = events.get(i + 1);
                         metaDataColumns.add(new MetaDataColumnBean(event1.getName() + "-" + event2.getName(), null, Types.DOUBLE, null));
                     }
                     break;
@@ -118,9 +118,9 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
         if (null != postGroup) {
             dimensionColumns.add(new MetaDataColumnBean(postGroup.getColumn(), null, Types.VARCHAR, null));
         }
-        List<FunnelEventBean> events = funnelBean.getEvents();
+        List<FunnelVirtualEvent> events = funnelBean.getSteps();
         for (int i = 0; i < events.size(); i++) {
-            FunnelEventBean event = events.get(i);
+            FunnelVirtualEvent event = events.get(i);
             String name = null;
             if (Strings.isEmpty(event.getName())) {
                 name = "funnel_event_" + (i + 1);
