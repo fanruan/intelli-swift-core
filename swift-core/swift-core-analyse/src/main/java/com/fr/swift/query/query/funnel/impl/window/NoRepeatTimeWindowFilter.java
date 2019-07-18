@@ -13,7 +13,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,9 +60,9 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
     public void init() {
         initIterableEvents();
 
-        this.lists = new ArrayList<List<IStepContainer>>();
+        this.lists = new ArrayList<>();
         for (int i = 0; i < numberOfDates; i++) {
-            List<IStepContainer> containers = new ArrayList<IStepContainer>();
+            List<IStepContainer> containers = new ArrayList<>();
             for (int j = 0; j < step.size(); j++) {
                 if (j < firstAssociatedIndex || firstAssociatedIndex == -1) {
                     containers.add(new SimpleStepContainer());
@@ -98,7 +97,7 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
             node.setData(timestamp);
             // 如果符合就加入计算  不符合就不计算
             if (timeGroupMatchFilter.matches(node)) {
-                createHead(timestamp, associatedValue, groupValue, lists.get(dateIndex).get(0));
+                createHead(dateIndex, timestamp, associatedValue, groupValue, lists.get(dateIndex).get(0));
                 hasNoHeadBefore = false;
             }
             return;
@@ -225,10 +224,10 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
         return true;
     }
 
-    private void createHead(long timestamp, int associatedValue, Object groupValue, IStepContainer container) {
+    private void createHead(int timeIndex, long timeStamp, int associatedValue, Object groupValue, IStepContainer container) {
         // 当前事务没有被使用且属于第一个事件，则新建临时IHead对象
-        IHead newHead = new AHead(step.size(), isAllTime() ? "ALL" : simpleDateFormat.format(new Date(timestamp)), associatedValue);
-        newHead.addStep(timestamp, groupValue);
+        IHead newHead = new AHead(step.size(), isAllTime() ? "ALL" : timeDetail[timeIndex], associatedValue);
+        newHead.addStep(timeStamp, groupValue);
         container.add(associatedValue, newHead);
         // head只能添加在某一天，所以这里要跳出
     }
