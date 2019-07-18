@@ -11,8 +11,8 @@ import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.bean.parser.FilterInfoParser;
 import com.fr.swift.query.info.bean.type.MetricType;
-import com.fr.swift.query.info.funnel.FunnelEventBean;
 import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
+import com.fr.swift.query.info.funnel.FunnelVirtualStep;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
@@ -51,7 +51,7 @@ public class FunnelPathsMetric extends AbstractMetric {
 
     public List<DetailFilter> getEventFilter(Segment segment) {
         List<DetailFilter> result = new ArrayList<DetailFilter>();
-        for (FunnelEventBean event : bean.getEvents()) {
+        for (FunnelVirtualStep event : bean.getSteps()) {
             if (null != event.getFilter()) {
                 try {
                     result.add(FilterBuilder.buildDetailFilter(segment,

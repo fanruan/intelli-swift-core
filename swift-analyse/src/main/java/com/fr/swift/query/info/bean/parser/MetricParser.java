@@ -54,9 +54,9 @@ class MetricParser {
 
     private static Set<ColumnKey> getFunnelColumns(FunnelPathsAggregationBean bean) {
         Set<ColumnKey> columnKeys = new HashSet<ColumnKey>();
-        ParameterColumnsBean columns = bean.getColumns();
+        ParameterColumnsBean columns = bean.getParamColumns();
         columnKeys.add(new ColumnKey(columns.getTimestamp()));
-        columnKeys.add(new ColumnKey(columns.getUserId()));
+        columnKeys.add(new ColumnKey(columns.getId()));
 
         FunnelAssociationBean association = bean.getAssociation();
         if (null != association) {

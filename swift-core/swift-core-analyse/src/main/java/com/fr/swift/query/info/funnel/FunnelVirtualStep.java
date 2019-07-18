@@ -9,11 +9,11 @@ import java.util.List;
  * @author yee
  * @date 2019-06-28
  */
-public class FunnelEventBean {
+public class FunnelVirtualStep {
     @JsonProperty("name")
     private String name;
-    @JsonProperty("steps")
-    private List<String> steps;
+    @JsonProperty("events")
+    private List<String> events;
     @JsonProperty("filter")
     private FilterInfoBean filter;
 
@@ -25,12 +25,12 @@ public class FunnelEventBean {
         this.name = name;
     }
 
-    public List<String> getSteps() {
-        return steps;
+    public List<String> getEvents() {
+        return events;
     }
 
-    public void setSteps(List<String> steps) {
-        this.steps = steps;
+    public void setEvents(List<String> events) {
+        this.events = events;
     }
 
     public FilterInfoBean getFilter() {
@@ -43,33 +43,24 @@ public class FunnelEventBean {
 
     @Override
     public String toString() {
-        return "FunnelEventBean{" +
+        return "FunnelVirtualStep{" +
                 "name='" + name + '\'' +
-                ", steps=" + steps +
+                ", events=" + events +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof FunnelEventBean)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof FunnelVirtualStep)) return false;
 
-        FunnelEventBean that = (FunnelEventBean) o;
+        FunnelVirtualStep that = (FunnelVirtualStep) o;
 
-        if (steps != null ? !steps.equals(that.steps) : that.steps != null) {
-            return false;
-        }
-        return filter != null ? filter.equals(that.filter) : that.filter == null;
+        return events != null ? events.equals(that.events) : that.events == null;
     }
 
     @Override
     public int hashCode() {
-        int result = steps != null ? steps.hashCode() : 0;
-        result = 31 * result + (filter != null ? filter.hashCode() : 0);
-        return result;
+        return events != null ? events.hashCode() : 0;
     }
 }
