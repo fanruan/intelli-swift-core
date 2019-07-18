@@ -74,7 +74,7 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
         IStep step = createStep(bean.getEvents(), columns);
         TimeWindowFilter filter = createTimeWindowFilter(step, columns);
         SwiftLoggers.getLogger().debug("seg rows: {}", traversal.getCardinality());
-        Column<String> idColumn = (Column<String>) columns.get(new ColumnKey(paramColumn.getUserId()));
+        Column<String> idColumn = (Column<String>) columns.get(new ColumnKey(paramColumn.getId()));
         Iterator<GroupByEntry> iterator = GroupBy.createGroupByResult(idColumn, traversal, true);
         MergeIterator mergeIterator = new MergeIterator(filter, step, iterator,
                 idColumn.getDictionaryEncodedColumn(),

@@ -56,7 +56,7 @@ class MetricParser {
         Set<ColumnKey> columnKeys = new HashSet<ColumnKey>();
         ParameterColumnsBean columns = bean.getColumns();
         columnKeys.add(new ColumnKey(columns.getTimestamp()));
-        columnKeys.add(new ColumnKey(columns.getUserId()));
+        columnKeys.add(new ColumnKey(columns.getId()));
 
         FunnelAssociationBean association = bean.getAssociation();
         if (null != association) {
