@@ -13,7 +13,7 @@ import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.by.GroupByResult;
 import com.fr.swift.query.info.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.funnel.FunnelAssociationBean;
-import com.fr.swift.query.info.funnel.FunnelVirtualEvent;
+import com.fr.swift.query.info.funnel.FunnelVirtualStep;
 import com.fr.swift.query.info.funnel.ParameterColumnsBean;
 import com.fr.swift.query.info.funnel.filter.TimeFilterInfo;
 import com.fr.swift.query.info.funnel.group.post.PostGroupBean;
@@ -150,15 +150,15 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
         this.timeGroupFilter = timeGroupFilter;
     }
 
-    private IStep createStep(List<FunnelVirtualEvent> stepNames, Map<ColumnKey, Column<?>> columns) {
-        Set<FunnelVirtualEvent> names = new HashSet<FunnelVirtualEvent>();
+    private IStep createStep(List<FunnelVirtualStep> stepNames, Map<ColumnKey, Column<?>> columns) {
+        Set<FunnelVirtualStep> names = new HashSet<FunnelVirtualStep>();
         names.add(stepNames.get(0));
         boolean isHeadRepeated = false;
         DictionaryEncodedColumn eventDict = columns.get(eventKey).getDictionaryEncodedColumn();
         boolean[][] steps = new boolean[stepNames.size()][eventDict.size()];
         List<ImmutableBitMap> events = new ArrayList<ImmutableBitMap>();
         for (int i = 0; i < stepNames.size(); i++) {
-            FunnelVirtualEvent eventBean = stepNames.get(i);
+            FunnelVirtualStep eventBean = stepNames.get(i);
             if (i > 0 && names.contains(eventBean)) {
                 isHeadRepeated = true;
             }

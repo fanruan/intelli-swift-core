@@ -23,7 +23,7 @@ public class FunnelPathsAggregationBean implements AggregationBean {
     @JsonProperty("paramColumns")
     protected ParameterColumnsBean paramColumns;
     @JsonProperty("steps")
-    private List<FunnelVirtualEvent> steps;
+    private List<FunnelVirtualStep> steps;
     @JsonProperty("association")
     private FunnelAssociationBean association;
     @JsonProperty("timeWindow")
@@ -80,11 +80,11 @@ public class FunnelPathsAggregationBean implements AggregationBean {
         this.alias = alias;
     }
 
-    public List<FunnelVirtualEvent> getSteps() {
+    public List<FunnelVirtualStep> getSteps() {
         return steps;
     }
 
-    public void setSteps(List<FunnelVirtualEvent> steps) {
+    public void setSteps(List<FunnelVirtualStep> steps) {
         this.steps = steps;
     }
 
@@ -129,7 +129,7 @@ public class FunnelPathsAggregationBean implements AggregationBean {
                 filters.add(timeFilter.createFilter());
             }
             Set<String> eventFilterValue = new HashSet<String>();
-            for (FunnelVirtualEvent event : steps) {
+            for (FunnelVirtualStep event : steps) {
                 eventFilterValue.addAll(event.getEvents());
             }
             filters.add(new InFilterBean(getColumn(), eventFilterValue.toArray()));
