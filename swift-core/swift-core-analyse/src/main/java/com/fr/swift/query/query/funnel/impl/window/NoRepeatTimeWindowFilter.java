@@ -60,9 +60,9 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
     public void init() {
         initIterableEvents();
 
-        this.lists = new ArrayList<>();
+        this.lists = new ArrayList<List<IStepContainer>>();
         for (int i = 0; i < numberOfDates; i++) {
-            List<IStepContainer> containers = new ArrayList<>();
+            List<IStepContainer> containers = new ArrayList<IStepContainer>();
             for (int j = 0; j < step.size(); j++) {
                 if (j < firstAssociatedIndex || firstAssociatedIndex == -1) {
                     containers.add(new SimpleStepContainer());
