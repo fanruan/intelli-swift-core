@@ -1,7 +1,5 @@
-select * from a;
-
-SELECT a, todate(b, 'yyyy-m-d'), SUM(c)
-FROM t
+SELECT a, todate(b, 'yyyy-m-d') ymd, SUM(c) as sum_c
+FROM (select * from a a1) as tb
 WHERE (c1 = 100 AND c2 LIKE '%as%') OR (c3 BETWEEN 10 AND 100 OR Todate(d) > toDate(e)) and not 1 > 2
 GROUP BY z, a
 HAVING AVG(c9) > 100
@@ -16,6 +14,8 @@ ALTER TABLE a ADD c5 BIT, c6 time;
 ALTER TABLE a DROP c1, c2;
 
 INSERT INTO a (c2, c3, c4, c5) VALUES (1., 'string', NULL, 0);
-INSERT INTO a VALUES (1., 'string', NULL, 0);
+INSERT INTO a VALUES (1., 'string', NULL, 0),(1., 'string', NULL, 0);
 
-DELETE FROM a WHERE c2 LIKE '%as%' OR c3 BETWEEN 10 AND 100
+DELETE FROM a WHERE c2 LIKE '%as%' OR c3 BETWEEN 10 AND 100;
+
+TRUNCATE a;

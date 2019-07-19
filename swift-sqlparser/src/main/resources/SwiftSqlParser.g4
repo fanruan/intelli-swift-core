@@ -1,34 +1,34 @@
 parser grammar SwiftSqlParser;
 
 options {
-    language = Java;
-    tokenVocab = SwiftSqlLexer;
+    language=Java;
+    tokenVocab=SwiftSqlLexer;
 }
 
 root: sqls EOF;
 
-sqls: sql (SEMI sql)* SEMI?;
+sqls: sql (SEMI sql)*? SEMI?;
 
 sql: ddl | dml;
 
 ddl: createTable | dropTable | alterTable;
 
-dml: insert | delete | select;
+dml: insert | delete | select | truncate;
 
 // ddl
 createTable:
-    CREATE TABLE table = name L_PAR columnDefinitions R_PAR /*partitionBy?*/;
+    CREATE TABLE table=name L_PAR columnDefinitions R_PAR /*partitionBy?*/;
 
 columnDefinitions:
-    name columnDefinition (COMMA name columnDefinition)*?;
+    name columnDefinition (COMMA name columnDefinition)*;
 
 columnDefinition:
-    dataType (L_PAR length = NUMERIC_LITERAL R_PAR)? /*((NOT)? NULL)?*/;
+    dataType (L_PAR length=NUMERIC_LITERAL R_PAR)? /*((NOT)? NULL)?*/;
 
 // todo 分块
 //partitionBy:
 //    PARTITION BY (
-//        LINE L_PAR capacity = NUMERIC_LITERAL COMMA memCapacity = NUMERIC_LITERAL R_PAR
+//        LINE L_PAR capacity=NUMERIC_LITERAL COMMA memCapacity=NUMERIC_LITERAL R_PAR
 //        | HASH functionCall
 //        | RANGE
 //    );
@@ -40,39 +40,42 @@ dataType:
     DATE | TIME | TIMESTAMP |
     BOOLEAN;
 
-dropTable: DROP TABLE table = name;
+dropTable: DROP TABLE table=name;
 
 alterTable: alterTableAddColumn | alterTableDropColumn;
 
 alterTableAddColumn:
-    ALTER TABLE table = name ADD columnDefinitions;
+    ALTER TABLE table=name ADD columnDefinitions;
 
 alterTableDropColumn:
-    ALTER TABLE table = name DROP columnNames = names;
+    ALTER TABLE table=name DROP columnNames=names;
 
 // dml
 insert:
-    INSERT INTO table = name
-    (L_PAR columnNames = names R_PAR)?
-    VALUES L_PAR values R_PAR;
+    INSERT INTO table=name
+    (L_PAR columnNames=names R_PAR)?
+    VALUES
+    L_PAR values R_PAR (COMMA L_PAR values R_PAR)*?;
 
-delete: DELETE FROM table = name WHERE where = expr;
+delete: DELETE FROM table=name WHERE where=expr;
+
+truncate: TRUNCATE table=name;
 
 select:
     SELECT
     DISTINCT? columns
-    FROM table = name
-    (WHERE where = expr)?
-    (GROUP BY groupBy = names)?
-    (HAVING having = expr)?
+    FROM (table=name | L_PAR subQuery=select R_PAR) (AS? alias=name)?
+    (WHERE where=expr)?
+    (GROUP BY groupBy=names)?
+    (HAVING having=expr)?
     (ORDER BY orderBy)?
-    (LIMIT limit = NUMERIC_LITERAL)?;
+    (LIMIT limit=NUMERIC_LITERAL)?;
 
 columns:
     '*' |
-    simpleExpr (COMMA simpleExpr)*;
+    simpleExpr (AS? alias=name)? (COMMA simpleExpr (AS? alias=name)?)*?;
 
-orderBy: name (ASC | DESC)? ( COMMA name (ASC | DESC)?)*;
+orderBy: name (ASC | DESC)? ( COMMA name (ASC | DESC)?)*?;
 
 expr:
     simpleExpr |
@@ -83,7 +86,7 @@ expr:
 simpleExpr: value | name | funcExpr;
 
 funcExpr:
-    funcName L_PAR (simpleExpr (COMMA simpleExpr)*)? R_PAR;
+    funcName L_PAR (simpleExpr (COMMA simpleExpr)*?)? R_PAR;
 
 funcName:
     MAX | MIN | SUM | AVG | COUNT | MID |
@@ -112,8 +115,8 @@ logicOp: AND | OR;
 
 name: IDENTIFIER;
 
-names: name (COMMA name)*;
+names: name (COMMA name)*?;
 
 value: NULL | NUMERIC_LITERAL | STRING_LITERAL;
 
-values: value (COMMA value)*;
+values: value (COMMA value)*?;

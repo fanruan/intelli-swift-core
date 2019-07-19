@@ -1,6 +1,5 @@
 // Generated from D:\workspace\swift-public/target/classes/SwiftSqlParser.g4 by ANTLR 4.5.3
 package com.fr.swift.jdbc.antlr4;
-
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -217,6 +216,20 @@ public interface SwiftSqlParserListener extends ParseTreeListener {
      * @param ctx the parse tree
      */
     void exitDelete(SwiftSqlParser.DeleteContext ctx);
+
+    /**
+     * Enter a parse tree produced by {@link SwiftSqlParser#truncate}.
+     *
+     * @param ctx the parse tree
+     */
+    void enterTruncate(SwiftSqlParser.TruncateContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link SwiftSqlParser#truncate}.
+     *
+     * @param ctx the parse tree
+     */
+    void exitTruncate(SwiftSqlParser.TruncateContext ctx);
 
     /**
      * Enter a parse tree produced by {@link SwiftSqlParser#select}.
