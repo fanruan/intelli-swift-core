@@ -52,6 +52,7 @@ public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfo
         return sorts;
     }
 
+    @Override
     public void setSorts(List<SortBean> sorts) {
         this.sorts = sorts;
     }
