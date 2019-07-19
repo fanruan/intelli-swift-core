@@ -12,7 +12,6 @@ import com.fr.swift.result.GroupNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -100,7 +99,7 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
             temp = lists.get(dateIndex);
             if (step.isEqual(0, event, row)) {
                 hasNoHeadBefore = false;
-                createHead(timestamp, associatedValue, groupValue);
+                createHead(dateIndex, timestamp, associatedValue, groupValue);
                 //重复事件是head
                 if (!hasAnotherStep0) {
                     break;
@@ -208,9 +207,9 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
         return true;
     }
 
-    private void createHead(long timestamp, int associatedValue, Object groupValue) {
+    private void createHead(int timeIndex, long timestamp, int associatedValue, Object groupValue) {
         // 当前事务没有被使用且属于第一个事件，则新建临时IHead对象
-        IHead newHead = new Head(step.size(), isAllTime() ? "ALL" : simpleDateFormat.format(new Date(timestamp)), associatedValue, associatedColumnSize);
+        IHead newHead = new Head(step.size(), isAllTime() ? "ALL" : timeDetail[timeIndex], associatedValue, associatedColumnSize);
         newHead.addStep(timestamp, groupValue);
         temp.add(newHead);
     }

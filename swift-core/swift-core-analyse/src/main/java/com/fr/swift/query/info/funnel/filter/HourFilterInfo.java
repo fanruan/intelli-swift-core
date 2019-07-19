@@ -9,22 +9,21 @@ import java.util.Calendar;
  * @author lyon
  * @date 2018/12/28
  */
-public class DayFilterInfo extends BaseTimeFilterInfo {
+public class HourFilterInfo extends BaseTimeFilterInfo {
 
-    public DayFilterInfo(String column, String timeStart, int timeSegCount) {
-        super(column, timeStart, timeSegCount, new SimpleDateFormat("yyyyMMdd"), TimeFilterType.DAY);
-
+    public HourFilterInfo(String column, String timeStart, int timeSegCount) {
+        super(column, timeStart, timeSegCount, new SimpleDateFormat("yyyyMMddHH"), TimeFilterType.HOER);
     }
 
-    public DayFilterInfo() {
+    public HourFilterInfo() {
     }
-
 
     @Override
-    protected long calculateEndTime() {
+    public long calculateEndTime() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(getTimeStart());
-        calendar.add(Calendar.DATE, getTimeSegCount());
+        calendar.add(Calendar.HOUR, getTimeSegCount());
         return calendar.getTimeInMillis();
+
     }
 }

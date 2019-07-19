@@ -16,7 +16,9 @@ import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
         defaultImpl = DayFilterInfo.class
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(name = "DAY", value = DayFilterInfo.class)
+        @JsonSubTypes.Type(name = "DAY", value = DayFilterInfo.class),
+        @JsonSubTypes.Type(name = "HOUR", value = HourFilterInfo.class),
+        @JsonSubTypes.Type(name = "MINUTE", value = MinuteFilterInfo.class)
 })
 @JsonIgnoreProperties("timeSegment")
 public interface TimeFilterInfo {
