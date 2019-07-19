@@ -3,6 +3,7 @@ lexer grammar SwiftSqlLexer;
 // select
 SELECT: S E L E C T;
 DISTINCT: D I S T I N C T;
+AS: A S;
 FROM: F R O M;
 WHERE: W H E R E;
 GROUP: G R O U P;
@@ -20,6 +21,9 @@ VALUES: V A L U E S;
 
 // delete
 DELETE: D E L E T E;
+
+// truncate
+TRUNCATE: T R U N C A T E;
 
 // create table
 CREATE: C R E A T E;

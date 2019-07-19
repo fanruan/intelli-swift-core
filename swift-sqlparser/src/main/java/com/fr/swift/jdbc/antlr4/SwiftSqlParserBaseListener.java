@@ -287,6 +287,24 @@ public class SwiftSqlParserBaseListener implements SwiftSqlParserListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
+    public void enterTruncate(SwiftSqlParser.TruncateContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override
+    public void exitTruncate(SwiftSqlParser.TruncateContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override
     public void enterSelect(SwiftSqlParser.SelectContext ctx) {
     }
 
