@@ -71,6 +71,7 @@ public class IResourceDiscoveryTest {
                 readers.add(exec.submit(new Callable<Reader>() {
                     @Override
                     public Reader call() {
+                        Thread.yield();
                         return DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT));
                     }
                 }));
@@ -96,6 +97,7 @@ public class IResourceDiscoveryTest {
                 writers.add(exec.submit(new Callable<Writer>() {
                     @Override
                     public Writer call() {
+                        Thread.yield();
                         return DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT));
                     }
                 }));

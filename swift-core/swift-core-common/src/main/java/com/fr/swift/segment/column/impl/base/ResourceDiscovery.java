@@ -55,22 +55,24 @@ public class ResourceDiscovery implements IResourceDiscovery {
         String segPath = getSegPath(path);
         String ioPath = path.substring(segPath.length());
 
-        if (!segMemIos.containsKey(segPath)) {
-            ConcurrentMap<String, MemIo> baseMemIos = new ConcurrentHashMap<String, MemIo>();
-            MemIo memIo = MemIoBuilder.build(conf);
-            baseMemIos.put(ioPath, memIo);
-            segMemIos.put(segPath, baseMemIos);
-            return memIo;
-        }
+        synchronized (segMemIos) {
+            if (!segMemIos.containsKey(segPath)) {
+                ConcurrentMap<String, MemIo> baseMemIos = new ConcurrentHashMap<String, MemIo>();
+                MemIo memIo = MemIoBuilder.build(conf);
+                baseMemIos.put(ioPath, memIo);
+                segMemIos.put(segPath, baseMemIos);
+                return memIo;
+            }
 
-        Map<String, MemIo> baseMemIos = segMemIos.get(segPath);
-        if (!baseMemIos.containsKey(ioPath)) {
-            MemIo memIo = MemIoBuilder.build(conf);
-            baseMemIos.put(ioPath, memIo);
-            return memIo;
-        }
+            Map<String, MemIo> baseMemIos = segMemIos.get(segPath);
+            if (!baseMemIos.containsKey(ioPath)) {
+                MemIo memIo = MemIoBuilder.build(conf);
+                baseMemIos.put(ioPath, memIo);
+                return memIo;
+            }
 
-        return segMemIos.get(segPath).get(ioPath);
+            return segMemIos.get(segPath).get(ioPath);
+        }
     }
 
     private static boolean isMemory(IResourceLocation location) {
@@ -99,13 +101,9 @@ public class ResourceDiscovery implements IResourceDiscovery {
             return (R) Readers.build(location, conf);
         }
         if (isMinor(path)) {
-            synchronized (minorMemIos) {
-                return (R) getMemIo(minorMemIos, location, conf);
-            }
+            return (R) getMemIo(minorMemIos, location, conf);
         }
-        synchronized (cubeMemIos) {
-            return (R) getMemIo(cubeMemIos, location, conf);
-        }
+        return (R) getMemIo(cubeMemIos, location, conf);
     }
 
     @Override
