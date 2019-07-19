@@ -13,7 +13,7 @@ sql: ddl | dml;
 
 ddl: createTable | dropTable | alterTable;
 
-dml: insert | delete | select | truncate;
+dml: insert | delete | truncate | select;
 
 // ddl
 createTable:
