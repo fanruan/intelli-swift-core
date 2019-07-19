@@ -6,7 +6,6 @@ import com.fr.swift.result.SwiftRowIteratorImpl;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.IoUtil;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -114,6 +113,7 @@ public abstract class BaseApiResultSet<T> implements SwiftApiResultSet<T> {
 
     @Override
     public void close() {
-        IoUtil.close(rowIterator);
+        // TODO 这里的这里close rowIterator会有Stack Overflow，这里要考虑怎么close
+//        IoUtil.close(rowIterator);
     }
 }

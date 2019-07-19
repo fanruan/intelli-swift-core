@@ -24,9 +24,6 @@ import com.fr.swift.api.server.response.error.ParamErrorCode;
 import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.impl.SwiftWhere;
-import com.fr.swift.jdbc.adaptor.SwiftASTVisitorAdapter;
-import com.fr.swift.jdbc.adaptor.SwiftSQLType;
-import com.fr.swift.jdbc.adaptor.SwiftSQLUtils;
 import com.fr.swift.jdbc.adaptor.bean.ColumnBean;
 import com.fr.swift.jdbc.adaptor.bean.CreationBean;
 import com.fr.swift.jdbc.adaptor.bean.DeletionBean;
@@ -34,7 +31,9 @@ import com.fr.swift.jdbc.adaptor.bean.DropBean;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
 import com.fr.swift.jdbc.adaptor.bean.SelectionBean;
 import com.fr.swift.jdbc.adaptor.bean.TruncateBean;
-import com.fr.swift.jdbc.druid.sql.ast.SQLStatement;
+import com.fr.swift.jdbc.antlr4.SwiftSqlParseUtil;
+import com.fr.swift.jdbc.listener.SwiftSqlParserListenerImpl;
+import com.fr.swift.jdbc.listener.handler.SwiftSqlBeanHandler;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.query.QueryInfoBean;
 import com.fr.swift.util.Crasher;
@@ -61,91 +60,91 @@ public class SwiftRequestParserVisitor implements JdbcRequestParserVisitor, ApiR
     }
 
     @Override
-    public ApiInvocation visit(SqlRequestInfo sqlRequestInfo) {
+    public ApiInvocation visit(final SqlRequestInfo sqlRequestInfo) {
         String sql = sqlRequestInfo.getSql();
-        SwiftASTVisitorAdapter visitor = new SwiftASTVisitorAdapter(sqlRequestInfo.getDatabase());
-        SQLStatement stmt = SwiftSQLUtils.parseStatement(sql);
-        if (stmt == null) {
-            return ApiCrasher.crash(ParamErrorCode.SQL_PARSE_ERROR);
-        }
-        stmt.accept(visitor);
-        SwiftSQLType sqlType = visitor.getSqlType();
-        String schema = sqlRequestInfo.getDatabase();
-        switch (sqlType) {
-            case CREATE: {
-                CreationBean bean = visitor.getCreationBean();
-                CreateTableRequestInfo requestInfo = new CreateTableRequestInfo();
-                if (Strings.isNotEmpty(bean.getSchema())) {
-                    schema = sqlRequestInfo.getDatabase();
-                }
-                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema, bean.getTableName());
-                List<Column> columns = new ArrayList<Column>();
-                for (ColumnBean columnBean : bean.getFields()) {
-                    columns.add(new Column(columnBean.getColumnName(), columnBean.getColumnType()));
-                }
-                requestInfo.setColumns(columns);
-                return visit(requestInfo);
-            }
-            case INSERT: {
-                InsertionBean bean = visitor.getInsertionBean();
-                InsertRequestInfo requestInfo = new InsertRequestInfo();
-                if (Strings.isNotEmpty(bean.getSchema())) {
-                    schema = bean.getSchema();
-                }
-                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema, bean.getTableName());
-                requestInfo.setSelectFields(bean.getFields());
-                requestInfo.setData(bean.getRows());
-                return visit(requestInfo);
-            }
-            case DROP: {
-                DropBean bean = visitor.getDropBean();
-                if (Strings.isNotEmpty(bean.getSchema())) {
-                    schema = bean.getSchema();
-                }
-                TableRequestInfo requestInfo = new DropRequestInfo();
-                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema, bean.getTableName());
-                return visit(requestInfo);
-            }
-            case DELETE: {
-                DeletionBean bean = visitor.getDeletionBean();
-                DeleteRequestInfo requestInfo = new DeleteRequestInfo();
-                if (Strings.isNotEmpty(bean.getSchema())) {
-                    schema = bean.getSchema();
-                }
-                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema, bean.getTableName());
-                try {
-                    requestInfo.setWhere(JsonBuilder.writeJsonString(bean.getFilter()));
-                } catch (Exception e) {
-                    return ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
-                }
-                return visit(requestInfo);
-            }
-            case SELECT: {
-                SelectionBean bean = visitor.getSelectionBean();
+        final String[] schema = {sqlRequestInfo.getDatabase()};
+        final ApiInvocation[] result = {null};
+        SwiftSqlBeanHandler swiftSqlBeanHandler = new SwiftSqlBeanHandler() {
+
+            @Override
+            public void handle(SelectionBean bean) {
                 String queryJson = null;
                 if (Strings.isNotEmpty(bean.getSchema())) {
-                    schema = bean.getSchema();
+                    schema[0] = bean.getSchema();
                 }
                 try {
                     QueryInfoBean queryInfoBean = bean.getQueryInfoBean();
                     queryInfoBean.setQueryId(sqlRequestInfo.getRequestId());
                     queryJson = JsonBuilder.writeJsonString(queryInfoBean);
                 } catch (Exception e) {
-                    return ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
+                    ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
                 }
-                return createApiInvocation("query", SelectService.class,
-                        SwiftSchema.fromKey(schema), queryJson);
+                result[0] = createApiInvocation("query", SelectService.class,
+                        SwiftSchema.fromKey(schema[0]), queryJson);
             }
-            case TRUNCATE: {
-                TruncateBean bean = visitor.getTruncateBean();
+
+            @Override
+            public void handle(InsertionBean bean) {
+                InsertRequestInfo requestInfo = new InsertRequestInfo();
                 if (Strings.isNotEmpty(bean.getSchema())) {
-                    schema = bean.getSchema();
+                    schema[0] = bean.getSchema();
                 }
-                return createApiInvocation("truncateTable", TableService.class, SwiftSchema.fromKey(schema), bean.getTableName());
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema[0], bean.getTableName());
+                requestInfo.setSelectFields(bean.getFields());
+                requestInfo.setData(bean.getRows());
+                result[0] = visit(requestInfo);
             }
-            default:
-        }
-        return null;
+
+            @Override
+            public void handle(CreationBean bean) {
+                CreateTableRequestInfo requestInfo = new CreateTableRequestInfo();
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema[0] = sqlRequestInfo.getDatabase();
+                }
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema[0], bean.getTableName());
+                List<Column> columns = new ArrayList<Column>();
+                for (ColumnBean columnBean : bean.getFields()) {
+                    columns.add(new Column(columnBean.getColumnName(), columnBean.getColumnType()));
+                }
+                requestInfo.setColumns(columns);
+                result[0] = visit(requestInfo);
+            }
+
+            @Override
+            public void handle(DropBean bean) {
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema[0] = bean.getSchema();
+                }
+                TableRequestInfo requestInfo = new DropRequestInfo();
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema[0], bean.getTableName());
+                result[0] = visit(requestInfo);
+            }
+
+            @Override
+            public void handle(TruncateBean bean) {
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema[0] = bean.getSchema();
+                }
+                result[0] = createApiInvocation("truncateTable", TableService.class, SwiftSchema.fromKey(schema[0]), bean.getTableName());
+            }
+
+            @Override
+            public void handle(DeletionBean bean) {
+                DeleteRequestInfo requestInfo = new DeleteRequestInfo();
+                if (Strings.isNotEmpty(bean.getSchema())) {
+                    schema[0] = bean.getSchema();
+                }
+                setProperties(requestInfo, sqlRequestInfo.getAuthCode(), schema[0], bean.getTableName());
+                try {
+                    requestInfo.setWhere(JsonBuilder.writeJsonString(bean.getFilter()));
+                } catch (Exception e) {
+                    ApiCrasher.crash(ParamErrorCode.PARAMS_PARSER_ERROR);
+                }
+                result[0] = visit(requestInfo);
+            }
+        };
+        SwiftSqlParseUtil.parse(sql, new SwiftSqlParserListenerImpl(swiftSqlBeanHandler));
+        return result[0];
     }
 
     @Override
