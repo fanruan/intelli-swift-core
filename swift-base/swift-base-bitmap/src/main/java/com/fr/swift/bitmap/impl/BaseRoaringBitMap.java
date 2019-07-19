@@ -12,7 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Iterator;
 
 /**
  * @author anchore
@@ -79,7 +78,6 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
     @Override
     public IntIterator intIterator() {
         return new IntIterator() {
-
             com.fr.swift.bitmap.roaringbitmap.IntIterator itr = bitmap.getIntIterator();
 
             @Override
@@ -91,22 +89,7 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
             public boolean hasNext() {
                 return itr.hasNext();
             }
-
-            @Override
-            public Integer next() {
-                return nextInt();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
         };
-    }
-
-    @Override
-    public Iterator<Integer> iterator() {
-        return intIterator();
     }
 
     @Override

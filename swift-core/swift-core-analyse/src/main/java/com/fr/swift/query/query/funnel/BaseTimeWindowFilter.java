@@ -24,12 +24,17 @@ public abstract class BaseTimeWindowFilter implements TimeWindowFilter {
     // 漏斗定义的顺序步骤
     protected IStep step;
     private long dateStart;
+    private boolean allTime;
 
 
     public BaseTimeWindowFilter(TimeWindowBean timeWindow, TimeGroup timeGroup, MatchFilter timeGroupMatchFilter, TimeFilterInfo info, IStep step) {
         this.timeWindow = timeWindow.toMillis();
         this.dayWindow = this.timeWindow / info.timeSegment() + 1;
-        this.simpleDateFormat = new SimpleDateFormat(timeGroup.getDatePattern());
+        if (timeGroup == TimeGroup.ALL) {
+            allTime = true;
+        } else {
+            this.simpleDateFormat = new SimpleDateFormat(timeGroup.getDatePattern());
+        }
         this.filter = info;
         this.timeGroupMatchFilter = timeGroupMatchFilter;
         this.dateStart = info.getTimeStart();
@@ -52,5 +57,9 @@ public abstract class BaseTimeWindowFilter implements TimeWindowFilter {
             default:
         }
         return dateIndex;
+    }
+
+    public boolean isAllTime() {
+        return allTime;
     }
 }

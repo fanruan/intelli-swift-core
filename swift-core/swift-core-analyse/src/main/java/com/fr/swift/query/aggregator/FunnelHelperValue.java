@@ -10,14 +10,14 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class FunnelAggValue implements Serializable {
+public class FunnelHelperValue implements Serializable {
 
     private static final long serialVersionUID = 8578072541928721092L;
     private int[] count;
     private List<List<Long>> periods;
     private double[] medians = new double[0];
 
-    public FunnelAggValue(int[] count, List<List<Long>> periods) {
+    public FunnelHelperValue(int[] count, List<List<Long>> periods) {
         this.count = count;
         this.periods = periods;
     }
