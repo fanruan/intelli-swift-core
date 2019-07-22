@@ -28,8 +28,6 @@
         <module>swift-proxy</module>
         <module>swift-api-server</module>
         <module>swift-config</module>
-        <module>swift-sqlparser</module>
-        <module>swift-jdbc-emb</module>
         <module>swift-executor</module>
         <module>swift-base-boot</module>
     </modules>

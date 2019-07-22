@@ -76,6 +76,7 @@ public class FunnelPathsAggregationBean implements AggregationBean {
         return alias;
     }
 
+    @Override
     public void setAlias(String alias) {
         this.alias = alias;
     }
