@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * this is a result set for api or jdbc
+ *
  * @author yee
  * @date 2018-12-12
  */
@@ -42,6 +43,7 @@ public interface SwiftApiResultSet<T> extends SerializableResultSet, DetailResul
 
     /**
      * mark if there is next page for this result set
+     *
      * @return return true if there is next page.
      */
     boolean isOriginHasNextPage();

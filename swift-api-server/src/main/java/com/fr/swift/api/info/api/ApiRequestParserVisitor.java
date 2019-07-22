@@ -6,6 +6,7 @@ import com.fr.swift.api.info.RequestType;
 
 /**
  * requestType visitor for api
+ *
  * @author yee
  * @date 2018-12-11
  */
@@ -44,10 +45,11 @@ public interface ApiRequestParserVisitor extends RequestParserVisitor {
 
     /**
      * visit query requestType info
+     *
      * @param tableRequestInfo table requestType info
      *                         the requestType type might be TRUNCATE, DROP
-     * @see RequestType
      * @return invocation for table requestType
+     * @see RequestType
      */
     ApiInvocation visit(TableRequestInfo tableRequestInfo);
 
