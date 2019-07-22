@@ -50,10 +50,11 @@ public class InsertListener extends SwiftSqlParserBaseListener implements Insert
             SwiftSqlParser.ValuesContext values = (SwiftSqlParser.ValuesContext) node;
             List<Object> data = new ArrayList<>();
             for (SwiftSqlParser.ValueContext valueContext : values.value()) {
+                String text = valueContext.getText();
                 if (valueContext.start.getType() == SwiftSqlParser.NUMERIC_LITERAL) {
-                    data.add(Double.parseDouble(valueContext.getText()));
+                    data.add(Double.parseDouble(text));
                 } else {
-                    data.add(valueContext.getText());
+                    data.add(text.substring(1, text.length() - 1));
                 }
             }
             return new ListBasedRow(data);

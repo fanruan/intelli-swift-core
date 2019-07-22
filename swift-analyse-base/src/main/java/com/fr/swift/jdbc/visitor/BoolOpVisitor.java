@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -129,7 +130,7 @@ public class BoolOpVisitor extends AbstractParseTreeVisitor<FilterBeanCreator<Fi
                 return new BaseFilterBeanCreator(type) {
                     @Override
                     public FilterInfoBean create(String column, Object value) {
-                        return new InFilterBean(column, value);
+                        return new InFilterBean(column, (Collection<String>) value);
                     }
                 };
             default:

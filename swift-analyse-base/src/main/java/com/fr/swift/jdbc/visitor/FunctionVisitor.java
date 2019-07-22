@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 
 /**
+ * 处理聚合函数 todate不作为聚合函数处理
  * @author yee
  * @date 2019-07-19
  */
@@ -31,8 +32,6 @@ public class FunctionVisitor extends AbstractParseTreeVisitor<AggregationBean> {
             case SwiftSqlParser.AVG:
                 bean = MetricBean.builder(funcExprContext.simpleExpr(0).getText(), AggregatorType.AVERAGE).build();
                 break;
-            case SwiftSqlParser.TODATE:
-                // TODO 2019/07/19 todate实现
             default:
                 bean = MetricBean.builder(funcExprContext.simpleExpr(0).getText(), AggregatorType.COUNT).build();
                 break;
