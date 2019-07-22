@@ -1,5 +1,6 @@
 package com.fr.swift.jdbc.antlr4;
 
+import com.fr.swift.util.Strings;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -45,5 +46,15 @@ public class SwiftSqlParseUtil {
         };
         ParseTreeWalker.DEFAULT.walk(listener, parser.root());
         return select[0];
+    }
+
+    public static String trimQuote(String value, String quote) {
+        if (Strings.isEmpty(value) || value.length() < 2) {
+            return value;
+        }
+        if (value.startsWith(quote) && value.endsWith(quote)) {
+            return value.substring(1, value.length() - 1);
+        }
+        return value;
     }
 }
