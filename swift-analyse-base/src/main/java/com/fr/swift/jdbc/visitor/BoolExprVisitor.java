@@ -141,7 +141,9 @@ public class BoolExprVisitor extends AbstractParseTreeVisitor<FilterInfoBean> {
                 if (((SwiftSqlParser.ValueContext) node).getStart().getType() == SwiftSqlParser.NUMERIC_LITERAL) {
                     return Collections.singleton(((SwiftSqlParser.ValueContext) node).NUMERIC_LITERAL().getText());
                 }
-                return Collections.singleton(((SwiftSqlParser.ValueContext) node).STRING_LITERAL().getText());
+                TerminalNode terminalNode = ((SwiftSqlParser.ValueContext) node).STRING_LITERAL();
+                String value = terminalNode.getText();
+                return Collections.singleton(value.substring(1, value.length() - 1));
             }
             return set;
         }

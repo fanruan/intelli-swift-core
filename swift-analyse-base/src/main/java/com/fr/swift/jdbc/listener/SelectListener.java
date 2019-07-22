@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO 2019/07/09 distinct和子查询
  * @author yee
  * @date 2019-07-19
  */
@@ -74,7 +75,9 @@ public class SelectListener extends SwiftSqlParserBaseListener implements Select
 
     }
 
-    private void visitColumns(SwiftSqlParser.ColumnsContext columns, List<DimensionBean> dimensionBeans, List<AggregationBean> metricBeans) {
+    private void visitColumns(SwiftSqlParser.ColumnsContext columns,
+                              List<DimensionBean> dimensionBeans,
+                              List<AggregationBean> metricBeans) {
         int childCount = columns.getChildCount();
         boolean dimension = true;
         DimensionBean aliasDimension = null;
@@ -90,7 +93,11 @@ public class SelectListener extends SwiftSqlParserBaseListener implements Select
             if (child instanceof SwiftSqlParser.SimpleExprContext) {
                 SwiftSqlParser.FuncExprContext funcExprContext = ((SwiftSqlParser.SimpleExprContext) child).funcExpr();
                 if (funcExprContext != null) {
-                    metricBeans.add(funcExprContext.accept(new FunctionVisitor()));
+                    if (funcExprContext.start.getType() == SwiftSqlParser.TODATE) {
+                        // TODO 2019/07/19 todate应该转换成postquery？还是转换成dimension在取数的时候就正常format
+                    } else {
+                        metricBeans.add(funcExprContext.accept(new FunctionVisitor()));
+                    }
                     dimension = false;
                 } else {
                     int type = ((SwiftSqlParser.SimpleExprContext) child).start.getType();
