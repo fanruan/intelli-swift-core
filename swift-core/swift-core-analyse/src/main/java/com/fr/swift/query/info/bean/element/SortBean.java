@@ -4,7 +4,9 @@ import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.query.sort.SortType;
 
 /**
- * Created by Lyon on 2018/6/2.
+ *
+ * @author Lyon
+ * @date 2018/6/2
  */
 public class SortBean {
 
