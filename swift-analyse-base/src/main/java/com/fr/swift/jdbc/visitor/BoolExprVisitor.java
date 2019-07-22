@@ -1,5 +1,6 @@
 package com.fr.swift.jdbc.visitor;
 
+import com.fr.swift.jdbc.antlr4.SwiftSqlParseUtil;
 import com.fr.swift.jdbc.antlr4.SwiftSqlParser;
 import com.fr.swift.jdbc.creator.FilterBeanCreator;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -97,7 +98,7 @@ public class BoolExprVisitor extends AbstractParseTreeVisitor<FilterInfoBean> {
                     if (Strings.isEmpty(column)) {
                         column = child.getText();
                     } else {
-                        value = child.getText();
+                        value = SwiftSqlParseUtil.trimQuote(child.getText(), "'");
                     }
                 } else if (child instanceof SwiftSqlParser.BoolOpContext) {
                     creator = child.accept(new com.fr.swift.jdbc.visitor.BoolOpVisitor());
@@ -142,8 +143,8 @@ public class BoolExprVisitor extends AbstractParseTreeVisitor<FilterInfoBean> {
                     return Collections.singleton(((SwiftSqlParser.ValueContext) node).NUMERIC_LITERAL().getText());
                 }
                 TerminalNode terminalNode = ((SwiftSqlParser.ValueContext) node).STRING_LITERAL();
-                String value = terminalNode.getText();
-                return Collections.singleton(value.substring(1, value.length() - 1));
+                String value = SwiftSqlParseUtil.trimQuote(terminalNode.getText(), "'");
+                return Collections.singleton(value);
             }
             return set;
         }

@@ -2,6 +2,7 @@ package com.fr.swift.jdbc.listener;
 
 import com.fr.swift.jdbc.adaptor.InsertionBeanParser;
 import com.fr.swift.jdbc.adaptor.bean.InsertionBean;
+import com.fr.swift.jdbc.antlr4.SwiftSqlParseUtil;
 import com.fr.swift.jdbc.antlr4.SwiftSqlParser;
 import com.fr.swift.jdbc.antlr4.SwiftSqlParserBaseListener;
 import com.fr.swift.source.ListBasedRow;
@@ -54,7 +55,7 @@ public class InsertListener extends SwiftSqlParserBaseListener implements Insert
                 if (valueContext.start.getType() == SwiftSqlParser.NUMERIC_LITERAL) {
                     data.add(Double.parseDouble(text));
                 } else {
-                    data.add(text.substring(1, text.length() - 1));
+                    data.add(SwiftSqlParseUtil.trimQuote(text, "'"));
                 }
             }
             return new ListBasedRow(data);
