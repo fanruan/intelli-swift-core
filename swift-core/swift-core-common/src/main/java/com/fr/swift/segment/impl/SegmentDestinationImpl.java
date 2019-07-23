@@ -144,7 +144,7 @@ public class SegmentDestinationImpl implements SegmentDestination, Serializable 
     public int compareTo(SegmentDestination o) {
         int result = order - o.getOrder();
         if (0 == result) {
-            return isRemote() ? result : -1;
+            return isRemote() == o.isRemote() ? result : isRemote() ? result : -1;
         }
         return result;
     }

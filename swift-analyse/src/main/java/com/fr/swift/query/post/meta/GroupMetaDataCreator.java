@@ -48,7 +48,10 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
         for (PostQueryInfoBean postQueryInfoBean : postQueryInfoBeans) {
             PostQueryType type = postQueryInfoBean.getType();
             switch (type) {
-                case CAL_FIELD:
+                case ROW_SORT:
+                case HAVING_FILTER:
+                case TREE_SORT:
+                case TREE_FILTER:
                     break;
                 case FUNNEL_TIME_AVG:
                 case FUNNEL_CONVERSION_RATE:
