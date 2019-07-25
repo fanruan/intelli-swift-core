@@ -34,6 +34,7 @@ import com.fr.swift.util.Crasher;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -183,7 +184,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
         }
     }
 
-    private boolean addSegmentsWithoutTransaction(ConfigSession session, List<SegmentKey> segments) throws SQLException {
+    private boolean addSegmentsWithoutTransaction(ConfigSession session, Collection<SegmentKey> segments) throws SQLException {
         for (SegmentKey segment : segments) {
             swiftSegmentDao.addOrUpdateSwiftSegment(session, segment);
             SwiftSegmentLocationEntity locationEntity = new SwiftSegmentLocationEntity(SwiftProperty.getProperty().getClusterId(), segment.getId(), segment.getTable().getId());
@@ -265,48 +266,54 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType) {
         try {
+            final SegmentKey segmentKey = tryAppendSegmentWithoutLocation(tableKey, storeType);
+
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
                 @Override
                 public SegmentKey work(ConfigSession session) throws SQLException {
-
-                    List<SegmentKey> entities = swiftSegmentDao.find(session,
-                            new Order[]{OrderImpl.desc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)},
-                            ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId()));
-
-                    int appendOrder;
-                    if (entities.isEmpty()) {
-                        appendOrder = 0;
-                    } else {
-                        appendOrder = entities.get(0).getOrder() + 1;
-                    }
-                    SwiftSegmentEntity segKeyEntity = null;
-                    do {
-                        segKeyEntity = new SwiftSegmentEntity(tableKey, appendOrder, storeType,
-                                SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftSchema());
-                        try {
-                            swiftSegmentDao.persist(session, segKeyEntity);
-                            for (SegmentContainer value : SegmentContainer.values()) {
-                                value.register(segKeyEntity);
-                            }
-                            break;
-                        } catch (SwiftConstraintViolationException e) {
-                            appendOrder++;
-                        } catch (SwiftNonUniqueObjectException e) {
-                            appendOrder++;
-                        } catch (SwiftEntityExistsException e) {
-                            appendOrder++;
-                        }
-                    } while (true);
-                    SwiftSegmentLocationEntity locationEntity = new SwiftSegmentLocationEntity(SwiftProperty.getProperty().getClusterId(), segKeyEntity.getId(), segKeyEntity.getSegmentOwner());
-                    locationEntity.setSourceKey(segKeyEntity.getTable().getId());
-                    segmentLocationDao.saveOrUpdate(session, locationEntity);
-                    return segKeyEntity;
+                    addSegmentsWithoutTransaction(session, Collections.singleton(segmentKey));
+                    return null;
                 }
             });
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return Crasher.crash(e);
         }
+    }
+
+    private SegmentKey tryAppendSegmentWithoutLocation(final SourceKey tableKey, final StoreType storeType) throws SQLException {
+        do {
+            try {
+                return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
+                    @Override
+                    public SegmentKey work(ConfigSession session) throws SQLException {
+
+                        List<SegmentKey> entities = swiftSegmentDao.find(session,
+                                new Order[]{OrderImpl.desc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)},
+                                ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId()));
+
+                        int appendOrder;
+                        if (entities.isEmpty()) {
+                            appendOrder = 0;
+                        } else {
+                            appendOrder = entities.get(0).getOrder() + 1;
+                        }
+                        SwiftSegmentEntity segKeyEntity = new SwiftSegmentEntity(tableKey, appendOrder, storeType,
+                                SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftSchema());
+                        swiftSegmentDao.persist(session, segKeyEntity);
+                        return segKeyEntity;
+                    }
+                });
+
+            } catch (SQLException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof SwiftConstraintViolationException
+                        || cause instanceof SwiftNonUniqueObjectException
+                        || cause instanceof SwiftEntityExistsException) {
+                    continue;
+                }
+                throw e;
+            }
+        } while (true);
     }
 
     @Override
@@ -340,9 +347,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                         wheres.add(ConfigWhereImpl.in("id", segmentIds));
                         return swiftSegmentDao.findPage(session, page, size, new Order[]{OrderImpl.asc("id"), OrderImpl.asc("segmentOrder")}, wheres.toArray(new ConfigWhere[0]));
                     } catch (Throwable e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
                         throw new SQLException(e);
                     }
                 }
