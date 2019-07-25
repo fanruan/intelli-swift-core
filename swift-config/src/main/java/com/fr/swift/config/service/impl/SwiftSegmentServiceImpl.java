@@ -272,7 +272,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                 @Override
                 public SegmentKey work(ConfigSession session) throws SQLException {
                     addSegmentsWithoutTransaction(session, Collections.singleton(segmentKey));
-                    return null;
+                    return segmentKey;
                 }
             });
         } catch (SQLException e) {
