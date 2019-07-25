@@ -10,8 +10,10 @@ import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.element.dimension.DetailDimension;
+import com.fr.swift.query.info.element.dimension.DetailFormulaDimension;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.dimension.GroupDimension;
+import com.fr.swift.query.info.element.dimension.GroupFormulaDimension;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
@@ -49,6 +51,9 @@ class DimensionParser {
                     dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
                             new IndexInfoImpl(conf.isRequireIndex(), conf.isRequireGlobalDict())));
                     break;
+                case GROUP_FORMULA:
+                    dimensions.add(new GroupFormulaDimension(i, Groups.newGroup(new NoGroupRule()), sort, FormulaParser.parse(dimensionBean.getFormula())));
+                    break;
                 case DETAIL:
                     dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
                             new IndexInfoImpl(conf.isRequireIndex(), conf.isRequireGlobalDict())));
@@ -64,6 +69,9 @@ class DimensionParser {
                     }
                     break;
                 }
+                case DETAIL_FORMULA:
+                    dimensions.add(new DetailFormulaDimension(i, FormulaParser.parse(dimensionBean.getFormula())));
+                    break;
                 default:
             }
         }
