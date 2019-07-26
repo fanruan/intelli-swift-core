@@ -1,6 +1,7 @@
 package com.fr.swift.segment.column.impl.base;
 
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.query.formula.Formula;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -11,11 +12,12 @@ import com.fr.swift.util.Crasher;
 /**
  * Created by pony on 2018/5/10.
  */
-public class DetailFormulaColumn implements Column{
-    private String formula;
+public class DetailFormulaColumn implements Column {
+    //    private String formula;
     private Segment segment;
+    private Formula formula;
 
-    public DetailFormulaColumn(String formula, Segment segment) {
+    public DetailFormulaColumn(Formula formula, Segment segment) {
         this.formula = formula;
         this.segment = segment;
     }
@@ -33,7 +35,7 @@ public class DetailFormulaColumn implements Column{
 
     @Override
     public DetailColumn getDetailColumn() {
-        return Crasher.crash("unsupported");
+        return new FormulaDetailColumnImpl(formula, segment);
     }
 
     @Override

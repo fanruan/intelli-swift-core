@@ -30,6 +30,8 @@ public class DimensionBean {
      */
     @JsonProperty
     private DimensionType type;
+    @JsonProperty
+    private FormulaBean formula;
 
     public DimensionBean() {
     }
@@ -92,5 +94,13 @@ public class DimensionBean {
 
     public void setType(DimensionType type) {
         this.type = type;
+    }
+
+    public FormulaBean getFormula() {
+        return formula;
+    }
+
+    public void setFormula(FormulaBean formula) {
+        this.formula = formula;
     }
 }
