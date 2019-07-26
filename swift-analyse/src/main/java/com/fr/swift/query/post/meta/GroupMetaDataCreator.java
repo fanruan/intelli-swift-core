@@ -49,6 +49,9 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
             PostQueryType type = postQueryInfoBean.getType();
             switch (type) {
                 case CAL_FIELD:
+                    CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
+                    String name = calculatedFieldBean.getName();
+                    metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
                     break;
                 case FUNNEL_TIME_AVG:
                 case FUNNEL_CONVERSION_RATE:
@@ -65,9 +68,6 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                     }
                     break;
                 default:
-                    CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
-                    String name = calculatedFieldBean.getName();
-                    metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
             }
         }
         return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
