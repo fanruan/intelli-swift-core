@@ -2,6 +2,10 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftSegmentBucketService;
+import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -10,6 +14,7 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
+import com.fr.swift.query.info.segment.SwiftSegmentFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.DetailResultQuery;
 import com.fr.swift.query.segment.detail.DetailSegmentQuery;
@@ -27,7 +32,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
@@ -47,6 +51,10 @@ public class DetailQueryBuilderTest {
 
     private static final SwiftSegmentManager swiftSegmentManager = mock(SwiftSegmentManager.class);
 
+    private static final SwiftTableAllotRuleService ALLOT_RULE_SERVICE = mock(SwiftTableAllotRuleService.class);
+
+    public static final SwiftSegmentBucketService SEGMENT_BUCKET_SERVICE = mock(SwiftSegmentBucketService.class);
+
     @Before
     public void setUp() {
         //mock SwiftContext
@@ -56,6 +64,12 @@ public class DetailQueryBuilderTest {
 
         //mock SwiftSegmentManager
         when(beanFactory.getBean("localSegmentProvider", SwiftSegmentManager.class)).thenReturn(swiftSegmentManager);
+
+        //mock ALLOT_RULE_SERVICE
+        when(beanFactory.getBean(SwiftTableAllotRuleService.class)).thenReturn(ALLOT_RULE_SERVICE);
+
+        //mock SEGMENT_BUCKET_SERVICE
+        when(beanFactory.getBean(SwiftSegmentBucketService.class)).thenReturn(SEGMENT_BUCKET_SERVICE);
     }
 
     @Test
@@ -66,20 +80,20 @@ public class DetailQueryBuilderTest {
         when(QueryInfoParser.parse(detailQueryInfoBean)).thenReturn(detailQueryInfo);
 
         //info.hashSort()==true   new DetailQueryBuilder(queryInfo)
-        when(detailQueryInfo.hasSort()).thenReturn(true);
+        when(detailQueryInfo.hasSort()).thenReturn(false);
         DetailQueryBuilder detailQueryBuilder = mock(DetailQueryBuilder.class);
         whenNew(DetailQueryBuilder.class).withArguments(detailQueryInfo).thenReturn(detailQueryBuilder);
         assertThat(DetailQueryBuilder.of(detailQueryInfoBean)).isEqualTo(detailQueryBuilder);
 
         //info.hasSort()==false   new SortedDetailQueryBuilder(queryInfo)
-        when(detailQueryInfo.hasSort()).thenReturn(false);
+        when(detailQueryInfo.hasSort()).thenReturn(true);
         SortedDetailQueryBuilder sortedDetailQueryBuilder = mock(SortedDetailQueryBuilder.class);
         whenNew(SortedDetailQueryBuilder.class).withArguments(detailQueryInfo).thenReturn(sortedDetailQueryBuilder);
         assertThat(DetailQueryBuilder.of(detailQueryInfoBean)).isEqualTo(sortedDetailQueryBuilder);
     }
 
     @Test
-    public void buildQuery() {
+    public void buildQuery() throws Exception {
         DetailQueryInfo detailQueryInfo = mock(DetailQueryInfo.class);
         List<Query<DetailQueryResultSet>> queries = new ArrayList<Query<DetailQueryResultSet>>();
         Segment segment = mock(Segment.class);
@@ -89,12 +103,19 @@ public class DetailQueryBuilderTest {
         SourceKey table = mock(SourceKey.class);
         when(detailQueryInfo.getTable()).thenReturn(table);
 
-        //mock QuerySegment
-        Set queryTarget = mock(Set.class);
-        when(detailQueryInfo.getQuerySegment()).thenReturn(queryTarget);
+        //mock SwiftTableAllotRule
+        SwiftTableAllotRule allotRule = mock(SwiftTableAllotRule.class);
+        when(ALLOT_RULE_SERVICE.getAllotRuleByTable(table)).thenReturn(allotRule);
 
-        SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-        when(localSegmentProvider.getSegmentsByIds(table, queryTarget)).thenReturn(segments);
+        //mock SwiftSegmentBucket segmentBucket
+        SwiftSegmentBucket segmentBucket = mock(SwiftSegmentBucket.class);
+        when(SEGMENT_BUCKET_SERVICE.getBucketByTable(table)).thenReturn(segmentBucket);
+
+        //mock SwiftSegmentFilter
+        SwiftSegmentFilter swiftSegmentFilter = mock(SwiftSegmentFilter.class);
+        whenNew(SwiftSegmentFilter.class).withArguments(allotRule, segmentBucket, detailQueryInfo).thenReturn(swiftSegmentFilter);
+
+        when(swiftSegmentFilter.filter()).thenReturn(segments);
 
         //mock List<Dimentsions>
         List dimensions = new ArrayList();

@@ -1,7 +1,9 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -18,6 +20,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.info.segment.SwiftSegmentFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupSegmentQuery;
@@ -25,7 +28,6 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -44,7 +46,6 @@ import java.util.List;
  * @date 2017/12/15
  */
 public class GroupQueryBuilder extends BaseQueryBuilder {
-    private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     private static boolean isPagingQuery(GroupQueryInfo info) {
         // TODO: 2018/6/14 暂时只要有postQuery都不分页，后面再细分
@@ -111,13 +112,16 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
      * @param bean group query bean
      * @return query
      */
-    public Query<QueryResultSet<GroupPage>> buildQuery(GroupQueryInfoBean bean) {
+    public Query<QueryResultSet<GroupPage>> buildQuery(GroupQueryInfoBean bean) throws SwiftMetaDataException {
         GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(bean);
         List<Query<QueryResultSet<GroupPage>>> queries = new ArrayList<Query<QueryResultSet<GroupPage>>>();
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
         boolean pagingQuery = isPagingQuery(info);
-        List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
+        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(info.getTable());
+        SwiftSegmentBucket segmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(info.getTable());
+        List<Segment> segments = new SwiftSegmentFilter(allotRule, segmentBucket, info).filter();
+        // List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
             List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
             List<Column> metricColumns = getMetricSegments(segment, metrics);
