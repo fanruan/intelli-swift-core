@@ -86,6 +86,10 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler impl
 //                for (SegmentKey segmentKey : urlSetEntry.getValue()) {
 //                    idList.add(Pair.of(segmentKey.getTable(), segmentKey));
 //                }
+                Map<String, Set<SegmentKey>> segmentTable = new HashMap<String, Set<SegmentKey>>();
+                segmentTable.put(urlSetEntry.getKey().getDestination().getId(), urlSetEntry.getValue());
+                clusterSegmentService.updateSegmentTable(segmentTable);
+
                 Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, urlSetEntry.getKey());
                 RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass, method, methodName, parameterTypes, urlSetEntry.getValue(), replace);
 
@@ -93,9 +97,6 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler impl
                     @Override
                     public void success(Object result) {
                         try {
-                            Map<String, Set<SegmentKey>> segmentTable = new HashMap<String, Set<SegmentKey>>();
-                            segmentTable.put(urlSetEntry.getKey().getDestination().getId(), urlSetEntry.getValue());
-                            clusterSegmentService.updateSegmentTable(segmentTable);
                             SwiftServiceHandlerManager.getManager().
                                     handle(new SegmentLocationRpcEvent(replace ? SegmentLocationInfo.UpdateType.ALL : SegmentLocationInfo.UpdateType.PART
                                             , new SegmentLocationInfoImpl(ServiceType.HISTORY, destinations)));
