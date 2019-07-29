@@ -1,6 +1,6 @@
 package com.fr.swift.query.info.funnel;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by lyon on 2018/12/28.

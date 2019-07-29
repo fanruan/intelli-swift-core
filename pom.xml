@@ -31,5 +31,14 @@
         <module>swift-executor</module>
         <module>swift-base-boot</module>
     </modules>
-
+    <properties>
+        <jackson.version>2.9.8</jackson.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
 </project>
