@@ -66,7 +66,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     @Transient
     private ExecutorTaskType executorTaskType;
 
-    public SwiftExecutorTaskEntity() {
+    private SwiftExecutorTaskEntity() {
     }
 
     public SwiftExecutorTaskEntity(ExecutorTask task) {
