@@ -1,5 +1,7 @@
 package com.fr.swift.api.info;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fr.swift.api.info.api.CreateTableRequestInfo;
 import com.fr.swift.api.info.api.DeleteRequestInfo;
 import com.fr.swift.api.info.api.DropRequestInfo;
@@ -10,8 +12,6 @@ import com.fr.swift.api.info.jdbc.ColumnsRequestInfo;
 import com.fr.swift.api.info.jdbc.SqlRequestInfo;
 import com.fr.swift.api.info.jdbc.TablesRequestInfo;
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.base.json.annotation.JsonSubTypes;
-import com.fr.swift.base.json.annotation.JsonTypeInfo;
 
 /**
  * basic interface of requestType info for api and jdbc
