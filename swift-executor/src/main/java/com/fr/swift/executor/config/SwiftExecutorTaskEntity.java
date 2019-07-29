@@ -12,6 +12,7 @@ import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
+import com.fr.swift.executor.type.TaskType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.source.SourceKey;
@@ -167,6 +168,9 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     public ExecutorTask convert() {
         try {
             Class<? extends ExecutorTask> clazz = ExecutorTypeContainer.getInstance().getClassByType(this.taskType);
+
+            TaskType taskTypeAnnotation = clazz.getAnnotation(TaskType.class);
+            executorTaskType = (ExecutorTaskType) Enum.valueOf(taskTypeAnnotation.type(), taskType);
 
             Constructor constructor = clazz.getDeclaredConstructor(SourceKey.class, boolean.class, ExecutorTaskType.class, LockType.class,
                     String.class, DBStatusType.class, String.class, long.class, String.class);

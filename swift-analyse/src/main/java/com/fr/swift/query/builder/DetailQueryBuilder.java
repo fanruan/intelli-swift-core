@@ -1,6 +1,8 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -9,12 +11,12 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.info.segment.SwiftSegmentFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.DetailResultQuery;
 import com.fr.swift.query.segment.detail.DetailSegmentQuery;
 import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.Pair;
 
@@ -26,7 +28,6 @@ import java.util.List;
  */
 class DetailQueryBuilder extends BaseQueryBuilder {
 
-    private static final SwiftSegmentManager SEG_SVC = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
     DetailQueryInfo detailQueryInfo;
 
@@ -44,9 +45,13 @@ class DetailQueryBuilder extends BaseQueryBuilder {
     /**
      * 给最外层查询节点（查询服务节点）条用并构建query，根据segment分布信息区分本地query和远程query
      */
-    Query<DetailQueryResultSet> buildQuery() {
+    Query<DetailQueryResultSet> buildQuery() throws SwiftMetaDataException {
         List<Query<DetailQueryResultSet>> queries = new ArrayList<Query<DetailQueryResultSet>>();
-        List<Segment> segments = SEG_SVC.getSegmentsByIds(detailQueryInfo.getTable(), detailQueryInfo.getQuerySegment());
+        //根据分开规则提前区分segment
+        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(detailQueryInfo.getTable());
+        SwiftSegmentBucket segmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(detailQueryInfo.getTable());
+        List<Segment> segments = new SwiftSegmentFilter(allotRule, segmentBucket, detailQueryInfo).filter();
+//        List<Segment> segments = SEG_SVC.getSegmentsByIds(detailQueryInfo.getTable(), detailQueryInfo.getQuerySegment());
         List<Dimension> dimensions = detailQueryInfo.getDimensions();
         for (Segment seg : segments) {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
@@ -58,6 +63,7 @@ class DetailQueryBuilder extends BaseQueryBuilder {
         }
         return getResultQuery(queries);
     }
+
 
     /**
      * 子类SortedDetailQueryBuilder会重写此方法
@@ -83,4 +89,6 @@ class DetailQueryBuilder extends BaseQueryBuilder {
     Query<DetailQueryResultSet> getResultQuery(List<Query<DetailQueryResultSet>> queries) {
         return new DetailResultQuery(detailQueryInfo.getFetchSize(), queries);
     }
+
+
 }

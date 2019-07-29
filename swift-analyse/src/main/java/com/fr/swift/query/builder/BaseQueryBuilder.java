@@ -1,5 +1,8 @@
 package com.fr.swift.query.builder;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftSegmentBucketService;
+import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.funnel.FunnelComplexColumn;
 import com.fr.swift.query.group.Group;
@@ -25,6 +28,9 @@ import java.util.Map;
  * @date 2019/6/27
  */
 class BaseQueryBuilder {
+    public static final SwiftTableAllotRuleService ALLOT_RULE_SERVICE = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
+    public static final SwiftSegmentBucketService SEGMENT_BUCKET_SERVICE = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
+
 
     static boolean[] isGlobalIndexed(List<Dimension> dimensions, List<Metric> metrics) {
         boolean[] booleans = new boolean[dimensions.size()];
