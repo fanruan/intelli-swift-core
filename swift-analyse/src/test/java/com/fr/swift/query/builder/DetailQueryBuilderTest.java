@@ -155,8 +155,6 @@ public class DetailQueryBuilderTest {
         whenNew(DetailSegmentQuery.class).withArguments(fetchSize, columns, detailFilter).thenReturn(detailSegmentQuery);
 
         assertThat(new DetailQueryBuilder(detailQueryInfo).getSegmentQuery(seg, columns, filterInfos)).isEqualTo(detailSegmentQuery);
-
-
     }
 
     @Test
