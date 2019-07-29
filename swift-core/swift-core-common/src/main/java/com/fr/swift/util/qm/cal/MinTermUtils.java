@@ -106,6 +106,9 @@ class MinTermUtils {
                         lastSop = current;
                         continue;
                     }
+                    if (current.isEmpty()) {
+                        continue;
+                    }
                     lastSop = distributeProduct(lastSop, current);
                 }
                 sop.addAll(lastSop);
