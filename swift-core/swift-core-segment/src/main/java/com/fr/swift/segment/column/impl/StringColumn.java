@@ -18,11 +18,11 @@ public class StringColumn extends BaseColumn<String> {
 
     @Override
     public DictionaryEncodedColumn<String> getDictionaryEncodedColumn() {
-        return dictColumn != null ? dictColumn : (dictColumn = new StringDictColumn(location, Comparators.STRING_ASC));
+        return dictColumn == null ? dictColumn = new StringDictColumn(location, Comparators.STRING_ASC) : dictColumn;
     }
 
     @Override
     public DetailColumn<String> getDetailColumn() {
-        return detailColumn != null ? detailColumn : (detailColumn = new StringDetailColumn(location));
+        return detailColumn == null ? detailColumn = new StringDetailColumn(location) : detailColumn;
     }
 }

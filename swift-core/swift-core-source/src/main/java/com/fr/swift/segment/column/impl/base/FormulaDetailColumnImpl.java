@@ -1,6 +1,8 @@
 package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.query.formula.Formula;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.FormulaDetailColumn;
 import com.fr.swift.util.Crasher;
 
@@ -12,15 +14,20 @@ import com.fr.swift.util.Crasher;
  * @date 2018/5/11
  */
 public class FormulaDetailColumnImpl implements FormulaDetailColumn {
-    private String formula;
+    private Formula formula;
+    private DetailColumn column;
     private Segment segment;
 //    private Calculator c = Calculator.createCalculator();
 //    private Map<String, ColumnKey> columnIndexMap;
 
-    public FormulaDetailColumnImpl(String formula, Segment segment) {
+    public FormulaDetailColumnImpl(Formula formula, Segment segment) {
+        this.formula = formula;
 //        this.formula = FormulaUtils.getParameterIndexEncodedFormula(formula);
 //        this.segment = segment;
 //        this.columnIndexMap = FormulaUtils.createColumnIndexMap(formula, segment);
+        if (formula.getColumnKeys() != null) {
+            column = segment.getColumn(formula.getColumnKeys()[0]).getDetailColumn();
+        }
     }
     @Override
     public int getInt(int pos) {
@@ -45,7 +52,10 @@ public class FormulaDetailColumnImpl implements FormulaDetailColumn {
 
     @Override
     public Object get(int pos) {
-        return null;
+        if (null != column) {
+            return formula.eval(column.get(pos));
+        }
+        return formula.eval();
     }
 
     @Override

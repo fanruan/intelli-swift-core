@@ -43,13 +43,7 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-sqlparser</artifactId>
-            <version>${swift.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-api-server-base</artifactId>
+            <artifactId>swift-api-server</artifactId>
             <version>${swift.version}</version>
         </dependency>
 

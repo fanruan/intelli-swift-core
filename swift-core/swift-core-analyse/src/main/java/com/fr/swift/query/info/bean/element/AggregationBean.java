@@ -44,4 +44,6 @@ public interface AggregationBean {
     String getAlias();
 
     FilterInfoBean getFilter();
+
+    void setAlias(String alias);
 }
