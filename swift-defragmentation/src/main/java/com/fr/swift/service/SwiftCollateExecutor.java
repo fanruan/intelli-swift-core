@@ -12,7 +12,11 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
@@ -32,13 +36,23 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private SwiftSegmentService swiftSegmentService;
 
+    private static DateFormat DATE_FORMAT = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+    private static DateFormat DAY_FORMAT = new SimpleDateFormat("yy-MM-dd");
+    private static long ONE_DAY = 24 * 60 * 60 * 1000;
+
     private SwiftCollateExecutor() {
     }
 
+
     @Override
     public void start() {
+        long initDelay = getTimeMillis("4:00:00") - System.currentTimeMillis();
+        initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
+
         executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
-        executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
+//        executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
+        executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
+
         swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
     }
 
@@ -46,6 +60,16 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
     public void stop() {
         executorService.shutdown();
     }
+
+    private static long getTimeMillis(String time) {
+        try {
+            Date currentDate = DATE_FORMAT.parse(DAY_FORMAT.format(new Date()) + " " + time);
+            return currentDate.getTime();
+        } catch (ParseException e) {
+            return 0;
+        }
+    }
+
 
     @Override
     public void run() {

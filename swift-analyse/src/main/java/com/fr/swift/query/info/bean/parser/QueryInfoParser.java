@@ -24,6 +24,7 @@ import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,7 +45,9 @@ public class QueryInfoParser {
     }
 
     public static List<PostQueryInfo> parsePostQuery(QueryInfoBean queryInfoBean) {
-        return ((GroupQueryInfo) parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean)).getPostQueryInfoList();
+        return queryInfoBean.getQueryType() == QueryType.GROUP ?
+                ((GroupQueryInfo) parseGroupQueryInfo((GroupQueryInfoBean) queryInfoBean)).getPostQueryInfoList() :
+                Collections.<PostQueryInfo>emptyList();
     }
 
     private static QueryInfo parseGroupQueryInfo(GroupQueryInfoBean bean) {

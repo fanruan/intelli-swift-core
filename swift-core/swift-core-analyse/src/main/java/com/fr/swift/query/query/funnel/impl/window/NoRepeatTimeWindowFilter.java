@@ -13,7 +13,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,7 +31,7 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
     private int associatedColumnSize;
     private boolean[] iterableEvents;
 
-    private List<List<IStepContainer>> lists;
+    private IStepContainer[][] lists;
     private boolean[] finished;
     private boolean hasNoHeadBefore = true;
 
@@ -61,17 +60,17 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
     public void init() {
         initIterableEvents();
 
-        this.lists = new ArrayList<List<IStepContainer>>();
+        this.lists = new IStepContainer[numberOfDates][];
         for (int i = 0; i < numberOfDates; i++) {
-            List<IStepContainer> containers = new ArrayList<IStepContainer>();
+            IStepContainer[] containers = new IStepContainer[step.size()];
             for (int j = 0; j < step.size(); j++) {
                 if (j < firstAssociatedIndex || firstAssociatedIndex == -1) {
-                    containers.add(new SimpleStepContainer());
+                    containers[j] = new SimpleStepContainer();
                 } else {
-                    containers.add(new AStepContainer(associatedColumnSize));
+                    containers[j] = new AStepContainer(associatedColumnSize);
                 }
             }
-            lists.add(containers);
+            lists[i] = containers;
         }
         this.finished = new boolean[numberOfDates];
     }
@@ -98,7 +97,7 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
             node.setData(timestamp);
             // 如果符合就加入计算  不符合就不计算
             if (timeGroupMatchFilter.matches(node)) {
-                createHead(timestamp, associatedValue, groupValue, lists.get(dateIndex).get(0));
+                createHead(dateIndex, timestamp, associatedValue, groupValue, lists[dateIndex][0]);
                 hasNoHeadBefore = false;
             }
             return;
@@ -108,9 +107,9 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
             if (finished[dateIndex]) {
                 break;
             }
-            List<IStepContainer> containers = lists.get(dateIndex);
-            IStepContainer prevHeads = containers.get(eventIndex - 1);
-            IStepContainer currentHeads = containers.get(eventIndex);
+            IStepContainer[] containers = lists[dateIndex];
+            IStepContainer prevHeads = containers[eventIndex - 1];
+            IStepContainer currentHeads = containers[eventIndex];
             if (newStep(eventIndex, dateIndex, timestamp, associatedValue, groupValue, prevHeads, currentHeads)) {
                 continue;
             }
@@ -225,10 +224,10 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
         return true;
     }
 
-    private void createHead(long timestamp, int associatedValue, Object groupValue, IStepContainer container) {
+    private void createHead(int timeIndex, long timeStamp, int associatedValue, Object groupValue, IStepContainer container) {
         // 当前事务没有被使用且属于第一个事件，则新建临时IHead对象
-        IHead newHead = new AHead(step.size(), simpleDateFormat.format(new Date(timestamp)), associatedValue);
-        newHead.addStep(timestamp, groupValue);
+        IHead newHead = new AHead(step.size(), isAllTime() ? "ALL" : timeDetail[timeIndex], associatedValue);
+        newHead.addStep(timeStamp, groupValue);
         container.add(associatedValue, newHead);
         // head只能添加在某一天，所以这里要跳出
     }
@@ -378,9 +377,9 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
     @Override
     public List<IHead> getResult() {
         List<IHead> result = new ArrayList<IHead>();
-        for (List<IStepContainer> containers : lists) {
+        for (IStepContainer[] containers : lists) {
             for (int i = step.size() - 1; i >= 0; i--) {
-                IStepContainer container = containers.get(i);
+                IStepContainer container = containers[i];
                 container.initIterator();
                 IHead head = container.next();
                 if (head != null) {
@@ -394,10 +393,9 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
 
     @Override
     public void reset() {
-        for (int i = 0; i < numberOfDates; i++) {
-            List<IStepContainer> containers = lists.get(i);
-            for (int j = 0; j < step.size(); j++) {
-                containers.get(j).reset();
+        for (IStepContainer[] list : lists) {
+            for (IStepContainer iStepContainer : list) {
+                iStepContainer.reset();
             }
         }
         this.finished = new boolean[numberOfDates];

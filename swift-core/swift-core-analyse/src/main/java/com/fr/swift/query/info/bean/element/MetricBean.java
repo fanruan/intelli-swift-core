@@ -68,6 +68,7 @@ public class MetricBean implements AggregationBean {
         return alias;
     }
 
+    @Override
     public void setAlias(String alias) {
         this.alias = alias;
     }

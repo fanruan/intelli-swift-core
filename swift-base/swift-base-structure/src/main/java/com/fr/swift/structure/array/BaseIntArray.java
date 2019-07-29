@@ -11,7 +11,6 @@ abstract class BaseIntArray implements IntArray {
     @Override
     public IntIterator intIterator() {
         return new IntIterator() {
-
             private int cursor = 0;
 
             @Override
@@ -22,16 +21,6 @@ abstract class BaseIntArray implements IntArray {
             @Override
             public boolean hasNext() {
                 return cursor < size();
-            }
-
-            @Override
-            public Integer next() {
-                return nextInt();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
             }
         };
     }

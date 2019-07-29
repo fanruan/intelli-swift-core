@@ -18,11 +18,11 @@ public class LongColumn extends BaseColumn<Long> {
 
     @Override
     public DictionaryEncodedColumn<Long> getDictionaryEncodedColumn() {
-        return dictColumn != null ? dictColumn : (dictColumn = new LongDictColumn(location, Comparators.<Long>asc()));
+        return dictColumn == null ? dictColumn = new LongDictColumn(location, Comparators.<Long>asc()) : dictColumn;
     }
 
     @Override
     public DetailColumn<Long> getDetailColumn() {
-        return detailColumn != null ? detailColumn : (detailColumn = new LongDetailColumn(location));
+        return detailColumn == null ? detailColumn = new LongDetailColumn(location) : detailColumn;
     }
 }
