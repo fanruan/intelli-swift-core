@@ -14,6 +14,10 @@ public final class IdBitMap extends RangeBitmap {
         super(id, id + 1);
     }
 
+    public int getId() {
+        return start;
+    }
+
     public static ImmutableBitMap of(int id) {
         return new IdBitMap(id);
     }
