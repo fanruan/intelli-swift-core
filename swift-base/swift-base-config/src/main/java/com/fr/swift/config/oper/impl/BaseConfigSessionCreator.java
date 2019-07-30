@@ -1,8 +1,8 @@
 package com.fr.swift.config.oper.impl;
 
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.ConfigTransaction;
-import com.fr.swift.config.oper.TransactionManager;
 
 import java.sql.SQLException;
 
@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * @author yee
  * @date 2018-11-28
  */
-public abstract class BaseTransactionManager implements TransactionManager {
+public abstract class BaseConfigSessionCreator implements ConfigSessionCreator {
     @Override
     public <T> T doTransactionIfNeed(TransactionWorker<T> worker) throws SQLException {
         try {
@@ -40,5 +40,5 @@ public abstract class BaseTransactionManager implements TransactionManager {
 
     }
 
-    protected abstract ConfigSession createSession() throws ClassNotFoundException;
+    public abstract ConfigSession createSession() throws ClassNotFoundException;
 }

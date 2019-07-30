@@ -4,7 +4,7 @@ package com.fr.swift.config.oper;
  * @author yee
  * @date 2018-11-27
  */
-public abstract class BaseTransactionWorker<T> implements TransactionManager.TransactionWorker<T> {
+public abstract class BaseTransactionWorker<T> implements ConfigSessionCreator.TransactionWorker<T> {
     private boolean needTx = true;
 
     public BaseTransactionWorker(boolean needTx) {

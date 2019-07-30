@@ -1,22 +1,21 @@
 package com.fr.swift.config.oper;
 
+import java.io.Closeable;
 import java.io.Serializable;
-import java.sql.SQLException;
 
 /**
  * @author yee
  * @date 2018-11-26
  */
-public interface ConfigSession {
+public interface ConfigSession extends Closeable {
 
     /**
      * 对应hibernate session中的merge
      *
      * @param entity
      * @return
-     * @throws SQLException
      */
-    Object merge(Object entity) throws SQLException;
+    Object merge(Object entity);
 
     /**
      * 对应hibernate session中的get

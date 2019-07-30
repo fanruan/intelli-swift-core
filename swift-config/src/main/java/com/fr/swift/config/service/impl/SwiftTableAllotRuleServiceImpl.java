@@ -6,7 +6,7 @@ import com.fr.swift.config.dao.SwiftTableAllotRuleDao;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
@@ -22,17 +22,17 @@ import java.sql.SQLException;
 @SwiftBean
 public class SwiftTableAllotRuleServiceImpl implements SwiftTableAllotRuleService {
     private SwiftTableAllotRuleDao swiftTableAllotRuleDao;
-    private TransactionManager transactionManager;
+    private ConfigSessionCreator configSessionCreator;
 
     public SwiftTableAllotRuleServiceImpl() {
         this.swiftTableAllotRuleDao = SwiftContext.get().getBean(SwiftTableAllotRuleDao.class);
-        this.transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+        this.configSessionCreator = SwiftContext.get().getBean(ConfigSessionCreator.class);
     }
 
     @Override
     public SwiftTableAllotRule getAllotRuleByTable(final SourceKey sourceKey) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SwiftTableAllotRule>(false) {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<SwiftTableAllotRule>(false) {
                 @Override
                 public SwiftTableAllotRule work(ConfigSession session) throws SQLException {
                     SwiftTableAllotRule swiftTableAllotRule = swiftTableAllotRuleDao.select(session, sourceKey.getId());
@@ -48,7 +48,7 @@ public class SwiftTableAllotRuleServiceImpl implements SwiftTableAllotRuleServic
     @Override
     public boolean saveAllotRule(final SwiftTableAllotRule swiftTableAllotRule) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     return swiftTableAllotRuleDao.saveOrUpdate(session, swiftTableAllotRule);

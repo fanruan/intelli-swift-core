@@ -4,9 +4,9 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
-import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.executor.task.ExecutorTask;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class ExecutorTaskServiceTest {
     @Mock
     BeanFactory beanFactory;
     @Mock
-    TransactionManager transactionManager;
+    ConfigSessionCreator configSessionCreator;
     @Mock
     ExecutorTaskDao executorTaskDao;
 
@@ -56,13 +56,13 @@ public class ExecutorTaskServiceTest {
     public void setUp() throws Exception {
         PowerMockito.mockStatic(SwiftContext.class);
         Mockito.when(SwiftContext.get()).thenReturn(beanFactory);
-        Mockito.when(beanFactory.getBean(TransactionManager.class)).thenReturn(transactionManager);
+        Mockito.when(beanFactory.getBean(ConfigSessionCreator.class)).thenReturn(configSessionCreator);
         Mockito.when(beanFactory.getBean(ExecutorTaskDao.class)).thenReturn(executorTaskDao);
 
-        Mockito.when(transactionManager.doTransactionIfNeed(Mockito.any(BaseTransactionWorker.class))).thenAnswer(new Answer<Object>() {
+        Mockito.when(configSessionCreator.doTransactionIfNeed(Mockito.any(BaseTransactionWorker.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                TransactionManager.TransactionWorker worker = invocationOnMock.getArgument(0);
+                ConfigSessionCreator.TransactionWorker worker = invocationOnMock.getArgument(0);
                 return worker.work(configSession);
             }
         });

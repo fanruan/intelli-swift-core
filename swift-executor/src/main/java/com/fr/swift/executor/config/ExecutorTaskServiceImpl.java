@@ -4,8 +4,8 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.Order;
-import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.oper.impl.OrderImpl;
 import com.fr.swift.executor.task.ExecutorTask;
@@ -27,7 +27,7 @@ import java.util.Set;
 @SwiftBean
 public class ExecutorTaskServiceImpl implements ExecutorTaskService {
 
-    private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+    private ConfigSessionCreator configSessionCreator = SwiftContext.get().getBean(ConfigSessionCreator.class);
 
     private ExecutorTaskDao executorTaskDao = SwiftContext.get().getBean(ExecutorTaskDao.class);
 
@@ -36,7 +36,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
 
     @Override
     public boolean saveOrUpdate(final ExecutorTask executorTask) throws SQLException {
-        return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+        return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
             @Override
             public Boolean work(ConfigSession session) throws SQLException {
                 return executorTaskDao.saveOrUpdate(session, (SwiftExecutorTaskEntity) executorTask.convert());
@@ -46,7 +46,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
 
     @Override
     public boolean batchSaveOrUpdate(final Set<ExecutorTask> executorTasks) throws SQLException {
-        return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+        return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
             @Override
             public Boolean work(ConfigSession session) throws SQLException {
                 for (ExecutorTask executorTask : executorTasks) {
@@ -60,7 +60,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     @Override
     public List<ExecutorTask> getActiveTasksBeforeTime(final long time) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<ExecutorTask>>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<List<ExecutorTask>>() {
                 @Override
                 public List<ExecutorTask> work(ConfigSession session) {
                     List<ExecutorTask> tasks = new ArrayList<ExecutorTask>();
@@ -88,7 +88,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     @Override
     public boolean deleteTask(final ExecutorTask executorTask) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     return executorTaskDao.delete(session, (SwiftExecutorTaskEntity) executorTask.convert());
@@ -103,7 +103,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     @Override
     public ExecutorTask getExecutorTask(final String taskId) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<ExecutorTask>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<ExecutorTask>() {
                 @Override
                 public ExecutorTask work(ConfigSession session) throws SQLException {
                     List<SwiftExecutorTaskEntity> entities = executorTaskDao.find(session, ConfigWhereImpl.eq("id", taskId));

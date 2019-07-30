@@ -8,7 +8,7 @@ import com.fr.swift.config.entity.SwiftColumnIndexingConf;
 import com.fr.swift.config.entity.SwiftTableAllotConf;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.log.SwiftLoggers;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 @SwiftBean
 public class SwiftIndexingConfService implements IndexingConfService {
-    private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
+    private ConfigSessionCreator tx = SwiftContext.get().getBean(ConfigSessionCreator.class);
 
     private BasicDao<SwiftTableAllotConf> tableConf = new BasicDao<SwiftTableAllotConf>(SwiftTableAllotConf.class);
 
