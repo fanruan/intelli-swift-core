@@ -2,8 +2,6 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.entity.SwiftSegmentBucket;
-import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -14,7 +12,6 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
-import com.fr.swift.query.info.segment.SwiftSegmentFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.DetailResultQuery;
 import com.fr.swift.query.segment.detail.DetailSegmentQuery;
@@ -22,7 +19,6 @@ import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.SourceKey;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,25 +95,10 @@ public class DetailQueryBuilderTest {
         Segment segment = mock(Segment.class);
         List<Segment> segments = Arrays.asList(segment);
 
-        //mock SourceKey
-        SourceKey table = mock(SourceKey.class);
-        when(detailQueryInfo.getTable()).thenReturn(table);
+        mockStatic(BaseQueryBuilder.class);
+        when(BaseQueryBuilder.filter(detailQueryInfo)).thenReturn(segments);
 
-        //mock SwiftTableAllotRule
-        SwiftTableAllotRule allotRule = mock(SwiftTableAllotRule.class);
-        when(ALLOT_RULE_SERVICE.getAllotRuleByTable(table)).thenReturn(allotRule);
-
-        //mock SwiftSegmentBucket segmentBucket
-        SwiftSegmentBucket segmentBucket = mock(SwiftSegmentBucket.class);
-        when(SEGMENT_BUCKET_SERVICE.getBucketByTable(table)).thenReturn(segmentBucket);
-
-        //mock SwiftSegmentFilter
-        SwiftSegmentFilter swiftSegmentFilter = mock(SwiftSegmentFilter.class);
-        whenNew(SwiftSegmentFilter.class).withArguments(allotRule, segmentBucket, detailQueryInfo).thenReturn(swiftSegmentFilter);
-
-        when(swiftSegmentFilter.filter()).thenReturn(segments);
-
-        //mock List<Dimentsions>
+        //mock List<Dimensions>
         List dimensions = new ArrayList();
         when(detailQueryInfo.getDimensions()).thenReturn(dimensions);
 
@@ -126,7 +107,6 @@ public class DetailQueryBuilderTest {
 
         //mock columns
         List columns = mock(List.class);
-        mockStatic(BaseQueryBuilder.class);
         when(BaseQueryBuilder.getDimensionSegments(segment, dimensions)).thenReturn(columns);
 
         //mock FilterInfo  detailQueryInfo.getFilterInfo() != null
