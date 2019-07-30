@@ -15,6 +15,6 @@ public interface SegmentFilter {
      * @return
      * @description 根据导入方式查询segment
      */
-    List<Segment> filter() throws Exception;
+    List<Segment> filter(SingleTableQueryInfo singleTableQueryInfo) throws Exception;
 
 }
