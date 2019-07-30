@@ -1,6 +1,6 @@
 package com.fr.swift.source;
 
-import com.fr.swift.base.json.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * Created by pony on 2017/10/25.

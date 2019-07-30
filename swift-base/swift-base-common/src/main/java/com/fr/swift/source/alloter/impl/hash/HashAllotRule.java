@@ -1,6 +1,6 @@
 package com.fr.swift.source.alloter.impl.hash;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.source.alloter.impl.BaseAllotRule;
 import com.fr.swift.source.alloter.impl.hash.function.HashFunction;
 import com.fr.swift.source.alloter.impl.hash.function.JdkHashFunction;

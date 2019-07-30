@@ -1,6 +1,6 @@
 package com.fr.swift.query.info.funnel.group.post;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
