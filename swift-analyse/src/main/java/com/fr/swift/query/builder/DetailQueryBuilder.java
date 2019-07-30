@@ -1,7 +1,5 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.config.entity.SwiftSegmentBucket;
-import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -11,7 +9,6 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
-import com.fr.swift.query.info.segment.SwiftSegmentFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.DetailResultQuery;
 import com.fr.swift.query.segment.detail.DetailSegmentQuery;
@@ -48,9 +45,7 @@ class DetailQueryBuilder extends BaseQueryBuilder {
     Query<DetailQueryResultSet> buildQuery() throws SwiftMetaDataException {
         List<Query<DetailQueryResultSet>> queries = new ArrayList<Query<DetailQueryResultSet>>();
         //根据分开规则提前区分segment
-        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(detailQueryInfo.getTable());
-        SwiftSegmentBucket segmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(detailQueryInfo.getTable());
-        List<Segment> segments = new SwiftSegmentFilter(allotRule, segmentBucket, detailQueryInfo).filter();
+        List<Segment> segments = filter(detailQueryInfo);
 //        List<Segment> segments = SEG_SVC.getSegmentsByIds(detailQueryInfo.getTable(), detailQueryInfo.getQuerySegment());
         List<Dimension> dimensions = detailQueryInfo.getDimensions();
         for (Segment seg : segments) {

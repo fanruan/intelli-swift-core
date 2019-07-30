@@ -4,7 +4,6 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.query.info.SegmentFilter;
-import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.segment.SwiftSegmentManager;
 
 /**
@@ -18,11 +17,10 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
     protected SwiftTableAllotRule tableAllotRule;
     protected SwiftSegmentBucket segmentBucket;
-    protected SingleTableQueryInfo singleTableQueryInfo;
 
-    public AbstractSegmentFilter(SwiftTableAllotRule tableAllotRule, SwiftSegmentBucket segmentBucket, SingleTableQueryInfo singleTableQueryInfo) {
+    public AbstractSegmentFilter(SwiftTableAllotRule tableAllotRule, SwiftSegmentBucket segmentBucket) {
         this.tableAllotRule = tableAllotRule;
         this.segmentBucket = segmentBucket;
-        this.singleTableQueryInfo = singleTableQueryInfo;
     }
+
 }

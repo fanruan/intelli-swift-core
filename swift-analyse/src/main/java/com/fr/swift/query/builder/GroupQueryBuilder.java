@@ -1,7 +1,5 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.config.entity.SwiftSegmentBucket;
-import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -20,7 +18,6 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
-import com.fr.swift.query.info.segment.SwiftSegmentFilter;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.group.GroupResultQuery;
 import com.fr.swift.query.segment.group.GroupSegmentQuery;
@@ -118,9 +115,7 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
         boolean pagingQuery = isPagingQuery(info);
-        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(info.getTable());
-        SwiftSegmentBucket segmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(info.getTable());
-        List<Segment> segments = new SwiftSegmentFilter(allotRule, segmentBucket, info).filter();
+        List<Segment> segments = filter(info);
         // List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
             List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
