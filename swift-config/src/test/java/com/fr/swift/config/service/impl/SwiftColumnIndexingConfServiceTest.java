@@ -3,8 +3,8 @@ package com.fr.swift.config.service.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftColumnIndexingConf;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.TransactionManager;
-import com.fr.swift.config.oper.impl.BaseTransactionManager;
+import com.fr.swift.config.oper.ConfigSessionCreator;
+import com.fr.swift.config.oper.impl.BaseConfigSessionCreator;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
@@ -37,13 +37,13 @@ public class SwiftColumnIndexingConfServiceTest extends BaseServiceTest {
         // Generate by Mock Plugin
         final ConfigSession mockConfigSession = mockSession(SwiftColumnIndexingConf.class);
 
-        BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
+        BaseConfigSessionCreator mockBaseTransactionManager = new BaseConfigSessionCreator() {
             @Override
-            protected ConfigSession createSession() {
+            public ConfigSession createSession() {
                 return mockConfigSession;
             }
         };
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(TransactionManager.class))).andReturn(mockBaseTransactionManager).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(ConfigSessionCreator.class))).andReturn(mockBaseTransactionManager).anyTimes();
         PowerMock.replay(mockSwiftContext);
         service = new SwiftIndexingConfService();
     }

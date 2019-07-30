@@ -8,8 +8,8 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.ConfigWhere;
-import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.log.SwiftLoggers;
@@ -35,13 +35,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @SwiftBean
 public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
-    private TransactionManager transactionManager;
+    private ConfigSessionCreator configSessionCreator;
     private SwiftMetaDataDao swiftMetaDataDao;
 
     private final ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
     public SwiftMetaDataServiceImpl() {
-        transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+        configSessionCreator = SwiftContext.get().getBean(ConfigSessionCreator.class);
         swiftMetaDataDao = SwiftContext.get().getBean(SwiftMetaDataDao.class);
     }
 
@@ -50,7 +50,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         try {
             final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
             bean.setId(sourceKey);
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     swiftMetaDataDao.addOrUpdateSwiftMetaData(session, bean);
@@ -69,7 +69,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean addMetaDatas(final Map<String, SwiftMetaData> metaDatas) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
@@ -94,7 +94,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public boolean removeMetaDatas(final SourceKey... sourceKeys) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
 
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
@@ -130,7 +130,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public Map<String, SwiftMetaData> getAllMetaData() {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
                 @Override
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
@@ -162,7 +162,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public Map<String, SwiftMetaData> getFuzzyMetaData(final String fuzzyName) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
                 @Override
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
@@ -196,7 +196,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         SwiftMetaData metaData = metaDataCache.get(sourceKey);
         if (null == metaData) {
             try {
-                return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SwiftMetaData>(false) {
+                return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<SwiftMetaData>(false) {
                     @Override
                     public SwiftMetaData work(ConfigSession session) throws SQLException {
                         SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey);
@@ -219,7 +219,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     public boolean containsMeta(final SourceKey sourceKey) {
         try {
             if (!metaDataCache.containsKey(sourceKey.getId())) {
-                return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+                return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                     @Override
                     public Boolean work(ConfigSession session) throws SQLException {
                         SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey.getId());
@@ -251,7 +251,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     @Override
     public List<SwiftMetaData> find(final ConfigWhere... criterion) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
                 @Override
                 public List<SwiftMetaData> work(ConfigSession session) {
                     return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion));

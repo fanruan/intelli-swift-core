@@ -7,8 +7,8 @@ import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.dao.impl.SwiftMetaDataDaoImpl;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.TransactionManager;
-import com.fr.swift.config.oper.impl.BaseTransactionManager;
+import com.fr.swift.config.oper.ConfigSessionCreator;
+import com.fr.swift.config.oper.impl.BaseConfigSessionCreator;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.source.SourceKey;
@@ -59,13 +59,13 @@ public class SwiftMetaDataServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         final ConfigSession mockConfigSession = mockSession(SwiftMetaDataBean.class, mockData());
 
-        BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
+        BaseConfigSessionCreator mockBaseTransactionManager = new BaseConfigSessionCreator() {
             @Override
-            protected ConfigSession createSession() {
+            public ConfigSession createSession() {
                 return mockConfigSession;
             }
         };
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(TransactionManager.class))).andReturn(mockBaseTransactionManager).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(ConfigSessionCreator.class))).andReturn(mockBaseTransactionManager).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftMetaDataDao.class))).andReturn(new SwiftMetaDataDaoImpl()).anyTimes();
         PowerMock.replay(mockSwiftContext);
         service = new SwiftMetaDataServiceImpl();
@@ -169,16 +169,16 @@ public class SwiftMetaDataServiceImplTest extends BaseServiceTest {
         PowerMockito.mockStatic(SwiftContext.class);
         BeanFactory beanFactory = Mockito.mock(BeanFactory.class);
         Mockito.when(SwiftContext.get()).thenReturn(beanFactory);
-        TransactionManager transactionManager = Mockito.mock(TransactionManager.class);
+        ConfigSessionCreator configSessionCreator = Mockito.mock(ConfigSessionCreator.class);
         SwiftMetaDataDao swiftMetaDataDao = Mockito.mock(SwiftMetaDataDao.class);
-        Mockito.when(beanFactory.getBean(TransactionManager.class)).thenReturn(transactionManager);
+        Mockito.when(beanFactory.getBean(ConfigSessionCreator.class)).thenReturn(configSessionCreator);
         Mockito.when(beanFactory.getBean(SwiftMetaDataDao.class)).thenReturn(swiftMetaDataDao);
         final ConfigSession configSession = Mockito.mock(ConfigSession.class);
 
-        Mockito.when(transactionManager.doTransactionIfNeed(Mockito.any(BaseTransactionWorker.class))).thenAnswer(new Answer<Object>() {
+        Mockito.when(configSessionCreator.doTransactionIfNeed(Mockito.any(BaseTransactionWorker.class))).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                TransactionManager.TransactionWorker worker = invocationOnMock.getArgument(0);
+                ConfigSessionCreator.TransactionWorker worker = invocationOnMock.getArgument(0);
                 return worker.work(configSession);
             }
         });
