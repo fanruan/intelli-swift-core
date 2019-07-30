@@ -1,10 +1,10 @@
 package com.fr.swift.api.info.jdbc;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.BaseRequestInfo;
 import com.fr.swift.api.info.RequestType;
-import com.fr.swift.base.json.annotation.JsonIgnore;
-import com.fr.swift.base.json.annotation.JsonProperty;
 
 /**
  * @author yee

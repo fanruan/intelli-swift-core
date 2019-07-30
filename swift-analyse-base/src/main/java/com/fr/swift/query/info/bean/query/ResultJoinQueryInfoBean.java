@@ -1,6 +1,6 @@
 package com.fr.swift.query.info.bean.query;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.query.info.bean.element.DimensionBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;

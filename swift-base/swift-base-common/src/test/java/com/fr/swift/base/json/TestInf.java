@@ -1,7 +1,7 @@
 package com.fr.swift.base.json;
 
-import com.fr.swift.base.json.annotation.JsonSubTypes;
-import com.fr.swift.base.json.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * @author yee
