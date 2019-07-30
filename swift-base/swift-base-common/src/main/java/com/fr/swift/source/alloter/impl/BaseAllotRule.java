@@ -1,6 +1,6 @@
 package com.fr.swift.source.alloter.impl;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.util.Assert;
 

@@ -1,8 +1,8 @@
 package com.fr.swift.source.alloter;
 
-import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
-import com.fr.swift.base.json.annotation.JsonSubTypes;
-import com.fr.swift.base.json.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fr.swift.source.alloter.impl.hash.HashAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 

@@ -1,6 +1,6 @@
 package com.fr.swift.api.info;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
