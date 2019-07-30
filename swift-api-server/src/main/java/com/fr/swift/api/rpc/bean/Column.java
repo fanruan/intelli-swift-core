@@ -1,7 +1,7 @@
 package com.fr.swift.api.rpc.bean;
 
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 

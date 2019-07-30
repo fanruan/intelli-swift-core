@@ -42,8 +42,8 @@ public class SwiftSegmentBucketServiceImpl implements SwiftSegmentBucketService 
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SwiftSegmentBucket>() {
                 @Override
                 public SwiftSegmentBucket work(ConfigSession session) throws SQLException {
-                    List<SwiftSegmentBucketElement> elementList = swiftSegmentBucketDao.find(session, ConfigWhereImpl.eq("unionKey.sourceKey", sourceKey.getId()));
-
+                    List<SwiftSegmentBucketElement> elementList = swiftSegmentBucketDao.find(session,
+                            ConfigWhereImpl.eq("unionKey.sourceKey", sourceKey.getId()));
                     SwiftSegmentBucket swiftSegmentBucket = new SwiftSegmentBucket(sourceKey);
                     for (SwiftSegmentBucketElement bucketElement : elementList) {
                         SegmentKey segmentKey = swiftSegmentDao.select(session, bucketElement.getRealSegmentKey());

@@ -1,12 +1,12 @@
 package com.fr.swift.config.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.annotation.persistence.Column;
 import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Enumerated;
 import com.fr.swift.annotation.persistence.Id;
 import com.fr.swift.annotation.persistence.Table;
-import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
-import com.fr.swift.base.json.annotation.JsonProperty;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftSchema;

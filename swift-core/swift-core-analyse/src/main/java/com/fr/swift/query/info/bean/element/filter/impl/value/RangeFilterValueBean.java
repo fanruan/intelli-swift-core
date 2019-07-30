@@ -1,6 +1,6 @@
 package com.fr.swift.query.info.bean.element.filter.impl.value;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 

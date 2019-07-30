@@ -1,6 +1,6 @@
 package com.fr.swift.query.info.funnel.filter;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
