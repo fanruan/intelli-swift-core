@@ -38,7 +38,9 @@ public class RangeBitmap extends AbstractBitMap {
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
         switch (index.getType()) {
+            case EMPTY:
             case RANGE:
+            case ID:
                 return FasterAggregation.and(this, ((RangeBitmap) index));
             default:
                 return index.getAnd(this);
