@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.entity.key.SwiftTablePathKey;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -83,25 +84,26 @@ public class SegmentHelper {
     }
 
     public static Set<String> download(String sourceKey, Set<String> sets, boolean replace) {
-        String path = new SwiftCubePathServiceImpl().getSwiftPath();
+        String path = SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
         SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
         SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
         Integer prevTabDir = null;
-        int downloadTabPair = 0;
+        int downloadTabDir = 0;
         SwiftTablePathEntity entity = tablePathService.get(sourceKey);
         if (entity != null) {
             prevTabDir = entity.getTablePath();
-            downloadTabPair = replace ? prevTabDir + 1 : prevTabDir;
+            downloadTabDir = replace ? prevTabDir + 1 : prevTabDir;
         }
         Set<String> downloadPaths = new HashSet<>();
         for (String uri : sets) {
-            String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), downloadTabPair, uri);
+            String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), downloadTabDir, uri);
             String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
             try {
                 repository.copyFromRemote(remotePath, cubePath);
                 downloadPaths.add(remotePath);
+                // catch Error防FR FTP 下载文件过大OOM导致整个方法跳出
             } catch (Throwable e) {
                 if (cubePath.matches(String.format(".+%s/seg\\d+?$", Matcher.quoteReplacement(sourceKey)))) {
                     // 若下载整个seg失败则删掉，下载all show不删
@@ -115,7 +117,7 @@ public class SegmentHelper {
             // 进行替换且之前有对应数据，删除之前数据
             // 替换是全量更新下的情况，是下载整个seg，单独下载allshow的情况不会出现
             // TODO: 2019/5/7 anchore 全部下载成功才进行替换，默认单次下载所有块。FR用不到的
-            tablePathService.saveOrUpdate(new SwiftTablePathEntity(new SwiftTablePathKey(sourceKey, entity.getId().getClusterId()),downloadTabPair));
+            tablePathService.saveOrUpdate(new SwiftTablePathEntity(new SwiftTablePathKey(sourceKey, entity.getId().getClusterId()),downloadTabDir));
 
             String prevTabPath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), prevTabDir, sourceKey);
             FileUtil.delete(prevTabPath);
