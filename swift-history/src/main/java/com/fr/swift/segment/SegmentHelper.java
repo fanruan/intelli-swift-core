@@ -102,7 +102,7 @@ public class SegmentHelper {
 
                 boolean downloadSuccess = true;
                 for (String uri : sets) {
-                    CubePathBuilder builder = new CubePathBuilder().asAbsolute().setSwiftSchema(metaData.getSwiftSchema()).setTempDir(tmp);
+                    CubePathBuilder builder = new CubePathBuilder().setSwiftSchema(metaData.getSwiftSchema()).setTempDir(tmp);
                     String cubePath = String.format("%s/%s", builder.build(), uri);
                     String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
                     try {
