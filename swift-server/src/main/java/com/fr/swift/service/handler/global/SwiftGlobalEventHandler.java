@@ -1,22 +1,14 @@
 package com.fr.swift.service.handler.global;
 
-import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
-import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
-import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.db.Where;
-import com.fr.swift.event.ClusterEvent;
-import com.fr.swift.event.ClusterEventType;
-import com.fr.swift.event.ClusterListenerHandler;
-import com.fr.swift.event.ClusterType;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
@@ -25,7 +17,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.DeleteService;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
@@ -38,8 +29,6 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.task.TaskKey;
 import com.fr.swift.task.TaskResult;
 import com.fr.swift.task.impl.TaskEvent;
-import com.fr.swift.util.Crasher;
-import com.fr.swift.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,7 +47,7 @@ import java.util.Set;
 @SwiftBean
 public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEvent> {
 
-    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
+//    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
 
     private SwiftClusterSegmentService segmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
 
@@ -67,23 +56,23 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         final ProxyFactory factory = ProxySelector.getInstance().getFactory();
         // todo 用表驱动法，分离switch匹配，和具体的处理逻辑
         switch (event.subEvent()) {
-            case CHECK_MASTER:
-                List<SwiftServiceInfoEntity> masterServiceInfoBeanList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
-                if (masterServiceInfoBeanList.isEmpty()) {
-                    Crasher.crash("Master is null!");
-                }
-                SwiftServiceInfoEntity masterBean = masterServiceInfoBeanList.get(0);
-                if (!Util.equals(ClusterSelector.getInstance().getFactory().getMasterId(), masterBean.getClusterId())) {
-                    SwiftLoggers.getLogger().info("Master is not synchronized!");
-                    try {
-                        ClusterNodeService clusterNodeService = SwiftContext.get().getBean(ClusterNodeService.class);
-                        clusterNodeService.competeMaster();
-                    } catch (SwiftBeanException e) {
-                        SwiftLoggers.getLogger().error(e);
-                    }
-                    ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.FR));
-                }
-                return (S) ClusterSelector.getInstance().getFactory().getCurrentId();
+//            case CHECK_MASTER:
+//                List<SwiftServiceInfoEntity> masterServiceInfoBeanList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
+//                if (masterServiceInfoBeanList.isEmpty()) {
+//                    Crasher.crash("Master is null!");
+//                }
+//                SwiftServiceInfoEntity masterBean = masterServiceInfoBeanList.get(0);
+//                if (!Util.equals(ClusterSelector.getInstance().getFactory().getMasterId(), masterBean.getClusterId())) {
+//                    SwiftLoggers.getLogger().info("Master is not synchronized!");
+//                    try {
+//                        ClusterNodeService clusterNodeService = SwiftContext.get().getBean(ClusterNodeService.class);
+//                        clusterNodeService.competeMaster();
+//                    } catch (SwiftBeanException e) {
+//                        SwiftLoggers.getLogger().error(e);
+//                    }
+//                    ClusterListenerHandler.handlerEvent(new ClusterEvent(ClusterEventType.JOIN_CLUSTER, ClusterType.FR));
+//                }
+//                return (S) ClusterSelector.getInstance().getFactory().getCurrentId();
             case TASK_DONE:
                 Pair<TaskKey, TaskResult> pair = (Pair<TaskKey, TaskResult>) event.getContent();
                 SwiftEventDispatcher.fire(TaskEvent.DONE, pair);
