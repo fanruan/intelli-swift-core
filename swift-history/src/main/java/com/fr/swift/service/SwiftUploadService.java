@@ -12,9 +12,11 @@ import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,9 +51,9 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
     }
 
     @Override
-    public void download(Set<SegmentKey> segKeys, boolean replace) {
+    public Set<String> download(Set<SegmentKey> segKeys, boolean replace) {
         if (segKeys == null || segKeys.isEmpty()) {
-            return;
+            return Collections.emptySet();
         }
 
         Map<SourceKey, Set<String>> needLoadSegments = new HashMap<SourceKey, Set<String>>();
@@ -62,7 +64,7 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
             }
             needLoadSegments.get(sourceKey).add(String.format("%s/seg%d", segmentKey.getTable(), segmentKey.getOrder()));
         }
-        SegmentHelper.download(needLoadSegments, replace);
+        return SegmentHelper.download(needLoadSegments, replace);
     }
 
     @Override
