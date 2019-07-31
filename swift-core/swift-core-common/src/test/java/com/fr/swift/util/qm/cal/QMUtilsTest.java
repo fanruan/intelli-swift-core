@@ -89,5 +89,11 @@ public class QMUtilsTest extends TestCase {
         BExpr and = new MinTermsUtilsTest.AndExpr(MinTermsUtilsTest.item2List(an, or));
         simplified = QMUtils.simplify(and, converter);
         assertTrue(simplified.type() == BExprType.FALSE);
+
+        // a() = a
+        BExpr emptyAnd = new MinTermsUtilsTest.AndExpr(MinTermsUtilsTest.item2List());
+        BExpr and6 = new MinTermsUtilsTest.AndExpr(MinTermsUtilsTest.item2List(a, emptyAnd));
+        simplified = QMUtils.simplify(and6, converter);
+        assertSame(a, simplified);
     }
 }

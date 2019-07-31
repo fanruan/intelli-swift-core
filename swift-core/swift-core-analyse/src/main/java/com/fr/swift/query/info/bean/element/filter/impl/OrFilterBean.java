@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/6/28.
  */
-public class OrFilterBean extends GeneralFilterInfoBean<List<FilterInfoBean>> implements BNExpr, Serializable {
+public class OrFilterBean extends ComplexFilterInfoBean implements BNExpr, Serializable {
 
     private static final long serialVersionUID = -5854713752764823833L;
 

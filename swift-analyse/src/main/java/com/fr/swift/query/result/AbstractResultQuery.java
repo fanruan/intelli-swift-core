@@ -1,5 +1,6 @@
 package com.fr.swift.query.result;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSetMerger;
@@ -32,7 +33,11 @@ public abstract class AbstractResultQuery<T extends QueryResultSet<?>> implement
         List<T> resultSets = new ArrayList<T>(queries.size());
         try {
             for (Query<T> query : queries) {
-                resultSets.add(query.getQueryResult());
+                try {
+                    resultSets.add(query.getQueryResult());
+                } catch (SQLException e) {
+                    SwiftLoggers.getLogger().info("segment query error: {}", query, e);
+                }
             }
             return merge(resultSets);
         } catch (Exception e) {

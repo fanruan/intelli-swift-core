@@ -1,8 +1,8 @@
 package com.fr.swift.query.info.bean.element.filter;
 
-import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
-import com.fr.swift.base.json.annotation.JsonSubTypes;
-import com.fr.swift.base.json.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.info.bean.element.filter.impl.AllShowFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
