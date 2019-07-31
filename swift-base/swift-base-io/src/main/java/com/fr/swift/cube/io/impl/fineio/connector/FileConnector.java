@@ -46,6 +46,7 @@ public class FileConnector extends BaseConnector {
     @Override
     public void write(FileBlock block, InputStream is) throws IOException {
         File f = toFile(block.getParentUri().getPath(), block.getFileName(), true);
+        // 不需要去释放is 调用connector的上层会自动释放is
         try (FileOutputStream fos = new FileOutputStream(f)) {
             byte[] bytes = new byte[1024];
             for (int len; (len = is.read(bytes)) != -1; ) {
