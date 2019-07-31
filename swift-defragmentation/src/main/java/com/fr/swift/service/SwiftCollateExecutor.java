@@ -1,12 +1,16 @@
 package com.fr.swift.service;
 
+import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.executor.CollateExecutor;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
@@ -36,13 +40,14 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private SwiftSegmentService swiftSegmentService;
 
+    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
+
     private static DateFormat DATE_FORMAT = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
     private static DateFormat DAY_FORMAT = new SimpleDateFormat("yy-MM-dd");
     private static long ONE_DAY = 24 * 60 * 60 * 1000;
 
     private SwiftCollateExecutor() {
     }
-
 
     @Override
     public void start() {
@@ -70,7 +75,6 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
         }
     }
 
-
     @Override
     public void run() {
         triggerCollate();
@@ -78,19 +82,38 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private void triggerCollate() {
         try {
-            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getAllSegments();
-            for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
-                List<SegmentKey> keys = new ArrayList<SegmentKey>();
-                for (SegmentKey key : tableEntry.getValue()) {
-                    if (key.getStoreType().isTransient()) {
-                        continue;
+
+            //DEC-7562 collate触发的时候，查一下数据库自己是不是master，避免依然间隙存在2个master同时触发
+            if (ClusterSelector.getInstance().getFactory().isCluster()) {
+                String masterId = ClusterSelector.getInstance().getFactory().getMasterId();
+                List<SwiftServiceInfoEntity> masterServiceInfoEntityList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
+                if (!masterServiceInfoEntityList.isEmpty()) {
+                    SwiftServiceInfoEntity masterServiceEntity = masterServiceInfoEntityList.get(0);
+                    if (!masterServiceEntity.getClusterId().equals(masterId)) {
+                        SwiftLoggers.getLogger().error(String.format("Config master is %s,but self master is %s! Skip this collate task!", masterServiceEntity.getClusterId(), masterId));
+                        return;
                     }
-                    keys.add(key);
-                }
-                if (!keys.isEmpty()) {
-                    ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
                 }
             }
+
+            try {
+                Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getAllSegments();
+                for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
+                    List<SegmentKey> keys = new ArrayList<SegmentKey>();
+                    for (SegmentKey key : tableEntry.getValue()) {
+                        if (key.getStoreType().isTransient()) {
+                            continue;
+                        }
+                        keys.add(key);
+                    }
+                    if (!keys.isEmpty()) {
+                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
+                    }
+                }
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
