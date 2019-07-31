@@ -1,6 +1,6 @@
 package com.fr.swift.source.alloter.impl.hash.function;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author lucifer

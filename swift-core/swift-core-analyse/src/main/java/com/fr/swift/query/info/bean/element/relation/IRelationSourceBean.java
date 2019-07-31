@@ -1,7 +1,7 @@
 package com.fr.swift.query.info.bean.element.relation;
 
-import com.fr.swift.base.json.annotation.JsonSubTypes;
-import com.fr.swift.base.json.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fr.swift.query.info.bean.element.relation.impl.FieldRelationSourceBean;
 import com.fr.swift.query.info.bean.element.relation.impl.RelationPathSourceBean;
 import com.fr.swift.query.info.bean.element.relation.impl.RelationSourceBean;

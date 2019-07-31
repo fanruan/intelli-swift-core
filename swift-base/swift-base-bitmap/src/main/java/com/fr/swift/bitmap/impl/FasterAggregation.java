@@ -1,9 +1,12 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.structure.array.IntList;
+import com.fr.swift.structure.array.IntListFactory;
 
 import java.util.List;
 
@@ -22,13 +25,23 @@ public final class FasterAggregation {
             return bitmaps.get(0);
         }
         MutableRoaringBitmap r = new MutableRoaringBitmap();
+        final IntList list = IntListFactory.createIntList();
         for (ImmutableBitMap bitmap : bitmaps) {
-            if (!bitmap.isEmpty()) {
+            if (bitmap.isEmpty()) {
+                continue;
+            }
+            if (bitmap.getType() == BitMapType.ID) {
+                list.add(((IdBitMap) bitmap).getId());
+            } else if (bitmap instanceof BaseRoaringBitMap) {
                 r.naivelazyor(((BaseRoaringBitMap) bitmap).bitmap);
             }
         }
         r.repairAfterLazy();
-        return RoaringImmutableBitMap.of(r);
+        ImmutableBitMap bitMap = RoaringImmutableBitMap.of(r);
+        if (list.size() > 0) {
+            bitMap = bitMap.getOr(BitMaps.newImmutableBitMap(list));
+        }
+        return bitMap;
     }
 
     public static ImmutableBitMap compose(List<ImmutableBitMap> bitmaps, final int[] offsets) {
