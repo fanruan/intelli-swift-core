@@ -13,6 +13,7 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.event.history.HistoryRemoveEvent;
 import com.fr.swift.exception.SwiftServiceException;
@@ -20,13 +21,17 @@ import com.fr.swift.exception.TableNotExistException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.segment.collate.SwiftFragmentClassify;
 import com.fr.swift.segment.collate.SwiftFragmentFilter;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
+import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.segment.operator.collate.segment.HisSegmentMerger;
 import com.fr.swift.segment.operator.collate.segment.HisSegmentMergerImpl;
 import com.fr.swift.service.listener.RemoteSender;
@@ -41,6 +46,7 @@ import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -141,6 +147,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 // 合并失败
                 continue;
             }
+
+            SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, newSegmentKeys);
             fireUploadHistory(newSegmentKeys);
             clearCollatedSegment(collateSegKeys, tableKey);
         }
