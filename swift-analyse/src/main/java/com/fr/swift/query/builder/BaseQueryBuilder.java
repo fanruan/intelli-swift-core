@@ -12,11 +12,14 @@ import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.info.SingleTableQueryInfo;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.FunnelPathsMetric;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.GroupTarget;
-import com.fr.swift.query.info.segment.SwiftSegmentFilter;
+import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.info.segment.CommonSegmentFilter;
+import com.fr.swift.query.info.segment.FunnelSegmentFilter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -42,7 +45,21 @@ class BaseQueryBuilder {
         SourceKey table = queryInfo.getTable();
         SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(table);
         SwiftSegmentBucket swiftSegmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(table);
-        return new SwiftSegmentFilter(allotRule, swiftSegmentBucket).filter(queryInfo);
+        switch (queryInfo.getType()) {
+            case GROUP:
+                GroupQueryInfo groupQueryInfo = (GroupQueryInfo) queryInfo;
+                List<Metric> metrics = groupQueryInfo.getMetrics();
+                if (metrics.size() != 0) {
+                    for (Metric metric : metrics) {
+                        if (metric.getMetricType() == MetricType.FUNNEL || metric.getMetricType() == MetricType.FUNNEL_PATHS) {
+                            //漏斗计算
+                            return new FunnelSegmentFilter(allotRule, swiftSegmentBucket).filter(queryInfo);
+                        }
+                    }
+                }
+            default:
+                return new CommonSegmentFilter(allotRule, swiftSegmentBucket).filter(queryInfo);
+        }
     }
 
     static boolean[] isGlobalIndexed(List<Dimension> dimensions, List<Metric> metrics) {
