@@ -34,7 +34,7 @@ public class PackageConnectorImpl implements PackageConnector {
     public InputStream read(String path) throws IOException {
         String parent = SwiftRepositoryUtils.getParent(path);
         String name = SwiftRepositoryUtils.getName(path);
-        return connector.read(new FileBlock(parent, name + getSuffix()));
+        return connector.read(new FileBlock(parent, name));
     }
 
     @Override
