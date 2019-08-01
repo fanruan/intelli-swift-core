@@ -56,9 +56,9 @@ public class SwiftRepositoryImpl implements SwiftRepository {
         if (block instanceof DirectoryBlock) {
             for (Block file : ((DirectoryBlock) block).getFiles()) {
                 if (file instanceof DirectoryBlock) {
-                    packageManager.packageDir(file.getPath());
+                    packageManager.packageDir(remote + "/" + file.getName(), file.getPath());
                 } else {
-                    packageManager.getPackageConnector().write(file.getPath(), connector.read((FileBlock) file));
+                    packageManager.getPackageConnector().write(remote, connector.read((FileBlock) file));
                 }
             }
         }
@@ -69,7 +69,7 @@ public class SwiftRepositoryImpl implements SwiftRepository {
     public boolean zipToRemote(String local, String remote) throws IOException {
         Connector connector = ConnectorManager.getInstance().getConnector();
         Block list = connector.list(local);
-        packageManager.packageDir(list.getPath());
+        packageManager.packageDir(remote, list.getPath());
         return true;
     }
 
