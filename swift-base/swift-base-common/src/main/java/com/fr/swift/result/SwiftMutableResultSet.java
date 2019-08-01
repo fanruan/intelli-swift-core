@@ -2,6 +2,7 @@ package com.fr.swift.result;
 
 import com.fr.swift.base.meta.MetaDataColumnBean;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.ListMutableRow;
 import com.fr.swift.source.MutableRow;
@@ -65,7 +66,9 @@ public class SwiftMutableResultSet implements MutableResultSet {
             swiftMetaDataColumnList.add(baseMetadata.getColumn(i));
         }
         for (String currentSubField : currentSubFields) {
-            if (!baseMetadata.containsColumn(currentSubField)) {
+            try {
+                baseMetadata.getColumnIndex(currentSubField);
+            } catch (SwiftMetaDataColumnAbsentException e) {
                 swiftMetaDataColumnList.add(columnMap.get(currentSubField));
             }
         }
@@ -139,10 +142,10 @@ public class SwiftMutableResultSet implements MutableResultSet {
     }
 
     private void addOrSetValue(MutableRow mutableRow, String field, Object value) throws SwiftMetaDataException {
-        if (baseMetadata.containsColumn(field)) {
+        try {
             int index = baseMetadata.getColumnIndex(field);
             mutableRow.setElement(index - 1, value);
-        } else {
+        } catch (SwiftMetaDataColumnAbsentException e) {
             mutableRow.addElement(value);
         }
     }

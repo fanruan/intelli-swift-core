@@ -73,6 +73,4 @@ public interface SwiftMetaData {
     String getId();
 
     SwiftMetaData clone();
-
-    boolean containsColumn(String columnName) throws SwiftMetaDataException;
 }
