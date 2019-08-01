@@ -9,7 +9,6 @@ import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.config.service.impl.SwiftCubePathServiceImpl;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.SwiftSchema;
@@ -98,7 +97,9 @@ public class SegmentHelper {
         }
         Set<String> downloadPaths = new HashSet<>();
         for (String uri : sets) {
-            String cubePath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), downloadTabDir, uri);
+            String cubePath = String.format("%s/%s", new CubePathBuilder()
+                    .setSwiftSchema(metaData.getSwiftSchema())
+                    .setTempDir(downloadTabDir).build(), uri);
             String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
             try {
                 repository.copyFromRemote(remotePath, cubePath);
@@ -117,9 +118,13 @@ public class SegmentHelper {
             // 进行替换且之前有对应数据，删除之前数据
             // 替换是全量更新下的情况，是下载整个seg，单独下载allshow的情况不会出现
             // TODO: 2019/5/7 anchore 全部下载成功才进行替换，默认单次下载所有块。FR用不到的
-            tablePathService.saveOrUpdate(new SwiftTablePathEntity(new SwiftTablePathKey(sourceKey, entity.getId().getClusterId()),downloadTabDir));
+            tablePathService.saveOrUpdate(new SwiftTablePathEntity(new SwiftTablePathKey(sourceKey, entity.getId().getClusterId()), downloadTabDir));
 
-            String prevTabPath = String.format("%s/%s/%d/%s", path, metaData.getSwiftSchema().getDir(), prevTabDir, sourceKey);
+            String relativePreTabPath = new CubePathBuilder()
+                    .setSwiftSchema(metaData.getSwiftSchema())
+                    .setTempDir(prevTabDir)
+                    .setTableKey(new SourceKey(sourceKey)).build();
+            String prevTabPath = String.format("%s/%s", path, relativePreTabPath);
             FileUtil.delete(prevTabPath);
         }
         if (!downloadPaths.isEmpty()) {

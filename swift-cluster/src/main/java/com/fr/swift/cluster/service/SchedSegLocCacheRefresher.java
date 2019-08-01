@@ -1,6 +1,7 @@
 package com.fr.swift.cluster.service;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -16,7 +17,6 @@ import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * @author anchore
  * @date 2019/5/14
  */
-@Service
+@SwiftBean
 public class SchedSegLocCacheRefresher implements Runnable {
     private final SwiftSegmentLocationService segLocSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
