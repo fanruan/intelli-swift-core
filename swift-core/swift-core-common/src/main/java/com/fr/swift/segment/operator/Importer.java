@@ -11,7 +11,7 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public interface Importer {
+public interface Importer<R extends SwiftResultSet> {
 
     /**
      * 导入数据
@@ -19,16 +19,18 @@ public interface Importer {
      * @param swiftResultSet 承载数据的resultSet
      * @throws Exception
      */
-    void importData(SwiftResultSet swiftResultSet) throws Exception;
+    void importData(R swiftResultSet) throws Exception;
 
     /**
      * 获取字段
+     *
      * @return
      */
     List<String> getFields();
 
     /**
      * 导入的Segment
+     *
      * @return
      */
     List<SegmentKey> getImportSegments();
