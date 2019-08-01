@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 /**
  * @author anchore
+ * TODO: 2019/7/29 anchore 确保imut不变性，脱离imut bitmap
  */
 public class RoaringMutableBitMap extends RoaringImmutableBitMap implements MutableBitMap {
     private RoaringMutableBitMap(MutableRoaringBitmap bitmap) {

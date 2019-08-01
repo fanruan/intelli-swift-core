@@ -23,6 +23,22 @@ public final class IdBitMap extends RangeBitmap {
     }
 
     @Override
+    public ImmutableBitMap getAnd(ImmutableBitMap index) {
+        if (index.contains(start)) {
+            return this;
+        }
+        return new EmptyBitmap();
+    }
+
+    @Override
+    public ImmutableBitMap getOr(ImmutableBitMap index) {
+        if (index.contains(start)) {
+            return index;
+        }
+        return super.getOr(index);
+    }
+
+    @Override
     public ImmutableBitMap clone() {
         return of(start);
     }
