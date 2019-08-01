@@ -77,6 +77,17 @@ public class SegmentUtils {
         }
     }
 
+    /**
+     * 只清数据，不清配置
+     *
+     * @param segKeys
+     */
+    public static void clearSegments(Collection<SegmentKey> segKeys) {
+        for (SegmentKey segKey : segKeys) {
+            clearSegment(segKey);
+        }
+    }
+
     private static void clearRealtimeSegment(SegmentKey segKey) {
         ResourceDiscovery.getInstance().releaseSegment(segKey.getSwiftSchema(), segKey.getTable(), segKey.getOrder());
 

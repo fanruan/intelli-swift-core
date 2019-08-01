@@ -43,6 +43,15 @@ public final class AllShowBitMap extends RangeBitmap {
     }
 
     @Override
+    public ImmutableBitMap getNot(int bound) {
+        if (bound < end) {
+            return new RangeBitmap(bound, end);
+        } else {
+            return new RangeBitmap(end, bound);
+        }
+    }
+
+    @Override
     public ImmutableBitMap clone() {
         return of(end);
     }
