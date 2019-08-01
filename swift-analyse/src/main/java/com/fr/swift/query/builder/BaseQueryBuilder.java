@@ -40,8 +40,7 @@ class BaseQueryBuilder {
     protected static final SwiftTableAllotRuleService ALLOT_RULE_SERVICE = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
     protected static final SwiftSegmentBucketService SEGMENT_BUCKET_SERVICE = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
 
-
-    static List<Segment> filter(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
+    static List<Segment> filterQueryInfo(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         SourceKey table = queryInfo.getTable();
         SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(table);
         SwiftSegmentBucket swiftSegmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(table);
@@ -57,9 +56,11 @@ class BaseQueryBuilder {
                         }
                     }
                 }
+                break;
             default:
                 return new CommonSegmentFilter(allotRule, swiftSegmentBucket).filter(queryInfo);
         }
+        return new CommonSegmentFilter(allotRule, swiftSegmentBucket).filter(queryInfo);
     }
 
     static boolean[] isGlobalIndexed(List<Dimension> dimensions, List<Metric> metrics) {

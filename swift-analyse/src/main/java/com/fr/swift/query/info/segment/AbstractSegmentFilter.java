@@ -43,6 +43,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         this.bucketMap = segmentBucket.getBucketMap();
     }
 
+    @Override
     public List<Segment> filter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (tableAllotRule == null || segmentBucket == null || singleTableQueryInfo.getFilterInfo() == null) {
             return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
