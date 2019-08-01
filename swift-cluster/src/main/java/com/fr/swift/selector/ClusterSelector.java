@@ -14,7 +14,8 @@ public class ClusterSelector implements Selector<ClusterNodeManager> {
 
     private ClusterNodeManager clusterNodeManager;
 
-    private ClusterSelector() {
+    public ClusterSelector() {
+        clusterNodeManager = DefaultNodeManager.INSTANCE;
     }
 
     private static final ClusterSelector INSTANCE = new ClusterSelector();
