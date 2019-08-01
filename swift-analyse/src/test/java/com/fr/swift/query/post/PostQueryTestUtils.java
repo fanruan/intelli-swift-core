@@ -121,11 +121,6 @@ public class PostQueryTestUtils {
             public SwiftMetaData clone() {
                 return this;
             }
-
-            @Override
-            public boolean containsColumn(String columnName) {
-                return false;
-            }
         };
     }
 
