@@ -178,7 +178,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             @Override
             public void run() {
                 for (SegmentKey collateSegKey : collateSegKeys) {
-//                    swiftSegmentService.removeSegments(Collections.singletonList(collateSegKey));
                     SegmentUtils.clearSegment(collateSegKey);
                     if (collateSegKey.getStoreType().isPersistent()) {
                         // TODO: 2019/1/24 先改成同步fire，避免fr rpc timeout

@@ -14,7 +14,50 @@ public class ClusterSelector implements Selector<ClusterNodeManager> {
 
     private ClusterNodeManager clusterNodeManager;
 
-    private ClusterSelector() {
+    class DefaultNodeManager implements ClusterNodeManager{
+        @Override
+        public void setMasterNode(Object masterNode) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Object getMasterNode() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Object getCurrentNode() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getCurrentId() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getMasterId() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isCluster() {
+            return false;
+        }
+
+        @Override
+        public void setCluster(boolean cluster) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isMaster() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public ClusterSelector() {
+        clusterNodeManager =  new DefaultNodeManager();
     }
 
     private static final ClusterSelector INSTANCE = new ClusterSelector();
