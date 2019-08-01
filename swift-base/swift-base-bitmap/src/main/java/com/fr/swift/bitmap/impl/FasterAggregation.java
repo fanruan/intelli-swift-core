@@ -88,8 +88,8 @@ public final class FasterAggregation {
             return RoaringImmutableBitMap.of(b);
         }
 
-        int start = b1.start < b2.start ? b1.start : b2.start;
-        int end = b1.end > b2.end ? b1.end : b2.end;
+        int start = Math.min(b1.start, b2.start);
+        int end = Math.max(b1.end, b2.end);
         return RangeBitmap.of(start, end);
     }
 
@@ -98,8 +98,8 @@ public final class FasterAggregation {
             return new EmptyBitmap();
         }
 
-        int start = b1.start > b2.start ? b1.start : b2.start;
-        int end = b1.end < b2.end ? b1.end : b2.end;
+        int start = Math.max(b1.start, b2.start);
+        int end = Math.min(b1.end, b2.end);
         return RangeBitmap.of(start, end);
     }
 
@@ -108,8 +108,8 @@ public final class FasterAggregation {
             return b1;
         }
 
-        int start = b1.start > b2.start ? b1.start : b2.start;
-        int end = b1.end < b2.end ? b1.end : b2.end;
+        int start = Math.max(b1.start, b2.start);
+        int end = Math.min(b1.end, b2.end);
 
         if (start == b1.start) {
             return RangeBitmap.of(end, b1.end);
@@ -135,8 +135,8 @@ public final class FasterAggregation {
             return b1;
         }
 
-        int start = b1Start > b2.start ? b1Start : b2.start;
-        int end = b1End < b2.end ? b1End : b2.end;
+        int start = Math.max(b1Start, b2.start);
+        int end = Math.min(b1End, b2.end);
 
         MutableRoaringBitmap bitmap = b1.bitmap.clone();
         bitmap.remove((long) start, end);
@@ -154,8 +154,8 @@ public final class FasterAggregation {
             return;
         }
 
-        int start = b1Start > b2.start ? b1Start : b2.start;
-        int end = b1End < b2.end ? b1End : b2.end;
+        int start = Math.max(b1Start, b2.start);
+        int end = Math.min(b1End, b2.end);
 
         b1.bitmap.remove((long) start, end);
     }
