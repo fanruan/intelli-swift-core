@@ -172,7 +172,10 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
                 }
             }
         }
-        return fieldIndexes.get(columnName) == null ? -1 : fieldIndexes.get(columnName);
+        if (fieldIndexes.get(columnName) == null) {
+            throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
+        }
+        return fieldIndexes.get(columnName);
     }
 
     @Override
@@ -248,14 +251,5 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
             bean.fields.add(new MetaDataColumnBean(field.getName(), field.getRemark(), field.getType(), field.getPrecision(), field.getScale(), field.getColumnId()));
         }
         return bean;
-    }
-
-    @Override
-    public boolean containsColumn(String columnName) throws SwiftMetaDataException {
-        try {
-            return getColumnIndex(columnName) >= 1;
-        } catch (SwiftMetaDataException e) {
-            return false;
-        }
     }
 }
