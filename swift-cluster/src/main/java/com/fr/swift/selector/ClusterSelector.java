@@ -14,7 +14,10 @@ public class ClusterSelector implements Selector<ClusterNodeManager> {
 
     private ClusterNodeManager clusterNodeManager;
 
-    class DefaultNodeManager implements ClusterNodeManager{
+    enum DefaultNodeManager implements ClusterNodeManager {
+
+        INSTANCE;
+
         @Override
         public void setMasterNode(Object masterNode) {
             throw new UnsupportedOperationException();
@@ -57,7 +60,7 @@ public class ClusterSelector implements Selector<ClusterNodeManager> {
     }
 
     public ClusterSelector() {
-        clusterNodeManager =  new DefaultNodeManager();
+        clusterNodeManager = DefaultNodeManager.INSTANCE;
     }
 
     private static final ClusterSelector INSTANCE = new ClusterSelector();
