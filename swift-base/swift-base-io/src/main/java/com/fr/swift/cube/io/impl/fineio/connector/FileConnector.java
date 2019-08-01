@@ -5,7 +5,6 @@ import com.fineio.io.file.FileBlock;
 import com.fineio.storage.Connector;
 import com.fineio.v3.file.DirectoryBlock;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.util.IoUtil;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -31,7 +30,7 @@ public class FileConnector extends BaseConnector {
     }
 
     private File toFile(String path, String name, boolean mkdirs) {
-        File dir = new File(parentURI + "/" + path);
+        File dir = new File(parentPath + "/" + path);
         if (mkdirs) {
             dir.mkdirs();
         }
@@ -47,9 +46,8 @@ public class FileConnector extends BaseConnector {
     @Override
     public void write(FileBlock block, InputStream is) throws IOException {
         File f = toFile(block.getParentUri().getPath(), block.getFileName(), true);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(f);
+        // 不需要去释放is 调用connector的上层会自动释放is
+        try (FileOutputStream fos = new FileOutputStream(f)) {
             byte[] bytes = new byte[1024];
             for (int len; (len = is.read(bytes)) != -1; ) {
                 fos.write(bytes, 0, len);
@@ -57,8 +55,6 @@ public class FileConnector extends BaseConnector {
         } catch (IOException e) {
             SwiftLoggers.getLogger().error(e);
             throw e;
-        } finally {
-            IoUtil.close(fos, is);
         }
     }
 
@@ -76,7 +72,7 @@ public class FileConnector extends BaseConnector {
 
     @Override
     public Block list(String dir) {
-        File f = new File(parentURI + "/" + dir);
+        File f = new File(parentPath + "/" + dir);
         if (f.isDirectory()) {
             List<Block> blocks = new ArrayList<Block>();
             File[] list = f.listFiles(new FileFilter() {
@@ -87,12 +83,18 @@ public class FileConnector extends BaseConnector {
             });
             if (null != list) {
                 for (File s : list) {
-                    blocks.add(list(s.getAbsolutePath()));
+                    String path = s.getAbsolutePath().replaceAll(parentPath, "");
+                    if (path.startsWith("/")) {
+                        path = path.substring(1);
+                    }
+                    blocks.add(list(path));
                 }
             }
             return new DirectoryBlock(dir, blocks);
         } else {
-            return new FileBlock(f.getParent().replace(parentURI + "/", ""), f.getName());
+            String path = f.getParent().replaceAll(parentPath, "");
+            path = path.startsWith("/") ? path.substring(1) : path;
+            return new FileBlock(path, f.getName());
         }
     }
 
