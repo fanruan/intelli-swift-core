@@ -23,7 +23,7 @@ import java.util.List;
 @SwiftScope("prototype")
 public class SwiftInserter extends BaseInserter implements Inserter {
 
-    private int cursor, lastCursor;
+    protected int cursor, lastCursor;
 
     /**
      * 是否追加insert
@@ -36,7 +36,7 @@ public class SwiftInserter extends BaseInserter implements Inserter {
         initCursors();
     }
 
-    private SwiftInserter(Segment segment, boolean append) {
+    protected SwiftInserter(Segment segment, boolean append) {
         this(segment, segment.getMetaData().getFieldNames(), append);
     }
 
