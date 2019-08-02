@@ -78,14 +78,14 @@ public interface ServiceContext {
      * delete service methods
      * 用于删除符合条件的数据
      * 删除是标记删除，除非删除所有数据，否则不会删除文件
+     *
      * @param tableKey 要删除的表
-     * @param where 删除条件
+     * @param where    删除条件
      * @return
      * @throws Exception
      */
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.REAL_TIME, Target.HISTORY})
     boolean delete(SourceKey tableKey, Where where) throws Exception;
-
 
     //upload service methods
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.REAL_TIME, Target.HISTORY})
