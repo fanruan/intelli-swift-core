@@ -45,7 +45,7 @@ class DetailQueryBuilder extends BaseQueryBuilder {
     Query<DetailQueryResultSet> buildQuery() throws SwiftMetaDataException {
         List<Query<DetailQueryResultSet>> queries = new ArrayList<Query<DetailQueryResultSet>>();
         //根据分开规则提前区分segment
-        List<Segment> segments = filter(detailQueryInfo);
+        List<Segment> segments = filterQueryInfo(detailQueryInfo);
 //        List<Segment> segments = SEG_SVC.getSegmentsByIds(detailQueryInfo.getTable(), detailQueryInfo.getQuerySegment());
         List<Dimension> dimensions = detailQueryInfo.getDimensions();
         for (Segment seg : segments) {
