@@ -18,6 +18,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
+import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanSimplify;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -46,6 +47,7 @@ public class FilterInfoParser {
             return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
         }
         bean = FilterInfoBeanOptimizer.optimize(bean);
+        bean = FilterInfoBeanSimplify.simple(bean);
         switch (bean.getType()) {
             case AND:
             case OR:
