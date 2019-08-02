@@ -2,6 +2,7 @@ package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.element.filter.impl.AndFilterBean;
+import com.fr.swift.query.info.bean.element.filter.impl.EmptyFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.OrFilterBean;
@@ -57,13 +58,13 @@ public class FilterInfoBeanSimplifyTest {
         Assert.assertTrue(b.get(0) instanceof NumberInRangeFilterBean);
         Assert.assertTrue(b.get(1) instanceof InFilterBean);
 
-        //a<9 AND a>10 = null
+        //a<9 AND a>10 = EmptyfilterBean
         List<FilterInfoBean> filters3 = new ArrayList<>();
         filters3.add(filter1);
         filters3.add(filter5);
         DetailQueryInfoBean queryInfoBean4 = new DetailQueryInfoBean.Builder("data").setFilter(new AndFilterBean(filters3)).build();
         FilterInfoBean filterInfo4 = FilterInfoBeanSimplify.simple(queryInfoBean4.getFilter());
-        Assert.assertEquals(null, filterInfo4);
+        Assert.assertTrue(filterInfo4 instanceof EmptyFilterBean);
 
     }
 }
