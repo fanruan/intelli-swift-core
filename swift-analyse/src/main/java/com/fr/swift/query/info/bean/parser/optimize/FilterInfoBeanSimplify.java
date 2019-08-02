@@ -90,7 +90,6 @@ public class FilterInfoBeanSimplify {
     }
 
     private static Map<String, List<DetailFilterInfoBean>> groupByColumnName(List<FilterInfoBean> beans) {
-//        List<FilterInfoBean> copyBeans = new ArrayList<>(beans);
         List<DetailFilterInfoBean> numberInRangeFilterBeans = new ArrayList<>();
         Iterator<FilterInfoBean> iterator = beans.iterator();
         while (iterator.hasNext()) {
