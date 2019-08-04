@@ -4,8 +4,10 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.db.Table;
@@ -19,6 +21,7 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.SegmentDestination;
@@ -42,8 +45,10 @@ import com.fr.swift.util.FileUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author pony
@@ -60,6 +65,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     private transient ClusterEventListener realtimeClusterListener;
 
     private transient SwiftSegmentService segSvc;
+    private transient SwiftSegmentLocationService segLocationSvc;
 
     public SwiftRealtimeService() {
         realtimeClusterListener = new RealtimeClusterListener();
@@ -69,6 +75,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     public boolean start() throws SwiftServiceException {
         super.start();
         segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         if (recoverable) {
             recover0();
             recoverable = false;
@@ -83,6 +90,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         ResourceDiscovery.getInstance().releaseAll();
         recoverable = true;
         segSvc = null;
+        segLocationSvc = null;
         ClusterListenerHandler.removeExtraListener(realtimeClusterListener);
         return true;
     }
@@ -117,12 +125,17 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public void truncate(SourceKey tableKey) {
-        Map<SourceKey, List<SegmentKey>> ownSegs = segSvc.getOwnSegments();
+        Map<SourceKey, List<SwiftSegmentLocationEntity>> localTableToLocations = segLocationSvc.getAllLocal();
         // 删配置
+        segLocationSvc.delete(SwiftProperty.getProperty().getClusterId(), tableKey.getId());
         segSvc.removeSegments(tableKey.getId());
-        if (ownSegs.containsKey(tableKey)) {
-            // 同步seg location
-            SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, ownSegs.get(tableKey));
+        // 同步seg location
+        if (localTableToLocations.containsKey(tableKey)) {
+            Set<String> localSegIds = new HashSet<>();
+            for (SwiftSegmentLocationEntity localLocation : localTableToLocations.get(tableKey)) {
+                localSegIds.add(localLocation.getSegmentId());
+            }
+            SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, segSvc.getByIds(localSegIds));
         }
 
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(tableKey.getId());

@@ -91,7 +91,7 @@ public class SegmentHelperTest {
         PowerMock.replay(SwiftContext.class);
         PowerMock.replayAll();
 
-        SegmentHelper.checkSegmentExists(mockSwiftSegmentService, mockSwiftSegmentManager);
+        SegmentHelper.checkSegmentExists(mockSwiftSegmentService, segLocationSvc, mockSwiftSegmentManager);
 
         PowerMock.verifyAll();
     }
