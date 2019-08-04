@@ -12,6 +12,7 @@ import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -69,6 +70,11 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     @Override
     public Page<SegmentKey> selectSelective(SegmentKey segmentKey, int page, int size) {
         return service.selectSelective(segmentKey, page, size);
+    }
+
+    @Override
+    public Set<SegmentKey> getByIds(Set<String> segIds) {
+        return service.getByIds(segIds);
     }
 
     @Override
