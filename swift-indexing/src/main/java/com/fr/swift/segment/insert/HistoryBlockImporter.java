@@ -7,6 +7,7 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -27,7 +28,7 @@ import java.util.Collections;
  */
 @SwiftBean(name = "historyBlockImporter")
 @SwiftScope("prototype")
-public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A> {
+public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A, SwiftResultSet> {
 
     public HistoryBlockImporter(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
