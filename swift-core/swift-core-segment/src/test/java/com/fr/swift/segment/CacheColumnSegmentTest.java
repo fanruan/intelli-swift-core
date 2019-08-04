@@ -83,9 +83,7 @@ public class CacheColumnSegmentTest {
         seg.release();
 
         Map<ColumnKey, Column<?>> columns = Whitebox.getInternalState(seg, "columns");
-        for (Column<?> column : columns.values()) {
-            verifyStatic(SegmentUtils.class);
-            SegmentUtils.releaseHisColumn(column);
-        }
+        verifyStatic(SegmentUtils.class);
+        SegmentUtils.releaseHisColumn(columns.values());
     }
 }

@@ -49,7 +49,7 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
         boolean readable = CubeUtil.isReadable(segment);
 
         for (int i = 0; i < columns.size(); i++) {
-            BitmapIndexedColumn bitmapIndex = columns.get(i).getBitmapIndex();
+            BitmapIndexedColumn bitmapIndex = columns.get(fields.get(i)).getBitmapIndex();
             ImmutableBitMap nullIndex;
             if (bitmapIndex.isReadable()) {
                 try {
@@ -62,7 +62,7 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
             } else {
                 nullIndex = BitMaps.newRoaringMutable();
             }
-            MutableBitMap newNullIndex = nullIndices.get(i);
+            MutableBitMap newNullIndex = nullIndices.get(fields.get(i));
             newNullIndex.or(nullIndex);
             bitmapIndex.putNullIndex(newNullIndex);
         }

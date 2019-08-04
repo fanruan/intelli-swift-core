@@ -42,6 +42,11 @@ public class ListMutableRow implements MutableRow {
     }
 
     @Override
+    public void setElement(int index, Object value) {
+        values.set(index, value);
+    }
+
+    @Override
     public void addAllRowElement(MutableRow mutableRow) {
         for (int i = 0; i < mutableRow.getSize(); i++) {
             values.add(mutableRow.getValue(i));

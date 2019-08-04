@@ -17,6 +17,7 @@ import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
 import com.fr.swift.event.base.EventResult;
 import com.fr.swift.log.SwiftLoggers;
@@ -31,6 +32,7 @@ import com.fr.swift.util.MonitorUtil;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,11 +54,13 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler impl
 
     private SwiftClusterSegmentService clusterSegmentService;
 
+    private SwiftSegmentLocationService swiftSegmentLocationService;
 
     public SwiftSyncDataProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
         dataSyncRuleService = SwiftContext.get().getBean(DataSyncRuleService.class);
         clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+        swiftSegmentLocationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
     }
 
     /**
@@ -147,8 +151,23 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler impl
         Map<String, Set<SegmentKey>> segkeyDistribution = dataSyncRuleService.getCurrentRule().getNeedLoadAndUpdateDestinations(nodeIds, segmentKeys, destinations);
 
         Map<URL, Set<SegmentKey>> urlResultMap = new HashMap<URL, Set<SegmentKey>>();
+
         for (Map.Entry<String, Set<SegmentKey>> segkeyEntry : segkeyDistribution.entrySet()) {
-            urlResultMap.put(UrlSelector.getInstance().getFactory().getURL(segkeyEntry.getKey()), segkeyEntry.getValue());
+            String nodeId = segkeyEntry.getKey();
+            Set<SegmentKey> needDownloadSegKeys = segkeyEntry.getValue();
+
+            Map<SegmentKey, Set<String>> segKeyToNodeIds = swiftSegmentLocationService.findLocationsBySegKeys(needDownloadSegKeys);
+            for (Iterator<SegmentKey> iterator = needDownloadSegKeys.iterator(); iterator.hasNext(); ) {
+                SegmentKey segKey = iterator.next();
+                if (segKeyToNodeIds.containsKey(segKey) &&
+                        segKeyToNodeIds.get(segKey).contains(nodeId)) {
+                    // 该节点已有分布，不用重复下载，一般此节点为上传机器
+                    iterator.remove();
+                }
+            }
+            if (!needDownloadSegKeys.isEmpty()) {
+                urlResultMap.put(UrlSelector.getInstance().getFactory().getURL(nodeId), needDownloadSegKeys);
+            }
         }
         return urlResultMap;
     }

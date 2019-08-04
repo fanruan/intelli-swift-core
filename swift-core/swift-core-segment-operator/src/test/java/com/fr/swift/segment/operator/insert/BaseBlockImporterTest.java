@@ -84,7 +84,7 @@ public class BaseBlockImporterTest {
         when(dataSource.getSourceKey()).thenReturn(mock(SourceKey.class));
         when(dataSource.getMetadata().getSwiftSchema()).thenReturn(SwiftSchema.CUBE);
 
-        BaseBlockImporter<?> blockImporter = spy(new BlockImporter<SwiftSourceAlloter<?, RowInfo>>(dataSource, alloter));
+        BaseBlockImporter<?, SwiftResultSet> blockImporter = spy(new BlockImporter<SwiftSourceAlloter<?, RowInfo>>(dataSource, alloter));
 
         Inserting inserting0 = mock(Inserting.class), inserting1 = mock(Inserting.class);
         when(blockImporter, "getInserting", any()).thenReturn(inserting0, inserting1);
@@ -145,7 +145,7 @@ public class BaseBlockImporterTest {
         assertEquals(segKeys, blockImporter.getImportSegments());
     }
 
-    static class BlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A> {
+    static class BlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A, SwiftResultSet> {
 
         public BlockImporter(DataSource dataSource, A alloter) {
             super(dataSource, alloter);

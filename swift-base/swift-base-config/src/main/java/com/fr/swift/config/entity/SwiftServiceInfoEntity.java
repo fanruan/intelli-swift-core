@@ -34,6 +34,9 @@ public class SwiftServiceInfoEntity implements Serializable {
     @Column(name = "is_singleton")
     private boolean singleton;
 
+    public SwiftServiceInfoEntity() {
+    }
+
     public SwiftServiceInfoEntity(String service, String clusterId, String serviceInfo, boolean singleton) {
         this.service = service;
         this.clusterId = clusterId;

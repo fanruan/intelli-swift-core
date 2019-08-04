@@ -16,7 +16,9 @@ import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Lucifer
@@ -45,6 +47,8 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
     @Column(name = "fields", length = 65536)
     @Convert(converter = MetaDataColumnListConverter.class)
     private List<SwiftMetaDataColumn> fields;
+
+    private transient Map<String, Integer> fieldIndexes = new HashMap<>();
 
     public SwiftMetaDataBean(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
@@ -143,17 +147,35 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
         throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
     }
 
+    /**
+     * @param columnName
+     * @return
+     * @throws SwiftMetaDataException
+     * @descrption 同时规避无脑循环和并发初始化问题。
+     */
     @Override
     public int getColumnIndex(String columnName) throws SwiftMetaDataException {
-        if (Strings.isNotEmpty(columnName)) {
-            for (int i = 0, columnCount = getColumnCount(); i < columnCount; i++) {
-                SwiftMetaDataColumn column = fields.get(i);
-                if (columnName.equals(column.getName())) {
-                    return i + 1;
+        if (Strings.isEmpty(columnName)) {
+            throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
+        }
+        if (fieldIndexes == null || fieldIndexes.size() != fields.size()) {
+            synchronized (this) {
+                if (fieldIndexes == null) {
+                    fieldIndexes = new HashMap<>();
+                }
+                if (fieldIndexes.size() != fields.size()) {
+                    fieldIndexes.clear();
+                    for (int i = 0; i < fields.size(); i++) {
+                        SwiftMetaDataColumn column = fields.get(i);
+                        fieldIndexes.put(column.getName(), i + 1);
+                    }
                 }
             }
         }
-        throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
+        if (fieldIndexes.get(columnName) == null) {
+            throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
+        }
+        return fieldIndexes.get(columnName);
     }
 
     @Override
