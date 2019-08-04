@@ -19,7 +19,7 @@ import java.util.List;
 public class SwiftFragmentFilter implements FragmentFilter {
 
     /**
-     * 碎片块数 》= 10
+     * 碎片块数 >= 10
      */
     public static final int FRAGMENT_NUMBER = 10;
 

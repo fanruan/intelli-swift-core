@@ -18,12 +18,6 @@ import org.easymock.EasyMock;
  * @description
  */
 public class GlobalEventTest extends TestCase {
-    public void testCheckMasterEvent() {
-        CheckMasterEvent event = new CheckMasterEvent();
-        assertEquals(event.type(), SwiftRpcEvent.EventType.GLOBAL);
-        assertEquals(event.subEvent(), AbstractGlobalRpcEvent.Event.CHECK_MASTER);
-        assertNull(event.getContent());
-    }
 
     public void testCleanMetaDataCacheEvent() {
         CleanMetaDataCacheEvent event = new CleanMetaDataCacheEvent(new SourceKey[0]);

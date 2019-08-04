@@ -1,18 +1,30 @@
 package com.fr.swift.query.builder;
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftSegmentBucketService;
+import com.fr.swift.config.service.SwiftTableAllotRuleService;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.funnel.FunnelComplexColumn;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.query.info.SingleTableQueryInfo;
+import com.fr.swift.query.info.bean.type.MetricType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.FunnelPathsMetric;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.element.target.GroupTarget;
+import com.fr.swift.query.info.group.GroupQueryInfo;
+import com.fr.swift.query.info.segment.CommonSegmentFilter;
+import com.fr.swift.query.info.segment.FunnelSegmentFilter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
@@ -25,6 +37,31 @@ import java.util.Map;
  * @date 2019/6/27
  */
 class BaseQueryBuilder {
+    protected static final SwiftTableAllotRuleService ALLOT_RULE_SERVICE = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
+    protected static final SwiftSegmentBucketService SEGMENT_BUCKET_SERVICE = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
+
+    static List<Segment> filterQueryInfo(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
+        SourceKey table = queryInfo.getTable();
+        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(table);
+        SwiftSegmentBucket swiftSegmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(table);
+        switch (queryInfo.getType()) {
+            case GROUP:
+                GroupQueryInfo groupQueryInfo = (GroupQueryInfo) queryInfo;
+                List<Metric> metrics = groupQueryInfo.getMetrics();
+                if (metrics.size() != 0) {
+                    for (Metric metric : metrics) {
+                        if (metric.getMetricType() == MetricType.FUNNEL || metric.getMetricType() == MetricType.FUNNEL_PATHS) {
+                            //漏斗计算
+                            return new FunnelSegmentFilter(allotRule, swiftSegmentBucket).filter(queryInfo);
+                        }
+                    }
+                }
+                break;
+            default:
+                return new CommonSegmentFilter(allotRule, swiftSegmentBucket).filter(queryInfo);
+        }
+        return new CommonSegmentFilter(allotRule, swiftSegmentBucket).filter(queryInfo);
+    }
 
     static boolean[] isGlobalIndexed(List<Dimension> dimensions, List<Metric> metrics) {
         boolean[] booleans = new boolean[dimensions.size()];

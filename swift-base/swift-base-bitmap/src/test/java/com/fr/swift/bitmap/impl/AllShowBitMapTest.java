@@ -149,4 +149,11 @@ public class AllShowBitMapTest {
         verifyStatic(IoUtil.class, times(2));
         IoUtil.close(output);
     }
+
+    @Test
+    public void getNot() {
+        BitmapAssert.equals(new RangeBitmap(5, 10), AllShowBitMap.of(10).getNot(5));
+        BitmapAssert.equals(new RangeBitmap(10, 15), AllShowBitMap.of(10).getNot(15));
+        BitmapAssert.equals(new EmptyBitmap(), AllShowBitMap.of(10).getNot(10));
+    }
 }
