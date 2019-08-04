@@ -74,12 +74,12 @@ public class SwiftHibernateConfigCommandBus<T> extends BaseSwiftConfigCommandBus
     }
 
     @Override
-    public List<T> delete(SwiftConfigCondition condition) {
+    public int delete(SwiftConfigCondition condition) {
         try {
             return transaction(SwiftConfigCommands.ofDelete(tClass, condition));
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error("delete object failed", e);
-            return Collections.emptyList();
+            return 0;
         }
     }
 

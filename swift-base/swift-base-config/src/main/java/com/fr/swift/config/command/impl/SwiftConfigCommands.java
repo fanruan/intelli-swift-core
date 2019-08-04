@@ -3,14 +3,12 @@ package com.fr.swift.config.command.impl;
 import com.fr.swift.config.command.SwiftConfigCommand;
 import com.fr.swift.config.condition.SwiftConfigCondition;
 
-import java.util.List;
-
 /**
  * @author yee
  * @date 2019-07-30
  */
 public class SwiftConfigCommands {
-    public static <T> SwiftConfigCommand<List<T>> ofDelete(Class<T> tClass, SwiftConfigCondition condition) {
+    public static <T> SwiftConfigCommand<Integer> ofDelete(Class<T> tClass, SwiftConfigCondition condition) {
         return new DeleteItemCommand<>(tClass, condition);
     }
 
