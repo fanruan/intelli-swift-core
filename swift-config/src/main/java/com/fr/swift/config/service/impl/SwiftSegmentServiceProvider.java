@@ -12,7 +12,6 @@ import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author yee
@@ -34,11 +33,6 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
 
     @Override
     public boolean removeSegments(List<SegmentKey> segmentKeys) {
-        return service.removeSegments(segmentKeys);
-    }
-
-    @Override
-    public boolean removeSegments(Set<String> segmentKeys) {
         return service.removeSegments(segmentKeys);
     }
 

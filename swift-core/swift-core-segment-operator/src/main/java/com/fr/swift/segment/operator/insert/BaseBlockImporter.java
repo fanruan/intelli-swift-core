@@ -3,6 +3,7 @@ package com.fr.swift.segment.operator.insert;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.db.Database;
@@ -30,6 +31,7 @@ import com.fr.swift.util.IoUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +42,6 @@ import java.util.Map.Entry;
  * @date 2018/8/1
  */
 public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>, R extends SwiftResultSet> implements Releasable, Importer<R> {
-
     protected A alloter;
 
     protected DataSource dataSource;
@@ -50,6 +51,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected List<SegmentKey> importSegKeys = new ArrayList<>();
 
     protected SwiftTableAllotRuleService swiftTableAllotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
+
+    private final SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
@@ -71,12 +74,12 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     @Override
     public void importData(R swiftResultSet) throws Exception {
-        try {
+        try (R resultSet = swiftResultSet) {
             persistMeta();
 
             int cursor = 0;
-            while (swiftResultSet.hasNext()) {
-                Row row = swiftResultSet.getNextRow();
+            while (resultSet.hasNext()) {
+                Row row = resultSet.getNextRow();
                 SegmentInfo segInfo = allot(cursor++, row);
 
                 if (!insertings.containsKey(segInfo)) {
@@ -89,12 +92,12 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 insertings.get(segInfo).insert(row);
             }
 
+            segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
             SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             clearDirtyIfNeed();
         } finally {
-            IoUtil.close(swiftResultSet);
             IoUtil.release(this);
         }
     }
