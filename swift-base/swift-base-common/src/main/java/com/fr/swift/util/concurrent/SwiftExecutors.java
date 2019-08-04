@@ -72,7 +72,7 @@ public class SwiftExecutors {
     }
 
     public static ScheduledExecutorService newSingleThreadScheduledExecutor(ThreadFactory threadFactory) {
-        ScheduledExecutorService singleThreadScheduledExecutor = Executors.newSingleThreadScheduledExecutor(threadFactory);
+        ScheduledExecutorService singleThreadScheduledExecutor = new ExceptionSafeScheduledExecutor(Executors.newSingleThreadScheduledExecutor(threadFactory));
         EXECUTORS.put(EXECUTOR_COUNT.getAndIncrement(), singleThreadScheduledExecutor);
         return singleThreadScheduledExecutor;
     }
@@ -82,7 +82,7 @@ public class SwiftExecutors {
     }
 
     public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize, ThreadFactory threadFactory) {
-        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(corePoolSize, threadFactory);
+        ScheduledExecutorService scheduledThreadPool = new ExceptionSafeScheduledExecutor(Executors.newSingleThreadScheduledExecutor(threadFactory));
         EXECUTORS.put(EXECUTOR_COUNT.getAndIncrement(), scheduledThreadPool);
         return scheduledThreadPool;
     }

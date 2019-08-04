@@ -13,18 +13,18 @@ import java.io.IOException;
  * @date 2018/8/17
  */
 public abstract class BaseConnector extends AbstractConnector {
-    String parentURI;
+    String parentPath;
 
     public BaseConnector(String path) {
         initParentPath(path);
     }
 
     private void initParentPath(String path) {
-        parentURI = Strings.unifySlash("/" + path + "/");
+        parentPath = Strings.unifySlash("/" + path + "/");
     }
 
     public File getFolderPath(FileBlock block) {
-        String path = Strings.unifySlash(parentURI + "/" + block.getParentUri().getPath());
+        String path = Strings.unifySlash(parentPath + "/" + block.getParentUri().getPath());
         return new File(path);
     }
 

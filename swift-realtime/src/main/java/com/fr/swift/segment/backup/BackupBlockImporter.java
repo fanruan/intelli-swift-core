@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -22,7 +23,7 @@ import com.fr.swift.transaction.TransactionProxyFactory;
  * @author anchore
  * @date 2019/3/8
  */
-public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A> {
+public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A, SwiftResultSet> {
     public BackupBlockImporter(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
     }

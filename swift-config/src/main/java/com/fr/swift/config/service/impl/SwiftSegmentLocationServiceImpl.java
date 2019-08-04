@@ -11,14 +11,17 @@ import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -52,6 +55,32 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
         } catch (SQLException e) {
             SwiftLoggers.getLogger().warn(e);
             return false;
+        }
+    }
+
+    @Override
+    public Map<SegmentKey, Set<String>> findLocationsBySegKeys(final Set<SegmentKey> segKeys) {
+        try {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Map<SegmentKey, Set<String>>>() {
+                @Override
+                public Map<SegmentKey, Set<String>> work(ConfigSession session) throws SQLException {
+                    Map<SegmentKey, Set<String>> segKeyToNodeIds = new HashMap<>();
+                    for (SegmentKey segKey : segKeys) {
+                        if (!segKeyToNodeIds.containsKey(segKey)) {
+                            segKeyToNodeIds.put(segKey, new HashSet<String>());
+                        }
+
+                        List<SwiftSegmentLocationEntity> locationEntities =
+                                segmentLocationDao.find(session, ConfigWhereImpl.eq("id.segmentId", segKey.getId()));
+                        for (SwiftSegmentLocationEntity locationEntity : locationEntities) {
+                            segKeyToNodeIds.get(segKey).add(locationEntity.getClusterId());
+                        }
+                    }
+                    return segKeyToNodeIds;
+                }
+            });
+        } catch (SQLException e) {
+            return Collections.emptyMap();
         }
     }
 

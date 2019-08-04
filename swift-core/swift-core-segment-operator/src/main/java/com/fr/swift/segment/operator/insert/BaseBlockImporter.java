@@ -39,15 +39,15 @@ import java.util.Map.Entry;
  * @author anchore
  * @date 2018/8/1
  */
-public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> implements Releasable, Importer {
+public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>, R extends SwiftResultSet> implements Releasable, Importer<R> {
 
-    private A alloter;
+    protected A alloter;
 
     protected DataSource dataSource;
 
-    protected Map<SegmentInfo, Inserting> insertings = new HashMap<SegmentInfo, Inserting>();
+    protected Map<SegmentInfo, Inserting> insertings = new HashMap<>();
 
-    private List<SegmentKey> importSegKeys = new ArrayList<SegmentKey>();
+    protected List<SegmentKey> importSegKeys = new ArrayList<>();
 
     protected SwiftTableAllotRuleService swiftTableAllotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
 
@@ -70,7 +70,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     @Override
-    public void importData(SwiftResultSet swiftResultSet) throws Exception {
+    public void importData(R swiftResultSet) throws Exception {
         try {
             persistMeta();
 
@@ -99,7 +99,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         }
     }
 
-    private SegmentInfo allot(int cursor, Row row) {
+    protected SegmentInfo allot(int cursor, Row row) {
         if (alloter.getAllotRule().getType() == AllotType.HASH) {
             return alloter.allot(new HashRowInfo(row));
         }
@@ -118,7 +118,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftSchema());
     }
 
-    private void releaseFullIfExists() {
+    protected void releaseFullIfExists() {
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (entry.getValue().isFull()) {
@@ -153,14 +153,14 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected void indexIfNeed(SegmentInfo segInfo) {
     }
 
-    protected class Inserting implements Releasable {
-        private Inserter inserter;
+    public class Inserting<I extends Inserter> implements Releasable {
+        protected I inserter;
 
         private Segment seg;
 
         private int rowCount;
 
-        public Inserting(Inserter inserter, Segment seg, int rowCount) {
+        public Inserting(I inserter, Segment seg, int rowCount) {
             Assert.isTrue(rowCount >= 0);
 
             this.inserter = inserter;

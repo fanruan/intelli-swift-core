@@ -3,6 +3,8 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
+import com.fr.swift.config.entity.key.SwiftTablePathKey;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -31,11 +33,13 @@ import com.fr.swift.util.Strings;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 /**
  * @author yee
@@ -78,68 +82,59 @@ public class SegmentHelper {
         return needDownload;
     }
 
-    public static void download(String sourceKey, Set<String> sets, boolean replace) {
+    public static Set<String> download(String sourceKey, Set<String> sets, boolean replace) {
+        String path = SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-        try {
-            if (null != repository) {
-                SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
-                SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
-                SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
-                int tmp = 0;
-                SwiftTablePathEntity entity = tablePathService.get(sourceKey);
-                if (null == entity) {
-                    entity = new SwiftTablePathEntity(sourceKey, tmp);
-                    tablePathService.saveOrUpdate(entity);
-                    replace = true;
-                } else {
-                    tmp = entity.getTablePath() == null ? 0 : entity.getTablePath();
-                    if (replace) {
-                        tmp += 1;
-                        entity.setTmpDir(tmp);
-                        tablePathService.saveOrUpdate(entity);
-                    }
-                }
-
-                boolean downloadSuccess = true;
-                for (String uri : sets) {
-                    CubePathBuilder builder = new CubePathBuilder().asAbsolute().setSwiftSchema(metaData.getSwiftSchema()).setTempDir(tmp);
-                    String cubePath = String.format("%s/%s", builder.build(), uri);
-                    String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
-                    try {
-                        repository.copyFromRemote(remotePath, cubePath);
-                    } catch (Exception e) {
-                        downloadSuccess = false;
-                        SwiftLoggers.getLogger().error("Download " + sourceKey + " with error! ", e);
-                        break;
-                    }
-                }
-
-                if (replace && downloadSuccess) {
-                    entity = tablePathService.get(sourceKey);
-                    int current = entity.getTablePath() == null ? -1 : entity.getTablePath();
-                    entity.setLastPath(current);
-                    entity.setTablePath(tmp);
-                    tablePathService.saveOrUpdate(entity);
-                    CubePathBuilder builder = new CubePathBuilder()
-                            .asAbsolute()
-                            .setSwiftSchema(metaData.getSwiftSchema())
-                            .setTempDir(current)
-                            .setTableKey(new SourceKey(sourceKey));
-                    String cubePath = builder.build();
-                    FileUtil.delete(cubePath);
-                    new File(cubePath).getParentFile().delete();
-                }
-                if (downloadSuccess) {
-                    SourceKey table = new SourceKey(sourceKey);
-                    SegmentContainer.NORMAL.remove(table);
-                    SegmentContainer.INDEXING.remove(table);
-                    SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(table);
-                    SwiftLoggers.getLogger().info("Download {} {}successful", sourceKey, sets);
-                }
-            }
-        } catch (RepoNotFoundException e) {
-            SwiftLoggers.getLogger().error("Default repository not found.", e);
+        SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
+        SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
+        SwiftMetaData metaData = metaDataService.getMetaDataByKey(sourceKey);
+        Integer prevTabDir = null;
+        int downloadTabDir = 0;
+        SwiftTablePathEntity entity = tablePathService.get(sourceKey);
+        if (entity != null) {
+            prevTabDir = entity.getTablePath();
+            downloadTabDir = replace ? prevTabDir + 1 : prevTabDir;
         }
+        Set<String> downloadPaths = new HashSet<>();
+        for (String uri : sets) {
+            String cubePath = String.format("%s/%s", new CubePathBuilder()
+                    .setSwiftSchema(metaData.getSwiftSchema())
+                    .setTempDir(downloadTabDir).build(), uri);
+            String remotePath = String.format("%s/%s", metaData.getSwiftSchema().getDir(), uri);
+            try {
+                repository.copyFromRemote(remotePath, cubePath);
+                downloadPaths.add(remotePath);
+                // catch Error防FR FTP 下载文件过大OOM导致整个方法跳出
+            } catch (Throwable e) {
+                if (cubePath.matches(String.format(".+%s/seg\\d+?$", Matcher.quoteReplacement(sourceKey)))) {
+                    // 若下载整个seg失败则删掉，下载all show不删
+                    FileUtil.delete(cubePath);
+                }
+                SwiftLoggers.getLogger().error("Download {} with error! ", cubePath, e);
+            }
+        }
+
+        if (replace && prevTabDir != null && downloadPaths.size() == sets.size()) {
+            // 进行替换且之前有对应数据，删除之前数据
+            // 替换是全量更新下的情况，是下载整个seg，单独下载allshow的情况不会出现
+            // TODO: 2019/5/7 anchore 全部下载成功才进行替换，默认单次下载所有块。FR用不到的
+            tablePathService.saveOrUpdate(new SwiftTablePathEntity(new SwiftTablePathKey(sourceKey, entity.getId().getClusterId()), downloadTabDir));
+
+            String relativePreTabPath = new CubePathBuilder()
+                    .setSwiftSchema(metaData.getSwiftSchema())
+                    .setTempDir(prevTabDir)
+                    .setTableKey(new SourceKey(sourceKey)).build();
+            String prevTabPath = String.format("%s/%s", path, relativePreTabPath);
+            FileUtil.delete(prevTabPath);
+        }
+        if (!downloadPaths.isEmpty()) {
+            SourceKey table = new SourceKey(sourceKey);
+            SegmentContainer.NORMAL.remove(table);
+            SegmentContainer.INDEXING.remove(table);
+            SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(table);
+            SwiftLoggers.getLogger().info("Download {} {} successful", sourceKey, downloadPaths);
+        }
+        return downloadPaths;
     }
 
     public static void uploadTable(SwiftSegmentManager manager,
@@ -251,22 +246,23 @@ public class SegmentHelper {
         }
     }
 
-    public static void download(Map<SourceKey, Set<String>> remoteUris, boolean replace) {
+    public static Set<String> download(Map<SourceKey, Set<String>> remoteUris, boolean replace) {
         if (null == remoteUris || remoteUris.isEmpty()) {
-            return;
+            return Collections.emptySet();
         }
+        Set<String> downloadPaths = new HashSet<>();
         for (final SourceKey sourceKey : remoteUris.keySet()) {
             Set<String> uris = remoteUris.get(sourceKey);
             if (uris.isEmpty()) {
-                return;
+                return Collections.emptySet();
             }
-
             try {
-                download(sourceKey.getId(), uris, replace);
+                downloadPaths.addAll(download(sourceKey.getId(), uris, replace));
                 SwiftLoggers.getLogger().info("{}, {}", sourceKey, uris);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().warn("download seg {} of {} failed", uris, sourceKey, e);
             }
         }
+        return downloadPaths;
     }
 }
