@@ -1,7 +1,6 @@
 package com.fr.swift.config.oper.proxy;
 
 import com.fr.swift.config.VersionConfigProperty;
-import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigTransaction;
 
 import java.lang.reflect.Constructor;
@@ -18,11 +17,13 @@ public class SessionInvocationHandler implements InvocationHandler {
     private Object object;
     private Class proxyClass;
     private Class query = null;
+    private Class delete = null;
 
     public SessionInvocationHandler(Object object) throws ClassNotFoundException {
         this.object = object;
         this.proxyClass = object.getClass();
         this.query = Class.forName("com.fr.swift.config.hibernate.HibernateQuery");
+        this.delete = Class.forName("com.fr.swift.config.hibernate.HibernateDelete");
     }
 
     @Override
@@ -32,13 +33,15 @@ public class SessionInvocationHandler implements InvocationHandler {
             constructor.setAccessible(true);
             return constructor.newInstance(args[0], object);
         }
+
+        if ("createEntityDelete".equals(method.getName())) {
+            Constructor constructor = delete.getDeclaredConstructor(Class.class, VersionConfigProperty.get().getSession());
+            constructor.setAccessible(true);
+            return constructor.newInstance(args[0], object);
+        }
         Method invokeMethod = proxyClass.getMethod(method.getName(), method.getParameterTypes());
         try {
             Object obj = invokeMethod.invoke(object, args);
-            if ("createQuery".equals(method.getName())) {
-                return Proxy.newProxyInstance(object.getClass().getClassLoader(), new Class[]{ConfigQuery.class}, new DirectInvocationHandler(obj));
-            }
-
             if ("beginTransaction".equals(method.getName())) {
                 return Proxy.newProxyInstance(object.getClass().getClassLoader(), new Class[]{ConfigTransaction.class}, new DirectInvocationHandler(obj));
             }

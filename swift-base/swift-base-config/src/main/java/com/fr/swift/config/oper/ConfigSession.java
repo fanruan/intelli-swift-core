@@ -33,13 +33,6 @@ public interface ConfigSession extends Closeable {
     void delete(Object entity);
 
     /**
-     * 对应hibernate session中的createQuery
-     * @param format hql
-     * @return
-     */
-    ConfigQuery createQuery(String format);
-
-    /**
      * 对应hibernate session中的beginTransaction
      * @return
      */
@@ -63,4 +56,6 @@ public interface ConfigSession extends Closeable {
      * @return
      */
     <Entity> ConfigQuery<Entity> createEntityQuery(Class<Entity> entityClass);
+
+    <Entity> ConfigDelete<Entity> createEntityDelete(Class<Entity> entityClass);
 }

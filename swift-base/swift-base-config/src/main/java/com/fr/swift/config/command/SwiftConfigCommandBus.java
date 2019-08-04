@@ -51,7 +51,7 @@ public interface SwiftConfigCommandBus<T> {
      * @param condition 删除条件
      * @return 已删除的对象
      */
-    List<T> delete(SwiftConfigCondition condition);
+    int delete(SwiftConfigCondition condition);
 
     /**
      * 执行自定义方法
