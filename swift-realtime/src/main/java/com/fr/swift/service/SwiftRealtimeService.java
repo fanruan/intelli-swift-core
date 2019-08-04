@@ -129,12 +129,13 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         // 删配置
         segLocationSvc.delete(SwiftProperty.getProperty().getClusterId(), tableKey.getId());
         segSvc.removeSegments(tableKey.getId());
-        // 同步seg location
+
         if (localTableToLocations.containsKey(tableKey)) {
             Set<String> localSegIds = new HashSet<>();
             for (SwiftSegmentLocationEntity localLocation : localTableToLocations.get(tableKey)) {
                 localSegIds.add(localLocation.getSegmentId());
             }
+            // 同步seg location
             SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, segSvc.getByIds(localSegIds));
         }
 

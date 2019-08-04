@@ -177,7 +177,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
         }
     }
 
-    private static SwiftSegmentLocationEntity toSegLocation(SegmentKey segKey) {
+    private static SwiftSegmentLocationEntity toLocalSegLocation(SegmentKey segKey) {
         return new SwiftSegmentLocationEntity(SwiftProperty.getProperty().getClusterId(), segKey.getId(), segKey.getTable().getId());
     }
 
@@ -206,7 +206,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                 public Void work(ConfigSession session) {
                     for (SegmentKey segKey : segKeys) {
                         try {
-                            segmentLocationDao.saveOrUpdate(session, toSegLocation(segKey));
+                            segmentLocationDao.saveOrUpdate(session, toLocalSegLocation(segKey));
                         } catch (SQLException e) {
                             SwiftLoggers.getLogger().error(e);
                         }
