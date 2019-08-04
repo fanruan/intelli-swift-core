@@ -49,4 +49,14 @@ public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
     protected void handleFullSegment(SegmentInfo segInfo) {
         // do nothing
     }
+
+    @Override
+    protected void onSucceed() {
+        // 在备份，还未真正insert，啥也不做
+    }
+
+    @Override
+    protected void onFailed() {
+        // do nothing
+    }
 }
