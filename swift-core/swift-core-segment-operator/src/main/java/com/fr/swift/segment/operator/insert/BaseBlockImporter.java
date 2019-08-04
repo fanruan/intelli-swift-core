@@ -31,7 +31,6 @@ import com.fr.swift.util.IoUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected SwiftTableAllotRuleService swiftTableAllotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
 
-    private final SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+    protected final SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
@@ -92,11 +91,10 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 insertings.get(segInfo).insert(row);
             }
 
-            segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
-            SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
+            onSucceed();
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
-            clearDirtyIfNeed();
+            onFailed();
         } finally {
             IoUtil.release(this);
         }
@@ -113,9 +111,11 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected abstract void handleFullSegment(SegmentInfo segInfo);
 
-    protected void clearDirtyIfNeed() {
-        // for override
+    protected void onSucceed() {
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
     }
+
+    protected abstract void onFailed();
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
         return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftSchema());
