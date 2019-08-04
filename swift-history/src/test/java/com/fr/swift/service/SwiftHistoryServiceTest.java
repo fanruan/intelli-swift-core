@@ -8,6 +8,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.io.Types;
@@ -83,7 +84,7 @@ public class SwiftHistoryServiceTest {
         SegmentHelper mockSegmentHelper = PowerMock.createMock(SegmentHelper.class);
         Map<SourceKey, Set<String>> needDownload = new HashMap<SourceKey, Set<String>>();
         needDownload.put(new SourceKey("table"), Collections.singleton("seg0"));
-        EasyMock.expect(SegmentHelper.checkSegmentExists(EasyMock.notNull(SwiftSegmentService.class), segLocationSvc, EasyMock.notNull(SwiftSegmentManager.class))).andReturn(needDownload).anyTimes();
+        EasyMock.expect(SegmentHelper.checkSegmentExists(EasyMock.notNull(SwiftSegmentService.class), EasyMock.notNull(SwiftSegmentLocationService.class), EasyMock.notNull(SwiftSegmentManager.class))).andReturn(needDownload).anyTimes();
         SegmentHelper.uploadRelation(EasyMock.anyObject(RelationSource.class), EasyMock.anyString());
         EasyMock.expectLastCall().anyTimes();
         SegmentHelper.download(EasyMock.notNull(String.class), EasyMock.notNull(Set.class), EasyMock.eq(true));
