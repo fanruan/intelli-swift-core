@@ -3,7 +3,7 @@ package com.fr.swift.executor.task.job.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.service.ScheduledRealtimeTransfer.RealtimeToHistoryTransfer;
+import com.fr.swift.segment.operator.SegmentTransfer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -32,14 +32,14 @@ public class TransferJobTest {
         mockStatic(SwiftContext.class);
         when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
 
-        RealtimeToHistoryTransfer transfer = mock(RealtimeToHistoryTransfer.class);
-        whenNew(RealtimeToHistoryTransfer.class).withAnyArguments().thenReturn(transfer);
+        SegmentTransfer transfer = mock(SegmentTransfer.class);
+        whenNew(SegmentTransfer.class).withAnyArguments().thenReturn(transfer);
 
         SegmentKey segKey = mock(SegmentKey.class);
         TransferJob job = new TransferJob(segKey);
 
         assertTrue(job.call());
-        verifyNew(RealtimeToHistoryTransfer.class).withArguments(segKey);
+        verifyNew(SegmentTransfer.class).withArguments(segKey);
         verify(transfer).transfer();
 
         doThrow(new RuntimeException()).when(transfer).transfer();

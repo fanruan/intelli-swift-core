@@ -22,6 +22,7 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.util.IoUtil;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -85,6 +86,17 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
+    }
+
+    @Override
+    protected void onSucceed() {
+        segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
+        super.onSucceed();
+    }
+
+    @Override
+    protected void onFailed() {
+        // do nothing
     }
 
     @Override
