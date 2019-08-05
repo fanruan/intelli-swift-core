@@ -2,7 +2,7 @@ package com.fr.swift.repository.connector;
 
 import com.fineio.accessor.Block;
 import com.fineio.io.file.FileBlock;
-import com.fineio.storage.Connector;
+import com.fineio.storage.v3.Connector;
 import com.fineio.v3.connector.PackageConnector;
 import com.fineio.v3.file.DirectoryBlock;
 import com.fr.swift.log.SwiftLoggers;
