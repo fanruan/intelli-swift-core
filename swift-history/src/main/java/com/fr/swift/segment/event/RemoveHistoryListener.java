@@ -1,6 +1,7 @@
 package com.fr.swift.segment.event;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.event.SwiftEventDispatcher;
@@ -19,9 +20,9 @@ import java.util.Collections;
  * @see SegmentEvent#REMOVE_HISTORY
  */
 public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
-
-
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+
+    private static final SwiftSegmentLocationService SEG_LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
     @Override
     public void on(final SegmentKey segKey) {
@@ -30,17 +31,22 @@ public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
             try {
                 SwiftRepositoryManager.getManager().currentRepo().delete(remote);
 
-                SEG_SVC.removeSegments(Collections.singletonList(segKey));
-                SegmentUtils.clearSegment(segKey);
+                delete(segKey);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error("unload segment {} failed", segKey, e);
             }
         } else {
-            SEG_SVC.removeSegments(Collections.singletonList(segKey));
-            SegmentUtils.clearSegment(segKey);
+            delete(segKey);
         }
 
         SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, Collections.singletonList(segKey));
+    }
+
+    private void delete(SegmentKey segKey) {
+        SEG_LOCATION_SVC.delete(Collections.singleton(segKey));
+        SEG_SVC.removeSegments(Collections.singletonList(segKey));
+
+        SegmentUtils.clearSegment(segKey);
     }
 
     static {
