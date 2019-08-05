@@ -75,6 +75,10 @@ public class SegmentHelper {
                     }
                     segLocationSvc.delete(new HashSet<>(notExists));
                     segmentService.removeSegments(notExists);
+                    //如果存在本地文件，也需要删除
+                    for(SegmentKey notExist:notExists){
+                        SegmentUtils.clearSegment(notExist);
+                    }
                 }
             }
         } catch (RepoNotFoundException e) {
