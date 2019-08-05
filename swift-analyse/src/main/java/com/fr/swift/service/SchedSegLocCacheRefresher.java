@@ -1,4 +1,4 @@
-package com.fr.swift.cluster.service;
+package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
@@ -12,8 +12,6 @@ import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.ServiceType;
-import com.fr.swift.service.SwiftAnalyseService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
@@ -47,7 +45,7 @@ public class SchedSegLocCacheRefresher implements Runnable {
     private void refreshCache() {
         Map<SourceKey, List<SegmentDestination>> histSegDsts = new HashMap<SourceKey, List<SegmentDestination>>();
         Map<SourceKey, List<SegmentDestination>> realtSegDsts = new HashMap<SourceKey, List<SegmentDestination>>();
-        HashMap<SourceKey, Set<String>> tableToNodes = new HashMap<SourceKey, Set<String>>();
+        Map<SourceKey, Set<String>> tableToNodes = new HashMap<SourceKey, Set<String>>();
         // table -> seg locations
         Map<String, List<SwiftSegmentLocationEntity>> segLocs = segLocSvc.findAll();
         for (Entry<String, List<SwiftSegmentLocationEntity>> entry : segLocs.entrySet()) {

@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class SwiftSegmentLocationEntity implements Serializable {
     @Id
     private SwiftSegLocationEntityId id;
-    @Column
+    @Column(name = "sourceKey")
     private String sourceKey;
 
     public SwiftSegmentLocationEntity(String clusterId, String segmentId, String sourceKey) {
