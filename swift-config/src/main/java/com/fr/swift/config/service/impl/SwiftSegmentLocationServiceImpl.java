@@ -11,6 +11,7 @@ import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -104,11 +105,6 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                     }
                     return result;
                 }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
             });
         } catch (SQLException e) {
             return Collections.emptyMap();
@@ -152,14 +148,100 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                 public List<SwiftSegmentLocationEntity> work(ConfigSession session) {
                     return segmentLocationDao.findBySourceKey(session, sourceKey.getId());
                 }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
             });
         } catch (SQLException e) {
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public void delete(final Set<SegmentKey> segKeys) {
+        try {
+            tx.doTransactionIfNeed(new BaseTransactionWorker<Void>() {
+                @Override
+                public Void work(ConfigSession session) throws SQLException {
+                    Set<String> segIds = new HashSet<>();
+                    for (SegmentKey segKey : segKeys) {
+                        segIds.add(segKey.getId());
+                    }
+                    List<SwiftSegmentLocationEntity> segLocations = segmentLocationDao.find(session,
+                            ConfigWhereImpl.in("id.segmentId", segIds));
+                    for (SwiftSegmentLocationEntity segLocation : segLocations) {
+                        segmentLocationDao.delete(session, segLocation);
+                    }
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+    }
+
+    private static SwiftSegmentLocationEntity toLocalSegLocation(SegmentKey segKey) {
+        return new SwiftSegmentLocationEntity(SwiftProperty.getProperty().getClusterId(), segKey.getId(), segKey.getTable().getId());
+    }
+
+    @Override
+    public boolean containsLocal(final SegmentKey segKey) {
+        try {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+                @Override
+                public Boolean work(ConfigSession session) {
+                    return !segmentLocationDao.find(session,
+                            ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
+                            ConfigWhereImpl.eq("id.segmentId", segKey.getId())).isEmpty();
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+            return false;
+        }
+    }
+
+    @Override
+    public void saveOrUpdateLocal(final Set<SegmentKey> segKeys) {
+        try {
+            tx.doTransactionIfNeed(new BaseTransactionWorker<Void>() {
+                @Override
+                public Void work(ConfigSession session) {
+                    for (SegmentKey segKey : segKeys) {
+                        try {
+                            segmentLocationDao.saveOrUpdate(session, toLocalSegLocation(segKey));
+                        } catch (SQLException e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
+                    }
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+    }
+
+    @Override
+    public Map<SourceKey, List<SwiftSegmentLocationEntity>> getAllLocal() {
+        try {
+            return tx.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SwiftSegmentLocationEntity>>>() {
+                @Override
+                public Map<SourceKey, List<SwiftSegmentLocationEntity>> work(ConfigSession session) {
+                    List<SwiftSegmentLocationEntity> localSegLocations = segmentLocationDao.find(session,
+                            ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()));
+
+                    Map<SourceKey, List<SwiftSegmentLocationEntity>> tableToLocations = new HashMap<>();
+                    for (SwiftSegmentLocationEntity localSegLocation : localSegLocations) {
+                        SourceKey tableKey = new SourceKey(localSegLocation.getSourceKey());
+                        if (!tableToLocations.containsKey(tableKey)) {
+                            tableToLocations.put(tableKey, new ArrayList<SwiftSegmentLocationEntity>());
+                        }
+                        tableToLocations.get(tableKey).add(localSegLocation);
+                    }
+                    return tableToLocations;
+                }
+            });
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error(e);
+            return Collections.emptyMap();
         }
     }
 }

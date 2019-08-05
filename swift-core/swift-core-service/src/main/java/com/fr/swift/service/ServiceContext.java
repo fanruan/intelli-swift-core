@@ -26,6 +26,8 @@ import java.util.Set;
  *
  * @author Lucifer
  * @description
+ *
+ * extends各种service，避免接口不同步
  */
 public interface ServiceContext {
 
