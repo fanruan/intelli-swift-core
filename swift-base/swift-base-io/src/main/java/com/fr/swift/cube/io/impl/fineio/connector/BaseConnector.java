@@ -3,6 +3,7 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 import com.fineio.accessor.Block;
 import com.fineio.io.file.FileBlock;
 import com.fineio.storage.AbstractConnector;
+import com.fineio.storage.v3.Connector;
 import com.fr.swift.util.Strings;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import java.io.IOException;
  * @author anchore
  * @date 2018/8/17
  */
-public abstract class BaseConnector extends AbstractConnector {
+public abstract class BaseConnector extends AbstractConnector implements Connector {
     String parentPath;
 
     public BaseConnector(String path) {
