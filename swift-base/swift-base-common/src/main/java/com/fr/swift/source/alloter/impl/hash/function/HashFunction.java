@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = JdkHashFunction.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = JdkHashFunction.class),
+        @JsonSubTypes.Type(value = TimeHashFunction.class),
 
 })
 public interface HashFunction {
