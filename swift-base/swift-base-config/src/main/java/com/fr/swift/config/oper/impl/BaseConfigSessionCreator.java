@@ -11,6 +11,7 @@ import java.sql.SQLException;
  * @date 2018-11-28
  */
 public abstract class BaseConfigSessionCreator implements ConfigSessionCreator {
+    @Deprecated
     @Override
     public <T> T doTransactionIfNeed(TransactionWorker<T> worker) throws SQLException {
         try {
@@ -40,5 +41,4 @@ public abstract class BaseConfigSessionCreator implements ConfigSessionCreator {
 
     }
 
-    public abstract ConfigSession createSession() throws ClassNotFoundException;
 }
