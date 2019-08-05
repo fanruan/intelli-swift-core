@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.iterator;
 
-import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.structure.iterator.Filter;
 import com.fr.swift.structure.iterator.FilteredIterator;
@@ -12,9 +12,9 @@ import java.util.Iterator;
  *
  * Created by Lyon on 2018/4/11.
  */
-public class NLevelGroupNodeIterator implements Iterator<GroupNode> {
+public class NLevelGroupNodeIterator implements Iterator<SwiftNode> {
 
-    private Iterator<GroupNode> iterator;
+    private Iterator<SwiftNode> iterator;
 
     /**
      * -1层为根节点，依次类推
@@ -22,10 +22,10 @@ public class NLevelGroupNodeIterator implements Iterator<GroupNode> {
      * @param depth
      * @param root
      */
-    public NLevelGroupNodeIterator(final int depth, GroupNode root) {
-        this.iterator = new FilteredIterator<GroupNode>(SwiftNodeUtils.dftNodeIterator(depth + 1, root), new Filter<GroupNode>() {
+    public NLevelGroupNodeIterator(final int depth, SwiftNode root) {
+        this.iterator = new FilteredIterator<SwiftNode>(SwiftNodeUtils.dftNodeIterator(depth + 1, root), new Filter<SwiftNode>() {
             @Override
-            public boolean accept(GroupNode node) {
+            public boolean accept(SwiftNode node) {
                 return node.getDepth() == depth;
             }
         });
@@ -37,7 +37,7 @@ public class NLevelGroupNodeIterator implements Iterator<GroupNode> {
     }
 
     @Override
-    public GroupNode next() {
+    public SwiftNode next() {
         return iterator.next();
     }
 

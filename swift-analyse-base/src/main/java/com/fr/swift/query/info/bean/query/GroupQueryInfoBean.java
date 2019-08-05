@@ -1,8 +1,8 @@
 package com.fr.swift.query.info.bean.query;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.swift.query.info.bean.element.AggregationBean;
 import com.fr.swift.query.info.bean.element.DimensionBean;
-import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.query.QueryType;
@@ -19,7 +19,7 @@ public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean impleme
 
     private static final long serialVersionUID = 8719563190390818951L;
     @JsonProperty
-    private List<MetricBean> aggregations = new ArrayList<MetricBean>(0);
+    private List<AggregationBean> aggregations = new ArrayList<AggregationBean>(0);
     @JsonProperty
     private List<PostQueryInfoBean> postAggregations = new ArrayList<PostQueryInfoBean>(0);
 
@@ -27,11 +27,11 @@ public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean impleme
         queryType = QueryType.GROUP;
     }
 
-    public List<MetricBean> getAggregations() {
+    public List<AggregationBean> getAggregations() {
         return aggregations;
     }
 
-    public void setAggregations(List<MetricBean> aggregations) {
+    public void setAggregations(List<AggregationBean> aggregations) {
         this.aggregations = aggregations;
     }
 
@@ -75,12 +75,12 @@ public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean impleme
             return this;
         }
 
-        public Builder setAggregations(List<MetricBean> aggregations) {
+        public Builder setAggregations(List<AggregationBean> aggregations) {
             bean.setAggregations(aggregations);
             return this;
         }
 
-        public Builder setAggregations(MetricBean... aggregations) {
+        public Builder setAggregations(AggregationBean... aggregations) {
             bean.setAggregations(Arrays.asList(aggregations));
             return this;
         }

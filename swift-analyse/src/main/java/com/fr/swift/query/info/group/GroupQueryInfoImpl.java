@@ -6,7 +6,6 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
 import com.fr.swift.query.query.QueryType;
-import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
  * @author pony
  * @date 2017/12/11
  */
-public class GroupQueryInfoImpl extends AbstractQueryInfo<NodeMergeQRS> implements GroupQueryInfo<NodeMergeQRS> {
+public class GroupQueryInfoImpl extends AbstractQueryInfo implements GroupQueryInfo {
 
     private List<Metric> metrics;
     private List<PostQueryInfo> postQueryInfoList;

@@ -10,6 +10,8 @@ public interface MutableRow extends Row {
 
     void addElement(Object object);
 
+    void setElement(int index, Object value);
+
     void addAllRowElement(MutableRow mutableRow);
 
     void setRow(List<Object> values);

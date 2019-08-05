@@ -194,7 +194,7 @@ public class SwiftBeanScanner implements BeanScanner {
     private void calcSwiftBeans(ClassAnnotations classAnnotations, List<Class<?>> classes) {
         for (String annotation : classAnnotations.getAnnotationNames()) {
             try {
-                if (annotation.equals(SwiftBean.class.getName())) {
+                if (SwiftBean.class.getName().equals(annotation)) {
                     try {
                         classes.add(Class.forName(classAnnotations.getClassName()));
                         continue;

@@ -1,9 +1,6 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.storage.Connector;
-import com.fr.swift.SwiftContext;
-import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftFineIOConnectorService;
 
 /**
  * 创建FineIO Connector
@@ -14,20 +11,12 @@ import com.fr.swift.config.service.SwiftFineIOConnectorService;
  * @author yee
  * @date 2017/8/2
  */
-public class ConnectorManager {
+public class ConnectorManager implements IConnectorManager {
     private volatile static ConnectorManager instance;
-    private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
-    private ConnectorProvider provider = SwiftContext.get().getBean(ConnectorProvider.class);
-    private SwiftFineIOConnectorService fineIOConnectorService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
-    private volatile Connector connector;
+    private IConnectorManager manager;
 
     private ConnectorManager() {
-        pathService.registerPathChangeListener(new SwiftCubePathService.PathChangeListener() {
-            @Override
-            public void changed(String path) {
-                connector = null;
-            }
-        });
+        this.manager = SwiftConnectorManager.getInstance();
     }
 
     public static ConnectorManager getInstance() {
@@ -44,15 +33,12 @@ public class ConnectorManager {
     }
 
 
+    public void setManager(IConnectorManager manager) {
+        this.manager = manager;
+    }
 
+    @Override
     public Connector getConnector() {
-        if (null == connector) {
-            synchronized (this) {
-                if (null == connector) {
-                    connector = provider.apply(fineIOConnectorService.getCurrentConfig());
-                }
-            }
-        }
-        return connector;
+        return manager.getConnector();
     }
 }

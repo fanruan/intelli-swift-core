@@ -38,4 +38,9 @@ public class FineIoLogger extends BaseSwiftLogger implements FineIOLogger, Swift
     public void error(String msg, Object... args) {
         loggerDelegate.error(msg, args);
     }
+
+    @Override
+    public void warn(String msg, Throwable throwable) {
+        loggerDelegate.warn(msg, throwable);
+    }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/5/31.
  */
-public interface SingleTableQueryInfo<T> extends QueryInfo<T> {
+public interface SingleTableQueryInfo extends QueryInfo {
 
     /**
      * 查询对应的表

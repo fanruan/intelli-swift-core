@@ -1,7 +1,7 @@
 package com.fr.swift.segment.impl;
 
-import com.fr.swift.base.json.annotation.JsonIgnoreProperties;
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;

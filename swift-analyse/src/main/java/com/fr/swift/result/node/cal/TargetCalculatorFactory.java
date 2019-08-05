@@ -5,13 +5,13 @@ import com.fr.swift.query.info.bean.type.cal.CalTargetType;
 import com.fr.swift.query.info.element.target.GroupTarget;
 import com.fr.swift.query.info.element.target.cal.BrotherGroupTarget;
 import com.fr.swift.query.info.element.target.cal.GroupFormulaTarget;
-import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.iterator.CurrentDimensionIterator;
 import com.fr.swift.result.node.iterator.LeafNodeIterator;
 import com.fr.swift.structure.iterator.MapperIterator;
 import com.fr.swift.util.function.Function;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class TargetCalculatorFactory {
 
-    public static TargetCalculator create(GroupTarget target, GroupNode groupNode, List<Map<Integer, Object>> dic) {
+    public static TargetCalculator create(GroupTarget target, SwiftNode groupNode, List<Map<Integer, Object>> dic) {
         CalTargetType type = target.type();
         Iterator<Iterator<List<AggregatorValue[]>>> iterator = createIterator(type, groupNode);
         switch (type) {
@@ -67,17 +67,18 @@ public class TargetCalculatorFactory {
             case ARITHMETIC_DIV:
             case ARITHMETIC_MUL:
             case ARITHMETIC_SUB:
-                return new ArithmeticTargetCalculator(type, target.paramIndexes(), target.resultIndex(), new MapperIterator<GroupNode, AggregatorValue[]>(new LeafNodeIterator(groupNode), new Function<GroupNode, AggregatorValue[]>() {
+                return new ArithmeticTargetCalculator(type, target.paramIndexes(), target.resultIndex(), new MapperIterator<SwiftNode, AggregatorValue[]>(new LeafNodeIterator(groupNode), new Function<SwiftNode, AggregatorValue[]>() {
                     @Override
-                    public AggregatorValue[] apply(GroupNode p) {
+                    public AggregatorValue[] apply(SwiftNode p) {
                         return p.getAggregatorValue();
                     }
                 }));
+            default:
         }
         return null;
     }
 
-    private static Iterator<Iterator<List<AggregatorValue[]>>> createIterator(CalTargetType type, GroupNode root) {
+    private static Iterator<Iterator<List<AggregatorValue[]>>> createIterator(CalTargetType type, SwiftNode root) {
         switch (type) {
             case ALL_SUM_OF_ALL:
             case ALL_AVG:
@@ -97,17 +98,26 @@ public class TargetCalculatorFactory {
             case GROUP_RANK_ASC:
             case GROUP_RANK_DEC:
                 return new GroupIterator(root, groupNodeMapper());
+            default:
         }
         return new RootIterator(root, groupNodeMapper());
     }
 
+    private static Function<SwiftNode, List<AggregatorValue[]>> groupNodeMapper() {
+        return new Function<SwiftNode, List<AggregatorValue[]>>() {
+            @Override
+            public List<AggregatorValue[]> apply(final SwiftNode p) {
+                return Collections.singletonList(p.getAggregatorValue());
+            }
+        };
+    }
 
     private static class RootIterator implements Iterator<Iterator<List<AggregatorValue[]>>> {
-        private Function<GroupNode, List<AggregatorValue[]>> function;
-        private GroupNode root;
+        private Function<SwiftNode, List<AggregatorValue[]>> function;
+        private SwiftNode root;
         private boolean hasNext = true;
 
-        private RootIterator(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> function) {
+        private RootIterator(SwiftNode root, Function<SwiftNode, List<AggregatorValue[]>> function) {
             this.root = root;
             this.function = function;
         }
@@ -120,7 +130,7 @@ public class TargetCalculatorFactory {
         @Override
         public Iterator<List<AggregatorValue[]>> next() {
             hasNext = false;
-            return new MapperIterator<GroupNode, List<AggregatorValue[]>>(new LeafNodeIterator(root), function);
+            return new MapperIterator<SwiftNode, List<AggregatorValue[]>>(new LeafNodeIterator(root), function);
         }
 
         @Override
@@ -130,15 +140,15 @@ public class TargetCalculatorFactory {
     }
 
     private static class GroupIterator implements Iterator<Iterator<List<AggregatorValue[]>>> {
-        private GroupNode current;
-        private Function<GroupNode, List<AggregatorValue[]>> function;
+        private SwiftNode current;
+        private Function<SwiftNode, List<AggregatorValue[]>> function;
 
-        private GroupIterator(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> function) {
+        private GroupIterator(SwiftNode root, Function<SwiftNode, List<AggregatorValue[]>> function) {
             initCurrent(root);
             this.function = function;
         }
 
-        private void initCurrent(GroupNode root) {
+        private void initCurrent(SwiftNode root) {
             current = root;
             while (current.getChildrenSize() != 0) {
                 current = current.getChild(0);
@@ -153,7 +163,7 @@ public class TargetCalculatorFactory {
 
         @Override
         public Iterator<List<AggregatorValue[]>> next() {
-            GroupNode node = current;
+            SwiftNode node = current;
             current = current.getSibling();
             return new CurrentDimensionIterator(node, function);
         }
@@ -162,14 +172,5 @@ public class TargetCalculatorFactory {
         public void remove() {
 
         }
-    }
-
-    private static Function<GroupNode, List<AggregatorValue[]>> groupNodeMapper() {
-        return new Function<GroupNode, List<AggregatorValue[]>>() {
-            @Override
-            public List<AggregatorValue[]> apply(final GroupNode p) {
-                return Arrays.<AggregatorValue[]>asList(p.getAggregatorValue());
-            }
-        };
     }
 }

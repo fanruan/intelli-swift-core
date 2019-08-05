@@ -48,17 +48,17 @@ public class SubDateColumn extends BaseColumn<Long> {
 
     @Override
     public DetailColumn<Long> getDetailColumn() throws UnsupportedOperationException {
-        return detailColumn != null ? detailColumn : (detailColumn = new SubDetailColumn());
+        return detailColumn == null ? detailColumn = new SubDetailColumn() : detailColumn;
     }
 
     @Override
     public DictionaryEncodedColumn<Long> getDictionaryEncodedColumn() {
-        return dictColumn != null ? dictColumn : (dictColumn = new LongDictColumn(location, Comparators.<Long>asc()));
+        return dictColumn == null ? dictColumn = new LongDictColumn(location, Comparators.<Long>asc()) : dictColumn;
     }
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return indexColumn != null ? indexColumn : (indexColumn = new SubBitmapIndexedColumn());
+        return indexColumn == null ? indexColumn = new SubBitmapIndexedColumn() : indexColumn;
     }
 
     private class SubDetailColumn implements DetailColumn<Long> {

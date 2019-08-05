@@ -12,7 +12,7 @@ public interface UploadService extends SwiftService {
 
     void upload(Set<SegmentKey> segKeys) throws Exception;
 
-    void download(Set<SegmentKey> segKeys, boolean replace) throws Exception;
+    Set<String> download(Set<SegmentKey> segKeys, boolean replace) throws Exception;
 
     void uploadAllShow(Set<SegmentKey> segKeys) throws Exception;
 

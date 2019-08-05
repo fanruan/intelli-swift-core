@@ -2,8 +2,8 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.impl.SwiftConfigDaoImpl;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
@@ -46,12 +46,12 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
 
     @Override
     public <ConfigBean> boolean updateConfigBean(ConfigConvert<ConfigBean> convert, ConfigBean bean, Object... args) {
-        final List<SwiftConfigBean> configEntities = convert.toEntity(bean, args);
+        final List<SwiftConfigEntity> configEntities = convert.toEntity(bean, args);
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
-                    for (SwiftConfigBean configEntity : configEntities) {
+                    for (SwiftConfigEntity configEntity : configEntities) {
                         swiftConfigDao.saveOrUpdate(session, configEntity);
                     }
                     return true;
@@ -65,12 +65,12 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
 
     @Override
     public <ConfigBean> boolean deleteConfigBean(ConfigConvert<ConfigBean> convert, ConfigBean bean, Object... args) {
-        final List<SwiftConfigBean> configEntities = convert.toEntity(bean, args);
+        final List<SwiftConfigEntity> configEntities = convert.toEntity(bean, args);
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
-                    for (SwiftConfigBean configEntity : configEntities) {
+                    for (SwiftConfigEntity configEntity : configEntities) {
                         swiftConfigDao.deleteById(session, configEntity.getConfigKey());
                     }
                     return true;

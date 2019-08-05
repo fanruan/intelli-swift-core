@@ -11,7 +11,6 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.converter.FindList;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -39,7 +38,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     private TransactionManager transactionManager;
     private SwiftMetaDataDao swiftMetaDataDao;
 
-    private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
+    private final ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
     public SwiftMetaDataServiceImpl() {
         transactionManager = SwiftContext.get().getBean(TransactionManager.class);
@@ -136,18 +135,12 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        swiftMetaDataDao.findAll(session).forEach(new FindList.SimpleEach<SwiftMetaDataBean>() {
-                            @Override
-                            public void each(int idx, SwiftMetaDataBean bean) throws Exception {
-                                result.put(bean.getId(), bean);
-                            }
-                        });
+                        for (SwiftMetaDataBean swiftMetaDataBean : swiftMetaDataDao.findAll(session)) {
+                            result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
+                        }
                         metaDataCache.putAll(result);
                         return result;
                     } catch (Exception e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
                         throw new SQLException(e);
                     }
 
@@ -174,18 +167,12 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        swiftMetaDataDao.fuzzyFind(session, fuzzyName).forEach(new FindList.SimpleEach<SwiftMetaDataBean>() {
-                            @Override
-                            public void each(int idx, SwiftMetaDataBean bean) throws Exception {
-                                result.put(bean.getId(), bean);
-                            }
-                        });
+                        for (SwiftMetaDataBean swiftMetaDataBean : swiftMetaDataDao.fuzzyFind(session, fuzzyName)) {
+                            result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
+                        }
                         metaDataCache.putAll(result);
                         return result;
                     } catch (Exception e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
-                        }
                         throw new SQLException(e);
                     }
 
@@ -267,7 +254,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
                 @Override
                 public List<SwiftMetaData> work(ConfigSession session) {
-                    return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion).list());
+                    return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion));
                 }
             });
         } catch (SQLException e) {

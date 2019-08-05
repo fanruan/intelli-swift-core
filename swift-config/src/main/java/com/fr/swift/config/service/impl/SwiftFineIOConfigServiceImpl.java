@@ -6,6 +6,13 @@ import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.config.convert.FineIOConfigConvert;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftFineIOConnectorService;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.repository.exception.RepoNotFoundException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author yee
@@ -13,21 +20,41 @@ import com.fr.swift.config.service.SwiftFineIOConnectorService;
  */
 @SwiftBean(name = "swiftFineIOConfigServiceImpl")
 public class SwiftFineIOConfigServiceImpl implements SwiftFineIOConnectorService {
-    private static final FineIOConfigConvert CONFIG_CONVERT = new FineIOConfigConvert();
     private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
+    private Map<Type, List<ConfChangeListener>> changeListeners = new HashMap<Type, List<ConfChangeListener>>();
+
 
     @Override
-    public FineIOConnectorConfig getCurrentConfig() {
-        return configService.getConfigBean(CONFIG_CONVERT);
+    public FineIOConnectorConfig getCurrentConfig(Type type) {
+        FineIOConfigConvert convert = type == Type.CONNECTOR ? FineIOConfigConvert.CONNECTOR : FineIOConfigConvert.PACKAGE;
+        return configService.getConfigBean(convert);
     }
 
     @Override
-    public void setCurrentConfig(FineIOConnectorConfig config) {
-        FineIOConnectorConfig current = getCurrentConfig();
+    public void setCurrentConfig(FineIOConnectorConfig config, Type type) {
+        FineIOConfigConvert convert = type == Type.CONNECTOR ? FineIOConfigConvert.CONNECTOR : FineIOConfigConvert.PACKAGE;
+        FineIOConnectorConfig current = getCurrentConfig(type);
         if (null != config && !config.equals(current)) {
-            configService.deleteConfigBean(CONFIG_CONVERT, current);
-            configService.updateConfigBean(CONFIG_CONVERT, config);
+            configService.deleteConfigBean(convert, current);
+            configService.updateConfigBean(convert, config);
+            List<ConfChangeListener> confChangeListeners = changeListeners.get(type);
+            for (ConfChangeListener changeListener : confChangeListeners) {
+                try {
+                    changeListener.change(config);
+                } catch (RepoNotFoundException e) {
+                    SwiftLoggers.getLogger().warn("Cannot find default repository config.", e);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error("Cannot set swift repository config.", e);
+                }
+            }
         }
     }
 
+    @Override
+    public void registerListener(ConfChangeListener listener, Type type) {
+        if (null == changeListeners.get(type)) {
+            changeListeners.put(type, new ArrayList<ConfChangeListener>());
+        }
+        changeListeners.get(type).add(listener);
+    }
 }

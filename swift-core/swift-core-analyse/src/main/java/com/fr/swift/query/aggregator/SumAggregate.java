@@ -6,20 +6,22 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+
 import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 
 /**
  * @author Xiaolei.liu
  */
 
-public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue> {
+public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue> implements Serializable {
 
     protected static final Aggregator INSTANCE = new SumAggregate();
     private static final long serialVersionUID = -6996921485360000948L;
 
 
     @Override
-    public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
         if (traversal.isEmpty()) {
             return new DoubleAmountAggregatorValue(NULL_DOUBLE);
         }
@@ -109,7 +111,7 @@ public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue
     }
 
     @Override
-    public DoubleAmountAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public DoubleAmountAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
         if (value.calculateValue() == null) {
             valueAmount.setValue(0);

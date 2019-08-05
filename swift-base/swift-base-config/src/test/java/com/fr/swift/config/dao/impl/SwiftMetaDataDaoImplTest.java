@@ -5,8 +5,6 @@ import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
-import com.fr.swift.converter.FindList;
-import com.fr.swift.converter.ObjectConverter;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +14,8 @@ import org.powermock.api.easymock.PowerMock;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,8 +37,8 @@ public class SwiftMetaDataDaoImplTest {
     @Test
     public void findBySourceKey() throws Exception {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        EasyMock.expect(mockConfigSession.get(EasyMock.eq(SwiftMetaDataBean.TYPE), EasyMock.notNull(Serializable.class))).andReturn(SwiftMetaDataBean.TYPE.newInstance()).anyTimes();
-        EasyMock.expect(mockConfigSession.get(EasyMock.eq(SwiftMetaDataBean.TYPE), EasyMock.isNull(Serializable.class))).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
+        EasyMock.expect(mockConfigSession.get(EasyMock.eq(SwiftMetaDataBean.class), EasyMock.notNull(Serializable.class))).andReturn(new SwiftMetaDataBean()).anyTimes();
+        EasyMock.expect(mockConfigSession.get(EasyMock.eq(SwiftMetaDataBean.class), EasyMock.isNull(Serializable.class))).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
         PowerMock.replayAll();
         mockSwiftMetaDataDaoImpl.findBySourceKey(mockConfigSession, "");
         boolean exception = false;
@@ -57,8 +57,8 @@ public class SwiftMetaDataDaoImplTest {
         ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
         mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(SwiftMetaDataBean.TYPE.newInstance())).anyTimes();
-        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SwiftMetaDataBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Collections.singletonList(new SwiftMetaDataBean())).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SwiftMetaDataBean.class))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
         assertNotNull(mockSwiftMetaDataDaoImpl.findByTableName(mockConfigSession, ""));
         PowerMock.verifyAll();
@@ -67,12 +67,10 @@ public class SwiftMetaDataDaoImplTest {
     @Test
     public void addOrUpdateSwiftMetaData() throws SQLException {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ObjectConverter<SwiftMetaDataBean> mockEntity = (ObjectConverter<SwiftMetaDataBean>) PowerMock.createMock(SwiftMetaDataBean.TYPE);
-        EasyMock.expect(mockEntity.convert()).andReturn(new SwiftMetaDataBean()).anyTimes();
-        EasyMock.expect(mockConfigSession.merge(EasyMock.notNull(SwiftMetaDataBean.TYPE))).andReturn(mockEntity).anyTimes();
+        SwiftMetaDataBean mockEntity = PowerMock.createMock(SwiftMetaDataBean.class);
+        EasyMock.expect(mockConfigSession.merge(EasyMock.notNull(SwiftMetaDataBean.class))).andReturn(mockEntity).anyTimes();
         EasyMock.expect(mockConfigSession.merge(null)).andThrow(new SQLException("Just Test Exception")).anyTimes();
         SwiftMetaDataBean mockTestBean = PowerMock.createMock(SwiftMetaDataBean.class);
-        EasyMock.expect(mockTestBean.convert()).andReturn(null).anyTimes();
 
         PowerMock.replayAll();
 
@@ -90,10 +88,9 @@ public class SwiftMetaDataDaoImplTest {
     @Test
     public void deleteSwiftMetaDataBean() throws SQLException {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ObjectConverter<SwiftMetaDataBean> mockEntity = (ObjectConverter<SwiftMetaDataBean>) PowerMock.createMock(SwiftMetaDataBean.TYPE);
-        EasyMock.expect(mockEntity.convert()).andReturn(new SwiftMetaDataBean()).anyTimes();
-        EasyMock.expect(mockConfigSession.get(EasyMock.eq(SwiftMetaDataBean.TYPE), EasyMock.notNull(Serializable.class))).andReturn(mockEntity).anyTimes();
-        EasyMock.expect(mockConfigSession.get(EasyMock.eq(SwiftMetaDataBean.TYPE), EasyMock.isNull(Serializable.class))).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
+        SwiftMetaDataBean mockEntity = PowerMock.createMock(SwiftMetaDataBean.class);
+        EasyMock.expect(mockConfigSession.get(EasyMock.eq(SwiftMetaDataBean.class), EasyMock.notNull(Serializable.class))).andReturn(mockEntity).anyTimes();
+        EasyMock.expect(mockConfigSession.get(EasyMock.eq(SwiftMetaDataBean.class), EasyMock.isNull(Serializable.class))).andThrow(new RuntimeException("Just Test Exception")).anyTimes();
         mockConfigSession.delete(EasyMock.anyObject());
         PowerMock.replayAll();
         assertTrue(mockSwiftMetaDataDaoImpl.deleteSwiftMetaDataBean(mockConfigSession, ""));
@@ -110,27 +107,26 @@ public class SwiftMetaDataDaoImplTest {
     @Test
     public void findAll() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ObjectConverter<SwiftMetaDataBean> mockEntity = (ObjectConverter<SwiftMetaDataBean>) PowerMock.createMock(SwiftMetaDataBean.TYPE);
+        SwiftMetaDataBean mockEntity = PowerMock.createMock(SwiftMetaDataBean.class);
         ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
         mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
         EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(mockEntity)).anyTimes();
-        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SwiftMetaDataBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
-        EasyMock.expect(mockEntity.convert()).andReturn(new SwiftMetaDataBean()).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SwiftMetaDataBean.class))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
-        assertFalse(mockSwiftMetaDataDaoImpl.findAll(mockConfigSession).list().isEmpty());
+        assertFalse(mockSwiftMetaDataDaoImpl.findAll(mockConfigSession).isEmpty());
         PowerMock.verifyAll();
     }
 
     @Test
     public void testFuzzyFind() {
         ConfigSession configSession = Mockito.mock(ConfigSession.class);
-        ObjectConverter<SwiftMetaDataBean> mockEntity = (ObjectConverter<SwiftMetaDataBean>) Mockito.mock(SwiftMetaDataBean.TYPE);
+        SwiftMetaDataBean mockEntity = Mockito.mock(SwiftMetaDataBean.class);
         ConfigQuery configQuery = Mockito.mock(ConfigQuery.class);
         Mockito.when(configSession.createEntityQuery(Mockito.any(Class.class))).thenReturn(configQuery);
         Mockito.when(configQuery.executeQuery()).thenReturn(Arrays.asList(mockEntity));
 
-        FindList<SwiftMetaDataBean> result = mockSwiftMetaDataDaoImpl.fuzzyFind(configSession, "a");
+        List<SwiftMetaDataBean> result = mockSwiftMetaDataDaoImpl.fuzzyFind(configSession, "a");
         assertFalse(result.isEmpty());
         Mockito.verify(configQuery).where(Mockito.any(ConfigWhere.class));
     }

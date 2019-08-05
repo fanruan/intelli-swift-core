@@ -8,6 +8,7 @@ import com.fr.swift.structure.queue.SortedListMergingUtils;
 import com.fr.swift.util.Util;
 import com.fr.swift.util.function.Function;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -41,7 +42,9 @@ public abstract class MergerGroupBy<T> implements Iterator<Pair<T, RowTraversal[
                 this.getComparator(), new PairCombiner<T>());
     }
 
-    private static class PairCombiner<T> implements Combiner<Item<T>> {
+    private static class PairCombiner<T> implements Combiner<Item<T>>, Serializable {
+        private static final long serialVersionUID = 2327585136570426873L;
+
         @Override
         public void combine(Item<T> current, Item<T> other) {
             current.getPair().getValue()[other.getIndex()] = other.getPair().getValue()[other.getIndex()];

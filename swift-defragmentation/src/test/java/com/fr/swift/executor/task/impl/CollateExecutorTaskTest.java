@@ -1,8 +1,8 @@
 package com.fr.swift.executor.task.impl;
 
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.LockType;
@@ -27,8 +27,8 @@ public class CollateExecutorTaskTest {
             "\"test@FINE_IO@0\",\"order\":0},{\"sourceKey\":\"test\",\"storeType\":\"MEMORY\"" +
             ",\"swiftSchema\":\"CUBE\",\"id\":\"test@MEMORY@1\",\"order\":1}]";
 
-    final SegmentKey segmentKey1 = new SegmentKeyBean("test", 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    final SegmentKey segmentKey2 = new SegmentKeyBean("test", 1, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
+    final SegmentKey segmentKey1 = new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE);
+    final SegmentKey segmentKey2 = new SwiftSegmentEntity(new SourceKey("test"), 1, Types.StoreType.MEMORY, SwiftSchema.CUBE);
 
     @Test
     public void testSerialize() throws Exception {

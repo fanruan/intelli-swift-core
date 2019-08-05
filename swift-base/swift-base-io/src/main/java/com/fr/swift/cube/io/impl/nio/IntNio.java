@@ -18,16 +18,16 @@ public class IntNio extends BaseAtomNio implements IntIo {
 
     @Override
     public int get(long pos) {
-        initBuf(getPage(pos));
-        return buf.getInt(getOffset(pos));
+        initBuf(nthBuf(pos));
+        return buf.getInt(bufOffset(pos));
     }
 
     @Override
     public void put(long pos, int val) {
-        initBuf(getPage(pos));
-        int offset = getOffset(pos);
+        initBuf(nthBuf(pos));
+        int offset = bufOffset(pos);
         buf.putInt(offset, val);
 
-        setBufPosition(offset);
+        setBufPos(offset);
     }
 }

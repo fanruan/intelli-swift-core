@@ -3,12 +3,14 @@ package com.fr.swift.result;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.iterator.IteratorUtils;
+import com.fr.swift.util.IoUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Lyon on 2018/6/13.
+ * @author Lyon
+ * @date 2018/6/13
  */
 public class SwiftNode2RowIterator implements SwiftRowIterator {
 
@@ -41,5 +43,11 @@ public class SwiftNode2RowIterator implements SwiftRowIterator {
 
     @Override
     public void remove() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void close() {
+        IoUtil.close(source);
     }
 }

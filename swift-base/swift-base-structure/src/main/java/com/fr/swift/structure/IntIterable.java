@@ -10,8 +10,17 @@ public interface IntIterable extends Iterable<Integer> {
 
     IntIterator intIterator();
 
-    interface IntIterator extends Iterator<Integer> {
+    abstract class IntIterator implements Iterator<Integer> {
+        public abstract int nextInt();
 
-        int nextInt();
+        @Override
+        public Integer next() {
+            return nextInt();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 }

@@ -2,9 +2,9 @@ package com.fr.swift.config.convert;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SegmentDestSelectRule;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.convert.base.AbstractObjectConfigConvert;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -21,7 +21,7 @@ public class SegDestSelectRuleConvert extends AbstractObjectConfigConvert<Segmen
     }
 
     @Override
-    public SegmentDestSelectRule toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) {
+    public SegmentDestSelectRule toBean(SwiftConfigDao<SwiftConfigEntity> dao, ConfigSession session, Object... args) {
         try {
             return super.toBean(dao, session, args);
         } catch (Exception e) {

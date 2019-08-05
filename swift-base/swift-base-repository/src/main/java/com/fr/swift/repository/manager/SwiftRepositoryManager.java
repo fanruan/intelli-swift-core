@@ -1,12 +1,12 @@
 package com.fr.swift.repository.manager;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.bean.FineIOConnectorConfig;
+import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.SwiftFileSystemConfig;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
-import com.fr.swift.service.SwiftRepositoryConfService;
 
 /**
  * @author yee
@@ -14,26 +14,25 @@ import com.fr.swift.service.SwiftRepositoryConfService;
  */
 public class SwiftRepositoryManager {
     private static SwiftRepository currentRepository = null;
-    private SwiftRepositoryConfService service;
+    private SwiftFineIOConnectorService service;
 
     private SwiftRepositoryManager() {
-        service = SwiftContext.get().getBean(SwiftRepositoryConfService.class);
-        service.registerListener(new SwiftRepositoryConfService.ConfChangeListener() {
+        service = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
+        service.registerListener(new SwiftFineIOConnectorService.ConfChangeListener() {
             @Override
-            public void change(SwiftFileSystemConfig change) {
+            public void change(FineIOConnectorConfig change) {
                 if (null != currentRepository) {
                     try {
                         currentRepository = new SwiftRepositoryImpl(change);
-                        currentRepository.testConnection();
                     } catch (RepoNotFoundException e) {
                         throw e;
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
-                        currentRepository = new SwiftRepositoryImpl();
+                        currentRepository = new SwiftRepositoryImpl(change);
                     }
                 }
             }
-        });
+        }, SwiftFineIOConnectorService.Type.PACKAGE);
     }
 
     public static SwiftRepositoryManager getManager() {
@@ -43,20 +42,19 @@ public class SwiftRepositoryManager {
     public SwiftRepository currentRepo() {
         if (null == currentRepository) {
             synchronized (SwiftRepositoryManager.class) {
-                SwiftFileSystemConfig config = null;
+                FineIOConnectorConfig config = null;
                 try {
-                    config = SwiftContext.get().getBean(SwiftRepositoryConfService.class).getCurrentRepository();
+                    config = SwiftContext.get().getBean(SwiftFineIOConnectorService.class).getCurrentConfig(SwiftFineIOConnectorService.Type.PACKAGE);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn("Cannot find repository config. Use default.");
                 }
                 try {
                     currentRepository = new SwiftRepositoryImpl(config);
-                    currentRepository.testConnection();
                 } catch (RepoNotFoundException e) {
                     throw e;
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
-                    currentRepository = new SwiftRepositoryImpl();
+                    currentRepository = new SwiftRepositoryImpl(config);
                 }
             }
         }

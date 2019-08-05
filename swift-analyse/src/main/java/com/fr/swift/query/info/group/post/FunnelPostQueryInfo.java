@@ -1,7 +1,7 @@
 package com.fr.swift.query.info.group.post;
 
-import com.fr.swift.query.info.bean.query.FunnelQueryBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
+import com.fr.swift.query.query.funnel.TimeWindowBean;
 
 /**
  * This class created on 2018/12/14
@@ -11,18 +11,23 @@ import com.fr.swift.query.info.bean.type.PostQueryType;
  */
 public class FunnelPostQueryInfo implements PostQueryInfo {
 
-    private FunnelQueryBean queryBean;
+    private TimeWindowBean timeWindowBean;
+    private PostQueryType type;
 
-    public FunnelPostQueryInfo(FunnelQueryBean queryBean) {
-        this.queryBean = queryBean;
+    public FunnelPostQueryInfo(TimeWindowBean timeWindowBean) {
+        this.timeWindowBean = timeWindowBean;
     }
 
     @Override
     public PostQueryType getType() {
-        return PostQueryType.FUNNEL_MEDIAN;
+        return type;
     }
 
-    public FunnelQueryBean getQueryBean() {
-        return queryBean;
+    public void setType(PostQueryType type) {
+        this.type = type;
+    }
+
+    public TimeWindowBean getTimeWindowBean() {
+        return timeWindowBean;
     }
 }

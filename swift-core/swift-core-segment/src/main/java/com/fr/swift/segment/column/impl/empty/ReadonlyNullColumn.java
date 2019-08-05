@@ -23,6 +23,15 @@ public abstract class ReadonlyNullColumn<T> implements Column<T> {
         this.rowCount = rowCount;
     }
 
+    public static Column<Integer> ofInt(IResourceLocation location, int rowCount) {
+        return new ReadonlyNullColumn<Integer>(location, rowCount) {
+            @Override
+            public DictionaryEncodedColumn<Integer> getDictionaryEncodedColumn() {
+                return new ReadonlyNullDictColumn<Integer>(rowCount, Comparators.<Integer>asc(), ClassType.INTEGER);
+            }
+        };
+    }
+
     public static Column<Long> ofLong(IResourceLocation location, int rowCount) {
         return new ReadonlyNullColumn<Long>(location, rowCount) {
             @Override

@@ -2,7 +2,6 @@ package com.fr.swift.config.dao;
 
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
-import com.fr.swift.converter.FindList;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -39,7 +38,7 @@ public interface SwiftSegmentDao extends SwiftConfigDao<SegmentKey> {
      *
      * @return
      */
-    FindList<SegmentKey> findAll(ConfigSession session);
+    List<SegmentKey> findAll(ConfigSession session);
 
     Map<SourceKey, List<SegmentKey>> findSegmentKeyWithSourceKey(ConfigSession session, ConfigWhere... criteria);
 }

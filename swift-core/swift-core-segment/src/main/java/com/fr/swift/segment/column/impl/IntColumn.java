@@ -18,11 +18,11 @@ public class IntColumn extends BaseColumn<Integer> {
 
     @Override
     public DictionaryEncodedColumn<Integer> getDictionaryEncodedColumn() {
-        return dictColumn != null ? dictColumn : (dictColumn = new IntDictColumn(location, Comparators.<Integer>asc()));
+        return dictColumn == null ? dictColumn = new IntDictColumn(location, Comparators.<Integer>asc()) : dictColumn;
     }
 
     @Override
     public DetailColumn<Integer> getDetailColumn() {
-        return detailColumn != null ? detailColumn : (detailColumn = new IntDetailColumn(location));
+        return detailColumn == null ? detailColumn = new IntDetailColumn(location) : detailColumn;
     }
 }

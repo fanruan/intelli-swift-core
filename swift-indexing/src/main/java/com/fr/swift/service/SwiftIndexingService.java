@@ -5,7 +5,7 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.ServerCurrentStatus;
-import com.fr.swift.config.bean.SwiftTablePathBean;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.event.SwiftEventDispatcher;
@@ -168,11 +168,11 @@ public class SwiftIndexingService extends AbstractSwiftService implements Indexi
                 if (null != obj) {
                     if (obj instanceof DataSource) {
                         SourceKey sourceKey = ((DataSource) obj).getSourceKey();
-                        SwiftTablePathBean entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
+                        SwiftTablePathEntity entity = SwiftContext.get().getBean(SwiftTablePathService.class).get(sourceKey.getId());
                         Integer tmpPath = entity.getTmpDir();
                         String deletePath = String.format("%s/%s/%d/%s",
                                 pathService.getSwiftPath(),
-                                ((DataSource) obj).getMetadata().getSwiftDatabase().getDir(),
+                                ((DataSource) obj).getMetadata().getSwiftSchema().getDir(),
                                 tmpPath,
                                 sourceKey.getId());
                         FileUtil.delete(deletePath);

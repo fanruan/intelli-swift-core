@@ -14,8 +14,28 @@ public final class IdBitMap extends RangeBitmap {
         super(id, id + 1);
     }
 
+    public int getId() {
+        return start;
+    }
+
     public static ImmutableBitMap of(int id) {
         return new IdBitMap(id);
+    }
+
+    @Override
+    public ImmutableBitMap getAnd(ImmutableBitMap index) {
+        if (index.contains(start)) {
+            return this;
+        }
+        return new EmptyBitmap();
+    }
+
+    @Override
+    public ImmutableBitMap getOr(ImmutableBitMap index) {
+        if (index.contains(start)) {
+            return index;
+        }
+        return super.getOr(index);
     }
 
     @Override

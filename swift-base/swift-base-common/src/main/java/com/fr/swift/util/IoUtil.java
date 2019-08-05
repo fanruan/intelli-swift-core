@@ -90,7 +90,7 @@ public class IoUtil {
         }
     }
 
-    public static void close(Collection<Closable> closables) {
+    public static void close(Collection<? extends Closable> closables) {
         if (closables != null) {
             for (Closable closable : closables) {
                 close(closable);

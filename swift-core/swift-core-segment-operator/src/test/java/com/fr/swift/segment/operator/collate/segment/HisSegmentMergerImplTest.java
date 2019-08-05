@@ -5,11 +5,12 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -72,7 +73,7 @@ public class HisSegmentMergerImplTest {
             public SegmentKey answer(InvocationOnMock invocation) throws Throwable {
                 SourceKey tableKey = invocation.getArgument(0);
                 Types.StoreType storeType = invocation.getArgument(1);
-                return new SegmentKeyBean(tableKey, order++, storeType, com.fr.swift.db.SwiftDatabase.CUBE);
+                return new SwiftSegmentEntity(tableKey, order++, storeType, SwiftSchema.CUBE);
             }
         });
 
@@ -92,7 +93,7 @@ public class HisSegmentMergerImplTest {
         when(dataSource.getSourceKey()).thenReturn(tableKey);
         SwiftMetaData metaData = mock(SwiftMetaData.class);
         when(dataSource.getMetadata()).thenReturn(metaData);
-        when(metaData.getSwiftDatabase()).thenReturn(com.fr.swift.db.SwiftDatabase.CUBE);
+        when(metaData.getSwiftSchema()).thenReturn(SwiftSchema.CUBE);
         when(metaData.getFieldNames()).thenReturn(Collections.singletonList("a"));
 
         Segment testSeg0 = mock(Segment.class);
@@ -112,7 +113,7 @@ public class HisSegmentMergerImplTest {
         });
         mockExpectedColumn(seg0);
         HisSegmentMerger merger = new HisSegmentMergerImpl();
-        List<SegmentKey> keys = merger.merge(dataSource, Collections.singletonList(testSeg0), alloter);
+        List<SegmentKey> keys = merger.merge(dataSource, Collections.singletonList(testSeg0), alloter, -1);
         assertEquals(1, keys.size());
         check0(seg0);
 
@@ -129,7 +130,7 @@ public class HisSegmentMergerImplTest {
             }
         });
         mockExpectedColumn(seg1);
-        keys = merger.merge(dataSource, Collections.singletonList(testSeg1), alloter);
+        keys = merger.merge(dataSource, Collections.singletonList(testSeg1), alloter, -1);
         assertEquals(1, keys.size());
         check1(seg1);
 
@@ -147,7 +148,7 @@ public class HisSegmentMergerImplTest {
         when(SegmentUtils.newSegment(ArgumentMatchers.<IResourceLocation>any(), ArgumentMatchers.<SwiftMetaData>any())).thenReturn(seg2, seg3);
         mockExpectedColumn(seg2);
         mockExpectedColumn(seg3);
-        keys = merger.merge(dataSource, Arrays.asList(testSeg2, testSeg3), alloter);
+        keys = merger.merge(dataSource, Arrays.asList(testSeg2, testSeg3), alloter, -1);
         assertEquals(2, keys.size());
         check2(seg2);
         check3(seg3);

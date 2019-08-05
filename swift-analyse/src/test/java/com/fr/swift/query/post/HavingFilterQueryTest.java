@@ -6,8 +6,9 @@ import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
 import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeQRSImpl;
+import com.fr.swift.result.NodeQueryResultSetImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -26,7 +27,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Created by lyon on 2019/1/11.
@@ -49,8 +49,8 @@ public class HavingFilterQueryTest {
             child.setAggregatorValue(new AggregatorValue[]{new DoubleAmountAggregatorValue(i)});
             root.addChild(child);
         }
-        QueryResultSet<SwiftNode> rs = new NodeQRSImpl(200, root);
-        PostQuery<QueryResultSet> postQuery = EasyMock.createMock(PostQuery.class);
+        QueryResultSet<SwiftNode> rs = new NodeQueryResultSetImpl(200, root);
+        Query<QueryResultSet<SwiftNode>> postQuery = EasyMock.createMock(Query.class);
         EasyMock.expect(postQuery.getQueryResult()).andReturn(rs).anyTimes();
         EasyMock.replay(postQuery);
         DetailBasedMatchFilter filter = new DetailBasedMatchFilter(0,
@@ -62,11 +62,6 @@ public class HavingFilterQueryTest {
     public void getQueryResult() throws SQLException {
         QueryResultSet<SwiftNode> resultSet = query.getQueryResult();
         assertTrue(resultSet.hasNextPage());
-        try {
-            resultSet.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
         List<Row> rows = new ArrayList<Row>();
         while (resultSet.hasNextPage()) {
             rows.addAll(IteratorUtils.iterator2List(SwiftNodeUtils.node2RowIterator(resultSet.getPage())));

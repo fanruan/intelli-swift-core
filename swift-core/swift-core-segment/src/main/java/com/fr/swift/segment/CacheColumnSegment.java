@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CacheColumnSegment extends BaseSegment {
 
-    private final Map<ColumnKey, Column<?>> columns = new ConcurrentHashMap<ColumnKey, Column<?>>();
+    private final Map<ColumnKey, Column<?>> columns = new ConcurrentHashMap<>();
 
     public CacheColumnSegment(IResourceLocation location, SwiftMetaData meta) {
         super(location, meta);
@@ -60,9 +60,7 @@ public class CacheColumnSegment extends BaseSegment {
         try {
             super.release();
         } finally {
-            for (Column column : columns.values()) {
-                SegmentUtils.releaseHisColumn(column);
-            }
+            SegmentUtils.releaseHisColumn(columns.values());
         }
     }
 }

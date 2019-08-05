@@ -15,6 +15,7 @@ import com.fr.swift.util.Util;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
         int currentDir = CubeUtil.getCurrentDir(Util.firstItemOf(segKeys).get().getTable());
 
         for (SegmentKey segKey : segKeys) {
-            String local = new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build();
+            String local = new CubePathBuilder(segKey).setTempDir(currentDir).build();
             String remote = new CubePathBuilder(segKey).build();
             try {
                 SwiftRepositoryManager.getManager().currentRepo().copyToRemote(local, remote);
@@ -49,9 +50,9 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
     }
 
     @Override
-    public void download(Set<SegmentKey> segKeys, boolean replace) {
+    public Set<String> download(Set<SegmentKey> segKeys, boolean replace) {
         if (segKeys == null || segKeys.isEmpty()) {
-            return;
+            return Collections.emptySet();
         }
 
         Map<SourceKey, Set<String>> needLoadSegments = new HashMap<SourceKey, Set<String>>();
@@ -62,7 +63,7 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
             }
             needLoadSegments.get(sourceKey).add(String.format("%s/seg%d", segmentKey.getTable(), segmentKey.getOrder()));
         }
-        SegmentHelper.download(needLoadSegments, replace);
+        return SegmentHelper.download(needLoadSegments, replace);
     }
 
     @Override
