@@ -41,7 +41,7 @@ public class FilterInfoBeanSimplify {
     }
 
     private static FilterInfoBean simpleOr(FilterInfoBean bean) {
-        List<FilterInfoBean> beans = transferFilterList(bean, new Function<List<RangeFilterValueBean>, List<RangeFilterValueBean>>() {
+        List<FilterInfoBean> beans = getSimplifiedFilters(bean, new Function<List<RangeFilterValueBean>, List<RangeFilterValueBean>>() {
             @Override
             public List<RangeFilterValueBean> apply(List<RangeFilterValueBean> p) {
                 return prepareUnionOr(p);
@@ -55,7 +55,7 @@ public class FilterInfoBeanSimplify {
     }
 
     private static FilterInfoBean simpleAnd(FilterInfoBean bean) {
-        List<FilterInfoBean> beans = transferFilterList(bean, new Function<List<RangeFilterValueBean>, List<RangeFilterValueBean>>() {
+        List<FilterInfoBean> beans = getSimplifiedFilters(bean, new Function<List<RangeFilterValueBean>, List<RangeFilterValueBean>>() {
             @Override
             public List<RangeFilterValueBean> apply(List<RangeFilterValueBean> p) {
                 return prepareUnionAnd(p);
@@ -70,8 +70,9 @@ public class FilterInfoBeanSimplify {
         }
     }
 
-    private static List<FilterInfoBean> transferFilterList(FilterInfoBean bean,
-                                                           Function<List<RangeFilterValueBean>, List<RangeFilterValueBean>> fn) {
+    //返回最终化简后的filters
+    private static List<FilterInfoBean> getSimplifiedFilters(FilterInfoBean bean,
+                                                             Function<List<RangeFilterValueBean>, List<RangeFilterValueBean>> fn) {
         List<FilterInfoBean> beans = new ArrayList<>((List<FilterInfoBean>) bean.getFilterValue());
         List<FilterInfoBean> result = new ArrayList<>();
         Map<String, List<DetailFilterInfoBean>> filters = groupByColumnName(beans);
@@ -252,14 +253,17 @@ public class FilterInfoBeanSimplify {
         return Double.parseDouble(b.getEnd()) - Double.parseDouble(a.getStart()) > -1 && (Double.parseDouble(b.getStart()) - Double.parseDouble(a.getEnd())) < 1;
     }
 
+    //start为null时，转为负无穷
     private static String startTransfer(String string) {
         return Strings.isEmpty(string) ? String.valueOf(Double.NEGATIVE_INFINITY) : string;
     }
 
+    //end为null时，转为正无穷
     private static String endTransfer(String string) {
         return Strings.isEmpty(string) ? String.valueOf(Double.POSITIVE_INFINITY) : string;
     }
 
+    //把化简结果重构为numberInRangeFilterBean
     private static List<FilterInfoBean> listTransferToFilterBean(List<RangeFilterValueBean> set, String column) {
         List<FilterInfoBean> beans = new ArrayList<>();
         if (set != null) {
