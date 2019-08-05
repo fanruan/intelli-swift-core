@@ -12,7 +12,6 @@ import com.fr.swift.segment.SegmentHelper;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
-import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.IOException;
 import java.io.Serializable;
