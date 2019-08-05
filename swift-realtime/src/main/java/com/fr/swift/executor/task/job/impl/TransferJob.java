@@ -4,7 +4,6 @@ import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.operator.SegmentTransfer;
-import com.fr.swift.service.ScheduledRealtimeTransfer;
 
 /**
  * This class created on 2019/2/19
@@ -23,8 +22,7 @@ public class TransferJob extends BaseJob<Boolean, SegmentKey> {
     @Override
     public Boolean call() {
         try {
-            SegmentTransfer transfer = new ScheduledRealtimeTransfer.RealtimeToHistoryTransfer(transferSegKey);
-            transfer.transfer();
+            new SegmentTransfer(transferSegKey).transfer();
             return true;
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);

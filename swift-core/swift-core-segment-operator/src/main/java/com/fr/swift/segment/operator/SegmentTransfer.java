@@ -1,12 +1,18 @@
 package com.fr.swift.segment.operator;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.collate.segment.SegmentBuilder;
 
 import java.util.Arrays;
@@ -17,49 +23,60 @@ import java.util.Collections;
  * @date 2018/8/20
  */
 public class SegmentTransfer {
+    private static final SwiftSegmentLocationService SEG_LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
-    protected SegmentKey oldSegKey;
+    protected SegmentKey realtSegKey;
 
-    protected SegmentKey newSegKey;
+    protected SegmentKey histSegKey;
 
-    public SegmentTransfer(SegmentKey oldSegKey, SegmentKey newSegKey) {
-        this.oldSegKey = oldSegKey;
-        this.newSegKey = newSegKey;
+    public SegmentTransfer(SegmentKey realtSegKey) {
+        this.realtSegKey = realtSegKey;
+        this.histSegKey = getHistorySegKey(realtSegKey);
+    }
+
+    private static SegmentKey getHistorySegKey(SegmentKey realtimeSegKey) {
+        return new SwiftSegmentEntity(realtimeSegKey.getTable(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema());
     }
 
     public void transfer() {
-        if (!SEG_SVC.containsSegment(oldSegKey)) {
+        if (!SEG_LOCATION_SVC.containsLocal(realtSegKey)) {
             return;
         }
 
-        Segment oldSeg = null;
-        Segment newSeg = null;
+        Segment realtSeg = null;
+        Segment histSeg = null;
         try {
-            SEG_SVC.addSegments(Collections.singletonList(newSegKey));
+            SEG_SVC.addSegments(Collections.singletonList(histSegKey));
 
-            oldSeg = newSegment(oldSegKey);
-            newSeg = newSegment(newSegKey);
-            SegmentBuilder segBuilder = new SegmentBuilder(newSeg, oldSeg.getMetaData().getFieldNames(), Collections.singletonList(oldSeg), Collections.singletonList(oldSeg.getAllShowIndex()));
+            realtSeg = newSegment(realtSegKey);
+            histSeg = newSegment(histSegKey);
+            SegmentBuilder segBuilder = new SegmentBuilder(histSeg, realtSeg.getMetaData().getFieldNames(), Collections.singletonList(realtSeg), Collections.singletonList(realtSeg.getAllShowIndex()));
             segBuilder.build();
 
             onSucceed();
         } catch (Exception e) {
-            remove(newSegKey);
-            SwiftLoggers.getLogger().error("seg transfer from {} to {} failed", oldSegKey, newSegKey, e);
+            remove(histSegKey);
+            SwiftLoggers.getLogger().error("seg transfer from {} to {} failed", realtSegKey, histSegKey, e);
         } finally {
-            SegmentUtils.releaseHisSeg(Arrays.asList(oldSeg, newSeg));
+            SegmentUtils.releaseHisSeg(Arrays.asList(realtSeg, histSeg));
         }
     }
 
-    protected void onSucceed() {
-        remove(oldSegKey);
-        SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(newSegKey);
-        SwiftLoggers.getLogger().info("seg transferred from {} to {}", oldSegKey, newSegKey);
+    private void onSucceed() {
+        remove(realtSegKey);
+        SEG_LOCATION_SVC.saveOrUpdateLocal(Collections.singleton(histSegKey));
+        SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(histSegKey);
+        SwiftLoggers.getLogger().info("seg transferred from {} to {}", realtSegKey, histSegKey);
+
+        SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.REMOVE_SEG, Collections.singletonList(realtSegKey));
+        SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(histSegKey));
+        SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, histSegKey);
     }
 
-    private void remove(final SegmentKey segKey) {
+    protected void remove(final SegmentKey segKey) {
+        SEG_LOCATION_SVC.delete(Collections.singleton(segKey));
         SEG_SVC.removeSegments(Collections.singletonList(segKey));
         SegmentUtils.clearSegment(segKey);
         SwiftLoggers.getLogger().info("seg {} removed", segKey);

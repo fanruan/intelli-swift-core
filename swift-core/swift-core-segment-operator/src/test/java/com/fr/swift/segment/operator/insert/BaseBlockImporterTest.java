@@ -118,7 +118,7 @@ public class BaseBlockImporterTest {
         // exception
         when(resultSet.hasNext()).thenThrow(SQLException.class);
         blockImporter.importData(resultSet);
-        verify(blockImporter).clearDirtyIfNeed();
+        verify(blockImporter).onFailed();
 
         // finally
         verify(resultSet, times(2)).close();
@@ -158,7 +158,10 @@ public class BaseBlockImporterTest {
 
         @Override
         protected void handleFullSegment(SegmentInfo segInfo) {
+        }
 
+        @Override
+        protected void onFailed() {
         }
     }
 }

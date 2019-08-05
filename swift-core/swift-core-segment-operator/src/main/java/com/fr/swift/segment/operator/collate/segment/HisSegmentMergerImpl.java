@@ -3,6 +3,7 @@ package com.fr.swift.segment.operator.collate.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
@@ -16,14 +17,17 @@ import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by lyon on 2019/2/20.
+ * @author lyon
+ * @date 2019/2/20
  */
 public class HisSegmentMergerImpl implements HisSegmentMerger {
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    private static final SwiftSegmentLocationService SEG_LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
     private static final SwiftSegmentBucketService BUCKET_SVC = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
     private static final int currentDir = 0;
     private static final int LINE_VIRTUAL_INDEX = -1;
@@ -32,11 +36,6 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
     public List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter, int index) {
         AllotRule rule = alloter.getAllotRule();
         Partitioner partitioner = new LinePartitioner(rule.getCapacity());
-//        if (rule.getType() == BaseAllotRule.AllotType.HASH) {
-//            partitioner = new HashPartitioner();
-//        } else {
-//            partitioner = new LinePartitioner(rule.getCapacity());
-//        }
         List<SegmentKey> segmentKeys = new ArrayList<SegmentKey>();
         List<String> fields = dataSource.getMetadata().getFieldNames();
         List<SegmentItem> items = partitioner.partition(segments);
@@ -50,6 +49,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                     builder.build();
                     SegmentUtils.releaseHisSeg(segment);
+                    SEG_LOCATION_SVC.saveOrUpdateLocal(Collections.singleton(segKey));
                 } catch (Throwable e) {
                     try {
                         SegmentUtils.releaseHisSeg(segment);

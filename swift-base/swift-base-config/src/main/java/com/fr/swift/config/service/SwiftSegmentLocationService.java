@@ -24,4 +24,12 @@ public interface SwiftSegmentLocationService extends ConfigService<SwiftSegmentL
     Map<String, List<SwiftSegmentLocationEntity>> findAll();
 
     List<SwiftSegmentLocationEntity> findBySourceKey(SourceKey sourceKey);
+
+    void saveOrUpdateLocal(Set<SegmentKey> segKeys);
+
+    void delete(Set<SegmentKey> segKeys);
+
+    boolean containsLocal(SegmentKey segKey);
+
+    Map<SourceKey, List<SwiftSegmentLocationEntity>> getAllLocal();
 }
