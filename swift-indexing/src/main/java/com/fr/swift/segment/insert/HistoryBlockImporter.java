@@ -21,6 +21,7 @@ import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * @author anchore
@@ -66,7 +67,13 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     }
 
     @Override
-    protected void clearDirtyIfNeed() {
+    protected void onSucceed() {
+        segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
+        super.onSucceed();
+    }
+
+    @Override
+    protected void onFailed() {
         // todo 报错全给清掉？
     }
 }

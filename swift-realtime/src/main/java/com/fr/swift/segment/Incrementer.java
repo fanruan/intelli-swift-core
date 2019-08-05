@@ -12,6 +12,8 @@ import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
+import java.util.Collections;
+
 /**
  * @author anchore
  * @date 2018/6/5
@@ -35,5 +37,21 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
         // 增量块已满，transfer掉
         SegmentKey segKey = newSegmentKey(segInfo);
         SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
+    }
+
+    @Override
+    protected void onSucceed() {
+        for (SegmentKey importSegKey : importSegKeys) {
+            if (!segLocationSvc.containsLocal(importSegKey)) {
+                // 不存在则更新seg location
+                segLocationSvc.saveOrUpdateLocal(Collections.singleton(importSegKey));
+            }
+        }
+        super.onSucceed();
+    }
+
+    @Override
+    protected void onFailed() {
+        // do nothing
     }
 }

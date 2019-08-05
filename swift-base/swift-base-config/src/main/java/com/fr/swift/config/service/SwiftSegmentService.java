@@ -35,8 +35,6 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
 
     boolean removeSegments(List<SegmentKey> segmentKeys);
 
-    boolean removeSegments(Set<String> segmentKeys);
-
     /**
      * @param segments
      * @return
@@ -71,4 +69,6 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
     SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
 
     Page<SegmentKey> selectSelective(SegmentKey segmentKey, int page, int size);
+
+    Set<SegmentKey> getByIds(Set<String> segIds);
 }

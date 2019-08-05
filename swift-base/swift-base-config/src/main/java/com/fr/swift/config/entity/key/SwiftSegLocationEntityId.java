@@ -13,9 +13,9 @@ import java.io.Serializable;
 @Embeddable
 public class SwiftSegLocationEntityId implements Serializable {
     private static final long serialVersionUID = 2145513184016170123L;
-    @Column
+    @Column(name = "clusterId")
     private String clusterId;
-    @Column
+    @Column(name = "segmentId")
     private String segmentId;
 
     public SwiftSegLocationEntityId(String clusterId, String segmentId) {
