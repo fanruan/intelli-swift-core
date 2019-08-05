@@ -75,7 +75,7 @@ public class SegmentTransferTest {
         when(SegmentUtils.newSegment(oldSegKey)).thenReturn(oldSeg);
         when(SegmentUtils.newSegment(newSegKey)).thenReturn(newSeg);
 
-        SegmentTransfer transfer = new SegmentTransfer(oldSegKey, newSegKey);
+        SegmentTransfer transfer = new SegmentTransfer(oldSegKey);
         transfer.transfer();
 
         // add seg conf
@@ -107,7 +107,7 @@ public class SegmentTransferTest {
 
         doThrow(Exception.class).when(segmentBuilder).build();
 
-        SegmentTransfer transfer = new SegmentTransfer(oldSegKey, newSegKey);
+        SegmentTransfer transfer = new SegmentTransfer(oldSegKey);
         transfer.transfer();
 
         // add seg conf

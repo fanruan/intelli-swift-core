@@ -38,11 +38,6 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     }
 
     @Override
-    public boolean removeSegments(Set<String> segmentKeys) {
-        return service.removeSegments(segmentKeys);
-    }
-
-    @Override
     public boolean updateSegments(String sourceKey, List<SegmentKey> segments) {
         return service.updateSegments(sourceKey, segments);
     }
@@ -75,6 +70,11 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     @Override
     public Page<SegmentKey> selectSelective(SegmentKey segmentKey, int page, int size) {
         return service.selectSelective(segmentKey, page, size);
+    }
+
+    @Override
+    public Set<SegmentKey> getByIds(Set<String> segIds) {
+        return service.getByIds(segIds);
     }
 
     @Override

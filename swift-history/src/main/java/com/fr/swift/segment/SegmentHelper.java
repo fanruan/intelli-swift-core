@@ -46,7 +46,7 @@ import java.util.regex.Matcher;
  * @date 2018-12-04
  */
 public class SegmentHelper {
-    public static Map<SourceKey, Set<String>> checkSegmentExists(SwiftSegmentService segmentService, SwiftSegmentManager segmentManager) {
+    public static Map<SourceKey, Set<String>> checkSegmentExists(SwiftSegmentService segmentService, SwiftSegmentLocationService segLocationSvc, SwiftSegmentManager segmentManager) {
         final Map<SourceKey, Set<String>> needDownload = new HashMap<SourceKey, Set<String>>();
         try {
             SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
@@ -73,6 +73,7 @@ public class SegmentHelper {
                             }
                         }
                     }
+                    segLocationSvc.delete(new HashSet<>(notExists));
                     segmentService.removeSegments(notExists);
                 }
             }
