@@ -1,15 +1,12 @@
 package com.fr.swift.query.result.serialize;
 
 import com.fr.swift.base.meta.SwiftMetaDataBean;
-import com.fr.swift.result.DetailQueryResultSetMerger;
-import com.fr.swift.result.IDetailQueryResultSetMerger;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,14 +21,13 @@ import static org.junit.Assert.fail;
  */
 public class DetailSerializableQRSTest {
 
-    int fetchSize = 1;
-    int rowCount = 3;
-    private DetailSerializableQRS qrs;
+    private int fetchSize = 1;
+    private int rowCount = 3;
+    private SerializedDetailQueryResultSet qrs;
 
     @Before
-    public void setUp() throws Exception {
-        qrs = new DetailSerializableQRS(fetchSize, rowCount, new DetailQueryResultSetMerger(fetchSize),
-                new ArrayList<Row>(), false);
+    public void setUp() {
+        qrs = new SerializedDetailQueryResultSet(fetchSize, rowCount, new ArrayList<Row>(), false);
     }
 
     @Test
@@ -41,14 +37,13 @@ public class DetailSerializableQRSTest {
 
     @Test
     public void setInvoker() {
-        List<Row> page = new ArrayList<Row>(Collections.singleton(new ListBasedRow(Arrays.asList("a"))));
-        IDetailQueryResultSetMerger merger = new DetailQueryResultSetMerger(fetchSize);
-        final DetailSerializableQRS next = new DetailSerializableQRS(fetchSize, rowCount, merger, page, false);
-        qrs = new DetailSerializableQRS(fetchSize, rowCount, merger, page, true);
-        qrs.setInvoker(new BaseSerializableQRS.SyncInvoker() {
+        List<Row> page = new ArrayList<Row>(Collections.singleton(new ListBasedRow(Collections.singletonList("a"))));
+        final SerializedDetailQueryResultSet next = new SerializedDetailQueryResultSet(fetchSize, rowCount, page, false);
+        qrs = new SerializedDetailQueryResultSet(fetchSize, rowCount, page, true);
+        qrs.setInvoker(new BaseSerializedQueryResultSet.SyncInvoker() {
             @Override
-            public <D, T extends BaseSerializableQRS<D>> T invoke() {
-                return (T) next;
+            public BaseSerializedQueryResultSet<?> invoke() {
+                return next;
             }
         });
         assertTrue(qrs.hasNextPage());
@@ -61,11 +56,6 @@ public class DetailSerializableQRSTest {
     @Test
     public void getFetchSize() {
         assertEquals(fetchSize, qrs.getFetchSize());
-    }
-
-    @Test
-    public void getMerger() {
-        assertNotNull(qrs.getMerger());
     }
 
     @Test

@@ -1,8 +1,10 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
-import com.fineio.FineIO;
-import com.fineio.FineIO.MODEL;
-import com.fineio.io.LongBuffer;
+import com.fineio.accessor.FineIOAccessor;
+import com.fineio.accessor.buffer.LongBuf;
+import com.fineio.accessor.file.IAppendFile;
+import com.fineio.accessor.file.IWriteFile;
+import com.fineio.accessor.impl.BaseModel;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.output.LongWriter;
@@ -12,12 +14,13 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class LongFineIoWriter extends BaseFineIoWriter<LongBuffer> implements LongWriter {
+public class LongFineIoWriter extends BaseFineIoWriter<LongBuf> implements LongWriter {
     private LongFineIoWriter(URI uri, Connector connector, boolean isOverwrite) {
+        super(isOverwrite);
         if (isOverwrite) {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.WRITE_LONG, true);
+            writeFile = (IWriteFile<LongBuf>) FineIOAccessor.INSTANCE.createFile(connector, uri, BaseModel.ofLong().asWrite());
         } else {
-            ioFile = FineIO.createIOFile(connector, uri, MODEL.APPEND_LONG, true);
+            appendFile = (IAppendFile<LongBuf>) FineIOAccessor.INSTANCE.createFile(connector, uri, BaseModel.ofLong().asAppend());
         }
     }
 
@@ -31,6 +34,10 @@ public class LongFineIoWriter extends BaseFineIoWriter<LongBuffer> implements Lo
 
     @Override
     public void put(long pos, long val) {
-        FineIO.put(ioFile, pos, val);
+        if (isOverwrite) {
+            FineIOAccessor.INSTANCE.put(writeFile, (int) pos, val);
+        } else {
+            FineIOAccessor.INSTANCE.put(appendFile, val);
+        }
     }
 }

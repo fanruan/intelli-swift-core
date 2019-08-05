@@ -1,7 +1,7 @@
 package com.fr.swift.generate;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SwiftColumnIdxConfBean;
+import com.fr.swift.config.entity.SwiftColumnIndexingConf;
 import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -90,7 +90,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
                 List<Segment> segments = localSegments.getSegment(dataSource.getSourceKey());
 
                 for (String columnName : transporter.getIndexFieldsList()) {
-                    SwiftColumnIdxConfBean columnConf = indexingConfService.getColumnConf(dataSource.getSourceKey(), columnName);
+                    SwiftColumnIndexingConf columnConf = indexingConfService.getColumnConf(dataSource.getSourceKey(), columnName);
 
                     if (!columnConf.isRequireIndex()) {
                         continue;

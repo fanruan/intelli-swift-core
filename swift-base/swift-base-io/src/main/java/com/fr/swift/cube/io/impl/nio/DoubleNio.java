@@ -18,16 +18,16 @@ public class DoubleNio extends BaseAtomNio implements DoubleIo {
 
     @Override
     public double get(long pos) {
-        initBuf(getPage(pos));
-        return buf.getDouble(getOffset(pos));
+        initBuf(nthBuf(pos));
+        return buf.getDouble(bufOffset(pos));
     }
 
     @Override
     public void put(long pos, double val) {
-        initBuf(getPage(pos));
-        int offset = getOffset(pos);
+        initBuf(nthBuf(pos));
+        int offset = bufOffset(pos);
         buf.putDouble(offset, val);
 
-        setBufPosition(offset);
+        setBufPos(offset);
     }
 }

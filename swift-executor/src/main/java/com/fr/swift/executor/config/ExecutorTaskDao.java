@@ -1,7 +1,6 @@
 package com.fr.swift.executor.config;
 
 import com.fr.swift.config.dao.SwiftConfigDao;
-import com.fr.swift.executor.task.ExecutorTask;
 
 /**
  * This class created on 2019/2/26
@@ -9,5 +8,5 @@ import com.fr.swift.executor.task.ExecutorTask;
  * @author Lucifer
  * @description
  */
-public interface ExecutorTaskDao extends SwiftConfigDao<ExecutorTask> {
+public interface ExecutorTaskDao extends SwiftConfigDao<SwiftExecutorTaskEntity> {
 }

@@ -1,16 +1,15 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
-import com.fineio.io.Buffer;
-import com.fineio.io.file.IOFile;
+import com.fineio.accessor.file.IWriteFile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 /**
  * @author anchore
@@ -20,18 +19,13 @@ import static org.mockito.Mockito.verify;
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 public class BaseFineIoWriterTest {
 
-    @Mock
-    IOFile<? extends Buffer> ioFile;
-    @InjectMocks
-    BaseFineIoWriter fineIoWriter = new FineIoWriter();
-
     @Test
     public void release() {
+        BaseFineIoWriter fineIoWriter = mock(BaseFineIoWriter.class, CALLS_REAL_METHODS);
+        fineIoWriter.writeFile = mock(IWriteFile.class);
+
         fineIoWriter.release();
 
-        verify(ioFile).close();
-    }
-
-    class FineIoWriter extends BaseFineIoWriter {
+        verify(fineIoWriter.writeFile).close();
     }
 }

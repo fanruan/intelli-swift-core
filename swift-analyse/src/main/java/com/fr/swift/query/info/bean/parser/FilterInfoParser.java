@@ -18,6 +18,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
+import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanSimplify;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -46,6 +47,7 @@ public class FilterInfoParser {
             return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
         }
         bean = FilterInfoBeanOptimizer.optimize(bean);
+        bean = FilterInfoBeanSimplify.simple(bean);
         switch (bean.getType()) {
             case AND:
             case OR:
@@ -165,10 +167,11 @@ public class FilterInfoParser {
     private static Object convertValue(Object origin, ColumnTypeConstants.ClassType classType, boolean start) {
         switch (classType) {
             case INTEGER:
+                return origin == null ? (start ? Integer.MIN_VALUE : Integer.MAX_VALUE) : Integer.parseInt(origin.toString());
             case LONG:
                 return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : Long.parseLong(origin.toString());
-//            case DATE:
-//                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString(), true).getTime();
+            case DATE:
+                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString()).getTime();
             default:
                 return origin == null ? (start ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY) : Double.parseDouble(origin.toString());
         }
@@ -230,6 +233,7 @@ public class FilterInfoParser {
     private static Object convert(Object origin, ColumnTypeConstants.ClassType type) {
         switch (type) {
             case INTEGER:
+                return Integer.parseInt(origin.toString());
             case LONG:
                 return Long.parseLong(origin.toString());
             case DATE:

@@ -20,6 +20,7 @@ public class IntListExternalMapFactory {
             case DOUBLE:
                 return (ExternalMap<K, IntList>) new DoubleIntListExternalMap(bufferSize, comparator, dataFolder);
             case INTEGER:
+                return (ExternalMap<K, IntList>) new IntegerIntListExternalMap(bufferSize, comparator, dataFolder);
             case LONG:
             case DATE:
                 return (ExternalMap<K, IntList>) new LongIntListExternalMap(bufferSize, comparator, dataFolder);

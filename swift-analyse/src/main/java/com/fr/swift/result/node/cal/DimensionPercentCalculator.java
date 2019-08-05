@@ -36,7 +36,7 @@ public class DimensionPercentCalculator extends AbstractTargetCalculator {
 
     private Double getSum(AggregatorValue[] aggregatorValues) {
         double d = 0;
-        for (AggregatorValue value : aggregatorValues){
+        for (AggregatorValue value : aggregatorValues) {
             if (value != null){
                 Object result = value.calculateValue();
                 if (result != null){

@@ -2,8 +2,8 @@ package com.fr.swift.config.convert;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.DataSyncRule;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -30,9 +30,9 @@ public class DataSyncRuleConvertTest {
     public void toBean() throws SQLException {
         SwiftConfigDao mockSwiftConfigDao = PowerMock.createMock(SwiftConfigDao.class);
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigBean(convert.getNameSpace() + ".class", TestDataSyncRule.class.getName())).once();
+                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigEntity(convert.getNameSpace() + ".class", TestDataSyncRule.class.getName())).once();
         EasyMock.expect(mockSwiftConfigDao.select(EasyMock.anyObject(ConfigSession.class),
-                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigBean(convert.getNameSpace() + ".class", DataSyncRuleConvertTest.class.getName())).once();
+                EasyMock.eq(convert.getNameSpace() + ".class"))).andReturn(new SwiftConfigEntity(convert.getNameSpace() + ".class", DataSyncRuleConvertTest.class.getName())).once();
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         PowerMock.mockStatic(SwiftContext.class);
         SwiftContext mockSwiftContext = PowerMock.createMock(SwiftContext.class);

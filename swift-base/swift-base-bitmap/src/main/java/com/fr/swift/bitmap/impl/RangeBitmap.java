@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Iterator;
 
 /**
  * @author anchore
@@ -38,34 +37,28 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
-        switch (index.getType()) {
-            case RANGE:
-                return FasterAggregation.and(this, ((RangeBitmap) index));
-            default:
-                return index.getAnd(this);
+        if (index instanceof RangeBitmap) {
+            return FasterAggregation.and(this, ((RangeBitmap) index));
         }
+        return index.getAnd(this);
     }
 
     @Override
     public ImmutableBitMap getOr(ImmutableBitMap index) {
-        switch (index.getType()) {
-            case RANGE:
-                return FasterAggregation.or(this, ((RangeBitmap) index));
-            default:
-                return index.getOr(this);
+        if (index instanceof RangeBitmap) {
+            return FasterAggregation.or(this, ((RangeBitmap) index));
         }
+        return index.getOr(this);
     }
 
     @Override
     public ImmutableBitMap getAndNot(ImmutableBitMap index) {
-        switch (index.getType()) {
-            case RANGE:
-                return FasterAggregation.andNot(this, ((RangeBitmap) index));
-            default:
-                MutableBitMap bitmap = toRealBitmap();
-                bitmap.andNot(index);
-                return bitmap;
+        if (index instanceof RangeBitmap) {
+            return FasterAggregation.andNot(this, ((RangeBitmap) index));
         }
+        MutableBitMap bitmap = toRealBitmap();
+        bitmap.andNot(index);
+        return bitmap;
     }
 
     @Override
@@ -96,7 +89,7 @@ public class RangeBitmap extends AbstractBitMap {
 
     private MutableBitMap toRealBitmap() {
         MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
-        bitmap.flip((long) start, (long) end);
+        bitmap.flip(start, end);
         return RoaringMutableBitMap.of(bitmap);
     }
 
@@ -150,7 +143,6 @@ public class RangeBitmap extends AbstractBitMap {
     @Override
     public IntIterator intIterator() {
         return new IntIterator() {
-
             private int cursor = start;
 
             @Override
@@ -162,21 +154,6 @@ public class RangeBitmap extends AbstractBitMap {
             public boolean hasNext() {
                 return cursor < end;
             }
-
-            @Override
-            public Integer next() {
-                return nextInt();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
         };
-    }
-
-    @Override
-    public Iterator<Integer> iterator() {
-        return intIterator();
     }
 }

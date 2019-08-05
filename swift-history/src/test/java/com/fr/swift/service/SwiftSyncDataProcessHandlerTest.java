@@ -17,11 +17,11 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.DataSyncRule;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.base.AbstractAnalyseRpcEvent;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.handler.analyse.SwiftAnalyseEventHandler;
@@ -98,7 +98,7 @@ public class SwiftSyncDataProcessHandlerTest {
         // Generate by Mock Plugin
         DataSyncRule mockDataSyncRule = PowerMock.createMock(DataSyncRule.class);
         Map<String, List<SegmentKey>> map = new HashMap<String, List<SegmentKey>>();
-        map.put("clusterId", Arrays.<SegmentKey>asList(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE)));
+        map.put("clusterId", Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE)));
         EasyMock.expect(mockDataSyncRule.getNeedLoadAndUpdateDestinations(EasyMock.notNull(Set.class), EasyMock.notNull(Set.class), EasyMock.notNull(Map.class))).andReturn(map).anyTimes();
 
         EasyMock.expect(mockDataSyncRuleService.getCurrentRule()).andReturn(mockDataSyncRule).anyTimes();
@@ -196,7 +196,7 @@ public class SwiftSyncDataProcessHandlerTest {
         PowerMock.replayAll();
         SwiftSyncDataProcessHandler handler = new SwiftSyncDataProcessHandler(mockInvokerCreator);
         Set<SegmentKey> segmentKeys = new HashSet<SegmentKey>();
-        segmentKeys.add(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE));
+        segmentKeys.add(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE));
         handler.processResult(HistoryService.class.getMethod("load", Set.class, boolean.class), new Target[]{Target.HISTORY}, segmentKeys, true);
         handler.processResult(HistoryService.class.getMethod("load", Set.class, boolean.class), new Target[]{Target.HISTORY}, segmentKeys, true);
         PowerMock.verifyAll();

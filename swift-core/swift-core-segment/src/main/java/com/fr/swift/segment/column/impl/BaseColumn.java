@@ -26,7 +26,7 @@ public abstract class BaseColumn<T> implements Column<T> {
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return indexColumn != null ? indexColumn : (indexColumn = new BitMapColumn(location));
+        return indexColumn == null ? indexColumn = new BitMapColumn(location) : indexColumn;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.fr.swift.result;
 
 import com.fr.swift.source.Row;
+import com.fr.swift.util.IoUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,5 +40,10 @@ public class SwiftRowIteratorImpl<T extends Pagination<List<Row>>> implements Sw
 
     @Override
     public void remove() {
+    }
+
+    @Override
+    public void close() {
+        IoUtil.close(source);
     }
 }

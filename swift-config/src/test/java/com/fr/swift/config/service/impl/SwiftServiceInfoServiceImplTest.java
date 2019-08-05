@@ -1,9 +1,9 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
 import com.fr.swift.config.dao.SwiftServiceInfoDao;
 import com.fr.swift.config.dao.impl.SwiftServiceInfoDaoImpl;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
@@ -41,7 +41,7 @@ public class SwiftServiceInfoServiceImplTest extends BaseServiceTest {
 
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession(SwiftServiceInfoBean.TYPE, mockData());
+        final ConfigSession mockConfigSession = mockSession(SwiftServiceInfoEntity.class, mockData());
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
@@ -57,19 +57,19 @@ public class SwiftServiceInfoServiceImplTest extends BaseServiceTest {
 
     @Test
     public void saveOrUpdate() {
-        assertTrue(service.saveOrUpdate(new SwiftServiceInfoBean("service", "clusterId", "serviceInfo")));
+        assertTrue(service.saveOrUpdate(new SwiftServiceInfoEntity("service", "clusterId", "serviceInfo", false)));
         PowerMock.verifyAll();
     }
 
     @Test
     public void removeServiceInfo() {
-        assertTrue(service.removeServiceInfo(new SwiftServiceInfoBean("service", "clusterId", "serviceInfo")));
+        assertTrue(service.removeServiceInfo(new SwiftServiceInfoEntity("service", "clusterId", "serviceInfo", false)));
         PowerMock.verifyAll();
     }
 
     @Test
     public void getServiceInfo() {
-        assertNull(service.getServiceInfo(new SwiftServiceInfoBean("service", "clusterId", "serviceInfo")));
+        assertNull(service.getServiceInfo(new SwiftServiceInfoEntity("service", "clusterId", "serviceInfo", false)));
         PowerMock.verifyAll();
     }
 
@@ -95,13 +95,11 @@ public class SwiftServiceInfoServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         ObjectConverter tablePathA = PowerMock.createMock(ObjectConverter.class);
         // Generate by Mock Plugin
-        SwiftServiceInfoBean mockSwiftTablePathBean = PowerMock.createMock(SwiftServiceInfoBean.class);
-        EasyMock.expect(mockSwiftTablePathBean.convert()).andReturn(tablePathA).anyTimes();
+        SwiftServiceInfoEntity mockSwiftTablePathBean = PowerMock.createMock(SwiftServiceInfoEntity.class);
 
         EasyMock.expect(tablePathA.convert()).andReturn(mockSwiftTablePathBean).anyTimes();
         ObjectConverter tablePathB = PowerMock.createMock(ObjectConverter.class);
-        SwiftServiceInfoBean mockSwiftTablePathBean1 = PowerMock.createMock(SwiftServiceInfoBean.class);
-        EasyMock.expect(mockSwiftTablePathBean1.convert()).andReturn(tablePathB).anyTimes();
+        SwiftServiceInfoEntity mockSwiftTablePathBean1 = PowerMock.createMock(SwiftServiceInfoEntity.class);
         EasyMock.expect(tablePathB.convert()).andReturn(mockSwiftTablePathBean1).anyTimes();
         PowerMock.replay(tablePathA, tablePathB, mockSwiftTablePathBean, mockSwiftTablePathBean1);
         return new ObjectConverter[]{

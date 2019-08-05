@@ -8,7 +8,6 @@ import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.oper.impl.OrderImpl;
-import com.fr.swift.converter.FindList;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.log.SwiftLoggers;
@@ -40,7 +39,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
         return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
             @Override
             public Boolean work(ConfigSession session) throws SQLException {
-                return executorTaskDao.saveOrUpdate(session, executorTask);
+                return executorTaskDao.saveOrUpdate(session, (SwiftExecutorTaskEntity) executorTask.convert());
             }
         });
     }
@@ -51,7 +50,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             @Override
             public Boolean work(ConfigSession session) throws SQLException {
                 for (ExecutorTask executorTask : executorTasks) {
-                    executorTaskDao.saveOrUpdate(session, executorTask);
+                    executorTaskDao.saveOrUpdate(session, (SwiftExecutorTaskEntity) executorTask.convert());
                 }
                 return true;
             }
@@ -64,11 +63,20 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<ExecutorTask>>() {
                 @Override
                 public List<ExecutorTask> work(ConfigSession session) {
-                    FindList<ExecutorTask> findList = executorTaskDao.find(session, new Order[]{OrderImpl.asc("createTime")}
-                            , ConfigWhereImpl.eq("dbStatusType", DBStatusType.ACTIVE)
-                            , ConfigWhereImpl.eq("clusterId", SwiftProperty.getProperty().getClusterId())
-                            , ConfigWhereImpl.gt("createTime", time));
-                    return findList.list();
+                    List<ExecutorTask> tasks = new ArrayList<ExecutorTask>();
+                    try {
+                        for (SwiftExecutorTaskEntity item : executorTaskDao.find(session, new Order[]{OrderImpl.asc("createTime")}
+                                , ConfigWhereImpl.eq("dbStatusType", DBStatusType.ACTIVE)
+                                , ConfigWhereImpl.eq("clusterId", SwiftProperty.getProperty().getClusterId())
+                                , ConfigWhereImpl.gt("createTime", time))) {
+
+                            tasks.add(item.convert());
+
+                        }
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
+                    }
+                    return tasks;
                 }
             });
         } catch (Exception e) {
@@ -83,7 +91,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
-                    return executorTaskDao.delete(session, executorTask);
+                    return executorTaskDao.delete(session, (SwiftExecutorTaskEntity) executorTask.convert());
                 }
             });
         } catch (Exception e) {
@@ -98,7 +106,11 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<ExecutorTask>() {
                 @Override
                 public ExecutorTask work(ConfigSession session) throws SQLException {
-                    List<ExecutorTask> executorTasks = executorTaskDao.find(session, ConfigWhereImpl.eq("id", taskId)).list();
+                    List<SwiftExecutorTaskEntity> entities = executorTaskDao.find(session, ConfigWhereImpl.eq("id", taskId));
+                    List<ExecutorTask> executorTasks = new ArrayList<ExecutorTask>();
+                    for (SwiftExecutorTaskEntity item : entities) {
+                        executorTasks.add(item.convert());
+                    }
                     if (executorTasks.isEmpty()) {
                         return null;
                     } else {

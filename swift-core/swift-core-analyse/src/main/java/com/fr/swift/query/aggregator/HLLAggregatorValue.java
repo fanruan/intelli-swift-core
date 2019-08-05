@@ -5,10 +5,13 @@ import com.fr.swift.query.aggregator.hll.HyperLogLog;
 import com.fr.swift.query.aggregator.hll.MurmurHash;
 import com.fr.swift.util.Crasher;
 
+import java.io.Serializable;
+
 /**
- * Created by Lyon on 2018/7/13.
+ * @author Lyon
+ * @date 2018/7/13
  */
-public class HLLAggregatorValue implements AggregatorValue<Double> {
+public class HLLAggregatorValue implements AggregatorValue<Double>, Serializable {
 
     private static final long serialVersionUID = 2390681614784335256L;
     private HyperLogLog hyperLogLog;

@@ -13,17 +13,17 @@ public class ByteNio extends BaseAtomNio implements ByteIo {
 
     @Override
     public byte get(long pos) {
-        initBuf(getPage(pos));
-        return buf.get(getOffset(pos));
+        initBuf(nthBuf(pos));
+        return buf.get(bufOffset(pos));
     }
 
     @Override
     public void put(long pos, byte val) {
-        initBuf(getPage(pos));
-        int offset = getOffset(pos);
+        initBuf(nthBuf(pos));
+        int offset = bufOffset(pos);
         buf.put(offset, val);
 
-        setBufPosition(offset);
+        setBufPos(offset);
     }
 
     @Override

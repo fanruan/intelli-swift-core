@@ -3,15 +3,15 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.config.bean.SegmentKeyBean;
-import com.fr.swift.config.bean.SwiftTablePathBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.base.SwiftRpcEvent;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
@@ -64,8 +64,8 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         SwiftSegmentService mockSwiftSegmentService = PowerMock.createMock(SwiftSegmentService.class);
         Map<SourceKey, List<SegmentKey>> keys = new HashMap<SourceKey, List<SegmentKey>>();
-        keys.put(new SourceKey("table"), Arrays.<SegmentKey>asList(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE),
-                new SegmentKeyBean(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE)));
+        keys.put(new SourceKey("table"), Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE),
+                new SwiftSegmentEntity(new SourceKey("table"), 1, Types.StoreType.FINE_IO, SwiftSchema.CUBE)));
         EasyMock.expect(mockSwiftSegmentService.getOwnSegments()).andReturn(keys).anyTimes();
         EasyMock.expect(mockSwiftSegmentService.removeSegments(EasyMock.anyObject(List.class))).andReturn(true).anyTimes();
 
@@ -91,7 +91,8 @@ public class SegmentHelperTest {
         PowerMock.replay(SwiftContext.class);
         PowerMock.replayAll();
 
-        SegmentHelper.checkSegmentExists(mockSwiftSegmentService, mockSwiftSegmentManager);
+        SwiftSegmentLocationService segLocationSvc = EasyMock.mock(SwiftSegmentLocationService.class);
+        SegmentHelper.checkSegmentExists(mockSwiftSegmentService, segLocationSvc, mockSwiftSegmentManager);
 
         PowerMock.verifyAll();
     }
@@ -105,17 +106,17 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         SwiftTablePathService mockSwiftTablePathService = PowerMock.createMock(SwiftTablePathService.class);
         EasyMock.expect(mockSwiftTablePathService.get(EasyMock.anyObject(String.class))).andReturn(null).once();
-        SwiftTablePathBean bean = new SwiftTablePathBean();
+        SwiftTablePathEntity bean = new SwiftTablePathEntity();
         bean.setTmpDir(0);
         bean.setTablePath(0);
         bean.setLastPath(0);
         EasyMock.expect(mockSwiftTablePathService.get(EasyMock.anyObject(String.class))).andReturn(bean).times(3);
-        EasyMock.expect(mockSwiftTablePathService.saveOrUpdate(EasyMock.anyObject(SwiftTablePathBean.class))).andReturn(true).anyTimes();
+        EasyMock.expect(mockSwiftTablePathService.saveOrUpdate(EasyMock.anyObject(SwiftTablePathEntity.class))).andReturn(true).anyTimes();
 
         // Generate by Mock Plugin
         SwiftMetaDataService mockSwiftMetaDataService = PowerMock.createMock(SwiftMetaDataService.class);
         SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
-        EasyMock.expect(mockSwiftMetaData.getSwiftDatabase()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftSchema.CUBE).anyTimes();
         EasyMock.expect(mockSwiftMetaDataService.getMetaDataByKey(EasyMock.anyString())).andReturn(mockSwiftMetaData).anyTimes();
 
         // Generate by Mock Plugin
@@ -146,12 +147,12 @@ public class SegmentHelperTest {
 
         // Generate by Mock Plugin
         SwiftTablePathService mockSwiftTablePathService = PowerMock.createMock(SwiftTablePathService.class);
-        SwiftTablePathBean bean = new SwiftTablePathBean();
+        SwiftTablePathEntity bean = new SwiftTablePathEntity();
         bean.setTmpDir(0);
         bean.setTablePath(0);
         bean.setLastPath(0);
         EasyMock.expect(mockSwiftTablePathService.get(EasyMock.anyObject(String.class))).andReturn(bean).anyTimes();
-        EasyMock.expect(mockSwiftTablePathService.saveOrUpdate(EasyMock.anyObject(SwiftTablePathBean.class))).andReturn(true).anyTimes();
+        EasyMock.expect(mockSwiftTablePathService.saveOrUpdate(EasyMock.anyObject(SwiftTablePathEntity.class))).andReturn(true).anyTimes();
 
         // Generate by Mock Plugin
         SwiftSegmentLocationService mockSwiftMetaDataService = PowerMock.createMock(SwiftSegmentLocationService.class);
@@ -161,7 +162,7 @@ public class SegmentHelperTest {
         SwiftSegmentService mockSwiftSegmentService = PowerMock.createMock(SwiftSegmentService.class);
         EasyMock.expect(mockSwiftSegmentService.getSegmentByKey(EasyMock.anyString()))
                 .andReturn(
-                        Arrays.<SegmentKey>asList(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE))
+                        Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE))
                 ).anyTimes();
 
         // Generate by Mock Plugin
@@ -177,7 +178,7 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         DataSource mockDataSource = PowerMock.createMock(DataSource.class);
         SwiftMetaData mockSwiftMetaData = PowerMock.createMock(SwiftMetaData.class);
-        EasyMock.expect(mockSwiftMetaData.getSwiftDatabase()).andReturn(SwiftDatabase.CUBE).anyTimes();
+        EasyMock.expect(mockSwiftMetaData.getSwiftSchema()).andReturn(SwiftSchema.CUBE).anyTimes();
         EasyMock.expect(mockDataSource.getMetadata()).andReturn(mockSwiftMetaData).anyTimes();
         EasyMock.expect(mockDataSource.getSourceKey()).andReturn(new SourceKey("table")).anyTimes();
 
@@ -219,12 +220,12 @@ public class SegmentHelperTest {
 
         // Generate by Mock Plugin
         SwiftTablePathService mockSwiftTablePathService = PowerMock.createMock(SwiftTablePathService.class);
-        SwiftTablePathBean bean = new SwiftTablePathBean();
+        SwiftTablePathEntity bean = new SwiftTablePathEntity();
         bean.setTmpDir(0);
         bean.setTablePath(0);
         bean.setLastPath(0);
         EasyMock.expect(mockSwiftTablePathService.get(EasyMock.anyObject(String.class))).andReturn(bean).anyTimes();
-        EasyMock.expect(mockSwiftTablePathService.saveOrUpdate(EasyMock.anyObject(SwiftTablePathBean.class))).andReturn(true).anyTimes();
+        EasyMock.expect(mockSwiftTablePathService.saveOrUpdate(EasyMock.anyObject(SwiftTablePathEntity.class))).andReturn(true).anyTimes();
 
         // Generate by Mock Plugin
         SwiftSegmentLocationService mockSwiftMetaDataService = PowerMock.createMock(SwiftSegmentLocationService.class);
@@ -234,7 +235,7 @@ public class SegmentHelperTest {
         SwiftSegmentService mockSwiftSegmentService = PowerMock.createMock(SwiftSegmentService.class);
         EasyMock.expect(mockSwiftSegmentService.getSegmentByKey(EasyMock.anyString()))
                 .andReturn(
-                        Arrays.<SegmentKey>asList(new SegmentKeyBean(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE))
+                        Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE))
                 ).anyTimes();
 
         // Generate by Mock Plugin

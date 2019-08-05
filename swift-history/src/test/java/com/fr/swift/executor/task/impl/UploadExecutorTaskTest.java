@@ -1,8 +1,8 @@
 package com.fr.swift.executor.task.impl;
 
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.job.impl.UploadJob;
 import com.fr.swift.executor.type.DBStatusType;
@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 public class UploadExecutorTaskTest {
 
     String json = "{\"uploadSegmentKey\":{\"sourceKey\":\"test\",\"storeType\":\"FINE_IO\",\"swiftSchema\":\"CUBE\",\"id\":\"test@FINE_IO@0\",\"order\":0},\"uploadWholeSeg\":false}";
-    SegmentKey segmentKey = new SegmentKeyBean("test", 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
+    SegmentKey segmentKey = new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE);
 
 
     @Test

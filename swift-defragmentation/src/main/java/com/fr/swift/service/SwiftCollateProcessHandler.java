@@ -12,11 +12,11 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.CollateProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
-import com.fr.swift.config.bean.SegLocationBean;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.collate.SwiftFragmentCollectRule;
+import com.fr.swift.segment.collate.SwiftFragmentFilter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
 
@@ -46,16 +46,16 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
         List<SegmentKey> segmentKeys = (List<SegmentKey>) args[1];
 
         SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
-        List<SegLocationBean> segLocationBeanList = locationService.findBySourceKey(sourceKey);
+        List<SwiftSegmentLocationEntity> SwiftSegmentLocationEntityList = locationService.findBySourceKey(sourceKey);
         //clusterid-->segkeys
         Map<String, List<SegmentKey>> segkeysByClusterIdMap = new HashMap<String, List<SegmentKey>>();
-        for (SegLocationBean segLocationBean : segLocationBeanList) {
-            String clusterId = segLocationBean.getClusterId();
+        for (SwiftSegmentLocationEntity SwiftSegmentLocationEntity : SwiftSegmentLocationEntityList) {
+            String clusterId = SwiftSegmentLocationEntity.getClusterId();
             if (!segkeysByClusterIdMap.containsKey(clusterId)) {
                 segkeysByClusterIdMap.put(clusterId, new ArrayList<SegmentKey>());
             }
             for (SegmentKey segmentKey : segmentKeys) {
-                if (Util.equals(segLocationBean.getSegmentId(), segmentKey.getId())) {
+                if (Util.equals(SwiftSegmentLocationEntity.getSegmentId(), segmentKey.getId())) {
                     segkeysByClusterIdMap.get(clusterId).add(segmentKey);
                     break;
                 }
@@ -72,7 +72,7 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
             URL url = factory.getURL(allEntry.getKey());
             List<SegmentKey> segmentKeyList = allEntry.getValue();
             segmentKeyList.removeAll(collatedSegKeys);
-            if (segmentKeyList.size() >= SwiftFragmentCollectRule.FRAGMENT_NUMBER) {
+            if (segmentKeyList.size() >= SwiftFragmentFilter.FRAGMENT_NUMBER) {
                 collateMap.put(url, new ArrayList<SegmentKey>());
                 collateMap.get(url).addAll(segmentKeyList);
                 collatedSegKeys.addAll(segmentKeyList);

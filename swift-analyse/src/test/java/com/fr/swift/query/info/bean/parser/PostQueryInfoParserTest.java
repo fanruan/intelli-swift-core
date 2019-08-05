@@ -7,6 +7,7 @@ import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
 import com.fr.swift.query.group.info.IndexInfoImpl;
+import com.fr.swift.query.info.bean.element.AggregationBean;
 import com.fr.swift.query.info.bean.element.MetricBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
@@ -14,6 +15,7 @@ import com.fr.swift.query.info.bean.element.filter.impl.InFilterBean;
 import com.fr.swift.query.info.bean.post.HavingFilterQueryInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.info.bean.post.RowSortQueryInfoBean;
+import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.type.PostQueryType;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.dimension.GroupDimension;
@@ -28,6 +30,7 @@ import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -57,8 +60,11 @@ public class PostQueryInfoParserTest {
         MetricBean metricBean = new MetricBean();
         metricBean.setColumn("a");
         metricBean.setType(AggregatorType.SUM);
-        List<PostQueryInfo> infoList = PostQueryInfoParser.parse(null, Collections.<PostQueryInfoBean>singletonList(bean),
-                Collections.singletonList(dimension), Collections.singletonList(metricBean));
+        GroupQueryInfoBean mock = Mockito.mock(GroupQueryInfoBean.class);
+        Mockito.when(mock.getAggregations()).thenReturn(Collections.<AggregationBean>emptyList());
+        Mockito.when(mock.getPostAggregations()).thenReturn(Collections.<PostQueryInfoBean>emptyList());
+        List<PostQueryInfo> infoList = PostQueryInfoParser.parse(null, mock,
+                Collections.singletonList(dimension));
         assertEquals(1, infoList.size());
         assertEquals(PostQueryType.ROW_SORT, infoList.get(0).getType());
         RowSortQueryInfo info = (RowSortQueryInfo) infoList.get(0);
@@ -87,9 +93,11 @@ public class PostQueryInfoParserTest {
                         SwiftDetailFilterType.IN))
                 .anyTimes();
         PowerMock.replay(FilterInfoParser.class);
-
-        List<PostQueryInfo> infoList = PostQueryInfoParser.parse(null, Collections.<PostQueryInfoBean>singletonList(bean),
-                Collections.singletonList(dimension), Collections.singletonList(metricBean));
+        GroupQueryInfoBean mock = Mockito.mock(GroupQueryInfoBean.class);
+        Mockito.when(mock.getAggregations()).thenReturn(Collections.<AggregationBean>emptyList());
+        Mockito.when(mock.getPostAggregations()).thenReturn(Collections.<PostQueryInfoBean>emptyList());
+        List<PostQueryInfo> infoList = PostQueryInfoParser.parse(null, mock,
+                Collections.singletonList(dimension));
         assertEquals(1, infoList.size());
         assertEquals(PostQueryType.HAVING_FILTER, infoList.get(0).getType());
         HavingFilterQueryInfo info = (HavingFilterQueryInfo) infoList.get(0);

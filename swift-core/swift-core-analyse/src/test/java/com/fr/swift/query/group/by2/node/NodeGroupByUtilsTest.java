@@ -11,8 +11,6 @@ import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.group.info.MetricInfo;
 import com.fr.swift.query.group.info.MetricInfoImpl;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeMergeQRS;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeUtils;
 import com.fr.swift.segment.column.Column;
@@ -32,14 +30,14 @@ import java.util.Map;
  */
 public class NodeGroupByUtilsTest extends TestCase {
 
-    private Iterator<NodeMergeQRS<GroupNode>> iterator;
+    private Iterator<GroupPage> iterator;
     private List<Pair<Column, IndexInfo>> dimensions;
     private Column metric;
     private Map<List<String>, Double> expected;
     private int rowCount = 10000;
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() {
         CubeData cubeData = new CubeData(2, 1, rowCount);
         dimensions = cubeData.getDimensions();
         metric = cubeData.getMetrics().get(0);
@@ -57,8 +55,8 @@ public class NodeGroupByUtilsTest extends TestCase {
         expected = new HashMap<List<String>, Double>();
         for (int i = 0; i < rowCount; i++) {
             List<String> keys = new ArrayList<String>();
-            for (int j = 0; j < dimensions.size(); j++) {
-                String value = (String) dimensions.get(j).getKey().getDetailColumn().get(i);
+            for (Pair<Column, IndexInfo> dimension : dimensions) {
+                String value = (String) dimension.getKey().getDetailColumn().get(i);
                 keys.add(value);
             }
             Double value = expected.get(keys);
@@ -72,7 +70,7 @@ public class NodeGroupByUtilsTest extends TestCase {
 
     public void test() {
         assertTrue(iterator.hasNext());
-        GroupNode root = iterator.next().getPage().getKey();
+        SwiftNode root = iterator.next().getRoot();
         assertNotNull(root);
         Iterator<List<SwiftNode>> it = SwiftNodeUtils.node2RowListIterator(root);
         assertTrue(it.hasNext());
@@ -86,8 +84,8 @@ public class NodeGroupByUtilsTest extends TestCase {
 
     private List<String> getKey(List<SwiftNode> row) {
         List<String> key = new ArrayList<String>();
-        for (int i = 0; i < row.size(); i++) {
-            key.add((String) row.get(i).getData());
+        for (SwiftNode swiftNode : row) {
+            key.add((String) swiftNode.getData());
         }
         return key;
     }

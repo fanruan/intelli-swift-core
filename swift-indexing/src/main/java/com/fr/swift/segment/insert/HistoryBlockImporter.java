@@ -7,6 +7,7 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -20,6 +21,7 @@ import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * @author anchore
@@ -27,7 +29,7 @@ import java.util.Collections;
  */
 @SwiftBean(name = "historyBlockImporter")
 @SwiftScope("prototype")
-public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A> {
+public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A, SwiftResultSet> {
 
     public HistoryBlockImporter(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
@@ -65,7 +67,13 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     }
 
     @Override
-    protected void clearDirtyIfNeed() {
+    protected void onSucceed() {
+        segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
+        super.onSucceed();
+    }
+
+    @Override
+    protected void onFailed() {
         // todo 报错全给清掉？
     }
 }

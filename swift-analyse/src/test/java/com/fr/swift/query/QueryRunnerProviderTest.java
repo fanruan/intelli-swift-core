@@ -7,7 +7,7 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.query.info.bean.query.GroupQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.SwiftResultSetUtils;
+import com.fr.swift.query.result.serialize.QueryResultSetSerializer;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.query.session.factory.SessionFactoryImpl;
 import com.fr.swift.result.SwiftResultSet;
@@ -31,13 +31,13 @@ import static org.powermock.api.mockito.PowerMockito.when;
  * Created by lyon on 2019/1/14.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({SwiftContext.class, ProxySelector.class, SwiftResultSetUtils.class})
+@PrepareForTest({SwiftContext.class, ProxySelector.class, QueryResultSetSerializer.class})
 public class QueryRunnerProviderTest {
 
     private ServiceContext service;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         PowerMock.mockStatic(SwiftContext.class);
         BeanFactory beanFactory = EasyMock.createMock(BeanFactory.class);
         EasyMock.expect(SwiftContext.get()).andReturn(beanFactory).anyTimes();
@@ -61,14 +61,14 @@ public class QueryRunnerProviderTest {
         SwiftResultSet resultSet = EasyMock.mock(SwiftResultSet.class);
         SwiftResultSet resultSet2 = EasyMock.mock(SwiftResultSet.class);
         when(service.getQueryResult(json)).thenReturn(qrs);
-        PowerMock.mockStatic(SwiftResultSetUtils.class);
-        EasyMock.expect(SwiftResultSetUtils.toSwiftResultSet(EasyMock.anyObject(QueryResultSet.class),
+        PowerMock.mockStatic(QueryResultSetSerializer.class);
+        EasyMock.expect(QueryResultSetSerializer.toSwiftResultSet(EasyMock.anyObject(QueryResultSet.class),
                 EasyMock.anyObject(QueryBean.class))).andReturn(resultSet).times(1);
-        EasyMock.expect(SwiftResultSetUtils.toSwiftResultSet(EasyMock.anyObject(QueryResultSet.class),
+        EasyMock.expect(QueryResultSetSerializer.toSwiftResultSet(EasyMock.anyObject(QueryResultSet.class),
                 EasyMock.anyObject(QueryBean.class))).andReturn(resultSet2).times(1);
-        EasyMock.expect(SwiftResultSetUtils.toSwiftResultSet(EasyMock.anyObject(QueryResultSet.class),
+        EasyMock.expect(QueryResultSetSerializer.toSwiftResultSet(EasyMock.anyObject(QueryResultSet.class),
                 EasyMock.anyObject(QueryBean.class))).andReturn(resultSet).anyTimes();
-        PowerMock.replay(SwiftResultSetUtils.class, qrs, resultSet);
+        PowerMock.replay(QueryResultSetSerializer.class, qrs, resultSet);
 
         // 不缓存
         bean.setQueryId(null);

@@ -26,6 +26,8 @@ import java.util.Set;
  *
  * @author Lucifer
  * @description
+ *
+ * extends各种service，避免接口不同步
  */
 public interface ServiceContext {
 
@@ -44,7 +46,14 @@ public interface ServiceContext {
     void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
 
 
-    //realtime service methods
+    /**
+     * realtime service methods
+     * 用于增量插入数据
+     *
+     * @param tableKey  要插入的表
+     * @param resultSet 要插入的数据
+     * @throws Exception
+     */
     @InvokeMethod(value = InsertSegmentProcessHandler.class, target = Target.REAL_TIME)
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
@@ -67,11 +76,18 @@ public interface ServiceContext {
     @InvokeMethod(value = CollateProcessHandler.class)
     void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception;
 
-
-    //delete service methods
+    /**
+     * delete service methods
+     * 用于删除符合条件的数据
+     * 删除是标记删除，除非删除所有数据，否则不会删除文件
+     *
+     * @param tableKey 要删除的表
+     * @param where    删除条件
+     * @return
+     * @throws Exception
+     */
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.REAL_TIME, Target.HISTORY})
     boolean delete(SourceKey tableKey, Where where) throws Exception;
-
 
     //upload service methods
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.REAL_TIME, Target.HISTORY})

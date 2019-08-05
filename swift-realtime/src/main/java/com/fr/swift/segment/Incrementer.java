@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
@@ -11,13 +12,15 @@ import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
+import java.util.Collections;
+
 /**
  * @author anchore
  * @date 2018/6/5
  */
 @SwiftBean(name = "incrementer")
 @SwiftScope("prototype")
-public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A> {
+public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A, SwiftResultSet> {
 
     public Incrementer(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
@@ -26,7 +29,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     @Override
     protected Inserting getInserting(SegmentKey segKey) {
         Segment seg = SegmentUtils.newSegment(segKey);
-        return new Inserting(SwiftInserter.ofAppendMode(seg), seg, seg.isReadable() ? seg.getRowCount() : 0);
+        return new Inserting(SwiftInserter.ofAppendMode(seg), seg, SegmentUtils.safeGetRowCount(seg));
     }
 
     @Override
@@ -34,5 +37,21 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
         // 增量块已满，transfer掉
         SegmentKey segKey = newSegmentKey(segInfo);
         SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
+    }
+
+    @Override
+    protected void onSucceed() {
+        for (SegmentKey importSegKey : importSegKeys) {
+            if (!segLocationSvc.containsLocal(importSegKey)) {
+                // 不存在则更新seg location
+                segLocationSvc.saveOrUpdateLocal(Collections.singleton(importSegKey));
+            }
+        }
+        super.onSucceed();
+    }
+
+    @Override
+    protected void onFailed() {
+        // do nothing
     }
 }

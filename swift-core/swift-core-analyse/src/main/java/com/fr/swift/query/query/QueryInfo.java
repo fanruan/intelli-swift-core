@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * Created by pony on 2017/12/12.
  */
-public interface QueryInfo<T> {
+public interface QueryInfo {
 
     /**
      * 查询id

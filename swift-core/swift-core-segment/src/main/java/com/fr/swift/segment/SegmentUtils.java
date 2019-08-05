@@ -19,6 +19,7 @@ import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -73,6 +74,17 @@ public class SegmentUtils {
             clearRealtimeSegment(segKey);
         } else {
             clearHistorySegment(segKey);
+        }
+    }
+
+    /**
+     * 只清数据，不清配置
+     *
+     * @param segKeys
+     */
+    public static void clearSegments(Collection<SegmentKey> segKeys) {
+        for (SegmentKey segKey : segKeys) {
+            clearSegment(segKey);
         }
     }
 
@@ -131,7 +143,7 @@ public class SegmentUtils {
      *
      * @param segs
      */
-    public static void releaseHisSeg(List<Segment> segs) {
+    public static void releaseHisSeg(Collection<? extends Segment> segs) {
         if (segs == null) {
             return;
         }
@@ -144,22 +156,27 @@ public class SegmentUtils {
      * 释放历史块column
      *
      * @param column 列
-     * @param <T>    数据类型
      */
-    public static <T> void releaseHisColumn(Column<T> column) {
+    public static void releaseHisColumn(Column<?> column) {
         if (column != null && column.getLocation().getStoreType().isPersistent()) {
-            IoUtil.release(column.getDetailColumn());
-            IoUtil.release(column.getDictionaryEncodedColumn());
-            IoUtil.release(column.getBitmapIndex());
+            IoUtil.release(column.getDetailColumn(), column.getDictionaryEncodedColumn(), column.getBitmapIndex());
         }
     }
 
-    public static <T> void releaseHisColumn(List<Column<T>> columns) {
+    public static void releaseHisColumn(Collection<? extends Column<?>> columns) {
         if (columns == null) {
             return;
         }
-        for (Column<T> column : columns) {
+        for (Column<?> column : columns) {
             releaseHisColumn(column);
+        }
+    }
+
+    public static int safeGetRowCount(Segment seg) {
+        try {
+            return seg.isReadable() ? seg.getRowCount() : 0;
+        } finally {
+            releaseHisSeg(seg);
         }
     }
 }

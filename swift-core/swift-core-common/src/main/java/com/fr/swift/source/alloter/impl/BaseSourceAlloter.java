@@ -1,6 +1,7 @@
 package com.fr.swift.source.alloter.impl;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.AllotRule;
@@ -18,6 +19,7 @@ import java.util.Map;
 public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> implements SwiftSourceAlloter<A, R> {
 
     protected static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    protected static final SwiftSegmentBucketService BUCKET_SVC = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
 
     protected SourceKey tableKey;
 
@@ -44,7 +46,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
             segState = logicToReal.get(logicOrder);
         } else {
             // 新分配
-            segState = getInsertableSeg();
+            segState = getInsertableSeg(logicOrder);
             logicToReal.put(logicOrder, segState);
         }
         if (segState.incrementAndGet() < rule.getCapacity()) {
@@ -52,13 +54,13 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
             return segState.getSegInfo();
         }
         // 已满，再分配
-        segState = getInsertableSeg();
+        segState = getInsertableSeg(logicOrder);
         logicToReal.put(logicOrder, segState);
         segState.incrementAndGet();
         return segState.getSegInfo();
     }
 
-    protected abstract SegmentState getInsertableSeg();
+    protected abstract SegmentState getInsertableSeg(int logicOrder);
 
     /**
      * 计算逻辑seg order

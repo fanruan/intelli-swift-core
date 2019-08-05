@@ -20,10 +20,11 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.result.serialize.BaseSerializableQRS;
-import com.fr.swift.result.EmptyDetailQueryResultSet;
+import com.fr.swift.query.query.QueryType;
+import com.fr.swift.query.result.SerializedQueryResultSetMerger;
+import com.fr.swift.query.result.serialize.BaseSerializedQueryResultSet;
+import com.fr.swift.result.qrs.EmptyQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.result.qrs.QueryResultSetMerger;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.selector.ClusterSelector;
@@ -50,7 +51,7 @@ import java.util.concurrent.CountDownLatch;
 @SwiftBean
 @SwiftScope("prototype")
 @RegisteredHandler(QueryableProcessHandler.class)
-public class SwiftQueryableProcessHandler extends BaseProcessHandler implements QueryableProcessHandler {
+class SwiftQueryableProcessHandler extends BaseProcessHandler implements QueryableProcessHandler {
 
     public SwiftQueryableProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
@@ -62,7 +63,7 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
     }
 
     @Override
-    public Object processResult(final Method method, Target[] targets, Object... args) throws Throwable {
+    public QueryResultSet<?> processResult(final Method method, Target[] targets, Object... args) throws Throwable {
         String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
         queryBean.setQueryId(UUID.randomUUID().toString());
@@ -89,14 +90,14 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
                         case DETAIL_SORT:
                         case DETAIL:
                         case GROUP: {
-                            BaseSerializableQRS qrs = (BaseSerializableQRS) rs;
-                            BaseSerializableQRS.SyncInvoker syncInvoker = new BaseSerializableQRS.SyncInvoker() {
+                            BaseSerializedQueryResultSet qrs = (BaseSerializedQueryResultSet) rs;
+                            BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
                                 @Override
-                                public <D, T extends BaseSerializableQRS<D>> T invoke() {
+                                public <D> BaseSerializedQueryResultSet<D> invoke() {
                                     Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
                                     Invocation invocation = new SwiftInvocation(method, new Object[]{query});
                                     try {
-                                        return (T) invoker.invoke(invocation).recreate();
+                                        return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
                                     } catch (Throwable throwable) {
                                         return Crasher.crash(throwable);
                                     }
@@ -121,16 +122,16 @@ public class SwiftQueryableProcessHandler extends BaseProcessHandler implements 
         }
         latch.await();
         if (resultSets.isEmpty()) {
-            return new EmptyDetailQueryResultSet();
+            return EmptyQueryResultSet.get();
         }
-        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, resultSets.get(0).getMerger());
+        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, queryBean.getQueryType());
         Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
     }
 
     @Override
-    protected Object mergeResult(List resultList, Object... args) throws Throwable {
-        return ((QueryResultSetMerger) args[0]).merge(resultList);
+    protected Object mergeResult(List resultList, Object... args) {
+        return SerializedQueryResultSetMerger.merge((QueryType) args[0], resultList);
     }
 
     @Override

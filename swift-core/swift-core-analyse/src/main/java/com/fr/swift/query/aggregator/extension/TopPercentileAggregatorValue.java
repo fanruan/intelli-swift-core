@@ -4,10 +4,13 @@ import com.fr.swift.annotation.Negative;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.extension.histogram.Histogram;
 
+import java.io.Serializable;
+
 /**
- * Created by lyon on 2019/1/23.
+ * @author lyon
+ * @date 2019/1/23
  */
-public class TopPercentileAggregatorValue implements AggregatorValue<Double> {
+public class TopPercentileAggregatorValue implements AggregatorValue<Double>, Serializable {
 
     private static final long serialVersionUID = -5940270018952259741L;
 

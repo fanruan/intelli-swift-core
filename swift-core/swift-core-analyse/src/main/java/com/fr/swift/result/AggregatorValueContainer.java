@@ -14,6 +14,7 @@ public interface AggregatorValueContainer extends Serializable {
 
     AggregatorValue getAggregatorValue(int key);
 
+
     AggregatorValue[] getAggregatorValue();
 
     void setAggregatorValue(AggregatorValue[] aggregatorValues);
