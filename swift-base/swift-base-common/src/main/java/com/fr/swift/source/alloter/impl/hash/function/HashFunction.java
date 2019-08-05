@@ -3,7 +3,6 @@ package com.fr.swift.source.alloter.impl.hash.function;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fr.swift.source.alloter.impl.time.function.TimePartitionsFunction;
 
 /**
  * @author lucifer
@@ -15,7 +14,7 @@ import com.fr.swift.source.alloter.impl.time.function.TimePartitionsFunction;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = JdkHashFunction.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = JdkHashFunction.class),
-        @JsonSubTypes.Type(value = TimePartitionsFunction.class),
+        @JsonSubTypes.Type(value = TimeHashFunction.class),
 
 })
 public interface HashFunction {

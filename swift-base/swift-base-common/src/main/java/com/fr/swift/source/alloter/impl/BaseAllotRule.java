@@ -29,6 +29,6 @@ public abstract class BaseAllotRule implements AllotRule {
     }
 
     public enum AllotType implements Type {
-        LINE, HASH, TIME
+        LINE, HASH
     }
 }

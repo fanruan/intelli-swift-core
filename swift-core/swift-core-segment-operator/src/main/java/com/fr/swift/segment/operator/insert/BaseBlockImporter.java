@@ -24,7 +24,6 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.BaseAllotRule.AllotType;
 import com.fr.swift.source.alloter.impl.hash.HashRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
-import com.fr.swift.source.alloter.impl.time.TimeRowInfo;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.IoUtil;
 
@@ -103,9 +102,6 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected SegmentInfo allot(int cursor, Row row) {
         if (alloter.getAllotRule().getType() == AllotType.HASH) {
             return alloter.allot(new HashRowInfo(row));
-        }
-        if (alloter.getAllotRule().getType() == AllotType.TIME) {
-            return alloter.allot(new TimeRowInfo(row));
         }
         return alloter.allot(new LineRowInfo(cursor));
     }

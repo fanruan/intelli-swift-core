@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fr.swift.source.alloter.impl.hash.HashAllotRule;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.source.alloter.impl.time.TimeAllotRule;
 
 /**
  * @author anchore
@@ -16,7 +15,6 @@ import com.fr.swift.source.alloter.impl.time.TimeAllotRule;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LineAllotRule.class),
         @JsonSubTypes.Type(value = HashAllotRule.class),
-        @JsonSubTypes.Type(value = TimeAllotRule.class)
 })
 public interface AllotRule {
     Type getType();

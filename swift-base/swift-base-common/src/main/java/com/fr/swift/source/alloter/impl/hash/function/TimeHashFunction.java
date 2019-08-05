@@ -1,36 +1,37 @@
-package com.fr.swift.source.alloter.impl.time.function;
+package com.fr.swift.source.alloter.impl.hash.function;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.swift.source.alloter.impl.hash.function.HashFunction;
-import com.fr.swift.source.alloter.impl.hash.function.HashType;
 
 import java.util.Calendar;
 
 /**
  * @author Marvin
- * @date 8/2/2019
+ * @date 8/5/2019
  * @description
  * @since swift 1.1
  */
-public class TimePartitionsFunction implements HashFunction {
 
-    @JsonProperty("partitions")
-    TimePartitionsType partitionsType;
+public class TimeHashFunction implements HashFunction {
 
-    private TimePartitionsFunction() {
+    @JsonProperty("partitionstype")
+    private TimeType partitionsType;
+
+    private Calendar calendar = Calendar.getInstance();
+
+    public TimeHashFunction() {
+        this(TimeType.YEAR_MONTH);
     }
 
-    public TimePartitionsFunction(TimePartitionsType partitionsType) {
+    public TimeHashFunction(TimeType partitionsType) {
         this.partitionsType = partitionsType;
     }
 
     @Override
     public int indexOf(Object key) {
-        long time = (key == null) ? 0 : Long.valueOf(String.valueOf(key)).longValue();
+        long time = (key == null) ? 0 : Long.parseLong(String.valueOf(key));
         if (time <= 0 || time > System.currentTimeMillis()) {
             time = 0;
         }
-        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         int index = 0;
         switch (partitionsType) {
@@ -43,6 +44,11 @@ public class TimePartitionsFunction implements HashFunction {
             case MONTH:
                 index = calendar.get(Calendar.MONTH);
                 break;
+            case YEAR_MONTH:
+                index = calendar.get(Calendar.YEAR) * 100 + calendar.get(Calendar.MONTH);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + partitionsType);
         }
         return index;
     }
@@ -52,3 +58,4 @@ public class TimePartitionsFunction implements HashFunction {
         return HashType.TIME;
     }
 }
+
