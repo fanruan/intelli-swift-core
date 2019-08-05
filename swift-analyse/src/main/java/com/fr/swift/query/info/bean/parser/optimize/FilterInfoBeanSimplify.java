@@ -21,11 +21,13 @@ import java.util.Set;
 /**
  * @author Moira
  * @date 2019/7/30
- * @description
+ * @description 不同于布尔逻辑的optimize，simple方法用来合并多个过滤的数字范围
  * @since swift 1.0
  */
 public class FilterInfoBeanSimplify {
 
+    private static final String NEGATIVE_INFINITY = "-Infinity";
+    private static final String POSITIVE_INFINITY = "Infinity";
     public static FilterInfoBean simple(FilterInfoBean bean) {
 
         switch (bean.getType()) {
@@ -89,6 +91,7 @@ public class FilterInfoBeanSimplify {
         return result;
     }
 
+    //把beans中rangefilter取出来根据column分组，并且从beans中删掉
     private static Map<String, List<DetailFilterInfoBean>> groupByColumnName(List<FilterInfoBean> beans) {
         List<DetailFilterInfoBean> numberInRangeFilterBeans = new ArrayList<>();
         Iterator<FilterInfoBean> iterator = beans.iterator();
@@ -111,6 +114,7 @@ public class FilterInfoBeanSimplify {
         return filters;
     }
 
+    //例如 a and b,合并这两个filterBean
     private static List<RangeFilterValueBean> prepareUnionAnd(List<RangeFilterValueBean> set) {
         List<RangeFilterValueBean> result = new ArrayList<>();
         Map<RangeFilterValueBean, List<RangeFilterValueBean>> map = buildCombineMap(set, result);
@@ -126,6 +130,7 @@ public class FilterInfoBeanSimplify {
         }
     }
 
+    //例如 a or b or c,合并abc三个filterBean
     private static List<RangeFilterValueBean> prepareUnionOr(List<RangeFilterValueBean> set) {
         List<RangeFilterValueBean> result = new ArrayList<>();
         Map<RangeFilterValueBean, List<RangeFilterValueBean>> map = buildCombineMap(set, result);
@@ -137,6 +142,7 @@ public class FilterInfoBeanSimplify {
         }
     }
 
+    //把可以合并的bean放入map
     private static Map<RangeFilterValueBean, List<RangeFilterValueBean>> buildCombineMap(List<RangeFilterValueBean> set, List<RangeFilterValueBean> result) {
         Map<RangeFilterValueBean, List<RangeFilterValueBean>> map = new HashMap<>();
         for (int i = 0; i < set.size(); i++) {
@@ -151,10 +157,10 @@ public class FilterInfoBeanSimplify {
                 }
             }
             if (map.isEmpty()) {
-                if (set.get(i).getStart().equals("-Infinity")) {
+                if (NEGATIVE_INFINITY.equals(set.get(i).getStart())) {
                     set.get(i).setStart(null);
                 }
-                if (set.get(i).getEnd().equals("Infinity")) {
+                if (POSITIVE_INFINITY.equals(set.get(i).getEnd())) {
                     set.get(i).setEnd(null);
                 }
                 result.add(set.get(i));
