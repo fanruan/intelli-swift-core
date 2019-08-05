@@ -7,6 +7,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
+import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.db.Database;
@@ -40,10 +41,9 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-//import java.util.Collections;
 
 /**
  * This class created on 2018/7/9
@@ -58,15 +58,17 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private static final long serialVersionUID = 7259915342007294244L;
 
+    private transient SwiftSegmentLocationService segLocationSvc;
+
     private transient SwiftSegmentManager segmentManager;
 
     private transient Database database;
 
     private transient SwiftSegmentService swiftSegmentService;
 
-    private SwiftSegmentBucketService bucketService;
+    private transient SwiftSegmentBucketService bucketService;
 
-    private SwiftTableAllotRuleService allotRuleService;
+    private transient SwiftTableAllotRuleService allotRuleService;
 
     private SwiftCollateService() {
     }
@@ -77,6 +79,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         database = SwiftDatabase.getInstance();
         swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
         allotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
         return true;
@@ -88,6 +91,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentManager = null;
         database = null;
         swiftSegmentService = null;
+        segLocationSvc = null;
         bucketService = null;
         allotRuleService = null;
         return true;
@@ -173,6 +177,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     private void clearCollatedSegment(final List<SegmentKey> collateSegKeys, final SourceKey tableKey) {
+        segLocationSvc.delete(new HashSet<>(collateSegKeys));
         swiftSegmentService.removeSegments(collateSegKeys);
         CommonExecutor.get().execute(new Runnable() {
             @Override

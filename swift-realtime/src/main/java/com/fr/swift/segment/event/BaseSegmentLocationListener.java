@@ -13,6 +13,7 @@ import com.fr.swift.source.SourceKey;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,10 @@ import java.util.Map;
  * @author anchore
  * @date 2018/12/28
  */
-abstract class BaseSegmentLocationListener implements SwiftEventListener<List<SegmentKey>> {
+abstract class BaseSegmentLocationListener implements SwiftEventListener<Collection<SegmentKey>> {
 
     @Override
-    public void on(List<SegmentKey> segKeys) {
+    public void on(Collection<SegmentKey> segKeys) {
         if (!SwiftProperty.getProperty().isCluster()) {
             return;
         }
