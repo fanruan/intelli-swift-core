@@ -14,8 +14,7 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, defaultImpl = LineAllotRule.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LineAllotRule.class),
-        @JsonSubTypes.Type(value = HashAllotRule.class)
-
+        @JsonSubTypes.Type(value = HashAllotRule.class),
 })
 public interface AllotRule {
     Type getType();
