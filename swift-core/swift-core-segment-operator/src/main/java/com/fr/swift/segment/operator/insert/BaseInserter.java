@@ -64,7 +64,7 @@ public abstract class BaseInserter {
         }
     }
 
-    protected void putNullIndex() {
+    protected void putNullIndex(int cursor) {
         boolean readable = CubeUtil.isReadable(segment);
 
         for (int i = 0; i < columns.size(); i++) {
@@ -76,6 +76,8 @@ public abstract class BaseInserter {
                 nullIndex = BitMaps.newRoaringMutable();
             }
             MutableBitMap newNullIndex = nullIndices.get(fields.get(i));
+            // bitmap限制在rowCount内
+            newNullIndex.and(RangeBitmap.of(0, cursor));
             newNullIndex.or(nullIndex);
             bitmapIndex.putNullIndex(newNullIndex);
         }
@@ -92,7 +94,9 @@ public abstract class BaseInserter {
         if (allShowIndex.isFull()) {
             allShowIndex = AllShowBitMap.of(cursor);
         } else {
-            allShowIndex = allShowIndex.getOr(new RangeBitmap(lastCursor, cursor));
+            // bitmap限制在rowCount内
+            allShowIndex = allShowIndex.getAnd(new RangeBitmap(0, cursor))
+                    .getOr(new RangeBitmap(lastCursor, cursor));
         }
         segment.putRowCount(cursor);
         segment.putAllShowIndex(allShowIndex);

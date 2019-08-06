@@ -13,7 +13,7 @@ import com.fr.swift.util.Crasher;
  * @date 2018/8/14
  */
 abstract class BaseAlterTableAction implements AlterTableAction {
-    static final SwiftMetaDataService CONF_SVC = SwiftContext.get().getBean(SwiftMetaDataService.class);
+    static final SwiftMetaDataService META_SVC = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
     SwiftMetaDataColumn relatedColumnMeta;
 
