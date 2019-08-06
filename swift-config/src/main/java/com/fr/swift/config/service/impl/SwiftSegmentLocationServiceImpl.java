@@ -6,8 +6,8 @@ import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.ConfigWhere;
-import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
@@ -32,7 +32,7 @@ import java.util.Set;
 public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationService {
 
     private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
-    private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
+    private ConfigSessionCreator tx = SwiftContext.get().getBean(ConfigSessionCreator.class);
 
     @Override
     public boolean delete(final String table, final String clusterId) {

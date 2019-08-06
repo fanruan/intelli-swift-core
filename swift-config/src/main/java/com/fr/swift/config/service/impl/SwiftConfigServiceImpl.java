@@ -6,7 +6,7 @@ import com.fr.swift.config.dao.impl.SwiftConfigDaoImpl;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -21,13 +21,13 @@ import java.util.List;
 @SwiftBean
 public class SwiftConfigServiceImpl implements SwiftConfigService {
 
-    private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+    private ConfigSessionCreator configSessionCreator = SwiftContext.get().getBean(ConfigSessionCreator.class);
     private SwiftConfigDaoImpl swiftConfigDao = SwiftContext.get().getBean(SwiftConfigDaoImpl.class);
 
     @Override
     public <ConfigBean> ConfigBean getConfigBean(final ConfigConvert<ConfigBean> convert, final Object... args) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<ConfigBean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<ConfigBean>() {
                 @Override
                 public ConfigBean work(ConfigSession session) throws SQLException {
                     return convert.toBean(swiftConfigDao, session, args);
@@ -48,7 +48,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     public <ConfigBean> boolean updateConfigBean(ConfigConvert<ConfigBean> convert, ConfigBean bean, Object... args) {
         final List<SwiftConfigEntity> configEntities = convert.toEntity(bean, args);
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (SwiftConfigEntity configEntity : configEntities) {
@@ -67,7 +67,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     public <ConfigBean> boolean deleteConfigBean(ConfigConvert<ConfigBean> convert, ConfigBean bean, Object... args) {
         final List<SwiftConfigEntity> configEntities = convert.toEntity(bean, args);
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (SwiftConfigEntity configEntity : configEntities) {
