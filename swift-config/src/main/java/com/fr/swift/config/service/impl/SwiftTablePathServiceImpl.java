@@ -7,8 +7,8 @@ import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.entity.key.SwiftTablePathKey;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.ConfigWhere;
-import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @SwiftBean
 public class SwiftTablePathServiceImpl implements SwiftTablePathService {
     private SwiftTablePathDao swiftTablePathDao = SwiftContext.get().getBean(SwiftTablePathDao.class);
-    private TransactionManager tx = SwiftContext.get().getBean(TransactionManager.class);
+    private ConfigSessionCreator tx = SwiftContext.get().getBean(ConfigSessionCreator.class);
     private ConcurrentHashMap<String, SwiftTablePathEntity> tablePath = new ConcurrentHashMap<String, SwiftTablePathEntity>();
 
     public SwiftTablePathServiceImpl() {
