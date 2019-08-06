@@ -27,7 +27,6 @@ import com.fr.swift.result.qrs.EmptyQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
-import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
@@ -55,11 +54,6 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
 
     public SwiftQueryableProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
-    }
-
-    private static boolean isLocalURL(URL url) {
-        return url == null || url.getDestination().getId() == null
-                || url.getDestination().getId().equals(ClusterSelector.getInstance().getFactory().getCurrentId());
     }
 
     @Override
@@ -153,6 +147,6 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
             // 单机
             map.put(Strings.EMPTY, Pair.<URL, Set<String>>of(null, new HashSet<String>()));
         }
-        return Collections.unmodifiableList(new ArrayList<Pair<URL, Set<String>>>(map.values()));
+        return Collections.unmodifiableList(new ArrayList<>(map.values()));
     }
 }
