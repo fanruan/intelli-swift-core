@@ -153,9 +153,7 @@ public class GroupBy {
             @Override
             public void actionPerformed(int row) {
                 int groupRow = dictionaryEncodedColumn.getIndexByRow(row);
-                if (groupRow != NULL_INT) {
-                    groupIndex[groupRow] = true;
-                }
+                groupIndex[groupRow] = true;
             }
         });
         return asc ? getArraySortAscResult(bitMapColumn, groupIndex, startIndex, filteredTraversal) :
@@ -236,7 +234,7 @@ public class GroupBy {
 
             @Override
             public boolean hasNext() {
-                return groupRow != NULL_INT;
+                return groupRow != -1;
             }
 
             @Override
@@ -244,7 +242,7 @@ public class GroupBy {
                 IntList list = IntListFactory.createHeapIntList(1);
                 list.add(row);
                 GroupByEntry entry = new IntListGroupByEntry(groupRow, new IntListRowTraversal(list));
-                groupRow = NULL_INT;
+                groupRow = -1;
                 return entry;
             }
         };
@@ -304,9 +302,6 @@ public class GroupBy {
     }
 
     private static boolean match(int startIndex, boolean asc, int groupRow) {
-        if (groupRow == NULL_INT) {
-            return false;
-        }
         if (startIndex == 0) {
             return true;
         }
@@ -323,12 +318,10 @@ public class GroupBy {
             @Override
             public void actionPerformed(int row) {
                 int groupRow = dictionaryEncodedColumn.getIndexByRow(row);
-                if (groupRow != NULL_INT) {
-                    if (groupArray[groupRow] == null) {
-                        groupArray[groupRow] = IntListFactory.createHeapIntList();
-                    }
-                    groupArray[groupRow].add(row);
+                if (groupArray[groupRow] == null) {
+                    groupArray[groupRow] = IntListFactory.createHeapIntList();
                 }
+                groupArray[groupRow].add(row);
             }
         });
         return asc ? getArrayResortAscResult(groupArray, startIndex) : getArrayResortDescResult(groupArray, startIndex);
