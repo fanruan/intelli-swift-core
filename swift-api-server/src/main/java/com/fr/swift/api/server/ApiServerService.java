@@ -8,4 +8,6 @@ import com.fr.swift.api.server.response.ApiResponse;
  */
 public interface ApiServerService {
     ApiResponse dispatchRequest(String request);
+
+    void close(String queryId);
 }
