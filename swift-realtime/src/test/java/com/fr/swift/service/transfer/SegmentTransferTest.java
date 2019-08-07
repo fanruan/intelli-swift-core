@@ -1,4 +1,4 @@
-package com.fr.swift.segment.operator;
+package com.fr.swift.service.transfer;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
