@@ -61,11 +61,17 @@ public class RoaringMutableBitMap extends RoaringImmutableBitMap implements Muta
 
     @Override
     public void and(ImmutableBitMap index) {
+        if (isEmpty() || index.isFull()) {
+            return;
+        }
         if (index.isEmpty()) {
             bitmap.clear();
             return;
         }
-        if (index.isFull()) {
+        if (index instanceof RangeBitmap) {
+            MutableRoaringBitmap range = new MutableRoaringBitmap();
+            range.add((long) ((RangeBitmap) index).start, ((RangeBitmap) index).end);
+            bitmap.and(range);
             return;
         }
         bitmap.and(extract(index));
@@ -78,7 +84,7 @@ public class RoaringMutableBitMap extends RoaringImmutableBitMap implements Muta
 
     @Override
     public void andNot(ImmutableBitMap index) {
-        if (index.isEmpty()) {
+        if (isEmpty() || index.isEmpty()) {
             return;
         }
         if (index.isFull()) {
