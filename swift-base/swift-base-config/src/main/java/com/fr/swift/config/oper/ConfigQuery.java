@@ -26,11 +26,6 @@ public interface ConfigQuery<Entity> {
      */
     void orderBy(Order... orders);
 
-    /**
-     * 执行Hibernate Query中的executeUpdate
-     * @return
-     */
-    int executeUpdate();
 
     Page<Entity> executeQuery(int page, int size);
 }

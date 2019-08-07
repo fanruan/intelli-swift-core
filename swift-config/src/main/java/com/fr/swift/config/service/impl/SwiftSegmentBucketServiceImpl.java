@@ -8,7 +8,7 @@ import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.log.SwiftLoggers;
@@ -27,19 +27,19 @@ import java.util.List;
 @SwiftBean
 public class SwiftSegmentBucketServiceImpl implements SwiftSegmentBucketService {
     private SwiftSegmentBucketDao swiftSegmentBucketDao;
-    private TransactionManager transactionManager;
+    private ConfigSessionCreator configSessionCreator;
     private SwiftSegmentDao swiftSegmentDao;
 
     public SwiftSegmentBucketServiceImpl() {
         this.swiftSegmentBucketDao = SwiftContext.get().getBean(SwiftSegmentBucketDao.class);
-        this.transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+        this.configSessionCreator = SwiftContext.get().getBean(ConfigSessionCreator.class);
         this.swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
     }
 
     @Override
     public SwiftSegmentBucket getBucketByTable(final SourceKey sourceKey) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SwiftSegmentBucket>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<SwiftSegmentBucket>() {
                 @Override
                 public SwiftSegmentBucket work(ConfigSession session) throws SQLException {
                     List<SwiftSegmentBucketElement> elementList = swiftSegmentBucketDao.find(session,
@@ -61,7 +61,7 @@ public class SwiftSegmentBucketServiceImpl implements SwiftSegmentBucketService 
     @Override
     public boolean saveElement(final SwiftSegmentBucketElement element) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     return swiftSegmentBucketDao.saveOrUpdate(session, element);

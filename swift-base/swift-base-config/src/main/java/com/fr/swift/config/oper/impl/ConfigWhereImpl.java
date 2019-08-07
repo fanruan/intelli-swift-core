@@ -2,6 +2,7 @@ package com.fr.swift.config.oper.impl;
 
 
 import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -22,26 +23,34 @@ public class ConfigWhereImpl<T> implements ConfigWhere<T> {
     }
 
     public static ConfigWhere<Number> gt(String column, Number value) {
-        return new ConfigWhereImpl<Number>(column, value, Type.GT);
+        return new ConfigWhereImpl<>(column, value, Type.GT);
     }
 
     public static ConfigWhere<Serializable> eq(String column, Serializable value) {
-        return new ConfigWhereImpl<Serializable>(column, value, Type.EQ);
+        return new ConfigWhereImpl<>(column, value, Type.EQ);
     }
 
     public static ConfigWhere<Collection> in(String column, Collection value) {
-        return new ConfigWhereImpl<Collection>(column, value, Type.IN);
+        return new ConfigWhereImpl<>(column, value, Type.IN);
     }
 
     public static ConfigWhere<String> like(String column, String value, MatchMode mode) {
         switch (mode) {
             case END:
-                return new ConfigWhereImpl<String>(column, String.format("%%%s", value), Type.LIKE);
+                return new ConfigWhereImpl<>(column, String.format("%%%s", value), Type.LIKE);
             case START:
-                return new ConfigWhereImpl<String>(column, String.format("%s%%", value), Type.LIKE);
+                return new ConfigWhereImpl<>(column, String.format("%s%%", value), Type.LIKE);
             default:
-                return new ConfigWhereImpl<String>(column, String.format("%%%s%%", value), Type.LIKE);
+                return new ConfigWhereImpl<>(column, String.format("%%%s%%", value), Type.LIKE);
         }
+    }
+
+    public static ConfigWhere<ConfigWhere[]> and(ConfigWhere... wheres) {
+        return new ConfigWhereImpl<>(Strings.EMPTY, wheres, Type.AND);
+    }
+
+    public static ConfigWhere<ConfigWhere[]> or(ConfigWhere... wheres) {
+        return new ConfigWhereImpl<>(Strings.EMPTY, wheres, Type.OR);
     }
 
     @Override

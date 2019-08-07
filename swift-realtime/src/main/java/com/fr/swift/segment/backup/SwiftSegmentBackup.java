@@ -15,7 +15,7 @@ public interface SwiftSegmentBackup extends Releasable {
 
     void backupRowData(int cursor, Row rowData);
 
-    void backupNullIndex();
+    void backupNullIndex(int cursor);
 
     void backupSegmentInfo(int lastCursor, int cursor);
 

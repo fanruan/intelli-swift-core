@@ -10,8 +10,8 @@ import com.fr.swift.config.dao.impl.SwiftSegmentLocationDaoImpl;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.TransactionManager;
-import com.fr.swift.config.oper.impl.BaseTransactionManager;
+import com.fr.swift.config.oper.ConfigSessionCreator;
+import com.fr.swift.config.oper.impl.BaseConfigSessionCreator;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.converter.ObjectConverter;
@@ -64,13 +64,13 @@ public class SwiftSegmentServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         final ConfigSession mockConfigSession = mockSession();
 
-        BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
+        BaseConfigSessionCreator mockBaseTransactionManager = new BaseConfigSessionCreator() {
             @Override
-            protected ConfigSession createSession() {
+            public ConfigSession createSession() {
                 return mockConfigSession;
             }
         };
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(TransactionManager.class))).andReturn(mockBaseTransactionManager).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(ConfigSessionCreator.class))).andReturn(mockBaseTransactionManager).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentLocationDao.class))).andReturn(new SwiftSegmentLocationDaoImpl()).anyTimes();
         // Generate by Mock Plugin
         SwiftMetaDataService mockSwiftMetaDataService = PowerMock.createMock(SwiftMetaDataService.class);

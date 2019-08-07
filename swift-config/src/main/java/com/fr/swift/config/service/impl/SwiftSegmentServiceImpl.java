@@ -10,10 +10,10 @@ import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.Page;
-import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
 import com.fr.swift.config.oper.exception.SwiftEntityExistsException;
 import com.fr.swift.config.oper.exception.SwiftNonUniqueObjectException;
@@ -51,7 +51,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
      */
     @Deprecated
     private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
-    private TransactionManager transactionManager = SwiftContext.get().getBean(TransactionManager.class);
+    private ConfigSessionCreator configSessionCreator = SwiftContext.get().getBean(ConfigSessionCreator.class);
     private SwiftSegmentDao swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
     private SwiftSegmentBucketDao segmentBucketDao = SwiftContext.get().getBean(SwiftSegmentBucketDao.class);
 
@@ -63,7 +63,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public boolean addSegments(final List<SegmentKey> segments) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     return addSegmentsWithoutTransaction(session, segments);
@@ -78,7 +78,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public boolean removeSegments(final String... sourceKey) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (String key : sourceKey) {
@@ -103,7 +103,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
             if (null == segmentKeys) {
                 return false;
             }
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(final ConfigSession session) throws SQLException {
                     try {
@@ -139,7 +139,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public boolean updateSegments(final String sourceKey, final List<SegmentKey> segments) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     swiftSegmentDao.deleteBySourceKey(session, sourceKey);
@@ -155,7 +155,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public Map<SourceKey, List<SegmentKey>> getAllSegments() {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
                 @Override
                 public Map<SourceKey, List<SegmentKey>> work(ConfigSession session) throws SQLException {
                     Map<SourceKey, List<SegmentKey>> result = swiftSegmentDao.findSegmentKeyWithSourceKey(session);
@@ -184,7 +184,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public boolean containsSegment(final SegmentKey segmentKey) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     return null != swiftSegmentDao.select(session, segmentKey.getId());
@@ -200,7 +200,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
         try {
             final SegmentKey segmentKey = tryAppendSegmentWithoutLocation(tableKey, storeType);
 
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
                 @Override
                 public SegmentKey work(ConfigSession session) throws SQLException {
                     addSegmentsWithoutTransaction(session, Collections.singleton(segmentKey));
@@ -215,7 +215,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     private SegmentKey tryAppendSegmentWithoutLocation(final SourceKey tableKey, final StoreType storeType) throws SQLException {
         do {
             try {
-                return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
+                return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
                     @Override
                     public SegmentKey work(ConfigSession session) throws SQLException {
                         List<SegmentKey> entities = swiftSegmentDao.find(session,
@@ -264,7 +264,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
             wheres.add(ConfigWhereImpl.eq("swiftSchema", swiftSchema));
         }
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Page<SegmentKey>>(false) {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Page<SegmentKey>>(false) {
                 @Override
                 public Page<SegmentKey> work(ConfigSession session) throws SQLException {
                     try {
@@ -291,7 +291,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public Set<SegmentKey> getByIds(final Set<String> segIds) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Set<SegmentKey>>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Set<SegmentKey>>() {
                 @Override
                 public Set<SegmentKey> work(ConfigSession session) {
                     return new HashSet<>(swiftSegmentDao.find(session, ConfigWhereImpl.in("id", segIds)));
@@ -311,7 +311,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public Map<SourceKey, List<SegmentKey>> getOwnSegments(final String clusterId) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
                 @Override
                 public Map<SourceKey, List<SegmentKey>> work(final ConfigSession session) throws SQLException {
                     final Set<String> segmentIds = new HashSet<String>();
@@ -340,7 +340,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public boolean updateSegmentTable(final Map<String, Set<SegmentKey>> segmentTable) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
                 @Override
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (Map.Entry<String, Set<SegmentKey>> entry : segmentTable.entrySet()) {
@@ -361,7 +361,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     @Override
     public List<SegmentKey> find(final ConfigWhere... criterion) {
         try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SegmentKey>>(false) {
+            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<List<SegmentKey>>(false) {
                 @Override
                 public List<SegmentKey> work(final ConfigSession session) throws SQLException {
                     try {
