@@ -1,6 +1,7 @@
 package com.fr.swift.service.transfer;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.segment.RealtimeSegment;
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author anchore
  * @date 2018/7/27
  */
-@Service
+@SwiftBean
 public class ScheduledRealtimeTransfer implements Runnable {
     private final SwiftSegmentService segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
 
