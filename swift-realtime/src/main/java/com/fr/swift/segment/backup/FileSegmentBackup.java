@@ -40,12 +40,12 @@ public class FileSegmentBackup extends BaseInserter implements SwiftSegmentBacku
     }
 
     @Override
-    public void backupNullIndex() {
-        putNullIndex();
+    public void backupNullIndex(int cursor) {
+        putNullIndex(cursor);
     }
 
     @Override
-    protected void putNullIndex() {
+    protected void putNullIndex(int cursor) {
         boolean readable = CubeUtil.isReadable(segment);
 
         for (int i = 0; i < columns.size(); i++) {

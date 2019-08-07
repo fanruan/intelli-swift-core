@@ -1,8 +1,8 @@
 package com.fr.swift.config.oper.impl;
 
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigSessionCreator.TransactionWorker;
 import com.fr.swift.config.oper.ConfigTransaction;
-import com.fr.swift.config.oper.TransactionManager.TransactionWorker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(TransactionWorker.class)
-public class BaseTransactionManagerTest {
+public class BaseConfigSessionCreatorTest {
 
     @Test
     public void doTransactionIfNeed() throws SQLException {
@@ -48,9 +48,9 @@ public class BaseTransactionManagerTest {
         TransactionWorker noTransaction = PowerMockito.mock(TransactionWorker.class);
         Mockito.when(noTransaction.work(mockConfigSession)).thenReturn(null);
         Mockito.when(noTransaction.needTransaction()).thenReturn(false);
-        BaseTransactionManager manager = new BaseTransactionManager() {
+        BaseConfigSessionCreator manager = new BaseConfigSessionCreator() {
             @Override
-            protected ConfigSession createSession() {
+            public ConfigSession createSession() {
                 return mockConfigSession;
             }
         };

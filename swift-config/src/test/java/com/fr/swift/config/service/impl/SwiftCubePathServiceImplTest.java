@@ -4,8 +4,8 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.config.dao.impl.SwiftConfigDaoImpl;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.TransactionManager;
-import com.fr.swift.config.oper.impl.BaseTransactionManager;
+import com.fr.swift.config.oper.ConfigSessionCreator;
+import com.fr.swift.config.oper.impl.BaseConfigSessionCreator;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftCubePathService.PathChangeListener;
@@ -46,13 +46,13 @@ public class SwiftCubePathServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         final ConfigSession mockConfigSession = mockSession(SwiftConfigEntity.class);
 
-        BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
+        BaseConfigSessionCreator mockBaseTransactionManager = new BaseConfigSessionCreator() {
             @Override
-            protected ConfigSession createSession() {
+            public ConfigSession createSession() {
                 return mockConfigSession;
             }
         };
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(TransactionManager.class))).andReturn(mockBaseTransactionManager).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(ConfigSessionCreator.class))).andReturn(mockBaseTransactionManager).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(SwiftConfigDaoImpl.class)).andReturn(new SwiftConfigDaoImpl()).anyTimes();
 // Generate by Mock Plugin
         ContextProvider mockContextProvider = PowerMock.createMock(ContextProvider.class);

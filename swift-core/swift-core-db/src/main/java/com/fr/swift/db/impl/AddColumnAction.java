@@ -44,9 +44,9 @@ public class AddColumnAction extends BaseAlterTableAction {
                     oldMeta.getSchemaName(),
                     oldMeta.getTableName(),
                     oldMeta.getRemark(), columnMetas);
-            CONF_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
+            META_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
         } catch (SwiftMetaDataException e) {
-            SwiftLoggers.getLogger().error("alter meta failed: {}", e);
+            SwiftLoggers.getLogger().error("alter meta failed", e);
         }
     }
 }

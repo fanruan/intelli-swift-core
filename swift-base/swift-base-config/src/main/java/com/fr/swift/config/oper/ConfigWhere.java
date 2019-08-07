@@ -11,7 +11,7 @@ public interface ConfigWhere<T> extends Expression {
 
     enum Type {
         //
-        EQ, IN, LIKE, GT
+        EQ, IN, LIKE, GT, AND, OR
     }
 
     enum MatchMode {
