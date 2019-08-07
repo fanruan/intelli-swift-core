@@ -3,7 +3,7 @@ package com.fr.swift.executor.task.job.impl;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.operator.SegmentTransfer;
+import com.fr.swift.service.transfer.SegmentTransfer;
 
 /**
  * This class created on 2019/2/19
