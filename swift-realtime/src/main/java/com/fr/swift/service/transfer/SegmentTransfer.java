@@ -1,4 +1,4 @@
-package com.fr.swift.segment.operator;
+package com.fr.swift.service.transfer;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
@@ -57,11 +57,16 @@ public class SegmentTransfer {
 
             onSucceed();
         } catch (Exception e) {
-            remove(histSegKey);
+            onFailed();
             SwiftLoggers.getLogger().error("seg transfer from {} to {} failed", realtSegKey, histSegKey, e);
         } finally {
             SegmentUtils.releaseHisSeg(Arrays.asList(realtSeg, histSeg));
         }
+    }
+
+    private void onFailed() {
+        remove(realtSegKey);
+        remove(histSegKey);
     }
 
     private void onSucceed() {
