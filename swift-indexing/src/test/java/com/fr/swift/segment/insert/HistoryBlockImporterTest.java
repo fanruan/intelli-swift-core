@@ -2,7 +2,11 @@ package com.fr.swift.segment.insert;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -49,7 +53,15 @@ public class HistoryBlockImporterTest {
     public void setUp() {
         mockStatic(SwiftContext.class);
         when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
-        when(SwiftContext.get().getBean(SwiftCubePathService.class)).thenReturn(mock(SwiftCubePathService.class));
+        final ContextProvider mock = mock(ContextProvider.class);
+        when(mock.getContextPath()).thenReturn("/");
+        when(SwiftContext.get().getBean(ContextProvider.class)).thenReturn(mock);
+
+        SwiftConfig service = mock(SwiftConfig.class);
+        when(SwiftContext.get().getBean(SwiftConfig.class)).thenReturn(service);
+        final SwiftConfigEntityQueryBus query = mock(SwiftConfigEntityQueryBus.class);
+        when(service.query(SwiftConfigEntity.class)).thenReturn(query);
+        when(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, "/")).thenReturn("/");
     }
 
     @Test

@@ -5,9 +5,13 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.db.SwiftSchema;
@@ -78,9 +82,15 @@ public class HisSegmentMergerImplTest {
         });
 
         // mock cube path service
-        SwiftCubePathService service = mock(SwiftCubePathService.class);
-        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(service);
-        when(service.getSwiftPath()).thenReturn("/");
+        final ContextProvider mock = mock(ContextProvider.class);
+        when(mock.getContextPath()).thenReturn("/");
+        when(beanFactory.getBean(ContextProvider.class)).thenReturn(mock);
+
+        SwiftConfig service = mock(SwiftConfig.class);
+        when(beanFactory.getBean(SwiftConfig.class)).thenReturn(service);
+        final SwiftConfigEntityQueryBus query = mock(SwiftConfigEntityQueryBus.class);
+        when(service.query(SwiftConfigEntity.class)).thenReturn(query);
+        when(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, "/")).thenReturn("/");
     }
 
     @Test

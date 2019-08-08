@@ -6,12 +6,15 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigTransaction;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yee
  * @date 2019-07-30
  */
 public abstract class BaseSwiftConfigCommandBus<T> implements SwiftConfigCommandBus<T> {
+    protected List<SaveOrUpdateListener<T>> listeners = new ArrayList<>();
 
     @Override
     public <R> R transaction(SwiftConfigCommand<R> fn) throws SQLException {
@@ -23,6 +26,11 @@ public abstract class BaseSwiftConfigCommandBus<T> implements SwiftConfigCommand
         } catch (Exception e) {
             throw new SQLException(e);
         }
+    }
+
+    @Override
+    public void addSaveOrUpdateListener(SaveOrUpdateListener<T> listener) {
+        listeners.add(listener);
     }
 
     /**

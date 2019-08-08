@@ -2,8 +2,12 @@ package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
@@ -36,6 +40,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author lucifer
@@ -46,7 +51,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @SuppressStaticInitializationFor("com.fr.swift.db.impl.SwiftDatabase")
-@PrepareForTest({SwiftContext.class, MutableImporter.class, CubeUtil.class, SwiftCubePathService.class, MutableInserter.class, SwiftDatabase.class})
+@PrepareForTest({SwiftContext.class, MutableImporter.class, CubeUtil.class, MutableInserter.class, SwiftDatabase.class})
 public class MutableImporterTest {
 
     SwiftMetaData baseMetadata = SwiftMutableResultSetTest.getFirstMetadata();
@@ -76,7 +81,15 @@ public class MutableImporterTest {
 
         Mockito.when(dataSource.getMetadata()).thenReturn(baseMetadata);
         Mockito.when(dataSource.getSourceKey()).thenReturn(new SourceKey("test"));
-        Mockito.when(SwiftContext.get().getBean(SwiftCubePathService.class)).thenReturn(mock(SwiftCubePathService.class));
+        final ContextProvider mock = mock(ContextProvider.class);
+        when(mock.getContextPath()).thenReturn("/");
+        when(SwiftContext.get().getBean(ContextProvider.class)).thenReturn(mock);
+
+        SwiftConfig service = mock(SwiftConfig.class);
+        when(SwiftContext.get().getBean(SwiftConfig.class)).thenReturn(service);
+        final SwiftConfigEntityQueryBus query = mock(SwiftConfigEntityQueryBus.class);
+        when(service.query(SwiftConfigEntity.class)).thenReturn(query);
+        when(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, "/")).thenReturn("/");
         PowerMockito.mockStatic(CubeUtil.class);
         Mockito.when(CubeUtil.getCurrentDir(new SourceKey("test"))).thenReturn(1);
         CubePathBuilder cubePathBuilder = mock(CubePathBuilder.class, Mockito.RETURNS_DEEP_STUBS);

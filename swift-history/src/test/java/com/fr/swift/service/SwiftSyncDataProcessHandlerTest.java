@@ -17,8 +17,10 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.DataSyncRule;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.service.DataSyncRuleService;
+import com.fr.swift.config.query.SwiftConfigQueryBus;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.SwiftSchema;
@@ -30,6 +32,7 @@ import com.fr.swift.service.handler.history.SwiftHistoryEventHandler;
 import com.fr.swift.service.handler.indexing.SwiftIndexingEventHandler;
 import com.fr.swift.service.handler.realtime.SwiftRealTimeEventHandler;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.function.Function;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +63,7 @@ public class SwiftSyncDataProcessHandlerTest {
         // Generate by Mock Plugin
         PowerMock.mockStatic(SwiftContext.class);
         BeanFactory mockBeanFactory = PowerMock.createMock(BeanFactory.class);
-        EasyMock.expect(mockBeanFactory.getBean(EasyMock.eq(DataSyncRuleService.class))).andReturn(mockDataSyncRuleService()).anyTimes();
+        EasyMock.expect(mockBeanFactory.getBean(EasyMock.eq(SwiftConfig.class))).andReturn(mockDataSyncRuleService()).anyTimes();
         EasyMock.expect(mockBeanFactory.getBean(EasyMock.eq(SwiftClusterSegmentService.class))).andReturn(mockSwiftClusterSegmentService()).anyTimes();
         EasyMock.expect(mockBeanFactory.getBean(EasyMock.eq(SwiftHistoryEventHandler.class))).andReturn(null).anyTimes();
         EasyMock.expect(mockBeanFactory.getBean(EasyMock.eq(SwiftAnalyseEventHandler.class))).andReturn(mockSwiftAnalyseEventHandler()).anyTimes();
@@ -92,16 +95,18 @@ public class SwiftSyncDataProcessHandlerTest {
 
     }
 
-    private DataSyncRuleService mockDataSyncRuleService() {
+    private SwiftConfig mockDataSyncRuleService() {
         // Generate by Mock Plugin
-        DataSyncRuleService mockDataSyncRuleService = PowerMock.createMock(DataSyncRuleService.class);
+        SwiftConfig mockDataSyncRuleService = PowerMock.createMock(SwiftConfig.class);
         // Generate by Mock Plugin
         DataSyncRule mockDataSyncRule = PowerMock.createMock(DataSyncRule.class);
         Map<String, List<SegmentKey>> map = new HashMap<String, List<SegmentKey>>();
         map.put("clusterId", Arrays.<SegmentKey>asList(new SwiftSegmentEntity(new SourceKey("table"), 0, Types.StoreType.FINE_IO, SwiftSchema.CUBE)));
         EasyMock.expect(mockDataSyncRule.getNeedLoadAndUpdateDestinations(EasyMock.notNull(Set.class), EasyMock.notNull(Set.class), EasyMock.notNull(Map.class))).andReturn(map).anyTimes();
 
-        EasyMock.expect(mockDataSyncRuleService.getCurrentRule()).andReturn(mockDataSyncRule).anyTimes();
+        final SwiftConfigQueryBus mock = EasyMock.createMock(SwiftConfigQueryBus.class);
+        EasyMock.expect(mock.select(EasyMock.anyString(), EasyMock.anyObject(Function.class))).andReturn(mockDataSyncRule).anyTimes();
+        EasyMock.expect(mockDataSyncRuleService.query(EasyMock.eq(SwiftConfigEntity.class))).andReturn(mock).anyTimes();
         PowerMock.replay(mockDataSyncRuleService, mockDataSyncRule);
 
         return mockDataSyncRuleService;

@@ -62,4 +62,10 @@ public interface SwiftConfigCommandBus<T> {
      * @throws SQLException
      */
     <R> R transaction(SwiftConfigCommand<R> fn) throws SQLException;
+
+    void addSaveOrUpdateListener(SaveOrUpdateListener<T> listener);
+
+    interface SaveOrUpdateListener<T> {
+        void saveOrUpdate(T entity);
+    }
 }
