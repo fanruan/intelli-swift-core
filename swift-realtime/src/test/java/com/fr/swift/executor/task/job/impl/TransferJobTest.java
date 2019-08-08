@@ -3,7 +3,7 @@ package com.fr.swift.executor.task.job.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.operator.SegmentTransfer;
+import com.fr.swift.service.transfer.SegmentTransfer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;

@@ -43,11 +43,14 @@ public class RoaringImmutableBitMap extends BaseRoaringBitMap {
 
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
-        if (index.isEmpty()) {
-            return index;
+        if (isEmpty() || index.isEmpty()) {
+            return BitMaps.EMPTY_IMMUTABLE;
         }
         if (index.isFull()) {
             return this;
+        }
+        if (index instanceof RangeBitmap) {
+            return FasterAggregation.and(this, (RangeBitmap) index);
         }
 
         MutableRoaringBitmap copy = bitmap.clone();
@@ -61,10 +64,12 @@ public class RoaringImmutableBitMap extends BaseRoaringBitMap {
         if (index.isEmpty()) {
             return this;
         }
-        if (index.isFull()) {
+        if (isEmpty() || index.isFull()) {
             return index;
         }
-
+        if (index instanceof RangeBitmap) {
+            return FasterAggregation.or(this, (RangeBitmap) index);
+        }
         MutableRoaringBitmap copy = bitmap.clone();
         copy.or(extract(index));
 
@@ -76,11 +81,11 @@ public class RoaringImmutableBitMap extends BaseRoaringBitMap {
         if (index.isEmpty()) {
             return this;
         }
-        if (index.isFull()) {
+        if (isEmpty() || index.isFull()) {
             return BitMaps.EMPTY_IMMUTABLE;
         }
         if (index instanceof RangeBitmap) {
-            return FasterAggregation.andNot(this, ((RangeBitmap) index));
+            return FasterAggregation.andNot(this, (RangeBitmap) index);
         }
 
         MutableRoaringBitmap copy = bitmap.clone();

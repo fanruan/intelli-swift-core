@@ -1,6 +1,7 @@
 package com.fr.swift.bitmap.impl;
 
 import com.fr.swift.bitmap.BitMapType;
+import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
@@ -26,7 +27,7 @@ public class RangeBitmap extends AbstractBitMap {
     final int start, end;
 
     public RangeBitmap(int start, int end) {
-        Assert.isTrue(start <= end, "start > end, illegal");
+        Assert.isTrue(start >= 0 && start <= end, "start < 0 or start > end, illegal");
         this.start = start;
         this.end = end;
     }
@@ -37,14 +38,26 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
+        if (isEmpty() || index.isEmpty()) {
+            return BitMaps.EMPTY_IMMUTABLE;
+        }
+        if (index.isFull()) {
+            return this;
+        }
         if (index instanceof RangeBitmap) {
-            return FasterAggregation.and(this, ((RangeBitmap) index));
+            return FasterAggregation.and(this, (RangeBitmap) index);
         }
         return index.getAnd(this);
     }
 
     @Override
     public ImmutableBitMap getOr(ImmutableBitMap index) {
+        if (isEmpty() || index.isFull()) {
+            return index;
+        }
+        if (index.isEmpty()) {
+            return this;
+        }
         if (index instanceof RangeBitmap) {
             return FasterAggregation.or(this, ((RangeBitmap) index));
         }
@@ -53,6 +66,12 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public ImmutableBitMap getAndNot(ImmutableBitMap index) {
+        if (isEmpty() || index.isFull()) {
+            return BitMaps.EMPTY_IMMUTABLE;
+        }
+        if (index.isEmpty()) {
+            return this;
+        }
         if (index instanceof RangeBitmap) {
             return FasterAggregation.andNot(this, ((RangeBitmap) index));
         }
@@ -67,8 +86,8 @@ public class RangeBitmap extends AbstractBitMap {
             return of(0, start);
         }
         MutableRoaringBitmap b = new MutableRoaringBitmap();
-        b.flip(0L, start);
-        b.flip((long) end, bound);
+        b.add(0L, start);
+        b.add((long) end, bound);
         return RoaringImmutableBitMap.of(b);
     }
 
@@ -89,7 +108,7 @@ public class RangeBitmap extends AbstractBitMap {
 
     private MutableBitMap toRealBitmap() {
         MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
-        bitmap.flip(start, end);
+        bitmap.add((long) start, (long) end);
         return RoaringMutableBitMap.of(bitmap);
     }
 
@@ -137,7 +156,10 @@ public class RangeBitmap extends AbstractBitMap {
 
     @Override
     public String toString() {
-        return String.format("{%d, ..., %d}", start, end - 1);
+        return start == end ? "{}" :
+                start == end - 1 ?
+                        String.format("{%d}", start) : String.format("{%d, ..., %d}", start, end - 1);
+
     }
 
     @Override
