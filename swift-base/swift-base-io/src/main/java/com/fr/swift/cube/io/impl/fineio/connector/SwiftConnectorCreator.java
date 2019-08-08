@@ -38,7 +38,12 @@ public class SwiftConnectorCreator {
     }
 
     public static Connector create(FineIOConnectorConfig fineIOConnectorConfig) {
-        String key = fineIOConnectorConfig.type();
+        String key = null;
+        if (null == fineIOConnectorConfig) {
+            key = CommonConnectorType.LZ4.name();
+        } else {
+            key = fineIOConnectorConfig.type();
+        }
         try {
             CommonConnectorType type = CommonConnectorType.valueOf(key);
             switch (type) {
@@ -61,11 +66,11 @@ public class SwiftConnectorCreator {
     }
 
     public static PackageConnector createPackConnector(FineIOConnectorConfig connectorConfig) {
-        String name = connectorConfig.type();
+        String name = null == connectorConfig ? "DEFAULT" : connectorConfig.type();
         if (INSTANCE.packageBuilder.containsKey(name)) {
             return INSTANCE.packageBuilder.get(name).build(connectorConfig);
         }
-        if (INSTANCE.packageBuilder.containsKey("DEFAULT"))  {
+        if (INSTANCE.packageBuilder.containsKey("DEFAULT")) {
             return INSTANCE.packageBuilder.get("DEFAULT").build(connectorConfig);
         }
         return Crasher.crash(String.format("Cannot build package connector witch type is %s", name));

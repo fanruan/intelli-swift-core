@@ -2,7 +2,11 @@ package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import org.junit.Assert;
@@ -11,6 +15,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -40,10 +45,15 @@ public abstract class BaseRealtimeColumnTest<T> {
     public void setUp() throws Exception {
         mockStatic(SwiftContext.class);
         when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
-        SwiftCubePathService cubePathService = mock(SwiftCubePathService.class);
-        when(SwiftContext.get().getBean(SwiftCubePathService.class)).thenReturn(cubePathService);
+        final ContextProvider mock = PowerMockito.mock(ContextProvider.class);
+        PowerMockito.when(mock.getContextPath()).thenReturn("/");
+        PowerMockito.when(SwiftContext.get().getBean(ContextProvider.class)).thenReturn(mock);
 
-        when(cubePathService.getSwiftPath()).thenReturn("/");
+        SwiftConfig service = PowerMockito.mock(SwiftConfig.class);
+        PowerMockito.when(SwiftContext.get().getBean(SwiftConfig.class)).thenReturn(service);
+        final SwiftConfigEntityQueryBus query = PowerMockito.mock(SwiftConfigEntityQueryBus.class);
+        PowerMockito.when(service.query(SwiftConfigEntity.class)).thenReturn(query);
+        PowerMockito.when(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, "/")).thenReturn("/");
     }
 
     @Test

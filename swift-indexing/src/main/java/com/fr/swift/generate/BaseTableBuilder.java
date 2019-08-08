@@ -1,8 +1,9 @@
 package com.fr.swift.generate;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.SwiftConfig;
 import com.fr.swift.config.entity.SwiftColumnIndexingConf;
-import com.fr.swift.config.service.IndexingConfService;
+import com.fr.swift.config.query.impl.SwiftIndexingConfigQueryBus;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
@@ -40,7 +41,7 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
 
     private boolean isRealtime;
 
-    private IndexingConfService indexingConfService = SwiftContext.get().getBean(IndexingConfService.class);
+    private SwiftIndexingConfigQueryBus indexingConfService;
 
     private SwiftSegmentManager localSegments = SwiftContext.get().getBean(IndexingSegmentManager.class);
 
@@ -52,6 +53,8 @@ public abstract class BaseTableBuilder extends BaseWorker implements SwiftTableB
         this.round = round;
         this.dataSource = dataSource;
         this.isRealtime = isRealtime;
+        this.indexingConfService = (SwiftIndexingConfigQueryBus) SwiftContext.get()
+                .getBean(SwiftConfig.class).query(SwiftColumnIndexingConf.class);
     }
 
     protected void init() throws SwiftMetaDataException {

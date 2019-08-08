@@ -2,10 +2,14 @@ package com.fr.swift.source.alloter.impl.line;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -80,9 +84,19 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
         EasyMock.expect(metaDataService.getMetaDataByKey("")).andReturn(metaData).anyTimes();
         EasyMock.expect(SwiftContext.get().getBean(SwiftMetaDataService.class)).andReturn(metaDataService).anyTimes();
 
-        SwiftCubePathService pathService = PowerMock.createMock(SwiftCubePathService.class);
-        EasyMock.expect(pathService.getSwiftPath()).andReturn("").anyTimes();
-        EasyMock.expect(SwiftContext.get().getBean(SwiftCubePathService.class)).andReturn(pathService).anyTimes();
+
+        // Generate by Mock Plugin
+        final String path = "";
+        final ContextProvider mock = PowerMock.createMock(ContextProvider.class);
+        EasyMock.expect(mock.getContextPath()).andReturn(path).anyTimes();
+
+        SwiftConfig service = EasyMock.createMock(SwiftConfig.class);
+
+
+        final SwiftConfigEntityQueryBus query = EasyMock.mock(SwiftConfigEntityQueryBus.class);
+        EasyMock.expect(service.query(SwiftConfigEntity.class)).andReturn(query).anyTimes();
+        EasyMock.expect(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, path)).andReturn(path).anyTimes();
+
 
         SwiftSegmentService segmentService = PowerMock.createMock(SwiftSegmentService.class);
         EasyMock.expect(segmentService.getOwnSegments()).andReturn(keyListMap).times(2);
@@ -109,7 +123,7 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
                 EasyMock.notNull(IResourceLocation.class), EasyMock.eq(metaData)))
                 .andReturn(seg2)
                 .times(1);
-        PowerMock.replay(SwiftContext.get(), segmentService, metaDataService, pathService, metaData);
+        PowerMock.replay(SwiftContext.get(), segmentService, metaDataService, metaData, mock, service, query);
         SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(new SourceKey(""), new LineAllotRule(1000));
         // 插入一行
         SegmentInfo segmentInfo = alloter.allot(new LineRowInfo(0));

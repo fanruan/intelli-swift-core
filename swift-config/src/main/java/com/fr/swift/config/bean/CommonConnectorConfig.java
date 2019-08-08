@@ -1,8 +1,12 @@
 package com.fr.swift.config.bean;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.annotation.ConfigField;
-import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 
 /**
@@ -27,7 +31,9 @@ public class CommonConnectorConfig implements FineIOConnectorConfig {
 
     @Override
     public String basePath() {
-        return SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
+        final String contextPath = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
+        final SwiftConfigEntityQueryBus query = (SwiftConfigEntityQueryBus) SwiftContext.get().getBean(SwiftConfig.class).query(SwiftConfigEntity.class);
+        return query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, contextPath);
     }
 
     @Override

@@ -2,8 +2,12 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.storage.Connector;
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftFineIOConnectorService;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.bean.FineIOConnectorConfig;
+import com.fr.swift.config.command.SwiftConfigCommandBus;
+import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
 
 /**
  * @author yee
@@ -11,16 +15,17 @@ import com.fr.swift.config.service.SwiftFineIOConnectorService;
  */
 public class SwiftConnectorManager implements IConnectorManager {
     private volatile static SwiftConnectorManager instance;
-    private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+    private SwiftConfig swiftConfig = SwiftContext.get().getBean(SwiftConfig.class);
     private ConnectorProvider provider = SwiftContext.get().getBean(ConnectorProvider.class);
-    private SwiftFineIOConnectorService fineIOConnectorService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
     private volatile Connector connector;
 
     private SwiftConnectorManager() {
-        pathService.registerPathChangeListener(new SwiftCubePathService.PathChangeListener() {
+        swiftConfig.command(SwiftConfigEntity.class).addSaveOrUpdateListener(new SwiftConfigCommandBus.SaveOrUpdateListener<SwiftConfigEntity>() {
             @Override
-            public void changed(String path) {
-                connector = null;
+            public void saveOrUpdate(SwiftConfigEntity entity) {
+                if (entity.getConfigKey().contains(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH.name())) {
+                    connector = null;
+                }
             }
         });
     }
@@ -44,7 +49,8 @@ public class SwiftConnectorManager implements IConnectorManager {
         if (null == connector) {
             synchronized (this) {
                 if (null == connector) {
-                    connector = provider.apply(fineIOConnectorService.getCurrentConfig(SwiftFineIOConnectorService.Type.CONNECTOR));
+                    SwiftConfigEntityQueryBus query = (SwiftConfigEntityQueryBus) swiftConfig.query(SwiftConfigEntity.class);
+                    connector = provider.apply(query.select(SwiftConfigConstants.Namespace.FINE_IO_CONNECTOR, FineIOConnectorConfig.class, null));
                 }
             }
         }

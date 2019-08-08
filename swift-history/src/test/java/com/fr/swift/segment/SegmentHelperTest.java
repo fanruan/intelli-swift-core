@@ -3,13 +3,17 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.config.SwiftConfig;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
-import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.base.SwiftRpcEvent;
@@ -77,16 +81,25 @@ public class SegmentHelperTest {
         EasyMock.expect(mockSegment.isReadable()).andReturn(true).once();
 
         EasyMock.expect(mockSwiftSegmentManager.getSegment(EasyMock.anyObject(SegmentKey.class))).andReturn(mockSegment).anyTimes();
-
         // Generate by Mock Plugin
-        SwiftCubePathService mockSwiftCubePathService = PowerMock.createMock(SwiftCubePathService.class);
-        EasyMock.expect(mockSwiftCubePathService.getSwiftPath()).andReturn(System.getProperty("user.dir")).anyTimes();
+        final String path = System.getProperty("user.dir");
+        final ContextProvider mock = PowerMock.createMock(ContextProvider.class);
+        EasyMock.expect(mock.getContextPath()).andReturn(path).anyTimes();
+
+        SwiftConfig service = EasyMock.createMock(SwiftConfig.class);
+
+
+        final SwiftConfigEntityQueryBus query = EasyMock.mock(SwiftConfigEntityQueryBus.class);
+        EasyMock.expect(service.query(SwiftConfigEntity.class)).andReturn(query).anyTimes();
+        EasyMock.expect(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, path)).andReturn(path).anyTimes();
+
 
 
         // Generate by Mock Plugin
         PowerMock.mockStatic(SwiftContext.class);
         SwiftContext mockSwiftContext = PowerMock.createMock(SwiftContext.class);
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftCubePathService.class))).andReturn(mockSwiftCubePathService).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(ContextProvider.class)).andReturn(mock).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(SwiftConfig.class)).andReturn(service).anyTimes();
         EasyMock.expect(SwiftContext.get()).andReturn(mockSwiftContext).anyTimes();
         PowerMock.replay(SwiftContext.class);
         PowerMock.replayAll();
@@ -99,9 +112,19 @@ public class SegmentHelperTest {
 
     @Test
     public void download() {
+
         // Generate by Mock Plugin
-        SwiftCubePathService mockSwiftCubePathService = PowerMock.createMock(SwiftCubePathService.class);
-        EasyMock.expect(mockSwiftCubePathService.getSwiftPath()).andReturn(System.getProperty("user.dir")).anyTimes();
+        final String path = System.getProperty("user.dir");
+        final ContextProvider mock = PowerMock.createMock(ContextProvider.class);
+        EasyMock.expect(mock.getContextPath()).andReturn(path).anyTimes();
+
+        SwiftConfig service = EasyMock.createMock(SwiftConfig.class);
+
+
+        final SwiftConfigEntityQueryBus query = EasyMock.mock(SwiftConfigEntityQueryBus.class);
+        EasyMock.expect(service.query(SwiftConfigEntity.class)).andReturn(query).anyTimes();
+        EasyMock.expect(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, path)).andReturn(path).anyTimes();
+
 
         // Generate by Mock Plugin
         SwiftTablePathService mockSwiftTablePathService = PowerMock.createMock(SwiftTablePathService.class);
@@ -126,7 +149,8 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         PowerMock.mockStatic(SwiftContext.class);
         SwiftContext mockSwiftContext = PowerMock.createMock(SwiftContext.class);
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftCubePathService.class))).andReturn(mockSwiftCubePathService).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(ContextProvider.class)).andReturn(mock).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(SwiftConfig.class)).andReturn(service).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftTablePathService.class))).andReturn(mockSwiftTablePathService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftMetaDataService.class))).andReturn(mockSwiftMetaDataService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("localSegmentProvider"), EasyMock.eq(SwiftSegmentManager.class))).andReturn(mockSwiftSegmentManager).anyTimes();
@@ -141,9 +165,19 @@ public class SegmentHelperTest {
 
     @Test
     public void uploadTable() throws Exception {
+
         // Generate by Mock Plugin
-        SwiftCubePathService mockSwiftCubePathService = PowerMock.createMock(SwiftCubePathService.class);
-        EasyMock.expect(mockSwiftCubePathService.getSwiftPath()).andReturn(System.getProperty("user.dir")).anyTimes();
+        final String path = System.getProperty("user.dir");
+        final ContextProvider mock = PowerMock.createMock(ContextProvider.class);
+        EasyMock.expect(mock.getContextPath()).andReturn(path).anyTimes();
+
+        SwiftConfig service = EasyMock.createMock(SwiftConfig.class);
+
+
+        final SwiftConfigEntityQueryBus query = EasyMock.mock(SwiftConfigEntityQueryBus.class);
+        EasyMock.expect(service.query(SwiftConfigEntity.class)).andReturn(query).anyTimes();
+        EasyMock.expect(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, path)).andReturn(path).anyTimes();
+
 
         // Generate by Mock Plugin
         SwiftTablePathService mockSwiftTablePathService = PowerMock.createMock(SwiftTablePathService.class);
@@ -168,7 +202,8 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         PowerMock.mockStatic(SwiftContext.class);
         SwiftContext mockSwiftContext = PowerMock.createMock(SwiftContext.class);
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftCubePathService.class))).andReturn(mockSwiftCubePathService).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(ContextProvider.class)).andReturn(mock).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(SwiftConfig.class)).andReturn(service).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftTablePathService.class))).andReturn(mockSwiftTablePathService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentLocationService.class))).andReturn(mockSwiftMetaDataService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("segmentServiceProvider"), EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService).anyTimes();
@@ -215,8 +250,17 @@ public class SegmentHelperTest {
     @Test
     public void uploadRelation() {
         // Generate by Mock Plugin
-        SwiftCubePathService mockSwiftCubePathService = PowerMock.createMock(SwiftCubePathService.class);
-        EasyMock.expect(mockSwiftCubePathService.getSwiftPath()).andReturn(System.getProperty("user.dir")).anyTimes();
+        final String path = System.getProperty("user.dir");
+        final ContextProvider mock = PowerMock.createMock(ContextProvider.class);
+        EasyMock.expect(mock.getContextPath()).andReturn(path).anyTimes();
+
+        SwiftConfig service = EasyMock.createMock(SwiftConfig.class);
+
+
+        final SwiftConfigEntityQueryBus query = EasyMock.mock(SwiftConfigEntityQueryBus.class);
+        EasyMock.expect(service.query(SwiftConfigEntity.class)).andReturn(query).anyTimes();
+        EasyMock.expect(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, path)).andReturn(path).anyTimes();
+
 
         // Generate by Mock Plugin
         SwiftTablePathService mockSwiftTablePathService = PowerMock.createMock(SwiftTablePathService.class);
@@ -241,7 +285,8 @@ public class SegmentHelperTest {
         // Generate by Mock Plugin
         PowerMock.mockStatic(SwiftContext.class);
         SwiftContext mockSwiftContext = PowerMock.createMock(SwiftContext.class);
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftCubePathService.class))).andReturn(mockSwiftCubePathService).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(ContextProvider.class)).andReturn(mock).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(SwiftConfig.class)).andReturn(service).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftTablePathService.class))).andReturn(mockSwiftTablePathService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentLocationService.class))).andReturn(mockSwiftMetaDataService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("segmentServiceProvider"), EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService).anyTimes();
