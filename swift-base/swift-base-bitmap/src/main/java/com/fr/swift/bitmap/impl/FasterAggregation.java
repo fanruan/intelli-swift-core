@@ -83,8 +83,8 @@ public final class FasterAggregation {
     public static ImmutableBitMap or(RangeBitmap b1, RangeBitmap b2) {
         if (b1.end < b2.start || b2.end < b1.start) {
             MutableRoaringBitmap b = new MutableRoaringBitmap();
-            b.flip((long) b1.start, b1.end);
-            b.flip((long) b2.start, b2.end);
+            b.add((long) b1.start, b1.end);
+            b.add((long) b2.start, b2.end);
             return RoaringImmutableBitMap.of(b);
         }
 
@@ -95,7 +95,7 @@ public final class FasterAggregation {
 
     public static ImmutableBitMap and(RangeBitmap b1, RangeBitmap b2) {
         if (b1.end < b2.start || b2.end < b1.start) {
-            return new EmptyBitmap();
+            return BitMaps.EMPTY_IMMUTABLE;
         }
 
         int start = Math.max(b1.start, b2.start);
@@ -125,9 +125,6 @@ public final class FasterAggregation {
     }
 
     static ImmutableBitMap andNot(RoaringImmutableBitMap b1, RangeBitmap b2) {
-        if (b1.isEmpty()) {
-            return b1;
-        }
 
         int b1Start = b1.bitmap.select(0), b1End = b1.bitmap.select(b1.bitmap.getCardinality() - 1);
 
@@ -144,9 +141,6 @@ public final class FasterAggregation {
     }
 
     static void andNot(RoaringMutableBitMap b1, RangeBitmap b2) {
-        if (b1.isEmpty()) {
-            return;
-        }
 
         int b1Start = b1.bitmap.select(0), b1End = b1.bitmap.select(b1.bitmap.getCardinality() - 1);
 
@@ -158,5 +152,23 @@ public final class FasterAggregation {
         int end = Math.min(b1End, b2.end);
 
         b1.bitmap.remove((long) start, end);
+    }
+
+    static ImmutableBitMap and(RoaringImmutableBitMap b1, RangeBitmap b2) {
+        MutableRoaringBitmap range = new MutableRoaringBitmap();
+        range.add((long) b2.start, b2.end);
+
+        MutableRoaringBitmap bitmap = b1.bitmap.clone();
+        bitmap.and(range);
+        return RoaringImmutableBitMap.of(bitmap);
+    }
+
+    static ImmutableBitMap or(RoaringImmutableBitMap b1, RangeBitmap b2) {
+        MutableRoaringBitmap range = new MutableRoaringBitmap();
+        range.add((long) b2.start, b2.end);
+
+        MutableRoaringBitmap bitmap = b1.bitmap.clone();
+        bitmap.or(range);
+        return RoaringImmutableBitMap.of(bitmap);
     }
 }

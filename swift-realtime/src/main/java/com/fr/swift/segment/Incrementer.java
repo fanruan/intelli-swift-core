@@ -7,6 +7,7 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
+import com.fr.swift.service.transfer.SegmentTransfer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
@@ -36,7 +37,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     protected void handleFullSegment(SegmentInfo segInfo) {
         // 增量块已满，transfer掉
         SegmentKey segKey = newSegmentKey(segInfo);
-        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
+        new SegmentTransfer(segKey).transfer();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.fr.swift.util;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.function.Consumer;
 
 import java.io.File;
@@ -22,7 +23,9 @@ public class FileUtil {
         walk(f, new Consumer<File>() {
             @Override
             public void accept(File file) {
-                file.delete();
+                if (!file.delete()) {
+                    SwiftLoggers.getLogger().debug("failed to delete {}", file.getPath());
+                }
             }
         });
     }

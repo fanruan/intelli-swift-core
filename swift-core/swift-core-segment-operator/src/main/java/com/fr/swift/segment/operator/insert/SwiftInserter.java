@@ -78,7 +78,7 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     @Override
     public void release() {
         try {
-            putNullIndex();
+            putNullIndex(cursor);
             putSegmentInfo(lastCursor, cursor);
         } finally {
             super.release();

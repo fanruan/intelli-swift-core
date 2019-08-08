@@ -30,6 +30,7 @@ import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.collate.segment.HisSegmentMerger;
 import com.fr.swift.segment.operator.collate.segment.HisSegmentMergerImpl;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
@@ -151,7 +152,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 // 合并失败
                 continue;
             }
-            fireUploadHistory(newSegmentKeys);
+            fireUploadHistoryIfNeed(newSegmentKeys);
             clearCollatedSegment(collateSegKeys, tableKey);
         }
     }
@@ -167,12 +168,15 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         return segments;
     }
 
-    private static void fireUploadHistory(List<SegmentKey> newKeys) {
+    private static void fireUploadHistoryIfNeed(List<SegmentKey> newKeys) {
+        boolean inCluster = ClusterSelector.getInstance().getFactory().isCluster();
         SwiftSegmentManager manager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
         for (SegmentKey newSegKey : newKeys) {
             manager.getSegment(newSegKey);
-            // TODO: 2019/1/24 先改成同步fire，避免fr rpc timeout
-            SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
+            if (inCluster) {
+                // TODO: 2019/1/24 先改成同步fire，避免fr rpc timeout
+                SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
+            }
         }
     }
 
