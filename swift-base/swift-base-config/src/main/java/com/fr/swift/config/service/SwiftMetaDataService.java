@@ -19,13 +19,6 @@ public interface SwiftMetaDataService extends ConfigService<SwiftMetaData> {
      */
     boolean addMetaData(String sourceKey, SwiftMetaData metaData);
 
-    /**
-     * 批量增加MetaData
-     *
-     * @param metaDatas
-     * @return
-     */
-    boolean addMetaDatas(Map<String, SwiftMetaData> metaDatas);
 
     /**
      * 批量删除MetaData

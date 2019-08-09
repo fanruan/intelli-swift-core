@@ -1,5 +1,6 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
 
 /**
@@ -8,16 +9,11 @@ import com.fr.swift.config.bean.FineIOConnectorConfig;
  */
 public interface SwiftFineIOConnectorService {
 
-    FineIOConnectorConfig getCurrentConfig(Type type);
+    FineIOConnectorConfig getCurrentConfig(SwiftConfigConstants.Namespace type);
 
-    void setCurrentConfig(FineIOConnectorConfig config, Type type);
+    void setCurrentConfig(FineIOConnectorConfig config, SwiftConfigConstants.Namespace namespace);
 
-    void registerListener(ConfChangeListener listener, Type type);
-
-    enum Type {
-        //
-        CONNECTOR, PACKAGE
-    }
+    void registerListener(ConfChangeListener listener, SwiftConfigConstants.Namespace namespace);
 
     interface ConfChangeListener {
         void change(FineIOConnectorConfig change);

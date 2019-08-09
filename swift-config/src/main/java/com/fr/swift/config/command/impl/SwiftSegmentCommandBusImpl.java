@@ -2,7 +2,6 @@ package com.fr.swift.config.command.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.command.SwiftConfigCommand;
 import com.fr.swift.config.command.SwiftSegmentCommandBus;
 import com.fr.swift.config.condition.SwiftConfigCondition;
@@ -12,17 +11,9 @@ import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
-import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
-import com.fr.swift.config.oper.exception.SwiftEntityExistsException;
-import com.fr.swift.config.oper.exception.SwiftNonUniqueObjectException;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
-import com.fr.swift.config.oper.impl.OrderImpl;
-import com.fr.swift.cube.io.Types;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.container.SegmentContainer;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Crasher;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -101,44 +92,6 @@ public class SwiftSegmentCommandBusImpl extends SwiftHibernateConfigCommandBus<S
             }
         }
         return super.deleteCascade(condition);
-    }
-
-    public SegmentKey tryAppendSegment(final SourceKey tableKey, final Types.StoreType storeType) {
-
-        do {
-            try {
-                SegmentKey segmentKey = transaction(new SwiftConfigCommand<SegmentKey>() {
-                    @Override
-                    public SegmentKey apply(ConfigSession p) {
-                        final ConfigQuery<? extends SegmentKey> entityQuery = p.createEntityQuery(tClass);
-                        entityQuery.orderBy(OrderImpl.desc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER));
-                        entityQuery.where(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId()));
-                        List<? extends SegmentKey> entities = entityQuery.executeQuery();
-                        int appendOrder;
-                        if (entities.isEmpty()) {
-                            appendOrder = 0;
-                        } else {
-                            appendOrder = entities.get(0).getOrder() + 1;
-                        }
-                        SwiftSegmentEntity segKeyEntity = new SwiftSegmentEntity(tableKey, appendOrder, storeType,
-                                SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftSchema());
-                        p.save(segKeyEntity);
-                        return segKeyEntity;
-                    }
-                });
-                cacheSegment(Collections.singleton(segmentKey));
-                return segmentKey;
-            } catch (SQLException e) {
-                Throwable cause = e.getCause();
-                if (cause instanceof SwiftConstraintViolationException
-                        || cause instanceof SwiftNonUniqueObjectException
-                        || cause instanceof SwiftEntityExistsException) {
-                    // 主键冲突，继续尝试
-                    continue;
-                }
-                return Crasher.crash(e);
-            }
-        } while (true);
     }
 
     @Override

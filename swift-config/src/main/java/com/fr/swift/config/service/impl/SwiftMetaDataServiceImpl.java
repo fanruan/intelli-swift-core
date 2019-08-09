@@ -1,31 +1,25 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
-import com.fr.swift.basics.ProxyFactory;
-import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.dao.SwiftMetaDataDao;
-import com.fr.swift.config.oper.BaseTransactionWorker;
-import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.ConfigSessionCreator;
+import com.fr.swift.config.command.impl.SwiftHibernateConfigCommandBus;
+import com.fr.swift.config.condition.SwiftConfigCondition;
+import com.fr.swift.config.condition.impl.SwiftConfigConditionImpl;
 import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.config.oper.impl.ConfigWhereImpl;
+import com.fr.swift.config.query.impl.SwiftHibernateConfigQueryBus;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.event.global.CleanMetaDataCacheEvent;
-import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.service.listener.RemoteSender;
-import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.function.Function;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -34,92 +28,29 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SwiftBean
 public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
-
-    private ConfigSessionCreator configSessionCreator;
-    private SwiftMetaDataDao swiftMetaDataDao;
+    private SwiftHibernateConfigCommandBus<SwiftMetaData> commandBus = new SwiftHibernateConfigCommandBus<SwiftMetaData>(SwiftMetaDataBean.class);
+    private SwiftHibernateConfigQueryBus<SwiftMetaDataBean> queryBus = new SwiftHibernateConfigQueryBus<>(SwiftMetaDataBean.class);
 
     private final ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
-    public SwiftMetaDataServiceImpl() {
-        configSessionCreator = SwiftContext.get().getBean(ConfigSessionCreator.class);
-        swiftMetaDataDao = SwiftContext.get().getBean(SwiftMetaDataDao.class);
-    }
-
     @Override
     public boolean addMetaData(final String sourceKey, final SwiftMetaData metaData) {
-        try {
-            final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
-            bean.setId(sourceKey);
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(ConfigSession session) throws SQLException {
-                    swiftMetaDataDao.addOrUpdateSwiftMetaData(session, bean);
-                    metaDataCache.put(sourceKey, bean);
-                    return true;
-                }
-
-
-            });
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Add or update metadata error!", e);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean addMetaDatas(final Map<String, SwiftMetaData> metaDatas) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(ConfigSession session) throws SQLException {
-                    Iterator<Map.Entry<String, SwiftMetaData>> iterator = metaDatas.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<String, SwiftMetaData> entry = iterator.next();
-                        SwiftMetaDataBean bean = (SwiftMetaDataBean) entry.getValue();
-                        bean.setId(entry.getKey());
-                        swiftMetaDataDao.addOrUpdateSwiftMetaData(session, bean);
-                        metaDataCache.put(entry.getKey(), bean);
-                    }
-                    return true;
-                }
-
-
-            });
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Add metadata error!", e);
-            return false;
-        }
+        final SwiftMetaDataBean bean = (SwiftMetaDataBean) metaData;
+        bean.setId(sourceKey);
+        commandBus.merge(bean);
+        return true;
     }
 
     @Override
     public boolean removeMetaDatas(final SourceKey... sourceKeys) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-
-                @Override
-                public Boolean work(ConfigSession session) throws SQLException {
-                    for (SourceKey sourceKey : sourceKeys) {
-                        swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey.getId());
-                        metaDataCache.remove(sourceKey.getId());
-                    }
-                    // 集群情况下才去发rpc
-                    // 现在日志这边没必要
-                    boolean isCluster = SwiftProperty.getProperty().isCluster();
-                    if (sourceKeys.length > 0 && isCluster) {
-                        ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                        SwiftServiceListenerHandler handler = factory.getProxy(RemoteSender.class);
-                        handler.trigger(new CleanMetaDataCacheEvent(sourceKeys));
-                    }
-                    return true;
-                }
-
-
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Remove metadata error!", e);
+        Set<String> ids = new HashSet<>(sourceKeys.length);
+        for (SourceKey sourceKey : sourceKeys) {
+            ids.add(sourceKey.getId());
+        }
+        if (ids.isEmpty()) {
             return false;
         }
+        return commandBus.deleteCascade(SwiftConfigConditionImpl.newInstance().addWhere(ConfigWhereImpl.in("id", ids))) >= 0;
     }
 
     @Override
@@ -129,112 +60,49 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     @Override
     public Map<String, SwiftMetaData> getAllMetaData() {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
-                @Override
-                public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
-                    try {
-                        final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        for (SwiftMetaDataBean swiftMetaDataBean : swiftMetaDataDao.findAll(session)) {
-                            result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
-                        }
-                        metaDataCache.putAll(result);
-                        return result;
-                    } catch (Exception e) {
-                        throw new SQLException(e);
-                    }
-
-
-                }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Select metadata error!", e);
-            return new HashMap<String, SwiftMetaData>();
-        }
+        return queryBus.get(SwiftConfigConditionImpl.newInstance(), toMetaDataMap());
     }
 
     @Override
     public Map<String, SwiftMetaData> getFuzzyMetaData(final String fuzzyName) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
-                @Override
-                public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
-                    try {
-                        final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        for (SwiftMetaDataBean swiftMetaDataBean : swiftMetaDataDao.fuzzyFind(session, fuzzyName)) {
-                            result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
-                        }
-                        metaDataCache.putAll(result);
-                        return result;
-                    } catch (Exception e) {
-                        throw new SQLException(e);
-                    }
+        final SwiftConfigCondition condition = SwiftConfigConditionImpl.newInstance().addWhere(ConfigWhereImpl.like("tableName", fuzzyName, ConfigWhere.MatchMode.ANY));
+        return queryBus.get(condition, toMetaDataMap());
+    }
 
-
+    private Function<Collection<SwiftMetaDataBean>, Map<String, SwiftMetaData>> toMetaDataMap() {
+        return new Function<Collection<SwiftMetaDataBean>, Map<String, SwiftMetaData>>() {
+            @Override
+            public Map<String, SwiftMetaData> apply(Collection<SwiftMetaDataBean> p) {
+                final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>(p.size());
+                for (SwiftMetaDataBean swiftMetaDataBean : p) {
+                    result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
                 }
-
-                @Override
-                public boolean needTransaction() {
-                    return false;
-                }
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Select metadata error!", e);
-            return new HashMap<String, SwiftMetaData>();
-        }
+                metaDataCache.putAll(result);
+                return result;
+            }
+        };
     }
 
     @Override
     public SwiftMetaData getMetaDataByKey(final String sourceKey) {
         SwiftMetaData metaData = metaDataCache.get(sourceKey);
         if (null == metaData) {
-            try {
-                return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<SwiftMetaData>(false) {
-                    @Override
-                    public SwiftMetaData work(ConfigSession session) throws SQLException {
-                        SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey);
-                        if (null != metaData) {
-                            metaDataCache.put(sourceKey, metaData);
-                        }
-                        return metaData;
+            return queryBus.select(sourceKey, new Function<SwiftMetaDataBean, SwiftMetaData>() {
+                @Override
+                public SwiftMetaData apply(SwiftMetaDataBean p) {
+                    if (null != p) {
+                        metaDataCache.put(sourceKey, p);
                     }
-                });
-
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().warn("Select metadata error!", e);
-                return null;
-            }
+                    return p;
+                }
+            });
         }
         return metaData;
     }
 
     @Override
     public boolean containsMeta(final SourceKey sourceKey) {
-        try {
-            if (!metaDataCache.containsKey(sourceKey.getId())) {
-                return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                    @Override
-                    public Boolean work(ConfigSession session) throws SQLException {
-                        SwiftMetaData metaData = swiftMetaDataDao.findBySourceKey(session, sourceKey.getId());
-                        if (null != metaData) {
-                            metaDataCache.put(sourceKey.getId(), metaData);
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return null != getMetaDataByKey(sourceKey.getId());
     }
 
     @Override
@@ -250,17 +118,11 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     @Override
     public List<SwiftMetaData> find(final ConfigWhere... criterion) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
-                @Override
-                public List<SwiftMetaData> work(ConfigSession session) {
-                    return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion));
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn(e);
-            return Collections.emptyList();
+        final SwiftConfigCondition condition = SwiftConfigConditionImpl.newInstance();
+        for (ConfigWhere configWhere : criterion) {
+            condition.addWhere(configWhere);
         }
+        return new ArrayList<SwiftMetaData>(queryBus.get(condition));
     }
 
     @Override
