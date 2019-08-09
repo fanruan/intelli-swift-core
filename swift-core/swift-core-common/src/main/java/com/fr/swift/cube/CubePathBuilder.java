@@ -1,11 +1,7 @@
 package com.fr.swift.cube;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
-import com.fr.swift.context.ContextProvider;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -18,8 +14,7 @@ import com.fr.swift.util.Strings;
  */
 public class CubePathBuilder {
 
-    private static final SwiftConfigEntityQueryBus PATH_SVC = (SwiftConfigEntityQueryBus) SwiftContext.get()
-            .getBean(SwiftConfig.class).query(SwiftConfigEntity.class);
+    private static final SwiftCubePathService PATH_SVC = SwiftContext.get().getBean(SwiftCubePathService.class);
     private boolean absolute = false;
     private SwiftSchema schema = null;
     private Integer tempDir = null;
@@ -82,9 +77,7 @@ public class CubePathBuilder {
 
         StringBuilder path = new StringBuilder();
         if (absolute) {
-            final String contextPath = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
-            final String p = PATH_SVC.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, contextPath);
-            path.append(p).append('/');
+            path.append(PATH_SVC.getSwiftPath()).append('/');
         }
         path.append(backup ? schema.getBackupDir() : schema.getDir());
         if (tempDir != null) {

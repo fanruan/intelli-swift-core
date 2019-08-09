@@ -2,10 +2,7 @@ package com.fr.swift.segment.bean.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SegmentDestSelectRule;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
+import com.fr.swift.config.service.SegmentDestSelectRuleService;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.SegmentLocationManager;
@@ -31,11 +28,9 @@ public abstract class AbstractSegmentLocationManager implements SegmentLocationM
     private SegmentDestSelectRule rule;
 
     public AbstractSegmentLocationManager() {
-        remoteSegments = new ConcurrentHashMap<>();
-        localSegments = new ConcurrentHashMap<>();
-        final SwiftConfigEntityQueryBus query = (SwiftConfigEntityQueryBus) SwiftContext.get().getBean(SwiftConfig.class).query(SwiftConfigEntity.class);
-        rule = query.select(SwiftConfigConstants.Namespace.SEGMENT_DEST_SELECT_RULE, SegmentDestSelectRule.class,
-                SwiftContext.get().getBean("defaultSegmentDestSelectRule", SegmentDestSelectRule.class));
+        remoteSegments = new ConcurrentHashMap<SourceKey, CheckRemoveHashMap>();
+        localSegments = new ConcurrentHashMap<SourceKey, CheckRemoveHashMap>();
+        rule = SwiftContext.get().getBean(SegmentDestSelectRuleService.class).getCurrentRule();
     }
 
     public void setRule(SegmentDestSelectRule rule) {

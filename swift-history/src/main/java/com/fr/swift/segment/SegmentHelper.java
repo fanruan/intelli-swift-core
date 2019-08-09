@@ -2,17 +2,13 @@ package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftTablePathEntity;
 import com.fr.swift.config.entity.key.SwiftTablePathKey;
-import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTablePathService;
-import com.fr.swift.context.ContextProvider;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.SwiftSchema;
@@ -92,9 +88,7 @@ public class SegmentHelper {
     }
 
     public static Set<String> download(String sourceKey, Set<String> sets, boolean replace) {
-        final String contextPath = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
-        final SwiftConfigEntityQueryBus query = (SwiftConfigEntityQueryBus) SwiftContext.get().getBean(SwiftConfig.class).query(SwiftConfigEntity.class);
-        final String path = query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, contextPath);
+        String path = SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
         SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
         SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
         SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);

@@ -1,17 +1,11 @@
 package com.fr.swift.repository.manager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.command.SwiftConfigCommandBus;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
+import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.exception.RepoNotFoundException;
-import com.fr.swift.repository.impl.MutableRepository;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
 
 /**
@@ -20,29 +14,25 @@ import com.fr.swift.repository.impl.SwiftRepositoryImpl;
  */
 public class SwiftRepositoryManager {
     private static SwiftRepository currentRepository = null;
-    private SwiftConfig config;
+    private SwiftFineIOConnectorService service;
 
     private SwiftRepositoryManager() {
-        config = SwiftContext.get().getBean(SwiftConfig.class);
-        final SwiftConfigCommandBus<SwiftConfigEntity> command = config.command(SwiftConfigEntity.class);
-        command.addSaveOrUpdateListener(new SwiftConfigCommandBus.SaveOrUpdateListener<SwiftConfigEntity>() {
+        service = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
+        service.registerListener(new SwiftFineIOConnectorService.ConfChangeListener() {
             @Override
-            public void saveOrUpdate(SwiftConfigEntity entity) {
-                if (entity.getConfigKey().contains(SwiftConfigConstants.Namespace.FINE_IO_PACKAGE.name())) {
-                    if (null != currentRepository) {
-                        try {
-                            final FineIOConnectorConfig change = new ObjectMapper().readValue(entity.getConfigValue(), FineIOConnectorConfig.class);
-                            currentRepository = new SwiftRepositoryImpl(change);
-                        } catch (RepoNotFoundException e) {
-                            throw e;
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
-                            currentRepository = new MutableRepository();
-                        }
+            public void change(FineIOConnectorConfig change) {
+                if (null != currentRepository) {
+                    try {
+                        currentRepository = new SwiftRepositoryImpl(change);
+                    } catch (RepoNotFoundException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
+                        currentRepository = new SwiftRepositoryImpl(change);
                     }
                 }
             }
-        });
+        }, SwiftFineIOConnectorService.Type.PACKAGE);
     }
 
     public static SwiftRepositoryManager getManager() {
@@ -53,8 +43,11 @@ public class SwiftRepositoryManager {
         if (null == currentRepository) {
             synchronized (SwiftRepositoryManager.class) {
                 FineIOConnectorConfig config = null;
-                final SwiftConfigEntityQueryBus query = (SwiftConfigEntityQueryBus) this.config.query(SwiftConfigEntity.class);
-                config = query.select(SwiftConfigConstants.Namespace.FINE_IO_PACKAGE, FineIOConnectorConfig.class, null);
+                try {
+                    config = SwiftContext.get().getBean(SwiftFineIOConnectorService.class).getCurrentConfig(SwiftFineIOConnectorService.Type.PACKAGE);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().warn("Cannot find repository config. Use default.");
+                }
                 try {
                     currentRepository = new SwiftRepositoryImpl(config);
                 } catch (RepoNotFoundException e) {

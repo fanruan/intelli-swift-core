@@ -2,11 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
-import com.fr.swift.context.ContextProvider;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -52,15 +48,9 @@ public class CacheColumnSegmentTest {
 
         BeanFactory beanFactory = mock(BeanFactory.class);
         when(SwiftContext.get()).thenReturn(beanFactory);
-        final ContextProvider mock = mock(ContextProvider.class);
-        when(mock.getContextPath()).thenReturn("/");
-        when(beanFactory.getBean(ContextProvider.class)).thenReturn(mock);
-
-        SwiftConfig config = mock(SwiftConfig.class);
-        when(beanFactory.getBean(SwiftConfig.class)).thenReturn(config);
-        final SwiftConfigEntityQueryBus query = mock(SwiftConfigEntityQueryBus.class);
-        when(config.query(SwiftConfigEntity.class)).thenReturn(query);
-        when(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, "/")).thenReturn("/");
+        SwiftCubePathService service = mock(SwiftCubePathService.class);
+        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(service);
+        when(service.getSwiftPath()).thenReturn("/");
     }
 
     @Test

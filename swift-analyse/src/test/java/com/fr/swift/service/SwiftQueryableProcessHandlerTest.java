@@ -10,10 +10,8 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
-import com.fr.swift.config.query.SwiftConfigQueryBus;
+import com.fr.swift.config.service.SegmentDestSelectRuleService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.local.LocalInvoker;
 import com.fr.swift.query.builder.QueryBuilder;
@@ -31,7 +29,6 @@ import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.segment.impl.SegmentDestinationImpl;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.function.Function;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.junit.runner.RunWith;
@@ -74,10 +71,9 @@ public class SwiftQueryableProcessHandlerTest extends TestCase {
         EasyMock.expect(swiftServiceInfoService.getServiceInfoByService(SwiftServiceInfoService.SERVICE)).andReturn(Collections.singletonList(swiftServiceInfoBean)).anyTimes();
         EasyMock.expect(swiftServiceInfoBean.getServiceInfo()).andReturn("127.0.0.1:8080").anyTimes();
 
-        SwiftConfig rule = PowerMock.createMock(SwiftConfig.class);
-        final SwiftConfigQueryBus queryBus = EasyMock.createMock(SwiftConfigQueryBus.class);
-        EasyMock.expect(queryBus.select(EasyMock.anyString(), EasyMock.anyObject(Function.class))).andReturn(null).anyTimes();
-        EasyMock.expect(rule.query(EasyMock.eq(SwiftConfigEntity.class))).andReturn(queryBus).anyTimes();
+        SegmentDestSelectRuleService rule = PowerMock.createMock(SegmentDestSelectRuleService.class);
+        EasyMock.expect(rule.getCurrentRule()).andReturn(null).anyTimes();
+        EasyMock.expect(beanFactory.getBean(SegmentDestSelectRuleService.class)).andReturn(rule).anyTimes();
         PowerMock.replay(SwiftContext.class, rule);
 
         URL url = EasyMock.createMock(URL.class);

@@ -3,11 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
-import com.fr.swift.context.ContextProvider;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.input.BitMapReader;
@@ -106,15 +102,9 @@ public class AbstractSegmentTest {
 
         BeanFactory beanFactory = mock(BeanFactory.class);
         when(SwiftContext.get()).thenReturn(beanFactory);
-        final ContextProvider mock = mock(ContextProvider.class);
-        when(mock.getContextPath()).thenReturn(path);
-        when(beanFactory.getBean(ContextProvider.class)).thenReturn(mock);
-
-        SwiftConfig service = mock(SwiftConfig.class);
-        when(beanFactory.getBean(SwiftConfig.class)).thenReturn(service);
-        final SwiftConfigEntityQueryBus query = mock(SwiftConfigEntityQueryBus.class);
-        when(service.query(SwiftConfigEntity.class)).thenReturn(query);
-        when(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, path)).thenReturn(path);
+        SwiftCubePathService service = mock(SwiftCubePathService.class);
+        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(service);
+        when(service.getSwiftPath()).thenReturn(path);
     }
 
     @Test
