@@ -6,12 +6,10 @@ import com.fr.swift.config.command.SwiftConfigCommandBus;
 import com.fr.swift.config.command.impl.SwiftConfigEntityCommandBusImpl;
 import com.fr.swift.config.command.impl.SwiftHibernateConfigCommandBus;
 import com.fr.swift.config.command.impl.SwiftSegmentCommandBusImpl;
-import com.fr.swift.config.entity.SwiftColumnIndexingConf;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.query.SwiftConfigQueryBus;
 import com.fr.swift.config.query.impl.SwiftConfigEntityQueryBusImpl;
 import com.fr.swift.config.query.impl.SwiftHibernateConfigQueryBus;
-import com.fr.swift.config.query.impl.SwiftIndexingConfigQueryBus;
 import com.fr.swift.segment.SegmentKey;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +34,6 @@ public class SwiftHibernateConfig implements SwiftConfig {
         commandBus.putIfAbsent(SwiftConfigEntity.class, new SwiftConfigEntityCommandBusImpl());
         commandBus.putIfAbsent(SegmentKey.class, new SwiftSegmentCommandBusImpl());
 
-        queryBus.putIfAbsent(SwiftColumnIndexingConf.class, new SwiftIndexingConfigQueryBus());
         queryBus.putIfAbsent(SwiftConfigEntity.class, new SwiftConfigEntityQueryBusImpl());
     }
 

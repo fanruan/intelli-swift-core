@@ -1,24 +1,24 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.dao.SwiftSegmentBucketDao;
-import com.fr.swift.config.dao.SwiftSegmentDao;
-import com.fr.swift.config.dao.SwiftSegmentLocationDao;
+import com.fr.swift.config.command.SwiftSegmentCommandBus;
+import com.fr.swift.config.command.impl.SwiftSegmentCommandBusImpl;
+import com.fr.swift.config.condition.SwiftConfigCondition;
+import com.fr.swift.config.condition.impl.SwiftConfigConditionImpl;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
-import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
-import com.fr.swift.config.oper.ConfigSessionCreator;
 import com.fr.swift.config.oper.ConfigWhere;
-import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.Page;
 import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
 import com.fr.swift.config.oper.exception.SwiftEntityExistsException;
 import com.fr.swift.config.oper.exception.SwiftNonUniqueObjectException;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.oper.impl.OrderImpl;
+import com.fr.swift.config.query.SwiftConfigQuery;
+import com.fr.swift.config.query.impl.SwiftHibernateConfigQueryBus;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -30,11 +30,14 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,115 +49,67 @@ import java.util.Set;
  */
 @SwiftBean(name = "swiftClusterSegmentService")
 public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, SwiftSegmentService {
-    /**
-     * @deprecated 暂时留着给getOwnSegment、updateSegmentTable、selectSelective用，重构要去掉的
-     */
-    @Deprecated
-    private SwiftSegmentLocationDao segmentLocationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
-    private ConfigSessionCreator configSessionCreator = SwiftContext.get().getBean(ConfigSessionCreator.class);
-    private SwiftSegmentDao swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
-    private SwiftSegmentBucketDao segmentBucketDao = SwiftContext.get().getBean(SwiftSegmentBucketDao.class);
+
+    private SwiftSegmentCommandBus commandBus = new SwiftSegmentCommandBusImpl();
+    private SwiftHibernateConfigQueryBus<SwiftSegmentEntity> queryBus = new SwiftHibernateConfigQueryBus<>(SwiftSegmentEntity.class);
 
     @Override
     public boolean saveOrUpdate(SegmentKey obj) {
-        return addSegments(Collections.singletonList(obj));
+        commandBus.merge(obj);
+        return true;
     }
 
     @Override
     public boolean addSegments(final List<SegmentKey> segments) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(ConfigSession session) throws SQLException {
-                    return addSegmentsWithoutTransaction(session, segments);
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn("add segment error! ", e);
-        }
-        return false;
+        commandBus.merge(segments);
+        return true;
     }
 
     @Override
     public boolean removeSegments(final String... sourceKey) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(ConfigSession session) throws SQLException {
-                    for (String key : sourceKey) {
-                        swiftSegmentDao.deleteBySourceKey(session, key);
-                        segmentBucketDao.deleteBySourceKey(session, key);
-                        for (SegmentContainer value : SegmentContainer.values()) {
-                            value.remove(new SourceKey(key));
-                        }
-                    }
-                    return true;
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn("remove segment error! ", e);
+        final List<String> value = Arrays.asList(sourceKey);
+        if (value.isEmpty()) {
+            return false;
         }
-        return false;
+        final SwiftConfigCondition condition = SwiftConfigConditionImpl.newInstance()
+                .addWhere(ConfigWhereImpl.in(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, value));
+        commandBus.deleteCascade(condition);
+        return true;
     }
 
     @Override
     public boolean removeSegments(final List<SegmentKey> segmentKeys) {
-        try {
-            if (null == segmentKeys) {
-                return false;
-            }
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(final ConfigSession session) throws SQLException {
-                    try {
-                        for (SegmentKey segmentKey : segmentKeys) {
-                            for (SegmentContainer value : SegmentContainer.values()) {
-                                value.remove(segmentKey);
-                            }
-                            swiftSegmentDao.deleteById(session, segmentKey.getId());
-                            segmentBucketDao.deleteBySegmentKey(session, segmentKey.getId());
-                        }
-                    } catch (Throwable e) {
-                        throw new SQLException(e);
-                    }
-                    return true;
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn("remove segment error! ", e);
+
+        if (null == segmentKeys || segmentKeys.isEmpty()) {
             return false;
         }
-    }
-
-    private boolean addSegmentsWithoutTransaction(ConfigSession session, Collection<SegmentKey> segments) throws SQLException {
-        for (SegmentKey segment : segments) {
-            swiftSegmentDao.addOrUpdateSwiftSegment(session, segment);
-            for (SegmentContainer value : SegmentContainer.values()) {
-                value.register(segment);
-            }
+        Set<String> segmentId = new HashSet<>(segmentKeys.size());
+        for (SegmentKey segmentKey : segmentKeys) {
+            segmentId.add(segmentKey.getId());
         }
-        return true;
+        return commandBus.deleteCascade(SwiftConfigConditionImpl.newInstance().addWhere(ConfigWhereImpl.in("id", segmentId))) >= 0;
     }
-
 
     @Override
     public Map<SourceKey, List<SegmentKey>> getAllSegments() {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
-                @Override
-                public Map<SourceKey, List<SegmentKey>> work(ConfigSession session) throws SQLException {
-                    Map<SourceKey, List<SegmentKey>> result = swiftSegmentDao.findSegmentKeyWithSourceKey(session);
-                    for (SegmentContainer value : SegmentContainer.values()) {
-                        value.register(result);
+        return queryBus.get(SwiftConfigConditionImpl.newInstance(), new Function<Collection<SwiftSegmentEntity>, Map<SourceKey, List<SegmentKey>>>() {
+            @Override
+            public Map<SourceKey, List<SegmentKey>> apply(Collection<SwiftSegmentEntity> collection) {
+                final Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
+                try {
+                    for (SegmentKey segmentKey : collection) {
+                        SourceKey sourceKey = segmentKey.getTable();
+                        if (!result.containsKey(sourceKey)) {
+                            result.put(sourceKey, new ArrayList<SegmentKey>());
+                        }
+                        result.get(sourceKey).add(segmentKey);
                     }
-                    return result;
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().warn("find segments failed", e);
                 }
-            });
-
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("Select segments error!", e);
-        }
-        return Collections.emptyMap();
+                return result;
+            }
+        });
     }
 
     @Override
@@ -168,58 +123,27 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
 
     @Override
     public boolean containsSegment(final SegmentKey segmentKey) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(ConfigSession session) throws SQLException {
-                    return null != swiftSegmentDao.select(session, segmentKey.getId());
-                }
-            });
-        } catch (Exception e) {
-            return false;
-        }
+        return null != queryBus.select(segmentKey.getId());
     }
 
     @Override
     public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType) {
-        try {
-            final SegmentKey segmentKey = tryAppendSegmentWithoutLocation(tableKey, storeType);
-
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
-                @Override
-                public SegmentKey work(ConfigSession session) throws SQLException {
-                    addSegmentsWithoutTransaction(session, Collections.singleton(segmentKey));
-                    return segmentKey;
-                }
-            });
-        } catch (SQLException e) {
-            return Crasher.crash(e);
-        }
-    }
-
-    private SegmentKey tryAppendSegmentWithoutLocation(final SourceKey tableKey, final StoreType storeType) throws SQLException {
         do {
             try {
-                return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
-                    @Override
-                    public SegmentKey work(ConfigSession session) throws SQLException {
-                        List<SegmentKey> entities = swiftSegmentDao.find(session,
-                                new Order[]{OrderImpl.desc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER)},
-                                ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId()));
-
-                        int appendOrder;
-                        if (entities.isEmpty()) {
-                            appendOrder = 0;
-                        } else {
-                            appendOrder = entities.get(0).getOrder() + 1;
-                        }
-                        SwiftSegmentEntity segKeyEntity = new SwiftSegmentEntity(tableKey, appendOrder, storeType,
-                                SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftSchema());
-                        swiftSegmentDao.persist(session, segKeyEntity);
-                        return segKeyEntity;
-                    }
-                });
-
+                final SwiftConfigCondition condition = SwiftConfigConditionImpl.newInstance()
+                        .addWhere(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, tableKey.getId()))
+                        .addSort(OrderImpl.desc(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER));
+                final List<SwiftSegmentEntity> list = queryBus.get(condition);
+                int appendOrder;
+                if (list.isEmpty()) {
+                    appendOrder = 0;
+                } else {
+                    appendOrder = list.get(0).getOrder() + 1;
+                }
+                SwiftSegmentEntity segKeyEntity = new SwiftSegmentEntity(tableKey, appendOrder, storeType,
+                        SwiftDatabase.getInstance().getTable(tableKey).getMetadata().getSwiftSchema());
+                commandBus.save(segKeyEntity);
+                return segKeyEntity;
             } catch (SQLException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof SwiftConstraintViolationException
@@ -228,64 +152,57 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                     // 主键冲突，继续尝试
                     continue;
                 }
-                throw e;
+                return Crasher.crash(e);
             }
         } while (true);
     }
 
     @Override
     public Page<SegmentKey> selectSelective(SegmentKey segmentKey, final int page, final int size) {
-        final List<ConfigWhere> wheres = new ArrayList<ConfigWhere>();
+        final SwiftConfigCondition configCondition = SwiftConfigConditionImpl.newInstance();
         SourceKey sourceKey = segmentKey.getTable();
         if (null != sourceKey) {
-            wheres.add(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey.getId()));
+            configCondition.addWhere(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER, sourceKey.getId()));
         }
         StoreType storeType = segmentKey.getStoreType();
         if (null != storeType) {
-            wheres.add(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, storeType));
+            configCondition.addWhere(ConfigWhereImpl.eq(SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE, storeType));
         }
         SwiftSchema swiftSchema = segmentKey.getSwiftSchema();
         if (null != swiftSchema) {
-            wheres.add(ConfigWhereImpl.eq("swiftSchema", swiftSchema));
+            configCondition.addWhere(ConfigWhereImpl.eq("swiftSchema", swiftSchema));
         }
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Page<SegmentKey>>(false) {
-                @Override
-                public Page<SegmentKey> work(ConfigSession session) throws SQLException {
-                    try {
-                        final Set<String> segmentIds = new HashSet<String>();
-                        for (SwiftSegmentLocationEntity bean : segmentLocationDao.find(session,
-                                ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()))) {
-                            segmentIds.add(bean.getSegmentId());
-                        }
-                        if (segmentIds.isEmpty()) {
-                            return new Page<SegmentKey>();
-                        }
-                        wheres.add(ConfigWhereImpl.in("id", segmentIds));
-                        return swiftSegmentDao.findPage(session, page, size, new Order[]{OrderImpl.asc("id"), OrderImpl.asc("segmentOrder")}, wheres.toArray(new ConfigWhere[0]));
-                    } catch (Throwable e) {
-                        throw new SQLException(e);
-                    }
+
+        return queryBus.get(new SwiftConfigQuery<Page<SegmentKey>>() {
+            @Override
+            public Page<SegmentKey> apply(ConfigSession p) {
+                ConfigQuery<SwiftSegmentLocationEntity> entityQuery = p.createEntityQuery(SwiftSegmentLocationEntity.class);
+                entityQuery.where(ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()));
+                List<SwiftSegmentLocationEntity> entities = entityQuery.executeQuery();
+                if (entities.isEmpty()) {
+                    return new Page<>();
                 }
-            });
-        } catch (SQLException e) {
-            return new Page<SegmentKey>();
-        }
+                Set<String> segIds = new HashSet<>(entities.size());
+                for (SwiftSegmentLocationEntity entity : entities) {
+                    segIds.add(entity.getSegmentId());
+                }
+                configCondition.addWhere(ConfigWhereImpl.in("id", segIds));
+                final ConfigQuery<SwiftSegmentEntity> segmentEntityConfigQuery = p.createEntityQuery(SwiftSegmentEntity.class);
+                final Page<SwiftSegmentEntity> data = segmentEntityConfigQuery.executeQuery(page, size);
+                Page<SegmentKey> result = new Page<>();
+                result.setData(new ArrayList<SegmentKey>(data.getData()));
+                result.setTotal(data.getTotal());
+                result.setCurrentPage(data.getCurrentPage());
+                result.setPageSize(data.getPageSize());
+                return result;
+            }
+        });
+
     }
 
     @Override
     public Set<SegmentKey> getByIds(final Set<String> segIds) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Set<SegmentKey>>() {
-                @Override
-                public Set<SegmentKey> work(ConfigSession session) {
-                    return new HashSet<>(swiftSegmentDao.find(session, ConfigWhereImpl.in("id", segIds)));
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().error(e);
-            return Collections.emptySet();
-        }
+        return new HashSet<SegmentKey>(queryBus.get(SwiftConfigConditionImpl.newInstance().addWhere(ConfigWhereImpl.in("id", segIds))));
     }
 
     @Override
@@ -295,73 +212,45 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
 
     @Override
     public Map<SourceKey, List<SegmentKey>> getOwnSegments(final String clusterId) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Map<SourceKey, List<SegmentKey>>>(false) {
-                @Override
-                public Map<SourceKey, List<SegmentKey>> work(final ConfigSession session) throws SQLException {
-                    final Set<String> segmentIds = new HashSet<String>();
-                    try {
-                        for (SwiftSegmentLocationEntity item : segmentLocationDao.findByClusterId(session, clusterId)) {
-                            segmentIds.add(item.getSegmentId());
-                        }
-                        if (segmentIds.isEmpty()) {
-                            return Collections.emptyMap();
-                        }
-                        Map<SourceKey, List<SegmentKey>> result = swiftSegmentDao.findSegmentKeyWithSourceKey(session, ConfigWhereImpl.in("id", segmentIds));
-                        for (SegmentContainer value : SegmentContainer.values()) {
-                            value.register(result);
-                        }
-                        return result;
-                    } catch (Throwable e) {
-                        throw new SQLException(e);
-                    }
+        return queryBus.get(new SwiftConfigQuery<Map<SourceKey, List<SegmentKey>>>() {
+            @Override
+            public Map<SourceKey, List<SegmentKey>> apply(ConfigSession session) {
+                ConfigQuery<SwiftSegmentLocationEntity> locationQuery = session.createEntityQuery(SwiftSegmentLocationEntity.class);
+                locationQuery.where(ConfigWhereImpl.eq("id.clusterId", clusterId));
+                final List<SwiftSegmentLocationEntity> entities = locationQuery.executeQuery();
+                if (entities.isEmpty()) {
+                    return Collections.emptyMap();
                 }
-            });
-        } catch (SQLException e) {
-            return Collections.emptyMap();
-        }
+                final Set<String> segmentIds = new HashSet<String>(entities.size());
+                for (SwiftSegmentLocationEntity entity : entities) {
+                    segmentIds.add(entity.getSegmentId());
+                }
+                ConfigQuery<SwiftSegmentEntity> entityQuery = session.createEntityQuery(SwiftSegmentEntity.class);
+                entityQuery.where(ConfigWhereImpl.in("id", segmentIds));
+                final List<SwiftSegmentEntity> list = entityQuery.executeQuery();
+                Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
+                for (SegmentKey segmentKey : list) {
+                    SourceKey sourceKey = segmentKey.getTable();
+                    if (!result.containsKey(sourceKey)) {
+                        result.put(sourceKey, new ArrayList<SegmentKey>());
+                    }
+                    result.get(sourceKey).add(segmentKey);
+                }
+                for (SegmentContainer value : SegmentContainer.values()) {
+                    value.register(result);
+                }
+                return result;
+            }
+        });
     }
 
-    @Override
-    public boolean updateSegmentTable(final Map<String, Set<SegmentKey>> segmentTable) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(ConfigSession session) throws SQLException {
-                    for (Map.Entry<String, Set<SegmentKey>> entry : segmentTable.entrySet()) {
-                        for (SegmentKey segmentKey : entry.getValue()) {
-                            SwiftSegmentLocationEntity locationEntity = new SwiftSegmentLocationEntity(entry.getKey(), segmentKey.getId(), segmentKey.getTable().getId());
-                            segmentLocationDao.saveOrUpdate(session, locationEntity);
-                        }
-                    }
-                    return true;
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn("Update table error!", e);
-            return false;
-        }
-    }
 
     @Override
     public List<SegmentKey> find(final ConfigWhere... criterion) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<List<SegmentKey>>(false) {
-                @Override
-                public List<SegmentKey> work(final ConfigSession session) throws SQLException {
-                    try {
-                        List<SegmentKey> result = swiftSegmentDao.find(session, criterion);
-                        for (SegmentContainer value : SegmentContainer.values()) {
-                            value.register(result);
-                        }
-                        return result;
-                    } catch (Throwable e) {
-                        throw new SQLException(e);
-                    }
-                }
-            });
-        } catch (SQLException e) {
-            return Collections.emptyList();
+        SwiftConfigCondition condition = SwiftConfigConditionImpl.newInstance();
+        for (ConfigWhere configWhere : criterion) {
+            condition.addWhere(configWhere);
         }
+        return new ArrayList<SegmentKey>(queryBus.get(condition));
     }
 }
