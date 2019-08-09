@@ -138,16 +138,6 @@ public class SwiftSegmentServiceImplTest extends BaseServiceTest {
         PowerMock.verifyAll();
     }
 
-    @Test
-    public void updateSegments() {
-        List<SegmentKey> list = new ArrayList<SegmentKey>();
-        ObjectConverter[] converters = mockData();
-        for (ObjectConverter converter : converters) {
-            list.add((SegmentKey) converter.convert());
-        }
-        assertTrue(service.updateSegments("source", list));
-        PowerMock.verifyAll();
-    }
 
     @Test
     public void getSegmentByKey() {

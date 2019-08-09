@@ -136,21 +136,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
         return true;
     }
 
-    @Override
-    public boolean updateSegments(final String sourceKey, final List<SegmentKey> segments) {
-        try {
-            return configSessionCreator.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
-                @Override
-                public Boolean work(ConfigSession session) throws SQLException {
-                    swiftSegmentDao.deleteBySourceKey(session, sourceKey);
-                    return addSegmentsWithoutTransaction(session, segments);
-                }
-            });
-        } catch (SQLException e) {
-            SwiftLoggers.getLogger().warn("update segment error! ", e);
-        }
-        return false;
-    }
 
     @Override
     public Map<SourceKey, List<SegmentKey>> getAllSegments() {

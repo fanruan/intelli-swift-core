@@ -12,6 +12,10 @@ public class SwiftConfigCommands {
         return new DeleteItemCommand<>(tClass, condition);
     }
 
+    public static <T> SwiftConfigCommand<Integer> ofDeleteCascade(Class<T> tClass, SwiftConfigCondition condition) {
+        return new DeleteCascadeCommand<>(tClass, condition);
+    }
+
     public static <T> SwiftConfigCommand<T> ofSave(T obj) {
         return new MergeItemCommand<>(obj);
     }

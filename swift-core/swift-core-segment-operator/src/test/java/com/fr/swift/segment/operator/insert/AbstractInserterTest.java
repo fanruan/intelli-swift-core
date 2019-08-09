@@ -93,7 +93,7 @@ public class AbstractInserterTest {
         Ins ins = new Ins(seg, Collections.singletonList("c1"));
         ins.putRow(0, row);
         ins.putRow(1, row1);
-        ins.putNullIndex();
+//        ins.putNullIndex();
 
         verify(bitmapIndexedColumn).putNullIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
@@ -108,7 +108,7 @@ public class AbstractInserterTest {
         ins = new Ins(seg, Collections.singletonList("c1"));
         ins.putRow(0, row);
         ins.putRow(1, row1);
-        ins.putNullIndex();
+//        ins.putNullIndex();
 
         verify(bitmapIndexedColumn).putNullIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
@@ -124,7 +124,7 @@ public class AbstractInserterTest {
         ins = new Ins(seg, Collections.singletonList("c1"));
         ins.putRow(0, row);
         ins.putRow(1, row1);
-        ins.putNullIndex();
+//        ins.putNullIndex();
 
         verify(bitmapIndexedColumn, times(2)).putNullIndex(argThat(new ArgumentMatcher<ImmutableBitMap>() {
             @Override
