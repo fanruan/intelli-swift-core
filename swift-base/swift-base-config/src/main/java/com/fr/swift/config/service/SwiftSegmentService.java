@@ -35,11 +35,6 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
 
     boolean removeSegments(List<SegmentKey> segmentKeys);
 
-    /**
-     * @param segments
-     * @return
-     */
-    boolean updateSegments(String sourceKey, List<SegmentKey> segments);
 
     /**
      * 获取所有Segment

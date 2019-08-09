@@ -3,8 +3,7 @@ package com.fr.swift.config;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.CommonConnectorConfig;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.command.SwiftConfigEntityCommandBus;
-import com.fr.swift.config.entity.SwiftConfigEntity;
+import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 import com.fr.swift.cube.io.impl.fineio.connector.builder.FineIOConnectorBuilder;
 import com.fr.swift.cube.io.impl.fineio.connector.builder.PackageConnectorBuilder;
@@ -27,8 +26,7 @@ public class PublicConfig {
      * initMethod 好像没调用
      */
     public static void load() {
-        final SwiftConfig swiftConfig = SwiftContext.get().getBean(SwiftConfig.class);
-        final SwiftConfigEntityCommandBus command = (SwiftConfigEntityCommandBus) swiftConfig.command(SwiftConfigEntity.class);
+        SwiftFineIOConnectorService fineIoService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
         // 优先读取jar外面的 即当前目录下的文件
         File configFile = new File("public.conf");
         InputStream is = null;
@@ -49,7 +47,7 @@ public class PublicConfig {
                             PackageConnectorBuilder factory = SwiftContext.get().getBean(repoType, PackageConnectorBuilder.class);
                             if (null != factory) {
                                 FineIOConnectorConfig config = (FineIOConnectorConfig) factory.loadFromProperties(properties);
-                                command.merge(SwiftConfigConstants.Namespace.FINE_IO_PACKAGE, config);
+                                fineIoService.setCurrentConfig(config, SwiftFineIOConnectorService.Type.PACKAGE);
                             }
                         }
                     }
@@ -69,7 +67,7 @@ public class PublicConfig {
                         }
                     }
                     if (null != config) {
-                        command.merge(SwiftConfigConstants.Namespace.FINE_IO_CONNECTOR, config);
+                        fineIoService.setCurrentConfig(config, SwiftFineIOConnectorService.Type.CONNECTOR);
                     }
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("load fineio config failed!", e);

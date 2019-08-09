@@ -26,11 +26,7 @@ public class SwiftHibernateConfigCommandBus<T> extends BaseSwiftConfigCommandBus
 
     @Override
     public T save(final T obj) throws SQLException {
-        final T transaction = transaction(SwiftConfigCommands.ofSave(obj));
-        for (SaveOrUpdateListener<T> listener : listeners) {
-            listener.saveOrUpdate(transaction);
-        }
-        return transaction;
+        return transaction(SwiftConfigCommands.ofSave(obj));
     }
 
     @Override
@@ -51,11 +47,7 @@ public class SwiftHibernateConfigCommandBus<T> extends BaseSwiftConfigCommandBus
     @Override
     public T merge(final T obj) {
         try {
-            final T transaction = transaction(SwiftConfigCommands.ofMerge(obj));
-            for (SaveOrUpdateListener<T> listener : listeners) {
-                listener.saveOrUpdate(transaction);
-            }
-            return transaction;
+            return transaction(SwiftConfigCommands.ofMerge(obj));
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error("merge object {} failed", obj, e);
             return null;

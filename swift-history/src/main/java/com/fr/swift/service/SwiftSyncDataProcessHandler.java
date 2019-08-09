@@ -1,6 +1,5 @@
 package com.fr.swift.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
@@ -16,11 +15,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
-import com.fr.swift.config.DataSyncRule;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.query.SwiftConfigQueryBus;
+import com.fr.swift.config.service.DataSyncRuleService;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
@@ -33,9 +28,7 @@ import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
 import com.fr.swift.service.handler.SwiftServiceHandlerManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.MonitorUtil;
-import com.fr.swift.util.function.Function;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +50,7 @@ import java.util.concurrent.CountDownLatch;
 @RegisteredHandler(SyncDataProcessHandler.class)
 public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler implements SyncDataProcessHandler {
 
-    private SwiftConfigQueryBus<SwiftConfigEntity> dataSyncRuleService;
+    private DataSyncRuleService dataSyncRuleService;
 
     private SwiftClusterSegmentService clusterSegmentService;
 
@@ -65,7 +58,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler impl
 
     public SwiftSyncDataProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
-        dataSyncRuleService = SwiftContext.get().getBean(SwiftConfig.class).query(SwiftConfigEntity.class);
+        dataSyncRuleService = SwiftContext.get().getBean(DataSyncRuleService.class);
         clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
         swiftSegmentLocationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
     }
@@ -155,18 +148,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler impl
         Set<SegmentKey> segmentKeys = (Set<SegmentKey>) args[0];
         Map<SourceKey, List<SegmentDestination>> destinations = (Map<SourceKey, List<SegmentDestination>>) args[1];
 
-        DataSyncRule rule = dataSyncRuleService.select(SwiftConfigConstants.Namespace.DATA_SYNC_RULE.name(), new Function<SwiftConfigEntity, DataSyncRule>() {
-            @Override
-            public DataSyncRule apply(SwiftConfigEntity p) {
-                final DataSyncRule defaultDataSyncRule = SwiftContext.get().getBean("defaultDataSyncRule", DataSyncRule.class);
-                try {
-                    return null == p ? defaultDataSyncRule : new ObjectMapper().readValue(p.getConfigValue(), DataSyncRule.class);
-                } catch (IOException e) {
-                    return defaultDataSyncRule;
-                }
-            }
-        });
-        Map<String, Set<SegmentKey>> segkeyDistribution = rule.getNeedLoadAndUpdateDestinations(nodeIds, segmentKeys, destinations);
+        Map<String, Set<SegmentKey>> segkeyDistribution = dataSyncRuleService.getCurrentRule().getNeedLoadAndUpdateDestinations(nodeIds, segmentKeys, destinations);
 
         Map<URL, Set<SegmentKey>> urlResultMap = new HashMap<URL, Set<SegmentKey>>();
 

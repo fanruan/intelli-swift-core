@@ -1,65 +1,32 @@
 package com.fr.swift.config.impl;
 
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfig;
 import com.fr.swift.config.command.SwiftConfigCommandBus;
-import com.fr.swift.config.command.impl.SwiftConfigEntityCommandBusImpl;
-import com.fr.swift.config.command.impl.SwiftHibernateConfigCommandBus;
-import com.fr.swift.config.entity.SwiftColumnIndexingConf;
-import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.query.SwiftConfigQueryBus;
-import com.fr.swift.config.query.impl.SwiftConfigEntityQueryBusImpl;
-import com.fr.swift.config.query.impl.SwiftHibernateConfigQueryBus;
-import com.fr.swift.config.query.impl.SwiftIndexingConfigQueryBus;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
+ * TODO 实现 注册不同的Entity？还是只用一个
  * @author yee
  * @date 2019-07-30
  */
-@SwiftBean
 public class SwiftHibernateConfig implements SwiftConfig {
-
-    private ConcurrentMap<Class<?>, SwiftConfigCommandBus<?>> commandBus = new ConcurrentHashMap<>();
-    private ConcurrentMap<Class<?>, SwiftConfigQueryBus<?>> queryBus = new ConcurrentHashMap<>();
-
-
-    public SwiftHibernateConfig() {
-        init();
-    }
-
-    private void init() {
-        commandBus.putIfAbsent(SwiftConfigEntity.class, new SwiftConfigEntityCommandBusImpl());
-
-        queryBus.putIfAbsent(SwiftColumnIndexingConf.class, new SwiftIndexingConfigQueryBus());
-        queryBus.putIfAbsent(SwiftConfigEntity.class, new SwiftConfigEntityQueryBusImpl());
-    }
-
     @Override
     public <T> SwiftConfigCommandBus<T> command(Class<T> tClass) {
-        if (!commandBus.containsKey(tClass)) {
-            commandBus.put(tClass, new SwiftHibernateConfigCommandBus<T>(tClass));
-        }
-        return (SwiftConfigCommandBus<T>) commandBus.get(tClass);
+        return null;
     }
 
     @Override
     public SwiftConfigCommandBus command() {
-        return new SwiftHibernateConfigCommandBus(Object.class);
+        return null;
     }
 
     @Override
     public <T> SwiftConfigQueryBus<T> query(Class<T> tClass) {
-        if (!queryBus.containsKey(tClass)) {
-            queryBus.put(tClass, new SwiftHibernateConfigQueryBus<T>(tClass));
-        }
-        return (SwiftHibernateConfigQueryBus<T>) queryBus.get(tClass);
+        return null;
     }
 
     @Override
     public SwiftConfigQueryBus query() {
-        return new SwiftHibernateConfigQueryBus(Object.class);
+        return null;
     }
 }

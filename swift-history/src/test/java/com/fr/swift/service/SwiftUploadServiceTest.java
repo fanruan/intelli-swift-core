@@ -2,12 +2,8 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
-import com.fr.swift.context.ContextProvider;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftSchema;
@@ -68,15 +64,10 @@ public class SwiftUploadServiceTest {
         BeanFactory beanFactory = mock(BeanFactory.class);
         when(SwiftContext.get()).thenReturn(beanFactory);
 
-        final ContextProvider mock = mock(ContextProvider.class);
-        when(mock.getContextPath()).thenReturn("/a");
-        when(beanFactory.getBean(ContextProvider.class)).thenReturn(mock);
+        SwiftCubePathService service = mock(SwiftCubePathService.class);
+        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(service);
 
-        SwiftConfig service = mock(SwiftConfig.class);
-        when(beanFactory.getBean(SwiftConfig.class)).thenReturn(service);
-        final SwiftConfigEntityQueryBus query = mock(SwiftConfigEntityQueryBus.class);
-        when(service.query(SwiftConfigEntity.class)).thenReturn(query);
-        when(query.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, "/a")).thenReturn("/a");
+        when(service.getSwiftPath()).thenReturn("/a");
 
         when(CubeUtil.getCurrentDir(ArgumentMatchers.<SourceKey>any())).thenReturn(0);
 

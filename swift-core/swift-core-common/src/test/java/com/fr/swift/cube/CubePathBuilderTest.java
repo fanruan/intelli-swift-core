@@ -1,11 +1,7 @@
 package com.fr.swift.cube;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.SwiftConfig;
-import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.config.entity.SwiftConfigEntity;
-import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
-import com.fr.swift.context.ContextProvider;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
@@ -35,18 +31,12 @@ public class CubePathBuilderTest {
         EasyMock.expect(SwiftContext.get()).andReturn(swiftContext).anyTimes();
         PowerMock.replayAll();
 
+        SwiftCubePathService pathService = EasyMock.mock(SwiftCubePathService.class);
         basePath = "/base_path";
-        final ContextProvider contextProvider = EasyMock.createMock(ContextProvider.class);
-        EasyMock.expect(contextProvider.getContextPath()).andReturn(basePath).anyTimes();
-        EasyMock.expect(swiftContext.getBean(ContextProvider.class)).andReturn(contextProvider).anyTimes();
+        EasyMock.expect(pathService.getSwiftPath()).andReturn(basePath).anyTimes();
 
-        final SwiftConfig mock = EasyMock.createMock(SwiftConfig.class);
-        final SwiftConfigEntityQueryBus mock1 = EasyMock.createMock(SwiftConfigEntityQueryBus.class);
-
-        EasyMock.expect(mock.query(SwiftConfigEntity.class)).andReturn(mock1).anyTimes();
-        EasyMock.expect(mock1.select(SwiftConfigConstants.Namespace.SWIFT_CUBE_PATH, String.class, basePath)).andReturn(basePath).anyTimes();
-
-        EasyMock.replay(contextProvider, mock, mock1, swiftContext);
+        EasyMock.expect(swiftContext.getBean(SwiftCubePathService.class)).andReturn(pathService).anyTimes();
+        EasyMock.replay(pathService, swiftContext);
     }
 
     @Test(expected = RuntimeException.class)
