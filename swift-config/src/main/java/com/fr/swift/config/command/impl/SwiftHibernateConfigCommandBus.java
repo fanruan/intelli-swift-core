@@ -18,9 +18,9 @@ import java.util.List;
  * @date 2019-07-30
  */
 public class SwiftHibernateConfigCommandBus<T> extends BaseSwiftConfigCommandBus<T> {
-    private Class<T> tClass;
+    protected Class<? extends T> tClass;
 
-    public SwiftHibernateConfigCommandBus(Class<T> tClass) {
+    public SwiftHibernateConfigCommandBus(Class<? extends T> tClass) {
         this.tClass = tClass;
     }
 
@@ -77,6 +77,16 @@ public class SwiftHibernateConfigCommandBus<T> extends BaseSwiftConfigCommandBus
     public int delete(SwiftConfigCondition condition) {
         try {
             return transaction(SwiftConfigCommands.ofDelete(tClass, condition));
+        } catch (SQLException e) {
+            SwiftLoggers.getLogger().error("delete object failed", e);
+            return 0;
+        }
+    }
+
+    @Override
+    public int deleteCascade(SwiftConfigCondition condition) {
+        try {
+            return transaction(SwiftConfigCommands.ofDeleteCascade(tClass, condition));
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error("delete object failed", e);
             return 0;
