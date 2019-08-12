@@ -25,9 +25,7 @@ import java.util.Set;
  * This class created on 2019/3/4
  *
  * @author Lucifer
- * @description
- *
- * extends各种service，避免接口不同步
+ * @description extends各种service，避免接口不同步
  */
 public interface ServiceContext {
 
@@ -101,4 +99,7 @@ public interface ServiceContext {
 
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.REAL_TIME, Target.HISTORY})
     void downloadAllShow(Set<SegmentKey> segKeys) throws Exception;
+
+    @InvokeMethod(value = CommonProcessHandler.class, target = {Target.ANALYSE})
+    void clearQuery(String queryId) throws Exception;
 }

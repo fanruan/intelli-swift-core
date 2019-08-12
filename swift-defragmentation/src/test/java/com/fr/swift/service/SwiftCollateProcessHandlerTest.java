@@ -106,7 +106,7 @@ public class SwiftCollateProcessHandlerTest {
 
     @Test
     public void testProcessResult() {
-        Mockito.when(invokerCreator.createAsyncInvoker(CollateService.class, cluster1)).thenReturn(invoker);
+        Mockito.when(invokerCreator.createAsyncInvoker(ServiceContext.class, cluster1)).thenReturn(invoker);
         Mockito.when(invoker.invoke(Mockito.any(SwiftInvocation.class))).thenReturn(new SwiftResult("test" + segmentKeyList.size()));
 
         SwiftCollateProcessHandler handler = new SwiftCollateProcessHandler(invokerCreator);
