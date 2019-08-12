@@ -13,7 +13,6 @@ import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -67,4 +67,9 @@ public class ConfigWhereImpl<T> implements ConfigWhere<T> {
     public Type type() {
         return type;
     }
+
+    @Override
+    public ConfigWhere<T> rename(String column) {
+        return new ConfigWhereImpl<>(column, value, type);
+    }
 }

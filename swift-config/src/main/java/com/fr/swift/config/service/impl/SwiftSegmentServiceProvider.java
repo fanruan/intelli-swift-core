@@ -37,10 +37,6 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
         return service.removeSegments(segmentKeys);
     }
 
-    @Override
-    public boolean updateSegments(String sourceKey, List<SegmentKey> segments) {
-        return service.updateSegments(sourceKey, segments);
-    }
 
     @Override
     public Map<SourceKey, List<SegmentKey>> getAllSegments() {

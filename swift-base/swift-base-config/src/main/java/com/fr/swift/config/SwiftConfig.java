@@ -15,7 +15,7 @@ public interface SwiftConfig {
      * @param <T>
      * @return 操作对象
      */
-    <T> SwiftConfigCommandBus<T> command(Class<T> tClass);
+    <T, Bus extends SwiftConfigCommandBus<T>> Bus command(Class<T> tClass);
 
     /**
      * 获取通用的CommandBus
@@ -31,7 +31,7 @@ public interface SwiftConfig {
      * @param <T>
      * @return
      */
-    <T> SwiftConfigQueryBus<T> query(Class<T> tClass);
+    <T, Bus extends SwiftConfigQueryBus<T>> Bus query(Class<T> tClass);
 
     /**
      * 获取通用的QueryBus

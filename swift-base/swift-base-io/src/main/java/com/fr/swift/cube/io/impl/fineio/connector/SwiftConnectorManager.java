@@ -2,6 +2,7 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.storage.Connector;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftFineIOConnectorService;
 
@@ -44,7 +45,7 @@ public class SwiftConnectorManager implements IConnectorManager {
         if (null == connector) {
             synchronized (this) {
                 if (null == connector) {
-                    connector = provider.apply(fineIOConnectorService.getCurrentConfig(SwiftFineIOConnectorService.Type.CONNECTOR));
+                    connector = provider.apply(fineIOConnectorService.getCurrentConfig(SwiftConfigConstants.Namespace.FINE_IO_CONNECTOR));
                 }
             }
         }

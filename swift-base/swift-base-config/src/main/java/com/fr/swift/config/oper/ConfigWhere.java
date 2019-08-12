@@ -9,6 +9,8 @@ public interface ConfigWhere<T> extends Expression {
 
     Type type();
 
+    ConfigWhere<T> rename(String column);
+
     enum Type {
         //
         EQ, IN, LIKE, GT, AND, OR
