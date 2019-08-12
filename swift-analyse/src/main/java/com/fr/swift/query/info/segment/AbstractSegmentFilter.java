@@ -17,6 +17,7 @@ import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.alloter.AllotRule;
+import com.fr.swift.source.alloter.impl.BaseAllotRule;
 import com.fr.swift.source.alloter.impl.hash.HashAllotRule;
 
 import java.util.HashSet;
@@ -45,16 +46,23 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
     @Override
     public List<Segment> filter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
-        if (tableAllotRule == null || segmentBucket == null || singleTableQueryInfo.getFilterInfo() == null) {
+        if (isLineAllot(singleTableQueryInfo)) {
             return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
-        // List<Segment> segments = SEG_SVC.getSegmentsByIds(detailQueryInfo.getTable(), detailQueryInfo.getQuerySegment());
         Set<Integer> virtualOrders = getIndexSet(singleTableQueryInfo.getFilterInfo(), singleTableQueryInfo.getTable());
         if (virtualOrders.contains(-1)) {
             return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
         return filterSegment(virtualOrders);
 
+    }
+
+    private boolean isLineAllot(SingleTableQueryInfo singleTableQueryInfo) {
+        if (tableAllotRule == null || segmentBucket == null
+                || singleTableQueryInfo.getFilterInfo() == null || tableAllotRule.getAllotRule().getType() == BaseAllotRule.AllotType.LINE) {
+            return true;
+        }
+        return false;
     }
 
     public abstract List<Segment> filterSegment(Set<Integer> virtualOrders);
@@ -122,6 +130,4 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
             return allQuerySet;
         }
     }
-
-
 }
