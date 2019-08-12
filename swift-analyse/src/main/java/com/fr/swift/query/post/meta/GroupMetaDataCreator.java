@@ -104,7 +104,8 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                     SwiftMetaDataColumn metaDataColumn = Strings.isEmpty(column) ?
                             new MetaDataColumnBean(Strings.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
                     String name = alias == null ? column : alias;
-                    metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), metaDataColumn.getType(),
+                    int type = metaDataColumn.getType() == Types.VARCHAR ? Types.DOUBLE : metaDataColumn.getType();
+                    metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), type,
                             metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
             }
 
