@@ -40,4 +40,9 @@ public class SwiftConfigConstants {
         public static final String ZIP_NAMESPACE = "SWIFT_USE_ZIP";
         public static final String REPOSITORY_CONF_NAMESPACE = "SWIFT_REPOSITORY_CONF";
     }
+
+    public enum Namespace {
+        //
+        SWIFT_CUBE_PATH, SEGMENT_DEST_SELECT_RULE, DATA_SYNC_RULE, FINE_IO_CONNECTOR, FINE_IO_PACKAGE
+    }
 }

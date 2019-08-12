@@ -94,7 +94,7 @@ public class SwiftSyncDataProcessHandler extends BaseSyncDataProcessHandler impl
                 //先改配置，再发rpc
                 Map<String, Set<SegmentKey>> segmentTable = new HashMap<String, Set<SegmentKey>>();
                 segmentTable.put(urlSetEntry.getKey().getDestination().getId(), urlSetEntry.getValue());
-                clusterSegmentService.updateSegmentTable(segmentTable);
+                swiftSegmentLocationService.updateSegmentTable(segmentTable);
 
                 Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, urlSetEntry.getKey());
                 RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass, method, methodName, parameterTypes, urlSetEntry.getValue(), replace);

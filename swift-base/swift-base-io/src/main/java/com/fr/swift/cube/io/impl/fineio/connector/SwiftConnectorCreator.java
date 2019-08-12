@@ -65,7 +65,7 @@ public class SwiftConnectorCreator {
         if (INSTANCE.packageBuilder.containsKey(name)) {
             return INSTANCE.packageBuilder.get(name).build(connectorConfig);
         }
-        if (INSTANCE.packageBuilder.containsKey("DEFAULT"))  {
+        if (INSTANCE.packageBuilder.containsKey("DEFAULT")) {
             return INSTANCE.packageBuilder.get("DEFAULT").build(connectorConfig);
         }
         return Crasher.crash(String.format("Cannot build package connector witch type is %s", name));

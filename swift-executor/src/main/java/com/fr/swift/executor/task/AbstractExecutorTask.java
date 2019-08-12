@@ -1,16 +1,14 @@
 package com.fr.swift.executor.task;
 
 import com.fr.swift.base.json.JsonBuilder;
+import com.fr.swift.executor.config.SwiftExecutorTaskEntity;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.StatusType;
 import com.fr.swift.executor.type.TaskType;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
-
-import java.lang.reflect.Constructor;
 
 /**
  * This class created on 2019/2/11
@@ -62,16 +60,6 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.createTime = createTime;
         this.taskId = taskId;
         this.taskContent = taskContent;
-    }
-
-    public static final Class TYPE = entityType();
-
-    private static Class entityType() {
-        try {
-            return Class.forName("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
     }
 
     @Override
@@ -193,13 +181,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
     }
 
     @Override
-    public Object convert() {
-        try {
-            Constructor constructor = TYPE.getDeclaredConstructor(ExecutorTask.class);
-            return constructor.newInstance(this);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            return null;
-        }
+    public SwiftExecutorTaskEntity convert() {
+        return new SwiftExecutorTaskEntity(this);
     }
 }

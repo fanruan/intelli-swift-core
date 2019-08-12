@@ -54,6 +54,14 @@ public interface SwiftConfigCommandBus<T> {
     int delete(SwiftConfigCondition condition);
 
     /**
+     * 删除数据
+     *
+     * @param condition 删除条件
+     * @return 已删除的对象
+     */
+    int deleteCascade(SwiftConfigCondition condition);
+
+    /**
      * 执行自定义方法
      *
      * @param fn  要在事务中执行的方法
@@ -62,4 +70,5 @@ public interface SwiftConfigCommandBus<T> {
      * @throws SQLException
      */
     <R> R transaction(SwiftConfigCommand<R> fn) throws SQLException;
+
 }

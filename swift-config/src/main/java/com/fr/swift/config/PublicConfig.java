@@ -47,7 +47,7 @@ public class PublicConfig {
                             PackageConnectorBuilder factory = SwiftContext.get().getBean(repoType, PackageConnectorBuilder.class);
                             if (null != factory) {
                                 FineIOConnectorConfig config = (FineIOConnectorConfig) factory.loadFromProperties(properties);
-                                fineIoService.setCurrentConfig(config, SwiftFineIOConnectorService.Type.PACKAGE);
+                                fineIoService.setCurrentConfig(config, SwiftConfigConstants.Namespace.FINE_IO_PACKAGE);
                             }
                         }
                     }
@@ -67,7 +67,7 @@ public class PublicConfig {
                         }
                     }
                     if (null != config) {
-                        fineIoService.setCurrentConfig(config, SwiftFineIOConnectorService.Type.CONNECTOR);
+                        fineIoService.setCurrentConfig(config, SwiftConfigConstants.Namespace.FINE_IO_CONNECTOR);
                     }
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("load fineio config failed!", e);

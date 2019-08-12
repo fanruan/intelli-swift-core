@@ -5,7 +5,6 @@ import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author yee
@@ -13,6 +12,4 @@ import java.util.Set;
  */
 public interface SwiftClusterSegmentService extends SwiftSegmentService {
     Map<SourceKey, List<SegmentKey>> getOwnSegments(String clusterId);
-
-    boolean updateSegmentTable(Map<String, Set<SegmentKey>> segmentTable);
 }

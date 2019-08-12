@@ -32,4 +32,7 @@ public interface SwiftSegmentLocationService extends ConfigService<SwiftSegmentL
     boolean containsLocal(SegmentKey segKey);
 
     Map<SourceKey, List<SwiftSegmentLocationEntity>> getAllLocal();
+
+
+    boolean updateSegmentTable(Map<String, Set<SegmentKey>> segmentTable);
 }
