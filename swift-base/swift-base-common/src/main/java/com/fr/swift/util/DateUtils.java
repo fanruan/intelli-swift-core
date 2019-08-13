@@ -59,6 +59,9 @@ public class DateUtils {
             }
         }
 
+        if (null == date && null != obj) {
+            return string2Date(obj.toString());
+        }
         return date;
     }
 }
