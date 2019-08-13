@@ -245,6 +245,14 @@ public class FilterInfoParser {
         }
     }
 
+    /**
+     * postQuery的，如果count(字符字段) 只用convert取出来的object是String
+     * 强转成Number会抛异常
+     *
+     * @param origin
+     * @param type
+     * @return
+     */
     private static Number convertNumber(Object origin, ColumnTypeConstants.ClassType type) {
         final Object convert = convert(origin, type);
         return convert instanceof Number ? (Number) convert : Double.parseDouble(convert.toString());
