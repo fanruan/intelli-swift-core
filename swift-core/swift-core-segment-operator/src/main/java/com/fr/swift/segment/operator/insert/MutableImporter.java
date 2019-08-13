@@ -60,6 +60,9 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
                     // 可能有满了的seg
                     SegmentKey segKey = newSegmentKey(segInfo);
                     insertings.put(segInfo, getInserting(segKey));
+                    if (mutableResultSet.hasNewSubfields()) {
+                        ((MutableInserting) insertings.get(segInfo)).refreshMetadata(mutableResultSet.getMetaData());
+                    }
                     importSegKeys.add(segKey);
                 }
                 insertings.get(segInfo).insert(row);

@@ -45,10 +45,16 @@ public class SwiftMutableResultSetTest {
             "24;1562550000007;d;8;json;{\"a\":\"13\",\"b\":98,\"c\":20,\"d\":\"white\"}",
             "25;1562550000010;e;8;json;{\"a\":\"16\",\"c\":25,\"e\":\"false\"}"};
 
+    public static String[] lines4 = new String[]{"2;1562550000004;b;8;json;{\"id\":\"1\",\"score\":100,\"age\":18}",
+            "3;1562550000005;c;8;string;c-string",
+            "4;1562550000007;d;8;json;{\"id\":\"3\",\"score\":98,\"age\":20,\"head\":\"black\"}",
+            "5;1562550000009;e;8;json;{\"id\":\"5\",\"age\":15,\"type\":\"true\"}",
+            "1;1562550000001;a;8;string;a-string"};
+
     @Test
     public void testEmptyRule() throws SQLException {
         SwiftMetaData baseMetadata = getFirstMetadata();
-        SwiftMutableResultSet swiftMutableResultSet = new SwiftMutableResultSet(baseMetadata, new MutableTestResultSet(baseMetadata, lines1));
+        SwiftMutableResultSet swiftMutableResultSet = new SwiftMutableResultSet(baseMetadata, new MutableTestResultSet(baseMetadata, lines1), new JsonColumnSplitRule[]{});
         List<Row> rowList = new ArrayList<>();
 
         Assert.assertEquals(swiftMutableResultSet.getMetaData().getColumnCount(), 6);
@@ -74,7 +80,7 @@ public class SwiftMutableResultSetTest {
     @Test
     public void integrationFirstTest() throws SQLException {
         SwiftMetaData baseMetadata = getFirstMetadata();
-        SwiftMutableResultSet swiftMutableResultSet = new SwiftMutableResultSet(baseMetadata, new MutableTestResultSet(baseMetadata, lines1), new JsonColumnSplitRule("body", baseMetadata));
+        SwiftMutableResultSet swiftMutableResultSet = new SwiftMutableResultSet(baseMetadata, new MutableTestResultSet(baseMetadata, lines1), new JsonColumnSplitRule[]{new JsonColumnSplitRule("body", baseMetadata)});
         List<Row> rowList = new ArrayList<>();
 
         Assert.assertEquals(swiftMutableResultSet.getMetaData().getColumnCount(), 6);
@@ -124,7 +130,7 @@ public class SwiftMutableResultSetTest {
     @Test
     public void integrationSecondTest() throws SQLException {
         SwiftMetaData baseMetadata2 = getSecondMetadata();
-        SwiftMutableResultSet swiftMutableResultSet2 = new SwiftMutableResultSet(baseMetadata2, new MutableTestResultSet(baseMetadata2, lines2), new JsonColumnSplitRule("body", baseMetadata2));
+        SwiftMutableResultSet swiftMutableResultSet2 = new SwiftMutableResultSet(baseMetadata2, new MutableTestResultSet(baseMetadata2, lines2), new JsonColumnSplitRule[]{new JsonColumnSplitRule("body", baseMetadata2)});
         List<Row> rowList2 = new ArrayList<>();
 
         Assert.assertEquals(swiftMutableResultSet2.getMetaData().getColumnCount(), 11);
@@ -184,7 +190,7 @@ public class SwiftMutableResultSetTest {
     @Test
     public void integrationThirdTest() throws SQLException {
         SwiftMetaData baseMetadata3 = getSecondMetadata();
-        SwiftMutableResultSet swiftMutableResultSet3 = new SwiftMutableResultSet(baseMetadata3, new MutableTestResultSet(baseMetadata3, lines3), new JsonColumnSplitRule("body", baseMetadata3));
+        SwiftMutableResultSet swiftMutableResultSet3 = new SwiftMutableResultSet(baseMetadata3, new MutableTestResultSet(baseMetadata3, lines3), new JsonColumnSplitRule[]{new JsonColumnSplitRule("body", baseMetadata3)});
         List<Row> rowList2 = new ArrayList<>();
 
         Assert.assertEquals(swiftMutableResultSet3.getMetaData().getColumnCount(), 11);
