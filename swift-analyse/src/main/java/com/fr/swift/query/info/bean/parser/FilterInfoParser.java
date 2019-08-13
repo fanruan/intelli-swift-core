@@ -99,10 +99,10 @@ public class FilterInfoParser {
                 ColumnTypeConstants.ClassType classType = getClassType(table, ((NumberInRangeFilterBean) bean).getColumn());
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
                 if (valueBean.getStart() != null) {
-                    filterValue.setMin((Number) convert(valueBean.getStart(), classType));
+                    filterValue.setMin(convertNumber(valueBean.getStart(), classType));
                 }
                 if (valueBean.getEnd() != null) {
-                    filterValue.setMax((Number) convert(valueBean.getEnd(), classType));
+                    filterValue.setMax(convertNumber(valueBean.getEnd(), classType));
                 }
                 filterValue.setMinIncluded(valueBean.isStartIncluded());
                 filterValue.setMaxIncluded(valueBean.isEndIncluded());
@@ -243,5 +243,10 @@ public class FilterInfoParser {
             default:
                 return origin == null ? "" : origin.toString();
         }
+    }
+
+    private static Number convertNumber(Object origin, ColumnTypeConstants.ClassType type) {
+        final Object convert = convert(origin, type);
+        return convert instanceof Number ? (Number) convert : Double.parseDouble(convert.toString());
     }
 }
