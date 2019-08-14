@@ -34,37 +34,60 @@ public class AnnotationHandlerContext {
     }
 
 
-    public void process(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
+    public void process(Object object, Class<?> clazz) {
         //按照生命周期的顺序执行
         startProcess(object, clazz);
         methodProcess(object, clazz);
         classProcess(object, clazz);
         endProcess(object, clazz);
-
     }
 
 
-    public void startProcess(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
+    public void startProcess(Object object, Class<?> clazz) {
         for (BeanHandler beanHandler : startHandlers) {
-            beanHandler.handle(object, clazz);
+            try {
+                beanHandler.handle(object, clazz);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void endProcess(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
+    public void endProcess(Object object, Class<?> clazz) {
         for (BeanHandler beanHandler : endHandlers) {
-            beanHandler.handle(object, clazz);
+            try {
+                beanHandler.handle(object, clazz);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void methodProcess(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
+    public void methodProcess(Object object, Class<?> clazz) {
         for (BeanHandler beanHandler : methodHandlers) {
-            beanHandler.handle(object, clazz);
+            try {
+                beanHandler.handle(object, clazz);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void classProcess(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
+    public void classProcess(Object object, Class<?> clazz) {
         for (BeanHandler beanHandler : classHandlers) {
-            beanHandler.handle(object, clazz);
+            try {
+                beanHandler.handle(object, clazz);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
