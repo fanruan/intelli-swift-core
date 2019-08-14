@@ -1,14 +1,13 @@
 package com.fr.swift.beans.factory;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.handle.BeanWithMethod;
 import com.fr.swift.beans.exception.SwiftBeanException;
-import com.fr.swift.beans.factory.bean.IBean;
-import com.fr.swift.beans.factory.bean.ITestWithoutBeanPrototype;
-import com.fr.swift.beans.factory.bean.ITestWithoutBeanSingleton;
-import com.fr.swift.beans.factory.bean.TestWithoutBeanPrototype;
-import com.fr.swift.beans.factory.bean.TestWithoutBeanSingleton;
+import com.fr.swift.beans.factory.bean.*;
 import junit.framework.TestCase;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -160,5 +159,18 @@ public class SwiftBeanFactoryTest extends TestCase {
         assertEquals(list.size(), 2);
         assertEquals(list.get(0), TestWithoutBeanPrototype.class);
         assertEquals(list.get(1), TestWithoutBeanSingleton.class);
+    }
+
+    //测试refresh
+    public void  testRefresh() throws InvocationTargetException, IllegalAccessException {
+        SwiftContext.get().refresh(BeanWithMethod1.class);
+        assertEquals(10,SwiftContext.get().getBean(BeanWithMethod1.class).number);
+    }
+
+    //测试reFreshAll
+    public void testRefreshAll() throws InvocationTargetException, IllegalAccessException {
+        SwiftContext.get().refreshAll();
+        assertEquals(10,SwiftContext.get().getBean(BeanWithMethod1.class).number);
+        assertEquals(10,SwiftContext.get().getBean(BeanWithMethod2.class).number);
     }
 }

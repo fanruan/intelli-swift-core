@@ -16,7 +16,7 @@ public class SwiftContext extends SwiftBeanFactory {
     private boolean refreshed = false;
 
     private SwiftContext() {
-        registerPackages("com.fr.swift");
+//        registerPackages("com.fr.swift");
 //        registerPackages(
 //                // RPC和HTTP服务
 //                "com.fr.swift.netty.rpc.service",

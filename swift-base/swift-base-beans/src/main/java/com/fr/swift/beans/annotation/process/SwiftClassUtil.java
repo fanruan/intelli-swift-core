@@ -1,4 +1,4 @@
-package com.fr.swift.beans.factory;
+package com.fr.swift.beans.annotation.process;
 
 import com.fr.swift.util.Crasher;
 
@@ -13,7 +13,7 @@ import java.util.Set;
  * @description
  * @since Advanced FineBI 5.0
  */
-class SwiftClassUtil {
+public class SwiftClassUtil {
 
     /**
      * 获得所有接口
@@ -21,7 +21,7 @@ class SwiftClassUtil {
      * @param clazz
      * @return
      */
-    protected static Set<Class<?>> getAllInterfacesAndSelf(Class<?> clazz) {
+    public static Set<Class<?>> getAllInterfacesAndSelf(Class<?> clazz) {
         Set<Class<?>> returnClasses = new HashSet<Class<?>>();
         if (!clazz.isInterface() && !clazz.equals(Object.class)) {
             returnClasses.add(clazz);
@@ -50,7 +50,7 @@ class SwiftClassUtil {
      * @param className
      * @return
      */
-    protected static String getDefaultBeanName(String className) {
+    public static String getDefaultBeanName(String className) {
         if (className == null) {
             Crasher.crash("className is null");
         }
