@@ -161,7 +161,9 @@ public class SortedListMergingUtils {
         private void init(List<Iterator<E>> iterators, Comparator<E> comparator) {
             // 构造queue
             for (Iterator<E> iterator : iterators) {
-                queue.add(new IteratorComparator<E>(iterator, comparator));
+                if (iterator.hasNext()) {
+                    queue.add(new IteratorComparator<E>(iterator, comparator));
+                }
             }
             next = getNext();
         }

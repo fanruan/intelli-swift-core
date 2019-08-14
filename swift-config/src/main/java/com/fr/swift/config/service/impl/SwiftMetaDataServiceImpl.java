@@ -50,7 +50,11 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         if (ids.isEmpty()) {
             return false;
         }
-        return commandBus.deleteCascade(SwiftConfigConditionImpl.newInstance().addWhere(ConfigWhereImpl.in("id", ids))) >= 0;
+        final boolean result = commandBus.deleteCascade(SwiftConfigConditionImpl.newInstance().addWhere(ConfigWhereImpl.in("id", ids))) >= 0;
+        if (result) {
+            cleanCache(ids.toArray(new String[0]));
+        }
+        return result;
     }
 
     @Override
