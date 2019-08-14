@@ -6,6 +6,7 @@ import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
+import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -68,6 +69,7 @@ public class CommonSegmentFilterTest {
 
     @Test
     public void filterSegment() {
+        SingleTableQueryInfo singleTableQueryInfo = mock(SingleTableQueryInfo.class);
 
         Set<Integer> virtualOrders = new HashSet<Integer>();
         virtualOrders.add(1);
@@ -82,6 +84,6 @@ public class CommonSegmentFilterTest {
         PowerMockito.when(swiftSegmentManager.getSegment(segmentKey)).thenReturn(segment);
         segmentList.add(segment);
 
-        Assert.assertEquals(segmentList, new CommonSegmentFilter(tableAllotRule, swiftSegmentBucket).filterSegment(virtualOrders));
+        Assert.assertEquals(segmentList, new CommonSegmentFilter(tableAllotRule, swiftSegmentBucket).filterSegment(virtualOrders, singleTableQueryInfo));
     }
 }
