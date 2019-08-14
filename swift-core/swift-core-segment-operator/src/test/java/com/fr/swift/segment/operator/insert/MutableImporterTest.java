@@ -94,16 +94,37 @@ public class MutableImporterTest {
         Mockito.when(alloter.allot(Mockito.any(RowInfo.class))).thenReturn(new SwiftSegmentInfo(0, Types.StoreType.FINE_IO));
     }
 
+    /**
+     * 第一行不需要拓展字段
+     *
+     * @throws Exception
+     */
     @Test
-    public void integrationImport() throws Exception {
+    public void integrationImport1() throws Exception {
         SwiftMutableResultSet swiftMutableResultSet = new SwiftMutableResultSet(baseMetadata
                 , new SwiftMutableResultSetTest.MutableTestResultSet(baseMetadata, SwiftMutableResultSetTest.lines1)
-                , new JsonColumnSplitRule("body", baseMetadata));
+                , new JsonColumnSplitRule[]{new JsonColumnSplitRule("body", baseMetadata)});
         MutableImporter mutableImporter = new MutableImporter(dataSource, alloter);
         mutableImporter.importData(swiftMutableResultSet);
 
         Mockito.verify(mutableInserter, Mockito.times(3)).refreshMetadata(Mockito.any(SwiftMetaData.class));
         Mockito.verify(mutableInserter, Mockito.times(5)).insertData(Mockito.any(Row.class));
+    }
 
+    /**
+     * 第一行就需要拓展字段
+     *
+     * @throws Exception
+     */
+    @Test
+    public void integrationImport2() throws Exception {
+        SwiftMutableResultSet swiftMutableResultSet = new SwiftMutableResultSet(baseMetadata
+                , new SwiftMutableResultSetTest.MutableTestResultSet(baseMetadata, SwiftMutableResultSetTest.lines4)
+                , new JsonColumnSplitRule[]{new JsonColumnSplitRule("body", baseMetadata)});
+        MutableImporter mutableImporter = new MutableImporter(dataSource, alloter);
+        mutableImporter.importData(swiftMutableResultSet);
+
+        Mockito.verify(mutableInserter, Mockito.times(3)).refreshMetadata(Mockito.any(SwiftMetaData.class));
+        Mockito.verify(mutableInserter, Mockito.times(5)).insertData(Mockito.any(Row.class));
     }
 }

@@ -6,6 +6,7 @@ import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
+import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.segment.ReadonlyMultiSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -69,6 +70,8 @@ public class FunnelSegmentFilterTest {
 
     @Test
     public void filter() throws Exception {
+        SingleTableQueryInfo singleTableQueryInfo = mock(SingleTableQueryInfo.class);
+
         Set<Integer> virtualOrders = new HashSet<Integer>();
         virtualOrders.add(1);
 
@@ -93,7 +96,7 @@ public class FunnelSegmentFilterTest {
         List<Segment> funnelSegmentList = new ArrayList<Segment>();
         funnelSegmentList.add(readonlyMultiSegment);
 
-        Assert.assertEquals(funnelSegmentList, new FunnelSegmentFilter(tableAllotRule, swiftSegmentBucket).filterSegment(virtualOrders));
+        Assert.assertEquals(funnelSegmentList, new FunnelSegmentFilter(tableAllotRule, swiftSegmentBucket).filterSegment(virtualOrders, singleTableQueryInfo));
 
     }
 
