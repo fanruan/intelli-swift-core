@@ -1,6 +1,7 @@
 package com.fr.swift.beans.factory;
 
 import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.util.Strings;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,9 +25,9 @@ public class SwiftBeanDefinition {
 
     private List<Class<?>> autowiredClassList = new LinkedList<>();
 
-    private String initMethod = "";
+    private String initMethod = Strings.EMPTY;
 
-    private String destroyMethod = "";
+    private String destroyMethod = Strings.EMPTY;
 
     public SwiftBeanDefinition(Class<?> clazz, String beanName) {
         this(clazz, beanName, SwiftScope.SINGLETON);

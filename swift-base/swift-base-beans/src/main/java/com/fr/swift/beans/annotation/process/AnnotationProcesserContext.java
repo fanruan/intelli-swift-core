@@ -15,16 +15,6 @@ public class AnnotationProcesserContext {
 
     private List<BeanProcesser> processers = new ArrayList<>();
 
-//    private List<Handler> handler = new ArrayList<>();
-//
-//    public void register(BeanHandler beanHandler){
-//        Process anno = beanHandler.getClass().getAnnotation(Process.class);
-//        if(anno != null) {
-//            BeanSwiftDestroyProcesser process =   anno.getClazz();
-//            handler.add(beanHandler);
-//        }
-//    }
-
     private AnnotationProcesserContext() {
         // TODO: 2019/8/9  processers 动态绑定
         processers.add(new SwiftScopeProcesser());

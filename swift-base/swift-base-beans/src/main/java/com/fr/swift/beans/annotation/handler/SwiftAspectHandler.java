@@ -5,9 +5,8 @@ import com.fr.swift.beans.annotation.SwiftAspect;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftBefore;
 import com.fr.swift.beans.factory.SwiftBeanRegistry;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import com.fr.third.net.sf.cglib.proxy.Enhancer;
+import com.fr.third.net.sf.cglib.proxy.MethodInterceptor;
 
 import java.lang.reflect.Method;
 
@@ -35,12 +34,12 @@ public class SwiftAspectHandler implements BeanHandler {
         //构造代理对象
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
-        Method finalBeforeMethod = beforeMethod;
-        Method finalAfterMethod = afterMethod;
-        Object finalObject = object;
+        final Method finalBeforeMethod = beforeMethod;
+        final Method finalAfterMethod = afterMethod;
+        final Object finalObject = object;
         enhancer.setCallback(new MethodInterceptor() {
             @Override
-            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+            public Object intercept(Object o, Method method, Object[] objects, com.fr.third.net.sf.cglib.proxy.MethodProxy methodProxy) throws Throwable {
                 if (finalBeforeMethod != null) {
                     finalBeforeMethod.invoke(finalObject);
                 }

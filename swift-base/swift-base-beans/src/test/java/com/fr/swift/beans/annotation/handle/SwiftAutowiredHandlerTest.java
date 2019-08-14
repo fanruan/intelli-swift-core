@@ -2,7 +2,6 @@ package com.fr.swift.beans.annotation.handle;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.handler.AnnotationHandlerContext;
-import com.fr.swift.beans.annotation.handler.SwiftAutowiredHandler;
 import com.fr.swift.beans.factory.BeanFactory;
 import junit.framework.TestCase;
 
