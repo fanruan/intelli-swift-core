@@ -88,6 +88,9 @@ class PostQueryInfoParser {
                         FilterBuilder.buildDetailFilter(null, FilterInfoParser.parse(table, filterInfoBean)));
                 if (!filters.isEmpty()) {
                     filters.set(filters.size() - 1, filter);
+                } else {
+                    // 表示没有分组，对聚合做过滤  虽然没什么用  有点zz
+                    filters.add(filter);
                 }
                 return new HavingFilterQueryInfo(filters);
             }
