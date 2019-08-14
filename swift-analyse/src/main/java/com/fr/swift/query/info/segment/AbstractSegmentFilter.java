@@ -50,11 +50,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
             return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
         Set<Integer> virtualOrders = getIndexSet(singleTableQueryInfo.getFilterInfo(), singleTableQueryInfo.getTable());
-        if (virtualOrders.contains(-1)) {
-            return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
-        }
-        return filterSegment(virtualOrders);
-
+        return filterSegment(virtualOrders, singleTableQueryInfo);
     }
 
     private boolean isLineAllot(SingleTableQueryInfo singleTableQueryInfo) {
@@ -65,7 +61,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return false;
     }
 
-    public abstract List<Segment> filterSegment(Set<Integer> virtualOrders);
+    public abstract List<Segment> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo);
 
     public Set<Integer> getIndexSet(FilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
         Set<Integer> set = new HashSet<Integer>();
