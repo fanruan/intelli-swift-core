@@ -23,7 +23,7 @@ public class FunnelSegmentFilter extends AbstractSegmentFilter {
     @Override
     public List<Segment> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo) {
         List<Segment> funnelSegmentList = new ArrayList<Segment>();
-        if (virtualOrders.contains(-1)) {
+        if (virtualOrders.contains(ALL_SEGMENT)) {
             virtualOrders = bucketMap.keySet();
         }
         for (Integer key : virtualOrders) {
