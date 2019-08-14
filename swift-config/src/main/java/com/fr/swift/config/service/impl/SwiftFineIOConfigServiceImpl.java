@@ -27,6 +27,11 @@ public class SwiftFineIOConfigServiceImpl implements SwiftFineIOConnectorService
 
     private Map<SwiftConfigConstants.Namespace, List<ConfChangeListener>> changeListeners = new HashMap<>();
 
+    public SwiftFineIOConfigServiceImpl() {
+        changeListeners.put(SwiftConfigConstants.Namespace.FINE_IO_PACKAGE, new ArrayList<ConfChangeListener>());
+        changeListeners.put(SwiftConfigConstants.Namespace.FINE_IO_CONNECTOR, new ArrayList<ConfChangeListener>());
+    }
+
     @Override
     public FineIOConnectorConfig getCurrentConfig(SwiftConfigConstants.Namespace type) {
         return queryBus.select(type, FineIOConnectorConfig.class, new CommonConnectorConfig(CommonConnectorType.LZ4));
