@@ -10,7 +10,7 @@ import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
  * @date 2018-12-20
  */
 public class CommonConnectorConfig implements FineIOConnectorConfig {
-    @JsonProperty
+    @JsonProperty("type")
     private CommonConnectorType type;
 
     public CommonConnectorConfig(CommonConnectorType type) {
