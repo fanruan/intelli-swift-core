@@ -46,7 +46,7 @@ public class SwiftMutableResultSet implements MutableResultSet {
      * @param columnSplitRules
      * @description 外部需要保证baseNetadata的列数和row的列数相同，没有的列填null。
      */
-    public SwiftMutableResultSet(SwiftMetaData baseMetadata, SwiftResultSet swiftResultSet, ColumnSplitRule... columnSplitRules) {
+    public SwiftMutableResultSet(SwiftMetaData baseMetadata, SwiftResultSet swiftResultSet, ColumnSplitRule[] columnSplitRules) {
         this.baseMetadata = baseMetadata;
         this.swiftResultSet = swiftResultSet;
         this.columnSplitRules = columnSplitRules;
