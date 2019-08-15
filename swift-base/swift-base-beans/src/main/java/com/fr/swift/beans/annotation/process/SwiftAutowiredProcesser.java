@@ -1,7 +1,7 @@
 package com.fr.swift.beans.annotation.process;
 
 import com.fr.swift.beans.annotation.SwiftAutoWired;
-import com.fr.swift.beans.annotation.SwiftQualilifer;
+import com.fr.swift.beans.annotation.SwiftQualifier;
 import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
@@ -26,14 +26,14 @@ public class SwiftAutowiredProcesser implements BeanProcesser {
             if (target != null) {
                 //判断注解对象是否被托管
                 List<String> beanNames = SwiftBeanRegistry.getInstance().getBeanNamesByType(field.getType());
-                if (beanNames.size() == 0) {
+                if (beanNames.isEmpty()) {
                     throw new NoSuchBeanException(field.getType().getName());
                 } else if (beanNames.size() == 1) {
                     //单例且唯一
                     beanDefinition.getAutowiredClassList().add(field.getType());
                 } else {
-                    //存在多个bean，判断注解SwiftQualilifer是否存在
-                    if (field.getAnnotation(SwiftQualilifer.class) != null) {
+                    //存在多个bean，判断注解SwiftQualifier是否存在
+                    if (field.getAnnotation(SwiftQualifier.class) != null) {
                         beanDefinition.getAutowiredClassList().add(field.getType());
                     } else {
                         throw new SwiftBeanException(beanDefinition.getClazz().getName() + " contains >=2 beanNames");

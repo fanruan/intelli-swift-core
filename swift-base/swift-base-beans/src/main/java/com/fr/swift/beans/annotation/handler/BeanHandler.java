@@ -8,5 +8,5 @@ import java.lang.reflect.InvocationTargetException;
  * @description
  */
 public interface BeanHandler {
-    void handle(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException;
+    void handle(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException;
 }

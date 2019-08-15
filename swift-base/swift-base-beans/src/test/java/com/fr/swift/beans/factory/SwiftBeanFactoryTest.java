@@ -2,9 +2,14 @@ package com.fr.swift.beans.factory;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.beans.annotation.handle.BeanWithMethod;
 import com.fr.swift.beans.exception.SwiftBeanException;
-import com.fr.swift.beans.factory.bean.*;
+import com.fr.swift.beans.factory.bean.BeanWithMethod1;
+import com.fr.swift.beans.factory.bean.BeanWithMethod2;
+import com.fr.swift.beans.factory.bean.IBean;
+import com.fr.swift.beans.factory.bean.ITestWithoutBeanPrototype;
+import com.fr.swift.beans.factory.bean.ITestWithoutBeanSingleton;
+import com.fr.swift.beans.factory.bean.TestWithoutBeanPrototype;
+import com.fr.swift.beans.factory.bean.TestWithoutBeanSingleton;
 import junit.framework.TestCase;
 
 import java.lang.reflect.InvocationTargetException;

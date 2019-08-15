@@ -23,4 +23,9 @@ public class BeanWithAutowired {
     public BeanWithMethod getBeanWithMethod() {
         return beanWithMethod;
     }
+
+    //测试aspect的目标方法
+    public void run(){
+        System.out.println("target method in beanWithAutowired is running");
+    }
 }

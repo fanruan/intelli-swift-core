@@ -8,11 +8,12 @@ import java.lang.annotation.Target;
 
 /**
  * @author anner
- * @this annotation created on date 2019/8/9
- * @description 销毁后的destory方法
+ * @this annotation created on date 2019/8/15
+ * @description 切点
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface SwiftDestroy {
+public @interface SwiftPointCut {
+    String[] targets() default {};
 }

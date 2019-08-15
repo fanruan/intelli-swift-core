@@ -3,8 +3,7 @@ package com.fr.swift.beans.annotation.process;
 import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftDestroy;
-import com.fr.swift.beans.annotation.SwiftInitMethod;
-import com.fr.swift.beans.annotation.SwiftQualilifer;
+import com.fr.swift.beans.annotation.SwiftQualifier;
 
 /**
  * @author anner
@@ -14,7 +13,7 @@ import com.fr.swift.beans.annotation.SwiftQualilifer;
 @SwiftBean(name = "testBean3")
 public class TestBean3 {
     @SwiftAutoWired
-    @SwiftQualilifer
+    @SwiftQualifier
     private TestBean1 testBean1;
     @SwiftAutoWired
     private TestBean2 testBean2;

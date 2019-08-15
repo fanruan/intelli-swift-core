@@ -4,6 +4,8 @@ import com.fr.swift.beans.annotation.SwiftAfter;
 import com.fr.swift.beans.annotation.SwiftAspect;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftBefore;
+import com.fr.swift.beans.annotation.SwiftPointCut;
+import com.fr.swift.beans.annotation.aop.SwiftJoinPoint;
 
 /**
  * @author anner
@@ -13,23 +15,20 @@ import com.fr.swift.beans.annotation.SwiftBefore;
 @SwiftBean(name = "beanWithAspect")
 @SwiftAspect
 public class BeanWithAspect {
-    public  int getNumber() {
-        return number;
-    }
 
-    public static int number=0;
-    @SwiftBefore
-    public void before(){
-        System.out.println("before");
-        ++number;
+    @SwiftPointCut(targets = {"com.fr.swift.beans.annotation.handle.BeanWithAutowired.run",
+                              "com.fr.swift.beans.annotation.handle.BeanWithMethod.run"})
+    private void test(){
     }
-    public int testNormal(){
-        System.out.println("pointCut");
-        return number;
+    @SwiftBefore
+    public void before(SwiftJoinPoint joinPoint){
+        System.out.println(joinPoint);
+        System.out.println("before");
+
     }
     @SwiftAfter
-    public void after(){
-        System.out.printf("after");
-        ++number;
+    public void after(SwiftJoinPoint joinPoint){
+        System.out.println(joinPoint);
+        System.out.println("after");
     }
 }
