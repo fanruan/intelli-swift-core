@@ -3,7 +3,7 @@ package com.fr.swift.beans.annotation;
 /**
  * @author anner
  * @this annotation created on date 2019/8/13
- * @description
+ * @description 标注一个类是通知
  */
 
 import java.lang.annotation.Documented;
