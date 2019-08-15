@@ -1,6 +1,7 @@
 package com.fr.swift.beans.annotation.handle;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftPointCut;
 import com.fr.swift.beans.annotation.handler.AnnotationHandlerContext;
 import com.fr.swift.beans.annotation.handler.SwiftAspectHandler;
 import com.fr.swift.beans.factory.BeanFactory;
@@ -24,8 +25,13 @@ public class SwiftAspectHandlerTest extends TestCase {
     public void testProcess() throws InvocationTargetException, IllegalAccessException {
         AnnotationHandlerContext annotationHandlerContext=AnnotationHandlerContext.getInstance();
         BeanWithAspect beanWithAspect=SwiftContext.get().getBean(BeanWithAspect.class);
-        annotationHandlerContext.process(beanWithAspect,BeanWithAspect.class);
-        assertEquals(1,SwiftContext.get().getBean(BeanWithAspect.class).testNormal());
-        assertEquals(2,SwiftContext.get().getBean(BeanWithAspect.class).number);
+        annotationHandlerContext.classProcess(beanWithAspect,beanWithAspect.getClass());
+        SwiftContext.get().getBean(BeanWithAutowired.class).run();
+        SwiftContext.get().getBean(BeanWithMethod.class).run();
+
+        //测试joinPoint
+        annotationHandlerContext.classProcess(beanWithAspect,beanWithAspect.getClass());
+        SwiftContext.get().getBean(BeanWithAutowired.class).run();
+        SwiftContext.get().getBean(BeanWithMethod.class).run();
     }
 }

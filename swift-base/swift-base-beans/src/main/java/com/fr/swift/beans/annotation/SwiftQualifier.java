@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
 /**
  * @author anner
  * @this annotation created on date 2019/8/9
- * @description 销毁后的destory方法
+ * @description
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface SwiftDestroy {
+public @interface SwiftQualifier {
 }

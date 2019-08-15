@@ -39,7 +39,6 @@ public class AnnotationHandlerContext {
         startProcess(object, clazz);
         methodProcess(object, clazz);
         classProcess(object, clazz);
-        endProcess(object, clazz);
     }
 
 
@@ -50,6 +49,8 @@ public class AnnotationHandlerContext {
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -63,6 +64,8 @@ public class AnnotationHandlerContext {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -75,6 +78,8 @@ public class AnnotationHandlerContext {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -86,6 +91,8 @@ public class AnnotationHandlerContext {
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
