@@ -134,10 +134,10 @@ public class SwiftMutableResultSet implements MutableResultSet {
 
     private SwiftMetaDataColumn getColumn(Map.Entry<String, Object> entry) {
         if (isNumber(entry.getValue())) {
-            if (null == entry.getValue()) {
-                entry.setValue(null);
-            } else {
+            if (null != entry.getValue()) {
                 entry.setValue(Double.parseDouble(String.valueOf(entry.getValue())));
+            } else {
+                entry.setValue(null);
             }
             return new MetaDataColumnBean(entry.getKey(), Types.DOUBLE);
         } else {
