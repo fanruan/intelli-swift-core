@@ -25,8 +25,7 @@ public class AnnotationProcesserContextTest extends TestCase {
         AnnotationProcesserContext annotationProcesserContext=AnnotationProcesserContext.getInstance();
         annotationProcesserContext.process(beanDefinition);
         assertTrue(beanDefinition.getAutoWired());
-        assertEquals(1,beanDefinition.getAutowiredClassList().size());
-        assertEquals(TestBean1.class,beanDefinition.getAutowiredClassList().get(0));
+        assertEquals(2, beanDefinition.getAutowiredFields().size());
         assertEquals("testInitMethod",beanDefinition.getInitMethod());
         assertEquals("testDestroyMethod",beanDefinition.getDestroyMethod());
     }

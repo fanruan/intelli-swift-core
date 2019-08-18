@@ -1,10 +1,7 @@
 package com.fr.swift.beans.annotation.handle;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.handler.AnnotationHandlerContext;
-import com.fr.swift.beans.annotation.handler.SwiftAutowiredHandler;
-import com.fr.swift.beans.annotation.handler.SwiftInitHandler;
 import com.fr.swift.beans.factory.BeanFactory;
 import junit.framework.TestCase;
 
@@ -25,8 +22,9 @@ public class SwiftInitHandlerTest extends TestCase {
     }
     public void testProcess() throws InvocationTargetException, IllegalAccessException {
         AnnotationHandlerContext annotationHandlerContext=AnnotationHandlerContext.getInstance();
-        BeanWithMethod beanWithMethod= SwiftContext.get().getBean(BeanWithMethod.class);
-        annotationHandlerContext.process(beanWithMethod,BeanWithMethod.class);
-        assertEquals(1,beanWithMethod.number);
+
+        annotationHandlerContext.methodProcess();
+
+        assertEquals(1, SwiftContext.get().getBean(TestBean1.class).number);
     }
 }

@@ -66,23 +66,25 @@ public class SwiftAspectHandler implements BeanHandler {
                     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
                         Object returnValue = null;
                         //初始化joinPoint
-                        SwiftJoinPoint joinPoint=new SwiftJoinPoint(targetObject,o,method,objects,className,methodName);
+                        SwiftJoinPoint joinPoint = new SwiftJoinPoint(targetObject, o, method, objects, className, methodName);
                         //判断方法是否是目标方法
                         if (method.getName().equals(methodName)) {
                             //开始执行before
                             try {
-                                finalBeforeMethod.invoke(object,joinPoint);
+                                finalBeforeMethod.invoke(object, joinPoint);
                             } catch (Exception e) {
-                                SwiftLoggers.getLogger().error("aspect " + clazz.getName() + " --> " + className + " before method error");
+                                SwiftLoggers.getLogger().error(String.format("aspect %s -->  %s before method error", clazz.getName(), className));
                             }
                             //执行目标方法
                             returnValue = method.invoke(targetObject, objects);
                             //开始执行after
                             try {
-                                finalAfterMethod.invoke(object,joinPoint);
+                                finalAfterMethod.invoke(object, joinPoint);
                             } catch (Exception e) {
-                                SwiftLoggers.getLogger().error("aspect " + clazz.getName() + " --> " + className + " before method error");
+                                SwiftLoggers.getLogger().error(String.format("aspect %s --> %s after method error", clazz.getName(), className));
                             }
+                        } else {
+                            returnValue = method.invoke(targetObject, objects);
                         }
                         return returnValue;
                     }
@@ -104,7 +106,7 @@ public class SwiftAspectHandler implements BeanHandler {
         if (clazz.isAnnotationPresent(SwiftBean.class)) {
             beanName = clazz.getAnnotation(SwiftBean.class).name();
         } else {
-            throw new SwiftBeanException("target " + clazz.getName() + " is not marked as swiftBean");
+            throw new SwiftBeanException(String.format("target %s is not marked as swiftBean", clazz.getName()));
         }
         return beanName;
     }

@@ -1,6 +1,7 @@
 package com.fr.swift.beans.annotation.handle;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.handler.AnnotationHandlerContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import junit.framework.TestCase;
 
@@ -18,6 +19,13 @@ public class AnnotationHandlerContextTest extends TestCase {
         super.setUp();
     }
     public void testProcess(){
-
+        AnnotationHandlerContext annotationHandlerContext = AnnotationHandlerContext.getInstance();
+        assertSame(TestBean1.class, SwiftContext.get().getBean(TestBean1.class).getClass());
+        assertSame(TestBean2.class, SwiftContext.get().getBean(TestBean2.class).getClass());
+        assertEquals(0, SwiftContext.get().getBean(TestBean1.class).number);
+        annotationHandlerContext.process();
+        assertNotSame(TestBean1.class, SwiftContext.get().getBean(TestBean1.class).getClass());
+        assertNotSame(TestBean2.class, SwiftContext.get().getBean(TestBean2.class).getClass());
+        assertEquals(1, SwiftContext.get().getBean(TestBean1.class).number);
     }
 }

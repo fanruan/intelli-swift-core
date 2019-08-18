@@ -6,24 +6,30 @@ import com.fr.swift.beans.annotation.SwiftInitMethod;
 
 /**
  * @author anner
- * @this class created on date 19-8-14
+ * @this class created on date 2019/8/18
  * @description
  */
-@SwiftBean(name = "beanWithMethod")
-public class BeanWithMethod {
-    public static int number=0;
-    public static int test=10;
+@SwiftBean(name = "testBean1")
+public class TestBean1 {
+
+    public static int number = 0;
+
     @SwiftInitMethod
-    public void testInitMethod(){
+    public void init() {
         number++;
     }
+
     @SwiftDestroy
-    public void testDestroyMethod(){
-        test++;
+    private void destroy() {
+        number -= 10;
+    }
+
+    public void test() {
+
     }
 
     //测试aspect的目标方法
-    public void run(){
-        System.out.println("target method in beanWithMethod is running");
+    public void run() {
+        System.out.println("target method in testBean1 is running");
     }
 }

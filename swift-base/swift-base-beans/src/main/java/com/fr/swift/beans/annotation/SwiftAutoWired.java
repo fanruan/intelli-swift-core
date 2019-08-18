@@ -1,7 +1,5 @@
 package com.fr.swift.beans.annotation;
 
-import com.fr.swift.util.Strings;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,5 +15,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface SwiftAutoWired {
-    String name() default Strings.EMPTY;
+    boolean required() default true;
 }

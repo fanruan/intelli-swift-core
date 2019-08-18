@@ -22,8 +22,12 @@ public class SwiftAutowiredHandlerTest extends TestCase {
     }
     public void testProcess() throws InvocationTargetException, IllegalAccessException {
         AnnotationHandlerContext annotationHandlerContext=AnnotationHandlerContext.getInstance();
-        BeanWithAutowired beanWithAutowired=SwiftContext.get().getBean(BeanWithAutowired.class);
-        annotationHandlerContext.process(beanWithAutowired,BeanWithAutowired.class);
-        assertEquals(beanWithAutowired.getBeanWithAspect().hashCode(),SwiftContext.get().getBean(BeanWithAspect.class).hashCode());
+        //没有注入之前
+        assertNull(SwiftContext.get().getBean(TestBean2.class).testBean1);
+
+        annotationHandlerContext.startProcess();
+
+        assertNotNull(SwiftContext.get().getBean(TestBean2.class).testBean1);
+        assertEquals(SwiftContext.get().getBean(TestBean1.class), SwiftContext.get().getBean(TestBean2.class).testBean1);
     }
 }

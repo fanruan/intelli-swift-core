@@ -14,7 +14,7 @@ public class SwiftInitHandler implements BeanHandler {
 
     @Override
     public void handle(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
-        Method[] methods = clazz.getMethods();
+        Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             SwiftInitMethod initMethod = method.getAnnotation(SwiftInitMethod.class);
             if (initMethod != null) {

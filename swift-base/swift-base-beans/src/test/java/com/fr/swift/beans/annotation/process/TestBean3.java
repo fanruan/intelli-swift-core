@@ -8,17 +8,24 @@ import com.fr.swift.beans.annotation.SwiftQualifier;
 /**
  * @author anner
  * @this class created on date 2019/8/12
- * @description
+ * @description 存在两个父类
  */
 @SwiftBean(name = "testBean3")
-public class TestBean3 {
+public class TestBean3 extends TestBean2 {
     @SwiftAutoWired
-    @SwiftQualifier
-    private TestBean1 testBean1;
-    @SwiftAutoWired
+    @SwiftQualifier(name = "testBean2")
     private TestBean2 testBean2;
+
+    @SwiftAutoWired
+    @SwiftQualifier(name = "testBean1")
+    private TestBean1 testBean1Test;
+
+    @SwiftAutoWired
+    @SwiftQualifier(name = "testBean1")
+    private TestBean1 testBean11;
+
     @SwiftDestroy
-    public void testInitMethod(){
+    public void testInitMethod() {
 
     }
 }

@@ -30,7 +30,7 @@ public class SwiftClassUtil {
         return returnClasses;
     }
 
-    private static Set<Class<?>> getAllInterfaces(Class<?> clazz) {
+    public static Set<Class<?>> getAllInterfaces(Class<?> clazz) {
         Set<Class<?>> returnClasses = new HashSet<Class<?>>();
         if (clazz.isInterface()) {
             returnClasses.add(clazz);

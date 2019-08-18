@@ -3,8 +3,11 @@ package com.fr.swift.beans.factory;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.util.Strings;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018/11/28
@@ -23,7 +26,7 @@ public class SwiftBeanDefinition {
 
     private boolean autoWired;
 
-    private List<Class<?>> autowiredClassList = new LinkedList<>();
+    private Map<Field, String> autowiredFields = new HashMap<>();
 
     private String initMethod = Strings.EMPTY;
 
@@ -48,14 +51,9 @@ public class SwiftBeanDefinition {
         this.destroyMethod = destroyMethod;
     }
 
-    public List<Class<?>> getAutowiredClassList() {
-        return autowiredClassList;
+    public Map<Field, String> getAutowiredFields() {
+        return autowiredFields;
     }
-
-    public void setAutowiredClassList(List<Class<?>> autowiredClassList) {
-        this.autowiredClassList = autowiredClassList;
-    }
-
 
     public String getInitMethod() {
         return initMethod;
@@ -95,5 +93,13 @@ public class SwiftBeanDefinition {
 
     public boolean singleton() {
         return this.scope.equals(SwiftScope.SINGLETON);
+    }
+
+    public List<Field> getAllAutowiredFiles() {
+        List<Field> fields = new LinkedList<>();
+        for (Map.Entry<Field, String> entry : autowiredFields.entrySet()) {
+            fields.add(entry.getKey());
+        }
+        return fields;
     }
 }
