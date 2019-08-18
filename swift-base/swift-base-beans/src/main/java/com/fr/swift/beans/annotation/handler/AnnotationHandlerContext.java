@@ -1,8 +1,12 @@
 package com.fr.swift.beans.annotation.handler;
 
+import com.fr.swift.beans.factory.SwiftBeanRegistry;
+
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author anner
@@ -21,6 +25,14 @@ public class AnnotationHandlerContext {
     //全部结束后，销毁的生命周期
     private List<BeanHandler> endHandlers = new LinkedList<>();
 
+    private Map<Object, Class> getObjectMap() {
+        Map<Object, Class> objectMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : SwiftBeanRegistry.getInstance().getSingletonObjects().entrySet()) {
+            objectMap.put(entry.getValue(), SwiftBeanRegistry.getInstance().getBeanDefinition(entry.getKey()).getClazz());
+        }
+        return objectMap;
+    }
+
     private AnnotationHandlerContext() {
         // TODO: 19-8-14 动态绑定
         startHandlers.add(new SwiftAutowiredHandler());
@@ -34,66 +46,43 @@ public class AnnotationHandlerContext {
     }
 
 
-    public void process(Object object, Class<?> clazz) {
-        //按照生命周期的顺序执行
-        startProcess(object, clazz);
-        methodProcess(object, clazz);
-        classProcess(object, clazz);
+    public void process() throws IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+        //先执行代理
+        classProcess();
+        startProcess();
+        methodProcess();
+
     }
 
-
-    public void startProcess(Object object, Class<?> clazz) {
+    //每一个流程保证全部的对象全部执行完毕，否则后面的流程会出现逻辑问题，比如autowired必须全部set完毕
+    public void startProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         for (BeanHandler beanHandler : startHandlers) {
-            try {
-                beanHandler.handle(object, clazz);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            for (Map.Entry<Object, Class> objectClassEntry : getObjectMap().entrySet()) {
+                beanHandler.handle(objectClassEntry.getKey(), objectClassEntry.getValue());
             }
         }
     }
 
-    public void endProcess(Object object, Class<?> clazz) {
+    public void endProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         for (BeanHandler beanHandler : endHandlers) {
-            try {
-                beanHandler.handle(object, clazz);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            for (Map.Entry<Object, Class> objectClassEntry : getObjectMap().entrySet()) {
+                beanHandler.handle(objectClassEntry.getKey(), objectClassEntry.getValue());
             }
         }
     }
 
-    public void methodProcess(Object object, Class<?> clazz) {
+    public void methodProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         for (BeanHandler beanHandler : methodHandlers) {
-            try {
-                beanHandler.handle(object, clazz);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            for (Map.Entry<Object, Class> objectClassEntry : getObjectMap().entrySet()) {
+                beanHandler.handle(objectClassEntry.getKey(), objectClassEntry.getValue());
             }
         }
     }
 
-    public void classProcess(Object object, Class<?> clazz) {
+    public void classProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         for (BeanHandler beanHandler : classHandlers) {
-            try {
-                beanHandler.handle(object, clazz);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            for (Map.Entry<Object, Class> objectClassEntry : getObjectMap().entrySet()) {
+                beanHandler.handle(objectClassEntry.getKey(), objectClassEntry.getValue());
             }
         }
     }

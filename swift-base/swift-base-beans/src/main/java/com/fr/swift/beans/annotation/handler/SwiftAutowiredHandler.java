@@ -1,10 +1,12 @@
 package com.fr.swift.beans.annotation.handler;
 
-import com.fr.swift.beans.annotation.SwiftAutoWired;
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.factory.SwiftBeanDefinition;
 import com.fr.swift.beans.factory.SwiftBeanRegistry;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
  * @author anner
@@ -14,14 +16,15 @@ import java.lang.reflect.InvocationTargetException;
 public class SwiftAutowiredHandler implements BeanHandler {
     @Override
     public void handle(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
-        //绑定对象
-        Field[] fields = clazz.getDeclaredFields();
+        String beanName = clazz.getAnnotation(SwiftBean.class).name();
+        SwiftBeanDefinition beanDefinition = SwiftBeanRegistry.getInstance().getBeanDefinition(beanName);
+        List<Field> fields = beanDefinition.getAllAutowiredFiles();
         for (Field field : fields) {
             field.setAccessible(true);
-            SwiftAutoWired autoWired = field.getAnnotation(SwiftAutoWired.class);
-            if (autoWired != null) {
-                field.set(object, SwiftBeanRegistry.getInstance().getSingletonObjects().get(field.getName()));
-            }
+            String targetBeanName = beanDefinition.getAutowiredFields().get(field);
+            Object targetObject = SwiftBeanRegistry.getInstance().getSingletonObjects().get(targetBeanName);
+            field.set(object, targetObject);
         }
+        SwiftBeanRegistry.getInstance().getSingletonObjects().put(beanName, object);
     }
 }

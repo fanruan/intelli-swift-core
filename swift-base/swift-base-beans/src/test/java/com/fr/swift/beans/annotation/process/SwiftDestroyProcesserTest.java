@@ -1,7 +1,6 @@
 package com.fr.swift.beans.annotation.process;
 
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
-import com.fr.swift.beans.factory.SwiftBeanRegistry;
 import junit.framework.TestCase;
 
 /**

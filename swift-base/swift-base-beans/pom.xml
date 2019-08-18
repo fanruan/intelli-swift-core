@@ -9,6 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <cglib.version>3.2.5</cglib.version>
+    </properties>
+
     <artifactId>swift-base-beans</artifactId>
     <dependencies>
         <dependency>

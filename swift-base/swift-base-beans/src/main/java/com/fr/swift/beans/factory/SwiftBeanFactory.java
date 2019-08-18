@@ -175,8 +175,8 @@ public class SwiftBeanFactory implements BeanFactory {
             Map<String, Object> map = SwiftBeanRegistry.getInstance().getSingletonObjects();
             Object target = map.get(swiftBean.name());
             if (target != null) {
-                AnnotationHandlerContext.getInstance().endProcess(target, clazz);
-                AnnotationHandlerContext.getInstance().methodProcess(target, clazz);
+                AnnotationHandlerContext.getInstance().endProcess();
+                AnnotationHandlerContext.getInstance().methodProcess();
             }
         }
     }
