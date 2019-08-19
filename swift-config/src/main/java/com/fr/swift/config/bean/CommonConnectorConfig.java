@@ -1,7 +1,7 @@
 package com.fr.swift.config.bean;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.annotation.ConfigField;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 
@@ -10,7 +10,7 @@ import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
  * @date 2018-12-20
  */
 public class CommonConnectorConfig implements FineIOConnectorConfig {
-    @ConfigField
+    @JsonProperty("type")
     private CommonConnectorType type;
 
     public CommonConnectorConfig(CommonConnectorType type) {
