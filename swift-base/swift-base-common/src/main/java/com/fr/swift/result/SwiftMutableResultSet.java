@@ -46,7 +46,7 @@ public class SwiftMutableResultSet implements MutableResultSet {
      * @param columnSplitRules
      * @description 外部需要保证baseNetadata的列数和row的列数相同，没有的列填null。
      */
-    public SwiftMutableResultSet(SwiftMetaData baseMetadata, SwiftResultSet swiftResultSet, ColumnSplitRule... columnSplitRules) {
+    public SwiftMutableResultSet(SwiftMetaData baseMetadata, SwiftResultSet swiftResultSet, ColumnSplitRule[] columnSplitRules) {
         this.baseMetadata = baseMetadata;
         this.swiftResultSet = swiftResultSet;
         this.columnSplitRules = columnSplitRules;
@@ -107,7 +107,7 @@ public class SwiftMutableResultSet implements MutableResultSet {
         for (String currentSubField : currentSubFields) {
             if (subRowMap.containsKey(currentSubField)) {
                 Object originValue = subRowMap.get(currentSubField);
-                Object value1 = isNumber(originValue) ? Double.parseDouble(String.valueOf(originValue)) : originValue;
+                Object value1 = isNumber(originValue) && null != originValue ? Double.parseDouble(String.valueOf(originValue)) : originValue;
                 addOrSetValue(mutableRow, currentSubField, value1);
             } else {
                 addOrSetValue(mutableRow, currentSubField, null);
@@ -134,7 +134,11 @@ public class SwiftMutableResultSet implements MutableResultSet {
 
     private SwiftMetaDataColumn getColumn(Map.Entry<String, Object> entry) {
         if (isNumber(entry.getValue())) {
-            entry.setValue(Double.parseDouble(String.valueOf(entry.getValue())));
+            if (null != entry.getValue()) {
+                entry.setValue(Double.parseDouble(String.valueOf(entry.getValue())));
+            } else {
+                entry.setValue(null);
+            }
             return new MetaDataColumnBean(entry.getKey(), Types.DOUBLE);
         } else {
             return new MetaDataColumnBean(entry.getKey(), Types.VARCHAR);
@@ -151,9 +155,6 @@ public class SwiftMutableResultSet implements MutableResultSet {
     }
 
     private boolean isNumber(Object value) {
-        if (value instanceof String) {
-            return false;
-        }
-        return true;
+        return !(value instanceof String);
     }
 }

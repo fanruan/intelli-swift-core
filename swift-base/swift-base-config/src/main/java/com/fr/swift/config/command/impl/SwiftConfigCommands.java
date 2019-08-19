@@ -17,10 +17,10 @@ public class SwiftConfigCommands {
     }
 
     public static <T> SwiftConfigCommand<T> ofSave(T obj) {
-        return new MergeItemCommand<>(obj);
+        return new SaveItemCommand<>(obj);
     }
 
     public static <T> SwiftConfigCommand<T> ofMerge(T obj) {
-        return new SaveItemCommand<>(obj);
+        return new MergeItemCommand<>(obj);
     }
 }
