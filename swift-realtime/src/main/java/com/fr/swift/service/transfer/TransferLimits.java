@@ -2,13 +2,13 @@ package com.fr.swift.service.transfer;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.cube.space.SpaceUnit;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.RealtimeColumnMemMeter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
+import com.fr.swift.space.SpaceUnit;
 
 import java.util.HashMap;
 import java.util.Map;
