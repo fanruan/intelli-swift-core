@@ -7,7 +7,14 @@ package com.fr.swift.exception;
  * 异常上下文
  * <p>
  * 粒度最好细到单个元素，好做id
+ * 也是immut的
  */
-public interface ExceptionContext {
-    ExceptionContext clone();
+public interface ExceptionContext<T> {
+    T getContext();
+
+    @Override
+    boolean equals(Object o);
+
+    @Override
+    int hashCode();
 }
