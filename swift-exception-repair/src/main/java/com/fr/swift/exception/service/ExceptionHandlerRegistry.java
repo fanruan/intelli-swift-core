@@ -23,10 +23,7 @@ public class ExceptionHandlerRegistry {
     }
 
     private ExceptionHandlerRegistry() {
-        init();
-    }
 
-    private void init() {
     }
 
     public void registerExceptionHandler(ExceptionHandler handler) {
