@@ -15,7 +15,7 @@ public interface SwiftRpcEvent<C, T extends SubEvent> extends Serializable {
     C getContent();
 
     enum EventType {
-        REAL_TIME, HISTORY, INDEXING, ANALYSE, GLOBAL
+        REAL_TIME, HISTORY, INDEXING, ANALYSE, GLOBAL, EXCEPTION
     }
 
 
