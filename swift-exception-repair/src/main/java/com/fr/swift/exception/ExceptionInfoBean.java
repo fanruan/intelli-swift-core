@@ -22,6 +22,7 @@ import java.util.Objects;
 @Entity
 public class ExceptionInfoBean implements ExceptionInfo {
     @Id
+    @Column(name = "id")
     private String id;
     @Column(name = "sourceNodeId")
     private String sourceNodeId;
@@ -31,7 +32,7 @@ public class ExceptionInfoBean implements ExceptionInfo {
     private long occurredTime = -1;
     @Column(name = "context")
     @Convert(converter = ExceptionContextConverter.class)
-    private ExceptionContext context;
+    private ExceptionContext<?> context;
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private State state;
@@ -62,7 +63,7 @@ public class ExceptionInfoBean implements ExceptionInfo {
     }
 
     @Override
-    public ExceptionContext getContext() {
+    public ExceptionContext<?> getContext() {
         return context;
     }
 
@@ -109,7 +110,7 @@ public class ExceptionInfoBean implements ExceptionInfo {
                     .setSourceNodeId(bean.getSourceNodeId())
                     .setType(bean.getType())
                     .setOccurredTime(bean.getOccurredTime())
-                    .setContext(bean.getContext().clone())
+                    .setContext(bean.getContext())
                     .setState(bean.getState())
                     .setOperateNodeId(bean.getOperateNodeId()).build();
         }
@@ -141,7 +142,7 @@ public class ExceptionInfoBean implements ExceptionInfo {
             return this;
         }
 
-        public Builder setContext(ExceptionContext context) {
+        public Builder setContext(ExceptionContext<?> context) {
             bean.context = context;
             return this;
         }
@@ -175,6 +176,7 @@ public class ExceptionInfoBean implements ExceptionInfo {
          * @return id
          */
         private String genId() {
+            // fixme
             return String.format("%s,%d,%d,%s",
                     bean.sourceNodeId,
                     bean.type.getExceptionCode(),

@@ -30,7 +30,7 @@ public interface ExceptionInfo {
      *
      * @return
      */
-    ExceptionContext getContext();
+    ExceptionContext<?> getContext();
 
     /**
      * 异常的处理状态：处理中，已处理，无法处理
@@ -66,28 +66,5 @@ public interface ExceptionInfo {
         int getExceptionCode();
 
         String getDescription();
-    }
-
-    enum ET implements Type {
-        //
-        A(1, "DUMMY EXCEPTION");
-
-        ET(int code, String desc) {
-            this.code = code;
-            this.desc = desc;
-        }
-
-        int code;
-        String desc;
-
-        @Override
-        public int getExceptionCode() {
-            return code;
-        }
-
-        @Override
-        public String getDescription() {
-            return desc;
-        }
     }
 }
