@@ -58,6 +58,7 @@ public class SwiftAutowiredProcesser implements BeanProcesser {
     //获取全部的field
     public void recursionGetAllFields(Set<Field> autowiredFields, Class clazz) {
         Set<Class<?>> superClasses = SwiftClassUtil.getAllInterfaces(clazz);
+        if (superClasses.contains(clazz)) superClasses.remove(clazz);
         for (Class<?> superClass : superClasses) {
             recursionGetAllFields(autowiredFields, superClass);
             Field[] fields = superClass.getDeclaredFields();

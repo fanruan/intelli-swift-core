@@ -167,13 +167,13 @@ public class SwiftBeanFactoryTest extends TestCase {
     }
 
     //测试refresh
-    public void  testRefresh() throws InvocationTargetException, IllegalAccessException {
+    public void testRefresh() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         SwiftContext.get().refresh(BeanWithMethod1.class);
         assertEquals(10,SwiftContext.get().getBean(BeanWithMethod1.class).number);
     }
 
     //测试reFreshAll
-    public void testRefreshAll() throws InvocationTargetException, IllegalAccessException {
+    public void testRefreshAll() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         SwiftContext.get().refreshAll();
         assertEquals(10,SwiftContext.get().getBean(BeanWithMethod1.class).number);
         assertEquals(10,SwiftContext.get().getBean(BeanWithMethod2.class).number);

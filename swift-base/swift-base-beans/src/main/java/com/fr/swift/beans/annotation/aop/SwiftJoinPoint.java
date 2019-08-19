@@ -14,9 +14,9 @@ public class SwiftJoinPoint {
     //代理對象
     private Object proxy;
     //代理方法
-    Method proxyMethod;
+    private Method proxyMethod;
     //代理方法的參數
-    Object[] args;
+    private Object[] args;
     //目標className
     private String className;
     //目標方法名

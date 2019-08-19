@@ -20,7 +20,8 @@ public class SwiftInitHandlerTest extends TestCase {
         beanFactory.init();
         super.setUp();
     }
-    public void testProcess() throws InvocationTargetException, IllegalAccessException {
+
+    public void testProcess() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         AnnotationHandlerContext annotationHandlerContext=AnnotationHandlerContext.getInstance();
 
         annotationHandlerContext.methodProcess();

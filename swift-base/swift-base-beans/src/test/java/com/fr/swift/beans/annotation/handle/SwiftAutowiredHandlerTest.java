@@ -20,7 +20,8 @@ public class SwiftAutowiredHandlerTest extends TestCase {
         beanFactory.init();
         super.setUp();
     }
-    public void testProcess() throws InvocationTargetException, IllegalAccessException {
+
+    public void testProcess() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         AnnotationHandlerContext annotationHandlerContext=AnnotationHandlerContext.getInstance();
         //没有注入之前
         assertNull(SwiftContext.get().getBean(TestBean2.class).testBean1);

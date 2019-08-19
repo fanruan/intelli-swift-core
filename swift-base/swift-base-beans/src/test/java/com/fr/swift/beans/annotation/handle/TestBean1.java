@@ -16,7 +16,9 @@ public class TestBean1 {
 
     @SwiftInitMethod
     public void init() {
-        number++;
+        if (number == -10) {
+            number++;
+        }
     }
 
     @SwiftDestroy

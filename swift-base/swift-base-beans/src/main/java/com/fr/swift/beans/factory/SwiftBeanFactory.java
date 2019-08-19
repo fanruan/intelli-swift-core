@@ -168,7 +168,7 @@ public class SwiftBeanFactory implements BeanFactory {
     }
 
     @Override
-    public void refresh(Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
+    public void refresh(Class<?> clazz) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         SwiftBean swiftBean = clazz.getAnnotation(SwiftBean.class);
         if (swiftBean != null) {
             //获取到目标的object
@@ -182,7 +182,7 @@ public class SwiftBeanFactory implements BeanFactory {
     }
 
     @Override
-    public void refreshAll() throws InvocationTargetException, IllegalAccessException {
+    public void refreshAll() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         //获取到全部的object
         Map<String, Object> map = SwiftBeanRegistry.getInstance().getSingletonObjects();
         for (Map.Entry<String, Object> entry : map.entrySet()) {

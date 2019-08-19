@@ -34,7 +34,7 @@ public interface BeanFactory {
 
     List<Class<?>> getClassesByAnnotations(Class<? extends Annotation> annotation);
 
-    void refresh(Class<?> clazz) throws InvocationTargetException, IllegalAccessException;
+    void refresh(Class<?> clazz) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException;
 
-    void refreshAll() throws InvocationTargetException, IllegalAccessException;
+    void refreshAll() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException;
 }
