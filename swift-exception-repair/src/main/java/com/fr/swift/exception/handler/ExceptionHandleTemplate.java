@@ -7,7 +7,7 @@ import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.ExceptionInfoBean;
 import com.fr.swift.exception.event.ExceptionStateRpcEvent;
 import com.fr.swift.exception.service.ExceptionInfoService;
-import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 
 /**
@@ -39,7 +39,7 @@ public class ExceptionHandleTemplate {
     }
 
     void handleExceptionResult(ExceptionInfo info, ExceptionInfo.State state) {
-        String clusterId = SwiftProperty.getProperty().getClusterId();
+        String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
         ExceptionInfoBean bean = new ExceptionInfoBean.Builder(info)
                 .setOperateNodeId(clusterId)
                 .setState(state).build();
