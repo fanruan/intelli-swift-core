@@ -63,8 +63,12 @@ public class SwiftMasterProcessHandler extends AbstractProcessHandler<URL> imple
      */
     @Override
     public URL processUrl(Target[] targets, Object... args) {
+        //todo 分布式环境切回单机有问题
         List<SwiftServiceInfoEntity> swiftServiceInfoBeans = SwiftContext.get().getBean(SwiftServiceInfoService.class)
                 .getServiceInfoByService(SwiftServiceInfoService.SERVICE);
+        if (swiftServiceInfoBeans.isEmpty()) {
+            return null;
+        }
         SwiftServiceInfoEntity swiftServiceInfoBean = swiftServiceInfoBeans.get(0);
         return UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getServiceInfo());
     }
