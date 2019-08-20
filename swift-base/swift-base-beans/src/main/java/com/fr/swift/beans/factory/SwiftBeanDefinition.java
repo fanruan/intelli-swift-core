@@ -4,8 +4,8 @@ import com.fr.swift.beans.annotation.SwiftScope;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -147,10 +147,6 @@ public class SwiftBeanDefinition {
     }
 
     public List<Field> getAllAutowiredFiles() {
-        List<Field> fields = new LinkedList<>();
-        for (Map.Entry<Field, String> entry : autowiredFields.entrySet()) {
-            fields.add(entry.getKey());
-        }
-        return fields;
+        return new ArrayList<>(autowiredFields.keySet());
     }
 }
