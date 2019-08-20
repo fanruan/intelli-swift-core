@@ -6,14 +6,14 @@ import com.fr.swift.config.convert.ConfigAttributeConverter;
  * @author anchore
  * @date 2019/8/12
  */
-public class ExceptionContextConverter<T> implements ConfigAttributeConverter<T, String> {
+public class ExceptionContextConverter implements ConfigAttributeConverter<ExceptionContext, String> {
     @Override
-    public String convertToDatabaseColumn(T t) {
+    public String convertToDatabaseColumn(ExceptionContext t) {
         return null;
     }
 
     @Override
-    public T convertToEntityAttribute(String s) {
+    public ExceptionContext convertToEntityAttribute(String s) {
         return null;
     }
 }
