@@ -43,7 +43,7 @@ public class SlaveExceptionInfoQueue implements ExceptionInfoQueue {
 
     @Override
     public void initExceptionInfoQueue() {
-        //slave队列初始化时会找出sourceNodeId和operateNodeId均为本节点id且State为PENDING的异常信息加入队列
+        //slave队列初始化时会找出operateNodeId为本节点id且State为PENDING的异常信息加入队列
         String currentId = ClusterSelector.getInstance().getFactory().getCurrentId();
         Iterator it = infoService.getExceptionInfo(currentId, ExceptionInfo.State.PENDING).iterator();
         while (it.hasNext()) {
