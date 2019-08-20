@@ -8,10 +8,10 @@ import com.fr.swift.beans.annotation.SwiftBean;
  * @this class created on date 2019/8/18
  * @description
  */
-@SwiftBean(name = "testBean2")
-public class TestBean2 {
+@SwiftBean
+public class TestBeanHandler2 {
     @SwiftAutoWired
-    public TestBean1 testBean1;
+    public TestBeanHandler1 testBean1;
 
     //测试aspect的目标方法
     public void run() {

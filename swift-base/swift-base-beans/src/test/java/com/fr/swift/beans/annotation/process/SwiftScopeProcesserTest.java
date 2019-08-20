@@ -12,16 +12,16 @@ public class SwiftScopeProcesserTest extends TestCase {
 
     public void testProcess(){
         //测试scope不存在
-        SwiftBeanDefinition beanDefinition=new SwiftBeanDefinition(TestBean4.class,"testBean4");
+        SwiftBeanDefinition beanDefinition = new SwiftBeanDefinition(TestBeanProcesser4.class, "testBeanProcesser4");
         SwiftScopeProcesser scopeProcesser=new SwiftScopeProcesser();
         scopeProcesser.process(beanDefinition);
         assertTrue(beanDefinition.singleton());
         //测试scope存在且是单例
-        beanDefinition=new SwiftBeanDefinition(TestBean1.class,"testBean1");
+        beanDefinition = new SwiftBeanDefinition(TestBeanProcesser1.class, "testBeanProcesser1");
         scopeProcesser.process(beanDefinition);
         assertTrue(beanDefinition.singleton());
         //测试scope是多例
-        beanDefinition=new SwiftBeanDefinition(TestBean2.class,"testBean2");
+        beanDefinition = new SwiftBeanDefinition(TestBeanProcesser2.class, "testBeanProcesser2");
         scopeProcesser.process(beanDefinition);
         assertFalse(beanDefinition.singleton());
     }

@@ -10,7 +10,7 @@ import junit.framework.TestCase;
  */
 public class SwiftAspectProcesserTest extends TestCase {
     public void testProcess() {
-        SwiftBeanDefinition beanDefinition = new SwiftBeanDefinition(TestBean4.class, "test");
+        SwiftBeanDefinition beanDefinition = new SwiftBeanDefinition(TestBeanProcesser4.class, "test");
 
         SwiftAspectProcesser aspectProcesser = new SwiftAspectProcesser();
 
@@ -20,7 +20,7 @@ public class SwiftAspectProcesserTest extends TestCase {
         assertEquals(beanDefinition.getBeforeMethod().getName(), "before");
         assertEquals(beanDefinition.getAfterMethod().getName(), "after");
         assertEquals(beanDefinition.getPointCut().getName(), "test");
-        assertEquals(beanDefinition.getAdviceTarget()[0], "com.fr.swift.beans.annotation.process.TestBean2.run");
-        assertEquals(beanDefinition.getAdviceTarget()[1], "com.fr.swift.beans.annotation.process.TestBean3.run");
+        assertEquals(beanDefinition.getAdviceTarget()[0], "com.fr.swift.beans.annotation.process.TestBeanProcesser2.run");
+        assertEquals(beanDefinition.getAdviceTarget()[1], "com.fr.swift.beans.annotation.process.TestBeanProcesser3.run");
     }
 }

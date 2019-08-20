@@ -2,10 +2,12 @@ package com.fr.swift.beans.annotation.handler;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.aop.SwiftJoinPoint;
+import com.fr.swift.beans.annotation.process.SwiftClassUtil;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
 import com.fr.swift.beans.factory.SwiftBeanRegistry;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.Strings;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -95,7 +97,7 @@ public class SwiftAspectHandler implements BeanHandler {
         } else {
             throw new SwiftBeanException(String.format("target %s is not marked as swiftBean", clazz.getName()));
         }
-        return beanName;
+        return beanName.equals(Strings.EMPTY) ? SwiftClassUtil.getDefaultBeanName(clazz.getName()) : beanName;
     }
 
 }
