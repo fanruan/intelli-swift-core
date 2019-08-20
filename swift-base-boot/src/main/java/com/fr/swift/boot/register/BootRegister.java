@@ -53,7 +53,7 @@ public class BootRegister {
 
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentBucketElement", loader);
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTableAllotRule", loader);
-
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.exception.ExceptionInfoBean", loader);
     }
 
     public static void registerExecutorTask() {

@@ -26,13 +26,14 @@ public class ExceptionInfoBean implements ExceptionInfo {
     private String id;
     @Column(name = "sourceNodeId")
     private String sourceNodeId;
+    @Convert(converter = ExceptionInfoTypeConverter.class)
     @Column(name = "type")
     private Type type;
     @Column(name = "occurredTime")
     private long occurredTime = -1;
     @Column(name = "context")
     @Convert(converter = ExceptionContextConverter.class)
-    private ExceptionContext<?> context;
+    private ExceptionContext context;
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private State state;
