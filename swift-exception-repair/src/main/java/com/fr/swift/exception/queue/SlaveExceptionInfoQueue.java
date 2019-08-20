@@ -45,8 +45,8 @@ public class SlaveExceptionInfoQueue implements ExceptionInfoQueue {
     public void initExceptionInfoQueue() {
         //slave队列初始化时会找出operateNodeId为本节点id且State为PENDING的异常信息加入队列
         String currentId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        Set<ExceptionInfo> infoSet = infoService.getExceptionInfo(currentId, ExceptionInfo.State.PENDING);
-        for (ExceptionInfo info : infoSet) {
+        Set<ExceptionInfo> exceptionInfoSet = infoService.getExceptionInfo(currentId, ExceptionInfo.State.PENDING);
+        for (ExceptionInfo info : exceptionInfoSet) {
             if (!queue.offer(info)) {
                 SwiftLoggers.getLogger().warn("Add ExceptionInfo into SlaveExceptionInfoQueue Failed");
             }
