@@ -9,8 +9,8 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
+import com.fr.swift.util.Assert;
 import com.fr.swift.util.Strings;
-import com.fr.swift.util.Util;
 
 /**
  * @author yee
@@ -20,7 +20,7 @@ public class NumberStartsWithFilter extends AbstractDetailFilter {
     private String startsWith;
 
     public NumberStartsWithFilter(String startsWith, Column column) {
-        Util.requireNonNull(Strings.isEmpty(startsWith) ? null : startsWith);
+        Assert.isFalse(Strings.isEmpty(startsWith));
         this.startsWith = startsWith;
         this.column = column;
     }
