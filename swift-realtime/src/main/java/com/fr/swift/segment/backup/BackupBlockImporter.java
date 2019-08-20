@@ -19,6 +19,8 @@ import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.transaction.TransactionManager;
 import com.fr.swift.transaction.TransactionProxyFactory;
 
+import java.util.Collections;
+
 /**
  * @author anchore
  * @date 2019/3/8
@@ -52,7 +54,12 @@ public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
 
     @Override
     protected void onSucceed() {
-        // 在备份，还未真正insert，啥也不做
+        for (SegmentKey importSegKey : importSegKeys) {
+            if (!segLocationSvc.containsLocal(importSegKey)) {
+                // 不存在则更新seg location
+                segLocationSvc.saveOrUpdateLocal(Collections.singleton(importSegKey));
+            }
+        }
     }
 
     @Override
