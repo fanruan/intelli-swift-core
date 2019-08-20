@@ -29,7 +29,8 @@ public class StringEndsWithFilter extends AbstractDetailFilter<String> {
     protected RowTraversal getIntIterator(DictionaryEncodedColumn<String> dict) {
         IntList intList = IntListFactory.createIntList();
         for (int i = 0, size = dict.size(); i < size; i++) {
-            String data = dict.getValue(i);
+            final Object value = dict.getValue(i);
+            String data = null == value ? null : value.toString();
             if (data != null && data.endsWith(endsWith)) {
                 intList.add(i);
             }
