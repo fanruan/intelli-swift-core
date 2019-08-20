@@ -22,8 +22,8 @@ public class AnnotationProcesserContextTest extends TestCase {
     }
 
     public void testProcess(){
-        SwiftBeanDefinition beanDefinition1 = SwiftBeanRegistry.getInstance().getBeanDefinition("testBean1");
-        assertEquals(beanDefinition1.getBeanName(), "testBean1");
+        SwiftBeanDefinition beanDefinition1 = SwiftBeanRegistry.getInstance().getBeanDefinition("testBeanProcesser1");
+        assertEquals(beanDefinition1.getBeanName(), "testBeanProcesser1");
         assertEquals(beanDefinition1.singleton(), true);
         assertEquals(beanDefinition1.getAutowiredFields().size(), 1);
         assertEquals(beanDefinition1.getInitMethod().getName(), "testInitMethod");
@@ -34,12 +34,12 @@ public class AnnotationProcesserContextTest extends TestCase {
         assertNull(beanDefinition1.getPointCut());
         assertEquals(beanDefinition1.getAdviceTarget().length, 0);
 
-        SwiftBeanDefinition beanDefinition2 = SwiftBeanRegistry.getInstance().getBeanDefinition("testBean2");
-        assertEquals(beanDefinition2.getBeanName(), "testBean2");
+        SwiftBeanDefinition beanDefinition2 = SwiftBeanRegistry.getInstance().getBeanDefinition("testBeanProcesser2");
+        assertEquals(beanDefinition2.getBeanName(), "testBeanProcesser2");
         assertFalse(beanDefinition2.singleton());
         assertEquals(beanDefinition2.getAutowiredFields().size(), 2);
-        assertTrue(beanDefinition2.getAutowiredFields().containsValue("testBean1"));
-        assertTrue(beanDefinition2.getAutowiredFields().containsValue("testBean4"));
+        assertTrue(beanDefinition2.getAutowiredFields().containsValue("testBeanProcesser1"));
+        assertTrue(beanDefinition2.getAutowiredFields().containsValue("testBeanProcesser4"));
         assertEquals(beanDefinition2.getInitMethod().getName(), "testInitMethod");
         assertEquals(beanDefinition2.getDestroyMethod().getName(), "testDestroyMethod");
         assertFalse(beanDefinition2.isAspect());
@@ -48,12 +48,12 @@ public class AnnotationProcesserContextTest extends TestCase {
         assertNull(beanDefinition2.getPointCut());
         assertEquals(beanDefinition2.getAdviceTarget().length, 0);
 
-        SwiftBeanDefinition beanDefinition3 = SwiftBeanRegistry.getInstance().getBeanDefinition("testBean3");
-        assertEquals(beanDefinition3.getBeanName(), "testBean3");
+        SwiftBeanDefinition beanDefinition3 = SwiftBeanRegistry.getInstance().getBeanDefinition("testBeanProcesser3");
+        assertEquals(beanDefinition3.getBeanName(), "testBeanProcesser3");
         assertTrue(beanDefinition3.singleton());
         assertEquals(beanDefinition3.getAutowiredFields().size(), 5);
-        assertTrue(beanDefinition3.getAutowiredFields().containsValue("testBean1"));
-        assertTrue(beanDefinition3.getAutowiredFields().containsValue("testBean4"));
+        assertTrue(beanDefinition3.getAutowiredFields().containsValue("testBeanProcesser1"));
+        assertTrue(beanDefinition3.getAutowiredFields().containsValue("testBeanProcesser4"));
         assertNull(beanDefinition3.getInitMethod());
         assertEquals(beanDefinition3.getDestroyMethod().getName(), "testDestroyMethod");
         assertFalse(beanDefinition3.isAspect());
@@ -62,8 +62,8 @@ public class AnnotationProcesserContextTest extends TestCase {
         assertNull(beanDefinition3.getPointCut());
         assertEquals(beanDefinition3.getAdviceTarget().length, 0);
 
-        SwiftBeanDefinition beanDefinition4 = SwiftBeanRegistry.getInstance().getBeanDefinition("testBean4");
-        assertEquals(beanDefinition4.getBeanName(), "testBean4");
+        SwiftBeanDefinition beanDefinition4 = SwiftBeanRegistry.getInstance().getBeanDefinition("testBeanProcesser4");
+        assertEquals(beanDefinition4.getBeanName(), "testBeanProcesser4");
         assertTrue(beanDefinition4.singleton());
         assertEquals(beanDefinition4.getAutowiredFields().size(), 0);
         assertNull(beanDefinition4.getInitMethod());
@@ -73,5 +73,6 @@ public class AnnotationProcesserContextTest extends TestCase {
         assertNotNull(beanDefinition4.getAfterMethod());
         assertNotNull(beanDefinition4.getPointCut());
         assertEquals(beanDefinition4.getAdviceTarget().length, 2);
+
     }
 }

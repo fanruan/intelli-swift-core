@@ -23,14 +23,14 @@ public class AnnotationHandlerContextTest extends TestCase {
 
     public void testProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         AnnotationHandlerContext annotationHandlerContext = AnnotationHandlerContext.getInstance();
-        assertSame(TestBean1.class, SwiftContext.get().getBean(TestBean1.class).getClass());
-        assertSame(TestBean2.class, SwiftContext.get().getBean(TestBean2.class).getClass());
-        assertEquals(0, SwiftContext.get().getBean(TestBean1.class).getNumber());
+        assertSame(TestBeanHandler1.class, SwiftContext.get().getBean(TestBeanHandler1.class).getClass());
+        assertSame(TestBeanHandler2.class, SwiftContext.get().getBean(TestBeanHandler2.class).getClass());
+        assertEquals(0, SwiftContext.get().getBean(TestBeanHandler1.class).getNumber());
 
         annotationHandlerContext.process();
 
-        assertNotSame(TestBean1.class, SwiftContext.get().getBean(TestBean1.class).getClass());
-        assertNotSame(TestBean2.class, SwiftContext.get().getBean(TestBean2.class).getClass());
-        assertEquals(1, SwiftContext.get().getBean(TestBean1.class).getNumber());
+        assertNotSame(TestBeanHandler1.class, SwiftContext.get().getBean(TestBeanHandler1.class).getClass());
+        assertNotSame(TestBeanHandler2.class, SwiftContext.get().getBean(TestBeanHandler2.class).getClass());
+        assertEquals(1, SwiftContext.get().getBean(TestBeanHandler1.class).getNumber());
     }
 }

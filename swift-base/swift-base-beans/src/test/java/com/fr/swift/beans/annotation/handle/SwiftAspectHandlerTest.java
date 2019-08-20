@@ -24,16 +24,16 @@ public class SwiftAspectHandlerTest extends TestCase {
     public void testProcess() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         AnnotationHandlerContext annotationHandlerContext=AnnotationHandlerContext.getInstance();
         //没有替换代理对象之前
-        assertSame(TestBean1.class, SwiftContext.get().getBean(TestBean1.class).getClass());
-        assertSame(TestBean2.class, SwiftContext.get().getBean(TestBean2.class).getClass());
+        assertSame(TestBeanHandler1.class, SwiftContext.get().getBean(TestBeanHandler1.class).getClass());
+        assertSame(TestBeanHandler2.class, SwiftContext.get().getBean(TestBeanHandler2.class).getClass());
 
         annotationHandlerContext.classProcess();
 
         //替换代理之后
-        assertNotSame(TestBean1.class, SwiftContext.get().getBean(TestBean1.class).getClass());
-        assertNotSame(TestBean2.class, SwiftContext.get().getBean(TestBean2.class).getClass());
+        assertNotSame(TestBeanHandler1.class, SwiftContext.get().getBean(TestBeanHandler1.class).getClass());
+        assertNotSame(TestBeanHandler2.class, SwiftContext.get().getBean(TestBeanHandler2.class).getClass());
         //输出打印结果
-        SwiftContext.get().getBean(TestBean1.class).run();
-        SwiftContext.get().getBean(TestBean2.class).run();
+        SwiftContext.get().getBean(TestBeanHandler1.class).run();
+        SwiftContext.get().getBean(TestBeanHandler2.class).run();
     }
 }

@@ -9,8 +9,8 @@ import com.fr.swift.beans.annotation.SwiftInitMethod;
  * @this class created on date 2019/8/18
  * @description
  */
-@SwiftBean(name = "testBean1")
-public class TestBean1 {
+@SwiftBean
+public class TestBeanHandler1 {
 
     private int number = 0;
 

@@ -12,11 +12,11 @@ import com.fr.swift.beans.annotation.aop.SwiftJoinPoint;
  * @this class created on date 2019/8/18
  * @description
  */
-@SwiftBean(name = "testBean3")
+@SwiftBean
 @SwiftAspect
-public class TestBean3 {
-    @SwiftPointCut(targets = {"com.fr.swift.beans.annotation.handle.TestBean1.run",
-            "com.fr.swift.beans.annotation.handle.TestBean2.run"})
+public class TestBeanHandler3 {
+    @SwiftPointCut(targets = {"com.fr.swift.beans.annotation.handle.TestBeanHandler1.run",
+            "com.fr.swift.beans.annotation.handle.TestBeanHandler2.run"})
     private void test() {
     }
 

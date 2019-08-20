@@ -20,13 +20,7 @@ import java.util.Set;
 public class SwiftAutowiredProcesser implements BeanProcesser {
     @Override
     public void process(SwiftBeanDefinition beanDefinition) {
-        Set<Field> fields = new HashSet<>();
-        for (Field field : beanDefinition.getClazz().getDeclaredFields()) {
-            if (field.isAnnotationPresent(SwiftAutoWired.class)) {
-                fields.add(field);
-            }
-        }
-        recursionGetAllFields(fields, beanDefinition.getClazz());
+        Set<Field> fields = getAllFields(beanDefinition.getClazz());
         for (Field field : fields) {
             SwiftAutoWired target = field.getAnnotation(SwiftAutoWired.class);
             List<String> beanNames = SwiftBeanRegistry.getInstance().getBeanNamesByType(field.getType());
@@ -55,14 +49,13 @@ public class SwiftAutowiredProcesser implements BeanProcesser {
         }
     }
 
-    //获取全部的field
-    public void recursionGetAllFields(Set<Field> autowiredFields, Class clazz) {
-        Set<Class<?>> superClasses = SwiftClassUtil.getAllInterfaces(clazz);
-        if (superClasses.contains(clazz)) {
-            superClasses.remove(clazz);
-        }
+    public Set<Field> getAllFields(Class<?> clazz) {
+        Set<Class<?>> superClasses = SwiftClassUtil.getAllInterfacesAndSelf(clazz);
+        Set<Field> autowiredFields = new HashSet<>();
         for (Class<?> superClass : superClasses) {
-            recursionGetAllFields(autowiredFields, superClass);
+            if (superClass.isInterface()) {
+                continue;
+            }
             Field[] fields = superClass.getDeclaredFields();
             for (Field field : fields) {
                 if (field.isAnnotationPresent(SwiftAutoWired.class)) {
@@ -70,6 +63,7 @@ public class SwiftAutowiredProcesser implements BeanProcesser {
                 }
             }
         }
+        return autowiredFields;
     }
 
 }

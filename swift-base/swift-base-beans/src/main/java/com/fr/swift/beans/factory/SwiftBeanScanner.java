@@ -2,9 +2,11 @@ package com.fr.swift.beans.factory;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.process.AnnotationProcesserContext;
+import com.fr.swift.beans.annotation.process.SwiftClassUtil;
 import com.fr.swift.beans.factory.classreading.ClassAnnotations;
 import com.fr.swift.beans.factory.classreading.ClassReader;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.Strings;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -54,6 +56,9 @@ public class SwiftBeanScanner implements BeanScanner {
                 SwiftBean swiftBean = clazz.getAnnotation(SwiftBean.class);
                 if (swiftBean != null) {
                     String beanName = swiftBean.name();
+                    if (beanName.equals(Strings.EMPTY)) {
+                        beanName = SwiftClassUtil.getDefaultBeanName(clazz.getName());
+                    }
                     Set<Class<?>> interfaces = com.fr.swift.beans.annotation.process.SwiftClassUtil.getAllInterfacesAndSelf(clazz);
                     for (Class<?> anInterface : interfaces) {
                         beanRegistry.registerBeanNamesByType(anInterface, beanName);

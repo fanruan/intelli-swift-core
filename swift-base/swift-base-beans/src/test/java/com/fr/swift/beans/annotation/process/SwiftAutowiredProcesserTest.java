@@ -21,17 +21,17 @@ public class SwiftAutowiredProcesserTest extends TestCase {
 
     public void testProcess() throws NoSuchFieldException {
         //测试没有属性的情况
-        SwiftBeanDefinition beanDefinition = new SwiftBeanDefinition(TestBean4.class, "test");
+        SwiftBeanDefinition beanDefinition = new SwiftBeanDefinition(TestBeanProcesser4.class, "test");
         SwiftAutowiredProcesser autowiredProcesser = new SwiftAutowiredProcesser();
         autowiredProcesser.process(beanDefinition);
         assertEquals(0, beanDefinition.getAutowiredFields().size());
         assertFalse(beanDefinition.getAutoWired());
         //测试只有自己的autowired
-        beanDefinition = new SwiftBeanDefinition(TestBean1.class, "test");
+        beanDefinition = new SwiftBeanDefinition(TestBeanProcesser1.class, "test");
         autowiredProcesser.process(beanDefinition);
         assertEquals(1, beanDefinition.getAutowiredFields().size());
         //测试继承关系的autowired
-        beanDefinition = new SwiftBeanDefinition(TestBean3.class, "test");
+        beanDefinition = new SwiftBeanDefinition(TestBeanProcesser3.class, "test");
         autowiredProcesser.process(beanDefinition);
         assertEquals(5, beanDefinition.getAutowiredFields().size());
     }

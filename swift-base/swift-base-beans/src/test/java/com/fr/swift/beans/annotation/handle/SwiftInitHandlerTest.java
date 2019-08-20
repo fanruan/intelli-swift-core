@@ -24,10 +24,10 @@ public class SwiftInitHandlerTest extends TestCase {
     public void testProcess() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
         AnnotationHandlerContext annotationHandlerContext=AnnotationHandlerContext.getInstance();
 
-        assertEquals(0, SwiftContext.get().getBean(TestBean1.class).getNumber());
+        assertEquals(0, SwiftContext.get().getBean(TestBeanHandler1.class).getNumber());
 
         annotationHandlerContext.methodProcess();
 
-        assertEquals(1, SwiftContext.get().getBean(TestBean1.class).getNumber());
+        assertEquals(1, SwiftContext.get().getBean(TestBeanHandler1.class).getNumber());
     }
 }
