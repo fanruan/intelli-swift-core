@@ -35,4 +35,11 @@ public interface ExceptionInfoService {
      * @return
      */
     boolean maintain(ExceptionInfo info);
+
+    /**
+     * 取出未处理异常
+     *
+     * @return
+     */
+    Set<ExceptionInfo> getUnsolvedExceptionInfo();
 }

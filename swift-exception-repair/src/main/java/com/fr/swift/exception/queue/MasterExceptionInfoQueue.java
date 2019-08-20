@@ -2,7 +2,7 @@ package com.fr.swift.exception.queue;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.exception.ExceptionInfo;
-import com.fr.swift.exception.service.SwiftExceptionInfoServiceImpl;
+import com.fr.swift.exception.service.ExceptionInfoService;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.util.Set;
@@ -25,7 +25,7 @@ public class MasterExceptionInfoQueue implements ExceptionInfoQueue {
 
     private BlockingQueue<ExceptionInfo> queue = new ArrayBlockingQueue<>(10000);
 
-    private SwiftExceptionInfoServiceImpl infoService = SwiftContext.get().getBean(SwiftExceptionInfoServiceImpl.class);
+    private ExceptionInfoService infoService = SwiftContext.get().getBean(ExceptionInfoService.class);
 
     private MasterExceptionInfoQueue() {
     }

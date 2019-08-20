@@ -97,6 +97,16 @@ public class ExceptionInfoBean implements ExceptionInfo {
         return Objects.hash(id, state, operateNodeId);
     }
 
+    @Override
+    public String toString() {
+        return "ExceptionInfoBean{" +
+                "sourceNodeId='" + sourceNodeId + '\'' +
+                ", type=" + type +
+                ", occurredTime=" + occurredTime +
+                ", context=" + context +
+                '}';
+    }
+
     public static class Builder {
         private ExceptionInfoBean bean;
 
