@@ -42,7 +42,7 @@ public class ToDateFormula extends BaseFormula {
         if (args != null && args.length >= 1) {
             try {
                 Long arg = (Long) args[0];
-                return new Date(arg);
+                return null == arg ? null : new Date(arg);
             } catch (ClassCastException e) {
                 return null;
             }
