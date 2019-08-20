@@ -43,8 +43,8 @@ public class MasterExceptionInfoQueue implements ExceptionInfoQueue {
     @Override
     public void initExceptionInfoQueue() {
         //master队列初始化时会找出State为UNSOLVED的异常信息加入队列
-        Set<ExceptionInfo> exceptionInfoSet = infoService.getUnsolvedExceptionInfo();
-        for (ExceptionInfo info : exceptionInfoSet) {
+        Set<ExceptionInfo> infoSet = infoService.getUnsolvedExceptionInfo();
+        for (ExceptionInfo info : infoSet) {
             if (!queue.offer(info)) {
                 SwiftLoggers.getLogger().warn("Add ExceptionInfo into MasterExceptionInfoQueue Failed");
             }
