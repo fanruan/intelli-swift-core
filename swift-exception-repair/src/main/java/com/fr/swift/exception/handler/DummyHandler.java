@@ -2,6 +2,7 @@ package com.fr.swift.exception.handler;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.ExceptionInfo;
+import com.fr.swift.exception.ExceptionInfoType;
 
 /**
  * 这个类用来测试异常处理流程
@@ -26,6 +27,6 @@ public class DummyHandler implements ExceptionHandler {
 
     @Override
     public ExceptionInfo.Type getExceptionInfoType() {
-        return ExceptionInfo.ET.A;
+        return ExceptionInfoType.UPLOAD_SEGMENT;
     }
 }
