@@ -1,6 +1,6 @@
 package com.fr.swift.beans.annotation.handler;
 
-import com.fr.swift.beans.annotation.SwiftInitMethod;
+import com.fr.swift.beans.factory.SwiftBeanDefinition;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,14 +13,11 @@ import java.lang.reflect.Method;
 public class SwiftInitHandler implements BeanHandler {
 
     @Override
-    public void handle(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
-        Method[] methods = clazz.getDeclaredMethods();
-        for (Method method : methods) {
-            SwiftInitMethod initMethod = method.getAnnotation(SwiftInitMethod.class);
-            if (initMethod != null) {
-                method.invoke(object);
-                return;
-            }
+    public void handle(Object object, SwiftBeanDefinition beanDefinition) throws InvocationTargetException, IllegalAccessException {
+        Method initMethod = beanDefinition.getInitMethod();
+        if (initMethod != null) {
+            initMethod.invoke(object);
         }
     }
+
 }

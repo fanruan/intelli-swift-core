@@ -15,10 +15,8 @@ public class SwiftInitProcesser implements BeanProcesser {
     public void process(SwiftBeanDefinition beanDefinition) {
         Method[] methods = beanDefinition.getClazz().getMethods();
         for (Method method : methods) {
-            SwiftInitMethod initMethod = method.getAnnotation(SwiftInitMethod.class);
-            if (initMethod != null) {
-                beanDefinition.setInitMethod(method.getName());
-                return;
+            if (method.isAnnotationPresent(SwiftInitMethod.class)) {
+                beanDefinition.setInitMethod(method);
             }
         }
     }

@@ -19,10 +19,10 @@ public class SwiftDestroyProcesserTest extends TestCase {
         SwiftBeanDefinition beanDefinition=new SwiftBeanDefinition(TestBean1.class,"bean1");
         SwiftDestroyProcesser destroyProcesser=new SwiftDestroyProcesser();
         destroyProcesser.process(beanDefinition);
-        assertEquals(beanDefinition.getDestroyMethod(),"testDestroyMethod");
+        assertEquals(beanDefinition.getDestroyMethod().getName(), "testDestroyMethod");
         //不存在destroy的情况
         beanDefinition=new SwiftBeanDefinition(TestBean4.class,"testBean4");
         destroyProcesser.process(beanDefinition);
-        assertEquals(beanDefinition.getDestroyMethod(),"");
+        assertNull(beanDefinition.getDestroyMethod());
     }
 }

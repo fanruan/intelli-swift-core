@@ -1,12 +1,9 @@
 package com.fr.swift.beans.annotation.handler;
 
-import com.fr.swift.beans.annotation.SwiftAfter;
-import com.fr.swift.beans.annotation.SwiftAspect;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.beans.annotation.SwiftBefore;
-import com.fr.swift.beans.annotation.SwiftPointCut;
 import com.fr.swift.beans.annotation.aop.SwiftJoinPoint;
 import com.fr.swift.beans.exception.SwiftBeanException;
+import com.fr.swift.beans.factory.SwiftBeanDefinition;
 import com.fr.swift.beans.factory.SwiftBeanRegistry;
 import com.fr.swift.log.SwiftLoggers;
 import net.sf.cglib.proxy.Enhancer;
@@ -23,44 +20,34 @@ import java.lang.reflect.Method;
 public class SwiftAspectHandler implements BeanHandler {
 
     @Override
-    public void handle(final Object object, final Class<?> clazz) throws ClassNotFoundException {
+    public void handle(final Object object, final SwiftBeanDefinition beanDefinition) throws ClassNotFoundException {
         //通知的目标方法,每一个aspect默认只存在一个before和after，多个无法确定执行顺序
         Method beforeMethod = null, afterMethod = null;
         //切点的目标位置
         String[] targets = {};
         //扫描class，初始化基本的信息
-        if (clazz.isAnnotationPresent(SwiftAspect.class)) {
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method method : methods) {
-                //找到通知的方法
-                if (method.isAnnotationPresent(SwiftBefore.class)) {
-                    beforeMethod = method;
-                }
-                if (method.isAnnotationPresent(SwiftAfter.class)) {
-                    afterMethod = method;
-                }
-                //找到切点
-                if (method.isAnnotationPresent(SwiftPointCut.class)) {
-                    SwiftPointCut pointCut = method.getAnnotation(SwiftPointCut.class);
-                    //获取到需要代理的方法位置
-                    targets = pointCut.targets();
-                }
+        if (beanDefinition.isAspect()) {
+            beforeMethod = beanDefinition.getBeforeMethod();
+            afterMethod = beanDefinition.getAfterMethod();
+            targets = beanDefinition.getAdviceTarget();
+            if (beforeMethod == null || afterMethod == null) {
+                throw new SwiftBeanException(String.format("aspect %s don't have beforeMethod or afterMethod", beanDefinition.getBeanName()));
             }
-            for (String target : targets) {
+            for (final String target : targets) {
                 //需要代理的类
                 final String className = target.substring(0, target.lastIndexOf("."));
                 final String methodName = target.substring(target.lastIndexOf(".") + 1, target.length());
                 //获取代理类的实例
-                String beanName = getBeanNametByClassName(className);
+                final String beanName = getBeanNametByClassName(className);
                 final Object targetObject = SwiftBeanRegistry.getInstance().getSingletonObjects().get(beanName);
                 if (targetObject == null) {
-                    throw new SwiftBeanException(" aspect " + clazz.getName() + ": pointcut " + target + " object is null");
+                    throw new SwiftBeanException(" aspect " + beanName + ": pointcut " + target + " object is null");
                 }
                 //开始创建代理对象
                 final Enhancer enhancer = new Enhancer();
-                enhancer.setSuperclass(targetObject.getClass());
                 final Method finalBeforeMethod = beforeMethod;
                 final Method finalAfterMethod = afterMethod;
+                enhancer.setSuperclass(targetObject.getClass());
                 enhancer.setCallback(new MethodInterceptor() {
                     @Override
                     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
@@ -73,7 +60,7 @@ public class SwiftAspectHandler implements BeanHandler {
                             try {
                                 finalBeforeMethod.invoke(object, joinPoint);
                             } catch (Exception e) {
-                                SwiftLoggers.getLogger().error(String.format("aspect %s -->  %s before method error", clazz.getName(), className));
+                                SwiftLoggers.getLogger().error(String.format("aspect %s -->  %s before method error", beanName, className));
                             }
                             //执行目标方法
                             returnValue = method.invoke(targetObject, objects);
@@ -81,10 +68,10 @@ public class SwiftAspectHandler implements BeanHandler {
                             try {
                                 finalAfterMethod.invoke(object, joinPoint);
                             } catch (Exception e) {
-                                SwiftLoggers.getLogger().error(String.format("aspect %s --> %s after method error", clazz.getName(), className));
+                                SwiftLoggers.getLogger().error(String.format("aspect %s --> %s after method error", beanName, className));
                             }
                         } else {
-                            returnValue = method.invoke(targetObject, objects);
+                            returnValue = methodProxy.invokeSuper(o, objects);
                         }
                         return returnValue;
                     }

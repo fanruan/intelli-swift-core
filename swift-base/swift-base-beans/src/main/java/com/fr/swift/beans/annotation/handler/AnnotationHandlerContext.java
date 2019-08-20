@@ -1,5 +1,6 @@
 package com.fr.swift.beans.annotation.handler;
 
+import com.fr.swift.beans.factory.SwiftBeanDefinition;
 import com.fr.swift.beans.factory.SwiftBeanRegistry;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,10 +26,10 @@ public class AnnotationHandlerContext {
     //全部结束后，销毁的生命周期
     private List<BeanHandler> endHandlers = new LinkedList<>();
 
-    private Map<Object, Class> getObjectMap() {
-        Map<Object, Class> objectMap = new HashMap<>();
+    private Map<Object, SwiftBeanDefinition> getObjectMap() {
+        Map<Object, SwiftBeanDefinition> objectMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : SwiftBeanRegistry.getInstance().getSingletonObjects().entrySet()) {
-            objectMap.put(entry.getValue(), SwiftBeanRegistry.getInstance().getBeanDefinition(entry.getKey()).getClazz());
+            objectMap.put(entry.getValue(), SwiftBeanRegistry.getInstance().getBeanDefinition(entry.getKey()));
         }
         return objectMap;
     }
@@ -57,7 +58,7 @@ public class AnnotationHandlerContext {
     //每一个流程保证全部的对象全部执行完毕，否则后面的流程会出现逻辑问题，比如autowired必须全部set完毕
     public void startProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         for (BeanHandler beanHandler : startHandlers) {
-            for (Map.Entry<Object, Class> objectClassEntry : getObjectMap().entrySet()) {
+            for (Map.Entry<Object, SwiftBeanDefinition> objectClassEntry : getObjectMap().entrySet()) {
                 beanHandler.handle(objectClassEntry.getKey(), objectClassEntry.getValue());
             }
         }
@@ -65,7 +66,7 @@ public class AnnotationHandlerContext {
 
     public void endProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         for (BeanHandler beanHandler : endHandlers) {
-            for (Map.Entry<Object, Class> objectClassEntry : getObjectMap().entrySet()) {
+            for (Map.Entry<Object, SwiftBeanDefinition> objectClassEntry : getObjectMap().entrySet()) {
                 beanHandler.handle(objectClassEntry.getKey(), objectClassEntry.getValue());
             }
         }
@@ -73,7 +74,7 @@ public class AnnotationHandlerContext {
 
     public void methodProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         for (BeanHandler beanHandler : methodHandlers) {
-            for (Map.Entry<Object, Class> objectClassEntry : getObjectMap().entrySet()) {
+            for (Map.Entry<Object, SwiftBeanDefinition> objectClassEntry : getObjectMap().entrySet()) {
                 beanHandler.handle(objectClassEntry.getKey(), objectClassEntry.getValue());
             }
         }
@@ -81,7 +82,7 @@ public class AnnotationHandlerContext {
 
     public void classProcess() throws IllegalAccessException, ClassNotFoundException, InvocationTargetException {
         for (BeanHandler beanHandler : classHandlers) {
-            for (Map.Entry<Object, Class> objectClassEntry : getObjectMap().entrySet()) {
+            for (Map.Entry<Object, SwiftBeanDefinition> objectClassEntry : getObjectMap().entrySet()) {
                 beanHandler.handle(objectClassEntry.getKey(), objectClassEntry.getValue());
             }
         }

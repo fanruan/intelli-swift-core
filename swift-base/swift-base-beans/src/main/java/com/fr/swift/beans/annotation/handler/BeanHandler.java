@@ -1,5 +1,7 @@
 package com.fr.swift.beans.annotation.handler;
 
+import com.fr.swift.beans.factory.SwiftBeanDefinition;
+
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -8,5 +10,5 @@ import java.lang.reflect.InvocationTargetException;
  * @description
  */
 public interface BeanHandler {
-    void handle(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException;
+    void handle(Object object, SwiftBeanDefinition beanDefinition) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException;
 }

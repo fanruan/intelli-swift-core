@@ -11,12 +11,14 @@ import com.fr.swift.beans.factory.SwiftBeanDefinition;
 public class SwiftScopeProcesser implements BeanProcesser {
     @Override
     public void process(SwiftBeanDefinition beanDefinition) {
-        SwiftScope swiftScope = beanDefinition.getClazz().getAnnotation(SwiftScope.class);
-        String beanName = beanDefinition.getBeanName();
-        if (swiftScope == null || swiftScope.value().equals(SwiftScope.SINGLETON)) {
-            beanDefinition.setScope(SwiftScope.SINGLETON);
-        } else if (swiftScope.value().equals(SwiftScope.PROTOTYPE)) {
-            beanDefinition.setScope(SwiftScope.PROTOTYPE);
+        if (beanDefinition.getClazz().isAnnotationPresent(SwiftScope.class)) {
+            SwiftScope swiftScope = beanDefinition.getClazz().getAnnotation(SwiftScope.class);
+            String beanName = beanDefinition.getBeanName();
+            if (swiftScope == null || swiftScope.value().equals(SwiftScope.SINGLETON)) {
+                beanDefinition.setScope(SwiftScope.SINGLETON);
+            } else if (swiftScope.value().equals(SwiftScope.PROTOTYPE)) {
+                beanDefinition.setScope(SwiftScope.PROTOTYPE);
+            }
         }
     }
 }
