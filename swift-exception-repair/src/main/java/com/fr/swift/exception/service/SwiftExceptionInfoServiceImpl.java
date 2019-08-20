@@ -31,6 +31,7 @@ public class SwiftExceptionInfoServiceImpl implements ExceptionInfoService {
 
     }
 
+    @Override
     public Set<ExceptionInfo> getUnsolvedExceptionInfo() {
         return new HashSet<ExceptionInfo>(queryBus.get(SwiftConfigConditionImpl.newInstance()
                 .addWhere(ConfigWhereImpl.eq("state", ExceptionInfo.State.UNSOLVED))));
