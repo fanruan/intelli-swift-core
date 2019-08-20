@@ -11,11 +11,13 @@ import com.fr.swift.config.convert.ConfigAttributeConverter;
 public class ExceptionInfoTypeConverter implements ConfigAttributeConverter<ExceptionInfo.Type, String> {
     @Override
     public String convertToDatabaseColumn(ExceptionInfo.Type type) {
+        //Todo
         return null;
     }
 
     @Override
     public ExceptionInfo.Type convertToEntityAttribute(String s) {
+        //Todo
         return null;
     }
 }

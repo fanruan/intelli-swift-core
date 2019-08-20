@@ -7,6 +7,7 @@ import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.query.impl.SwiftHibernateConfigQueryBus;
 import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.ExceptionInfoBean;
+import com.fr.swift.util.Strings;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class SwiftExceptionInfoServiceImpl implements ExceptionInfoService {
 
     @Override
     public boolean removeExceptionInfo(String id) {
-        if (null == id || id.isEmpty()) {
+        if (Strings.isEmpty(id)) {
             return false;
         }
         return commandBus.delete(SwiftConfigConditionImpl.newInstance().addWhere(ConfigWhereImpl.eq("id", id))) >= 0;
