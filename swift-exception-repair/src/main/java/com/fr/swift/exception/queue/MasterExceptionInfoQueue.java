@@ -5,7 +5,7 @@ import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.service.SwiftExceptionInfoServiceImpl;
 import com.fr.swift.log.SwiftLoggers;
 
-import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -43,9 +43,9 @@ public class MasterExceptionInfoQueue implements ExceptionInfoQueue {
     @Override
     public void initExceptionInfoQueue() {
         //master队列初始化时会找出State为UNSOLVED的异常信息加入队列
-        Iterator it = infoService.getUnsolvedExceptionInfo().iterator();
-        while (it.hasNext()) {
-            if (!queue.offer((ExceptionInfo) it.next())) {
+        Set<ExceptionInfo> infoSet = infoService.getUnsolvedExceptionInfo();
+        for (ExceptionInfo info : infoSet) {
+            if (!queue.offer(info)) {
                 SwiftLoggers.getLogger().warn("Add ExceptionInfo into MasterExceptionInfoQueue Failed");
             }
         }
