@@ -14,10 +14,10 @@ public class SwiftInitProcesserTest extends TestCase {
         SwiftBeanDefinition beanDefinition=new SwiftBeanDefinition(TestBean1.class,"bean1");
         SwiftInitProcesser initProcesser=new SwiftInitProcesser();
         initProcesser.process(beanDefinition);
-        assertEquals(beanDefinition.getInitMethod(),"testInitMethod");
+        assertEquals(beanDefinition.getInitMethod().getName(), "testInitMethod");
         //不存在init的情况
         beanDefinition=new SwiftBeanDefinition(TestBean3.class,"testBean3");
         initProcesser.process(beanDefinition);
-        assertEquals(beanDefinition.getInitMethod(),"");
+        assertNull(beanDefinition.getInitMethod());
     }
 }

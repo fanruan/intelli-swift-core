@@ -12,18 +12,20 @@ import com.fr.swift.beans.annotation.SwiftInitMethod;
 @SwiftBean(name = "testBean1")
 public class TestBean1 {
 
-    public static int number = 0;
+    private int number = 0;
 
     @SwiftInitMethod
     public void init() {
-        if (number == -10) {
-            number++;
-        }
+        number += 1;
     }
 
     @SwiftDestroy
     private void destroy() {
-        number -= 10;
+        number = -1;
+    }
+
+    public int getNumber() {
+        return number;
     }
 
     public void test() {

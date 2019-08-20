@@ -1,9 +1,9 @@
 package com.fr.swift.beans.factory;
 
 import com.fr.swift.beans.annotation.SwiftScope;
-import com.fr.swift.util.Strings;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,11 +26,53 @@ public class SwiftBeanDefinition {
 
     private boolean autoWired;
 
+    private boolean aspect;
+
     private Map<Field, String> autowiredFields = new HashMap<>();
 
-    private String initMethod = Strings.EMPTY;
+    private Method initMethod = null;
 
-    private String destroyMethod = Strings.EMPTY;
+    private Method destroyMethod = null;
+
+    public Method getPointCut() {
+        return pointCut;
+    }
+
+    public void setPointCut(Method pointCut) {
+        this.pointCut = pointCut;
+    }
+
+    public String[] getAdviceTarget() {
+        return adviceTarget;
+    }
+
+    public void setAdviceTarget(String[] adviceTarget) {
+        this.adviceTarget = adviceTarget;
+    }
+
+    public Method getBeforeMethod() {
+        return beforeMethod;
+    }
+
+    public void setBeforeMethod(Method beforeMethod) {
+        this.beforeMethod = beforeMethod;
+    }
+
+    public Method getAfterMethod() {
+        return afterMethod;
+    }
+
+    public void setAfterMethod(Method afterMethod) {
+        this.afterMethod = afterMethod;
+    }
+
+    private Method pointCut = null;
+
+    private String[] adviceTarget = {};
+
+    private Method beforeMethod = null;
+
+    private Method afterMethod = null;
 
     public SwiftBeanDefinition(Class<?> clazz, String beanName) {
         this(clazz, beanName, SwiftScope.SINGLETON);
@@ -42,12 +84,28 @@ public class SwiftBeanDefinition {
         this.scope = scope;
     }
 
+    public boolean isAspect() {
+        return aspect;
+    }
 
-    public String getDestroyMethod() {
+    public void setAspect(boolean aspect) {
+        this.aspect = aspect;
+    }
+
+
+    public Method getInitMethod() {
+        return initMethod;
+    }
+
+    public void setInitMethod(Method initMethod) {
+        this.initMethod = initMethod;
+    }
+
+    public Method getDestroyMethod() {
         return destroyMethod;
     }
 
-    public void setDestroyMethod(String destroyMethod) {
+    public void setDestroyMethod(Method destroyMethod) {
         this.destroyMethod = destroyMethod;
     }
 
@@ -55,13 +113,6 @@ public class SwiftBeanDefinition {
         return autowiredFields;
     }
 
-    public String getInitMethod() {
-        return initMethod;
-    }
-
-    public void setInitMethod(String initMethod) {
-        this.initMethod = initMethod;
-    }
 
     public void setClazz(Class<?> clazz) {
         this.clazz = clazz;

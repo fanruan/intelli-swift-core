@@ -1,6 +1,5 @@
 package com.fr.swift.beans.annotation.handler;
 
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
 import com.fr.swift.beans.factory.SwiftBeanRegistry;
 
@@ -15,10 +14,9 @@ import java.util.List;
  */
 public class SwiftAutowiredHandler implements BeanHandler {
     @Override
-    public void handle(Object object, Class<?> clazz) throws InvocationTargetException, IllegalAccessException {
-        String beanName = clazz.getAnnotation(SwiftBean.class).name();
-        SwiftBeanDefinition beanDefinition = SwiftBeanRegistry.getInstance().getBeanDefinition(beanName);
+    public void handle(Object object, SwiftBeanDefinition beanDefinition) throws InvocationTargetException, IllegalAccessException {
         List<Field> fields = beanDefinition.getAllAutowiredFiles();
+        String beanName = beanDefinition.getBeanName();
         for (Field field : fields) {
             field.setAccessible(true);
             String targetBeanName = beanDefinition.getAutowiredFields().get(field);

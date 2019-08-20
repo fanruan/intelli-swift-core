@@ -21,6 +21,7 @@ public class AnnotationProcesserContext {
         processers.add(new SwiftAutowiredProcesser());
         processers.add(new SwiftInitProcesser());
         processers.add(new SwiftDestroyProcesser());
+        processers.add(new SwiftAspectProcesser());
     }
 
     public static AnnotationProcesserContext getInstance() {
