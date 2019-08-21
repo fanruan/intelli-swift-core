@@ -17,6 +17,7 @@ import com.fr.swift.service.listener.RemoteSender;
  * @since swift 1.1
  */
 public class ExceptionHandleTemplate {
+
     private ExceptionInfoService infoService = SwiftContext.get().getBean(ExceptionInfoService.class);
 
     private ExceptionHandler exceptionHandler;
@@ -30,7 +31,7 @@ public class ExceptionHandleTemplate {
             exceptionHandler.handleException(exceptionInfo);
         } finally {
             if (exceptionHandler.evaluate()) {
-                infoService.deleteExceptionInfo(exceptionInfo.getId());
+                infoService.removeExceptionInfo(exceptionInfo.getId());
                 handleExceptionResult(exceptionInfo, ExceptionInfo.State.SOLVED);
             } else {
                 handleExceptionResult(exceptionInfo, ExceptionInfo.State.UNSOLVED);
@@ -39,9 +40,9 @@ public class ExceptionHandleTemplate {
     }
 
     void handleExceptionResult(ExceptionInfo info, ExceptionInfo.State state) {
-        String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
+        String currentId = ClusterSelector.getInstance().getFactory().getCurrentId();
         ExceptionInfoBean bean = new ExceptionInfoBean.Builder(info)
-                .setOperateNodeId(clusterId)
+                .setOperateNodeId(currentId)
                 .setState(state).build();
         SwiftRpcEvent event = new ExceptionStateRpcEvent(bean);
         ProxySelector.getProxy(RemoteSender.class).trigger(event);

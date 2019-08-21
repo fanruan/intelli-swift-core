@@ -22,7 +22,7 @@ public class ExceptionReporter {
     public static void report(ExceptionInfo exceptionInfo) {
         maintain(exceptionInfo);
         if (!SlaveExceptionInfoQueue.getInstance().offer(exceptionInfo)) {
-            SwiftLoggers.getLogger().warn("can`t add into SlaveExceptionInfoQueue");
+            SwiftLoggers.getLogger().warn("Add into SlaveExceptionInfoQueue Failed");
         }
     }
 
