@@ -1,10 +1,12 @@
 package com.fr.swift.beans.factory;
 
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.beans.annotation.process.AnnotationProcesserContext;
+import com.fr.swift.beans.annotation.process.SwiftClassUtil;
 import com.fr.swift.beans.factory.classreading.ClassAnnotations;
 import com.fr.swift.beans.factory.classreading.ClassReader;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.Strings;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -49,31 +51,27 @@ public class SwiftBeanScanner implements BeanScanner {
 
     private void resolveBeanDefinition(List<Class<?>> clazzList) {
         if (clazzList != null && clazzList.size() > 0) {
+            List<SwiftBeanDefinition> beanDefinitionList = new ArrayList<>();
             for (Class<?> clazz : clazzList) {
                 SwiftBean swiftBean = clazz.getAnnotation(SwiftBean.class);
                 if (swiftBean != null) {
                     String beanName = swiftBean.name();
-                    if (beanName.equals("")) {
+                    if (beanName.equals(Strings.EMPTY)) {
                         beanName = SwiftClassUtil.getDefaultBeanName(clazz.getName());
                     }
-                    Set<Class<?>> interfaces = SwiftClassUtil.getAllInterfacesAndSelf(clazz);
+                    Set<Class<?>> interfaces = com.fr.swift.beans.annotation.process.SwiftClassUtil.getAllInterfacesAndSelf(clazz);
                     for (Class<?> anInterface : interfaces) {
                         beanRegistry.registerBeanNamesByType(anInterface, beanName);
                     }
-
-                    SwiftScope swiftScope = clazz.getAnnotation(SwiftScope.class);
-                    try {
-                        if (swiftScope == null || swiftScope.value().equals(SwiftScope.SINGLETON)) {
-                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftScope.SINGLETON);
-                            beanRegistry.registerBeanDefinition(beanName, definition);
-                        } else if (swiftScope.value().equals(SwiftScope.PROTOTYPE)) {
-                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftScope.PROTOTYPE);
-                            beanRegistry.registerBeanDefinition(beanName, definition);
-                        }
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().error(e);
-                    }
+                    //开始处理每一个注解,默认是单例
+                    SwiftBeanDefinition beanDefinition = new SwiftBeanDefinition(clazz, beanName);
+                    beanRegistry.registerBeanDefinition(beanName, beanDefinition);
+                    beanDefinitionList.add(beanDefinition);
                 }
+            }
+            //保证获取全部的SwiftBean
+            for (SwiftBeanDefinition beanDefinition : beanDefinitionList) {
+                AnnotationProcesserContext.getInstance().process(beanDefinition);
             }
         }
     }
