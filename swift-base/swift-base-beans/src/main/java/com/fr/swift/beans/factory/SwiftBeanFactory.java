@@ -61,23 +61,16 @@ public class SwiftBeanFactory implements BeanFactory {
             beanNamesLoaded.clear();
         }
         SwiftBeanRegistry.getInstance().setSingletonObjects(singletonObjects);
-
-        try {
-            AnnotationHandlerContext.getInstance().process();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         SwiftLoggers.getLogger().info("Swift singleton beans create successfully!");
+
+        AnnotationHandlerContext.getInstance().process();
+
     }
 
     private void recursionCreateBean(Map<String, SwiftBeanDefinition> beanDefinitionMap, Map<String, Object> singletonObjects) {
-        BeanCreator beanCreator=new BeanCreator(beanNamesLoaded,singletonObjects);
+        BeanCreator beanCreator = new BeanCreator(beanNamesLoaded, singletonObjects);
         for (String singletonNotLoadName : singletonNotLoadNames) {
-            beanCreator.buildTreeByBeanName(singletonNotLoadName,beanDefinitionMap);
+            beanCreator.buildTreeByBeanName(singletonNotLoadName, beanDefinitionMap);
         }
         singletonNotLoadNames.removeAll(beanNamesLoaded);
     }

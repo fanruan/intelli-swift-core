@@ -1,4 +1,4 @@
-package com.fr.swift.beans.init.beancreator;
+package com.fr.swift.beans.init.bean;
 
 import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;

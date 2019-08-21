@@ -1,4 +1,4 @@
-package com.fr.swift.beans.init.beancreator;
+package com.fr.swift.beans.init.bean;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
@@ -9,7 +9,7 @@ public class BeanCreatorTest {
     @Before
     public void setUp() {
         BeanFactory beanFactory = SwiftContext.get();
-        beanFactory.registerPackages("com.fr.swift.beans.init.beancreator");
+        beanFactory.registerPackages("com.fr.swift.beans.init.bean");
         beanFactory.init();
     }
 

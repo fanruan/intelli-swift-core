@@ -69,7 +69,9 @@ public class BeanCreator {
     }
 
     public void recursion(WrapperDefinition wrapperDefinition) {
-        if (!wrapperDefinition.getDefinition().getAutoWired()) return;
+        if (!wrapperDefinition.getDefinition().getAutoWired()){
+            return;
+        }
         DependencyTreeNode root = new DependencyTreeNode(wrapperDefinition); //每次递归都会有一个子节点的树根
         getAllSubNode(root);
 
@@ -118,7 +120,9 @@ public class BeanCreator {
      * 后序遍历该树，构造整个依赖树
      * */
     public void createBeansByTree(DependencyTreeNode root) {
-        if (root == null) return;
+        if (root == null){
+            return;
+        }
 
         for (DependencyTreeNode node : root.next) {
             createBeansByTree(node);

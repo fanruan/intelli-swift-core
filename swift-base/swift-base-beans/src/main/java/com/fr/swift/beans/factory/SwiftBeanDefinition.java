@@ -150,16 +150,26 @@ public class SwiftBeanDefinition {
         return new ArrayList<>(autowiredFields.keySet());
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += 31 * beanName.hashCode() + 7;
+        hash += 31 * clazz.getName().hashCode() + 7;
+        hash += 31 * scope.hashCode() + 7;
+        return hash;
+    }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof SwiftBeanDefinition) {
-            SwiftBeanDefinition definition = (SwiftBeanDefinition) obj;
-            return this.getClazz().getName().equals(definition.getClazz().getName()) && this.getBeanName().equals(definition.getBeanName());
+        if (obj == null || getClass() != obj.getClass()){
+            return false;
         }
-        return false;
+
+        SwiftBeanDefinition definition = (SwiftBeanDefinition) obj;
+        return this.getClazz().getName().equals(definition.getClazz().getName()) && this.getBeanName().equals(definition.getBeanName());
     }
+
 }

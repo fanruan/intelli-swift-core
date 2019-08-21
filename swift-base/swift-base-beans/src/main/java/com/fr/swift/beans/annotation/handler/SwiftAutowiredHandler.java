@@ -2,9 +2,9 @@ package com.fr.swift.beans.annotation.handler;
 
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
 import com.fr.swift.beans.factory.SwiftBeanRegistry;
+import com.fr.swift.log.SwiftLoggers;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -14,14 +14,18 @@ import java.util.List;
  */
 public class SwiftAutowiredHandler implements BeanHandler {
     @Override
-    public void handle(Object object, SwiftBeanDefinition beanDefinition) throws InvocationTargetException, IllegalAccessException {
+    public void handle(Object object, SwiftBeanDefinition beanDefinition) {
         List<Field> fields = beanDefinition.getAllAutowiredFiles();
         String beanName = beanDefinition.getBeanName();
         for (Field field : fields) {
             field.setAccessible(true);
             String targetBeanName = beanDefinition.getAutowiredFields().get(field);
             Object targetObject = SwiftBeanRegistry.getInstance().getSingletonObjects().get(targetBeanName);
-            field.set(object, targetObject);
+            try {
+                field.set(object, targetObject);
+            } catch (IllegalAccessException e) {
+                SwiftLoggers.getLogger().error("the field is not accessible : " + field.getType() + " " + field.getName()+" to get in IllegalAccessException");
+            }
         }
         SwiftBeanRegistry.getInstance().getSingletonObjects().put(beanName, object);
     }
