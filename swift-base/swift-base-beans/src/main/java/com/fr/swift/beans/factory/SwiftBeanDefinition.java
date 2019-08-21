@@ -149,4 +149,17 @@ public class SwiftBeanDefinition {
     public List<Field> getAllAutowiredFiles() {
         return new ArrayList<>(autowiredFields.keySet());
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof SwiftBeanDefinition) {
+            SwiftBeanDefinition definition = (SwiftBeanDefinition) obj;
+            return this.getClazz().getName().equals(definition.getClazz().getName()) && this.getBeanName().equals(definition.getBeanName());
+        }
+        return false;
+    }
 }
