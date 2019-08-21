@@ -4,6 +4,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.handler.AnnotationHandlerContext;
 import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
+import com.fr.swift.beans.factory.init.BeanCreator;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.ReflectUtils;
@@ -60,22 +61,23 @@ public class SwiftBeanFactory implements BeanFactory {
             beanNamesLoaded.clear();
         }
         SwiftBeanRegistry.getInstance().setSingletonObjects(singletonObjects);
+
+        try {
+            AnnotationHandlerContext.getInstance().process();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         SwiftLoggers.getLogger().info("Swift singleton beans create successfully!");
     }
 
     private void recursionCreateBean(Map<String, SwiftBeanDefinition> beanDefinitionMap, Map<String, Object> singletonObjects) {
+        BeanCreator beanCreator=new BeanCreator(beanNamesLoaded,singletonObjects);
         for (String singletonNotLoadName : singletonNotLoadNames) {
-            SwiftBeanDefinition swiftBeanDefinition = beanDefinitionMap.get(singletonNotLoadName);
-            try {
-                Object singletonObject = createBean(swiftBeanDefinition.getClazz());
-                singletonObjects.put(swiftBeanDefinition.getBeanName(), singletonObject);
-                beanNamesLoaded.add(swiftBeanDefinition.getBeanName());
-            } catch (Exception ignore) {
-                SwiftLoggers.getLogger().debug(ignore);
-            }
-        }
-        if (beanNamesLoaded.isEmpty() && !singletonNotLoadNames.isEmpty()) {
-            Crasher.crash("RecursionCreateBean will trap in a dead circle! Please check beans " + singletonNotLoadNames.toString());
+            beanCreator.buildTreeByBeanName(singletonNotLoadName,beanDefinitionMap);
         }
         singletonNotLoadNames.removeAll(beanNamesLoaded);
     }
