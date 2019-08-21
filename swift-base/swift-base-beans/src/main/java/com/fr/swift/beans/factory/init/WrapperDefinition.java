@@ -6,6 +6,7 @@ package com.fr.swift.beans.factory.init;
  * @author Krysta
  * @description
  * */
+
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
 
 public class WrapperDefinition {
@@ -38,7 +39,7 @@ public class WrapperDefinition {
         int hash = definition.getClazz().getName().hashCode() * 31 + count;
         hash += definition.getBeanName().hashCode() * 31 + count;
         hash += definition.getInitMethod().hashCode() * 31 + count;
-        hash += definition.getDestroyMethod().hashCode() * 31 + count ;
+        hash += definition.getDestroyMethod().hashCode() * 31 + count;
         return hash;
     }
 
@@ -47,10 +48,12 @@ public class WrapperDefinition {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof WrapperDefinition) {
-            WrapperDefinition wrapperDefinition = (WrapperDefinition) obj;
-            return definition.getClazz().getName().equals(wrapperDefinition.definition.getClazz().getName()) && definition.getBeanName().equals(wrapperDefinition.definition.getBeanName()) && count == wrapperDefinition.count;
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
         }
-        return false;
+
+        WrapperDefinition wrapperDefinition = (WrapperDefinition) obj;
+        return definition.getClazz().getName().equals(wrapperDefinition.definition.getClazz().getName()) && definition.getBeanName().equals(wrapperDefinition.definition.getBeanName()) && count == wrapperDefinition.count;
     }
 }

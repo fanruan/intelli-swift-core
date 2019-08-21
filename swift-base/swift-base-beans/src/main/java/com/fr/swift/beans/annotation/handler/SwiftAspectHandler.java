@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 public class SwiftAspectHandler implements BeanHandler {
 
     @Override
-    public void handle(final Object object, final SwiftBeanDefinition beanDefinition) throws ClassNotFoundException {
+    public void handle(final Object object, final SwiftBeanDefinition beanDefinition) {
         //通知的目标方法,每一个aspect默认只存在一个before和after，多个无法确定执行顺序
         Method beforeMethod = null, afterMethod = null;
         //切点的目标位置
@@ -40,7 +40,7 @@ public class SwiftAspectHandler implements BeanHandler {
                 final String className = target.substring(0, target.lastIndexOf("."));
                 final String methodName = target.substring(target.lastIndexOf(".") + 1, target.length());
                 //获取代理类的实例
-                final String beanName = getBeanNametByClassName(className);
+                final String beanName = getBeanNameByClassName(className);
                 final Object targetObject = SwiftBeanRegistry.getInstance().getSingletonObjects().get(beanName);
                 if (targetObject == null) {
                     throw new SwiftBeanException(" aspect " + beanName + ": pointcut " + target + " object is null");
@@ -85,19 +85,25 @@ public class SwiftAspectHandler implements BeanHandler {
     }
 
     //根据类名获取BeanName
-    private String getBeanNametByClassName(String className) throws ClassNotFoundException {
+    private String getBeanNameByClassName(String className) {
         String beanName;
         //根据类的全路径名获取class对象
         Class<?> clazz;
         //启动容器的线程获取classLoader
-        clazz = Class.forName(className, false, Thread.currentThread().getContextClassLoader());
-        //获取到注解,判断是否被托管
-        if (clazz.isAnnotationPresent(SwiftBean.class)) {
-            beanName = clazz.getAnnotation(SwiftBean.class).name();
-        } else {
-            throw new SwiftBeanException(String.format("target %s is not marked as swiftBean", clazz.getName()));
+        try {
+            clazz = Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+            if (clazz.isAnnotationPresent(SwiftBean.class)) {
+                beanName = clazz.getAnnotation(SwiftBean.class).name();
+            } else {
+                throw new SwiftBeanException(String.format("target %s is not marked as swiftBean", clazz.getName()));
+            }
+            //获取到注解,判断是否被托管
+            return beanName.equals(Strings.EMPTY) ? SwiftClassUtil.getDefaultBeanName(clazz.getName()) : beanName;
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return beanName.equals(Strings.EMPTY) ? SwiftClassUtil.getDefaultBeanName(clazz.getName()) : beanName;
+        return null;
     }
 
 }

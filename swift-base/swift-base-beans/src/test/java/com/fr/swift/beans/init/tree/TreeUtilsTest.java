@@ -1,4 +1,4 @@
-package com.fr.swift.beans.init.treeutil;
+package com.fr.swift.beans.init.tree;
 
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
 import com.fr.swift.beans.factory.init.DependencyTreeNode;
