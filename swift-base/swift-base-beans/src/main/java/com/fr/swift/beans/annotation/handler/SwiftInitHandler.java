@@ -20,7 +20,7 @@ public class SwiftInitHandler implements BeanHandler {
             try {
                 initMethod.invoke(object);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                SwiftLoggers.getLogger().error("can not invoke the initMethod because of IllegalAccessException or InvocationTargetException");
+                SwiftLoggers.getLogger().error("can not invoke the initMethod because of IllegalAccessException or InvocationTargetException",e);
             }
         }
     }

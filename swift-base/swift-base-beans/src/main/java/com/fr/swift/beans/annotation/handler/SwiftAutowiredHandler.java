@@ -24,7 +24,7 @@ public class SwiftAutowiredHandler implements BeanHandler {
             try {
                 field.set(object, targetObject);
             } catch (IllegalAccessException e) {
-                SwiftLoggers.getLogger().error("the field is not accessible : " + field.getType() + " " + field.getName()+" to get in IllegalAccessException");
+                SwiftLoggers.getLogger().error("the field is not accessible : " + field.getType() + " " + field.getName()+" to get in IllegalAccessException",e);
             }
         }
         SwiftBeanRegistry.getInstance().getSingletonObjects().put(beanName, object);
