@@ -15,7 +15,7 @@ import com.fr.swift.util.Util;
 /**
  * Created by Lyon on 2017/11/27.
  */
-public class StringEndsWithFilter extends AbstractDetailFilter<String> {
+public class StringEndsWithFilter extends AbstractDetailFilter {
 
     private String endsWith;
 
@@ -26,11 +26,11 @@ public class StringEndsWithFilter extends AbstractDetailFilter<String> {
     }
 
     @Override
-    protected RowTraversal getIntIterator(DictionaryEncodedColumn<String> dict) {
+    protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
         IntList intList = IntListFactory.createIntList();
         for (int i = 0, size = dict.size(); i < size; i++) {
-            String data = dict.getValue(i);
-            if (data != null && data.endsWith(endsWith)) {
+            Object data = dict.getValue(i);
+            if (data != null && data.toString().endsWith(endsWith)) {
                 intList.add(i);
             }
         }
