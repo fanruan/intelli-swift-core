@@ -100,7 +100,7 @@ public class FilterInfoParser {
                 try {
                     classType = getClassType(table, ((NumberInRangeFilterBean) bean).getColumn());
                 } catch (RuntimeException e) {
-                    // 这边证明没有meta中没定义该字段，可能是calField生成的自定义字段
+                    // 这边证明meta中没定义该字段，可能是calField生成的自定义字段，默认用double比较
                     SwiftLoggers.getLogger().warn(e);
                     classType = ColumnTypeConstants.ClassType.DOUBLE;
                 }
