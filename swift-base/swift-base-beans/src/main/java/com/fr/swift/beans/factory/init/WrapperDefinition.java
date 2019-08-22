@@ -36,11 +36,7 @@ public class WrapperDefinition {
 
     @Override
     public int hashCode() {
-        int hash = definition.getClazz().getName().hashCode() * 31 + count;
-        hash += definition.getBeanName().hashCode() * 31 + count;
-        hash += definition.getInitMethod().hashCode() * 31 + count;
-        hash += definition.getDestroyMethod().hashCode() * 31 + count;
-        return hash;
+        return definition.hashCode() + count;
     }
 
     @Override
