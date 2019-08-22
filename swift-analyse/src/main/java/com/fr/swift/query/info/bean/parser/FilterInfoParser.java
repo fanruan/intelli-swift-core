@@ -96,7 +96,14 @@ public class FilterInfoParser {
             }
             case NUMBER_IN_RANGE: {
                 RangeFilterValueBean valueBean = (RangeFilterValueBean) bean.getFilterValue();
-                ColumnTypeConstants.ClassType classType = getClassType(table, ((NumberInRangeFilterBean) bean).getColumn());
+                ColumnTypeConstants.ClassType classType = null;
+                try {
+                    classType = getClassType(table, ((NumberInRangeFilterBean) bean).getColumn());
+                } catch (RuntimeException e) {
+                    // 这边证明没有meta中没定义该字段，可能是calField生成的自定义字段
+                    SwiftLoggers.getLogger().warn(e);
+                    classType = ColumnTypeConstants.ClassType.DOUBLE;
+                }
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
                 if (valueBean.getStart() != null) {
                     filterValue.setMin(convertNumber(valueBean.getStart(), classType));
@@ -225,7 +232,8 @@ public class FilterInfoParser {
         try {
             column = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(columnName);
         } catch (SQLException e) {
-            SwiftLoggers.getLogger(FilterInfoParser.class).error("failed to read metadata of table: " + table.toString());
+            SwiftLoggers.getLogger().error("failed to read metadata of table: {}", table.toString());
+            throw new RuntimeException("failed to read metadata of table: " + table.toString(), e);
         }
         return ColumnTypeUtils.getClassType(column);
     }

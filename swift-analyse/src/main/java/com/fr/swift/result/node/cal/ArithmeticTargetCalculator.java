@@ -56,10 +56,10 @@ public class ArithmeticTargetCalculator implements TargetCalculator {
     }
 
     private void sub(AggregatorValue[] values) {
-        Double sub = values[paramIndexes[0]] == null ? .0 : values[paramIndexes[0]].calculate();
+        Double sub = null;
         for (int i = 0; i < paramIndexes.length; i++) {
             Double value = values[paramIndexes[i]] == null ? .0 : values[paramIndexes[i]].calculate();
-            sub -= value;
+            sub = null != sub ? sub - value : value;
         }
         values[resultIndex] = new DoubleAmountAggregatorValue(sub);
     }
