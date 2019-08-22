@@ -12,6 +12,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
@@ -94,7 +95,7 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
     @Override
     protected void onSucceed() {
         segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
-        super.onSucceed();
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
     }
 
     @Override
