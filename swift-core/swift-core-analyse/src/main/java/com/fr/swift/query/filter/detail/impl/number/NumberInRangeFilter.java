@@ -90,7 +90,7 @@ public class NumberInRangeFilter extends AbstractDetailFilter<Number> {
         DetailColumn detail = column.getDetailColumn();
         for (int i = 0; i < rowCount; i++) {
             Number value = (Number) detail.get(i);
-            if (match(value.doubleValue())) {
+            if (null != value && match(value.doubleValue())) {
                 bitMap.add(i);
             }
         }

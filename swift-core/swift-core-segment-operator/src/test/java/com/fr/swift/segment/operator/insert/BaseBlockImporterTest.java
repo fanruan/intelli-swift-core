@@ -161,6 +161,11 @@ public class BaseBlockImporterTest {
         }
 
         @Override
+        protected void onSucceed() {
+
+        }
+
+        @Override
         protected void onFailed() {
         }
     }
