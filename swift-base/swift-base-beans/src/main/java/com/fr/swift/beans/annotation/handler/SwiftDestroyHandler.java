@@ -19,7 +19,7 @@ public class SwiftDestroyHandler implements BeanHandler {
             try {
                 destroyMethod.invoke(object);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                SwiftLoggers.getLogger().error("can not invoke the destroyMethod because of IllegalAccessException or InvocationTargetException",e);
+                SwiftLoggers.getLogger().error("can not invoke the destroyMethod because of IllegalAccessException or InvocationTargetException", e);
             }
         }
     }

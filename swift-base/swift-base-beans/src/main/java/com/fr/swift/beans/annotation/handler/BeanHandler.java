@@ -10,5 +10,5 @@ import java.lang.reflect.InvocationTargetException;
  * @description
  */
 public interface BeanHandler {
-    void handle(Object object, SwiftBeanDefinition beanDefinition) ;
+    void handle(Object object, SwiftBeanDefinition beanDefinition);
 }

@@ -101,7 +101,7 @@ public class SwiftAspectHandler implements BeanHandler {
             return beanName.equals(Strings.EMPTY) ? SwiftClassUtil.getDefaultBeanName(clazz.getName()) : beanName;
 
         } catch (ClassNotFoundException e) {
-            SwiftLoggers.getLogger().error("can not find the class: "+className,e);
+            SwiftLoggers.getLogger().error("can not find the class: " + className, e);
         }
         return null;
     }

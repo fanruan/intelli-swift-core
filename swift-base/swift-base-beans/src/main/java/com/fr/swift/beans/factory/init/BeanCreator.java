@@ -45,7 +45,7 @@ public class BeanCreator {
             return;
         }
         Class<?> clazz = definition.getClazz();
-        List<SwiftBeanDefinition> definitions=getBeanDefinitionsByType(clazz);
+        List<SwiftBeanDefinition> definitions = getBeanDefinitionsByType(clazz);
         for (SwiftBeanDefinition swiftBeanDefinition : definitions) {
             WrapperDefinition wrapperDefinition = new WrapperDefinition(swiftBeanDefinition, 0);
             tree = new DependencyTreeNode(wrapperDefinition);
@@ -69,7 +69,7 @@ public class BeanCreator {
     }
 
     public void recursion(WrapperDefinition wrapperDefinition) {
-        if (!wrapperDefinition.getDefinition().getAutoWired()){
+        if (!wrapperDefinition.getDefinition().getAutoWired()) {
             return;
         }
         DependencyTreeNode root = new DependencyTreeNode(wrapperDefinition); //每次递归都会有一个子节点的树根
@@ -120,7 +120,7 @@ public class BeanCreator {
      * 后序遍历该树，构造整个依赖树
      * */
     public void createBeansByTree(DependencyTreeNode root) {
-        if (root == null){
+        if (root == null) {
             return;
         }
 

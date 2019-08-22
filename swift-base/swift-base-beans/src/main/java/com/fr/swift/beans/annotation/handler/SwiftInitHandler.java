@@ -14,13 +14,13 @@ import java.lang.reflect.Method;
 public class SwiftInitHandler implements BeanHandler {
 
     @Override
-    public void handle(Object object, SwiftBeanDefinition beanDefinition){
+    public void handle(Object object, SwiftBeanDefinition beanDefinition) {
         Method initMethod = beanDefinition.getInitMethod();
         if (initMethod != null) {
             try {
                 initMethod.invoke(object);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                SwiftLoggers.getLogger().error("can not invoke the initMethod because of IllegalAccessException or InvocationTargetException",e);
+                SwiftLoggers.getLogger().error("can not invoke the initMethod because of IllegalAccessException or InvocationTargetException", e);
             }
         }
     }
