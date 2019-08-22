@@ -30,6 +30,7 @@
         <module>swift-config</module>
         <module>swift-executor</module>
         <module>swift-base-boot</module>
+        <module>swift-exception-repair</module>
     </modules>
     <properties>
         <jackson.version>2.9.8</jackson.version>

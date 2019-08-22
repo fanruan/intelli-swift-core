@@ -1,5 +1,7 @@
 package com.fr.swift.beans.factory;
 
+import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.handler.AnnotationHandlerContext;
 import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.log.SwiftLoggers;
@@ -8,6 +10,7 @@ import com.fr.swift.util.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactory {
+public class SwiftBeanFactory implements BeanFactory {
+
+    private final BeanRegistry beanRegistry = SwiftBeanRegistry.getInstance();
 
     private final List<String> packageNames = new ArrayList<String>();
 
@@ -29,10 +34,9 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
 
     private final List<String> singletonNotLoadNames = new ArrayList<String>();
 
-    private final Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>();
 
     public SwiftBeanFactory() {
-        beanScanner = new SwiftBeanScanner(this);
+        beanScanner = new SwiftBeanScanner(beanRegistry);
     }
 
     private List<String> beanNamesLoaded = new ArrayList<String>();
@@ -41,8 +45,8 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         String[] packageArrays = new String[packageNames.size()];
         packageNames.toArray(packageArrays);
         beanScanner.scan(packageArrays);
-        Map<String, SwiftBeanDefinition> beanDefinitionMap = getBeanDefinitionMap();
-
+        Map<String, SwiftBeanDefinition> beanDefinitionMap = beanRegistry.getBeanDefinitionMap();
+        Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>();
         for (Map.Entry<String, SwiftBeanDefinition> entry : beanDefinitionMap.entrySet()) {
             if (entry.getValue().singleton()) {
                 if (!singletonObjects.containsKey(entry.getKey())) {
@@ -51,13 +55,15 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
             }
         }
         while (!singletonNotLoadNames.isEmpty()) {
-            recursionCreateBean(beanDefinitionMap);
+            //单例对象初始化
+            recursionCreateBean(beanDefinitionMap, singletonObjects);
             beanNamesLoaded.clear();
         }
+        SwiftBeanRegistry.getInstance().setSingletonObjects(singletonObjects);
         SwiftLoggers.getLogger().info("Swift singleton beans create successfully!");
     }
 
-    private void recursionCreateBean(Map<String, SwiftBeanDefinition> beanDefinitionMap) {
+    private void recursionCreateBean(Map<String, SwiftBeanDefinition> beanDefinitionMap, Map<String, Object> singletonObjects) {
         for (String singletonNotLoadName : singletonNotLoadNames) {
             SwiftBeanDefinition swiftBeanDefinition = beanDefinitionMap.get(singletonNotLoadName);
             try {
@@ -76,19 +82,19 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
 
     @Override
     public <T> T getBean(String beanName, Class<T> clazz, Object... params) {
-        List<String> names = getBeanNamesByType(clazz);
+        List<String> names = beanRegistry.getBeanNamesByType(clazz);
         if (!names.contains(beanName)) {
             throw new NoSuchBeanException(beanName);
         }
-        SwiftBeanDefinition swiftBeanDefinition = getBeanDefinition(beanName);
+        SwiftBeanDefinition swiftBeanDefinition = beanRegistry.getBeanDefinition(beanName);
         if (swiftBeanDefinition.singleton()) {
-            if (!singletonObjects.containsKey(swiftBeanDefinition.getBeanName())) {
+            if (!SwiftBeanRegistry.getInstance().getSingletonObjects().containsKey(swiftBeanDefinition.getBeanName())) {
                 throw new NoSuchBeanException(swiftBeanDefinition.getBeanName());
             }
-            return (T) singletonObjects.get(swiftBeanDefinition.getBeanName());
+            return (T) SwiftBeanRegistry.getInstance().getSingletonObjects().get(swiftBeanDefinition.getBeanName());
         } else {
             try {
-                SwiftBeanDefinition beanDefinition = getBeanDefinition(beanName);
+                SwiftBeanDefinition beanDefinition = beanRegistry.getBeanDefinition(beanName);
                 Class<T> beanClazz = (Class<T>) beanDefinition.getClazz();
                 return createBean(beanClazz, params);
             } catch (Exception e) {
@@ -99,11 +105,10 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
 
     @Override
     public <T> T getBean(Class<T> clazz, Object... params) {
-        List<String> names = getBeanNamesByType(clazz);
+        List<String> names = beanRegistry.getBeanNamesByType(clazz);
         if (names == null || names.isEmpty()) {
             throw new SwiftBeanException(clazz.getName() + " 's beanNames size is null");
-        }
-        if (names.size() >= 2) {
+        } else if (names.size() >= 2) {
             throw new SwiftBeanException(clazz.getName() + " 's beanNames size >= 2");
         }
         String beanName = names.get(0);
@@ -118,17 +123,17 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
 
     @Override
     public boolean isSingleton(String beanName) {
-        return getBeanDefinition(beanName).singleton();
+        return beanRegistry.getBeanDefinition(beanName).singleton();
     }
 
     @Override
     public Class<?> getType(String beanName) {
-        return getBeanDefinition(beanName).getClazz();
+        return beanRegistry.getBeanDefinition(beanName).getClazz();
     }
 
     @Override
     public boolean isTypeMatch(String name, Class<?> typeToMatch) {
-        List<String> names = getBeanNamesByType(typeToMatch);
+        List<String> names = beanRegistry.getBeanNamesByType(typeToMatch);
         return names.contains(name);
     }
 
@@ -139,10 +144,9 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         }
     }
 
-    @Override
     public Map<String, Object> getBeansByAnnotations(Class<? extends Annotation> annotation) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        for (Map.Entry<String, Object> singletonObjectEntry : singletonObjects.entrySet()) {
+        for (Map.Entry<String, Object> singletonObjectEntry : SwiftBeanRegistry.getInstance().getSingletonObjects().entrySet()) {
             Annotation marked = singletonObjectEntry.getValue().getClass().getAnnotation(annotation);
             if (marked != null) {
                 resultMap.put(singletonObjectEntry.getKey(), singletonObjectEntry.getValue());
@@ -151,10 +155,9 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         return resultMap;
     }
 
-    @Override
     public List<Class<?>> getClassesByAnnotations(Class<? extends Annotation> annotation) {
         List<Class<?>> resultList = new ArrayList<Class<?>>();
-        Map<String, SwiftBeanDefinition> swiftBeanDefinitionMap = getBeanDefinitionMap();
+        Map<String, SwiftBeanDefinition> swiftBeanDefinitionMap = beanRegistry.getBeanDefinitionMap();
         for (Map.Entry<String, SwiftBeanDefinition> entry : swiftBeanDefinitionMap.entrySet()) {
             Annotation marked = entry.getValue().getClazz().getAnnotation(annotation);
             if (marked != null) {
@@ -162,6 +165,29 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
             }
         }
         return resultList;
+    }
+
+    @Override
+    public void refresh(Class<?> clazz) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+        SwiftBean swiftBean = clazz.getAnnotation(SwiftBean.class);
+        if (swiftBean != null) {
+            //获取到目标的object
+            Map<String, Object> map = SwiftBeanRegistry.getInstance().getSingletonObjects();
+            Object target = map.get(swiftBean.name());
+            if (target != null) {
+                AnnotationHandlerContext.getInstance().endProcess();
+                AnnotationHandlerContext.getInstance().methodProcess();
+            }
+        }
+    }
+
+    @Override
+    public void refreshAll() throws InvocationTargetException, IllegalAccessException, ClassNotFoundException {
+        //获取到全部的object
+        Map<String, Object> map = SwiftBeanRegistry.getInstance().getSingletonObjects();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            refresh(entry.getValue().getClass());
+        }
     }
 
 
