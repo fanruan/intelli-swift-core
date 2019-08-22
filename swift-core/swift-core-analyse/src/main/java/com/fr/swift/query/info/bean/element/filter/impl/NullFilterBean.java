@@ -15,6 +15,13 @@ public class NullFilterBean extends DetailFilterInfoBean<Object> implements Seri
         type = SwiftDetailFilterType.NULL;
     }
 
+    private NullFilterBean() {
+    }
+
+    public NullFilterBean(String columnName) {
+        this.setColumn(columnName);
+    }
+
     @Override
     public Object getFilterValue() {
         return null;
