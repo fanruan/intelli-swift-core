@@ -66,10 +66,10 @@ public class SwiftHistoryServiceTest {
         SwiftContext mockSwiftContext = PowerMock.createMock(SwiftContext.class);
         EasyMock.expect(SwiftContext.get()).andReturn(mockSwiftContext).anyTimes();
         PowerMock.replay(SwiftContext.class);
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("localSegmentProvider"), EasyMock.eq(SwiftSegmentManager.class))).andReturn(mockSegmentManager()).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentManager.class))).andReturn(mockSegmentManager()).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftTablePathService.class))).andReturn(mockSwiftTablePathService()).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftCubePathService.class))).andReturn(mockSwiftCubePathService()).anyTimes();
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("segmentServiceProvider"), EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService()).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService()).anyTimes();
 
         // Generate by Mock Plugin
         WhereDeleter mockWhereDeleter = PowerMock.createMock(WhereDeleter.class);

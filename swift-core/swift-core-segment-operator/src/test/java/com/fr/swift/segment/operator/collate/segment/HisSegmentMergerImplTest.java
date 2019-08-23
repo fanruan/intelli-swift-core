@@ -65,7 +65,7 @@ public class HisSegmentMergerImplTest {
 
         // mock segment service
         SwiftSegmentService swiftSegmentService = mock(SwiftSegmentService.class);
-        when(beanFactory.getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(swiftSegmentService);
+        when(beanFactory.getBean(SwiftSegmentService.class)).thenReturn(swiftSegmentService);
         when(swiftSegmentService.tryAppendSegment(ArgumentMatchers.<SourceKey>any(), ArgumentMatchers.<Types.StoreType>any())).thenAnswer(new Answer<SegmentKey>() {
             int order = 0;
 

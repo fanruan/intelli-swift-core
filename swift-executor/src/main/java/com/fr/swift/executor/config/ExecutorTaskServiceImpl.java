@@ -1,6 +1,6 @@
 package com.fr.swift.executor.config;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.SwiftConfig;
 import com.fr.swift.config.command.SwiftConfigCommand;
@@ -31,21 +31,22 @@ import java.util.Set;
 @SwiftBean
 public class ExecutorTaskServiceImpl implements ExecutorTaskService {
 
-    private SwiftConfigCommandBus<SwiftExecutorTaskEntity> commandBus = SwiftContext.get().getBean(SwiftConfig.class).command(SwiftExecutorTaskEntity.class);
-    private SwiftConfigQueryBus<SwiftExecutorTaskEntity> queryBus = SwiftContext.get().getBean(SwiftConfig.class).query(SwiftExecutorTaskEntity.class);
+    @SwiftAutoWired
+    private SwiftConfig config;
+
 
     public ExecutorTaskServiceImpl() {
     }
 
     @Override
     public boolean saveOrUpdate(final ExecutorTask executorTask) throws SQLException {
-        commandBus.merge((SwiftExecutorTaskEntity) executorTask.convert());
+        getCommandBus().merge((SwiftExecutorTaskEntity) executorTask.convert());
         return true;
     }
 
     @Override
     public boolean batchSaveOrUpdate(final Set<ExecutorTask> executorTasks) throws SQLException {
-        return commandBus.transaction(new SwiftConfigCommand<Boolean>() {
+        return getCommandBus().transaction(new SwiftConfigCommand<Boolean>() {
             @Override
             public Boolean apply(ConfigSession p) {
                 for (ExecutorTask executorTask : executorTasks) {
@@ -58,7 +59,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
 
     @Override
     public List<ExecutorTask> getActiveTasksBeforeTime(final long time) {
-        return queryBus.get(new SwiftConfigQuery<List<ExecutorTask>>() {
+        return getQueryBus().get(new SwiftConfigQuery<List<ExecutorTask>>() {
             @Override
             public List<ExecutorTask> apply(ConfigSession p) {
                 final ConfigQuery<SwiftExecutorTaskEntity> entityQuery = p.createEntityQuery(SwiftExecutorTaskEntity.class);
@@ -78,17 +79,25 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
 
     @Override
     public boolean deleteTask(final ExecutorTask executorTask) {
-        return commandBus.delete(SwiftConfigConditionImpl.newInstance()
+        return getCommandBus().delete(SwiftConfigConditionImpl.newInstance()
                 .addWhere(ConfigWhereImpl.eq("id", ((SwiftExecutorTaskEntity) executorTask.convert()).getId()))) > 0;
     }
 
     @Override
     public ExecutorTask getExecutorTask(final String taskId) {
-        return queryBus.select(taskId, new Function<SwiftExecutorTaskEntity, ExecutorTask>() {
+        return getQueryBus().select(taskId, new Function<SwiftExecutorTaskEntity, ExecutorTask>() {
             @Override
             public ExecutorTask apply(SwiftExecutorTaskEntity p) {
                 return null != p ? p.convert() : null;
             }
         });
+    }
+
+    private SwiftConfigCommandBus<SwiftExecutorTaskEntity> getCommandBus() {
+        return config.command(SwiftExecutorTaskEntity.class);
+    }
+
+    private SwiftConfigQueryBus<SwiftExecutorTaskEntity> getQueryBus() {
+        return config.query(SwiftExecutorTaskEntity.class);
     }
 }

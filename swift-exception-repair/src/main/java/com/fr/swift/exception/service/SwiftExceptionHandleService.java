@@ -1,7 +1,7 @@
 package com.fr.swift.exception.service;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.ExceptionInfoBean;
@@ -22,7 +22,8 @@ import com.fr.swift.service.ServiceType;
 @ProxyService(ExceptionHandleService.class)
 public class SwiftExceptionHandleService extends AbstractSwiftService implements ExceptionHandleService {
 
-    private ExceptionInfoService infoService = SwiftContext.get().getBean(ExceptionInfoService.class);
+    @SwiftAutoWired
+    private ExceptionInfoService infoService;
 
     private static final long serialVersionUID = -3571316445157286314L;
 

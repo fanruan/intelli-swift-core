@@ -20,7 +20,7 @@ import java.util.Collections;
  * @see SegmentEvent#REMOVE_HISTORY
  */
 public class RemoveHistoryListener implements SwiftEventListener<SegmentKey> {
-    private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
 
     private static final SwiftSegmentLocationService SEG_LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 

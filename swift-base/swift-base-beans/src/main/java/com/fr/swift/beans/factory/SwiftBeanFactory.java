@@ -4,6 +4,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.handler.AnnotationHandlerContext;
 import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
+import com.fr.swift.beans.factory.init.BeanCreator;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.ReflectUtils;
@@ -47,6 +48,7 @@ public class SwiftBeanFactory implements BeanFactory {
         beanScanner.scan(packageArrays);
         Map<String, SwiftBeanDefinition> beanDefinitionMap = beanRegistry.getBeanDefinitionMap();
         Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>();
+        SwiftBeanRegistry.getInstance().setSingletonObjects(singletonObjects);
         for (Map.Entry<String, SwiftBeanDefinition> entry : beanDefinitionMap.entrySet()) {
             if (entry.getValue().singleton()) {
                 if (!singletonObjects.containsKey(entry.getKey())) {
@@ -59,23 +61,16 @@ public class SwiftBeanFactory implements BeanFactory {
             recursionCreateBean(beanDefinitionMap, singletonObjects);
             beanNamesLoaded.clear();
         }
-        SwiftBeanRegistry.getInstance().setSingletonObjects(singletonObjects);
         SwiftLoggers.getLogger().info("Swift singleton beans create successfully!");
+
+        AnnotationHandlerContext.getInstance().process();
+
     }
 
     private void recursionCreateBean(Map<String, SwiftBeanDefinition> beanDefinitionMap, Map<String, Object> singletonObjects) {
+        BeanCreator beanCreator = new BeanCreator(beanNamesLoaded, singletonObjects);
         for (String singletonNotLoadName : singletonNotLoadNames) {
-            SwiftBeanDefinition swiftBeanDefinition = beanDefinitionMap.get(singletonNotLoadName);
-            try {
-                Object singletonObject = createBean(swiftBeanDefinition.getClazz());
-                singletonObjects.put(swiftBeanDefinition.getBeanName(), singletonObject);
-                beanNamesLoaded.add(swiftBeanDefinition.getBeanName());
-            } catch (Exception ignore) {
-                SwiftLoggers.getLogger().debug(ignore);
-            }
-        }
-        if (beanNamesLoaded.isEmpty() && !singletonNotLoadNames.isEmpty()) {
-            Crasher.crash("RecursionCreateBean will trap in a dead circle! Please check beans " + singletonNotLoadNames.toString());
+            beanCreator.buildTreeByBeanName(singletonNotLoadName, beanDefinitionMap);
         }
         singletonNotLoadNames.removeAll(beanNamesLoaded);
     }
