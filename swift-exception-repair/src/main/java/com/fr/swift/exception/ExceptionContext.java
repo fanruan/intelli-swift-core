@@ -10,11 +10,14 @@ package com.fr.swift.exception;
  * 也是immut的
  */
 public interface ExceptionContext<T> {
+    @Deprecated
     T getContext();
 
+    @Deprecated
     @Override
     boolean equals(Object o);
 
+    @Deprecated
     @Override
     int hashCode();
 }

@@ -32,6 +32,10 @@ public class MasterExceptionInfoQueue implements ExceptionInfoQueue {
 
     @Override
     public boolean offer(ExceptionInfo info) {
+        if (infoService.existsException(info)) {
+            SwiftLoggers.getLogger().info("Exception has exists");
+            return false;
+        }
         return queue.offer(info);
     }
 

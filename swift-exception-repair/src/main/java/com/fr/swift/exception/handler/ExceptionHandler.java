@@ -24,5 +24,10 @@ public interface ExceptionHandler {
      */
     boolean evaluate();
 
+    /**
+     * 异常类型
+     *
+     * @return
+     */
     ExceptionInfo.Type getExceptionInfoType();
 }
