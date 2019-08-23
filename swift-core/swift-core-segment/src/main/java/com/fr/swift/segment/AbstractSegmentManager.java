@@ -1,6 +1,6 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.oper.ConfigWhere.MatchMode;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
@@ -24,9 +24,12 @@ import java.util.Set;
  * @date 2017/10/16
  */
 public abstract class AbstractSegmentManager implements SwiftSegmentManager {
-    private final SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
-    protected SwiftSegmentService segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-    protected SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
+    @SwiftAutoWired
+    protected SwiftSegmentService segmentService;
+    @SwiftAutoWired
+    protected SwiftTablePathService tablePathService;
+    @SwiftAutoWired
+    private SwiftSegmentLocationService segLocationSvc;
     protected SegmentContainer container;
 
     protected AbstractSegmentManager(SegmentContainer container) {

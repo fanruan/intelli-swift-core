@@ -2,9 +2,11 @@ package com.fr.swift.segment;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.service.transfer.SegmentTransfer;
@@ -48,7 +50,12 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
                 segLocationSvc.saveOrUpdateLocal(Collections.singleton(importSegKey));
             }
         }
-        super.onSucceed();
+        if (!importSegKeys.isEmpty()) {
+            // 发送-1，告诉查询节点，本节点已有该表增量块
+            SwiftSegmentEntity allMemSegKeyEntities = new SwiftSegmentEntity(importSegKeys.get(0));
+            allMemSegKeyEntities.setSegmentOrder(-1);
+            SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(allMemSegKeyEntities));
+        }
     }
 
     @Override

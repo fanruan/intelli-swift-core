@@ -3,6 +3,7 @@ package com.fr.swift.rm;
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.Collect;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
@@ -31,10 +32,10 @@ import java.util.List;
 public class MasterManager extends AbstractModeManager implements SwiftManager {
 
     private ServiceManager serviceManager = SwiftContext.get().getBean(ServiceManager.class);
-
-    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
-
-    private CollateExecutor collateExecutor = SwiftContext.get().getBean(CollateExecutor.class);
+    @SwiftAutoWired
+    private SwiftServiceInfoService serviceInfoService;
+    @SwiftAutoWired
+    private CollateExecutor collateExecutor;
 
     private Collect heartBeatCollect = new MasterHeartbeatCollect();
 

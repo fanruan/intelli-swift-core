@@ -25,7 +25,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 @SwiftBean(name = "swiftServiceInfoService")
-class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
+public class SwiftServiceInfoServiceImpl implements SwiftServiceInfoService {
 
     private SwiftConfigCommandBus<SwiftServiceInfoEntity> commandBus = new SwiftHibernateConfigCommandBus<>(SwiftServiceInfoEntity.class);
     private SwiftConfigQueryBus<SwiftServiceInfoEntity> queryBus = new SwiftHibernateConfigQueryBus<>(SwiftServiceInfoEntity.class);

@@ -1,6 +1,6 @@
 package com.fr.swift.service;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
@@ -31,9 +31,10 @@ import java.util.concurrent.TimeUnit;
  */
 @SwiftBean
 public class SchedSegLocCacheRefresher implements Runnable {
-    private final SwiftSegmentLocationService segLocSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
-
-    private final SwiftAnalyseService analyseSvc = SwiftContext.get().getBean(SwiftAnalyseService.class);
+    @SwiftAutoWired
+    private SwiftSegmentLocationService segLocSvc;
+    @SwiftAutoWired
+    private SwiftAnalyseService analyseSvc;
 
     @Override
     public void run() {
