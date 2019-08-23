@@ -14,6 +14,11 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
+import com.fr.swift.exception.DownloadExceptionContext;
+import com.fr.swift.exception.ExceptionInfoBean;
+import com.fr.swift.exception.ExceptionInfoType;
+import com.fr.swift.exception.handler.DownloadExceptionHandler;
+import com.fr.swift.exception.reporter.ExceptionReporter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.exception.RepoNotFoundException;
@@ -76,7 +81,7 @@ public class SegmentHelper {
                     segLocationSvc.delete(new HashSet<>(notExists));
                     segmentService.removeSegments(notExists);
                     //如果存在本地文件，也需要删除
-                    for(SegmentKey notExist:notExists){
+                    for (SegmentKey notExist : notExists) {
                         SegmentUtils.clearSegment(notExist);
                     }
                 }
@@ -115,6 +120,14 @@ public class SegmentHelper {
                     // 若下载整个seg失败则删掉，下载all show不删
                     FileUtil.delete(cubePath);
                 }
+                DownloadExceptionHandler.success = false;
+                DownloadExceptionContext downloadExceptionContext = new DownloadExceptionContext(sourceKey, sets, replace);
+                ExceptionInfoBean downloadExceptionBean = new ExceptionInfoBean.Builder()
+                        .setNowAndHere()
+                        .setContext(downloadExceptionContext)
+                        .setType(ExceptionInfoType.DOWNLOAD_SEGMENT).build();
+                ExceptionReporter.report(downloadExceptionBean);
+
                 SwiftLoggers.getLogger().error("Download {} with error! ", cubePath, e);
             }
         }
