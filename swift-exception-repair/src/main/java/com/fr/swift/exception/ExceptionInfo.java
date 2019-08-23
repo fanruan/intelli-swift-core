@@ -30,7 +30,7 @@ public interface ExceptionInfo {
      *
      * @return
      */
-    ExceptionContext<?> getContext();
+    ExceptionContext getContext();
 
     /**
      * 异常的处理状态：处理中，已处理，无法处理

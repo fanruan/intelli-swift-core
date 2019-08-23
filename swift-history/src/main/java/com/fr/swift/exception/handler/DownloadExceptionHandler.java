@@ -9,8 +9,9 @@ import com.fr.swift.exception.DownloadExceptionContext;
 import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.ExceptionInfoType;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.SegmentHelper;
+import com.fr.swift.repository.manager.SwiftRepositoryManager;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,39 +21,41 @@ import java.util.concurrent.TimeUnit;
 @RegisterExceptionHandler
 public class DownloadExceptionHandler implements ExceptionHandler {
 
-    private static int RETRY_TIMES = 5;
+    private static final int RETRY_TIMES = 5;
 
-    private static long RETRY_INTERVAL = TimeUnit.MILLISECONDS.toMillis(4000);
-
-    public static boolean success = false;
+    private static final int RETRY_INTERVAL = 4;
 
     @Override
-    public void handleException(ExceptionInfo exceptionInfo) {
-        // TODO: 2019-08-23 这里只处理了重试下载的策略 应该还可以寻找容易节点直传输
+    public boolean handleException(ExceptionInfo exceptionInfo) {
+        // TODO: 2019-08-23 这里只处理了重试下载的策略 应该还可以寻找冗余节点直传输
         if (SwiftRepositoryAccessibleTester.testAccessible()) {
             try {
                 DownloadExceptionContext downloadExceptionContext = (DownloadExceptionContext) exceptionInfo.getContext();
                 for (int i = 0; i < RETRY_TIMES; i++) {
-                    success = true;
-                    //重试下载
-                    SegmentHelper.download(downloadExceptionContext.getSourceKey(), downloadExceptionContext.getUris(), downloadExceptionContext.isReplace());
-                    if (success) {
-                        break;
+                    if (retryDownload(downloadExceptionContext)) {
+                        return true;
+                    } else {
+                        TimeUnit.SECONDS.sleep(RETRY_INTERVAL);
                     }
-                    Thread.sleep(RETRY_INTERVAL);
                 }
             } catch (Exception e) {
-                success = false;
-                SwiftLoggers.getLogger().info("ExceptionHandler Thread interrupted!");
+                SwiftLoggers.getLogger().info("ExceptionHandler Thread interrupted!", e);
             }
         } else {
             SwiftLoggers.getLogger().info("connection unAccessible!");
         }
+        return false;
     }
 
-    @Override
-    public boolean evaluate() {
-        return success;
+    private boolean retryDownload(DownloadExceptionContext downloadExceptionContext) {
+        //重试下载
+        try {
+            SwiftRepositoryManager.getManager().currentRepo().copyFromRemote(downloadExceptionContext.getRemotePath(), downloadExceptionContext.getCubePath());
+            return true;
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+            return false;
+        }
     }
 
     @Override

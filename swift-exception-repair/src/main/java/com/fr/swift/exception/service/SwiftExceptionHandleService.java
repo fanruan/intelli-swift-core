@@ -42,7 +42,7 @@ public class SwiftExceptionHandleService extends AbstractSwiftService implements
 
     private void updateExceptionInfo(ExceptionInfo info) {
         String currentId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        ExceptionInfoBean bean = new ExceptionInfoBean.Builder(info)
+        ExceptionInfoBean bean = ExceptionInfoBean.builder(info)
                 .setOperateNodeId(currentId)
                 .setState(ExceptionInfo.State.PENDING).build();
         infoService.removeExceptionInfo(info.getId());
