@@ -62,7 +62,7 @@ public class SwiftDeleteService extends AbstractSwiftService implements DeleteSe
                 ImmutableBitMap allShow = whereDeleter.delete(where);
                 if (allShow.isEmpty()) {
                     SwiftContext.get().getBean(SwiftSegmentLocationService.class).delete(Collections.singleton(segKey));
-                    SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).removeSegments(Collections.singletonList(segKey));
+                    SwiftContext.get().getBean(SwiftSegmentService.class).removeSegments(Collections.singletonList(segKey));
                     SegmentUtils.clearSegment(segKey);
                 }
             } catch (Exception e) {

@@ -3,11 +3,11 @@ package com.fr.swift.service;
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
@@ -40,7 +40,8 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private SwiftSegmentService swiftSegmentService;
 
-    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
+    @SwiftAutoWired
+    private SwiftServiceInfoService serviceInfoService;
 
     private static DateFormat DATE_FORMAT = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
     private static DateFormat DAY_FORMAT = new SimpleDateFormat("yy-MM-dd");
@@ -58,7 +59,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 //        executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
         executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
 
-        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
     }
 
     @Override

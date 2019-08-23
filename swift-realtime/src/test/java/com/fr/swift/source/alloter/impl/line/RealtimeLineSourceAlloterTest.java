@@ -91,7 +91,7 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
                 .andReturn(newSeg)
                 .anyTimes();
 
-        EasyMock.expect(SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class))
+        EasyMock.expect(SwiftContext.get().getBean(SwiftSegmentService.class))
                 .andReturn(segmentService).anyTimes();
         EasyMock.expect(SwiftContext.get().getBean(EasyMock.eq("realtimeSegment"), EasyMock.eq(Segment.class),
                 EasyMock.notNull(IResourceLocation.class), EasyMock.eq(metaData)))
@@ -135,7 +135,7 @@ public class RealtimeLineSourceAlloterTest extends TestCase {
         SwiftSegmentService segmentService = mock(SwiftSegmentService.class);
         mockStatic(SwiftContext.class);
         when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
-        when(SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(segmentService);
+        when(SwiftContext.get().getBean(SwiftSegmentService.class)).thenReturn(segmentService);
 
         SourceKey tableKey = mock(SourceKey.class);
         RealtimeLineSourceAlloter alloter = spy(new RealtimeLineSourceAlloter(tableKey, new LineAllotRule()));
