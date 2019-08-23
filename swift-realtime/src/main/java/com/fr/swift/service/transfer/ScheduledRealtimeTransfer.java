@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @SwiftBean
 public class ScheduledRealtimeTransfer implements Runnable {
-    private final SwiftSegmentService segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    private final SwiftSegmentService segSvc = SwiftContext.get().getBean(SwiftSegmentService.class);
 
     private Map<SegmentKey, AtomicInteger> segAges = new HashMap<SegmentKey, AtomicInteger>();
 

@@ -31,7 +31,7 @@ public class SwiftBeanRegistry implements BeanRegistry {
 
     private final Map<Class<?>, List<String>> allBeanNamesByType = new ConcurrentHashMap<Class<?>, List<String>>();
 
-    private Map<String, Object> singletonObjects;
+    private Map<String, Object> singletonObjects = new ConcurrentHashMap<>();
 
     @Override
     public void registerBeanDefinition(String beanName, SwiftBeanDefinition beanDefinition) {

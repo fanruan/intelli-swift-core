@@ -157,7 +157,7 @@ public class SegmentHelper {
                 Integer tmpPath = entity.getTmpDir();
                 entity.setTablePath(tmpPath);
                 entity.setLastPath(path);
-                List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
+                List<SegmentKey> segmentKeys = SwiftContext.get().getBean(SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
                 if (null != segmentKeys) {
                     SwiftSchema swiftSchema = dataSource.getMetadata().getSwiftSchema();
                     repository.delete(new CubePathBuilder().setSwiftSchema(swiftSchema).setTableKey(sourceKey).build());
@@ -196,7 +196,7 @@ public class SegmentHelper {
                 SourceKey sourceKey = relation.getForeignSource();
                 SourceKey primary = relation.getPrimarySource();
                 Map<SegmentKey, List<String>> segNeedUpload = new HashMap<SegmentKey, List<String>>();
-                List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
+                List<SegmentKey> segmentKeys = SwiftContext.get().getBean(SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
                 if (null != segmentKeys) {
                     if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
                         for (SegmentKey segmentKey : segmentKeys) {

@@ -75,7 +75,7 @@ public class SwiftServiceContextTest {
         Mockito.when(beanFactory.getBean(AnalyseService.class)).thenReturn(analyseService);
         Mockito.when(beanFactory.getBean(HistoryService.class)).thenReturn(historyService);
         Mockito.when(beanFactory.getBean(BaseService.class)).thenReturn(baseService);
-        when(beanFactory.getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(mock(SwiftSegmentService.class));
+        when(beanFactory.getBean(SwiftSegmentService.class)).thenReturn(mock(SwiftSegmentService.class));
 
         mockStatic(TaskProducer.class);
         when(TaskProducer.produceTask(ArgumentMatchers.<ExecutorTask>any())).thenReturn(true);

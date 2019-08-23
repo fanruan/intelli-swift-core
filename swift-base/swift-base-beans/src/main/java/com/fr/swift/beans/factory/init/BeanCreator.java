@@ -152,7 +152,9 @@ public class BeanCreator {
         checkModifier(tClass); //如果注解了SwiftBean的类不是public的，抛出异常
         checkConstructor(tClass); //检查是否包含一个空的构造函数
 
-        T bean = tClass.newInstance();
+        final Constructor<T> declaredConstructor = tClass.getDeclaredConstructor();
+        declaredConstructor.setAccessible(true);
+        T bean = declaredConstructor.newInstance();
 
 
         for (Field field : fields.keySet()) {

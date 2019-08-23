@@ -1,7 +1,7 @@
 package com.fr.swift.nm;
 
 import com.fr.swift.Collect;
-import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.nm.collector.SlaveHeartBeatCollect;
@@ -28,9 +28,11 @@ public class SlaveManager extends AbstractModeManager implements SwiftManager {
 
     private Collect heartBeatCollect = new SlaveHeartBeatCollect();
 
-    private ServiceManager serviceManager = SwiftContext.get().getBean(ServiceManager.class);
+    @SwiftAutoWired
+    private ServiceManager serviceManager;
 
-    private ClusterServiceManager clusterServiceManager = SwiftContext.get().getBean(ClusterServiceManager.class);
+    @SwiftAutoWired
+    private ClusterServiceManager clusterServiceManager;
 
     @Override
     public void startUp() throws Exception {
