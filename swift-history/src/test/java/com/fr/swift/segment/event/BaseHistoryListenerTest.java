@@ -63,7 +63,7 @@ public class BaseHistoryListenerTest {
         // Generate by Mock Plugin
         SwiftSegmentService mockSwiftSegmentService = PowerMock.createMock(SwiftSegmentService.class);
         EasyMock.expect(mockSwiftSegmentService.removeSegments(EasyMock.anyObject(List.class))).andReturn(false).anyTimes();
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("segmentServiceProvider"), EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService).anyTimes();
         PowerMock.replay(mockSwiftSegmentService);
         mockSwiftProperty();
 

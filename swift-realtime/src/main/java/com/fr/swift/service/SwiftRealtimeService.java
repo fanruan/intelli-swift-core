@@ -74,7 +74,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        segSvc = SwiftContext.get().getBean(SwiftSegmentService.class);
         segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         if (recoverable) {
             recover0();

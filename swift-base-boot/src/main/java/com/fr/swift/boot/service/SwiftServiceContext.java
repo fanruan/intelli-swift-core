@@ -1,7 +1,7 @@
 package com.fr.swift.boot.service;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.db.Where;
@@ -39,10 +39,14 @@ import java.util.Set;
 @SwiftBean
 @ProxyService(ServiceContext.class)
 public class SwiftServiceContext implements ServiceContext {
-    private AnalyseService analyseService = SwiftContext.get().getBean(AnalyseService.class);
-    private HistoryService historyService = SwiftContext.get().getBean(HistoryService.class);
-    private BaseService baseService = SwiftContext.get().getBean(BaseService.class);
-    private SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
+    @SwiftAutoWired
+    private AnalyseService analyseService;
+    @SwiftAutoWired
+    private HistoryService historyService;
+    @SwiftAutoWired
+    private BaseService baseService;
+    @SwiftAutoWired
+    private SessionFactory sessionFactory;
 
     @Override
     public void cleanMetaCache(String[] sourceKeys) {

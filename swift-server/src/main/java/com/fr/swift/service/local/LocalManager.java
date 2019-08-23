@@ -1,6 +1,6 @@
 package com.fr.swift.service.local;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.service.AbstractModeManager;
 import com.fr.swift.service.LocalSwiftServerService;
@@ -20,12 +20,12 @@ import java.util.List;
  */
 @SwiftBean(name = "localManager")
 public class LocalManager extends AbstractModeManager implements SwiftManager {
-
-    private ServiceManager serviceManager = SwiftContext.get().getBean(ServiceManager.class);
-
-    private LocalServiceManager localServiceManager = SwiftContext.get().getBean(LocalServiceManager.class);
-
-    private CollateExecutor collateExecutor = SwiftContext.get().getBean(CollateExecutor.class);
+    @SwiftAutoWired
+    private ServiceManager serviceManager;
+    @SwiftAutoWired
+    private LocalServiceManager localServiceManager;
+    @SwiftAutoWired
+    private CollateExecutor collateExecutor;
 
     @Override
     public void startUp() throws Exception {

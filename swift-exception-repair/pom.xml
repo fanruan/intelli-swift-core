@@ -31,6 +31,11 @@
             <artifactId>swift-cluster</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-config</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
 
 
