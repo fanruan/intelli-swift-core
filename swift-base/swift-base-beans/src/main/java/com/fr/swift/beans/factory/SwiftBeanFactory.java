@@ -48,6 +48,7 @@ public class SwiftBeanFactory implements BeanFactory {
         beanScanner.scan(packageArrays);
         Map<String, SwiftBeanDefinition> beanDefinitionMap = beanRegistry.getBeanDefinitionMap();
         Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>();
+        SwiftBeanRegistry.getInstance().setSingletonObjects(singletonObjects);
         for (Map.Entry<String, SwiftBeanDefinition> entry : beanDefinitionMap.entrySet()) {
             if (entry.getValue().singleton()) {
                 if (!singletonObjects.containsKey(entry.getKey())) {
@@ -60,7 +61,6 @@ public class SwiftBeanFactory implements BeanFactory {
             recursionCreateBean(beanDefinitionMap, singletonObjects);
             beanNamesLoaded.clear();
         }
-        SwiftBeanRegistry.getInstance().setSingletonObjects(singletonObjects);
         SwiftLoggers.getLogger().info("Swift singleton beans create successfully!");
 
         AnnotationHandlerContext.getInstance().process();
