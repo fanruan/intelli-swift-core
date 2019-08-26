@@ -1,6 +1,7 @@
 package com.fr.swift.manager;
 
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftTablePathService;
 import com.fr.swift.segment.AbstractSegmentManager;
 import com.fr.swift.segment.Segment;
@@ -13,6 +14,7 @@ import com.fr.swift.source.SourceKey;
  * @author yee
  * @date 2017/12/18
  */
+@SwiftBean(name = "lineSegmentManager")
 public class LineSegmentManager extends AbstractSegmentManager {
 
     public LineSegmentManager() {

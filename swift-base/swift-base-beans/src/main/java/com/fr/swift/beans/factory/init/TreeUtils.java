@@ -1,5 +1,6 @@
 package com.fr.swift.beans.factory.init;
 
+import com.fr.swift.beans.exception.InitClassException;
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
 import com.fr.swift.util.Crasher;
 
@@ -18,11 +19,11 @@ public class TreeUtils {
 
     private static List<SwiftBeanDefinition> path = new ArrayList<>();
 
-    /*
+    /**
      * tree表示整棵树的根节点，root是子树的根节点
      * 采用深度优先搜索tree的叶子，查看是否与root相符合。
      * 如果有循环依赖，叶子的 circle=true，并不会把该节点与叶子相融，此时这个叶子停止生长
-     * */
+     */
     public static void buildTree(DependencyTreeNode tree, DependencyTreeNode root) {
         if (tree == null) return;
 
@@ -63,7 +64,7 @@ public class TreeUtils {
             }
 
             if (definition != null) { //说明有重复的节点
-                CircleError(definition);
+                circleError(definition);
             }
 
             path.remove(path.size() - 1); //将最后的叶子节点删除，用于判断另一个调用链
@@ -71,7 +72,7 @@ public class TreeUtils {
     }
 
 
-    private static void CircleError(SwiftBeanDefinition definition) {
+    private static void circleError(SwiftBeanDefinition definition) {
         int index = -1;
         for (int i = 0; i < path.size(); i++) {
             if (definition.equals(path.get(i))) {
@@ -80,11 +81,11 @@ public class TreeUtils {
             }
         }
 
-        StringBuilder errorMsg= new StringBuilder();
+        StringBuilder errorMsg = new StringBuilder();
         for (int i = index; i < path.size(); i++) {
             errorMsg.append("\n").append(path.get(i).getClazz().getName());
         }
-        Crasher.crash(errorMsg.toString() + " has a dead circle dependency");
+        throw new InitClassException(errorMsg.toString() + " has a dead circle dependency");
 
     }
 }
