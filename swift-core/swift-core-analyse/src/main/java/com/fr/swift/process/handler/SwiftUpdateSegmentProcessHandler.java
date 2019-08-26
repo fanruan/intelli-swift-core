@@ -56,7 +56,7 @@ public class SwiftUpdateSegmentProcessHandler extends BaseProcessHandler<List<UR
             try {
                 invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
             } catch (Exception e) {
-                reportException(locationInfo);
+                reportPushSegException(locationInfo);
                 throw e;
             }
         }
@@ -87,10 +87,10 @@ public class SwiftUpdateSegmentProcessHandler extends BaseProcessHandler<List<UR
     }
 
     //报告异常的方法抽出来，避免影响原有的逻辑的展示
-    private void reportException(Object exceptionContext) {
+    private void reportPushSegException(SegmentLocationInfo exceptionContext) {
         ExceptionInfo exceptionInfo = new ExceptionInfoBean.Builder()
-                .setContext(new PushSegmentExceptionContext((SegmentLocationInfo) exceptionContext))
-                .setType(ExceptionInfoType.MASTER_PUSH_SEGMENT)
+                .setContext(new PushSegmentExceptionContext(exceptionContext))
+                .setType(ExceptionInfoType.SLAVE_PUSH_SEGMENT)
                 .setNowAndHere().build();
         ExceptionReporter.report(exceptionInfo);
     }

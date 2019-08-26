@@ -5,6 +5,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.ExceptionInfoType;
 import com.fr.swift.exception.PushSegmentExceptionContext;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.structure.Pair;
@@ -20,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 @RegisterExceptionHandler
 public class MasterPushSegExceptionHandler implements ExceptionHandler {
 
-    private final long DELAY = TimeUnit.SECONDS.toSeconds(3000);
 
     private final int LOOPS = 3;
 
@@ -33,9 +33,9 @@ public class MasterPushSegExceptionHandler implements ExceptionHandler {
             } else {
                 //处理异常的线程延时三秒
                 try {
-                    Thread.sleep(DELAY);
+                    TimeUnit.SECONDS.sleep(3);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    SwiftLoggers.getLogger().warn(e);
                 }
             }
         }
@@ -51,6 +51,7 @@ public class MasterPushSegExceptionHandler implements ExceptionHandler {
             serviceContext.updateSegmentInfo(pair.getValue(), pair.getKey());
             return true;
         } catch (Exception exception) {
+            SwiftLoggers.getLogger().warn("Cannot sync native segment info to slave again!", exception);
             return false;
         }
     }
