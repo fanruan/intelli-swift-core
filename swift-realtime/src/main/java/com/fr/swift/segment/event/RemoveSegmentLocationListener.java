@@ -19,7 +19,8 @@ public class RemoveSegmentLocationListener extends BaseSegmentLocationListener {
     @Override
     Serializable trigger(SegmentLocationInfo segLocations) {
         try {
-            return ProxySelector.getProxy(RemoteSender.class).trigger(new RemoveSegLocationRpcEvent(SwiftProperty.getProperty().getClusterId(), segLocations));
+            return ProxySelector.getProxy(RemoteSender.class)
+                    .trigger(new RemoveSegLocationRpcEvent(SwiftProperty.getProperty().getClusterId(), segLocations));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return null;

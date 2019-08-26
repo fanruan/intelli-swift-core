@@ -25,4 +25,8 @@ public class SlavePushSegExceptionHandlerTest {
         when(slavePushSegExceptionHandler, "retryPush", pushSegmentExceptionContext).thenReturn(true);
         Assert.assertEquals(false, slavePushSegExceptionHandler.handleException(exceptionInfo));
     }
+
+    @Test
+    public void testHandleException() {
+    }
 }
