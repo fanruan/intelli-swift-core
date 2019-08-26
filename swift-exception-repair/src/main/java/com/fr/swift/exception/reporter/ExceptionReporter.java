@@ -23,10 +23,10 @@ public class ExceptionReporter {
      *
      * @param context
      */
-    public static void report(ExceptionContext context) {
+    public static void report(ExceptionContext context, ExceptionInfoType type) {
         ExceptionInfoBean bean = new ExceptionInfoBean.Builder()
                 .setNowAndHere()
-                .setType(ExceptionInfoType.UPLOAD_SEGMENT)
+                .setType(type)
                 .setContext(context).build();
         if (INFO_SERVICE.existsException(bean)) {
             SwiftLoggers.getLogger().info("Exception exists!");
