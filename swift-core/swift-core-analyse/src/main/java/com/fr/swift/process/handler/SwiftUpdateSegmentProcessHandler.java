@@ -90,7 +90,7 @@ public class SwiftUpdateSegmentProcessHandler extends BaseProcessHandler<List<UR
     private void reportPushSegException(SegmentLocationInfo exceptionContext) {
         ExceptionInfo exceptionInfo = new ExceptionInfoBean.Builder()
                 .setContext(new PushSegmentExceptionContext(exceptionContext))
-                .setType(ExceptionInfoType.SLAVE_PUSH_SEGMENT)
+                .setType(ExceptionInfoType.MASTER_PUSH_SEGMENT)
                 .setNowAndHere().build();
         ExceptionReporter.report(exceptionInfo);
     }
