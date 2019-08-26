@@ -37,12 +37,6 @@
             <version>2019.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-history</artifactId>
-            <version>2019.1</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 
