@@ -17,7 +17,7 @@ import java.util.List;
 @SwiftBean(name = "localSegmentProvider")
 public class LocalSegmentProvider implements SwiftSegmentManager {
     @SwiftAutoWired
-    @SwiftQualifier(name = "indexingSegmentManager")
+    @SwiftQualifier(name = "lineSegmentManager")
     private SwiftSegmentManager manager;
 
     @Override

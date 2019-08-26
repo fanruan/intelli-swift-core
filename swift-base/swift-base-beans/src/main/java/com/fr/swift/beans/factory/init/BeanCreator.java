@@ -101,22 +101,18 @@ public class BeanCreator {
             SwiftBean swiftBean = aClass.getAnnotation(SwiftBean.class);
             if (swiftBean != null) {
                 List<String> beanNames = SwiftBeanRegistry.getInstance().getBeanNamesByType(aClass);
-                swiftBeanDefinitionList.add(SwiftBeanRegistry.getInstance().getBeanDefinition(beanNames.get(0)));
+
+                for (String beanName : beanNames) {
+                    SwiftBeanDefinition beanDefinition = SwiftBeanRegistry.getInstance().getBeanDefinition(beanName);
+                    if (beanDefinition.getClazz().equals(aClass)){
+                        swiftBeanDefinitionList.add(beanDefinition);
+                        break;
+                    }
+                }
             }
         }
 
         return swiftBeanDefinitionList;
-    }
-
-    /*
-     * 根据java对象的构造顺序，是先构造父类，而父类有多个BeanName即多个SwiftBeanDefinition 它们按照父类到子类排列
-     * 也就是说只需要构造顶级父类的definitions 就可以完成继承链的构造。
-     * */
-
-    public Class<?> getTopSuperClass(Class<?> clazz) {
-        Set<Class<?>> interfaces = SwiftClassUtil.getAllInterfacesAndSelf(clazz);
-        List<Class<?>> list = new ArrayList<>(interfaces);
-        return list.get(list.size() - 1);// interfaces按子类到父类排列 ,所以顶级父类在最后面
     }
 
 
