@@ -13,16 +13,15 @@ public interface ExceptionHandler {
     /**
      * 处理异常的方法
      *
-     * @param exceptionInfo
+     * @param exceptionInfo exception info
+     * @return 处理结果
      */
-    void handleException(ExceptionInfo exceptionInfo);
+    boolean handleException(ExceptionInfo exceptionInfo);
 
     /**
-     * 评估处理结果
+     * 异常类型
      *
-     * @return
+     * @return type
      */
-    boolean evaluate();
-
     ExceptionInfo.Type getExceptionInfoType();
 }

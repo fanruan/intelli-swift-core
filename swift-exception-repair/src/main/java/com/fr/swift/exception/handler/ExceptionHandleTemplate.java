@@ -27,10 +27,11 @@ public class ExceptionHandleTemplate {
     }
 
     public void handleException(ExceptionInfo exceptionInfo) {
+        boolean success = false;
         try {
-            exceptionHandler.handleException(exceptionInfo);
+            success = exceptionHandler.handleException(exceptionInfo);
         } finally {
-            if (exceptionHandler.evaluate()) {
+            if (success) {
                 infoService.removeExceptionInfo(exceptionInfo.getId());
                 handleExceptionResult(exceptionInfo, ExceptionInfo.State.SOLVED);
             } else {
@@ -41,7 +42,7 @@ public class ExceptionHandleTemplate {
 
     void handleExceptionResult(ExceptionInfo info, ExceptionInfo.State state) {
         String currentId = ClusterSelector.getInstance().getFactory().getCurrentId();
-        ExceptionInfoBean bean = new ExceptionInfoBean.Builder(info)
+        ExceptionInfoBean bean = ExceptionInfoBean.builder(info)
                 .setOperateNodeId(currentId)
                 .setState(state).build();
         SwiftRpcEvent event = new ExceptionStateRpcEvent(bean);

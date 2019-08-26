@@ -42,4 +42,9 @@ public interface ExceptionInfoService {
      * @return
      */
     Set<ExceptionInfo> getUnsolvedExceptionInfo();
+
+    /**
+     * @return
+     */
+    boolean existsException(ExceptionInfo exceptionInfo);
 }
