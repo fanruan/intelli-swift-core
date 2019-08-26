@@ -26,7 +26,7 @@ public class PushSegmentLocationListener extends BaseSegmentLocationListener {
             return ProxySelector.getProxy(RemoteSender.class).trigger(new PushSegLocationRpcEvent(segLocations));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
-            reportException(segLocations);
+            reportPushSegException(segLocations);
         }
         return null;
     }
@@ -42,9 +42,9 @@ public class PushSegmentLocationListener extends BaseSegmentLocationListener {
     }
 
     //报告异常的方法抽出来，避免影响原有的逻辑的展示
-    private void reportException(Object exceptionContext) {
+    private void reportPushSegException(SegmentLocationInfo exceptionContext) {
         ExceptionInfo exceptionInfo = new ExceptionInfoBean.Builder()
-                .setContext(new PushSegmentExceptionContext((SegmentLocationInfo) exceptionContext))
+                .setContext(new PushSegmentExceptionContext(exceptionContext))
                 .setType(ExceptionInfoType.SLAVE_PUSH_SEGMENT)
                 .setNowAndHere().build();
         ExceptionReporter.report(exceptionInfo);
