@@ -9,6 +9,7 @@ import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.StatusProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
+import com.fr.swift.basics.handler.UpdateSegmentProcessHandler;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.db.Where;
 import com.fr.swift.result.SwiftResultSet;
@@ -37,7 +38,7 @@ public interface ServiceContext {
     @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
+    @InvokeMethod(value = UpdateSegmentProcessHandler.class, target = Target.ANALYSE)
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
