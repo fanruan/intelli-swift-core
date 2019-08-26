@@ -14,19 +14,21 @@ import com.fr.swift.log.SwiftLoggers;
  */
 public class ExceptionReporter {
 
+    private static final ExceptionInfoService INFO_SERVICE = SwiftContext.get().getBean(ExceptionInfoService.class);
+
     /**
      * 包装，持久化异常，添加异常到队列中
      *
      * @param exceptionInfo
      */
     public static void report(ExceptionInfo exceptionInfo) {
-        maintain(exceptionInfo);
+        if (INFO_SERVICE.existsException(exceptionInfo)) {
+            SwiftLoggers.getLogger().info("Exception exists!");
+            return;
+        }
+        INFO_SERVICE.maintain(exceptionInfo);
         if (!SlaveExceptionInfoQueue.getInstance().offer(exceptionInfo)) {
             SwiftLoggers.getLogger().warn("Add into SlaveExceptionInfoQueue Failed");
         }
-    }
-
-    private static void maintain(ExceptionInfo info) {
-        SwiftContext.get().getBean(ExceptionInfoService.class).maintain(info);
     }
 }

@@ -6,8 +6,14 @@ import com.fr.swift.segment.SegmentKey;
  * @author anchore
  * @date 2019/8/16
  */
-public class SegmentExceptionContext extends BaseExceptionContext<SegmentKey> {
+public class SegmentExceptionContext implements ExceptionContext {
+    private SegmentKey segmentKey;
+
     public SegmentExceptionContext(SegmentKey context) {
-        super(context);
+        this.segmentKey = context;
+    }
+
+    public SegmentKey getSegmentKey() {
+        return segmentKey;
     }
 }

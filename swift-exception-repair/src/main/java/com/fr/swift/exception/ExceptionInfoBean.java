@@ -64,7 +64,7 @@ public class ExceptionInfoBean implements ExceptionInfo {
     }
 
     @Override
-    public ExceptionContext<?> getContext() {
+    public ExceptionContext getContext() {
         return context;
     }
 
@@ -105,6 +105,14 @@ public class ExceptionInfoBean implements ExceptionInfo {
                 ", occurredTime=" + occurredTime +
                 ", context=" + context +
                 '}';
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(ExceptionInfo exceptionInfo) {
+        return new Builder(exceptionInfo);
     }
 
     public static class Builder {
@@ -153,7 +161,7 @@ public class ExceptionInfoBean implements ExceptionInfo {
             return this;
         }
 
-        public Builder setContext(ExceptionContext<?> context) {
+        public Builder setContext(ExceptionContext context) {
             bean.context = context;
             return this;
         }

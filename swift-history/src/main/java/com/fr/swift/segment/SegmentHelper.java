@@ -14,6 +14,10 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
+import com.fr.swift.exception.DownloadExceptionContext;
+import com.fr.swift.exception.ExceptionInfoBean;
+import com.fr.swift.exception.ExceptionInfoType;
+import com.fr.swift.exception.reporter.ExceptionReporter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.exception.RepoNotFoundException;
@@ -76,7 +80,7 @@ public class SegmentHelper {
                     segLocationSvc.delete(new HashSet<>(notExists));
                     segmentService.removeSegments(notExists);
                     //如果存在本地文件，也需要删除
-                    for(SegmentKey notExist:notExists){
+                    for (SegmentKey notExist : notExists) {
                         SegmentUtils.clearSegment(notExist);
                     }
                 }
@@ -115,6 +119,9 @@ public class SegmentHelper {
                     // 若下载整个seg失败则删掉，下载all show不删
                     FileUtil.delete(cubePath);
                 }
+                // TODO: 2019-08-23 replace考虑去掉，这里异常处理是直接下载，没有replace的
+                reportException(cubePath, remotePath);
+
                 SwiftLoggers.getLogger().error("Download {} with error! ", cubePath, e);
             }
         }
@@ -140,6 +147,15 @@ public class SegmentHelper {
             SwiftLoggers.getLogger().info("Download {} {} successful", sourceKey, downloadPaths);
         }
         return downloadPaths;
+    }
+
+    private static void reportException(String cubePath, String remotePath) {
+        DownloadExceptionContext downloadExceptionContext = new DownloadExceptionContext(remotePath, cubePath);
+        ExceptionInfoBean downloadExceptionBean = ExceptionInfoBean.builder()
+                .setNowAndHere()
+                .setContext(downloadExceptionContext)
+                .setType(ExceptionInfoType.DOWNLOAD_SEGMENT).build();
+        ExceptionReporter.report(downloadExceptionBean);
     }
 
     public static void uploadTable(SwiftSegmentManager manager,

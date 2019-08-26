@@ -2,6 +2,7 @@ package com.fr.swift.exception.service;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.command.impl.SwiftHibernateConfigCommandBus;
+import com.fr.swift.config.condition.SwiftConfigCondition;
 import com.fr.swift.config.condition.impl.SwiftConfigConditionImpl;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.query.impl.SwiftHibernateConfigQueryBus;
@@ -9,6 +10,8 @@ import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.ExceptionInfoBean;
 import com.fr.swift.util.Strings;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,6 +40,17 @@ public class SwiftExceptionInfoServiceImpl implements ExceptionInfoService {
         return new HashSet<ExceptionInfo>(queryBus.get(SwiftConfigConditionImpl.newInstance()
                 .addWhere(ConfigWhereImpl.eq("state", ExceptionInfo.State.UNSOLVED))));
 
+    }
+
+    @Override
+    public boolean existsException(ExceptionInfo exceptionInfo) {
+        SwiftConfigCondition condition = SwiftConfigConditionImpl.newInstance()
+                .addWhere(ConfigWhereImpl.eq("operateNodeId", exceptionInfo.getOperateNodeId()))
+                .addWhere(ConfigWhereImpl.eq("type", (Serializable) exceptionInfo.getType()))
+                .addWhere(ConfigWhereImpl.eq("context", (Serializable) exceptionInfo.getContext()))
+                .addWhere(ConfigWhereImpl.in("state",
+                        Arrays.asList(ExceptionInfo.State.PENDING, ExceptionInfo.State.UNSOLVED, ExceptionInfo.State.PROCESSING)));
+        return !queryBus.get(condition).isEmpty();
     }
 
     @Override

@@ -9,12 +9,5 @@ package com.fr.swift.exception;
  * 粒度最好细到单个元素，好做id
  * 也是immut的
  */
-public interface ExceptionContext<T> {
-    T getContext();
-
-    @Override
-    boolean equals(Object o);
-
-    @Override
-    int hashCode();
+public interface ExceptionContext {
 }
