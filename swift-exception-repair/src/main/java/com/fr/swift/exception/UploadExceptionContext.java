@@ -9,8 +9,8 @@ import com.fr.swift.segment.SegmentKey;
  * @since swift 1.1
  */
 public class UploadExceptionContext implements ExceptionContext {
-    SegmentKey context;
-    boolean isAllShow;
+    private SegmentKey context;
+    private boolean isAllShow;
 
     public UploadExceptionContext(SegmentKey context, boolean isAllShow) {
         this.context = context;

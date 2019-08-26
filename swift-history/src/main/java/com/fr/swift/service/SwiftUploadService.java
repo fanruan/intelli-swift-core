@@ -4,8 +4,6 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
-import com.fr.swift.exception.ExceptionInfoBean;
-import com.fr.swift.exception.ExceptionInfoType;
 import com.fr.swift.exception.UploadExceptionContext;
 import com.fr.swift.exception.reporter.ExceptionReporter;
 import com.fr.swift.log.SwiftLoggers;
@@ -49,11 +47,7 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
                 SwiftRepositoryManager.getManager().currentRepo().copyToRemote(local, remote);
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error("Cannot upload Segment which path is {}", local, e);
-                ExceptionInfoBean bean=new ExceptionInfoBean.Builder()
-                        .setNowAndHere()
-                        .setType(ExceptionInfoType.UPLOAD_SEGMENT)
-                        .setContext(new UploadExceptionContext(segKey,false)).build();
-                ExceptionReporter.report(bean);
+                ExceptionReporter.report(new UploadExceptionContext(segKey, false));
             }
         }
     }
@@ -93,11 +87,7 @@ public class SwiftUploadService extends AbstractSwiftService implements UploadSe
                 SwiftLoggers.getLogger().warn("default repository not found", e);
             } catch (IOException e) {
                 SwiftLoggers.getLogger().error("upload segment's all show {} failed", segKey, e);
-                ExceptionInfoBean bean=new ExceptionInfoBean.Builder()
-                        .setNowAndHere()
-                        .setType(ExceptionInfoType.UPLOAD_SEGMENT)
-                        .setContext(new UploadExceptionContext(segKey,false)).build();
-                ExceptionReporter.report(bean);
+                ExceptionReporter.report(new UploadExceptionContext(segKey, true));
             }
         }
     }

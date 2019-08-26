@@ -1,6 +1,6 @@
 package com.fr.swift.exception.handler;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.ExceptionInfoType;
@@ -20,7 +20,8 @@ import java.util.Collections;
 @RegisterExceptionHandler
 public class UploadSegExceptionHandler implements ExceptionHandler {
 
-    private SwiftUploadService uploadService = SwiftContext.get().getBean(SwiftUploadService.class);
+    @SwiftAutoWired
+    private SwiftUploadService uploadService;
 
     @Override
     public boolean handleException(ExceptionInfo info) {

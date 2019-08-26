@@ -1,7 +1,9 @@
 package com.fr.swift.exception.reporter;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.exception.ExceptionInfo;
+import com.fr.swift.exception.ExceptionContext;
+import com.fr.swift.exception.ExceptionInfoBean;
+import com.fr.swift.exception.ExceptionInfoType;
 import com.fr.swift.exception.queue.SlaveExceptionInfoQueue;
 import com.fr.swift.exception.service.ExceptionInfoService;
 import com.fr.swift.log.SwiftLoggers;
@@ -19,15 +21,19 @@ public class ExceptionReporter {
     /**
      * 包装，持久化异常，添加异常到队列中
      *
-     * @param exceptionInfo
+     * @param context
      */
-    public static void report(ExceptionInfo exceptionInfo) {
-        if (INFO_SERVICE.existsException(exceptionInfo)) {
+    public static void report(ExceptionContext context) {
+        ExceptionInfoBean bean = new ExceptionInfoBean.Builder()
+                .setNowAndHere()
+                .setType(ExceptionInfoType.UPLOAD_SEGMENT)
+                .setContext(context).build();
+        if (INFO_SERVICE.existsException(bean)) {
             SwiftLoggers.getLogger().info("Exception exists!");
             return;
         }
-        INFO_SERVICE.maintain(exceptionInfo);
-        if (!SlaveExceptionInfoQueue.getInstance().offer(exceptionInfo)) {
+        INFO_SERVICE.maintain(bean);
+        if (!SlaveExceptionInfoQueue.getInstance().offer(bean)) {
             SwiftLoggers.getLogger().warn("Add into SlaveExceptionInfoQueue Failed");
         }
     }
