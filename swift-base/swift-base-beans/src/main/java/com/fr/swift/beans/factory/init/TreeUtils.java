@@ -55,13 +55,15 @@ public class TreeUtils {
             for (SwiftBeanDefinition swiftBeanDefinition : path) {
                 if (set.contains(swiftBeanDefinition)) {
                     definition = swiftBeanDefinition;
+                    break;
                 } else {
                     set.add(swiftBeanDefinition);
+
                 }
             }
 
             if (definition != null) { //说明有重复的节点
-                Crasher.crash(definition.getClazz().getName() + " has a dead circle dependency");
+                CircleError(definition);
             }
 
             path.remove(path.size() - 1); //将最后的叶子节点删除，用于判断另一个调用链
@@ -69,4 +71,20 @@ public class TreeUtils {
     }
 
 
+    private static void CircleError(SwiftBeanDefinition definition) {
+        int index = -1;
+        for (int i = 0; i < path.size(); i++) {
+            if (definition.equals(path.get(i))) {
+                index = i;
+                break;
+            }
+        }
+
+        StringBuilder errorMsg= new StringBuilder();
+        for (int i = index; i < path.size(); i++) {
+            errorMsg.append("\n").append(path.get(i).getClazz().getName());
+        }
+        Crasher.crash(errorMsg.toString() + " has a dead circle dependency");
+
+    }
 }
