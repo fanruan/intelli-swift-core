@@ -16,8 +16,6 @@ import com.fr.swift.log.SwiftLoggers;
  */
 public class ExceptionReporter {
 
-    private static final ExceptionInfoService INFO_SERVICE = SwiftContext.get().getBean(ExceptionInfoService.class);
-
     /**
      * 包装，持久化异常，添加异常到队列中
      *
@@ -28,11 +26,12 @@ public class ExceptionReporter {
                 .setNowAndHere()
                 .setType(type)
                 .setContext(context).build();
-        if (INFO_SERVICE.existsException(bean)) {
+        ExceptionInfoService infoService = SwiftContext.get().getBean(ExceptionInfoService.class);
+        if (infoService.existsException(bean)) {
             SwiftLoggers.getLogger().info("Exception exists!");
             return;
         }
-        INFO_SERVICE.maintain(bean);
+        infoService.maintain(bean);
         if (!SlaveExceptionInfoQueue.getInstance().offer(bean)) {
             SwiftLoggers.getLogger().warn("Add into SlaveExceptionInfoQueue Failed");
         }
