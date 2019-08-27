@@ -1,5 +1,6 @@
 package com.fr.swift.beans.factory.init;
 
+import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.process.SwiftClassUtil;
 import com.fr.swift.beans.exception.InitClassException;
 import com.fr.swift.beans.factory.SwiftBeanDefinition;
@@ -35,17 +36,13 @@ public class BeanCreator {
     }
 
     public void buildTreeByBeanName(String beanName, Map<String, SwiftBeanDefinition> beanDefinitionMap) {
-        SwiftBeanDefinition swiftBeanDefinition = beanDefinitionMap.get(beanName);
-        buildFromSuper(swiftBeanDefinition);
-    }
-
-    public void buildFromSuper(SwiftBeanDefinition definition) {
+        SwiftBeanDefinition definition = beanDefinitionMap.get(beanName);
 
         if (beanNamesLoaded.contains(definition.getBeanName())) {
             return;
         }
         Class<?> clazz = definition.getClazz();
-        List<SwiftBeanDefinition> definitions = getBeanDefinitionsByType(clazz);
+        List<SwiftBeanDefinition> definitions = getBeanDefinitionsByInheritanceChain(clazz);
         for (SwiftBeanDefinition swiftBeanDefinition : definitions) {
             WrapperDefinition wrapperDefinition = new WrapperDefinition(swiftBeanDefinition, 0);
             tree = new DependencyTreeNode(wrapperDefinition);
@@ -53,19 +50,6 @@ public class BeanCreator {
             createBeansByTree(tree);
             tree.clear();
         }
-
-    }
-
-    /*
-     * 根据java对象的构造顺序，是先构造父类，而父类有多个BeanName即多个SwiftBeanDefinition 它们按照父类到子类排列
-     * 也就是说只需要构造顶级父类的definitions 就可以完成继承链的构造。
-     * */
-
-    public List<SwiftBeanDefinition> getTopSuperClass(Class<?> clazz) {
-        Set<Class<?>> interfaces = SwiftClassUtil.getAllInterfacesAndSelf(clazz);
-        List<Class<?>> list = new ArrayList<>(interfaces);
-        Class<?> topClass = list.get(list.size() - 1);// interfaces按子类到父类排列 ,所以顶级父类在最后面
-        return getBeanDefinitionsByType(topClass);
     }
 
     public void recursion(WrapperDefinition wrapperDefinition) {
@@ -90,7 +74,7 @@ public class BeanCreator {
         WrapperDefinition wrapperDefinition = root.getWrapperDefinition();
         List<Field> autowireds = wrapperDefinition.getDefinition().getAllAutowiredFiles();
         for (Field autowired : autowireds) {
-            List<SwiftBeanDefinition> definitions = getTopSuperClass(autowired.getType());
+            List<SwiftBeanDefinition> definitions = getBeanDefinitionsByInheritanceChain(autowired.getType());
             if (definitions.size() > 0) {
                 for (SwiftBeanDefinition definition : definitions) {
                     if (beanCount.containsKey(autowired.getName())) {
@@ -106,12 +90,28 @@ public class BeanCreator {
 
     }
 
-    private List<SwiftBeanDefinition> getBeanDefinitionsByType(Class<?> clazz) {
-        List<SwiftBeanDefinition> swiftBeanDefinitionList = new ArrayList<>();
-        List<String> beanNames = SwiftBeanRegistry.getInstance().getBeanNamesByType(clazz);
-        for (String beanName : beanNames) {
-            swiftBeanDefinitionList.add(SwiftBeanRegistry.getInstance().getBeanDefinition(beanName));
+    private List<SwiftBeanDefinition> getBeanDefinitionsByInheritanceChain(Class<?> clazz) {
+        List<Class<?>> classes = new ArrayList<>();
+        while (clazz != null) {
+            classes.add(clazz);
+            clazz = clazz.getSuperclass();
         }
+        List<SwiftBeanDefinition> swiftBeanDefinitionList = new ArrayList<>();
+        for (Class<?> aClass : classes) {
+            SwiftBean swiftBean = aClass.getAnnotation(SwiftBean.class);
+            if (swiftBean != null) {
+                List<String> beanNames = SwiftBeanRegistry.getInstance().getBeanNamesByType(aClass);
+
+                for (String beanName : beanNames) {
+                    SwiftBeanDefinition beanDefinition = SwiftBeanRegistry.getInstance().getBeanDefinition(beanName);
+                    if (beanDefinition.getClazz().equals(aClass)){
+                        swiftBeanDefinitionList.add(beanDefinition);
+                        break;
+                    }
+                }
+            }
+        }
+
         return swiftBeanDefinitionList;
     }
 
@@ -178,6 +178,7 @@ public class BeanCreator {
         for (Constructor constructor : constructors) {
             Class[] classes = constructor.getParameterTypes();
             if (classes.length == 0) {
+                constructor.setAccessible(true);
                 flag = true;
                 break;
             }
