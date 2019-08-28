@@ -11,7 +11,9 @@ public enum ExceptionInfoType implements Type {
     //
     UPLOAD_SEGMENT(0),
     DOWNLOAD_SEGMENT(1),
-    CORRUPTED_SEGMENT(2);
+    CORRUPTED_SEGMENT(2),
+    SLAVE_PUSH_SEGMENT(3),
+    MASTER_PUSH_SEGMENT(4);
 
     ExceptionInfoType(int code, String desc) {
         this.code = code;
