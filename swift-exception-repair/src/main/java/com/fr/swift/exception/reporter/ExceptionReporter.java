@@ -1,7 +1,9 @@
 package com.fr.swift.exception.reporter;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.exception.ExceptionInfo;
+import com.fr.swift.exception.ExceptionContext;
+import com.fr.swift.exception.ExceptionInfoBean;
+import com.fr.swift.exception.ExceptionInfoType;
 import com.fr.swift.exception.queue.SlaveExceptionInfoQueue;
 import com.fr.swift.exception.service.ExceptionInfoService;
 import com.fr.swift.log.SwiftLoggers;
@@ -14,20 +16,23 @@ import com.fr.swift.log.SwiftLoggers;
  */
 public class ExceptionReporter {
 
-    private static final ExceptionInfoService INFO_SERVICE = SwiftContext.get().getBean(ExceptionInfoService.class);
-
     /**
      * 包装，持久化异常，添加异常到队列中
      *
-     * @param exceptionInfo
+     * @param context
      */
-    public static void report(ExceptionInfo exceptionInfo) {
-        if (INFO_SERVICE.existsException(exceptionInfo)) {
+    public static void report(ExceptionContext context, ExceptionInfoType type) {
+        ExceptionInfoBean bean = new ExceptionInfoBean.Builder()
+                .setNowAndHere()
+                .setType(type)
+                .setContext(context).build();
+        ExceptionInfoService infoService = SwiftContext.get().getBean(ExceptionInfoService.class);
+        if (infoService.existsException(bean)) {
             SwiftLoggers.getLogger().info("Exception exists!");
             return;
         }
-        INFO_SERVICE.maintain(exceptionInfo);
-        if (!SlaveExceptionInfoQueue.getInstance().offer(exceptionInfo)) {
+        infoService.maintain(bean);
+        if (!SlaveExceptionInfoQueue.getInstance().offer(bean)) {
             SwiftLoggers.getLogger().warn("Add into SlaveExceptionInfoQueue Failed");
         }
     }
