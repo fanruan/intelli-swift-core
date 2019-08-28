@@ -18,7 +18,12 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
 import com.fr.swift.event.history.CheckLoadHistoryEvent;
+import com.fr.swift.exception.ExceptionInfo;
+import com.fr.swift.exception.ExceptionInfoBean;
+import com.fr.swift.exception.ExceptionInfoType;
+import com.fr.swift.exception.PushSegmentExceptionContext;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.exception.reporter.ExceptionReporter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
@@ -136,7 +141,6 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         // 删配置
         segLocationSvc.delete(SwiftProperty.getProperty().getClusterId(), tableKey.getId());
         segmentService.removeSegments(tableKey.getId());
-
         if (localTableToLocations.containsKey(tableKey)) {
             Set<String> localSegIds = new HashSet<>();
             for (SwiftSegmentLocationEntity localLocation : localTableToLocations.get(tableKey)) {
@@ -202,7 +206,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
                 try {
                     senderProxy.trigger(new PushSegLocationRpcEvent(info));
                 } catch (Exception e) {
-                    SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! ", e);
+                    SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! pushSegExceptionhander online", e);
+                    reportPushSegException(info);
                 }
             }
         }
@@ -249,6 +254,15 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
         protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
             String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
             return new SegmentDestinationImpl(clusterId, segmentKey.toString(), segmentKey.getOrder());
+        }
+
+        //报告异常的方法抽出来，避免影响原有的逻辑的展示
+        private void reportPushSegException(SegmentLocationInfo exceptionContext) {
+            ExceptionInfo exceptionInfo = new ExceptionInfoBean.Builder()
+                    .setContext(new PushSegmentExceptionContext(exceptionContext))
+                    .setType(ExceptionInfoType.SLAVE_PUSH_SEGMENT)
+                    .setNowAndHere().build();
+            ExceptionReporter.report(exceptionInfo);
         }
     }
 }
