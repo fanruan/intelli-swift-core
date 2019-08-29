@@ -15,7 +15,6 @@ import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
 import com.fr.swift.exception.DownloadExceptionContext;
-import com.fr.swift.exception.ExceptionInfoBean;
 import com.fr.swift.exception.ExceptionInfoType;
 import com.fr.swift.exception.reporter.ExceptionReporter;
 import com.fr.swift.log.SwiftLoggers;
@@ -151,11 +150,7 @@ public class SegmentHelper {
 
     private static void reportException(String cubePath, String remotePath) {
         DownloadExceptionContext downloadExceptionContext = new DownloadExceptionContext(remotePath, cubePath);
-        ExceptionInfoBean downloadExceptionBean = ExceptionInfoBean.builder()
-                .setNowAndHere()
-                .setContext(downloadExceptionContext)
-                .setType(ExceptionInfoType.DOWNLOAD_SEGMENT).build();
-        ExceptionReporter.report(downloadExceptionBean);
+        ExceptionReporter.report(downloadExceptionContext, ExceptionInfoType.DOWNLOAD_SEGMENT);
     }
 
     public static void uploadTable(SwiftSegmentManager manager,
