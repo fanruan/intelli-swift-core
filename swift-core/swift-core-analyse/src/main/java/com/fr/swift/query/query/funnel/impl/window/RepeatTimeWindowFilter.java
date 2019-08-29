@@ -9,6 +9,7 @@ import com.fr.swift.query.query.funnel.IStep;
 import com.fr.swift.query.query.funnel.TimeWindowBean;
 import com.fr.swift.query.query.funnel.impl.head.Head;
 import com.fr.swift.result.GroupNode;
+import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,7 +78,7 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
     }
 
     @Override
-    public void add(int event, long timestamp, int associatedValue, Object groupValue, int row) {
+    public void add(int event, long timestamp, Function<Integer, Integer> associatedValue, Object groupValue, int row) {
         // 事件有序进入
         // 更新临时对象: 从后往前, 并根据条件适当跳出
         if (hasNoHeadBefore) {
@@ -99,7 +100,7 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
             temp = lists.get(dateIndex);
             if (step.isEqual(0, event, row)) {
                 hasNoHeadBefore = false;
-                createHead(dateIndex, timestamp, associatedValue, groupValue);
+                createHead(dateIndex, timestamp, associatedValue.apply(0), groupValue);
                 //重复事件是head
                 if (!hasAnotherStep0) {
                     break;
@@ -117,14 +118,14 @@ public class RepeatTimeWindowFilter extends BaseTimeWindowFilter {
                     finished[dateIndex] = true;
                     break;
                 } else if (step.isEqual(nextEventIndex, event, row)) {
-                    nextEvent(nextEventIndex, timestamp, associatedValue, groupValue, head);
+                    nextEvent(nextEventIndex, timestamp, associatedValue.apply(nextEventIndex), groupValue, head);
                 } else if (head.getSize() > 1 && step.isEqual(head.getSize() - 1, event, row)) {
-                    if (updateEvent(i, timestamp, associatedValue, groupValue, head, copied)) {
+                    if (updateEvent(i, timestamp, associatedValue.apply(head.getSize() - 1), groupValue, head, copied)) {
                         copied = true;
                     }
                 } else {
                     if (!copied) {
-                        if (copyHead(i, event, timestamp, associatedValue, groupValue, head, row)) {
+                        if (copyHead(i, event, timestamp, associatedValue.apply(nextEventIndex - 1), groupValue, head, row)) {
                             copied = true;
                         }
                     }
