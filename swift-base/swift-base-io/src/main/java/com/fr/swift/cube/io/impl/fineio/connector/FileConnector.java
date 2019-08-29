@@ -5,6 +5,7 @@ import com.fineio.io.file.FileBlock;
 import com.fineio.storage.Connector;
 import com.fineio.v3.file.DirectoryBlock;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.util.Strings;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -83,7 +84,7 @@ public class FileConnector extends BaseConnector {
             });
             if (null != list) {
                 for (File s : list) {
-                    String path = s.getAbsolutePath().replaceAll(parentPath, "");
+                    String path = ("/" + Strings.unifySlash(s.getAbsolutePath())).replaceAll(parentPath, "");
                     if (path.startsWith("/")) {
                         path = path.substring(1);
                     }
@@ -92,7 +93,7 @@ public class FileConnector extends BaseConnector {
             }
             return new DirectoryBlock(dir, blocks);
         } else {
-            String path = f.getParent().replaceAll(parentPath, "");
+            String path = ("/" + Strings.unifySlash(f.getParent())).replaceAll(parentPath, "");
             path = path.startsWith("/") ? path.substring(1) : path;
             return new FileBlock(path, f.getName());
         }
