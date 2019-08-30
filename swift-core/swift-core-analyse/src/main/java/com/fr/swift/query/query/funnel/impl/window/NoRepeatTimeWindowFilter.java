@@ -1,5 +1,6 @@
 package com.fr.swift.query.query.funnel.impl.window;
 
+import com.fr.swift.query.aggregator.funnel.AssociatedColumn;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.info.funnel.filter.TimeFilterInfo;
 import com.fr.swift.query.info.funnel.group.time.TimeGroup;
@@ -9,7 +10,7 @@ import com.fr.swift.query.query.funnel.IStep;
 import com.fr.swift.query.query.funnel.TimeWindowBean;
 import com.fr.swift.query.query.funnel.impl.head.AHead;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,11 +38,11 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
 
     public NoRepeatTimeWindowFilter(TimeWindowBean timeWindow, TimeGroup timeGroup, MatchFilter timeGroupMatchFilter, TimeFilterInfo info, IStep step,
                                     int firstAssociatedIndex, boolean[] associatedEvents,
-                                    DictionaryEncodedColumn associatedPropertyColumn) {
+                                    AssociatedColumn associatedPropertyColumn) {
         super(timeWindow, timeGroup, timeGroupMatchFilter, info, step);
         this.firstAssociatedIndex = firstAssociatedIndex;
         this.associatedEvents = associatedEvents;
-        this.associatedColumnSize = associatedPropertyColumn == null ? 0 : associatedPropertyColumn.size();
+        this.associatedColumnSize = associatedPropertyColumn == null ? 0 : associatedPropertyColumn.dictSize();
     }
 
     private void initIterableEvents() {
@@ -81,7 +82,7 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
     }
 
     @Override
-    public void add(int event, long timestamp, int associatedValue, Object groupValue, int row) {
+    public void add(int event, long timestamp, Function<Integer, Integer> associatedValue, Object groupValue, int row) {
         // 事件有序进入
         // 更新临时对象: 从后往前, 并根据条件适当跳出
         int eventIndex = step.getEventIndex(event);
@@ -97,7 +98,7 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
             node.setData(timestamp);
             // 如果符合就加入计算  不符合就不计算
             if (timeGroupMatchFilter.matches(node)) {
-                createHead(dateIndex, timestamp, associatedValue, groupValue, lists[dateIndex][0]);
+                createHead(dateIndex, timestamp, associatedValue.apply(eventIndex), groupValue, lists[dateIndex][0]);
                 hasNoHeadBefore = false;
             }
             return;
@@ -110,10 +111,10 @@ public class NoRepeatTimeWindowFilter extends BaseTimeWindowFilter {
             IStepContainer[] containers = lists[dateIndex];
             IStepContainer prevHeads = containers[eventIndex - 1];
             IStepContainer currentHeads = containers[eventIndex];
-            if (newStep(eventIndex, dateIndex, timestamp, associatedValue, groupValue, prevHeads, currentHeads)) {
+            if (newStep(eventIndex, dateIndex, timestamp, associatedValue.apply(eventIndex), groupValue, prevHeads, currentHeads)) {
                 continue;
             }
-            updateStep(eventIndex, timestamp, associatedValue, groupValue, currentHeads);
+            updateStep(eventIndex, timestamp, associatedValue.apply(eventIndex), groupValue, currentHeads);
         }
     }
 

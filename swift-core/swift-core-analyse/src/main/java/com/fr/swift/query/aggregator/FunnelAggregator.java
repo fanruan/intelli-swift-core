@@ -3,7 +3,10 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.aggregator.funnel.AssociatedColumn;
 import com.fr.swift.query.aggregator.funnel.MergeIterator;
+import com.fr.swift.query.aggregator.funnel.MultiAssociatedColumnImpl;
+import com.fr.swift.query.aggregator.funnel.SingleAssociatedColumnImpl;
 import com.fr.swift.query.column.ComplexColumn;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
@@ -30,6 +33,7 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
+import com.fr.swift.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,12 +107,22 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
         return null != postGroup ? postGroup.getFunnelIndex() : -1;
     }
 
-    private DictionaryEncodedColumn createAssociatedColumn(Map<ColumnKey, Column<?>> columns) {
+    private AssociatedColumn createAssociatedColumn(Map<ColumnKey, Column<?>> columns) {
         FunnelAssociationBean associationFilterBean = bean.getAssociation();
         if (associationFilterBean == null) {
             return null;
         }
-        return columns.get(new ColumnKey(associationFilterBean.getColumn())).getDictionaryEncodedColumn();
+        final List<String> columnNames = associationFilterBean.getColumns();
+        if (columnNames.size() == 1) {
+            return new SingleAssociatedColumnImpl(columns.get(new ColumnKey(columnNames.get(0))).getDictionaryEncodedColumn());
+        }
+        final List<Integer> events = associationFilterBean.getEvents();
+        Assert.isTrue(columnNames.size() == events.size());
+        Map<Integer, DictionaryEncodedColumn> dicts = new HashMap<>(events.size());
+        for (int i = 0; i < events.size(); i++) {
+            dicts.put(events.get(i), columns.get(new ColumnKey(columnNames.get(i))).getDictionaryEncodedColumn());
+        }
+        return new MultiAssociatedColumnImpl(dicts);
     }
 
     private boolean[] getFlags(List<Integer> steps) {
@@ -177,9 +191,9 @@ public class FunnelAggregator extends MultiColumnAggregator<FunnelAggregatorValu
     private TimeWindowFilter createTimeWindowFilter(IStep step, Map<ColumnKey, Column<?>> columns) {
         FunnelAssociationBean association = bean.getAssociation();
         boolean[] associatedProperty = getFlags(association == null ? new ArrayList<Integer>() : association.getEvents());
-        DictionaryEncodedColumn associatedPropertyColumn = null;
-        if (association != null && association.getColumn() != null) {
-            associatedPropertyColumn = columns.get(new ColumnKey(association.getColumn())).getDictionaryEncodedColumn();
+        AssociatedColumn associatedPropertyColumn = null;
+        if (association != null && association.getEvents() != null) {
+            associatedPropertyColumn = createAssociatedColumn(columns);
         }
         TimeFilterInfo dayFilterBean = bean.getTimeFilter();
         int firstAssociatedIndex = (association == null || association.getEvents().size() == 0) ? -1 : association.getEvents().get(0);
