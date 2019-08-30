@@ -9,25 +9,25 @@ import java.util.List;
  */
 public class FunnelAssociationBean {
 
-    @JsonProperty("column")
-    private String column;
+    @JsonProperty("columns")
+    private List<String> columns;
     @JsonProperty("events")
     private List<Integer> events;
 
     public FunnelAssociationBean() {
     }
 
-    public FunnelAssociationBean(String column, List<Integer> events) {
-        this.column = column;
+    public FunnelAssociationBean(List<String> columns, List<Integer> events) {
+        this.columns = columns;
         this.events = events;
     }
 
-    public String getColumn() {
-        return column;
+    public List<String> getColumns() {
+        return columns;
     }
 
-    public void setColumn(String column) {
-        this.column = column;
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
     }
 
     public List<Integer> getEvents() {

@@ -60,7 +60,9 @@ class MetricParser {
 
         FunnelAssociationBean association = bean.getAssociation();
         if (null != association) {
-            columnKeys.add(new ColumnKey(association.getColumn()));
+            for (String column : association.getColumns()) {
+                columnKeys.add(new ColumnKey(column));
+            }
         }
 
         if (bean.getType() == AggregatorType.FUNNEL) {

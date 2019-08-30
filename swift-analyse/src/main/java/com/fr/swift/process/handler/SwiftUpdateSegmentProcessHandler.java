@@ -11,8 +11,6 @@ import com.fr.swift.basics.handler.UpdateSegmentProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
-import com.fr.swift.exception.ExceptionInfo;
-import com.fr.swift.exception.ExceptionInfoBean;
 import com.fr.swift.exception.ExceptionInfoType;
 import com.fr.swift.exception.PushSegmentExceptionContext;
 import com.fr.swift.exception.reporter.ExceptionReporter;
@@ -88,10 +86,6 @@ public class SwiftUpdateSegmentProcessHandler extends BaseProcessHandler<List<UR
 
     //报告异常的方法抽出来，避免影响原有的逻辑的展示
     private void reportPushSegException(SegmentLocationInfo exceptionContext) {
-        ExceptionInfo exceptionInfo = new ExceptionInfoBean.Builder()
-                .setContext(new PushSegmentExceptionContext(exceptionContext))
-                .setType(ExceptionInfoType.MASTER_PUSH_SEGMENT)
-                .setNowAndHere().build();
-        ExceptionReporter.report(exceptionInfo);
+        ExceptionReporter.report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.MASTER_PUSH_SEGMENT);
     }
 }
