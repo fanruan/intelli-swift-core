@@ -60,7 +60,6 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
     public QueryResultSet<?> processResult(final Method method, Target[] targets, Object... args) throws Throwable {
         String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
-        queryBean.setQueryId(UUID.randomUUID().toString());
         SourceKey table = new SourceKey(queryBean.getTableName());
         List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         List<Pair<URL, Set<String>>> pairs = processUrl(targets, segmentDestinations);

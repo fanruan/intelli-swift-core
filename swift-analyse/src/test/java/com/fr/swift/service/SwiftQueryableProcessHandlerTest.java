@@ -90,7 +90,7 @@ public class SwiftQueryableProcessHandlerTest extends TestCase {
 
     public void testProcessResult() throws Exception {
         String tableName = "test";
-        QueryInfoBean bean = new GroupQueryInfoBean();
+        QueryInfoBean bean = GroupQueryInfoBean.builder(tableName).build();
         ((GroupQueryInfoBean) bean).setTableName(tableName);
         String queryString = QueryBeanFactory.queryBean2String(bean);
 

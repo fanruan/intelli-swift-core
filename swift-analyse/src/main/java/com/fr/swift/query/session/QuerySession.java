@@ -1,5 +1,6 @@
 package com.fr.swift.query.session;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
@@ -81,7 +82,7 @@ public class QuerySession implements Session {
     public void cleanCache(boolean force) {
         if (null != cache) {
             Iterator<Map.Entry<Object, Cache<?>>> iterator = cache.entrySet().iterator();
-
+            SwiftLoggers.getLogger().info(String.format("clean cache [%s]!", force ? "force" : "unForce"));
             while (iterator.hasNext()) {
                 Map.Entry<Object, Cache<?>> entry = iterator.next();
                 if (force || entry.getValue().getIdle() >= cacheTimeout) {
@@ -90,6 +91,7 @@ public class QuerySession implements Session {
                         IoUtil.close((Closable) value);
                     }
                     iterator.remove();
+                    SwiftLoggers.getLogger().info(String.format("remove query session [%s]", entry.getKey().toString()));
                 }
             }
         }
