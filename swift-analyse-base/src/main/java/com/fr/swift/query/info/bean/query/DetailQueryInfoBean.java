@@ -8,6 +8,7 @@ import com.fr.swift.query.query.QueryType;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Lyon on 2018/6/3.
@@ -18,6 +19,9 @@ public class DetailQueryInfoBean extends AbstractSingleTableQueryInfoBean implem
 
     {
         queryType = QueryType.DETAIL;
+    }
+
+    private DetailQueryInfoBean() {
     }
 
     public static Builder builder(String table) {
@@ -63,6 +67,9 @@ public class DetailQueryInfoBean extends AbstractSingleTableQueryInfoBean implem
         }
 
         public DetailQueryInfoBean build() {
+            if (bean.getQueryId() == null) {
+                bean.setQueryId(UUID.randomUUID().toString());
+            }
             return bean;
         }
     }
