@@ -104,8 +104,7 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                     SwiftMetaDataColumn metaDataColumn = Strings.isEmpty(column) ?
                             new MetaDataColumnBean(Strings.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
                     String name = alias == null ? column : alias;
-                    int type = metaDataColumn.getType() == Types.VARCHAR ? Types.DOUBLE : metaDataColumn.getType();
-                    metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), type,
+                    metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), getMetricColumnType(metaDataColumn.getType()),
                             metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
             }
 
@@ -129,6 +128,18 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                 name = event.getName();
             }
             metricColumns.add(new MetaDataColumnBean(name, null, Types.BIGINT, null));
+        }
+    }
+
+    private int getMetricColumnType(int type) {
+        switch (type) {
+            case Types.DOUBLE:
+            case Types.INTEGER:
+            case Types.BIGINT:
+            case Types.BIT:
+                return type;
+            default:
+                return Types.DOUBLE;
         }
     }
 
