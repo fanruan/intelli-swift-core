@@ -33,4 +33,13 @@ public interface JdbcRequestParserVisitor extends RequestParserVisitor {
      * @return invocation for columns requestType
      */
     ApiInvocation visit(ColumnsRequestInfo tablesRequestInfo);
+
+    /**
+     * Visit catalogs requestType info
+     *
+     * @param tablesRequestInfo columns requestType info
+     * @return invocation for columns requestType
+     */
+
+    ApiInvocation visit(CatalogRequestInfo tablesRequestInfo);
 }
