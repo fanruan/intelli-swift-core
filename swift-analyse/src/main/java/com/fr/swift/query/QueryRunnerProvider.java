@@ -37,11 +37,6 @@ public class QueryRunnerProvider {
     }
 
     public SwiftResultSet query(QueryBean queryBean) throws Exception {
-        return query(QueryBeanFactory.queryBean2String(queryBean));
-    }
-
-    public SwiftResultSet query(String queryJson) throws Exception {
-        QueryBean queryBean = QueryBeanFactory.create(queryJson);
         String queryId = queryBean.getQueryId();
         SwiftResultSet resultSet;
         if (Strings.isNotEmpty(queryId)) {
@@ -54,10 +49,15 @@ public class QueryRunnerProvider {
         ServiceContext serviceContext = ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class);
         resultSet = QueryResultSetSerializer.toSwiftResultSet(
                 serviceContext.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
-        if (Strings.isNotEmpty(queryId)) {
-            sessionFactory.openSession(queryId).putObject(queryId, resultSet);
-        }
+//        if (Strings.isNotEmpty(queryId)) {
+//            sessionFactory.openSession(queryId).putObject(queryId, resultSet);
+//        }
         return resultSet;
+    }
+
+    public SwiftResultSet query(String queryJson) throws Exception {
+        QueryBean queryBean = QueryBeanFactory.create(queryJson);
+        return query(queryBean);
     }
 
     public Map<URI, IndexQuery<ImmutableBitMap>> executeIndexQuery(Table table, Where where) throws Exception {
