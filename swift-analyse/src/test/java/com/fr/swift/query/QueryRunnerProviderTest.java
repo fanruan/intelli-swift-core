@@ -55,7 +55,7 @@ public class QueryRunnerProviderTest {
 
     @Test
     public void query() throws Exception {
-        QueryBean bean = new GroupQueryInfoBean();
+        QueryBean bean = GroupQueryInfoBean.builder("test").build();
         String json = QueryBeanFactory.queryBean2String(bean);
         QueryResultSet qrs = EasyMock.mock(QueryResultSet.class);
         SwiftResultSet resultSet = EasyMock.mock(SwiftResultSet.class);

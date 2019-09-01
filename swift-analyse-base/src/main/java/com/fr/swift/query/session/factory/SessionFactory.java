@@ -16,6 +16,9 @@ public interface SessionFactory extends Clearable {
      */
     Session openSession(String queryId);
 
+
+    void closeSession(String queryId);
+
     /**
      * 设置缓存超时时间 默认5分钟
      *

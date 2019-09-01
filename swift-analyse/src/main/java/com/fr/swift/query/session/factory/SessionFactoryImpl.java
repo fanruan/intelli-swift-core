@@ -1,6 +1,7 @@
 package com.fr.swift.query.session.factory;
 
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.session.QuerySession;
 import com.fr.swift.query.session.Session;
@@ -60,6 +61,7 @@ public class SessionFactoryImpl implements SessionFactory {
 
     @Override
     public Session openSession(String queryId) {
+        SwiftLoggers.getLogger().info(String.format("open session [%s]!", queryId));
         if (Strings.isEmpty(queryId)) {
             return new QuerySession(cacheTimeout);
         }
@@ -81,6 +83,20 @@ public class SessionFactoryImpl implements SessionFactory {
             }
         }
         return session;
+    }
+
+    @Override
+    public void closeSession(String queryId) {
+        SwiftLoggers.getLogger().info(String.format("close session [%s]!", queryId));
+        if (queryId != null) {
+            String sessionId = queryMap2Session.remove(queryId);
+            if (sessionId != null) {
+                final Cache<Session> remove = sessionMap.remove(sessionId);
+                if (null != remove) {
+                    remove.get().close();
+                }
+            }
+        }
     }
 
     @Override
