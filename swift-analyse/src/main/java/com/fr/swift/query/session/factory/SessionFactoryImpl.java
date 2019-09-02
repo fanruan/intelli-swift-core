@@ -1,6 +1,5 @@
 package com.fr.swift.query.session.factory;
 
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.cache.Cache;
 import com.fr.swift.query.session.QuerySession;
@@ -20,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @author yee
  * @date 2018/6/19
  */
-@SwiftBean(name = "swiftQuerySessionFactory")
+//@SwiftBean(name = "swiftQuerySessionFactory")
 @Deprecated
 public class SessionFactoryImpl implements SessionFactory {
 
