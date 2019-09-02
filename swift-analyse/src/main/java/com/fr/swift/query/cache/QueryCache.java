@@ -36,20 +36,31 @@ public class QueryCache implements Clearable {
         createTime = System.currentTimeMillis();
     }
 
+    /**
+     * QueryRunnerProvider中使用，返回SwiftResultSet
+     *
+     * @return SwiftResultSet
+     * @see com.fr.swift.query.QueryRunnerProvider
+     */
     public SwiftResultSet getSwiftResultSet() {
-        return null != resultSet ? resultSet : doQuery();
+        if (null == resultSet) {
+            resultSet = QueryResultSetSerializer.toSwiftResultSet(function.apply(queryBean), queryBean);
+        }
+        return resultSet;
     }
 
+    /**
+     * 在AnalyseService中使用，返回的是序列化的QueryResultSet
+     *
+     * @return 序列化的QueryResultSet
+     * @throws Exception
+     * @see com.fr.swift.service.AnalyseService
+     */
     public QueryResultSet getQueryResultSet() throws Exception {
         if (null == queryResultSet) {
             queryResultSet = QueryBuilder.buildQuery(queryBean).getQueryResult();
         }
         return QueryResultSetSerializer.serialize(queryBean.getQueryType(), queryResultSet);
-    }
-
-    private SwiftResultSet doQuery() {
-        this.resultSet = QueryResultSetSerializer.toSwiftResultSet(function.apply(queryBean), queryBean);
-        return this.resultSet;
     }
 
     @Override
