@@ -11,6 +11,7 @@ import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.session.factory.SessionFactory;
@@ -93,9 +94,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public QueryResultSet getQueryResult(String queryJson) throws Exception {
         SwiftLoggers.getLogger().debug(queryJson);
-        // TODO: 2018/12/12
         QueryBean info = QueryBeanFactory.create(queryJson);
-        return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
+        return QueryCacheBuilder.builder().getOrBuildCache(info).getQueryResultSet();
+//        return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
     }
 
     @Override

@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2018/6/19
  */
 @SwiftBean(name = "swiftQuerySessionFactory")
+@Deprecated
 public class SessionFactoryImpl implements SessionFactory {
 
     /**

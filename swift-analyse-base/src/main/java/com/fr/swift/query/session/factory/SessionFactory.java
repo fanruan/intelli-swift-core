@@ -7,6 +7,7 @@ import com.fr.swift.util.Clearable;
  * @author yee
  * @date 2018/6/19
  */
+@Deprecated
 public interface SessionFactory extends Clearable {
     /**
      * 打开一个session

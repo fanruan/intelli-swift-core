@@ -13,6 +13,7 @@ import com.fr.swift.executor.task.impl.DownloadExecutorTask;
 import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.task.impl.UploadExecutorTask;
+import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -137,6 +138,7 @@ public class SwiftServiceContext implements ServiceContext {
 
     @Override
     public void clearQuery(String queryId) throws Exception {
-        sessionFactory.closeSession(queryId);
+        QueryCacheBuilder.builder().removeCache(queryId);
+//        sessionFactory.closeSession(queryId);
     }
 }
