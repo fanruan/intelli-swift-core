@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class QueryCacheBuilder {
     /**
-     * session超时默认10分钟
+     * session超时默认5分钟
      */
     private static final int DEFAULT_TIMEOUT = 5;
 
