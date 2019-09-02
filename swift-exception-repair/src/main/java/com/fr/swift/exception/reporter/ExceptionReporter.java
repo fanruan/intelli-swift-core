@@ -28,12 +28,12 @@ public class ExceptionReporter {
                 .setContext(context).build();
         ExceptionInfoService infoService = SwiftContext.get().getBean(ExceptionInfoService.class);
         if (infoService.existsException(bean)) {
-            SwiftLoggers.getLogger().info("Exception exists!");
+            SwiftLoggers.getLogger().info("Exception info {} exists!", bean);
             return;
         }
         infoService.maintain(bean);
         if (!SlaveExceptionInfoQueue.getInstance().offer(bean)) {
-            SwiftLoggers.getLogger().warn("Add into SlaveExceptionInfoQueue Failed");
+            SwiftLoggers.getLogger().warn("Add into SlaveExceptionInfoQueue Failed, {}", bean);
         }
     }
 }

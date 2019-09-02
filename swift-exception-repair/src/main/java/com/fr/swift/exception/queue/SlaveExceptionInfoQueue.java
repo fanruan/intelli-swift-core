@@ -2,9 +2,9 @@ package com.fr.swift.exception.queue;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.exception.ExceptionInfo;
-import com.fr.swift.exception.service.SwiftExceptionInfoServiceImpl;
+import com.fr.swift.exception.service.ExceptionInfoService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.selector.ClusterSelector;
 
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -26,7 +26,7 @@ public class SlaveExceptionInfoQueue implements ExceptionInfoQueue {
 
     private BlockingQueue<ExceptionInfo> queue = new ArrayBlockingQueue<>(10000);
 
-    private SwiftExceptionInfoServiceImpl infoService = SwiftContext.get().getBean(SwiftExceptionInfoServiceImpl.class);
+    private ExceptionInfoService infoService = SwiftContext.get().getBean(ExceptionInfoService.class);
 
     private SlaveExceptionInfoQueue() {
     }
@@ -44,11 +44,11 @@ public class SlaveExceptionInfoQueue implements ExceptionInfoQueue {
     @Override
     public void initExceptionInfoQueue() {
         //slave队列初始化时会找出operateNodeId为本节点id且State为PENDING的异常信息加入队列
-        String currentId = SwiftProperty.getProperty().getClusterId();
+        String currentId = ClusterSelector.getInstance().getFactory().getCurrentId();
         Set<ExceptionInfo> infoSet = infoService.getExceptionInfo(currentId, ExceptionInfo.State.PENDING);
         for (ExceptionInfo info : infoSet) {
             if (!queue.offer(info)) {
-                SwiftLoggers.getLogger().warn("Add ExceptionInfo into SlaveExceptionInfoQueue Failed");
+                SwiftLoggers.getLogger().warn("Add ExceptionInfo into SlaveExceptionInfoQueue Failed, {}", info);
             }
         }
     }
