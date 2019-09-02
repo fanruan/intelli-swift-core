@@ -13,7 +13,6 @@ import com.fr.swift.query.result.serialize.QueryResultSetSerializer;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.util.Strings;
@@ -29,6 +28,7 @@ public class QueryRunnerProvider {
     private static QueryRunnerProvider ourInstance = new QueryRunnerProvider();
     private QueryIndexRunner indexRunner;
     private SessionFactory sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
+    private static final String MERGED = "MERGED-";
 
     private QueryRunnerProvider() {
     }
@@ -41,14 +41,19 @@ public class QueryRunnerProvider {
         String queryId = queryBean.getQueryId();
         if (Strings.isNotEmpty(queryId)) {
             Session session = sessionFactory.openSession(queryId);
-            final QueryResultSet queryResultSet = (QueryResultSet) session.getObject(queryId);
-            if (queryResultSet != null) {
-                return QueryResultSetSerializer.toSwiftResultSet(queryResultSet, queryBean);
+            // TODO 每个QueryResultSet的取下一页可以重新实现下，这边目前还得这么写，不然会有数据丢失
+            final SwiftResultSet resultSet = (SwiftResultSet) session.getObject(MERGED + queryId);
+            if (null != resultSet) {
+                return resultSet;
             }
         }
         ServiceContext serviceContext = ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class);
-        return QueryResultSetSerializer.toSwiftResultSet(
+        final SwiftResultSet swiftResultSet = QueryResultSetSerializer.toSwiftResultSet(
                 serviceContext.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
+        if (Strings.isNotEmpty(queryId)) {
+            sessionFactory.openSession(queryId).putObject(MERGED + queryId, swiftResultSet);
+        }
+        return swiftResultSet;
     }
 
     public SwiftResultSet query(String queryJson) throws Exception {
