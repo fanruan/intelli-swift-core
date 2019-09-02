@@ -22,6 +22,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author yee
  * @date 2018/7/17
  */
+@Deprecated
 public class QuerySession implements Session {
     private Map<Object, Cache<?>> cache;
     private ReentrantReadWriteLock storeLock = new ReentrantReadWriteLock();

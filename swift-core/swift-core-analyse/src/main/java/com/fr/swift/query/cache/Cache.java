@@ -4,6 +4,7 @@ package com.fr.swift.query.cache;
  * @author yee
  * @date 2018/6/19
  */
+@Deprecated
 public class Cache<T> {
 
     private T cacheObject;

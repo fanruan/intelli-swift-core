@@ -54,7 +54,7 @@
 //                @Override
 //                public MergeRow apply(List<GroupNode> p) {
 //                    MergeRow row = new MergeRow(resultSetIndex, metricLengthList, p);
-//                    row.setValue(resultSetIndex, p.get(p.size() - 1).getAggregatorValue());
+//                    row.setValue(resultSetIndex, p.getSwiftResultSet(p.size() - 1).getAggregatorValue());
 //                    return row;
 //                }
 //            });
@@ -67,7 +67,7 @@
 //                return Pair.of(p.getKey(), p.getAllValues());
 //            }
 //        });
-//        return new NodeResultSetImpl(resultSets.get(0).getFetchSize(), createNode(dimensionSize, rowIt), crateMetaData(resultSets, dimensions));
+//        return new NodeResultSetImpl(resultSets.getSwiftResultSet(0).getFetchSize(), createNode(dimensionSize, rowIt), crateMetaData(resultSets, dimensions));
 //    }
 //
 //    public static GroupNode createNode(int dimensionSize, Iterator<Pair<List<Object>, AggregatorValue[]>> iterator) {
@@ -84,15 +84,15 @@
 //            AggregatorValue[] values = row.getValue();
 //            int deep = 0;
 //            for (; deep < key.size(); deep++) {
-//                if (key.get(deep) == null) {
+//                if (key.getSwiftResultSet(deep) == null) {
 //                    break;
 //                }
-//                if (cachedNode[deep + 1] == null || cachedKey[deep] == null || !cachedKey[deep].equals(key.get(deep))) {
+//                if (cachedNode[deep + 1] == null || cachedKey[deep] == null || !cachedKey[deep].equals(key.getSwiftResultSet(deep))) {
 //                    // 刷新缓存索引，deep之后的索引都无效了
 //                    Arrays.fill(cachedKey, deep, cachedKey.length, null);
 //                    // cachedNode和cachedIndex是同步更新的
-//                    cachedNode[deep + 1] = new GroupNode(deep, key.get(deep));
-//                    cachedKey[deep] = key.get(deep);
+//                    cachedNode[deep + 1] = new GroupNode(deep, key.getSwiftResultSet(deep));
+//                    cachedKey[deep] = key.getSwiftResultSet(deep);
 //                    GroupNode node = (GroupNode) cachedNode[deep];
 //                    node.addChild((GroupNode) cachedNode[deep + 1]);
 //                }
@@ -128,7 +128,7 @@
 //
 //            @Override
 //            public String getColumnName(int index) {
-//                return columnNames.get(index);
+//                return columnNames.getSwiftResultSet(index);
 //            }
 //
 //            @Override
@@ -230,8 +230,8 @@
 //            List<?> key2 = o2.getKey();
 //            assert key1.size() == key2.size();
 //            for (int i = 0; i < key1.size(); i++) {
-//                String s1 = key1.get(i) == null ? null : key1.get(i).toString();
-//                String s2 = key2.get(i) == null ? null : key2.get(i).toString();
+//                String s1 = key1.getSwiftResultSet(i) == null ? null : key1.getSwiftResultSet(i).toString();
+//                String s2 = key2.getSwiftResultSet(i) == null ? null : key2.getSwiftResultSet(i).toString();
 //                if (Comparators.STRING_ASC.compare(s1, s2) > 0) {
 //                    return 1;
 //                }
@@ -265,7 +265,7 @@
 //        private void initValues(List<Integer> metricLengthList) {
 //            this.values = new AggregatorValue[metricLengthList.size()][];
 //            for (int i = 0; i < values.length; i++) {
-//                values[i] = new AggregatorValue[metricLengthList.get(i)];
+//                values[i] = new AggregatorValue[metricLengthList.getSwiftResultSet(i)];
 //            }
 //        }
 //
