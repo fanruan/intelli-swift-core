@@ -13,6 +13,7 @@ import com.fr.swift.query.result.serialize.QueryResultSetSerializer;
 import com.fr.swift.query.session.Session;
 import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.SwiftResultSet;
+import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.util.Strings;
@@ -38,21 +39,16 @@ public class QueryRunnerProvider {
 
     public SwiftResultSet query(QueryBean queryBean) throws Exception {
         String queryId = queryBean.getQueryId();
-        SwiftResultSet resultSet;
         if (Strings.isNotEmpty(queryId)) {
             Session session = sessionFactory.openSession(queryId);
-            resultSet = (SwiftResultSet) session.getObject(queryId);
-            if (resultSet != null) {
-                return resultSet;
+            final QueryResultSet queryResultSet = (QueryResultSet) session.getObject(queryId);
+            if (queryResultSet != null) {
+                return QueryResultSetSerializer.toSwiftResultSet(queryResultSet, queryBean);
             }
         }
         ServiceContext serviceContext = ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class);
-        resultSet = QueryResultSetSerializer.toSwiftResultSet(
+        return QueryResultSetSerializer.toSwiftResultSet(
                 serviceContext.getQueryResult(QueryBeanFactory.queryBean2String(queryBean)), queryBean);
-//        if (Strings.isNotEmpty(queryId)) {
-//            sessionFactory.openSession(queryId).putObject(queryId, resultSet);
-//        }
-        return resultSet;
     }
 
     public SwiftResultSet query(String queryJson) throws Exception {
