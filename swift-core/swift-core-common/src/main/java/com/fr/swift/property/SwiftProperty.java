@@ -91,9 +91,9 @@ public class SwiftProperty {
             swiftBeansIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift-beans.properties");
         }
 
-        try {
-            properties.load(swiftBeansIn);
-            properties.load(swiftIn);
+        try (InputStream in = swiftIn; InputStream beanIn = swiftBeansIn) {
+            properties.load(in);
+            properties.load(beanIn);
             initSwiftServiceNames();
             initServerServiceNames();
             initRpcMaxObjectSize();
