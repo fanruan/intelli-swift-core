@@ -10,7 +10,8 @@ import com.fr.swift.util.Assert;
  */
 public abstract class BaseAllotRule implements AllotRule {
 
-    public static final int CAPACITY = 1000000, MEM_CAPACITY = 100000;
+    //轻易不要改
+    public static final int CAPACITY = 10000000, MEM_CAPACITY = 100000;
 
     @JsonProperty("capacity")
     private int capacity;
