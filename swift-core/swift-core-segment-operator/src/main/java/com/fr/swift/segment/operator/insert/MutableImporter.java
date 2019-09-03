@@ -98,14 +98,6 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
     }
 
     @Override
-    /**
-     * 目前看起来可以直接用基类的进行持久化，不知道是否有坑
-     */
-    protected void persistMeta() throws SQLException {
-        super.persistMeta();
-    }
-
-    @Override
     protected void onSucceed() {
         segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
         SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
