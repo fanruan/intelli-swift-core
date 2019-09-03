@@ -9,7 +9,6 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryIndexRunner;
-import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 
@@ -23,8 +22,6 @@ import java.util.Map;
 public class QueryRunnerProvider {
     private static QueryRunnerProvider ourInstance = new QueryRunnerProvider();
     private QueryIndexRunner indexRunner;
-    private SessionFactory sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
-    private static final String MERGED = "MERGED-";
 
     private QueryRunnerProvider() {
     }
