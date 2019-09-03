@@ -18,11 +18,11 @@ public class SwiftJdbcServerInfo implements Serializable {
     private static final long serialVersionUID = -2770151852252847453L;
     @Id
     private String clusterId;
-    @Column(name = "host", precision = 255)
+    @Column(name = "host")
     private String host;
     @Column(name = "port")
     private int port;
-    @Column(name = "version", precision = 255)
+    @Column(name = "version")
     private String version;
 
     public SwiftJdbcServerInfo(String clusterId, String host, int port, String version) {
