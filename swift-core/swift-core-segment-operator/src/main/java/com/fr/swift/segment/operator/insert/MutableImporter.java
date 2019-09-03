@@ -1,8 +1,10 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
@@ -22,6 +24,7 @@ import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.util.IoUtil;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,6 +45,7 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
     @Override
     public void importData(MutableResultSet mutableResultSet) throws Exception {
         try {
+            persistMeta();
             int cursor = 0;
             while (mutableResultSet.hasNext()) {
                 Row row = mutableResultSet.getNextRow();
@@ -68,6 +72,7 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
                 }
                 insertings.get(segInfo).insert(row);
             }
+            onSucceed();
         } finally {
             IoUtil.close(mutableResultSet);
             IoUtil.release(this);
@@ -90,6 +95,14 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
+    }
+
+    @Override
+    /**
+     * 目前看起来可以直接用基类的进行持久化，不知道是否有坑
+     */
+    protected void persistMeta() throws SQLException {
+        super.persistMeta();
     }
 
     @Override
