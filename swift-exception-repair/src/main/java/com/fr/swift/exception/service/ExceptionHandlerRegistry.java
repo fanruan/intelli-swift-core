@@ -14,16 +14,15 @@ import java.util.Map;
  */
 public class ExceptionHandlerRegistry {
 
-    public static final ExceptionHandlerRegistry INSTANCE = new ExceptionHandlerRegistry();
-
-    private Map<ExceptionInfo.Type, ExceptionHandler> handlerMap = new IdentityHashMap<>();
+    private static final ExceptionHandlerRegistry INSTANCE = new ExceptionHandlerRegistry();
 
     public static ExceptionHandlerRegistry getInstance() {
         return INSTANCE;
     }
 
-    private ExceptionHandlerRegistry() {
+    private Map<ExceptionInfo.Type, ExceptionHandler> handlerMap = new IdentityHashMap<>();
 
+    private ExceptionHandlerRegistry() {
     }
 
     public void registerExceptionHandler(ExceptionHandler handler) {
