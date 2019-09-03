@@ -53,6 +53,12 @@ public class SwiftProperty {
      */
     private Set<String> serverServiceNames;
 
+    /**
+     * swift jdbc server相关
+     */
+    private String jdbcHost;
+    private int jdbcPort;
+
     private String redisIp;
     private int redisPort;
     private String redisPassward;
@@ -89,6 +95,7 @@ public class SwiftProperty {
             initConfigDbDialect();
             initConfigDbJdbcUrl();
             initRedisConf();
+            initJdbcServerProperties();
         } catch (IOException e) {
             Crasher.crash(e);
         }
@@ -146,6 +153,12 @@ public class SwiftProperty {
             this.clusterId = SwiftConfigConstants.LOCALHOST;
         }
     }
+
+    private void initJdbcServerProperties() {
+        this.jdbcHost = properties.getProperty("swift.jdbcHost", "127.0.0.1");
+        this.jdbcPort = Integer.parseInt(properties.getProperty("swift.jdbcPort", "59526"));
+    }
+
 
     public void setClusterId(String clusterId) {
         this.clusterId = clusterId;
@@ -256,5 +269,22 @@ public class SwiftProperty {
 
     public int getRedisTimeout() {
         return redisTimeout;
+    }
+
+
+    public String getJdbcHost() {
+        return jdbcHost;
+    }
+
+    public void setJdbcHost(String jdbcHost) {
+        this.jdbcHost = jdbcHost;
+    }
+
+    public int getJdbcPort() {
+        return jdbcPort;
+    }
+
+    public void setJdbcPort(int jdbcPort) {
+        this.jdbcPort = jdbcPort;
     }
 }
