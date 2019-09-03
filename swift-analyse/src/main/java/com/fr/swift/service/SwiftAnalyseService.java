@@ -14,7 +14,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
@@ -45,7 +44,6 @@ import java.util.Map;
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService, Serializable {
     private static final long serialVersionUID = 841582089735823794L;
 
-    private transient SessionFactory sessionFactory;
     private transient boolean loadable = true;
 
     private transient ClusterEventListener analyseClusterListener;
@@ -58,7 +56,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
-        sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
 //        cacheSegments();
         ClusterListenerHandler.addExtraListener(analyseClusterListener);
         return start;
@@ -80,7 +77,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
-        sessionFactory = null;
         ClusterListenerHandler.removeExtraListener(analyseClusterListener);
         loadable = true;
         return true;
