@@ -30,6 +30,11 @@ public final class QueryBuilder {
      */
     public static <T extends QueryResultSet<?>> Query<T> buildQuery(String queryString) throws Exception {
         QueryInfoBean bean = QueryBeanFactory.create(queryString);
+        return buildQuery(bean);
+    }
+
+
+    public static <T extends QueryResultSet<?>> Query<T> buildQuery(QueryBean bean) throws Exception {
         switch (bean.getQueryType()) {
             case DETAIL:
                 return (Query<T>) DetailQueryBuilder.of((DetailQueryInfoBean) bean).buildQuery();

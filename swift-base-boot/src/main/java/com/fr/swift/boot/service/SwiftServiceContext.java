@@ -13,7 +13,7 @@ import com.fr.swift.executor.task.impl.DownloadExecutorTask;
 import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.task.impl.UploadExecutorTask;
-import com.fr.swift.query.session.factory.SessionFactory;
+import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
@@ -41,7 +41,6 @@ public class SwiftServiceContext implements ServiceContext {
     private AnalyseService analyseService = SwiftContext.get().getBean(AnalyseService.class);
     private HistoryService historyService = SwiftContext.get().getBean(HistoryService.class);
     private BaseService baseService = SwiftContext.get().getBean(BaseService.class);
-    private SessionFactory sessionFactory = SwiftContext.get().getBean(SessionFactory.class);
 
     @Override
     public void cleanMetaCache(String[] sourceKeys) {
@@ -137,6 +136,7 @@ public class SwiftServiceContext implements ServiceContext {
 
     @Override
     public void clearQuery(String queryId) throws Exception {
-        sessionFactory.closeSession(queryId);
+        QueryCacheBuilder.builder().removeCache(queryId);
+//        sessionFactory.closeSession(queryId);
     }
 }
