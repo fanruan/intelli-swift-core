@@ -56,7 +56,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         this.alloter = alloter;
     }
 
-    private void persistMeta() throws SQLException {
+    protected void persistMeta() throws SQLException {
         Database db = SwiftDatabase.getInstance();
         SourceKey tableKey = dataSource.getSourceKey();
         // todo 分布式导入可能有多线程坑
