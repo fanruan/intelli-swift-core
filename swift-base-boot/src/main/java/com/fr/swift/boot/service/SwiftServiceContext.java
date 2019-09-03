@@ -137,6 +137,5 @@ public class SwiftServiceContext implements ServiceContext {
     @Override
     public void clearQuery(String queryId) throws Exception {
         QueryCacheBuilder.builder().removeCache(queryId);
-//        sessionFactory.closeSession(queryId);
     }
 }
