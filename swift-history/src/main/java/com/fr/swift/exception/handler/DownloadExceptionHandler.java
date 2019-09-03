@@ -1,9 +1,5 @@
 package com.fr.swift.exception.handler;
 
-/**
- * Create by lifan on 2019-08-22 17:27
- */
-
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.DownloadExceptionContext;
 import com.fr.swift.exception.ExceptionInfo;

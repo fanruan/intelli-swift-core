@@ -1,6 +1,6 @@
 package com.fr.swift.util.concurrent;
 
-import com.fr.swift.util.Util;
+import com.fr.swift.util.Assert;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,7 +19,7 @@ abstract class BaseThreadFactory implements ThreadFactory {
     }
 
     BaseThreadFactory(String namePrefix) {
-        Util.requireNonNull(namePrefix);
+        Assert.notNull(namePrefix);
 
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() :
@@ -43,6 +43,7 @@ abstract class BaseThreadFactory implements ThreadFactory {
         if (t.getPriority() != Thread.NORM_PRIORITY) {
             t.setPriority(Thread.NORM_PRIORITY);
         }
+        t.setUncaughtExceptionHandler(SwiftThreadUncaughtExceptionHandler.INSTANCE);
         return t;
     }
 
