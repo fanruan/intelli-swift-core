@@ -1,8 +1,12 @@
 package com.fr.swift.property;
 
 import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -70,11 +74,26 @@ public class SwiftProperty {
 
     private void initProperties() {
         properties = new Properties();
-        InputStream swiftIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift.properties");
-        InputStream swiftBeansIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift-beans.properties");
+        InputStream swiftIn = null;
         try {
-            properties.load(swiftBeansIn);
-            properties.load(swiftIn);
+            SwiftLoggers.getLogger().info("read external swift.properties!");
+            swiftIn = new BufferedInputStream(new FileInputStream(("swift.properties")));
+        } catch (FileNotFoundException e) {
+            SwiftLoggers.getLogger().warn("Failed to read external swift.properties, read internal swift.properties instead!");
+            swiftIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift.properties");
+        }
+        InputStream swiftBeansIn = null;
+        try {
+            SwiftLoggers.getLogger().info("read external swift-beans.properties!");
+            swiftBeansIn = new BufferedInputStream(new FileInputStream(("swift-beans.properties")));
+        } catch (FileNotFoundException e) {
+            SwiftLoggers.getLogger().warn("Failed to read external swift.properties, read internal swift-beans.properties instead!");
+            swiftBeansIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift-beans.properties");
+        }
+
+        try (InputStream in = swiftIn; InputStream beanIn = swiftBeansIn) {
+            properties.load(in);
+            properties.load(beanIn);
             initSwiftServiceNames();
             initServerServiceNames();
             initRpcMaxObjectSize();
@@ -82,13 +101,6 @@ public class SwiftProperty {
             initCluster();
             initClusterId();
             initMasterAddress();
-            initSelfStart();
-            initConfigDbDriverClass();
-            initConfigDbUsername();
-            initConfigDbPasswd();
-            initConfigDbDialect();
-            initConfigDbJdbcUrl();
-            initRedisConf();
         } catch (IOException e) {
             Crasher.crash(e);
         }
@@ -159,36 +171,6 @@ public class SwiftProperty {
         this.masterAddress = properties.getProperty("swift.masterAddress");
     }
 
-    private void initSelfStart() {
-        this.selfStart = Boolean.parseBoolean(properties.getProperty("swift.selfStart"));
-    }
-
-    private void initConfigDbDriverClass() {
-        this.configDbDriverClass = properties.getProperty("swift.configDb.driver");
-    }
-
-    private void initConfigDbUsername() {
-        this.configDbUsername = properties.getProperty("swift.configDb.username");
-    }
-
-    private void initConfigDbPasswd() {
-        this.configDbPasswd = properties.getProperty("swift.configDb.passwd");
-    }
-
-    private void initConfigDbDialect() {
-        this.configDbDialect = properties.getProperty("swift.configDb.dialect");
-    }
-
-    private void initConfigDbJdbcUrl() {
-        this.configDbJdbcUrl = properties.getProperty("swift.configDb.url");
-    }
-
-    private void initRedisConf() {
-        this.redisIp = properties.getProperty("redis.ip");
-        this.redisPort = Integer.valueOf(properties.getProperty("redis.port"));
-        this.redisPassward = properties.getProperty("redis.passward");
-        this.redisTimeout = Integer.valueOf(properties.getProperty("redis.timeout"));
-    }
 
     public int getRpcMaxObjectSize() {
         return rpcMaxObjectSize;
@@ -208,30 +190,6 @@ public class SwiftProperty {
 
     public String getMasterAddress() {
         return masterAddress;
-    }
-
-    public boolean isSelfStart() {
-        return selfStart;
-    }
-
-    public String getConfigDbDriverClass() {
-        return configDbDriverClass;
-    }
-
-    public String getConfigDbUsername() {
-        return configDbUsername;
-    }
-
-    public String getConfigDbPasswd() {
-        return configDbPasswd;
-    }
-
-    public String getConfigDbDialect() {
-        return configDbDialect;
-    }
-
-    public String getConfigDbJdbcUrl() {
-        return configDbJdbcUrl;
     }
 
     public Set<String> getSwiftServiceNames() {
