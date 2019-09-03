@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Lyon on 2018/6/2.
@@ -18,6 +19,11 @@ import java.util.List;
 public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean implements Serializable {
 
     private static final long serialVersionUID = 8719563190390818951L;
+
+    private GroupQueryInfoBean() {
+
+    }
+
     @JsonProperty
     private List<AggregationBean> aggregations = new ArrayList<AggregationBean>(0);
     @JsonProperty
@@ -91,6 +97,9 @@ public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean impleme
         }
 
         public GroupQueryInfoBean build() {
+            if (bean.getQueryId() == null) {
+                bean.setQueryId(UUID.randomUUID().toString());
+            }
             return bean;
         }
     }
