@@ -6,6 +6,7 @@ import com.fr.swift.exception.inspect.bean.RpcHealthInfoBean;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ServiceContext;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -36,7 +37,7 @@ public class RpcServiceHealthInspector implements ComponentHealthInspector<Set<S
 
     @Override
     public Set<String> inspect() {
-        return null;
+        return Collections.emptySet();
     }
 
 }
