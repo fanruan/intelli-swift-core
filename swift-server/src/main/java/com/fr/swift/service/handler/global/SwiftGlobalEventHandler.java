@@ -7,7 +7,9 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.config.entity.SwiftJdbcServerInfo;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
+import com.fr.swift.config.service.SwiftJdbcServerInfoService;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.analyse.SegmentLocationRpcEvent;
@@ -98,12 +100,13 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
                 }
                 break;
             }
-            case GET_ANALYSE_REAL_TIME:
+            case GET_JDBC_ADDRESS:
                 Map<String, ClusterEntity> realtime = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.REAL_TIME);
                 Map<String, ClusterEntity> analyse = ClusterSwiftServerService.getInstance().getClusterEntityByService(ServiceType.ANALYSE);
-                Map<ServiceType, List<String>> result = new HashMap<ServiceType, List<String>>();
-                makeResultMap(realtime, result, ServiceType.REAL_TIME);
-                makeResultMap(analyse, result, ServiceType.ANALYSE);
+                Map<String, SwiftJdbcServerInfo> serverInfo = SwiftContext.get().getBean(SwiftJdbcServerInfoService.class).getAllServerInfo();
+                Map<ServiceType, List<String>> result = new HashMap<>(2);
+                makeResultMap(realtime, serverInfo, result, ServiceType.REAL_TIME);
+                makeResultMap(analyse, serverInfo, result, ServiceType.ANALYSE);
                 return (S) result;
             case DELETE:
                 Pair<SourceKey, Where> content = (Pair<SourceKey, Where>) event.getContent();
@@ -162,12 +165,16 @@ public class SwiftGlobalEventHandler extends AbstractHandler<AbstractGlobalRpcEv
         return null;
     }
 
-    private void makeResultMap(Map<String, ClusterEntity> realtime, Map<ServiceType, List<String>> result, ServiceType type) {
+    private void makeResultMap(Map<String, ClusterEntity> realtime, Map<String, SwiftJdbcServerInfo> address, Map<ServiceType, List<String>> result, ServiceType type) {
         for (String id : realtime.keySet()) {
+            if (!address.containsKey(id)) {
+                continue;
+            }
             if (result.get(type) == null) {
                 result.put(type, new ArrayList<String>());
             }
-            result.get(type).add(id);
+            final SwiftJdbcServerInfo swiftJdbcServerInfo = address.get(id);
+            result.get(type).add(swiftJdbcServerInfo.getHost() + ":" + swiftJdbcServerInfo.getPort());
         }
     }
 

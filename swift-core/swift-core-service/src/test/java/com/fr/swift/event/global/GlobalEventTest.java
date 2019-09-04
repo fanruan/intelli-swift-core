@@ -36,9 +36,9 @@ public class GlobalEventTest extends TestCase {
     }
 
     public void testGetAnalyseAndRealTimeAddrEvent() {
-        GetAnalyseAndRealTimeAddrEvent event = new GetAnalyseAndRealTimeAddrEvent();
+        GetJdbcAddresses event = new GetJdbcAddresses();
         assertEquals(event.type(), SwiftRpcEvent.EventType.GLOBAL);
-        assertEquals(event.subEvent(), AbstractGlobalRpcEvent.Event.GET_ANALYSE_REAL_TIME);
+        assertEquals(event.subEvent(), AbstractGlobalRpcEvent.Event.GET_JDBC_ADDRESS);
         assertNull(event.getContent());
     }
 
