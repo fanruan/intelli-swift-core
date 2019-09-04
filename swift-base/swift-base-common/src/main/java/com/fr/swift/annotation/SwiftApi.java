@@ -14,5 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface SwiftApi {
+    Class service() default Void.class;
     boolean enable() default true;
 }
