@@ -7,7 +7,7 @@ import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.db.Where;
-import com.fr.swift.exception.event.HealthInspectionRpcEvent;
+import com.fr.swift.exception.event.ServiceHealthInspectionRpcEvent;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
@@ -27,6 +27,7 @@ import com.fr.swift.service.BaseService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.bean.ServiceHealthInfoBean;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.stuff.IndexingStuff;
@@ -150,23 +151,30 @@ public class SwiftServiceContext implements ServiceContext {
     }
 
     @Override
-    public Set<String> inspectMasterRpcHealth(SwiftService service) {
+    public Set<String> inspectMasterRpcHealth(SwiftService target, boolean inspectOtherSlave) {
         SwiftLoggers.getLogger().debug("Inspect RpcHealth to Master");
         try {
-            return Collections.singleton((String) ProxySelector.getProxy(RemoteSender.class).trigger(new HealthInspectionRpcEvent().inspectMasterAccessiable()));
+            if (inspectOtherSlave) {
+                return Collections.singleton((String) ProxySelector.getProxy(RemoteSender.class).trigger(new ServiceHealthInspectionRpcEvent().inspectOtherSlaveAccessiable(target)));
+            } else {
+                return Collections.singleton((String) ProxySelector.getProxy(RemoteSender.class).trigger(new ServiceHealthInspectionRpcEvent().inspectMasterAccessiable()));
+            }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("Master Communication inspect failed:", e);
         }
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     @Override
-    public Set<String> inspectSlaveRpcHealth(SwiftService service) {
+    public Set<String> inspectSlaveRpcHealth(SwiftService target) {
         Set<String> healthySwiftServiceSets = new HashSet<>();
         try {
-            healthySwiftServiceSets.add(SwiftContext.get().getBean(service.getClass()).getId() + "/" + service.getClass().getName());
+            ServiceHealthInfoBean infoBean = new ServiceHealthInfoBean();
+            infoBean.setService(SwiftContext.get().getBean(((SwiftService) target).getClass()));
+            infoBean.setServiceInfo(target.getClass().getName());
+            healthySwiftServiceSets.add(infoBean.getInspectResult());
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error("Other Slave Communication inspect failed:", e);
+            SwiftLoggers.getLogger().error("Slave Communication inspect failed:", e);
         }
         return healthySwiftServiceSets;
     }

@@ -5,12 +5,14 @@ package com.fr.swift.exception.inspect;
  * @version 1.1
  * Created by Marvin on 8/30/2019
  */
-public interface ComponentHealthInspector<T, E> {
+public interface ComponentHealthInspector<R, T> {
     /**
      * 检测组件是否可用
      *
-     * @param inspectedObject
+     * @param info
      * @return
      */
-    T inspect(E inspectedObject);
+    R inspect(T info);
+
+    R inspect();
 }

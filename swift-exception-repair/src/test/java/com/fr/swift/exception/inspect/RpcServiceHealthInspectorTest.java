@@ -4,6 +4,7 @@ import com.fr.swift.ClusterNodeManager;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.exception.inspect.bean.RpcHealthInfoBean;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.SwiftService;
@@ -29,6 +30,7 @@ public class RpcServiceHealthInspectorTest {
     RpcServiceHealthInspector inspector;
     SwiftService service;
     ClusterNodeManager manager;
+    RpcHealthInfoBean info;
 
     @Before
     public void setUp() {
@@ -43,6 +45,9 @@ public class RpcServiceHealthInspectorTest {
         PowerMockito.when(selector.getFactory()).thenReturn(manager);
 
         service = PowerMockito.mock(SwiftService.class);
+        info = PowerMockito.mock(RpcHealthInfoBean.class);
+        PowerMockito.when(info.getTarget()).thenReturn(service);
+        PowerMockito.when(info.isInspectOtherSlave()).thenReturn(false);
 
         ServiceContext context = PowerMockito.mock(ServiceContext.class);
         PowerMockito.when(ProxySelector.getProxy(ServiceContext.class)).thenReturn(context);
@@ -51,7 +56,7 @@ public class RpcServiceHealthInspectorTest {
         BeanFactory beanFactory = PowerMockito.mock(BeanFactory.class);
         PowerMockito.when(SwiftContext.get()).thenReturn(beanFactory);
         PowerMockito.when(beanFactory.getBean(ServiceContext.class)).thenReturn(context);
-        PowerMockito.when(context.inspectMasterRpcHealth(service)).thenReturn(Collections.singleton("127.0.0.1:7000"));
+        PowerMockito.when(context.inspectMasterRpcHealth(service, false)).thenReturn(Collections.singleton("127.0.0.1:7000"));
     }
 
     @Test
@@ -59,10 +64,10 @@ public class RpcServiceHealthInspectorTest {
         inspector = PowerMockito.spy(new RpcServiceHealthInspector());
 
         PowerMockito.when(manager.isMaster()).thenReturn(true);
-        Assert.assertEquals(inspector.inspect(service), Collections.singleton("127.0.0.1:8000"));
+        Assert.assertEquals(inspector.inspect(info), Collections.singleton("127.0.0.1:8000"));
 
         PowerMockito.when(manager.isMaster()).thenReturn(false);
-        Assert.assertEquals(inspector.inspect(service), Collections.singleton("127.0.0.1:7000"));
+        Assert.assertEquals(inspector.inspect(info), Collections.singleton("127.0.0.1:7000"));
 
     }
 }

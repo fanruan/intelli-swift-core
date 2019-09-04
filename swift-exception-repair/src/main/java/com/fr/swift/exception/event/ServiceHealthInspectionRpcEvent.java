@@ -8,19 +8,18 @@ import com.fr.swift.service.SwiftService;
  * @version 1.1
  * Created by Marvin on 8/30/2019
  */
-public class HealthInspectionRpcEvent extends AbstractHealthInspectionRpcEvent<SwiftService> {
+public class ServiceHealthInspectionRpcEvent extends AbstractHealthInspectionRpcEvent<SwiftService> {
     private static final long serialVersionUID = 6914730085135484899L;
 
     private Event event;
     private SwiftService service;
 
-    public HealthInspectionRpcEvent inspectMasterAccessiable() {
+    public ServiceHealthInspectionRpcEvent inspectMasterAccessiable() {
         this.event = Event.INSPECT_MASTER;
-        this.service = null;
         return this;
     }
 
-    public HealthInspectionRpcEvent inspectOtherSlaveAccessiable(SwiftService service) {
+    public ServiceHealthInspectionRpcEvent inspectOtherSlaveAccessiable(SwiftService service) {
         this.event = Event.INSPECT_SLAVE;
         this.service = service;
         return this;

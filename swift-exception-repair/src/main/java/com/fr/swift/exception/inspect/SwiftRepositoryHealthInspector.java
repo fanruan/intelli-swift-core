@@ -1,6 +1,6 @@
 package com.fr.swift.exception.inspect;
 
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.exception.inspect.bean.ComponentHealthInfo;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 
@@ -13,18 +13,23 @@ import java.util.concurrent.TimeUnit;
  * @version 1.1
  * Created by Marvin on 8/30/2019
  */
-public class SwiftRepositoryHealthInspector<Object> implements ComponentHealthInspector<Boolean, Object> {
+public class SwiftRepositoryHealthInspector implements ComponentHealthInspector<Boolean, ComponentHealthInfo> {
 
     private static final int MAX_RETRY_TIMES = 5;
 
     public static final SwiftRepositoryHealthInspector INSTANCE = new SwiftRepositoryHealthInspector();
 
     @Override
-    public Boolean inspect(Object inspectedObject) {
+    public Boolean inspect(ComponentHealthInfo info) {
+        return false;
+    }
+
+    @Override
+    public Boolean inspect() {
         try {
-            File tempFile = File.createTempFile("AccessibleTest", ".tmp");
+            File tempFile = File.createTempFile("SwiftRepositoryHealthCheckTemp", ".tmp");
             String local = tempFile.getAbsolutePath();
-            String remote = new File(SwiftSchema.DECISION_LOG.getDir(), tempFile.getName()).getPath();
+            String remote = new File(tempFile.getName()).getPath();
             for (int n = 0; n < MAX_RETRY_TIMES; n++) {
                 try {
                     if (test(tempFile, local, remote)) {

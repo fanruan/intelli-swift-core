@@ -104,8 +104,10 @@ public interface ServiceContext {
     void clearQuery(String queryId) throws Exception;
 
     @InvokeMethod(value = EchoProcessHandler.class, target = Target.ALL)
-    Set<String> inspectMasterRpcHealth(SwiftService service);
+    Set<String> inspectMasterRpcHealth(SwiftService target, boolean inspectOtherSlave);
 
     @InvokeMethod(value = EchoProcessHandler.class, target = Target.ALL)
-    Set<String> inspectSlaveRpcHealth(SwiftService service);
+    Set<String> inspectSlaveRpcHealth(SwiftService target);
+
 }
+
