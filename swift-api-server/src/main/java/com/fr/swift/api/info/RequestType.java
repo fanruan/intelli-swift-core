@@ -10,5 +10,5 @@ public enum RequestType {
     // api
     JSON_QUERY, INSERT, DELETE, CREATE_TABLE, DROP_TABLE, TRUNCATE_TABLE,
     // jdbc
-    SQL, TABLES, COLUMNS
+    SQL, CATALOGS, TABLES, COLUMNS
 }
