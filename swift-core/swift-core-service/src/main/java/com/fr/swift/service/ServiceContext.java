@@ -4,6 +4,7 @@ import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.CollateProcessHandler;
 import com.fr.swift.basics.handler.CommonProcessHandler;
+import com.fr.swift.basics.handler.EchoProcessHandler;
 import com.fr.swift.basics.handler.IndexProcessHandler;
 import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
@@ -44,7 +45,6 @@ public interface ServiceContext {
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
 
-
     /**
      * realtime service methods
      * 用于增量插入数据
@@ -69,7 +69,6 @@ public interface ServiceContext {
 
     @InvokeMethod(StatusProcessHandler.class)
     ServerCurrentStatus currentStatus();
-
 
     //collate service methods
     @InvokeMethod(value = CollateProcessHandler.class)
@@ -103,4 +102,10 @@ public interface ServiceContext {
 
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.ANALYSE})
     void clearQuery(String queryId) throws Exception;
+
+    @InvokeMethod(value = EchoProcessHandler.class, target = Target.ALL)
+    Set<String> inspectMasterRpcHealth(SwiftService service);
+
+    @InvokeMethod(value = EchoProcessHandler.class, target = Target.ALL)
+    Set<String> inspectSlaveRpcHealth(SwiftService service);
 }
