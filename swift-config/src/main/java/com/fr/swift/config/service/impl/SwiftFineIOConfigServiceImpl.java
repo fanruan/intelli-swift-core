@@ -21,8 +21,12 @@ import java.util.Map;
 @SwiftBean(name = "swiftFineIOConfigServiceImpl")
 public class SwiftFineIOConfigServiceImpl implements SwiftFineIOConnectorService {
     private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
-    private Map<Type, List<ConfChangeListener>> changeListeners = new HashMap<Type, List<ConfChangeListener>>();
+    private Map<Type, List<ConfChangeListener>> changeListeners = new HashMap<>();
 
+    public SwiftFineIOConfigServiceImpl() {
+        changeListeners.put(Type.CONNECTOR, new ArrayList<ConfChangeListener>());
+        changeListeners.put(Type.PACKAGE, new ArrayList<ConfChangeListener>());
+    }
 
     @Override
     public FineIOConnectorConfig getCurrentConfig(Type type) {
