@@ -1,5 +1,6 @@
 package com.fr.swift.exception.inspect;
 
+import com.fr.swift.exception.inspect.bean.ComponentHealthInfo;
 import com.fr.swift.log.SwiftLoggers;
 
 /**
@@ -25,16 +26,16 @@ public class ComponentHealthCheck {
         this.lastInspectionTime = 0L;
     }
 
-    public <T> T check(Object target) {
+    public <T> T check(ComponentHealthInfo info) {
         //发生读写冲突的后果是多做了一次检测，影响不大，所以读时不加锁，只有写时加锁
         //如果30秒内请求同样的目标则返回上次检测的结果
         if (System.currentTimeMillis() - lastInspectionTime < stateSustainGap
-                && target.equals(preTarget)) {
+                && info.getTarget().equals(preTarget)) {
             return (T) result;
         }
-        preTarget = target;
+        preTarget = info.getTarget();
         try {
-            result = inspector.inspect(target);
+            result = inspector.inspect(info);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
@@ -46,7 +47,7 @@ public class ComponentHealthCheck {
     public boolean isHealthy() {
         //对于一些返回值为布尔类型的服务检测可以使用此方法
         boolean health;
-        health = check(null);
+        health = (boolean) inspector.inspect();
         return health;
     }
 

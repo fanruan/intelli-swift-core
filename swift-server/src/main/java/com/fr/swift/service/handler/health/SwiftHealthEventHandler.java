@@ -5,8 +5,8 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.event.base.AbstractHealthInspectionRpcEvent;
 import com.fr.swift.exception.inspect.ComponentHealthCheck;
 import com.fr.swift.exception.inspect.RpcServiceHealthInspector;
+import com.fr.swift.exception.inspect.bean.ComponentHealthInfo;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.handler.base.AbstractHandler;
 
 import java.io.Serializable;
@@ -25,15 +25,15 @@ public class SwiftHealthEventHandler extends AbstractHandler<AbstractHealthInspe
             case INSPECT_MASTER:
                 return (S) ClusterSelector.getInstance().getFactory().getMasterId();
             case INSPECT_SLAVE:
-                return (S) inspectSlaveRpcHealth((SwiftService) event.getContent());
+                return (S) inspectSlaveRpcHealth((ComponentHealthInfo) event.getContent());
             default:
                 throw new IllegalStateException("Unexpected value: " + event.subEvent());
         }
     }
 
-    private Set<URL> inspectSlaveRpcHealth(SwiftService service) {
+    private Set<URL> inspectSlaveRpcHealth(ComponentHealthInfo info) {
         ComponentHealthCheck rpcHealthChecker = new ComponentHealthCheck(RpcServiceHealthInspector.getInstance(), 30000);
-        return rpcHealthChecker.check(service);
+        return rpcHealthChecker.check(info);
     }
 
 }
