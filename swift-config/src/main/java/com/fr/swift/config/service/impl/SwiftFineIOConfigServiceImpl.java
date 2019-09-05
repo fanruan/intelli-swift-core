@@ -7,7 +7,6 @@ import com.fr.swift.config.convert.FineIOConfigConvert;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.exception.RepoNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,8 +44,6 @@ public class SwiftFineIOConfigServiceImpl implements SwiftFineIOConnectorService
             for (ConfChangeListener changeListener : confChangeListeners) {
                 try {
                     changeListener.change(config);
-                } catch (RepoNotFoundException e) {
-                    SwiftLoggers.getLogger().warn("Cannot find default repository config.", e);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("Cannot set swift repository config.", e);
                 }
