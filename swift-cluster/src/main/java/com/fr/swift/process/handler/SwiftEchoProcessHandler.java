@@ -28,7 +28,7 @@ import java.util.Set;
 @SwiftBean
 @SwiftScope("prototype")
 @RegisteredHandler(EchoProcessHandler.class)
-public class SwiftEchoProcessHandler extends AbstractProcessHandler<Set> implements EchoProcessHandler {
+public class SwiftEchoProcessHandler extends AbstractProcessHandler<Set<URL>> implements EchoProcessHandler {
 
     public SwiftEchoProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
