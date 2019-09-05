@@ -2,6 +2,7 @@ package com.fr.swift.cube.io.location;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.config.service.SwiftCubePathService.PathChangeListener;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.util.Strings;
 
@@ -15,7 +16,24 @@ import java.net.URI;
 public class ResourceLocation implements IResourceLocation {
     private static final String SEPARATOR = "/";
     private static final StoreType DEFAULT_STORE_TYPE = StoreType.FINE_IO;
-    private static String basePath = SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
+
+    private static String basePath;
+
+    static {
+        initBasePath();
+    }
+
+    private static void initBasePath() {
+        SwiftCubePathService cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+        basePath = cubePathService.getSwiftPath();
+        cubePathService.registerPathChangeListener(new PathChangeListener() {
+            @Override
+            public void changed(String path) {
+                basePath = path;
+            }
+        });
+    }
+
     private URI uri;
     private StoreType storeType;
 
