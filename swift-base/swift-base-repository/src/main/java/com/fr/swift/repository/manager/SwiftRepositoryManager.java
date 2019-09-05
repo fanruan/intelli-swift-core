@@ -5,7 +5,7 @@ import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepository;
-import com.fr.swift.repository.exception.RepoNotFoundException;
+import com.fr.swift.repository.impl.MuteRepositoryImpl;
 import com.fr.swift.repository.impl.SwiftRepositoryImpl;
 
 /**
@@ -24,11 +24,9 @@ public class SwiftRepositoryManager {
                 if (null != currentRepository) {
                     try {
                         currentRepository = new SwiftRepositoryImpl(change);
-                    } catch (RepoNotFoundException e) {
-                        throw e;
                     } catch (Exception e) {
                         SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
-                        currentRepository = new SwiftRepositoryImpl(change);
+                        currentRepository = MuteRepositoryImpl.getInstance();
                     }
                 }
             }
@@ -45,16 +43,10 @@ public class SwiftRepositoryManager {
                 FineIOConnectorConfig config = null;
                 try {
                     config = SwiftContext.get().getBean(SwiftFineIOConnectorService.class).getCurrentConfig(SwiftFineIOConnectorService.Type.PACKAGE);
+                    currentRepository = new SwiftRepositoryImpl(config);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn("Cannot find repository config. Use default.");
-                }
-                try {
-                    currentRepository = new SwiftRepositoryImpl(config);
-                } catch (RepoNotFoundException e) {
-                    throw e;
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().warn("Create repository failed. Use default", e);
-                    currentRepository = new SwiftRepositoryImpl(config);
+                    currentRepository = MuteRepositoryImpl.getInstance();
                 }
             }
         }
