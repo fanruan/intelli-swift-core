@@ -71,7 +71,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                             segKeyToNodeIds.put(segKey, new HashSet<String>());
                         }
 
-                        List<SwiftSegmentLocationEntity> locationEntities =
+                        List<SwiftSegmentLocationEntity> locationEntities = segKeyToNodeIds.isEmpty() ? Collections.<SwiftSegmentLocationEntity>emptyList() :
                                 segmentLocationDao.find(session, ConfigWhereImpl.eq("id.segmentId", segKey.getId()));
                         for (SwiftSegmentLocationEntity locationEntity : locationEntities) {
                             segKeyToNodeIds.get(segKey).add(locationEntity.getClusterId());
@@ -164,7 +164,8 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                     for (SegmentKey segKey : segKeys) {
                         segIds.add(segKey.getId());
                     }
-                    List<SwiftSegmentLocationEntity> segLocations = segmentLocationDao.find(session,
+                    List<SwiftSegmentLocationEntity> segLocations = segIds.isEmpty() ? Collections.<SwiftSegmentLocationEntity>emptyList() :
+                            segmentLocationDao.find(session,
                             ConfigWhereImpl.in("id.segmentId", segIds));
                     for (SwiftSegmentLocationEntity segLocation : segLocations) {
                         segmentLocationDao.delete(session, segLocation);
