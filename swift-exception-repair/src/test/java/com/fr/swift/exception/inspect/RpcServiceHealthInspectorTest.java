@@ -5,9 +5,11 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.exception.inspect.bean.RpcHealthInfoBean;
+import com.fr.swift.exception.inspect.service.ComponentHealthInspectService;
 import com.fr.swift.selector.ClusterSelector;
-import com.fr.swift.service.ServiceContext;
+import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.bean.RpcHealthResultBean;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +26,15 @@ import java.util.Collections;
  * Created by Marvin on 9/3/2019
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ClusterSelector.class, RpcServiceHealthInspector.class, ProxySelector.class, SwiftContext.class})
+@PrepareForTest({ClusterSelector.class, RpcServiceHealthInspector.class, ProxySelector.class, ComponentHealthInspectService.class})
 public class RpcServiceHealthInspectorTest {
 
     RpcServiceHealthInspector inspector;
     SwiftService service;
     ClusterNodeManager manager;
     RpcHealthInfoBean info;
+    ServiceType target;
+    RpcHealthResultBean bean;
 
     @Before
     public void setUp() {
@@ -44,19 +48,21 @@ public class RpcServiceHealthInspectorTest {
         manager = PowerMockito.mock(ClusterNodeManager.class);
         PowerMockito.when(selector.getFactory()).thenReturn(manager);
 
-        service = PowerMockito.mock(SwiftService.class);
+        target = PowerMockito.mock(ServiceType.class);
         info = PowerMockito.mock(RpcHealthInfoBean.class);
-        //PowerMockito.when(info.getTarget()).thenReturn(service);
+        bean = PowerMockito.mock(RpcHealthResultBean.class);
+
+        PowerMockito.when(info.getTarget()).thenReturn(target);
         PowerMockito.when(info.isInspectOtherSlave()).thenReturn(false);
 
-        ServiceContext context = PowerMockito.mock(ServiceContext.class);
-        PowerMockito.when(ProxySelector.getProxy(ServiceContext.class)).thenReturn(context);
-        //PowerMockito.when(context.inspectSlaveRpcHealth(service)).thenReturn(Collections.singleton("127.0.0.1:8000"));
+        ComponentHealthInspectService service = PowerMockito.mock(ComponentHealthInspectService.class);
+        PowerMockito.when(ProxySelector.getProxy(ComponentHealthInspectService.class)).thenReturn(service);
+        PowerMockito.when(service.inspectSlaveRpcHealth(target)).thenReturn(Collections.singleton(bean));
 
         BeanFactory beanFactory = PowerMockito.mock(BeanFactory.class);
         PowerMockito.when(SwiftContext.get()).thenReturn(beanFactory);
-        PowerMockito.when(beanFactory.getBean(ServiceContext.class)).thenReturn(context);
-        //PowerMockito.when(context.inspectMasterRpcHealth(service, false)).thenReturn(Collections.singleton("127.0.0.1:7000"));
+        PowerMockito.when(beanFactory.getBean(ComponentHealthInspectService.class)).thenReturn(service);
+        PowerMockito.when(service.inspectMasterRpcHealth(this.target)).thenReturn(Collections.singleton(bean));
     }
 
     @Test
