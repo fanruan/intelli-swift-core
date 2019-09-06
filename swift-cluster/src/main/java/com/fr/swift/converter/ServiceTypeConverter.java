@@ -22,6 +22,7 @@ public class ServiceTypeConverter {
     public static List<SwiftService> toSwiftService(final ServiceType type) {
         //需要检测的SwiftService值均小于8
         if (type.getType() < ServiceType.EXCEPTION.getType()) {
+
             return ServiceBeanFactory.getSwiftServiceByNames(new HashSet<String>() {
                 {
                     add(type.getName());
