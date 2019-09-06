@@ -1,22 +1,29 @@
 package com.fr.swift.exception.inspect.bean;
 
-import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.ServiceType;
+
+import java.io.Serializable;
 
 /**
  * @author Marvin
  * @version 1.1
  * Created by Marvin on 9/4/2019
  */
-public class RpcHealthInfoBean implements ComponentHealthInfo<SwiftService> {
+public class RpcHealthInfoBean implements ComponentHealthInfo<ServiceType>, Serializable {
 
-    SwiftService target;
+    private static final long serialVersionUID = 5496211401916821361L;
 
-    /**
-     * master节点检查其它节点的rpc健康状况后将结果返回给本节点
-     */
-    private boolean inspectOtherSlave;
+    //被检测的目标rpc服务
+    ServiceType target;
 
-    public RpcHealthInfoBean(SwiftService target, boolean inspectOtherMaster) {
+    //是否通过master检查其它节点
+    boolean inspectOtherSlave;
+
+    public RpcHealthInfoBean(ServiceType target) {
+        this.target = target;
+    }
+
+    public RpcHealthInfoBean(ServiceType target, boolean inspectOtherMaster) {
         this.target = target;
         this.inspectOtherSlave = inspectOtherMaster;
     }
@@ -26,7 +33,7 @@ public class RpcHealthInfoBean implements ComponentHealthInfo<SwiftService> {
     }
 
     @Override
-    public SwiftService getTarget() {
+    public ServiceType getTarget() {
         return target;
     }
 

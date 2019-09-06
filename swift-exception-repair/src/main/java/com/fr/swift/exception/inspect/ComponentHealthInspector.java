@@ -13,6 +13,4 @@ public interface ComponentHealthInspector<R, T> {
      * @return
      */
     R inspect(T info);
-
-    R inspect();
 }
