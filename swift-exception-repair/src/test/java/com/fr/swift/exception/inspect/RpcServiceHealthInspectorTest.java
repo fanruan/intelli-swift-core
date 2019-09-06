@@ -46,17 +46,17 @@ public class RpcServiceHealthInspectorTest {
 
         service = PowerMockito.mock(SwiftService.class);
         info = PowerMockito.mock(RpcHealthInfoBean.class);
-        PowerMockito.when(info.getTarget()).thenReturn(service);
+        //PowerMockito.when(info.getTarget()).thenReturn(service);
         PowerMockito.when(info.isInspectOtherSlave()).thenReturn(false);
 
         ServiceContext context = PowerMockito.mock(ServiceContext.class);
         PowerMockito.when(ProxySelector.getProxy(ServiceContext.class)).thenReturn(context);
-        PowerMockito.when(context.inspectSlaveRpcHealth(service)).thenReturn(Collections.singleton("127.0.0.1:8000"));
+        //PowerMockito.when(context.inspectSlaveRpcHealth(service)).thenReturn(Collections.singleton("127.0.0.1:8000"));
 
         BeanFactory beanFactory = PowerMockito.mock(BeanFactory.class);
         PowerMockito.when(SwiftContext.get()).thenReturn(beanFactory);
         PowerMockito.when(beanFactory.getBean(ServiceContext.class)).thenReturn(context);
-        PowerMockito.when(context.inspectMasterRpcHealth(service, false)).thenReturn(Collections.singleton("127.0.0.1:7000"));
+        //PowerMockito.when(context.inspectMasterRpcHealth(service, false)).thenReturn(Collections.singleton("127.0.0.1:7000"));
     }
 
     @Test
