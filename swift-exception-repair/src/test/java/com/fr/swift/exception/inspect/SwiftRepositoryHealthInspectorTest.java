@@ -1,7 +1,9 @@
 package com.fr.swift.exception.inspect;
 
+import com.fr.swift.exception.inspect.bean.ComponentHealthInfo;
 import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,22 +59,23 @@ public class SwiftRepositoryHealthInspectorTest {
     @Test
     public void test() throws Exception {
         SwiftRepositoryHealthInspector inspector = PowerMockito.spy(new SwiftRepositoryHealthInspector());
+        ComponentHealthInfo info = PowerMockito.mock(ComponentHealthInfo.class);
 
         PowerMockito.when(repo.copyToRemote(local, remote)).thenReturn(true);
         PowerMockito.when(repo.copyFromRemote(remote, local)).thenReturn(local);
         PowerMockito.when(file.exists()).thenReturn(true);
-        // Assert.assertTrue(inspector.inspect("inspect"));
+        Assert.assertTrue(inspector.inspect(info));
 
         PowerMockito.when(repo.copyToRemote(local, remote)).thenReturn(false);
         PowerMockito.when(repo.copyFromRemote(remote, local)).thenReturn(local);
         PowerMockito.when(file.exists()).thenReturn(true);
-        //Assert.assertFalse(inspector.inspect());
+        Assert.assertFalse(inspector.inspect(info));
         PowerMockito.verifyPrivate(inspector, Mockito.times(1 + 5)).invoke("test", tempFile, local, remote);
 
         PowerMockito.when(repo.copyToRemote(local, remote)).thenReturn(true);
         PowerMockito.when(repo.copyFromRemote(remote, local)).thenReturn(local);
         PowerMockito.when(file.exists()).thenReturn(false);
-        //Assert.assertFalse(inspector.inspect());
+        Assert.assertFalse(inspector.inspect(info));
         PowerMockito.verifyPrivate(inspector, Mockito.times(1 + 5 + 5)).invoke("test", tempFile, local, remote);
     }
 }
