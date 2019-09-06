@@ -21,11 +21,6 @@ public class SwiftRepositoryHealthInspector implements ComponentHealthInspector<
 
     @Override
     public Boolean inspect(ComponentHealthInfo info) {
-        return false;
-    }
-
-    @Override
-    public Boolean inspect() {
         try {
             File tempFile = File.createTempFile("SwiftRepositoryHealthCheckTemp", ".tmp");
             String local = tempFile.getAbsolutePath();

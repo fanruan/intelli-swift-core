@@ -12,12 +12,16 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.ClusterEntity;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
+import com.fr.swift.converter.ServiceTypeConverter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.selector.ClusterSelector;
+import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.bean.RpcHealthResultBean;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,8 +41,11 @@ public class SwiftEchoProcessHandler extends AbstractProcessHandler<Set<URL>> im
     @Override
     protected Set<URL> processUrl(Target[] targets, Object... args) {
         Set<URL> urlSets = new HashSet<>();
-        for (ClusterEntity entity : ClusterSwiftServerService.getInstance().getClusterEntityByService(((SwiftService) args[0]).getServiceType()).values()) {
-            urlSets.add(entity.getUrl());
+        List<SwiftService> services = ServiceTypeConverter.toSwiftService((ServiceType) args[0]);
+        for (SwiftService service : services) {
+            for (ClusterEntity entity : ClusterSwiftServerService.getInstance().getClusterEntityByService((service).getServiceType()).values()) {
+                urlSets.add(entity.getUrl());
+            }
         }
         urlSets.remove(UrlSelector.getInstance().getFactory().getURL(ClusterSelector.getInstance().getFactory().getMasterId()));
         return urlSets;
@@ -46,7 +53,7 @@ public class SwiftEchoProcessHandler extends AbstractProcessHandler<Set<URL>> im
 
     @Override
     public Object processResult(Method method, Target[] targets, Object... args) throws Throwable {
-        Set<String> healthyUrls = new HashSet<>();
+        Set<RpcHealthResultBean> healthyRpcService = new HashSet<>();
         try {
             for (URL url : processUrl(targets, args)) {
                 Class proxy = method.getDeclaringClass();
@@ -54,7 +61,8 @@ public class SwiftEchoProcessHandler extends AbstractProcessHandler<Set<URL>> im
                 String methodName = method.getName();
                 Invoker invoker = invokerCreator.createSyncInvoker(proxy, url);
                 try {
-                    healthyUrls.addAll((Set<String>) invoke(invoker, proxy, method, methodName, parameterTypes, args));
+                    Set<RpcHealthResultBean> beans = (Set<RpcHealthResultBean>) invoke(invoker, proxy, method, methodName, parameterTypes, args);
+                    healthyRpcService.addAll(beans);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("RPCService inspect failed:", e);
                     break;
@@ -63,6 +71,6 @@ public class SwiftEchoProcessHandler extends AbstractProcessHandler<Set<URL>> im
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-        return healthyUrls;
+        return healthyRpcService;
     }
 }
