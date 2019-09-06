@@ -19,40 +19,16 @@ public class ServiceTypeConverter {
      * @return SwiftService对象
      * 通过一个服务类型可能拿到不止一个SwiftService对象，详见ServiceBeanFactory.getSwiftServiceByNames方法
      */
-    public static List<SwiftService> toSwiftService(ServiceType type) {
-        final String serviceName;
-        switch (type) {
-            case DELETE:
-                serviceName = "delete";
-                break;
-            case SERVER:
-                serviceName = "server";
-                break;
-            case UPLOAD:
-                serviceName = "upload";
-                break;
-            case ANALYSE:
-                serviceName = "analyse";
-                break;
-            case COLLATE:
-                serviceName = "collate";
-                break;
-            case HISTORY:
-                serviceName = "history";
-                break;
-            case INDEXING:
-                serviceName = "indexing";
-                break;
-            case REAL_TIME:
-                serviceName = "realtime";
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + type.getType());
+    public static List<SwiftService> toSwiftService(final ServiceType type) {
+        //需要检测的SwiftService值均小于8
+        if (type.getType() < (byte) 8) {
+            return ServiceBeanFactory.getSwiftServiceByNames(new HashSet<String>() {
+                {
+                    add(type.getName());
+                }
+            });
+        } else {
+            throw new IllegalStateException("Unexpected value: " + type.getType());
         }
-        return ServiceBeanFactory.getSwiftServiceByNames(new HashSet<String>() {
-            {
-                add(serviceName);
-            }
-        });
     }
 }
