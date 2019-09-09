@@ -56,7 +56,7 @@ public class QueryCacheBuilder {
     }
 
     public QueryCache getOrBuildCache(QueryBean queryBean) {
-        SwiftLoggers.getLogger().info("get queryCache [{}]!", queryBean.getQueryId());
+        SwiftLoggers.getLogger().debug("get queryCache [{}]!", queryBean.getQueryId());
         final QueryCache value = new QueryCache(queryBean, new Function<QueryBean, QueryResultSet>() {
             @Override
             public QueryResultSet apply(QueryBean queryBean) {
@@ -75,10 +75,10 @@ public class QueryCacheBuilder {
     }
 
     public void removeCache(String queryId) {
-        SwiftLoggers.getLogger().info("remove queryCache [{}]!", queryId);
+        SwiftLoggers.getLogger().debug("remove queryCache [{}]!", queryId);
         final QueryCache remove = cacheContainer.remove(queryId);
         if (null != remove) {
-            SwiftLoggers.getLogger().info("clear queryCache [{}]!", queryId);
+            SwiftLoggers.getLogger().debug("clear queryCache [{}]!", queryId);
             remove.clear();
         }
     }
