@@ -47,7 +47,7 @@ public class ComponentHealthCheck {
     public boolean isHealthy() {
         //对于一些返回值为布尔类型的服务检测可以使用此方法
         boolean health;
-        health = (boolean) inspector.inspect("inspect");
+        health = (boolean) inspector.inspect(null);
         return health;
     }
 
