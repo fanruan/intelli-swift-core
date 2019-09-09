@@ -44,7 +44,6 @@ public interface ServiceContext {
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
 
-
     /**
      * realtime service methods
      * 用于增量插入数据
@@ -69,7 +68,6 @@ public interface ServiceContext {
 
     @InvokeMethod(StatusProcessHandler.class)
     ServerCurrentStatus currentStatus();
-
 
     //collate service methods
     @InvokeMethod(value = CollateProcessHandler.class)
@@ -103,4 +101,6 @@ public interface ServiceContext {
 
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.ANALYSE})
     void clearQuery(String queryId) throws Exception;
+
 }
+
