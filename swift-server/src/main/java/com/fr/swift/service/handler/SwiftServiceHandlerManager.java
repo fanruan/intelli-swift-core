@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.event.base.AbstractAnalyseRpcEvent;
 import com.fr.swift.event.base.AbstractExceptionRpcEvent;
 import com.fr.swift.event.base.AbstractGlobalRpcEvent;
+import com.fr.swift.event.base.AbstractHealthInspectionRpcEvent;
 import com.fr.swift.event.base.AbstractHistoryRpcEvent;
 import com.fr.swift.event.base.AbstractIndexingRpcEvent;
 import com.fr.swift.event.base.AbstractRealTimeRpcEvent;
@@ -12,6 +13,7 @@ import com.fr.swift.service.handler.analyse.SwiftAnalyseEventHandler;
 import com.fr.swift.service.handler.base.Handler;
 import com.fr.swift.service.handler.exception.SwiftExceptionEventHandler;
 import com.fr.swift.service.handler.global.SwiftGlobalEventHandler;
+import com.fr.swift.service.handler.health.SwiftHealthEventHandler;
 import com.fr.swift.service.handler.history.SwiftHistoryEventHandler;
 import com.fr.swift.service.handler.indexing.SwiftIndexingEventHandler;
 import com.fr.swift.service.handler.realtime.SwiftRealTimeEventHandler;
@@ -29,6 +31,7 @@ public class SwiftServiceHandlerManager implements Handler {
     private SwiftIndexingEventHandler indexingEventHandler = SwiftContext.get().getBean(SwiftIndexingEventHandler.class);
     private SwiftGlobalEventHandler globalEventHandler = SwiftContext.get().getBean(SwiftGlobalEventHandler.class);
     private SwiftExceptionEventHandler exceptionEventHandler = SwiftContext.get().getBean(SwiftExceptionEventHandler.class);
+    private SwiftHealthEventHandler healthEventHandler = SwiftContext.get().getBean(SwiftHealthEventHandler.class);
 
     private SwiftServiceHandlerManager() {
     }
@@ -52,6 +55,8 @@ public class SwiftServiceHandlerManager implements Handler {
                 return globalEventHandler.handle((AbstractGlobalRpcEvent) event);
             case EXCEPTION:
                 return exceptionEventHandler.handle((AbstractExceptionRpcEvent) event);
+            case HEALTH_INSPECT:
+                return healthEventHandler.handle((AbstractHealthInspectionRpcEvent) event);
             default:
                 break;
         }

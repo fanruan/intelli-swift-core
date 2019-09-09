@@ -4,6 +4,8 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.DownloadExceptionContext;
 import com.fr.swift.exception.ExceptionInfo;
 import com.fr.swift.exception.ExceptionInfoType;
+import com.fr.swift.exception.inspect.ComponentHealthCheck;
+import com.fr.swift.exception.inspect.SwiftRepositoryHealthInspector;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 
@@ -21,10 +23,12 @@ public class DownloadExceptionHandler implements ExceptionHandler {
 
     private static final int RETRY_INTERVAL = 4;
 
+    private ComponentHealthCheck repositoryChecker = new ComponentHealthCheck(SwiftRepositoryHealthInspector.getInstance(), 30000);
+
     @Override
     public boolean handleException(ExceptionInfo exceptionInfo) {
         // TODO: 2019-08-23 这里只处理了重试下载的策略 应该还可以寻找冗余节点直传输
-        if (SwiftRepositoryAccessibleTester.testAccessible()) {
+        if (repositoryChecker.isHealthy()) {
             try {
                 DownloadExceptionContext downloadExceptionContext = (DownloadExceptionContext) exceptionInfo.getContext();
                 for (int i = 0; i < RETRY_TIMES; i++) {
@@ -58,6 +62,5 @@ public class DownloadExceptionHandler implements ExceptionHandler {
     public ExceptionInfo.Type getExceptionInfoType() {
         return ExceptionInfoType.DOWNLOAD_SEGMENT;
     }
-
 
 }

@@ -6,17 +6,24 @@ package com.fr.swift.service;
  */
 public enum ServiceType {
     //
-    REAL_TIME((byte) 0), SERVER((byte) 1), ANALYSE((byte) 2), INDEXING((byte) 3), HISTORY((byte) 4), COLLATE((byte) 5),
-    DELETE((byte) 6), UPLOAD((byte) 7), EXCEPTION((byte) 8);
+    REAL_TIME((byte) 0, "realtime"), SERVER((byte) 1, "server"), ANALYSE((byte) 2, "analyse"), INDEXING((byte) 3, "indexing"), HISTORY((byte) 4, "history"), COLLATE((byte) 5, "collate"),
+    DELETE((byte) 6, "delete"), UPLOAD((byte) 7, "upload"), EXCEPTION((byte) 8, "exception"), HEALTH_INSPECT((byte) 9, "healthinspect");
 
     private byte type;
 
-    ServiceType(byte type) {
+    private String serviceName;
+
+    ServiceType(byte type, String serviceName) {
         this.type = type;
+        this.serviceName = serviceName;
     }
 
     public byte getType() {
         return type;
+    }
+
+    public String getName() {
+        return serviceName;
     }
 
     /**
