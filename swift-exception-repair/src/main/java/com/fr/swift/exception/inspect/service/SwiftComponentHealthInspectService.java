@@ -36,7 +36,7 @@ public class SwiftComponentHealthInspectService extends AbstractSwiftService imp
         SwiftLoggers.getLogger().debug("Inspect RpcHealth to Master");
         try {
             //通过RemoteSender发送健康检查rpc事件
-            return (Set<RpcHealthResultBean>) ProxySelector.getProxy(RemoteSender.class).trigger(new ServiceHealthInspectionRpcEvent().inspectMasterAccessiable());
+            return (Set<RpcHealthResultBean>) ProxySelector.getProxy(RemoteSender.class).trigger(new ServiceHealthInspectionRpcEvent().inspectOnlyMaster());
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("Master Communication inspect failed:", e);
         }
@@ -49,7 +49,7 @@ public class SwiftComponentHealthInspectService extends AbstractSwiftService imp
         try {
             //通过RemoteSender发送健康检查rpc事件，并且infoBean.inspectOtherSlave为true，通过master检查其它节点
             RpcHealthInfoBean infoBean = new RpcHealthInfoBean(target);
-            return (Set<RpcHealthResultBean>) ProxySelector.getProxy(RemoteSender.class).trigger(new ServiceHealthInspectionRpcEvent().inspectOtherSlaveAccessiableOverMaster(infoBean));
+            return (Set<RpcHealthResultBean>) ProxySelector.getProxy(RemoteSender.class).trigger(new ServiceHealthInspectionRpcEvent().inspectOtherSlavesOverMaster(infoBean));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("Master Communication inspect failed:", e);
         }

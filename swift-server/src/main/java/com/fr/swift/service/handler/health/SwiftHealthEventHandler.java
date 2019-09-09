@@ -21,6 +21,9 @@ import java.util.Set;
  */
 @SwiftBean
 public class SwiftHealthEventHandler extends AbstractHandler<AbstractHealthInspectionRpcEvent> {
+
+    public static final String MASTER_RPC_SERVICE = "MASTER_RPC_SERVICE";
+
     @Override
     public <S extends Serializable> S handle(AbstractHealthInspectionRpcEvent event) throws Exception {
         switch (event.subEvent()) {
@@ -47,7 +50,7 @@ public class SwiftHealthEventHandler extends AbstractHandler<AbstractHealthInspe
      */
     private Set<RpcHealthResultBean> getMaserRpcHealthInfoBean() {
         RpcHealthResultBean bean = new RpcHealthResultBean(ServiceType.HEALTH_INSPECT);
-        bean.setServiceName("TO_MASTER_RPC_SERVICE").setServiceId(ClusterSelector.getInstance().getFactory().getMasterId());
+        bean.setServiceName(MASTER_RPC_SERVICE).setServiceId(ClusterSelector.getInstance().getFactory().getMasterId());
         return Collections.singleton(bean);
     }
 

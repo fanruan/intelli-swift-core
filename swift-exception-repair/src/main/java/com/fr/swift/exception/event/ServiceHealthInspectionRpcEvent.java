@@ -14,12 +14,12 @@ public class ServiceHealthInspectionRpcEvent extends AbstractHealthInspectionRpc
     private Event event;
     private ComponentHealthInfo info;
 
-    public ServiceHealthInspectionRpcEvent inspectMasterAccessiable() {
+    public ServiceHealthInspectionRpcEvent inspectOnlyMaster() {
         this.event = Event.INSPECT_MASTER;
         return this;
     }
 
-    public ServiceHealthInspectionRpcEvent inspectOtherSlaveAccessiableOverMaster(ComponentHealthInfo info) {
+    public ServiceHealthInspectionRpcEvent inspectOtherSlavesOverMaster(ComponentHealthInfo info) {
         this.event = Event.INSPECT_SLAVE;
         this.info = info;
         return this;
