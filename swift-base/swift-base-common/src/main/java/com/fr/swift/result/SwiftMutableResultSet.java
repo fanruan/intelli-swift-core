@@ -72,7 +72,8 @@ public class SwiftMutableResultSet implements MutableResultSet {
                 swiftMetaDataColumnList.add(columnMap.get(currentSubField));
             }
         }
-        return new SwiftMetaDataBean(baseMetadata.getSwiftSchema(), baseMetadata.getTableName(), swiftMetaDataColumnList);
+
+        return new SwiftMetaDataBean.Builder(baseMetadata).setFields(swiftMetaDataColumnList).build();
     }
 
     @Override
