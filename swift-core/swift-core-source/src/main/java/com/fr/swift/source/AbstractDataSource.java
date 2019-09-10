@@ -43,12 +43,12 @@ public abstract class AbstractDataSource implements DataSource {
         return metaData;
     }
 
-    protected void checkColumnNames(){
+    protected void checkColumnNames() {
         try {
             List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
             Set<String> names = new HashSet<String>();
-            for (int i = 0;i < metaData.getColumnCount(); i++){
-                SwiftMetaDataColumn column = metaData.getColumn(i+1);
+            for (int i = 0; i < metaData.getColumnCount(); i++) {
+                SwiftMetaDataColumn column = metaData.getColumn(i + 1);
                 if (names.contains(column.getName()) || SwiftConfigConstants.KeyWords.COLUMN_KEY_WORDS.contains(column.getName().toLowerCase())) {
                     String newName = createNewName(names, column.getName());
                     column = new MetaDataColumnBean(newName, column.getRemark(), column.getType(), column.getPrecision(), column.getScale(), column.getColumnId());
@@ -56,15 +56,15 @@ public abstract class AbstractDataSource implements DataSource {
                 columnList.add(column);
                 names.add(column.getName());
             }
-            metaData = new SwiftMetaDataBean(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), columnList);
-        } catch (Exception ignore){
+            metaData = new SwiftMetaDataBean.Builder(metaData).setFields(columnList).build();
+        } catch (Exception ignore) {
 
         }
     }
 
-    protected String createNewName(Set<String> names, String name){
+    protected String createNewName(Set<String> names, String name) {
         int i = 0;
-        while (names.contains(name)){
+        while (names.contains(name)) {
             name = name + ++i;
         }
         return name;
