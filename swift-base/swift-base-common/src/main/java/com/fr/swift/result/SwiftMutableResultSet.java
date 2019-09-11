@@ -14,7 +14,6 @@ import com.fr.swift.source.split.SubRow;
 import com.fr.swift.source.split.json.JsonSubRow;
 
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +71,11 @@ public class SwiftMutableResultSet implements MutableResultSet {
                 swiftMetaDataColumnList.add(columnMap.get(currentSubField));
             }
         }
-
-        return new SwiftMetaDataBean.Builder(baseMetadata).setFields(swiftMetaDataColumnList).build();
+        return new SwiftMetaDataBean.Builder()
+                .setSwiftSchema(baseMetadata.getSwiftSchema())
+                .setTableName(baseMetadata.getTableName())
+                .setFields(swiftMetaDataColumnList)
+                .build();
     }
 
     @Override
@@ -111,7 +113,7 @@ public class SwiftMutableResultSet implements MutableResultSet {
                 Object originValue = subRowMap.get(currentSubField);
                 Object value1;
                 if (originValue instanceof Number) {
-                    value1 = Double.parseDouble(String.valueOf(originValue));
+                    value1 = ((Number) originValue).doubleValue();
                 } else {
                     value1 = String.valueOf(originValue);
                 }
@@ -146,11 +148,11 @@ public class SwiftMutableResultSet implements MutableResultSet {
      */
     private SwiftMetaDataColumn getColumn(Map.Entry<String, Object> entry) {
         if (entry.getValue() instanceof Number) {
-            entry.setValue(Double.parseDouble(entry.getValue().toString()));
-            return new MetaDataColumnBean(entry.getKey(), Types.DOUBLE);
+            entry.setValue(((Number) entry.getValue()).doubleValue());
+            return MetaDataColumnBean.ofDouble(entry.getKey());
         } else {
             entry.setValue(String.valueOf(entry.getValue()));
-            return new MetaDataColumnBean(entry.getKey(), Types.VARCHAR);
+            return MetaDataColumnBean.ofString(entry.getKey());
         }
     }
 
