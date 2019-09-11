@@ -53,6 +53,16 @@ public class Assert {
         notNull(object, "[Assertion failed] - this argument is required; it must not be null");
     }
 
+    public static void hasLength(String text) {
+        hasLength(text, "[Assertion failed] - this String argument must have length; it must not be null or empty");
+    }
+
+    private static void hasLength(String text, String message) {
+        if (!Strings.hasLength(text)) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
     public static void hasText(String text, String message) {
         if (!Strings.hasText(text)) {
             throw new IllegalArgumentException(message);
