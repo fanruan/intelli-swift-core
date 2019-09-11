@@ -101,13 +101,19 @@ public class SwiftMutableResultSet implements MutableResultSet {
         return mutableRow;
     }
 
+
     private void parseMutableRow(MutableRow mutableRow, SubRow subRow) throws SwiftMetaDataException {
         Map<String, Object> subRowMap = subRow.getSubRow();
 
         for (String currentSubField : currentSubFields) {
             if (subRowMap.containsKey(currentSubField)) {
                 Object originValue = subRowMap.get(currentSubField);
-                Object value1 = isNumber(originValue) && null != originValue ? Double.parseDouble(String.valueOf(originValue)) : originValue;
+                Object value1;
+                if (originValue instanceof Number) {
+                    value1 = Double.parseDouble(String.valueOf(originValue));
+                } else {
+                    value1 = String.valueOf(originValue);
+                }
                 addOrSetValue(mutableRow, currentSubField, value1);
             } else {
                 addOrSetValue(mutableRow, currentSubField, null);
@@ -132,15 +138,17 @@ public class SwiftMutableResultSet implements MutableResultSet {
         return hasNewSubfields;
     }
 
+    /**
+     * 动态解析 Json 字段的类型：
+     * Number -> Double
+     * not Number -> String
+     */
     private SwiftMetaDataColumn getColumn(Map.Entry<String, Object> entry) {
-        if (isNumber(entry.getValue())) {
-            if (null == entry.getValue()) {
-                entry.setValue(null);
-            } else {
-                entry.setValue(Double.parseDouble(String.valueOf(entry.getValue())));
-            }
+        if (entry.getValue() instanceof Number) {
+            entry.setValue(Double.parseDouble(entry.getValue().toString()));
             return new MetaDataColumnBean(entry.getKey(), Types.DOUBLE);
         } else {
+            entry.setValue(String.valueOf(entry.getValue()));
             return new MetaDataColumnBean(entry.getKey(), Types.VARCHAR);
         }
     }
@@ -152,9 +160,5 @@ public class SwiftMutableResultSet implements MutableResultSet {
         } catch (SwiftMetaDataColumnAbsentException e) {
             mutableRow.addElement(value);
         }
-    }
-
-    private boolean isNumber(Object value) {
-        return !(value instanceof String);
     }
 }
