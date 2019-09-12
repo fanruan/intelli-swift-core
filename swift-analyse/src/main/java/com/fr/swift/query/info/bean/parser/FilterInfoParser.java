@@ -46,8 +46,10 @@ public class FilterInfoParser {
         if (null == bean) {
             return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
         }
-        bean = FilterInfoBeanOptimizer.optimize(bean);
-        bean = FilterInfoBeanSimplify.simple(bean);
+        // TODO: 2019/9/12 多过滤条件性能差到无法跑出结果了。也可能是我不会用吧
+//        bean = FilterInfoBeanOptimizer.optimize(bean);
+        // TODO: 2019/9/12 反正有bug，也不敢说，先注释了吧。
+//        bean = FilterInfoBeanSimplify.simple(bean);
         switch (bean.getType()) {
             case AND:
             case OR:
