@@ -72,7 +72,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
      */
     @Deprecated
     public SwiftMetaDataBean(String id, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
-        new Builder().setId(id).setTableName(tableName).setFields(fields).build();
+        this(id, SwiftSchema.CUBE, schemaName, tableName, remark, fields);
     }
 
     /**
@@ -80,7 +80,12 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
      */
     @Deprecated
     public SwiftMetaDataBean(String id, SwiftSchema swiftSchema, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
-        new Builder().setId(id).setSwiftSchema(swiftSchema).setTableName(tableName).setFields(fields).build();
+        this.id = id;
+        this.swiftSchema = swiftSchema;
+        this.schemaName = schemaName;
+        this.tableName = tableName;
+        this.remark = remark;
+        this.fields = fields;
     }
 
     /**
