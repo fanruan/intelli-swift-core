@@ -14,7 +14,6 @@ import com.fr.swift.source.split.SubRow;
 import com.fr.swift.source.split.json.JsonSubRow;
 
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +71,11 @@ public class SwiftMutableResultSet implements MutableResultSet {
                 swiftMetaDataColumnList.add(columnMap.get(currentSubField));
             }
         }
-
-        return new SwiftMetaDataBean.Builder(baseMetadata).setFields(swiftMetaDataColumnList).build();
+        return new SwiftMetaDataBean.Builder()
+                .setSwiftSchema(baseMetadata.getSwiftSchema())
+                .setTableName(baseMetadata.getTableName())
+                .setFields(swiftMetaDataColumnList)
+                .build();
     }
 
     @Override
@@ -102,13 +104,19 @@ public class SwiftMutableResultSet implements MutableResultSet {
         return mutableRow;
     }
 
+
     private void parseMutableRow(MutableRow mutableRow, SubRow subRow) throws SwiftMetaDataException {
         Map<String, Object> subRowMap = subRow.getSubRow();
 
         for (String currentSubField : currentSubFields) {
             if (subRowMap.containsKey(currentSubField)) {
                 Object originValue = subRowMap.get(currentSubField);
-                Object value1 = isNumber(originValue) && null != originValue ? Double.parseDouble(String.valueOf(originValue)) : originValue;
+                Object value1;
+                if (originValue instanceof Number) {
+                    value1 = ((Number) originValue).doubleValue();
+                } else {
+                    value1 = String.valueOf(originValue);
+                }
                 addOrSetValue(mutableRow, currentSubField, value1);
             } else {
                 addOrSetValue(mutableRow, currentSubField, null);
@@ -133,16 +141,18 @@ public class SwiftMutableResultSet implements MutableResultSet {
         return hasNewSubfields;
     }
 
+    /**
+     * 动态解析 Json 字段的类型：
+     * Number -> Double
+     * not Number -> String
+     */
     private SwiftMetaDataColumn getColumn(Map.Entry<String, Object> entry) {
-        if (isNumber(entry.getValue())) {
-            if (null == entry.getValue()) {
-                entry.setValue(null);
-            } else {
-                entry.setValue(Double.parseDouble(String.valueOf(entry.getValue())));
-            }
-            return new MetaDataColumnBean(entry.getKey(), Types.DOUBLE);
+        if (entry.getValue() instanceof Number) {
+            entry.setValue(((Number) entry.getValue()).doubleValue());
+            return MetaDataColumnBean.ofDouble(entry.getKey());
         } else {
-            return new MetaDataColumnBean(entry.getKey(), Types.VARCHAR);
+            entry.setValue(String.valueOf(entry.getValue()));
+            return MetaDataColumnBean.ofString(entry.getKey());
         }
     }
 
@@ -153,9 +163,5 @@ public class SwiftMutableResultSet implements MutableResultSet {
         } catch (SwiftMetaDataColumnAbsentException e) {
             mutableRow.addElement(value);
         }
-    }
-
-    private boolean isNumber(Object value) {
-        return !(value instanceof String);
     }
 }
