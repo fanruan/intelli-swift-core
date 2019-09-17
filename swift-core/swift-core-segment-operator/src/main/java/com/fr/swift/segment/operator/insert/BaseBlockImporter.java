@@ -74,10 +74,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         try (R resultSet = swiftResultSet) {
             persistMeta();
 
-            int cursor = 0;
-            while (resultSet.hasNext()) {
+            for (int cursor = 0; resultSet.hasNext(); cursor++) {
                 Row row = resultSet.getNextRow();
-                SegmentInfo segInfo = allot(cursor++, row);
+                SegmentInfo segInfo = allot(cursor, row);
 
                 if (!insertings.containsKey(segInfo)) {
                     // 可能有满了的seg

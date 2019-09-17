@@ -1,10 +1,8 @@
 package com.fr.swift.segment.operator.insert;
 
-import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
@@ -24,7 +22,6 @@ import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.util.IoUtil;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,10 +43,10 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
     public void importData(MutableResultSet mutableResultSet) throws Exception {
         try {
             persistMeta();
-            int cursor = 0;
-            while (mutableResultSet.hasNext()) {
+
+            for (int cursor = 0; mutableResultSet.hasNext(); cursor++) {
                 Row row = mutableResultSet.getNextRow();
-                SegmentInfo segInfo = allot(cursor++, row);
+                SegmentInfo segInfo = allot(cursor, row);
 
                 if (mutableResultSet.hasNewSubfields()) {
                     for (Map.Entry<SegmentInfo, Inserting> insertingEntry : insertings.entrySet()) {
