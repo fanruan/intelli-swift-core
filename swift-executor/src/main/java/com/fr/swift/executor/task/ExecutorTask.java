@@ -51,4 +51,11 @@ public interface ExecutorTask<T extends Job> extends ObjectConverter {
     boolean isPersistent();
 
     String getTaskContent();
+
+    /**
+     * 任务优先级，越高在队列中排越前
+     */
+    int getPriority();
+
+    void setPriority(int priority);
 }
