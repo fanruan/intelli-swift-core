@@ -31,6 +31,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
     protected StatusType statusType;
     protected String taskContent;
     protected T job;
+    protected int priority;
 
     //创建task
     protected AbstractExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType,
@@ -72,6 +73,16 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         } catch (ClassNotFoundException e) {
             return null;
         }
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
+    @Override
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     @Override
