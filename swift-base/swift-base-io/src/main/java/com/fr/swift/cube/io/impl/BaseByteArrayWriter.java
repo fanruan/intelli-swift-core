@@ -70,7 +70,8 @@ public class BaseByteArrayWriter implements ByteArrayWriter {
 
             @Override
             public void write(int b) {
-                dataWriter.put(cursor++, (byte) b);
+                dataWriter.put(cursor, (byte) b);
+                cursor++;
             }
 
             @Override

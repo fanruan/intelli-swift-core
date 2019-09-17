@@ -38,7 +38,9 @@ public class SwiftNode2RowIterator implements SwiftRowIterator {
 
     @Override
     public Row next() {
-        return rows.get(cursor++);
+        final Row row = rows.get(cursor);
+        cursor++;
+        return row;
     }
 
     @Override
