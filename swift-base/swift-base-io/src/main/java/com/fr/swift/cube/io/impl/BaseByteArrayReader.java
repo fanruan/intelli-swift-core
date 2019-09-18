@@ -55,7 +55,9 @@ public class BaseByteArrayReader implements ByteArrayReader {
             @Override
             public int read() {
                 if (available() > 0) {
-                    return dataReader.get(cursor++) & 0xFF;
+                    final int b = dataReader.get(cursor) & 0xFF;
+                    cursor++;
+                    return b;
                 }
                 return -1;
             }
