@@ -90,11 +90,11 @@ public class CustomizeTaskConflict implements TaskConflict {
     }
 
     @Override
-    public boolean isConflict(ExecutorTask executorTask, List<ExecutorTask> InQueueTasks) {
+    public boolean isConflict(ExecutorTask executorTask, List<ExecutorTask> inQueueTasks) {
         // 进行 stopTheWorld 检查
         if (stopTheWorldTaskTypes.contains(executorTask.getExecutorTaskType().name())) {
             // 如果队列中有其他类型的任务，认为冲突
-            for (ExecutorTask task : InQueueTasks) {
+            for (ExecutorTask task : inQueueTasks) {
                 if (!task.getExecutorTaskType().name().equals(executorTask.getExecutorTaskType().name())) {
                     return true;
                 }
@@ -115,7 +115,7 @@ public class CustomizeTaskConflict implements TaskConflict {
         // 一旦超过允许，即可认定为冲突
         List<LockConflict> relativeConflicts = initLockConflicts(executorTask);
         for (LockConflict conflict : relativeConflicts) {
-            for (ExecutorTask queueTask : InQueueTasks) {
+            for (ExecutorTask queueTask : inQueueTasks) {
                 // TODO 这一步有重复计算的嫌疑，要求更高的性能可以从这里优化
                 if (conflict.isConflict(queueTask)) {
                     return true;
@@ -129,10 +129,10 @@ public class CustomizeTaskConflict implements TaskConflict {
     }
 
     @Override
-    public void initVirtualLocks(List<ExecutorTask> InQueueTasks) {
+    public void initVirtualLocks(List<ExecutorTask> inQueueTasks) {
         virtualSegmentLocks = new HashSet<>();
-        if (InQueueTasks != null) {
-            for (ExecutorTask task : InQueueTasks) {
+        if (inQueueTasks != null) {
+            for (ExecutorTask task : inQueueTasks) {
                 if (LockType.isVirtualLock(task)) {
                     virtualSegmentLocks.add(new Pair<>(task.getSourceKey(), task.getLockKey()));
                 }

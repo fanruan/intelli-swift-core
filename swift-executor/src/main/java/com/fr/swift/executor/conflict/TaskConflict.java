@@ -13,12 +13,12 @@ public interface TaskConflict {
      * 判定当前 task 是否与队列中的 task 冲突
      *
      * @param executorTask 想要插入队列的任务
-     * @param InQueueTasks 队列中的全部任务
+     * @param inQueueTasks 队列中的全部任务
      * @return
      */
-    boolean isConflict(ExecutorTask executorTask, List<ExecutorTask> InQueueTasks);
+    boolean isConflict(ExecutorTask executorTask, List<ExecutorTask> inQueueTasks);
 
-    void initVirtualLocks(List<ExecutorTask> InQueueTasks);
+    void initVirtualLocks(List<ExecutorTask> inQueueTasks);
 
     void finishVirtualLocks();
 }
