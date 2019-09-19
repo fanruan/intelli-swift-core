@@ -17,9 +17,9 @@ public class BaseLockConflict implements LockConflict {
     private String executorTaskType = null;
     // 任务相关块名
     private String lockKey = null;
-    // 当前指定任务最多在 queue 中存在的条数
+    // 当前指定任务最多在 【queue + 将加入的 1个 task】 中存在的条数
     private int semaphore = 1;
-    // 当前指定任务在 queue 中存在的条数
+    // 当前指定任务在 【queue + 将加入的 1个 task】 中存在的总条数
     private transient int curConflicts = 0;
 
     private BaseLockConflict() {
