@@ -58,4 +58,18 @@ public interface ExecutorTask<T extends Job> extends ObjectConverter {
     int getPriority();
 
     void setPriority(int priority);
+
+    /**
+     * failed 时需要存的报错信息
+     *
+     * @param cause
+     */
+    void setCause(String cause);
+
+    /**
+     * 任务结束时需要存的时间点
+     *
+     * @param finishTime
+     */
+    void setFinishTime(long finishTime);
 }

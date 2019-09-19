@@ -29,7 +29,7 @@ public class DownloadExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.REAL_SEG,
                 LockType.REAL_SEG.name(),
                 DBStatusType.ACTIVE,
-                new DownloadJob(downloadSegKey, downloadWholeSeg, replace));
+                new DownloadJob(downloadSegKey, downloadWholeSeg, replace), 0);
     }
 
     public static DownloadExecutorTask ofWholeSeg(SegmentKey downloadSegKey, boolean replace) throws Exception {
@@ -41,8 +41,9 @@ public class DownloadExecutorTask extends AbstractExecutorTask<Job> {
     }
 
     public DownloadExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
-        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
+                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                                int priority) throws Exception {
+        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent, priority);
         Map<String, Object> contentMap = JsonBuilder.readValue(taskContent, Map.class);
         boolean downloadWholeSeg = (Boolean) contentMap.get("downloadWholeSeg");
         boolean replace = (Boolean) contentMap.get("replace");

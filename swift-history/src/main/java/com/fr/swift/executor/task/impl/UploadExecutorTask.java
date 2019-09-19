@@ -30,7 +30,7 @@ public class UploadExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.REAL_SEG,
                 uploadSegKey.getId(),
                 DBStatusType.ACTIVE,
-                new UploadJob(uploadSegKey, uploadWholeSeg, jobListener));
+                new UploadJob(uploadSegKey, uploadWholeSeg, jobListener), 0);
     }
 
     public static UploadExecutorTask ofWholeSeg(SegmentKey uploadSegKey, JobListener jobListener) throws Exception {
@@ -46,8 +46,9 @@ public class UploadExecutorTask extends AbstractExecutorTask<Job> {
     }
 
     public UploadExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                              String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
-        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
+                              String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                              int priority) throws Exception {
+        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent, priority);
         Map<String, Object> contentMap = JsonBuilder.readValue(taskContent, Map.class);
         boolean uploadWholeSeg = (Boolean) contentMap.get("uploadWholeSeg");
         Map<String, Object> uploadSegmentKey = (Map<String, Object>) contentMap.get("uploadSegmentKey");

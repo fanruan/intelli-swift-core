@@ -27,12 +27,13 @@ public class TransferExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.REAL_SEG,
                 transferSegKey.getId(),
                 DBStatusType.ACTIVE,
-                new TransferJob(transferSegKey));
+                new TransferJob(transferSegKey), 0);
     }
 
     public TransferExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
-        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
+                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                                int priority) throws Exception {
+        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent, priority);
 
         SegmentKey segmentKey = JsonBuilder.readValue(taskContent, SwiftSegmentEntity.class);
         this.job = new TransferJob(segmentKey);

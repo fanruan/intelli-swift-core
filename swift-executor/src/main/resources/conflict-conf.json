@@ -1,0 +1,85 @@
+{
+  "conflicts": [
+    {
+      "sourceKey": null,
+      "executorTaskType": "COLLATE",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "TREASURE_IMPORT",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "TREASURE_ANALYSIS",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "REALTIME",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "RECOVERY",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "TRANSFER",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "INDEX",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "DELETE",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "TRUNCATE",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "UPLOAD",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "DOWNLOAD",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "HISTORY",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "QUERY",
+      "lockKey": null,
+      "semaphore": 1
+    }
+  ],
+  "stopTheWorldTaskTypes": [
+    "TREASURE_ANALYSIS"
+  ]
+}

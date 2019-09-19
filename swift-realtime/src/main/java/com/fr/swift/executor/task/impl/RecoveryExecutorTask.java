@@ -24,14 +24,15 @@ public class RecoveryExecutorTask extends AbstractExecutorTask<Job<Void, Segment
                 LockType.VIRTUAL_SEG,
                 recoverySegKey.getId(),
                 DBStatusType.ACTIVE,
-                new RecoveryJob(recoverySegKey));
+                new RecoveryJob(recoverySegKey), 0);
         // 优先做恢复任务
         this.createTime = 0;
     }
 
     public RecoveryExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
-        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
+                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                                int priority) throws Exception {
+        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent, priority);
 
         SegmentKey segmentKey = JsonBuilder.readValue(taskContent, SwiftSegmentEntity.class);
         this.job = new RecoveryJob(segmentKey);

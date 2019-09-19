@@ -31,12 +31,13 @@ public class CollateExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.TABLE,
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,
-                new CollateJob(sourceKey, segmentKeys));
+                new CollateJob(sourceKey, segmentKeys), 0);
     }
 
     public CollateExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                               String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
-        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
+                               String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                               int priority) throws Exception {
+        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent, priority);
         List list = JsonBuilder.readValue(taskContent, List.class);
         List<SegmentKey> segmentKeyList = new ArrayList<SegmentKey>();
         for (Object o : list) {
