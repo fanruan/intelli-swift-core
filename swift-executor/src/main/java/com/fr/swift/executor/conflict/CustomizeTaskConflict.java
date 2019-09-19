@@ -68,8 +68,8 @@ public class CustomizeTaskConflict implements TaskConflict {
      */
     private List<LockConflict> initLockConflicts(ExecutorTask executorTask) {
         // 第一次出现的表名，加入到冲突列表中，这样可以避免把全部表名写到配置文件
-        if (!sourceKeys.contains(executorTask.getSourceKey().toString())) {
-            sourceKeys.add(executorTask.getSourceKey().toString());
+        if (!sourceKeys.contains(executorTask.getSourceKey().getId())) {
+            sourceKeys.add(executorTask.getSourceKey().getId());
             LockConflict conflict = new BaseLockConflict.Builder()
                     .setSourceKey(executorTask.getSourceKey())
                     .setSemaphore(1)
