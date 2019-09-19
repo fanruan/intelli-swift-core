@@ -8,6 +8,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -58,8 +59,10 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                             SegmentUtils.clearSegment(key);
                         }
                     } catch (Exception ignore) {
+                        SwiftLoggers.getLogger().error("ignore exception", ignore);
                     }
-                    return new ArrayList<SegmentKey>();
+                    SwiftLoggers.getLogger().error("merge", e);
+                    return new ArrayList<>();
                 }
             }
             if (index != LINE_VIRTUAL_INDEX) {
