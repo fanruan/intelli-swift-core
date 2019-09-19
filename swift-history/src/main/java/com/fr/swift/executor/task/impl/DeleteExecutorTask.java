@@ -29,12 +29,13 @@ public class DeleteExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.TABLE,
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,
-                new DeleteJob(sourceKey, where));
+                new DeleteJob(sourceKey, where), 0);
     }
 
     public DeleteExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                              String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
-        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
+                              String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                              int priority) throws Exception {
+        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent, priority);
 
         FilterBean filterBean = JsonBuilder.readValue(taskContent, FilterInfoBean.class);
         Where where = new SwiftWhere(filterBean);

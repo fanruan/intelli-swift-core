@@ -32,7 +32,7 @@ public class RecoveryExecutorTaskTest {
     @Test
     public void testDeserialize() throws Exception {
         ExecutorTask executorTask = new RecoveryExecutorTask(new SourceKey("test"), false, SwiftTaskType.RECOVERY, LockType.TABLE,
-                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json);
+                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json, 0);
         Assert.assertEquals(executorTask.getJob().serializedTag(), segmentKey);
     }
 }
