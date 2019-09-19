@@ -20,7 +20,7 @@ public class BaseLockConflict implements LockConflict {
     // 当前指定任务最多在 queue 中存在的条数
     private int semaphore = 1;
     // 当前指定任务在 queue 中存在的条数
-    private transient int cur_conflicts = 0;
+    private transient int curConflicts = 0;
 
     private BaseLockConflict() {
     }
@@ -33,9 +33,9 @@ public class BaseLockConflict implements LockConflict {
         }
         // 发生一次冲突 +1，知道超过最大允许就是真正的冲突
         if (taskConflict(other)) {
-            cur_conflicts += 1;
+            curConflicts += 1;
         }
-        return cur_conflicts > semaphore;
+        return curConflicts > semaphore;
     }
 
     /**
@@ -65,7 +65,7 @@ public class BaseLockConflict implements LockConflict {
 
     @Override
     public void initCheck() {
-        cur_conflicts = 0;
+        curConflicts = 0;
     }
 
     @Override
