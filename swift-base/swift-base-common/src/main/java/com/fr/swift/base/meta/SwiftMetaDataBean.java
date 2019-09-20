@@ -314,7 +314,8 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
         }
 
         private String genId() {
-            return String.format("%s.%s", meta.swiftSchema.getName(), meta.tableName);
+            return meta.tableName;
+//            return String.format("%s.%s", meta.swiftSchema.getName(), meta.tableName);
         }
 
         public SwiftMetaDataBean build() {
