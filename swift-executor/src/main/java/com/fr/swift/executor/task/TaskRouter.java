@@ -1,13 +1,18 @@
 package com.fr.swift.executor.task;
 
+import com.fr.swift.executor.conflict.CustomizeTaskConflict;
+import com.fr.swift.executor.conflict.MultiSkipList;
+import com.fr.swift.executor.conflict.TaskConflict;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.StatusType;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
@@ -19,26 +24,36 @@ import java.util.concurrent.locks.Lock;
  */
 public class TaskRouter {
 
-    private List<ExecutorTask> idleTasks;
+    private MultiSkipList<ExecutorTask> idleTasks;
 
     private static TaskRouter INSTANCE = new TaskRouter();
+
+    private TaskConflict taskConflict = null;
 
     public static TaskRouter getInstance() {
         return INSTANCE;
     }
 
     private TaskRouter() {
-        this.idleTasks = new ArrayList<ExecutorTask>();
+        this.idleTasks = new MultiSkipList<>(new Comparator<ExecutorTask>() {
+            @Override
+            public int compare(ExecutorTask o1, ExecutorTask o2) {
+                return Integer.compare(o1.getPriority(), o2.getPriority());
+            }
+        });
     }
 
     public synchronized boolean addTasks(List<ExecutorTask> taskList) {
-        List<ExecutorTask> newTaskList = new ArrayList<ExecutorTask>(taskList);
+        List<ExecutorTask> newTaskList = new ArrayList<>(taskList);
         Collections.sort(newTaskList, new TaskTimeComparator());
         this.idleTasks.addAll(newTaskList);
         return true;
     }
 
-    public List<ExecutorTask> getIdleTasks() {
+    public MultiSkipList<ExecutorTask> getIdleTasks() {
+        if (taskConflict == null) {
+            initTaskConflicts();
+        }
         return idleTasks;
     }
 
@@ -54,14 +69,25 @@ public class TaskRouter {
     }
 
     public synchronized ExecutorTask pickExecutorTask(Lock lock) {
-        List<ExecutorTask> idleTasks = TaskRouter.getInstance().getIdleTasks();
+        MultiSkipList<ExecutorTask> idleTasks = TaskRouter.getInstance().getIdleTasks();
         ExecutorTask taskPicked = null;
-        for (ExecutorTask idleTask : idleTasks) {
-            if (isQualified(idleTask, lock)) {
-                taskPicked = idleTask;
-                break;
+        lock.lock();
+        try {
+            // 对 virtual seg 锁建索引
+            taskConflict.initVirtualLocks(ConsumeQueue.getInstance().getTaskList());
+            Iterator<ExecutorTask> iterator = idleTasks.iterator();
+            while (iterator.hasNext()) {
+                ExecutorTask curTask = iterator.next();
+                if (isQualified(curTask)) {
+                    taskPicked = curTask;
+                    break;
+                }
             }
+        } finally {
+            lock.unlock();
         }
+        // 完成冲突判定，删除 virtual seg 锁索引
+        taskConflict.finishVirtualLocks();
         if (taskPicked != null && TaskRouter.getInstance().remove(taskPicked)) {
             return taskPicked;
         } else {
@@ -73,19 +99,16 @@ public class TaskRouter {
         idleTasks.clear();
     }
 
-    private boolean isQualified(ExecutorTask task, Lock lock) {
-        lock.lock();
+    private boolean isQualified(ExecutorTask task) {
         try {
             List<ExecutorTask> taskList = ConsumeQueue.getInstance().getTaskList();
-            for (ExecutorTask runningTask : taskList) {
-                if (isTasksConfilct(runningTask, task)) {
-                    return false;
-                }
-            }
-            return true;
-        } finally {
-            lock.unlock();
+            return !taskConflict.isConflict(task, taskList);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e.toString());
         }
+        return false;
+
+
     }
 
     /**
@@ -135,6 +158,19 @@ public class TaskRouter {
             } else {
                 return -1;
             }
+        }
+    }
+
+    /**
+     * 读取配置文件对进行初始化
+     */
+    private void initTaskConflicts() {
+        try {
+            String path = TaskRouter.class.getClassLoader().getResource("conflict-conf.json").getPath();
+            taskConflict = new CustomizeTaskConflict(path);
+        } catch (Exception e) {
+            // TODO 需要对这个错误进行处理，否则并发限制失效
+            SwiftLoggers.getLogger().error(e);
         }
     }
 }

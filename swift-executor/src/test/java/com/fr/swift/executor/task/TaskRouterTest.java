@@ -1,7 +1,6 @@
 package com.fr.swift.executor.task;
 
-import com.fr.swift.executor.task.job.Job;
-import com.fr.swift.executor.type.DBStatusType;
+import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.source.SourceKey;
@@ -17,6 +16,8 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class created on 2019/2/22
@@ -28,9 +29,6 @@ import java.util.List;
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 public class TaskRouterTest {
 
-    long time = System.currentTimeMillis();
-    @Mock
-    Job job;
     @Mock
     ExecutorTask task1;
     @Mock
@@ -43,55 +41,117 @@ public class TaskRouterTest {
     ExecutorTask task5;
     @Mock
     ExecutorTask task6;
+    @Mock
     ExecutorTask task7;
+    @Mock
+    ExecutorTask task8;
 
     @Before
     public void setUp() throws Exception {
-        Mockito.when(task1.getCreateTime()).thenReturn(time);
-        Mockito.when(task2.getCreateTime()).thenReturn(time + 1);
-        Mockito.when(task3.getCreateTime()).thenReturn(time + 2);
-        Mockito.when(task4.getCreateTime()).thenReturn(time + 3);
-        Mockito.when(task5.getCreateTime()).thenReturn(time + 4);
-        Mockito.when(task6.getCreateTime()).thenReturn(time + 5);
-        task7 = new AbstractExecutorTask(new SourceKey("testA"), true, SwiftTaskType.COLLATE, LockType.TABLE, "testA", DBStatusType.ACTIVE, job) {
-        };
+        setSourceKey();
+        setExecutorType();
+        setLockKey();
+        setLockType();
+        setPriority();
+        ConsumeQueue.getInstance().offer(task1);
+        ConsumeQueue.getInstance().offer(task2);
+        ConsumeQueue.getInstance().offer(task3);
+        List<ExecutorTask> taskList = new ArrayList<>();
+        taskList.add(task4);
+        taskList.add(task5);
+        taskList.add(task6);
+        taskList.add(task7);
+        taskList.add(task8);
+        TaskRouter.getInstance().addTasks(taskList);
     }
 
     @Test
-    public void testAddTasksAndSort() {
-        List<ExecutorTask> taskList1 = new ArrayList<ExecutorTask>() {{
-            add(task3);
-            add(task4);
-            add(task1);
-            add(task2);
-        }};
-        List<ExecutorTask> taskList2 = new ArrayList<ExecutorTask>() {{
-            add(task7);
-            add(task5);
-            add(task6);
-        }};
-        TaskRouter.getInstance().addTasks(taskList1);
-        List<ExecutorTask> idleTasks = TaskRouter.getInstance().getIdleTasks();
-        Assert.assertEquals(idleTasks.size(), 4);
-        Assert.assertEquals(idleTasks.get(0), task1);
-        Assert.assertEquals(idleTasks.get(1), task2);
-        Assert.assertEquals(idleTasks.get(2), task3);
-        Assert.assertEquals(idleTasks.get(3), task4);
+    public void pickExecutorTask() {
+        Lock lock = new ReentrantLock();
+        ExecutorTask pickedTask;
 
-        TaskRouter.getInstance().addTasks(taskList2);
-        Assert.assertEquals(idleTasks.size(), 7);
-        Assert.assertEquals(idleTasks.get(0), task1);
-        Assert.assertEquals(idleTasks.get(1), task2);
-        Assert.assertEquals(idleTasks.get(2), task3);
-        Assert.assertEquals(idleTasks.get(3), task4);
-        Assert.assertEquals(idleTasks.get(4), task5);
-        Assert.assertEquals(idleTasks.get(5), task6);
-        Assert.assertEquals(idleTasks.get(6), task7);
+        // 测表级锁: 7, 8 都是表名不冲突的，但 8 的优先级更高，所以选 8
+        pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
+        Assert.assertEquals(pickedTask.getSourceKey().toString(), "focus8");
+        ConsumeQueue.getInstance().offer(pickedTask);
 
-        TaskRouter.getInstance().remove(task7);
-        Assert.assertEquals(idleTasks.size(), 6);
+        // 测表级锁: 4, 5, 6 的表名都冲突了，只能选 7
+        pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
+        Assert.assertEquals(pickedTask.getSourceKey().toString(), "focus7");
+        ConsumeQueue.getInstance().offer(pickedTask);
 
-        TaskRouter.getInstance().clear();
-        Assert.assertEquals(idleTasks.size(), 0);
+        // 测信号量: 4 的类型 COLLATE 已经满了，只能选 6
+        Mockito.when(task4.getSourceKey()).thenReturn(new SourceKey("focus4"));
+        Mockito.when(task6.getSourceKey()).thenReturn(new SourceKey("focus6"));
+        pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
+        Assert.assertEquals(pickedTask.getSourceKey().toString(), "focus6");
+        ConsumeQueue.getInstance().offer(pickedTask);
+
+        // 测虚拟锁: 5 虽然是表名冲突，但是其是虚拟锁，选择
+        Mockito.when(task5.getLockType()).thenReturn(LockType.VIRTUAL_SEG);
+        pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
+        Assert.assertEquals(pickedTask.getSourceKey().toString(), "focus_point");
+        ConsumeQueue.getInstance().offer(pickedTask);
+
+        // 测虚拟锁冲突: 已经添加了一个同 sourceKey 和 lockKey 的任务，只剩下一个冲突的任务，所以为 null
+        Mockito.when(task4.getLockType()).thenReturn(LockType.VIRTUAL_SEG);
+        Mockito.when(task4.getSourceKey()).thenReturn(new SourceKey("focus_point"));
+        pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
+        Assert.assertNull(pickedTask);
+    }
+
+    private void setSourceKey() {
+        Mockito.when(task1.getSourceKey()).thenReturn(new SourceKey("focus_point"));
+        Mockito.when(task2.getSourceKey()).thenReturn(new SourceKey("fo"));
+        Mockito.when(task3.getSourceKey()).thenReturn(new SourceKey("foc"));
+        Mockito.when(task4.getSourceKey()).thenReturn(new SourceKey("focus_point"));
+        Mockito.when(task5.getSourceKey()).thenReturn(new SourceKey("focus_point"));
+        Mockito.when(task6.getSourceKey()).thenReturn(new SourceKey("focus_point"));
+        Mockito.when(task7.getSourceKey()).thenReturn(new SourceKey("focus7"));
+        Mockito.when(task8.getSourceKey()).thenReturn(new SourceKey("focus8"));
+    }
+
+    private void setExecutorType() {
+        Mockito.when(task1.getExecutorTaskType()).thenReturn(SwiftTaskType.COLLATE);
+        Mockito.when(task2.getExecutorTaskType()).thenReturn(SwiftTaskType.HISTORY);
+        Mockito.when(task3.getExecutorTaskType()).thenReturn(SwiftTaskType.REALTIME);
+        Mockito.when(task4.getExecutorTaskType()).thenReturn(SwiftTaskType.COLLATE);
+        Mockito.when(task5.getExecutorTaskType()).thenReturn(SwiftTaskType.INDEX);
+        Mockito.when(task6.getExecutorTaskType()).thenReturn(SwiftTaskType.DOWNLOAD);
+        Mockito.when(task7.getExecutorTaskType()).thenReturn(SwiftTaskType.TRANSFER);
+        Mockito.when(task8.getExecutorTaskType()).thenReturn(SwiftTaskType.RECOVERY);
+    }
+
+    private void setLockType() {
+        Mockito.when(task1.getLockType()).thenReturn(LockType.TABLE);
+        Mockito.when(task2.getLockType()).thenReturn(LockType.TABLE);
+        Mockito.when(task3.getLockType()).thenReturn(LockType.TABLE);
+        Mockito.when(task4.getLockType()).thenReturn(LockType.TABLE);
+        Mockito.when(task5.getLockType()).thenReturn(LockType.TABLE);
+        Mockito.when(task6.getLockType()).thenReturn(LockType.TABLE);
+        Mockito.when(task7.getLockType()).thenReturn(LockType.TABLE);
+        Mockito.when(task8.getLockType()).thenReturn(LockType.TABLE);
+    }
+
+    private void setLockKey() {
+        Mockito.when(task1.getLockKey()).thenReturn("body1");
+        Mockito.when(task2.getLockKey()).thenReturn("body2");
+        Mockito.when(task3.getLockKey()).thenReturn("body3");
+        Mockito.when(task4.getLockKey()).thenReturn("body5");
+        Mockito.when(task5.getLockKey()).thenReturn("body5");
+        Mockito.when(task6.getLockKey()).thenReturn("body6");
+        Mockito.when(task7.getLockKey()).thenReturn("body7");
+        Mockito.when(task8.getLockKey()).thenReturn("body8");
+    }
+
+    private void setPriority() {
+        Mockito.when(task1.getPriority()).thenReturn(0);
+        Mockito.when(task2.getPriority()).thenReturn(0);
+        Mockito.when(task3.getPriority()).thenReturn(0);
+        Mockito.when(task4.getPriority()).thenReturn(0);
+        Mockito.when(task5.getPriority()).thenReturn(0);
+        Mockito.when(task6.getPriority()).thenReturn(0);
+        Mockito.when(task7.getPriority()).thenReturn(0);
+        Mockito.when(task8.getPriority()).thenReturn(1);
     }
 }

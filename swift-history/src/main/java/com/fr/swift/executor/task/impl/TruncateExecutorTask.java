@@ -21,12 +21,13 @@ public class TruncateExecutorTask extends AbstractExecutorTask<Job<Void, SourceK
                 LockType.TABLE,
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,
-                new TruncateJob(sourceKey));
+                new TruncateJob(sourceKey), 0);
     }
 
     public TruncateExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) throws Exception {
-        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent);
+                                String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                                int priority) throws Exception {
+        super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent, priority);
         this.job = new TruncateJob(sourceKey);
     }
 }
