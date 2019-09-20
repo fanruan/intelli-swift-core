@@ -66,6 +66,7 @@ public class TaskExecuteRunnable implements Runnable {
                     success = true;
                     if (executorTask.isPersistent()) {
                         executorTask.setDbStatusType(DBStatusType.SUCCESS);
+                        executorTask.setFinishTime(System.currentTimeMillis());
                         executorTaskService.saveOrUpdate(executorTask);
                     }
 //                    executorTaskService.deleteTask(executorTask);
@@ -73,6 +74,24 @@ public class TaskExecuteRunnable implements Runnable {
                     SwiftLoggers.getLogger().error(e);
                     success = false;
                     executorTask.setDbStatusType(DBStatusType.FAILED);
+                    StringBuilder cause = new StringBuilder();
+                    try {
+
+                        cause.append("[").append(e.getMessage()).append("]");
+                        Throwable t = e.getCause();
+                        // 只记录10层， 长度截断4000
+                        int count = 10;
+                        while (t != null && count > 0) {
+                            cause.append("[").append(t.getMessage()).append("]");
+                            t = t.getCause();
+                            count--;
+                        }
+                    } catch (Exception ee) {
+                        cause.append("failed in collect message: ");
+                        cause.append(ee.getMessage());
+                    }
+                    executorTask.setCause(cause.toString().substring(0, 4000));
+                    executorTask.setFinishTime(System.currentTimeMillis());
                     executorTaskService.saveOrUpdate(executorTask);
                 }
                 if (jobListener != null) {

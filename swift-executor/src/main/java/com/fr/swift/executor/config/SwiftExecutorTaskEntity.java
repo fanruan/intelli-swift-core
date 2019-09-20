@@ -57,6 +57,15 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     @Column(name = "lockKey")
     protected String lockKey;
 
+    @Column(name = "priority", columnDefinition = "int default 0")
+    protected int priority;
+
+    @Column(name = "cause")
+    protected String cause;
+
+    @Column(name = "finishTime", columnDefinition = "bigint default 0")
+    protected long finishTime;
+
     @Column(name = "dbStatusType")
     @Enumerated(Enumerated.EnumType.STRING)
     protected DBStatusType dbStatusType;
@@ -81,6 +90,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
         this.dbStatusType = task.getDbStatusType();
         this.id = clusterId + ID_SEPARATOR + taskId;
         this.taskContent = task.getTaskContent();
+        this.priority = task.getPriority();
     }
 
     public String getId() {
@@ -163,6 +173,13 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
         this.taskContent = taskContent;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 
     @Override
     public ExecutorTask convert() {
@@ -171,12 +188,11 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
 
             TaskType taskTypeAnnotation = clazz.getAnnotation(TaskType.class);
             executorTaskType = (ExecutorTaskType) Enum.valueOf(taskTypeAnnotation.type(), taskType);
-
             Constructor constructor = clazz.getDeclaredConstructor(SourceKey.class, boolean.class, ExecutorTaskType.class, LockType.class,
-                    String.class, DBStatusType.class, String.class, long.class, String.class);
+                    String.class, DBStatusType.class, String.class, long.class, String.class, int.class);
 
             return (ExecutorTask) constructor.newInstance(new SourceKey(this.sourceKey), true, this.executorTaskType, this.lockType,
-                    this.lockKey, this.dbStatusType, this.taskId, this.createTime, this.taskContent);
+                    this.lockKey, this.dbStatusType, this.taskId, this.createTime, this.taskContent, this.priority);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return null;

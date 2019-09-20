@@ -3,9 +3,8 @@ package com.fr.swift.executor.queue;
 import com.fr.swift.executor.task.ExecutorTask;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This class created on 2019/2/21
@@ -22,15 +21,7 @@ public class ConsumeQueue {
         return INSTANCE;
     }
 
-    /**
-     * 使用 PriorityBlockingQueue 实现拥有更高优先级(数字更大)的任务优先 take
-     */
-    private PriorityBlockingQueue<ExecutorTask> queue = new PriorityBlockingQueue<>(DEFAULT_INITIAL_CAPACITY, new Comparator<ExecutorTask>() {
-        @Override
-        public int compare(ExecutorTask o1, ExecutorTask o2) {
-            return Integer.compare(o1.getPriority(), o2.getPriority());
-        }
-    });
+    private LinkedBlockingQueue<ExecutorTask> queue = new LinkedBlockingQueue<>();
 
     private List<ExecutorTask> taskList = new ArrayList<>();
 
