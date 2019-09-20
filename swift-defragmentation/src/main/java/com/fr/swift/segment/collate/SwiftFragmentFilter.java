@@ -44,7 +44,7 @@ public class SwiftFragmentFilter implements FragmentFilter {
         if (fragmentKeys.size() >= FRAGMENT_NUMBER) {
             return fragmentKeys;
         }
-        return new ArrayList<SegmentKey>();
+        return new ArrayList<>();
     }
 
     /**
