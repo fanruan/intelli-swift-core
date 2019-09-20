@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * 非线程安全的可重复有序列表，底层实现为不限制层数的跳表
+ * 非线程安全的可重复有序列表，底层实现为限制层数的跳表
  *
  * @param <E>
  */
