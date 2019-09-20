@@ -156,12 +156,13 @@ public class CustomizeTaskConflict implements TaskConflict {
         try {
             File file = new File(path);
             if (file.isFile() && file.exists()) {
-                InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");
-                BufferedReader bufferedReader = new BufferedReader(read);
-                String lineTxt = bufferedReader.readLine();
-                while (lineTxt != null) {
-                    conf.append(lineTxt);
-                    lineTxt = bufferedReader.readLine();
+                try (InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");
+                     BufferedReader bufferedReader = new BufferedReader(read)) {
+                    String lineTxt = bufferedReader.readLine();
+                    while (lineTxt != null) {
+                        conf.append(lineTxt);
+                        lineTxt = bufferedReader.readLine();
+                    }
                 }
             }
         } catch (IOException e) {
