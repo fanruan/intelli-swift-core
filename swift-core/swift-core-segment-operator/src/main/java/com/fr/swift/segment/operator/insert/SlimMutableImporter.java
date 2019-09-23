@@ -116,6 +116,9 @@ public class SlimMutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
     }
 
     protected String buildSubTableName(String baseTableName, String id) {
+        if (id == null) {
+            return baseTableName + "_" + "null";
+        }
         if (id.startsWith("function")) {
             return baseTableName + "_" + "function";
         } else {
