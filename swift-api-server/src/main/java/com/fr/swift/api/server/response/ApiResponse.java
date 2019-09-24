@@ -42,4 +42,6 @@ public interface ApiResponse extends Serializable {
     void setThrowable(Throwable throwable);
 
     void setStatusCode(int statusCode);
+
+    Throwable getThrowable();
 }
