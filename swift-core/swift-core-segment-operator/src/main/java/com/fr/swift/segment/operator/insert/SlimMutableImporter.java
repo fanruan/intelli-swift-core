@@ -69,12 +69,12 @@ public class SlimMutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
             }
             onSucceed();
         } finally {
-            // 释放每一个 importer 和 resultSet
-            for (Map.Entry<SourceKey, MutableImporter> importerEntry : subTableImporter.entrySet()) {
-                importerEntry.getValue().finishImportRow();
-            }
+            // 释放每一个 resultSet 和 importer
             for (Map.Entry<SourceKey, SwiftMutableResultSet> resultSetEntry : subTableResultSet.entrySet()) {
                 IoUtil.close(resultSetEntry.getValue());
+            }
+            for (Map.Entry<SourceKey, MutableImporter> importerEntry : subTableImporter.entrySet()) {
+                importerEntry.getValue().finishImportRow();
             }
             IoUtil.close(mutableResultSet);
             IoUtil.release(this);
