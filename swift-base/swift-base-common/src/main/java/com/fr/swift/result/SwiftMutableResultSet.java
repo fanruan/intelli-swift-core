@@ -53,6 +53,10 @@ public class SwiftMutableResultSet implements MutableResultSet {
         this.columnMap = new HashMap<>();
     }
 
+    public void changeResultSet(SwiftResultSet resultSet) {
+        swiftResultSet = resultSet;
+    }
+
     @Override
     public int getFetchSize() {
         return 0;
