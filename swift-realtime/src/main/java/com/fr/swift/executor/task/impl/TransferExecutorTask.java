@@ -20,11 +20,11 @@ import com.fr.swift.source.SourceKey;
  */
 public class TransferExecutorTask extends AbstractExecutorTask<Job> {
 
-    public TransferExecutorTask(SegmentKey transferSegKey) throws Exception {
+    public TransferExecutorTask(SegmentKey transferSegKey, LockType lockType) throws Exception {
         super(transferSegKey.getTable(),
                 true,
                 SwiftTaskType.TRANSFER,
-                LockType.REAL_SEG,
+                lockType,
                 transferSegKey.getId(),
                 DBStatusType.ACTIVE,
                 new TransferJob(transferSegKey), 0);
@@ -37,5 +37,28 @@ public class TransferExecutorTask extends AbstractExecutorTask<Job> {
 
         SegmentKey segmentKey = JsonBuilder.readValue(taskContent, SwiftSegmentEntity.class);
         this.job = new TransferJob(segmentKey);
+    }
+
+    /**
+     * 主动触发的，如满了之后transfer的
+     *
+     * @param transferSegKey seg key
+     * @return task
+     * @throws Exception 异常
+     */
+    public static TransferExecutorTask ofActive(SegmentKey transferSegKey) throws Exception {
+        return new TransferExecutorTask(transferSegKey, LockType.REAL_SEG);
+    }
+
+    /**
+     * 被动触发的，如定时器transfer的
+     * 需要和insert互斥，以防transfer正在insert的seg
+     *
+     * @param transferSegKey seg key
+     * @return task
+     * @throws Exception 异常
+     */
+    public static TransferExecutorTask ofPassive(SegmentKey transferSegKey) throws Exception {
+        return new TransferExecutorTask(transferSegKey, LockType.VIRTUAL_SEG);
     }
 }
