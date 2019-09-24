@@ -1,5 +1,6 @@
 package com.fr.swift.segment.operator.insert;
 
+import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -10,21 +11,19 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.MutableResultSet;
 import com.fr.swift.result.RowSwiftResultSet;
 import com.fr.swift.result.SwiftMutableResultSet;
-import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.MutableCacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
-import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.resultset.progress.MutableProgressResultSet;
 import com.fr.swift.source.split.ColumnSplitRule;
 import com.fr.swift.util.IoUtil;
 
@@ -43,12 +42,16 @@ import java.util.Map;
 public class SlimMutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A, MutableResultSet> {
 
     private ColumnSplitRule[] columnSplitRules;
-    private Map<String, List<Row>> subTables;
+    private Map<SourceKey, MutableImporter> subTableImporter;
+    private Map<SourceKey, SwiftMutableResultSet> subTableResultSet;
+    private Map<SourceKey, SwiftMetaData> subTableMetaData;
 
     public SlimMutableImporter(DataSource dataSource, A alloter, ColumnSplitRule[] columnSplitRules) {
         super(dataSource, alloter);
         this.columnSplitRules = columnSplitRules;
-        this.subTables = new HashMap<>();
+        this.subTableImporter = new HashMap<>();
+        this.subTableResultSet = new HashMap<>();
+        this.subTableMetaData = new HashMap<>();
     }
 
     /**
@@ -62,11 +65,17 @@ public class SlimMutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
         try {
             while (mutableResultSet.hasNext()) {
                 Row row = mutableResultSet.getNextRow();
-                detectSubTable(row);
+                importRow(row);
             }
-            importSubTableData();
             onSucceed();
         } finally {
+            // 释放每一个 importer 和 resultSet
+            for (Map.Entry<SourceKey, MutableImporter> importerEntry : subTableImporter.entrySet()) {
+                importerEntry.getValue().finishImportRow();
+            }
+            for (Map.Entry<SourceKey, SwiftMutableResultSet> resultSetEntry : subTableResultSet.entrySet()) {
+                IoUtil.close(resultSetEntry.getValue());
+            }
             IoUtil.close(mutableResultSet);
             IoUtil.release(this);
         }
@@ -81,38 +90,37 @@ public class SlimMutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
     }
 
     /**
-     * 把 id 提取出来构建新的表名，并把当前行存起来
-     *
-     * @param row
-     */
-    private void detectSubTable(Row row) {
-        String id = row.getValue(0);
-        String tableName = buildSubTableName(dataSource.getSourceKey().getId(), id);
-        if (subTables.containsKey(tableName)) {
-            subTables.get(tableName).add(row);
-        } else {
-            List<Row> rows = new ArrayList<>();
-            rows.add(row);
-            subTables.put(tableName, rows);
-        }
-    }
-
-    /**
      * 把发现的子表都交给 MutableImporter 导入
      *
      * @throws Exception
      */
-    protected void importSubTableData() throws Exception {
-        for (Map.Entry<String, List<Row>> entry : subTables.entrySet()) {
-            if (!SwiftDatabase.getInstance().existsTable(new SourceKey(entry.getKey()))) {
-                SwiftDatabase.getInstance().createTable(new SourceKey(entry.getKey()), dataSource.getMetadata());
-            }
-            Table table = SwiftDatabase.getInstance().getTable(new SourceKey(entry.getKey()));
-            Importer importer = new MutableImporter(table, alloter);
-            SwiftMutableResultSet resultSet = new SwiftMutableResultSet(table.getMetadata(), new RowSwiftResultSet(table.getMetadata(), entry.getValue()), columnSplitRules);
-            SwiftResultSet finalResultSet = new MutableProgressResultSet(resultSet, entry.getKey());
-            importer.importData(finalResultSet);
+    protected void importRow(Row row) throws Exception {
+
+        String id = row.getValue(0);
+        String tableName = buildSubTableName(dataSource.getSourceKey().getId(), id);
+        SourceKey sourceKey = new SourceKey(tableName);
+        if (!SwiftDatabase.getInstance().existsTable(sourceKey)) {
+            // 注意 metadata 需要改表名
+            SwiftMetaData metaData = new SwiftMetaDataBean.Builder(dataSource.getMetadata()).setTableName(tableName).build();
+            SwiftDatabase.getInstance().createTable(sourceKey, metaData);
+            subTableMetaData.put(sourceKey, metaData);
         }
+        Table table = SwiftDatabase.getInstance().getTable(sourceKey);
+        if (!subTableImporter.containsKey(sourceKey)) {
+            // 由于没有改 Importer 接口, 所以这里直接声明为 MutableImporter, 以便调用专有方法
+            MutableImporter importer = new MutableImporter(table, alloter);
+            subTableImporter.put(sourceKey, importer);
+            SwiftMutableResultSet resultSet = new SwiftMutableResultSet(subTableMetaData.get(sourceKey), null, columnSplitRules);
+            subTableResultSet.put(sourceKey, resultSet);
+            // 初始化 importer
+            importer.initImportRow(sourceKey, subTableMetaData.get(sourceKey));
+        }
+        List<Row> rows = new ArrayList<>();
+        rows.add(row);
+        RowSwiftResultSet rowResultSet = new RowSwiftResultSet(subTableMetaData.get(sourceKey), rows);
+        // 最关键的一步，每次给 MutableResultSet 换一个底层 resultSet, 这样可以保留状态，避免每次 new 一个新的 Mutable
+        subTableResultSet.get(sourceKey).changeResultSet(rowResultSet);
+        subTableImporter.get(sourceKey).importRow(subTableResultSet.get(sourceKey));
     }
 
     protected String buildSubTableName(String baseTableName, String id) {
