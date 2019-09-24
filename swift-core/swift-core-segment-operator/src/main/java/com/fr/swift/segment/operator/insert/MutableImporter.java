@@ -117,8 +117,8 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
     }
 
     public void finishImportRow() {
+        onSucceed();
         IoUtil.release(this);
-
     }
 
     @Override

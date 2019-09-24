@@ -24,6 +24,8 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
+import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.split.ColumnSplitRule;
 import com.fr.swift.util.IoUtil;
 
@@ -108,7 +110,8 @@ public class SlimMutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
         Table table = SwiftDatabase.getInstance().getTable(sourceKey);
         if (!subTableImporter.containsKey(sourceKey)) {
             // 由于没有改 Importer 接口, 所以这里直接声明为 MutableImporter, 以便调用专有方法
-            MutableImporter importer = new MutableImporter(table, alloter);
+            SwiftSourceAlloter curAlloter = new HistoryLineSourceAlloter(sourceKey, new LineAllotRule());
+            MutableImporter importer = new MutableImporter(table, curAlloter);
             subTableImporter.put(sourceKey, importer);
             SwiftMutableResultSet resultSet = new SwiftMutableResultSet(subTableMetaData.get(sourceKey), null, columnSplitRules);
             subTableResultSet.put(sourceKey, resultSet);
