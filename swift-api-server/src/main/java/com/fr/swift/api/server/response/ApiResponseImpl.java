@@ -69,4 +69,9 @@ public class ApiResponseImpl implements ApiResponse {
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
     }
+
+    @Override
+    public Throwable getThrowable() {
+        return throwable;
+    }
 }
