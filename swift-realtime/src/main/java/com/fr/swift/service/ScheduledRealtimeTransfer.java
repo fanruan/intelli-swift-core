@@ -10,6 +10,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.TransferRealtimeListener.TransferRealtimeEventData;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
@@ -41,7 +42,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
                     }
                     Segment realtimeSeg = localSegments.getSegment(segKey);
                     if (realtimeSeg.isReadable() && realtimeSeg.getAllShowIndex().getCardinality() >= MIN_PUT_THRESHOLD) {
-                        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
+                        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofPassive(segKey));
                     }
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("Segkey {} persist failed", segKey.getTable().getId(), e);

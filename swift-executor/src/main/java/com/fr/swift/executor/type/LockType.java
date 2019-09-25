@@ -11,7 +11,10 @@ import com.fr.swift.util.Util;
  */
 public enum LockType {
     //
-    TABLE, REAL_SEG, VIRTUAL_SEG, NONE;
+    TABLE,
+    REAL_SEG,
+    VIRTUAL_SEG,
+    NONE;
 
     public static boolean isSameTable(ExecutorTask task1, ExecutorTask task2) {
         return Util.equals(task1.getSourceKey(), task2.getSourceKey());
