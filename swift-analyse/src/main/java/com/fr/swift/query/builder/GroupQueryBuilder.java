@@ -2,6 +2,7 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
@@ -118,17 +119,21 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         List<Segment> segments = filterQueryInfo(info);
         // List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
         for (Segment segment : segments) {
-            List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
-            List<Column> metricColumns = getMetricSegments(segment, metrics);
-            List<Aggregator> aggregators = getFilterAggregators(metrics, segment);
-            List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensions);
-            DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
-            // todo 这里难道不应是由fetch size决定是否分页吗？-1表示不分页之类
-            GroupByInfo rowGroupByInfo = new GroupByInfoImpl(pagingQuery ? info.getFetchSize() : Integer.MAX_VALUE,
-                    dimensionColumns, rowDetailFilter, rowIndexSorts, null);
-            MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators,
-                    metrics.size() + countCalFields(info.getPostQueryInfoList()));
-            queries.add(new GroupSegmentQuery(rowGroupByInfo, metricInfo));
+            try {
+                List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
+                List<Column> metricColumns = getMetricSegments(segment, metrics);
+                List<Aggregator> aggregators = getFilterAggregators(metrics, segment);
+                List<Sort> rowIndexSorts = getSegmentIndexSorts(dimensions);
+                DetailFilter rowDetailFilter = FilterBuilder.buildDetailFilter(segment, info.getFilterInfo());
+                // todo 这里难道不应是由fetch size决定是否分页吗？-1表示不分页之类
+                GroupByInfo rowGroupByInfo = new GroupByInfoImpl(pagingQuery ? info.getFetchSize() : Integer.MAX_VALUE,
+                        dimensionColumns, rowDetailFilter, rowIndexSorts, null);
+                MetricInfo metricInfo = new MetricInfoImpl(metricColumns, aggregators,
+                        metrics.size() + countCalFields(info.getPostQueryInfoList()));
+                queries.add(new GroupSegmentQuery(rowGroupByInfo, metricInfo));
+            } catch (Exception ignore) {
+                SwiftLoggers.getLogger().error(ignore);
+            }
         }
         return new GroupResultQuery(
                 info.getFetchSize(), queries,

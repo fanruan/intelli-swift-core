@@ -4,13 +4,16 @@ import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,11 +46,11 @@ public class CustomizeTaskConflict implements TaskConflict {
     /**
      * 用 json 配置文件的信息进行初始化
      *
-     * @param confPath 配置文件路径
      * @throws Exception
      */
-    public CustomizeTaskConflict(String confPath) throws Exception {
-        Map res = JsonBuilder.readValue(readFromFile(confPath), Map.class);
+    public CustomizeTaskConflict() throws Exception {
+        String json = readFromFile();
+        Map res = JsonBuilder.readValue(json, Map.class);
         for (Object obj : (ArrayList) res.get("conflicts")) {
             lockConflicts.add(new BaseLockConflict.Builder((Map) obj).build());
             initSourceKeys((Map) obj);
@@ -151,18 +154,22 @@ public class CustomizeTaskConflict implements TaskConflict {
         }
     }
 
-    private String readFromFile(String path) throws IOException {
+    private String readFromFile() throws IOException {
         StringBuffer conf = new StringBuffer();
         try {
-            File file = new File(path);
-            if (file.isFile() && file.exists()) {
-                try (InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");
-                     BufferedReader bufferedReader = new BufferedReader(read)) {
-                    String lineTxt = bufferedReader.readLine();
-                    while (lineTxt != null) {
-                        conf.append(lineTxt);
-                        lineTxt = bufferedReader.readLine();
-                    }
+            InputStream conflictIn = null;
+            try {
+                SwiftLoggers.getLogger().info("read external conflict-conf.json!");
+                conflictIn = new BufferedInputStream(new FileInputStream(("conflict-conf.json")));
+            } catch (FileNotFoundException e) {
+                SwiftLoggers.getLogger().warn("Failed to read external conflict-conf.json, read internal conflict-conf.json instead!");
+                conflictIn = SwiftProperty.class.getClassLoader().getResourceAsStream("conflict-conf.json");
+            }
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conflictIn))) {
+                String lineTxt = bufferedReader.readLine();
+                while (lineTxt != null) {
+                    conf.append(lineTxt);
+                    lineTxt = bufferedReader.readLine();
                 }
             }
         } catch (IOException e) {
