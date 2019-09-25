@@ -90,7 +90,7 @@ public class TaskExecuteRunnable implements Runnable {
                         cause.append("failed in collect message: ");
                         cause.append(ee.getMessage());
                     }
-                    executorTask.setCause(cause.toString().substring(0, 4000));
+                    executorTask.setCause(cause.toString().substring(0, Math.min(cause.length(), 4000)));
                     executorTask.setFinishTime(System.currentTimeMillis());
                     executorTaskService.saveOrUpdate(executorTask);
                 }
