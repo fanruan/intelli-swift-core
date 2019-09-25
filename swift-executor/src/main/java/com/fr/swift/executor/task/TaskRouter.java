@@ -165,12 +165,29 @@ public class TaskRouter {
      * 读取配置文件对进行初始化
      */
     private void initTaskConflicts() {
+
+//        InputStream swiftIn = null;
+//        try {
+//            SwiftLoggers.getLogger().info("read external swift.properties!");
+//            swiftIn = new BufferedInputStream(new FileInputStream(("swift.properties")));
+//        } catch (FileNotFoundException e) {
+//            SwiftLoggers.getLogger().warn("Failed to read external swift.properties, read internal swift.properties instead!");
+//            swiftIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift.properties");
+//        }
+
         try {
-            String path = TaskRouter.class.getClassLoader().getResource("conflict-conf.json").getPath();
-            taskConflict = new CustomizeTaskConflict(path);
+            taskConflict = new CustomizeTaskConflict();
         } catch (Exception e) {
-            // TODO 需要对这个错误进行处理，否则并发限制失效
             SwiftLoggers.getLogger().error(e);
         }
+
+
+//        try {
+//            String path = TaskRouter.class.getClassLoader().getResource("conflict-conf.json").getPath();
+//            taskConflict = new CustomizeTaskConflict(path);
+//        } catch (Exception e) {
+//            // TODO 需要对这个错误进行处理，否则并发限制失效
+//            SwiftLoggers.getLogger().error(e);
+//        }
     }
 }
