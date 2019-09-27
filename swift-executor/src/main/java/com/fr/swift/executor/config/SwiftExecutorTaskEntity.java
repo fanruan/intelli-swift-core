@@ -60,7 +60,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     @Column(name = "priority", columnDefinition = "int default 0")
     protected int priority;
 
-    @Column(name = "cause")
+    @Column(name = "cause", length = 4000)
     protected String cause;
 
     @Column(name = "finishTime", columnDefinition = "bigint default 0")
