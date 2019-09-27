@@ -60,7 +60,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     @Column(name = "priority", columnDefinition = "int default 0")
     protected int priority;
 
-    @Column(name = "cause")
+    @Column(name = "cause", length = 4000)
     protected String cause;
 
     @Column(name = "finishTime", columnDefinition = "bigint default 0")
@@ -91,6 +91,8 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
         this.id = clusterId + ID_SEPARATOR + taskId;
         this.taskContent = task.getTaskContent();
         this.priority = task.getPriority();
+        this.cause = task.getCause();
+        this.finishTime = task.getFinishTime();
     }
 
     public String getId() {

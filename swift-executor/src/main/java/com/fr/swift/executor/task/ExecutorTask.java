@@ -67,9 +67,21 @@ public interface ExecutorTask<T extends Job> extends ObjectConverter {
     void setCause(String cause);
 
     /**
+     * failed 时需要存的报错信息
+     *
+     * @return
+     */
+    String getCause();
+
+    /**
      * 任务结束时需要存的时间点
      *
      * @param finishTime
      */
     void setFinishTime(long finishTime);
+
+    /**
+     * 任务结束时需要存的时间点
+     */
+    long getFinishTime();
 }
