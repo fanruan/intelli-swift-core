@@ -95,8 +95,18 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
     }
 
     @Override
+    public String getCause() {
+        return cause;
+    }
+
+    @Override
     public void setFinishTime(long finishTime) {
         this.finishTime = finishTime;
+    }
+
+    @Override
+    public long getFinishTime() {
+        return finishTime;
     }
 
     @Override
