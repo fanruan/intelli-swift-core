@@ -91,6 +91,8 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
         this.id = clusterId + ID_SEPARATOR + taskId;
         this.taskContent = task.getTaskContent();
         this.priority = task.getPriority();
+        this.cause = task.getCause();
+        this.finishTime = task.getFinishTime();
     }
 
     public String getId() {

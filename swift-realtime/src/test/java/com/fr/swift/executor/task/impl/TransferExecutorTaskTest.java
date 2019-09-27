@@ -25,7 +25,7 @@ public class TransferExecutorTaskTest {
 
     @Test
     public void testSerialize() throws Exception {
-        ExecutorTask executorTask = new TransferExecutorTask(segmentKey);
+        ExecutorTask executorTask = TransferExecutorTask.ofActive(segmentKey);
         Assert.assertEquals(json, executorTask.getTaskContent());
     }
 
