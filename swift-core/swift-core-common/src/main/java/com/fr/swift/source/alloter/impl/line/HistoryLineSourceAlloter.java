@@ -24,9 +24,4 @@ public class HistoryLineSourceAlloter extends BaseLineSourceAlloter {
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
     }
-
-    @Override
-    public SwiftSourceAlloter copy(SourceKey sourceKey) {
-        return new HistoryLineSourceAlloter(sourceKey, rule);
-    }
 }

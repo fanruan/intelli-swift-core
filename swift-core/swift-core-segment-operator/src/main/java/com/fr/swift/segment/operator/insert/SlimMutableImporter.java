@@ -20,6 +20,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.impl.BaseSourceAlloter;
 import com.fr.swift.util.IoUtil;
 
 import java.util.ArrayList;
@@ -63,7 +64,9 @@ public class SlimMutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
                     } else {
                         table = SwiftDatabase.getInstance().getTable(new SourceKey(subTableName));
                     }
-                    MutableImporter mutableImporter = new MutableImporter(table, alloter.copy(new SourceKey(subTableName)));
+                    BaseSourceAlloter subAlloter = (BaseSourceAlloter) ((BaseSourceAlloter) alloter).clone();
+                    subAlloter.setSourceKey(new SourceKey(subTableName));
+                    MutableImporter mutableImporter = new MutableImporter(table, subAlloter);
                     mutableImporter.persistMeta();
                     subTableImporter.put(subTableName, mutableImporter);
                 }
