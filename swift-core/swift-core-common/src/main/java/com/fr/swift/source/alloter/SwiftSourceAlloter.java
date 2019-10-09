@@ -1,5 +1,7 @@
 package com.fr.swift.source.alloter;
 
+import com.fr.swift.source.SourceKey;
+
 /**
  * @author pony
  * @date 2017/10/24
@@ -15,4 +17,6 @@ public interface SwiftSourceAlloter<A extends AllotRule, R extends RowInfo> {
     SegmentInfo allot(R rowInfo);
 
     A getAllotRule();
+
+    SwiftSourceAlloter copy(SourceKey sourceKey);
 }

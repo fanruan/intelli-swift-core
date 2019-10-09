@@ -1,10 +1,8 @@
 package com.fr.swift.segment.operator.insert;
 
-import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
@@ -24,7 +22,6 @@ import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.util.IoUtil;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,30 +46,25 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
         try {
             persistMeta();
             for (int cursor = 0; mutableResultSet.hasNext(); cursor++) {
-                insertRow(mutableResultSet, mutableResultSet.getNextRow(), cursor);
+                importRow(mutableResultSet, mutableResultSet.getNextRow(), cursor);
             }
             onSucceed();
+        } catch (Throwable e) {
+            SwiftLoggers.getLogger().error(e);
+            onFailed();
+            throw e;
         } finally {
             IoUtil.close(mutableResultSet);
             IoUtil.release(this);
         }
     }
 
-    /**
-     * 导入一行数据（保存对 importer 的引用可以连续按行导入）
-     *
-     * @param mutableResultSet
-     * @return
-     * @throws Exception
-     */
-    public void importRow(MutableResultSet mutableResultSet) throws Exception {
-        if (mutableResultSet.hasNext()) {
-            insertRow(mutableResultSet, mutableResultSet.getNextRow(), curCursor);
-            curCursor++;
-        }
+    public void importRow(MutableResultSet mutableResultSet, Row row) throws Exception {
+        importRow(mutableResultSet, row, curCursor);
+        curCursor++;
     }
 
-    private void insertRow(MutableResultSet mutableResultSet, Row row, int cursor) throws Exception {
+    public void importRow(MutableResultSet mutableResultSet, Row row, int cursor) throws Exception {
         SegmentInfo segInfo = allot(cursor, row);
 
         if (mutableResultSet.hasNewSubfields()) {
@@ -95,25 +87,6 @@ public class MutableImporter<A extends SwiftSourceAlloter<?, RowInfo>> extends B
             importSegKeys.add(segKey);
         }
         insertings.get(segInfo).insert(row);
-    }
-
-    /**
-     * importRow 之前需要执行的初始化
-     *
-     * @param tableKey
-     * @param metaData
-     * @throws SQLException
-     */
-    public void initImportRow(SourceKey tableKey, SwiftMetaData metaData) throws SQLException {
-        Database db = SwiftDatabase.getInstance();
-        // todo 分布式导入可能有多线程坑
-        if (!db.existsTable(tableKey)) {
-            db.createTable(tableKey, metaData);
-        }
-        if (swiftTableAllotRuleService.getAllotRuleByTable(tableKey) == null) {
-            SwiftTableAllotRule swiftTableAllotRule = new SwiftTableAllotRule(tableKey.getId(), alloter.getAllotRule().getType().name(), alloter.getAllotRule());
-            swiftTableAllotRuleService.saveAllotRule(swiftTableAllotRule);
-        }
     }
 
     public void finishImportRow() {

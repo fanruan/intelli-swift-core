@@ -92,6 +92,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             onFailed();
+            throw e;
         } finally {
             IoUtil.release(this);
         }
@@ -142,9 +143,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             IoUtil.release(entry.getValue());
-
             indexIfNeed(entry.getKey());
-
+            // TODO: 2019/10/8 未满历史块不会走
             if (entry.getValue().isFull()) {
                 handleFullSegment(entry.getKey());
             }
