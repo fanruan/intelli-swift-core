@@ -67,11 +67,6 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         return new SegmentState(segInfo);
     }
 
-    @Override
-    public SwiftSourceAlloter copy(SourceKey sourceKey) {
-        return new RealtimeLineSourceAlloter(sourceKey, rule);
-    }
-
     /**
      * {@link BackupLineSourceAlloter} 会override，假装去读备份块
      *
