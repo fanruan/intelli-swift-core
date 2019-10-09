@@ -9,4 +9,6 @@ package com.fr.swift.result;
 public interface MutableResultSet extends SwiftResultSet {
 
     boolean hasNewSubfields();
+
+    String getCurrentTableName();
 }

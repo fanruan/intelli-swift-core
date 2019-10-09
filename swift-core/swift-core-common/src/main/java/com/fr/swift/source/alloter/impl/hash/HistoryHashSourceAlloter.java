@@ -4,6 +4,7 @@ import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 /**
@@ -29,5 +30,10 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
         BUCKET_SVC.saveElement(bucketElement);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
+    }
+
+    @Override
+    public SwiftSourceAlloter copy(SourceKey sourceKey) {
+        return new HistoryHashSourceAlloter(sourceKey, rule);
     }
 }

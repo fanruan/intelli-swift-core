@@ -12,10 +12,12 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.split.ColumnSplitRule;
 import com.fr.swift.source.split.SubRow;
 import com.fr.swift.source.split.json.JsonSubRow;
+import com.fr.swift.util.Strings;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -31,13 +33,60 @@ public class SwiftMutableResultSet implements MutableResultSet {
 
     private ColumnSplitRule[] columnSplitRules;
 
-    private SwiftResultSet swiftResultSet;
+    protected SwiftResultSet swiftResultSet;
 
-    private List<String> currentSubFields;
+    /**
+     * key: sub fieldName  value:sub metadata
+     */
+    private Map<String, SwiftMetaDataColumn> subColumnMap;
 
-    private Map<String, SwiftMetaDataColumn> columnMap;
+    /**
+     * key:sub tableName   value:sub metadata
+     */
+    private Map<String, SwiftMetaData> subMetadataMap;
+
+    /**
+     * key: sub id   value:sub tableName
+     */
+    private Map<String, String> subTableNameMap;
+    private String currentTableName;
+
+    /**
+     * key:sub tableName  value:current sub fieldNames
+     */
+    private Map<String, LinkedHashSet<String>> currentSubFieldMap;
+
 
     private boolean hasNewSubfields = false;
+
+    /**
+     * 提前预初始化一下可能的子表和字段信息
+     *
+     * @param baseMetadata
+     * @param swiftResultSet
+     * @param columnSplitRules
+     * @param subMetadataMap
+     */
+    public SwiftMutableResultSet(SwiftMetaData baseMetadata, SwiftResultSet swiftResultSet, ColumnSplitRule[] columnSplitRules, Map<String, SwiftMetaData> subMetadataMap) throws SwiftMetaDataException {
+        this(baseMetadata, swiftResultSet, columnSplitRules);
+        if (subMetadataMap != null) {
+            List<String> baseFields = baseMetadata.getFieldNames();
+            for (Map.Entry<String, SwiftMetaData> subMetadataEntry : subMetadataMap.entrySet()) {
+                if (!subMetadataEntry.getKey().equals(baseMetadata.getTableName())) {
+                    this.subMetadataMap.put(subMetadataEntry.getKey(), subMetadataEntry.getValue());
+                    SwiftMetaData subMetadata = subMetadataEntry.getValue();
+                    this.currentSubFieldMap.put(subMetadata.getTableName(), new LinkedHashSet<String>());
+                    for (int i = 0; i < subMetadata.getColumnCount(); i++) {
+                        SwiftMetaDataColumn subColumn = subMetadata.getColumn(i + 1);
+                        if (!baseFields.contains(subColumn.getName())) {
+                            this.subColumnMap.put(subColumn.getName(), subColumn);
+                            this.currentSubFieldMap.get(subMetadata.getTableName()).add(subColumn.getName());
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * @param baseMetadata
@@ -49,12 +98,11 @@ public class SwiftMutableResultSet implements MutableResultSet {
         this.baseMetadata = baseMetadata;
         this.swiftResultSet = swiftResultSet;
         this.columnSplitRules = columnSplitRules;
-        this.currentSubFields = new ArrayList<>();
-        this.columnMap = new HashMap<>();
-    }
-
-    public void changeResultSet(SwiftResultSet resultSet) {
-        swiftResultSet = resultSet;
+        this.subColumnMap = new HashMap<>();
+        this.subMetadataMap = new HashMap<>();
+        this.subTableNameMap = new HashMap<>();
+        this.currentTableName = Strings.EMPTY;
+        this.currentSubFieldMap = new HashMap<>();
     }
 
     @Override
@@ -64,22 +112,27 @@ public class SwiftMutableResultSet implements MutableResultSet {
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
-        List<SwiftMetaDataColumn> swiftMetaDataColumnList = new ArrayList<>();
-        for (int i = 1; i <= baseMetadata.getColumnCount(); i++) {
-            swiftMetaDataColumnList.add(baseMetadata.getColumn(i));
-        }
-        for (String currentSubField : currentSubFields) {
-            try {
-                baseMetadata.getColumnIndex(currentSubField);
-            } catch (SwiftMetaDataColumnAbsentException e) {
-                swiftMetaDataColumnList.add(columnMap.get(currentSubField));
+        if (hasNewSubfields || !subMetadataMap.containsKey(currentTableName)) {
+            List<SwiftMetaDataColumn> swiftMetaDataColumnList = new ArrayList<>();
+            for (int i = 1; i <= baseMetadata.getColumnCount(); i++) {
+                swiftMetaDataColumnList.add(baseMetadata.getColumn(i));
             }
+            for (String currentSubField : currentSubFieldMap.get(currentTableName)) {
+                try {
+                    baseMetadata.getColumnIndex(currentSubField);
+                } catch (SwiftMetaDataColumnAbsentException e) {
+                    swiftMetaDataColumnList.add(subColumnMap.get(currentSubField));
+                }
+            }
+            SwiftMetaData newMetaData = new SwiftMetaDataBean.Builder()
+                    .setSwiftSchema(baseMetadata.getSwiftSchema())
+                    .setTableName(currentTableName)
+                    .setFields(swiftMetaDataColumnList)
+                    .build();
+            subMetadataMap.put(currentTableName, newMetaData);
+
         }
-        return new SwiftMetaDataBean.Builder()
-                .setSwiftSchema(baseMetadata.getSwiftSchema())
-                .setTableName(baseMetadata.getTableName())
-                .setFields(swiftMetaDataColumnList)
-                .build();
+        return subMetadataMap.get(currentTableName);
     }
 
     @Override
@@ -91,11 +144,16 @@ public class SwiftMutableResultSet implements MutableResultSet {
     @Override
     public Row getNextRow() throws SQLException {
         Row baseRow = swiftResultSet.getNextRow();
+        // TODO: 2019/10/8 先默认第一个字段
+        String id = baseRow.getValue(0);
+        if (!this.subTableNameMap.containsKey(id)) {
+            subTableNameMap.put(id, buildSubTableName(baseMetadata.getTableName(), id));
+        }
+        this.currentTableName = this.subTableNameMap.get(id);
         if (columnSplitRules.length == 0) {
             return baseRow;
         }
         MutableRow mutableRow = new ListMutableRow(baseRow);
-
         SubRow subRow = new JsonSubRow();
         for (ColumnSplitRule columnSplitRule : columnSplitRules) {
             try {
@@ -104,19 +162,23 @@ public class SwiftMutableResultSet implements MutableResultSet {
                 continue;
             }
         }
+
         parseMutableRow(mutableRow, subRow);
         return mutableRow;
     }
 
-
     private void parseMutableRow(MutableRow mutableRow, SubRow subRow) throws SwiftMetaDataException {
         Map<String, Object> subRowMap = subRow.getSubRow();
-
-        for (String currentSubField : currentSubFields) {
+        if (!currentSubFieldMap.containsKey(currentTableName)) {
+            currentSubFieldMap.put(currentTableName, new LinkedHashSet<String>());
+        }
+        for (String currentSubField : currentSubFieldMap.get(currentTableName)) {
             if (subRowMap.containsKey(currentSubField)) {
                 Object originValue = subRowMap.get(currentSubField);
                 Object value1;
-                if (originValue instanceof Number) {
+                if (originValue == null) {
+                    value1 = null;
+                } else if (originValue instanceof Number) {
                     value1 = ((Number) originValue).doubleValue();
                 } else {
                     value1 = String.valueOf(originValue);
@@ -128,8 +190,8 @@ public class SwiftMutableResultSet implements MutableResultSet {
             subRowMap.remove(currentSubField);
         }
         for (Map.Entry<String, Object> newSubEntry : subRowMap.entrySet()) {
-            currentSubFields.add(newSubEntry.getKey());
-            columnMap.put(newSubEntry.getKey(), getColumn(newSubEntry));
+            currentSubFieldMap.get(currentTableName).add(newSubEntry.getKey());
+            subColumnMap.put(newSubEntry.getKey(), getColumn(newSubEntry));
             addOrSetValue(mutableRow, newSubEntry.getKey(), newSubEntry.getValue());
             this.hasNewSubfields = true;
         }
@@ -143,6 +205,22 @@ public class SwiftMutableResultSet implements MutableResultSet {
     @Override
     public boolean hasNewSubfields() {
         return hasNewSubfields;
+    }
+
+    @Override
+    public String getCurrentTableName() {
+        return currentTableName;
+    }
+
+    protected String buildSubTableName(String baseTableName, String id) {
+        if (id == null) {
+            return baseTableName + "_" + "null";
+        }
+        if (id.startsWith("FR")) {
+            return baseTableName + "_" + id;
+        } else {
+            return baseTableName + "_" + "function";
+        }
     }
 
     /**

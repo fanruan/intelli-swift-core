@@ -21,4 +21,9 @@ public class MutableProgressResultSet extends ProgressResultSet implements Mutab
     public boolean hasNewSubfields() {
         return mutableResultSet.hasNewSubfields();
     }
+
+    @Override
+    public String getCurrentTableName() {
+        return mutableResultSet.getCurrentTableName();
+    }
 }
