@@ -83,7 +83,7 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
                 tasks.add(new Callable<QueryResultSet<?>>() {
                     @Override
                     public QueryResultSet<?> call() {
-                        return remoteQuery(pair.getKey(), proxyClass, method, methodName, parameterTypes, query, queryBean.getQueryType());
+                        return remoteQuery(pair, proxyClass, method, methodName, parameterTypes, query, queryBean.getQueryType());
                     }
                 });
             }
@@ -118,15 +118,15 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         }
     }
 
-    private QueryResultSet<?> remoteQuery(final URL url,
+    private QueryResultSet<?> remoteQuery(final Pair<URL, Set<String>> pair,
                                           final Class<?> proxyClass, final Method method, String methodName, Class<?>[] parameterTypes,
                                           final String query, QueryType queryType) {
-        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, url);
+        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
         QueryResultSet<?> result;
         try {
             result = (QueryResultSet<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, query);
         } catch (Throwable throwable) {
-            SwiftLoggers.getLogger().error("swift query remote failed on url {}", url, throwable);
+            SwiftLoggers.getLogger().error("swift query remote failed on url {}", pair.getKey(), throwable);
             return null;
         }
         // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
@@ -138,7 +138,7 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
                 BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
                     @Override
                     public <D> BaseSerializedQueryResultSet<D> invoke() {
-                        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, url);
+                        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
                         Invocation invocation = new SwiftInvocation(method, new Object[]{query});
                         try {
                             return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
