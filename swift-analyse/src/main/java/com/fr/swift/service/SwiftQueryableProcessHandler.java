@@ -1,6 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.basic.URL;
+import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
@@ -38,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author yee
@@ -64,45 +66,56 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         final Class<?>[] parameterTypes = method.getParameterTypes();
         final String methodName = method.getName();
 
-        final List<QueryResultSet<?>> resultSets = new ArrayList<>();
+        final CountDownLatch latch = new CountDownLatch(pairs.size());
+        final List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<QueryResultSet<?>>());
         for (final Pair<URL, Set<String>> pair : pairs) {
             queryBean.setSegments(pair.getValue() == null ? Collections.<String>emptySet() : pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
             final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
-            RpcFuture<QueryResultSet<?>> rpcFuture = (RpcFuture<QueryResultSet<?>>) invoke(invoker, proxyClass, method, methodName, parameterTypes, query);
-            QueryResultSet<?> rs;
-            try {
-                rs = (QueryResultSet<?>) rpcFuture.get();
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error("Remote query error:", e);
-                continue;
-            }
-            switch (queryBean.getQueryType()) {
-                case DETAIL_SORT:
-                case DETAIL:
-                case GROUP: {
-                    // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
-                    BaseSerializedQueryResultSet<?> qrs = (BaseSerializedQueryResultSet<?>) rs;
-                    BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
-                        @Override
-                        public <D> BaseSerializedQueryResultSet<D> invoke() {
-                            Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                            Invocation invocation = new SwiftInvocation(method, new Object[]{query});
-                            try {
-                                return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
-                            } catch (Throwable throwable) {
-                                throw new RuntimeException(throwable);
+            RpcFuture<?> rpcFuture = (RpcFuture<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, query);
+            rpcFuture.addCallback(new AsyncRpcCallback() {
+                @Override
+                public void success(final Object result) {
+                    try {
+                        // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
+                        final QueryResultSet<?> rs = (QueryResultSet<?>) result;
+                        switch (queryBean.getQueryType()) {
+                            case DETAIL_SORT:
+                            case DETAIL:
+                            case GROUP: {
+                                BaseSerializedQueryResultSet<?> qrs = (BaseSerializedQueryResultSet<?>) rs;
+                                BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
+                                    @Override
+                                    public <D> BaseSerializedQueryResultSet<D> invoke() {
+                                        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                        Invocation invocation = new SwiftInvocation(method, new Object[]{query});
+                                        try {
+                                            return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
+                                        } catch (Throwable throwable) {
+                                            throw new RuntimeException(throwable);
+                                        }
+                                    }
+                                };
+                                qrs.setInvoker(syncInvoker);
+                                resultSets.add(qrs);
+                                break;
                             }
+                            default:
+                                resultSets.add(rs);
                         }
-                    };
-                    qrs.setInvoker(syncInvoker);
-                    resultSets.add(qrs);
-                    break;
+                    } finally {
+                        latch.countDown();
+                    }
                 }
-                default:
-                    resultSets.add(rs);
-            }
+
+                @Override
+                public void fail(Exception e) {
+                    latch.countDown();
+                    SwiftLoggers.getLogger().error("Remote invoke error:", e);
+                }
+            });
         }
+        latch.await();
         if (resultSets.isEmpty()) {
             return EmptyQueryResultSet.get();
         }
