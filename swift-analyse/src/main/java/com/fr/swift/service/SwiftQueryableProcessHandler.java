@@ -1,7 +1,6 @@
 package com.fr.swift.service;
 
 import com.fr.swift.basic.URL;
-import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invocation;
 import com.fr.swift.basics.Invoker;
 import com.fr.swift.basics.InvokerCreator;
@@ -29,7 +28,6 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Strings;
 
 import java.lang.reflect.Method;
@@ -40,7 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author yee
@@ -62,62 +59,55 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         SourceKey table = new SourceKey(queryBean.getTableName());
         List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         List<Pair<URL, Set<String>>> pairs = processUrl(targets, segmentDestinations);
-        final List<QueryResultSet> resultSets = new ArrayList<QueryResultSet>();
-        final Class proxyClass = method.getDeclaringClass();
+
+        final Class<?> proxyClass = method.getDeclaringClass();
         final Class<?>[] parameterTypes = method.getParameterTypes();
         final String methodName = method.getName();
-        final CountDownLatch latch = new CountDownLatch(pairs.size());
+
+        final List<QueryResultSet<?>> resultSets = new ArrayList<>();
         for (final Pair<URL, Set<String>> pair : pairs) {
             queryBean.setSegments(pair.getValue() == null ? Collections.<String>emptySet() : pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
-            final Invoker invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
-            RpcFuture rpcFuture = (RpcFuture) invoke(invoker, proxyClass,
-                    method, methodName, parameterTypes, query);
-            rpcFuture.addCallback(new AsyncRpcCallback() {
-                @Override
-                public void success(final Object result) {
+            final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
+            RpcFuture<QueryResultSet<?>> rpcFuture = (RpcFuture<QueryResultSet<?>>) invoke(invoker, proxyClass, method, methodName, parameterTypes, query);
+            QueryResultSet<?> rs;
+            try {
+                rs = (QueryResultSet<?>) rpcFuture.get();
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error("Remote query error:", e);
+                continue;
+            }
+            switch (queryBean.getQueryType()) {
+                case DETAIL_SORT:
+                case DETAIL:
+                case GROUP: {
                     // 包装一下远程节点返回的resultSet，内部能通过invoker发起远程调用取下一页，使得上层查询不用区分本地和远程
-                    final QueryResultSet rs = (QueryResultSet) result;
-                    switch (queryBean.getQueryType()) {
-                        case DETAIL_SORT:
-                        case DETAIL:
-                        case GROUP: {
-                            BaseSerializedQueryResultSet qrs = (BaseSerializedQueryResultSet) rs;
-                            BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
-                                @Override
-                                public <D> BaseSerializedQueryResultSet<D> invoke() {
-                                    Invoker invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
-                                    Invocation invocation = new SwiftInvocation(method, new Object[]{query});
-                                    try {
-                                        return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
-                                    } catch (Throwable throwable) {
-                                        return Crasher.crash(throwable);
-                                    }
-                                }
-                            };
-                            qrs.setInvoker(syncInvoker);
-                            resultSets.add(qrs);
-                            break;
+                    BaseSerializedQueryResultSet<?> qrs = (BaseSerializedQueryResultSet<?>) rs;
+                    BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
+                        @Override
+                        public <D> BaseSerializedQueryResultSet<D> invoke() {
+                            Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                            Invocation invocation = new SwiftInvocation(method, new Object[]{query});
+                            try {
+                                return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
+                            } catch (Throwable throwable) {
+                                throw new RuntimeException(throwable);
+                            }
                         }
-                        default:
-                            resultSets.add(rs);
-                    }
-                    latch.countDown();
+                    };
+                    qrs.setInvoker(syncInvoker);
+                    resultSets.add(qrs);
+                    break;
                 }
-
-                @Override
-                public void fail(Exception e) {
-                    SwiftLoggers.getLogger().error("Remote invoke error:", e);
-                    latch.countDown();
-                }
-            });
+                default:
+                    resultSets.add(rs);
+            }
         }
-        latch.await();
         if (resultSets.isEmpty()) {
             return EmptyQueryResultSet.get();
         }
-        QueryResultSet resultAfterMerge = (QueryResultSet) mergeResult(resultSets, queryBean.getQueryType());
-        Query postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
+        QueryResultSet<?> resultAfterMerge = (QueryResultSet<?>) mergeResult(resultSets, queryBean.getQueryType());
+        Query<QueryResultSet<?>> postQuery = QueryBuilder.<QueryResultSet<?>>buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
     }
 
