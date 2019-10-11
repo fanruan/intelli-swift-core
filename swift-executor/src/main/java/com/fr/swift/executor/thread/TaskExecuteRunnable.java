@@ -59,6 +59,7 @@ public class TaskExecuteRunnable implements Runnable {
                 Job job = executorTask.getJob();
                 JobListener jobListener = job.getJobListener();
                 ExecutorJob executorJob = new ExecutorJob(job);
+                executorTask.setStartTime(System.currentTimeMillis());
                 executorJob.run();
                 boolean success;
                 try {
@@ -76,7 +77,6 @@ public class TaskExecuteRunnable implements Runnable {
                     executorTask.setDbStatusType(DBStatusType.FAILED);
                     StringBuilder cause = new StringBuilder();
                     try {
-
                         cause.append("[").append(e.getMessage()).append("]");
                         Throwable t = e.getCause();
                         // 只记录10层， 长度截断4000
@@ -90,9 +90,11 @@ public class TaskExecuteRunnable implements Runnable {
                         cause.append("failed in collect message: ");
                         cause.append(ee.getMessage());
                     }
-                    executorTask.setCause(cause.toString().substring(0, Math.min(cause.length(), 4000)));
-                    executorTask.setFinishTime(System.currentTimeMillis());
-                    executorTaskService.saveOrUpdate(executorTask);
+                    if (executorTask.isPersistent()) {
+                        executorTask.setCause(cause.toString().substring(0, Math.min(cause.length(), 4000)));
+                        executorTask.setFinishTime(System.currentTimeMillis());
+                        executorTaskService.saveOrUpdate(executorTask);
+                    }
                 }
                 if (jobListener != null) {
                     jobListener.onDone(success);
