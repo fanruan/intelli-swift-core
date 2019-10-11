@@ -34,6 +34,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
     protected int priority;
     protected String cause;
     protected long finishTime;
+    protected long startTime;
 
     //创建task
     protected AbstractExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType,
@@ -109,6 +110,14 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         return finishTime;
     }
 
+    @Override
+    public long getStartTime() {
+        return startTime;
+    }
+    @Override
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
     @Override
     public SourceKey getSourceKey() {
         return sourceKey;

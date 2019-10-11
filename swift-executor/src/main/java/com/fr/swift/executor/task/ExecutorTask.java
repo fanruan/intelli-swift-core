@@ -84,4 +84,11 @@ public interface ExecutorTask<T extends Job> extends ObjectConverter {
      * 任务结束时需要存的时间点
      */
     long getFinishTime();
+
+    /**
+     * 任务开始时需要存的时间点
+     */
+    void setStartTime(long startTime);
+
+    long getStartTime();
 }

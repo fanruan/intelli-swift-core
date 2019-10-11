@@ -66,6 +66,9 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     @Column(name = "finishTime", columnDefinition = "bigint default 0")
     protected long finishTime;
 
+    @Column(name = "startTime", columnDefinition = "bigint default 0")
+    protected long startTime;
+
     @Column(name = "dbStatusType")
     @Enumerated(Enumerated.EnumType.STRING)
     protected DBStatusType dbStatusType;
@@ -93,6 +96,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
         this.priority = task.getPriority();
         this.cause = task.getCause();
         this.finishTime = task.getFinishTime();
+        this.startTime = task.getStartTime();
     }
 
     public String getId() {
