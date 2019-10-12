@@ -9,6 +9,7 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.ArrayLookupHelper;
 import com.fr.swift.util.IoUtil;
 
@@ -141,6 +142,7 @@ abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T>
         globalSizeReader = null;
         globalIndexReader = null;
         putter = null;
+        SwiftLoggers.getLogger().error("swift dict released at {}", parent.getPath());
     }
 
     private ArrayLookupHelper.Lookup<T> lookup = new ArrayLookupHelper.Lookup<T>() {
