@@ -3,6 +3,7 @@ package com.fr.swift.segment.column.impl.base;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
@@ -58,5 +59,6 @@ abstract class BaseDetailColumn<T, W extends Writer, R extends Reader> implement
         IoUtil.release(detailWriter, detailReader);
         detailWriter = null;
         detailReader = null;
+        SwiftLoggers.getLogger().error("swift detail released at {}", location.getPath());
     }
 }

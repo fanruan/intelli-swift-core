@@ -11,6 +11,7 @@ import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.RelationColumn;
@@ -178,6 +179,7 @@ public abstract class BaseSegment implements Segment {
         rowCountReader = null;
         bitMapWriter = null;
         bitMapReader = null;
+        SwiftLoggers.getLogger().error("swift seg released row count and all show at {}", location.getPath());
     }
 
     Column createRelationColumn(ColumnKey key) {
