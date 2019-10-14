@@ -1,12 +1,9 @@
 package com.fr.swift.property;
 
 import com.fr.swift.config.SwiftConfigConstants;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.InputStreamUtil;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -47,6 +44,8 @@ public class SwiftProperty {
 
     private int rpcMaxObjectSize;
 
+    private String cubesPath;
+
     /**
      * swift业务相关service
      */
@@ -74,23 +73,8 @@ public class SwiftProperty {
 
     private void initProperties() {
         properties = new Properties();
-        InputStream swiftIn = null;
-        try {
-            SwiftLoggers.getLogger().info("read external swift.properties!");
-            swiftIn = new BufferedInputStream(new FileInputStream(("swift.properties")));
-        } catch (FileNotFoundException e) {
-            SwiftLoggers.getLogger().warn("Failed to read external swift.properties, read internal swift.properties instead!");
-            swiftIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift.properties");
-        }
-        InputStream swiftBeansIn = null;
-        try {
-            SwiftLoggers.getLogger().info("read external swift-beans.properties!");
-            swiftBeansIn = new BufferedInputStream(new FileInputStream(("swift-beans.properties")));
-        } catch (FileNotFoundException e) {
-            SwiftLoggers.getLogger().warn("Failed to read external swift.properties, read internal swift-beans.properties instead!");
-            swiftBeansIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift-beans.properties");
-        }
-
+        InputStream swiftIn = InputStreamUtil.getIn("swift.properties");
+        InputStream swiftBeansIn = InputStreamUtil.getIn("swift-beans.properties");
         try (InputStream in = swiftIn; InputStream beanIn = swiftBeansIn) {
             properties.load(in);
             properties.load(beanIn);
@@ -101,6 +85,8 @@ public class SwiftProperty {
             initCluster();
             initClusterId();
             initMasterAddress();
+            initCubesPath();
+
         } catch (IOException e) {
             Crasher.crash(e);
         }
@@ -144,6 +130,10 @@ public class SwiftProperty {
 
     private void initCluster() {
         this.isCluster = Boolean.parseBoolean(properties.getProperty("swift.isCluster"));
+    }
+
+    private void initCubesPath() {
+        this.cubesPath = properties.getProperty("swift.cubesPath");
     }
 
     public void setCluster(boolean cluster) {
@@ -214,5 +204,9 @@ public class SwiftProperty {
 
     public int getRedisTimeout() {
         return redisTimeout;
+    }
+
+    public String getCubesPath() {
+        return cubesPath;
     }
 }
