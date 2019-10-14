@@ -56,7 +56,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         this.alloter = alloter;
     }
 
-    private void persistMeta() throws SQLException {
+    protected void persistMeta() throws SQLException {
         Database db = SwiftDatabase.getInstance();
         SourceKey tableKey = dataSource.getSourceKey();
         // todo 分布式导入可能有多线程坑
@@ -74,10 +74,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         try (R resultSet = swiftResultSet) {
             persistMeta();
 
-            int cursor = 0;
-            while (resultSet.hasNext()) {
+            for (int cursor = 0; resultSet.hasNext(); cursor++) {
                 Row row = resultSet.getNextRow();
-                SegmentInfo segInfo = allot(cursor++, row);
+                SegmentInfo segInfo = allot(cursor, row);
 
                 if (!insertings.containsKey(segInfo)) {
                     // 可能有满了的seg
@@ -93,6 +92,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             onFailed();
+            throw e;
         } finally {
             IoUtil.release(this);
         }
@@ -143,9 +143,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             IoUtil.release(entry.getValue());
-
             indexIfNeed(entry.getKey());
-
+            // TODO: 2019/10/8 未满历史块不会走
             if (entry.getValue().isFull()) {
                 handleFullSegment(entry.getKey());
             }

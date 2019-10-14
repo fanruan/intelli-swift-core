@@ -10,8 +10,6 @@ import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.impl.fineio.connector.SwiftConnectorCreator;
 import com.fr.swift.repository.SwiftRepository;
-import com.fr.swift.repository.exception.RepoNotFoundException;
-import com.fr.swift.util.Crasher;
 
 import java.io.IOException;
 
@@ -24,13 +22,9 @@ public class SwiftRepositoryImpl implements SwiftRepository {
     private PackageManager packageManager;
 
     public SwiftRepositoryImpl(FineIOConnectorConfig config) {
-        try {
-            Connector connector = ConnectorManager.getInstance().getConnector();
-            packageManager = new ZipPackageManager((com.fineio.storage.v3.Connector) connector,
-                    SwiftConnectorCreator.createPackConnector(config));
-        } catch (Crasher.CrashException e) {
-            throw new RepoNotFoundException(e.getMessage());
-        }
+        Connector connector = ConnectorManager.getInstance().getConnector();
+        packageManager = new ZipPackageManager((com.fineio.storage.v3.Connector) connector,
+                SwiftConnectorCreator.createPackConnector(config));
     }
 
     @Override

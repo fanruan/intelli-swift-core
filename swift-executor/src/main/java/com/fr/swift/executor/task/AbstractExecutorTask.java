@@ -29,10 +29,14 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
     protected StatusType statusType;
     protected String taskContent;
     protected T job;
+    protected int priority;
+    protected String cause;
+    protected long finishTime;
+    protected long startTime;
 
     //创建task
     protected AbstractExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType,
-                                   LockType lockType, String lockKey, DBStatusType dbStatusType, T job) throws Exception {
+                                   LockType lockType, String lockKey, DBStatusType dbStatusType, T job, int priority) throws Exception {
         this.sourceKey = sourceKey;
         this.persistent = persistent;
         this.executorTaskType = executorTaskType;
@@ -44,12 +48,13 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.statusType = StatusType.WAITING;
         this.createTime = System.currentTimeMillis();
         this.taskId = String.valueOf(createTime);
-
+        this.priority = priority;
         this.taskContent = JsonBuilder.writeJsonString(job.serializedTag());
     }
 
     protected AbstractExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                                   String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) {
+                                   String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                                   int priority) {
         this.sourceKey = sourceKey;
         this.persistent = persistent;
         this.executorTaskType = executorTaskType;
@@ -60,8 +65,47 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.createTime = createTime;
         this.taskId = taskId;
         this.taskContent = taskContent;
+        this.priority = priority;
     }
 
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
+    @Override
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    @Override
+    public void setCause(String cause) {
+        this.cause = cause;
+    }
+
+    @Override
+    public String getCause() {
+        return cause;
+    }
+
+    @Override
+    public void setFinishTime(long finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    @Override
+    public long getFinishTime() {
+        return finishTime;
+    }
+
+    @Override
+    public long getStartTime() {
+        return startTime;
+    }
+    @Override
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
     @Override
     public SourceKey getSourceKey() {
         return sourceKey;
@@ -139,6 +183,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
                 ", lockKey='" + lockKey + '\'' +
                 ", dbStatusType=" + dbStatusType +
                 ", statusType=" + statusType +
+                ", priority=" + priority +
                 '}';
     }
 
@@ -175,6 +220,9 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
             return false;
         }
         if (lockType != that.lockType) {
+            return false;
+        }
+        if (priority != that.priority) {
             return false;
         }
         return lockKey != null ? lockKey.equals(that.lockKey) : that.lockKey == null;

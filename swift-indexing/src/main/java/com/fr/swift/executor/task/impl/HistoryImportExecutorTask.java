@@ -26,6 +26,6 @@ public class HistoryImportExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.TABLE,
                 dataSource.getSourceKey().getId(),
                 DBStatusType.ACTIVE,
-                new HistoryImportJob(dataSource, alloter, resultSet));
+                new HistoryImportJob(dataSource, alloter, resultSet), 0);
     }
 }
