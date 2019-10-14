@@ -23,6 +23,6 @@ public class IndexExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.REAL_SEG,
                 indexSegKey.getId(),
                 DBStatusType.ACTIVE,
-                new IndexJob(indexSegKey));
+                new IndexJob(indexSegKey), 0);
     }
 }

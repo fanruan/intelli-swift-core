@@ -58,4 +58,3 @@ public class TimeHashFunction implements HashFunction {
         return HashType.TIME;
     }
 }
-

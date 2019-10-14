@@ -43,7 +43,7 @@ public class CollateExecutorTaskTest {
     @Test
     public void testDeserialize() throws Exception {
         final ExecutorTask executorTask = new CollateExecutorTask(new SourceKey("test"), false, SwiftTaskType.COLLATE, LockType.TABLE,
-                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json);
+                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json, 0);
         List<SegmentKey> list = (List<SegmentKey>) executorTask.getJob().serializedTag();
         Assert.assertEquals(list.size(), 2);
         Assert.assertEquals(list.get(0), segmentKey1);

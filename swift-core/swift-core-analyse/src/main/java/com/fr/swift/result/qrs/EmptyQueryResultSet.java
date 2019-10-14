@@ -1,5 +1,6 @@
 package com.fr.swift.result.qrs;
 
+import com.fr.swift.result.EmptyResultSet;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -28,7 +29,7 @@ public class EmptyQueryResultSet<T> implements QueryResultSet<T>, Serializable {
 
     @Override
     public SwiftResultSet convert(SwiftMetaData metaData) {
-        return null;
+        return EmptyResultSet.INSTANCE;
     }
 
     @Override
