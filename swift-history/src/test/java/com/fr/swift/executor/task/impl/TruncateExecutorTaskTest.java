@@ -27,7 +27,7 @@ public class TruncateExecutorTaskTest {
     @Test
     public void testDeserialize() throws Exception {
         ExecutorTask executorTask = new TruncateExecutorTask(new SourceKey("test"), false, SwiftTaskType.TRUNCATE, LockType.TABLE,
-                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json);
+                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json, 0);
         Assert.assertEquals(executorTask.getJob().serializedTag(), new SourceKey("test"));
     }
 }

@@ -52,7 +52,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     @Override
     public void start() {
-        long initDelay = getTimeMillis("4:00:00") - System.currentTimeMillis();
+        long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
         initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
 
         executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
@@ -108,7 +108,9 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                         keys.add(key);
                     }
                     if (!keys.isEmpty()) {
-                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
+                        // TODO: 2019/9/12 先改成凌晨2点触发，单线程同步跑，防止宕机先
+                        SwiftContext.get().getBean(CollateService.class).appointCollate(tableEntry.getKey(), keys);
+//                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
                     }
                 }
             } catch (Exception e) {

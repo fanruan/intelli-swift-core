@@ -11,6 +11,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.ArrayList;
