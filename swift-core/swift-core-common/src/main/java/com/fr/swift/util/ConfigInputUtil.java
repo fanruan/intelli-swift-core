@@ -11,15 +11,15 @@ import java.io.InputStream;
 /**
  * @author Heng.J
  * @date 2019/10/14
- * @description
+ * @description 读取配置文件的工具类
  * @since swift 1.1
  */
-public class InputStreamUtil {
+public class ConfigInputUtil {
 
-    public static InputStream getIn(String fileName) {
+    public static InputStream getConfigInputStream(String fileName) {
         InputStream tempIn = null;
         try {
-            SwiftLoggers.getLogger().info("read external " + fileName + "!");
+            SwiftLoggers.getLogger().info("read external {} !", fileName);
             tempIn = new BufferedInputStream(new FileInputStream((fileName)));
         } catch (FileNotFoundException e) {
             SwiftLoggers.getLogger().warn("Failed to read external {}, read internal {} instead!", fileName, fileName);
