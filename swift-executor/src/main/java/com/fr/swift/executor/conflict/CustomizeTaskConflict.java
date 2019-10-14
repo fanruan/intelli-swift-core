@@ -6,7 +6,7 @@ import com.fr.swift.executor.type.LockType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.InputStreamUtil;
+import com.fr.swift.util.ConfigInputUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -154,7 +154,7 @@ public class CustomizeTaskConflict implements TaskConflict {
     private String readFromFile() throws IOException {
         StringBuffer conf = new StringBuffer();
         try {
-            InputStream conflictIn = InputStreamUtil.getIn("conflict-conf.json");
+            InputStream conflictIn = ConfigInputUtil.getConfigInputStream("conflict-conf.json");
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conflictIn))) {
                 String lineTxt = bufferedReader.readLine();
                 while (lineTxt != null) {

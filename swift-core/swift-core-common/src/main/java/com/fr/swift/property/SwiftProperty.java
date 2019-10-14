@@ -1,8 +1,8 @@
 package com.fr.swift.property;
 
 import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.util.ConfigInputUtil;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.InputStreamUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,8 +73,8 @@ public class SwiftProperty {
 
     private void initProperties() {
         properties = new Properties();
-        InputStream swiftIn = InputStreamUtil.getIn("swift.properties");
-        InputStream swiftBeansIn = InputStreamUtil.getIn("swift-beans.properties");
+        InputStream swiftIn = ConfigInputUtil.getConfigInputStream("swift.properties");
+        InputStream swiftBeansIn = ConfigInputUtil.getConfigInputStream("swift-beans.properties");
         try (InputStream in = swiftIn; InputStream beanIn = swiftBeansIn) {
             properties.load(in);
             properties.load(beanIn);
