@@ -4,14 +4,11 @@ import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.util.ConfigInputUtil;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -157,14 +154,7 @@ public class CustomizeTaskConflict implements TaskConflict {
     private String readFromFile() throws IOException {
         StringBuffer conf = new StringBuffer();
         try {
-            InputStream conflictIn = null;
-            try {
-                SwiftLoggers.getLogger().info("read external conflict-conf.json!");
-                conflictIn = new BufferedInputStream(new FileInputStream(("conflict-conf.json")));
-            } catch (FileNotFoundException e) {
-                SwiftLoggers.getLogger().warn("Failed to read external conflict-conf.json, read internal conflict-conf.json instead!");
-                conflictIn = SwiftProperty.class.getClassLoader().getResourceAsStream("conflict-conf.json");
-            }
+            InputStream conflictIn = ConfigInputUtil.getConfigInputStream("conflict-conf.json");
             try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conflictIn))) {
                 String lineTxt = bufferedReader.readLine();
                 while (lineTxt != null) {
