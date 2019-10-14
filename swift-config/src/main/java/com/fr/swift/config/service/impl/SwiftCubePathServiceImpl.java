@@ -9,6 +9,7 @@ import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftCubePathService;
+import com.fr.swift.context.ContextProvider;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Strings;
 
@@ -34,7 +35,7 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
                 }
             } catch (Exception ignore) {
             }
-            String path = SwiftProperty.getProperty().getCubesPath();
+            String path = SwiftContext.get().getBean(ContextProvider.class).getContextPath();
             for (SwiftConfigEntity swiftConfigEntity : toEntity(path)) {
                 dao.saveOrUpdate(session, swiftConfigEntity);
             }
