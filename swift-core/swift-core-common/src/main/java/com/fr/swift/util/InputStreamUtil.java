@@ -1,0 +1,30 @@
+package com.fr.swift.util;
+
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+/**
+ * @author Heng.J
+ * @date 2019/10/14
+ * @description
+ * @since swift 1.1
+ */
+public class InputStreamUtil {
+
+    public static InputStream getIn(String fileName) {
+        InputStream tempIn = null;
+        try {
+            SwiftLoggers.getLogger().info("read external " + fileName + "!");
+            tempIn = new BufferedInputStream(new FileInputStream((fileName)));
+        } catch (FileNotFoundException e) {
+            SwiftLoggers.getLogger().warn("Failed to read external {}, read internal {} instead!", fileName, fileName);
+            tempIn = SwiftProperty.class.getClassLoader().getResourceAsStream(fileName);
+        }
+        return tempIn;
+    }
+}
