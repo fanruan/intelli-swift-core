@@ -25,14 +25,14 @@ public class TransferExecutorTaskTest {
 
     @Test
     public void testSerialize() throws Exception {
-        ExecutorTask executorTask = new TransferExecutorTask(segmentKey);
+        ExecutorTask executorTask = TransferExecutorTask.ofActive(segmentKey);
         Assert.assertEquals(json, executorTask.getTaskContent());
     }
 
     @Test
     public void testDeserialize() throws Exception {
         ExecutorTask executorTask = new TransferExecutorTask(new SourceKey("test"), false, SwiftTaskType.TRANSFER, LockType.TABLE,
-                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json);
+                "test", DBStatusType.ACTIVE, String.valueOf(System.currentTimeMillis()), System.currentTimeMillis(), json, 0);
         Assert.assertEquals(executorTask.getJob().serializedTag(), segmentKey);
     }
 }

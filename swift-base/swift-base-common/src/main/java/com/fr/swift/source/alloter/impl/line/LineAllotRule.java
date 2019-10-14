@@ -24,5 +24,4 @@ public class LineAllotRule extends BaseAllotRule {
     public Type getType() {
         return AllotType.LINE;
     }
-
 }

@@ -4,8 +4,7 @@ import com.fr.swift.executor.task.ExecutorTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This class created on 2019/2/21
@@ -15,15 +14,16 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public class ConsumeQueue {
 
+    private static final int DEFAULT_INITIAL_CAPACITY = 100;
     private static ConsumeQueue INSTANCE = new ConsumeQueue();
 
     public static ConsumeQueue getInstance() {
         return INSTANCE;
     }
 
-    private BlockingDeque<ExecutorTask> queue = new LinkedBlockingDeque<ExecutorTask>();
+    private LinkedBlockingQueue<ExecutorTask> queue = new LinkedBlockingQueue<>();
 
-    private List<ExecutorTask> taskList = new ArrayList<ExecutorTask>();
+    private List<ExecutorTask> taskList = new ArrayList<>();
 
     private ConsumeQueue() {
     }

@@ -1,6 +1,7 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -49,12 +50,16 @@ class DetailQueryBuilder extends BaseQueryBuilder {
 //        List<Segment> segments = SEG_SVC.getSegmentsByIds(detailQueryInfo.getTable(), detailQueryInfo.getQuerySegment());
         List<Dimension> dimensions = detailQueryInfo.getDimensions();
         for (Segment seg : segments) {
-            List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
-            List<Pair<Column, IndexInfo>> columns = getDimensionSegments(seg, dimensions);
-            if (detailQueryInfo.getFilterInfo() != null) {
-                filterInfos.add(detailQueryInfo.getFilterInfo());
+            try {
+                List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+                List<Pair<Column, IndexInfo>> columns = getDimensionSegments(seg, dimensions);
+                if (detailQueryInfo.getFilterInfo() != null) {
+                    filterInfos.add(detailQueryInfo.getFilterInfo());
+                }
+                queries.add(getSegmentQuery(seg, columns, filterInfos));
+            } catch (Exception ignore) {
+                SwiftLoggers.getLogger().error(ignore);
             }
-            queries.add(getSegmentQuery(seg, columns, filterInfos));
         }
         return getResultQuery(queries);
     }

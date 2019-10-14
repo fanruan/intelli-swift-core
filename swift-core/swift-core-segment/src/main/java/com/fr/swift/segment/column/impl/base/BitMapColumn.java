@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.IoUtil;
 
 /**
@@ -73,5 +74,6 @@ public class BitMapColumn extends BaseBitmapColumn {
         IoUtil.release(indexWriter, indexReader);
         indexWriter = null;
         indexReader = null;
+        SwiftLoggers.getLogger().error("swift bitmap released at {}", indexLocation.getPath());
     }
 }

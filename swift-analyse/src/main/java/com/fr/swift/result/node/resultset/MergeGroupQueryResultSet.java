@@ -10,8 +10,6 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.IoUtil;
-import com.fr.swift.util.concurrent.PoolThreadFactory;
-import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,9 +17,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 
 /**
@@ -29,8 +24,6 @@ import java.util.concurrent.Future;
  * @date 2018/7/26
  */
 public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
-    private static final ExecutorService EXEC = SwiftExecutors.newFixedThreadPool(new PoolThreadFactory(MergeGroupQueryResultSet.class));
-
     private int fetchSize;
     private boolean[] globalIndexed;
     private List<QueryResultSet<GroupPage>> sources;
@@ -52,42 +45,31 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
     }
 
     private void init() {
-        lastRowOfPrevPages = new ArrayList<List<SwiftNode>>(sources.size());
+        lastRowOfPrevPages = new ArrayList<>(sources.size());
         for (int i = 0; i < sources.size(); i++) {
             lastRowOfPrevPages.add(null);
         }
     }
 
     private GroupPage updateAll() {
-        final List<GroupPage> pages = new ArrayList<GroupPage>();
-        List<Future<GroupPage>> pageFutures = new ArrayList<Future<GroupPage>>();
+        final List<GroupPage> pages = new ArrayList<>();
+        // 暂时不多线程跑，seg query和result query的合并都是用的这个，单机自己查自己会导致阻塞
+        // 如先合并result query，占满了线程池，合并seg query的任务就提交不进去了
         for (int i = 0; i < sources.size(); i++) {
-            final int finalI = i;
-            pageFutures.add(EXEC.submit(new Callable<GroupPage>() {
-                @Override
-                public GroupPage call() {
-                    if (sources.get(finalI).hasNextPage()) {
-                        GroupPage pair = sources.get(finalI).getPage();
-                        if (pair == null) {
-                            SwiftLoggers.getLogger().error("MergeGroupQueryResultSet#updateAll: invalid page data!");
-                            return null;
-                        }
-                        SwiftNode node = pair.getRoot();
-                        lastRowOfPrevPages.set(finalI, SwiftNodeUtils.getLastRow(node));
-                        return new GroupPage(node, pair.getGlobalDicts());
-                    }
-                    return null;
-                }
-            }));
-        }
-        for (Future<GroupPage> future : pageFutures) {
+            QueryResultSet<GroupPage> resultSet = sources.get(i);
             try {
-                GroupPage rs = future.get();
-                if (rs != null) {
-                    pages.add(rs);
+                if (resultSet.hasNextPage()) {
+                    GroupPage pair = resultSet.getPage();
+                    if (pair == null) {
+                        SwiftLoggers.getLogger().error("MergeGroupQueryResultSet#updateAll: invalid page data!");
+                        continue;
+                    }
+                    SwiftNode node = pair.getRoot();
+                    lastRowOfPrevPages.set(i, SwiftNodeUtils.getLastRow(node));
+                    pages.add(new GroupPage(node, pair.getGlobalDicts()));
                 }
             } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e.getMessage(), e);
+                SwiftLoggers.getLogger().error(e);
             }
         }
         if (remainResultSet != null) {
@@ -102,7 +84,7 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
         if (theRowOfRemainNode == null) {
             return updateAll();
         }
-        List<GroupPage> newPages = new ArrayList<GroupPage>();
+        List<GroupPage> newPages = new ArrayList<>();
         for (int i = 0; i < sources.size(); i++) {
             if (sources.get(i).hasNextPage()) {
                 if (shouldUpdate(lastRowOfPrevPages.get(i))) {
@@ -171,9 +153,9 @@ public class MergeGroupQueryResultSet implements QueryResultSet<GroupPage> {
 
     private List<Map<Integer, Object>> getDictionary(SwiftNode root, List<Map<Integer, Object>> oldDictionary) {
         if (root == null || root.getChildrenSize() == 0) {
-            return new ArrayList<Map<Integer, Object>>(0);
+            return new ArrayList<>(0);
         }
-        List<Map<Integer, Object>> dictionary = new ArrayList<Map<Integer, Object>>(oldDictionary.size());
+        List<Map<Integer, Object>> dictionary = new ArrayList<>(oldDictionary.size());
         for (int i = 0; i < oldDictionary.size(); i++) {
             dictionary.add(null);
         }
