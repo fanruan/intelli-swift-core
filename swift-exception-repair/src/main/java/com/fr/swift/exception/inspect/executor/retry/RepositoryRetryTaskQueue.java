@@ -35,4 +35,5 @@ public class RepositoryRetryTaskQueue implements RetryTaskQueue {
     public int getTaskCount() {
         return queue.size();
     }
+
 }

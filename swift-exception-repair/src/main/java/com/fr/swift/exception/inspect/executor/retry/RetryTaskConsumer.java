@@ -28,5 +28,6 @@ public class RetryTaskConsumer implements Callable<Boolean> {
             }
         }
         return true;
+
     }
 }

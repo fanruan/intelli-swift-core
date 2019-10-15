@@ -37,7 +37,7 @@ public class RepositoryCheckExecutor implements Runnable {
                 SwiftLoggers.getLogger().error(e);
             } catch (TimeoutException e) {
                 future.cancel(true);
-                SwiftLoggers.getLogger().info("Retry Task Timeout, Cancel Task !");
+                SwiftLoggers.getLogger().info("Retry Task Timeout, Cancel Retry Task !");
             }
         }
     }
