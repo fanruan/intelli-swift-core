@@ -12,4 +12,5 @@ public interface RetryTaskQueue {
     RetryTask take() throws InterruptedException;
 
     int getTaskCount();
+
 }

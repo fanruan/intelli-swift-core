@@ -19,6 +19,7 @@ public class UploadSegExceptionHandler implements ExceptionHandler {
 
     @Override
     public boolean handleException(final ExceptionInfo info) {
+
         RetryTask task = new UploadSegRetryTask(info);
         RepositoryRetryTaskQueue.getInstance().offer(task);
 

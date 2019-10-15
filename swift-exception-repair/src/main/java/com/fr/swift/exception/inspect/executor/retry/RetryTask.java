@@ -7,4 +7,5 @@ package com.fr.swift.exception.inspect.executor.retry;
  */
 public interface RetryTask {
     void retry();
+
 }

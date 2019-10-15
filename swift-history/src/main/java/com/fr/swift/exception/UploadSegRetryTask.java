@@ -29,6 +29,7 @@ public class UploadSegRetryTask implements RetryTask {
             uploadService.upload(Collections.singleton(key));
         } else {
             uploadService.uploadAllShow(Collections.singleton(key));
+
         }
     }
 }
