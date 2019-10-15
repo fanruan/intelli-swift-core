@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class RepositoryCheckExecutor implements Runnable {
 
-    ExecutorService taskConsumerService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(RetryTaskConsumer.class));
+    private ExecutorService taskConsumerService = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(RetryTaskConsumer.class));
     long timeOut = 8L;
     private ComponentHealthCheck repositoryChecker = new ComponentHealthCheck(SwiftRepositoryHealthInspector.getInstance(), 30000);
 
