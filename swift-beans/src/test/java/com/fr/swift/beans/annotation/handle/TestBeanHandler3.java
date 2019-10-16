@@ -15,8 +15,8 @@ import com.fr.swift.beans.annotation.aop.SwiftJoinPoint;
 @SwiftBean
 @SwiftAspect
 public class TestBeanHandler3 {
-    @SwiftPointCut(targets = {"TestBeanHandler1.run",
-            "TestBeanHandler2.run"})
+    @SwiftPointCut(targets = {"com.fr.swift.beans.annotation.handle.TestBeanHandler1.run",
+            "com.fr.swift.beans.annotation.handle.TestBeanHandler2.run"})
     private void test() {
     }
 

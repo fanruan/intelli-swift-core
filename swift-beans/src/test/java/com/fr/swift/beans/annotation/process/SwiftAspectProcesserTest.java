@@ -20,7 +20,7 @@ public class SwiftAspectProcesserTest extends TestCase {
         assertEquals(beanDefinition.getBeforeMethod().getName(), "before");
         assertEquals(beanDefinition.getAfterMethod().getName(), "after");
         assertEquals(beanDefinition.getPointCut().getName(), "test");
-        assertEquals(beanDefinition.getAdviceTarget()[0], "TestBeanProcesser2.run");
-        assertEquals(beanDefinition.getAdviceTarget()[1], "TestBeanProcesser3.run");
+        assertEquals(beanDefinition.getAdviceTarget()[0], "com.fr.swift.beans.annotation.process.TestBeanProcesser2.run");
+        assertEquals(beanDefinition.getAdviceTarget()[1], "com.fr.swift.beans.annotation.process.TestBeanProcesser3.run");
     }
 }
