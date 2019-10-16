@@ -31,6 +31,12 @@
         <module>swift-executor</module>
         <module>swift-base-boot</module>
         <module>swift-exception-repair</module>
+        <module>swift-repo</module>
+        <module>swift-repo-api</module>
+        <module>swift-io</module>
+        <module>swift-io-api</module>
+        <module>swift-rpc-api</module>
+        <module>swift-cluster-api</module>
     </modules>
     <properties>
         <jackson.version>2.9.8</jackson.version>
