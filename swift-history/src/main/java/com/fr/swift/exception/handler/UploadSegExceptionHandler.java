@@ -29,7 +29,6 @@ public class UploadSegExceptionHandler implements ExceptionHandler {
 
     @Override
     public boolean handleException(ExceptionInfo info) {
-
         if (repositoryChecker.isHealthy()) {
             SegmentKey key = ((UploadExceptionContext) info.getContext()).getSegmentKey();
             if (!((UploadExceptionContext) info.getContext()).isAllShow()) {
