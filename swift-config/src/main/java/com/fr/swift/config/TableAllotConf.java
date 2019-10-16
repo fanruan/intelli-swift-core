@@ -1,6 +1,5 @@
 package com.fr.swift.config;
 
-import com.fr.swift.config.service.IndexingConf;
 import com.fr.swift.source.alloter.AllotRule;
 
 /**
