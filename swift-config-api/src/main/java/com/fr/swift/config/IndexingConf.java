@@ -1,4 +1,4 @@
-package com.fr.swift.config.service;
+package com.fr.swift.config;
 
 import com.fr.swift.source.SourceKey;
 
