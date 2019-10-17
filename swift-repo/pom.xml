@@ -14,7 +14,7 @@
         <dependency>
             <groupId>com.fineio</groupId>
             <artifactId>fineio</artifactId>
-            <version>3.0-RELEASE-SNAPSHOT</version>
+            <version>${fineio.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
