@@ -31,6 +31,10 @@
         <module>swift-executor</module>
         <module>swift-base-boot</module>
         <module>swift-exception-repair</module>
+        <module>swift-bitmap</module>
+        <module>swift-bitmap-api</module>
+        <module>swift-config-api</module>
+        <module>swift-beans</module>
     </modules>
     <properties>
         <jackson.version>2.9.8</jackson.version>
