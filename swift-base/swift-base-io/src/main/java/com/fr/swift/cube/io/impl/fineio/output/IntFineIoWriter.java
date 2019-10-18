@@ -37,7 +37,7 @@ public class IntFineIoWriter extends BaseFineIoWriter<IntBuf> implements IntWrit
         if (isOverwrite) {
             FineIOAccessor.INSTANCE.put(writeFile, (int) pos, val);
         } else {
-            FineIOAccessor.INSTANCE.put(appendFile, val);
+            FineIOAccessor.INSTANCE.put(appendFile, (int) pos, val);
         }
     }
 }
