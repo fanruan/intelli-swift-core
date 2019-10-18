@@ -1,4 +1,4 @@
-package com.fr.swift.segment.operator.collate.segment.bitmap;
+package com.fr.swift.segment.operator.collate.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
