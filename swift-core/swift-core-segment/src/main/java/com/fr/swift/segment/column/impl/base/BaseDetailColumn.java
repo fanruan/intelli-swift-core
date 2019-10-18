@@ -59,6 +59,6 @@ abstract class BaseDetailColumn<T, W extends Writer, R extends Reader> implement
         IoUtil.release(detailWriter, detailReader);
         detailWriter = null;
         detailReader = null;
-        SwiftLoggers.getLogger().error("swift detail released at {}", location.getPath());
+        SwiftLoggers.getLogger().debug("swift detail released at {}", location.getPath());
     }
 }
