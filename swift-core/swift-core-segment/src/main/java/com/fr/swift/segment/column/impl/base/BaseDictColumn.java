@@ -142,7 +142,7 @@ abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T>
         globalSizeReader = null;
         globalIndexReader = null;
         putter = null;
-        SwiftLoggers.getLogger().error("swift dict released at {}", parent.getPath());
+        SwiftLoggers.getLogger().debug("swift dict released at {}", parent.getPath());
     }
 
     private ArrayLookupHelper.Lookup<T> lookup = new ArrayLookupHelper.Lookup<T>() {
