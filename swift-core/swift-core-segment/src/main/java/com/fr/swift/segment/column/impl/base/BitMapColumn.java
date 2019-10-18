@@ -74,6 +74,6 @@ public class BitMapColumn extends BaseBitmapColumn {
         IoUtil.release(indexWriter, indexReader);
         indexWriter = null;
         indexReader = null;
-        SwiftLoggers.getLogger().error("swift bitmap released at {}", indexLocation.getPath());
+        SwiftLoggers.getLogger().debug("swift bitmap released at {}", indexLocation.getPath());
     }
 }
