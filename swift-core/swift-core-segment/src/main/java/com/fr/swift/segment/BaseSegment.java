@@ -179,7 +179,7 @@ public abstract class BaseSegment implements Segment {
         rowCountReader = null;
         bitMapWriter = null;
         bitMapReader = null;
-        SwiftLoggers.getLogger().error("swift seg released row count and all show at {}", location.getPath());
+        SwiftLoggers.getLogger().debug("swift seg released row count and all show at {}", location.getPath());
     }
 
     Column createRelationColumn(ColumnKey key) {
