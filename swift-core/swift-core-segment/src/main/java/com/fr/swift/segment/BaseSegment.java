@@ -11,11 +11,13 @@ import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.RelationColumn;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DoubleColumn;
+import com.fr.swift.segment.column.impl.IntColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.StringColumn;
 import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
@@ -58,6 +60,7 @@ public abstract class BaseSegment implements Segment {
     protected Column<?> newColumn(IResourceLocation location, ClassType classType) {
         switch (classType) {
             case INTEGER:
+                return new IntColumn(location);
             case LONG:
                 return new LongColumn(location);
             case DOUBLE:
@@ -170,22 +173,13 @@ public abstract class BaseSegment implements Segment {
     }
 
     @Override
-    public void flush() {
-        if (rowCountWriter != null) {
-            rowCountWriter.flush();
-        }
-        if (bitMapWriter != null) {
-            bitMapWriter.flush();
-        }
-    }
-
-    @Override
     public void release() {
         IoUtil.release(rowCountWriter, rowCountReader, bitMapWriter, bitMapReader);
         rowCountWriter = null;
         rowCountReader = null;
         bitMapWriter = null;
         bitMapReader = null;
+        SwiftLoggers.getLogger().debug("swift seg released row count and all show at {}", location.getPath());
     }
 
     Column createRelationColumn(ColumnKey key) {

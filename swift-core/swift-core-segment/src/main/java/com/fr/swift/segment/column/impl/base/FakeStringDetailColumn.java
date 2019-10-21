@@ -10,6 +10,7 @@ import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.IoUtil;
 
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
@@ -94,24 +95,21 @@ public class FakeStringDetailColumn implements DetailColumn<String> {
     }
 
     @Override
-    public void flush() {
-        if (map != null) {
-            // dump完，持久化map的一些信息，以便下一步直接索引
-            map.dumpMap();
-            waitUtilDumpOver();
-            map.writeExternal();
-            map.release();
-            map = null;
-
-        }
-    }
-
-    @Override
     public void release() {
-        flush();
+        try {
+            if (map != null) {
+                // dump完，持久化map的一些信息，以便下一步直接索引
+                map.dumpMap();
+                waitUtilDumpOver();
+            }
+        } finally {
+            if (map != null) {
+                map.writeExternal();
+                map.release();
+                map = null;
+            }
 
-        if (dictColumn != null) {
-            dictColumn.release();
+            IoUtil.release(dictColumn);
             dictColumn = null;
         }
     }

@@ -1,6 +1,5 @@
 package com.fr.swift.segment.column;
 
-import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.IfReadable;
 import com.fr.swift.cube.io.Releasable;
 
@@ -10,11 +9,26 @@ import com.fr.swift.cube.io.Releasable;
  * <p>
  * 获取基础类型的列，用于聚合
  */
-public interface DetailColumn<T> extends Releasable, Flushable, IfReadable {
+public interface DetailColumn<T> extends Releasable, IfReadable {
+    /**
+     * @deprecated 不硬核，还是要根据类型决定getInt/Long/Double
+     * 还不如强转成实现类，调实现类提供的具体方法
+     */
+    @Deprecated
     int getInt(int pos);
 
+    /**
+     * @deprecated 不硬核，还是要根据类型决定getInt/Long/Double
+     * 还不如强转成实现类，调实现类提供的具体方法
+     */
+    @Deprecated
     long getLong(int pos);
 
+    /**
+     * @deprecated 不硬核，还是要根据类型决定getInt/Long/Double
+     * 还不如强转成实现类，调实现类提供的具体方法
+     */
+    @Deprecated
     double getDouble(int pos);
 
     void put(int pos, T val);

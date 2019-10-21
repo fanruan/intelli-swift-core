@@ -2,7 +2,7 @@ package com.fr.swift.source.alloter.impl.line;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.bean.SegmentKeyBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
@@ -48,7 +48,7 @@ public class HistoryLineSourceAlloterTest {
             public SegmentKey answer(InvocationOnMock invocation) throws Throwable {
                 SourceKey tableKey = invocation.getArgument(0);
                 StoreType storeType = invocation.getArgument(1);
-                return new SegmentKeyBean(tableKey, order++, storeType, null);
+                return new SwiftSegmentEntity(tableKey, order++, storeType, null);
             }
         });
     }

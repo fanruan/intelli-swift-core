@@ -1,7 +1,8 @@
 package com.fr.swift.query.aggregator;
 
 /**
- * Created by Lyon on 2018/5/2.
+ * @author Lyon
+ * @date 2018/5/2
  */
 public class AggregatorValueUtils {
 
@@ -14,7 +15,7 @@ public class AggregatorValueUtils {
      * @param <T>
      * @return
      */
-    public static <T extends AggregatorValue> T combine(T value, T otherValue, Aggregator<T> aggregator) {
+    public static <T extends AggregatorValue<?>> T combine(T value, T otherValue, Aggregator<T> aggregator) {
         if (value == null && otherValue == null) {
             return null;
         }

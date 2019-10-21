@@ -1,9 +1,12 @@
 package com.fr.swift.query.aggregator;
 
+import java.io.Serializable;
+
 /**
- * Created by pony on 2018/3/27.
+ * @author pony
+ * @date 2018/3/27
  */
-public class DateAmountAggregateValue implements AggregatorValue<Long> {
+public class DateAmountAggregateValue implements AggregatorValue<Long>, Serializable {
 
     private static final long serialVersionUID = -4924535512001583885L;
     //日期都是大于0的，用负无穷表示null没关系

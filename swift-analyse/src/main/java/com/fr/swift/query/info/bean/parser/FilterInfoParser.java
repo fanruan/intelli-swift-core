@@ -18,11 +18,13 @@ import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
 import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
+import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanSimplify;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.DateUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,7 +46,10 @@ public class FilterInfoParser {
         if (null == bean) {
             return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
         }
-        bean = FilterInfoBeanOptimizer.optimize(bean);
+        // TODO: 2019/9/12 多过滤条件性能差到无法跑出结果了。也可能是我不会用吧
+//        bean = FilterInfoBeanOptimizer.optimize(bean);
+        // TODO: 2019/9/12 反正有bug，也不敢说，先注释了吧。
+//        bean = FilterInfoBeanSimplify.simple(bean);
         switch (bean.getType()) {
             case AND:
             case OR:
@@ -96,10 +101,10 @@ public class FilterInfoParser {
                 ColumnTypeConstants.ClassType classType = getClassType(table, ((NumberInRangeFilterBean) bean).getColumn());
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
                 if (valueBean.getStart() != null) {
-                    filterValue.setMin((Number) convert(valueBean.getStart(), classType));
+                    filterValue.setMin(convertNumber(valueBean.getStart(), classType));
                 }
                 if (valueBean.getEnd() != null) {
-                    filterValue.setMax((Number) convert(valueBean.getEnd(), classType));
+                    filterValue.setMax(convertNumber(valueBean.getEnd(), classType));
                 }
                 filterValue.setMinIncluded(valueBean.isStartIncluded());
                 filterValue.setMaxIncluded(valueBean.isEndIncluded());
@@ -164,10 +169,11 @@ public class FilterInfoParser {
     private static Object convertValue(Object origin, ColumnTypeConstants.ClassType classType, boolean start) {
         switch (classType) {
             case INTEGER:
+                return origin == null ? (start ? Integer.MIN_VALUE : Integer.MAX_VALUE) : Integer.parseInt(origin.toString());
             case LONG:
                 return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : Long.parseLong(origin.toString());
-//            case DATE:
-//                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString(), true).getTime();
+            case DATE:
+                return origin == null ? (start ? Long.MIN_VALUE : Long.MAX_VALUE) : DateUtils.string2Date(origin.toString()).getTime();
             default:
                 return origin == null ? (start ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY) : Double.parseDouble(origin.toString());
         }
@@ -229,14 +235,28 @@ public class FilterInfoParser {
     private static Object convert(Object origin, ColumnTypeConstants.ClassType type) {
         switch (type) {
             case INTEGER:
+                return Integer.parseInt(origin.toString());
             case LONG:
                 return Long.parseLong(origin.toString());
-//            case DATE:
-//                return DateUtils.string2Date(origin.toString(), true).getTime();
+            case DATE:
+                return DateUtils.string2Date(origin.toString()).getTime();
             case DOUBLE:
                 return Double.parseDouble(origin.toString());
             default:
                 return origin == null ? "" : origin.toString();
         }
+    }
+
+    /**
+     * postQuery的，如果count(字符字段) 只用convert取出来的object是String
+     * 强转成Number会抛异常
+     *
+     * @param origin
+     * @param type
+     * @return
+     */
+    private static Number convertNumber(Object origin, ColumnTypeConstants.ClassType type) {
+        final Object convert = convert(origin, type);
+        return convert instanceof Number ? (Number) convert : Double.parseDouble(convert.toString());
     }
 }

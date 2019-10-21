@@ -44,7 +44,7 @@ public class MinAggregate extends AllDataCompare {
     }
 
     @Override
-    public DoubleAmountAggregatorValue createAggregatorValue(AggregatorValue value) {
+    public DoubleAmountAggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
         if (value.calculateValue() == null) {
             valueAmount.setValue(Double.MAX_VALUE);

@@ -5,10 +5,12 @@ import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.EmptyDetailFilter;
 import com.fr.swift.query.filter.detail.impl.InFilter;
 import com.fr.swift.query.filter.detail.impl.NullFilter;
+import com.fr.swift.query.filter.detail.impl.date.WorkDayFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.BottomNFilter;
 import com.fr.swift.query.filter.detail.impl.nfilter.TopNFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberAverageFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
+import com.fr.swift.query.filter.detail.impl.number.NumberStartsWithFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringEndsWithFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringKeyWordFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringLikeFilter;
@@ -18,6 +20,10 @@ import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Optional;
 import com.fr.swift.util.ReflectUtils;
 import com.fr.swift.util.Strings;
@@ -46,10 +52,9 @@ public class DetailFilterFactory {
             case STRING_LIKE:
                 return new StringLikeFilter((String) filterInfo.getFilterValue(), column);
             case STRING_STARTS_WITH:
-                return new StringStartsWithFilter((String) filterInfo.getFilterValue(), column);
+                return createStartWithFilter((String) filterInfo.getFilterValue(), column, segment.getMetaData(), columnKey);
             case STRING_ENDS_WITH:
                 return new StringEndsWithFilter((String) filterInfo.getFilterValue(), column);
-
             case NUMBER_IN_RANGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
                 return new NumberInRangeFilter(value.getMin(), value.getMax(),
@@ -79,8 +84,21 @@ public class DetailFilterFactory {
                 return new StringKeyWordFilter((String) filterInfo.getFilterValue(), column);
             case EMPTY:
                 return new EmptyDetailFilter();
+            case WORK_DAY:
+                return new WorkDayFilter(column);
             default:
                 return new AllShowDetailFilter(segment);
+        }
+    }
+
+    private static DetailFilter createStartWithFilter(String value, Column column, SwiftMetaData metaData, ColumnKey columnKey) {
+        try {
+            final SwiftMetaDataColumn metaDataColumn = metaData.getColumn(columnKey.getName());
+            final ColumnTypeConstants.ClassType classType = ColumnTypeUtils.getClassType(metaDataColumn);
+            return classType == ColumnTypeConstants.ClassType.STRING ? new StringStartsWithFilter(value, column) :
+                    new NumberStartsWithFilter(value, column);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

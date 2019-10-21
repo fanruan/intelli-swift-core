@@ -4,8 +4,8 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 
+import java.io.OutputStream;
 import java.util.BitSet;
-import java.util.Iterator;
 
 /**
  * @author anchore
@@ -56,7 +56,6 @@ public abstract class BaseBitSetBitMap extends AbstractBitMap {
     @Override
     public IntIterator intIterator() {
         return new IntIterator() {
-
             int i = bitset.nextSetBit(0);
 
             @Override
@@ -70,22 +69,7 @@ public abstract class BaseBitSetBitMap extends AbstractBitMap {
             public boolean hasNext() {
                 return i >= 0;
             }
-
-            @Override
-            public Integer next() {
-                return nextInt();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
         };
-    }
-
-    @Override
-    public Iterator<Integer> iterator() {
-        return intIterator();
     }
 
     @Override
@@ -95,6 +79,11 @@ public abstract class BaseBitSetBitMap extends AbstractBitMap {
 
     @Override
     public byte[] toBytes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void writeBytes(OutputStream output) {
         throw new UnsupportedOperationException();
     }
 

@@ -1,5 +1,6 @@
 package com.fr.swift.query.info.element.dimension;
 
+import com.fr.swift.query.formula.Formula;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.info.IndexInfoImpl;
 import com.fr.swift.query.info.bean.type.DimensionType;
@@ -12,16 +13,17 @@ import com.fr.swift.segment.column.impl.base.DetailFormulaColumn;
  * Created by pony on 2018/5/11.
  */
 public class GroupFormulaDimension extends GroupDimension {
-    private String formula;
+    //    private String formula;
+    private Formula formula;
 
-    public GroupFormulaDimension(int index, Group group, Sort sort, String formula) {
-        super(index, null, group, sort, new IndexInfoImpl(true, false));
+    public GroupFormulaDimension(int index, Group group, Sort sort, Formula formula) {
+        super(index, formula.getColumnKeys() == null ? null : formula.getColumnKeys()[0], group, sort, new IndexInfoImpl(true, false));
         this.formula = formula;
     }
 
-    public String getFormula() {
-        return formula;
-    }
+//    public String getFormula() {
+//        return formula;
+//    }
 
     @Override
     public Column getColumn(Segment segment) {

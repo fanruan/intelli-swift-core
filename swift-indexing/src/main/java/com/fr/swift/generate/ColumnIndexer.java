@@ -5,6 +5,7 @@ import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
+import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -85,8 +86,7 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
                 Column<T> column = getColumn(segment);
                 buildColumnIndex(column, segment.getRowCount());
             } finally {
-                SegmentUtils.releaseColumnsOf(segment);
-                SegmentUtils.release(segment);
+                SegmentUtils.releaseHisSeg(segment);
             }
         }
     }
@@ -195,7 +195,7 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
                 rowToIndex[row] = pos;
                 bitmap.add(row);
             }
-            indexColumn.putBitMapIndex(pos, bitmap);
+            indexColumn.putBitMapIndex(pos, convertIfNeeded(bitmap));
 
             pos++;
         }
@@ -205,6 +205,21 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
         for (int row = 0, len = rowToIndex.length; row < len; row++) {
             dictColumn.putter().putIndex(row, rowToIndex[row]);
         }
+    }
+
+    private static ImmutableBitMap convertIfNeeded(ImmutableBitMap bitMap) {
+        // 基数为1的情况下使用IdBitmap，反序列快点
+        if (bitMap.getCardinality() != 1) {
+            return bitMap;
+        }
+        final int[] id = new int[1];
+        bitMap.traversal(new TraversalAction() {
+            @Override
+            public void actionPerformed(int row) {
+                id[0] = row;
+            }
+        });
+        return BitMaps.newIdBitMap(id[0]);
     }
 
     private BaseIntListExternalMap<T> newIntListExternalMap(Comparator<T> c, String path) throws SwiftMetaDataException {

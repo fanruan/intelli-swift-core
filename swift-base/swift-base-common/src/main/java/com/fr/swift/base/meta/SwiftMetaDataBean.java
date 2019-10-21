@@ -1,84 +1,103 @@
 package com.fr.swift.base.meta;
 
-import com.fr.swift.converter.ObjectConverter;
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.annotation.persistence.Column;
+import com.fr.swift.annotation.persistence.Convert;
+import com.fr.swift.annotation.persistence.Entity;
+import com.fr.swift.annotation.persistence.Enumerated;
+import com.fr.swift.annotation.persistence.Id;
+import com.fr.swift.annotation.persistence.Table;
+import com.fr.swift.config.convert.MetaDataColumnListConverter;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.Assert;
 import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Lucifer
  * @Description:
  * @Date: Created in 2018-3-8
  */
-public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectConverter {
+@Entity
+@Table(name = "fine_swift_metadata")
+public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
     private static final long serialVersionUID = -6185911493489618460L;
     /**
      * id实际上传的是SourceKey
      * 理论上SourceKey不重复
      */
+    @Id
     private String id;
-    private SwiftDatabase swiftDatabase;
+    @Column(name = "swiftSchema")
+    @Enumerated(Enumerated.EnumType.STRING)
+    private SwiftSchema swiftSchema;
+    @Column(name = "schemaName")
     private String schemaName;
+    @Column(name = "tableName")
     private String tableName;
+    @Column(name = "remark")
     private String remark;
+    @Column(name = "fields", length = 65536)
+    @Convert(converter = MetaDataColumnListConverter.class)
     private List<SwiftMetaDataColumn> fields;
-    private int columnCount;
 
-    public static final Class TYPE = entityType();
+    private transient Map<String, Integer> fieldIndexes = new HashMap<>();
 
-    private static Class entityType() {
-        try {
-            return Class.forName("com.fr.swift.config.entity.SwiftMetaDataEntity");
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
+    /**
+     * @deprecated 换Builder
+     */
+    @Deprecated
     public SwiftMetaDataBean(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
     }
 
-    public SwiftMetaDataBean(SwiftDatabase swiftDatabase, String tableName, List<SwiftMetaDataColumn> fieldList) {
-        this(null, swiftDatabase, null, tableName, null, fieldList);
-    }
-
+    /**
+     * @deprecated 换Builder
+     */
+    @Deprecated
     public SwiftMetaDataBean(String tableName, String remark, String schemaName, List<SwiftMetaDataColumn> fields) {
-        this(null, SwiftDatabase.CUBE, schemaName, tableName, remark, fields);
+        this(null, SwiftSchema.CUBE, schemaName, tableName, remark, fields);
     }
 
+    /**
+     * @deprecated 换Builder
+     */
+    @Deprecated
     public SwiftMetaDataBean(String id, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
-        this(id, SwiftDatabase.CUBE, schemaName, tableName, remark, fields);
+        this(id, SwiftSchema.CUBE, schemaName, tableName, remark, fields);
     }
 
-    public SwiftMetaDataBean(String id, SwiftDatabase swiftDatabase, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
+    /**
+     * @deprecated 换Builder
+     */
+    @Deprecated
+    public SwiftMetaDataBean(String id, SwiftSchema swiftSchema, String schemaName, String tableName, String remark, List<SwiftMetaDataColumn> fields) {
         this.id = id;
-        this.swiftDatabase = swiftDatabase;
+        this.swiftSchema = swiftSchema;
         this.schemaName = schemaName;
         this.tableName = tableName;
         this.remark = remark;
         this.fields = fields;
-        if (null == fields) {
-            this.columnCount = 0;
-        } else {
-            this.columnCount = fields.size();
-        }
     }
 
+    /**
+     * @deprecated 换Builder
+     */
+    @Deprecated
     public SwiftMetaDataBean() {
     }
 
     @Override
-    public SwiftDatabase getSwiftDatabase() {
-        return swiftDatabase;
+    public SwiftSchema getSwiftSchema() {
+        return swiftSchema;
     }
 
     @Override
@@ -97,7 +116,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
 
     @Override
     public int getColumnCount() {
-        return columnCount;
+        return fields.size();
     }
 
     @Override
@@ -127,7 +146,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
 
     @Override
     public SwiftMetaDataColumn getColumn(int index) throws SwiftMetaDataException {
-        if (index < 1 || index > columnCount) {
+        if (index < 1 || index > getColumnCount()) {
             throw new SwiftMetaDataException();
         }
         return fields.get(index - 1);
@@ -145,17 +164,35 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
         throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
     }
 
+    /**
+     * @param columnName
+     * @return
+     * @throws SwiftMetaDataException
+     * @descrption 同时规避无脑循环和并发初始化问题。
+     */
     @Override
     public int getColumnIndex(String columnName) throws SwiftMetaDataException {
-        if (Strings.isNotEmpty(columnName)) {
-            for (int i = 0; i < columnCount; i++) {
-                SwiftMetaDataColumn column = fields.get(i);
-                if (columnName.equals(column.getName())) {
-                    return i + 1;
+        if (Strings.isEmpty(columnName)) {
+            throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
+        }
+        if (fieldIndexes == null || fieldIndexes.size() != fields.size()) {
+            synchronized (this) {
+                if (fieldIndexes == null) {
+                    fieldIndexes = new HashMap<>();
+                }
+                if (fieldIndexes.size() != fields.size()) {
+                    fieldIndexes.clear();
+                    for (int i = 0; i < fields.size(); i++) {
+                        SwiftMetaDataColumn column = fields.get(i);
+                        fieldIndexes.put(column.getName(), i + 1);
+                    }
                 }
             }
         }
-        throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
+        if (fieldIndexes.get(columnName) == null) {
+            throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
+        }
+        return fieldIndexes.get(columnName);
     }
 
     @Override
@@ -198,11 +235,10 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
 
     public void setFields(List<SwiftMetaDataColumn> fields) {
         this.fields = fields;
-        this.columnCount = fields.size();
     }
 
-    public void setSwiftDatabase(SwiftDatabase schema) {
-        this.swiftDatabase = schema;
+    public void setSwiftSchema(SwiftSchema schema) {
+        this.swiftSchema = schema;
     }
 
     @Override
@@ -216,17 +252,80 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable, ObjectCon
 
     @Override
     public String toString() {
-        return String.format("{%s, %s, %s}", swiftDatabase, tableName, fields);
+        return String.format("{%s, %s, %s}", swiftSchema, tableName, fields);
     }
 
     @Override
-    public Object convert() {
-        try {
-            Constructor constructor = TYPE.getDeclaredConstructor(SwiftMetaDataBean.class);
-            return constructor.newInstance(this);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
+    public SwiftMetaData clone() {
+        return new Builder(this).build();
+    }
+
+    public static class Builder {
+        private SwiftMetaDataBean meta = new SwiftMetaDataBean();
+
+        public Builder() {
+            meta.fields = new ArrayList<>();
         }
-        return null;
+
+        public Builder(SwiftMetaData meta) {
+            try {
+                this.meta.id = meta.getId();
+                this.meta.schemaName = meta.getSchemaName();
+                this.meta.swiftSchema = meta.getSwiftSchema();
+                this.meta.tableName = meta.getTableName();
+                this.meta.fields = new ArrayList<>();
+                for (int i = 0; i < meta.getColumnCount(); i++) {
+                    this.meta.fields.add(new MetaDataColumnBean.Builder(meta.getColumn(i + 1)).build());
+                }
+                this.meta.remark = meta.getRemark();
+            } catch (SwiftMetaDataException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+        public Builder setId(String id) {
+            meta.id = id;
+            return this;
+        }
+
+        public Builder setSwiftSchema(SwiftSchema schema) {
+            meta.swiftSchema = schema;
+            return this;
+        }
+
+        public Builder setTableName(String tableName) {
+            meta.tableName = tableName;
+            return this;
+        }
+
+        public Builder setRemark(String remark) {
+            meta.remark = remark;
+            return this;
+        }
+
+        public Builder setFields(List<SwiftMetaDataColumn> fields) {
+            meta.fields = fields;
+            return this;
+        }
+
+        public Builder addField(SwiftMetaDataColumn columnMeta) {
+            meta.fields.add(columnMeta);
+            return this;
+        }
+
+        private String genId() {
+            return meta.tableName;
+//            return String.format("%s.%s", meta.swiftSchema.getName(), meta.tableName);
+        }
+
+        public SwiftMetaDataBean build() {
+            Assert.notNull(meta.swiftSchema);
+            Assert.hasText(meta.tableName);
+            Assert.notEmpty(meta.fields);
+            if (meta.id == null) {
+                meta.id = genId();
+            }
+            return meta;
+        }
     }
 }

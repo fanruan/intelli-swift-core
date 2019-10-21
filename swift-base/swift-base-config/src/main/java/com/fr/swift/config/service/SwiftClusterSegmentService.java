@@ -15,6 +15,4 @@ public interface SwiftClusterSegmentService extends SwiftSegmentService {
     Map<SourceKey, List<SegmentKey>> getOwnSegments(String clusterId);
 
     boolean updateSegmentTable(Map<String, Set<SegmentKey>> segmentTable);
-
-    void checkOldConfig();
 }

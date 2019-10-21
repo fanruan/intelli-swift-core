@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.CubeData;
+import com.fr.swift.result.detail.SegmentDetailResultSet;
 import com.fr.swift.source.Row;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -24,7 +25,7 @@ public class SegmentDetailResultSetTest {
     private SegmentDetailResultSet rs;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         CubeData cubeData = new CubeData(1, 0, 100);
         DetailFilter filter = EasyMock.createMock(DetailFilter.class);
         EasyMock.expect(filter.createFilterIndex()).andReturn(BitMaps.newAllShowBitMap(rowCount)).anyTimes();
@@ -47,15 +48,6 @@ public class SegmentDetailResultSetTest {
     @Test
     public void getRowCount() {
         assertEquals(rowCount, rs.getRowCount());
-    }
-
-    @Test
-    public void getMerger() {
-        try {
-            rs.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
@@ -29,7 +31,9 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyNoMoreInteractions;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -38,6 +42,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
+@PrepareForTest({SegmentUtils.class})
 public class AbstractInserterTest {
 
     @Mock
@@ -47,13 +52,14 @@ public class AbstractInserterTest {
 
     @Before
     public void setUp() throws Exception {
+        mockStatic(SegmentUtils.class);
+
         SwiftMetaData meta = mock(SwiftMetaData.class);
         when(meta.getFieldNames()).thenReturn(Collections.singletonList("c1"));
 
         when(column.getDetailColumn()).thenReturn(mock(DetailColumn.class));
         when(column.getBitmapIndex()).thenReturn(mock(BitmapIndexedColumn.class));
 
-        when(seg.getMetaData()).thenReturn(meta);
         when(seg.isReadable()).thenReturn(true);
         when(seg.getColumn(new ColumnKey("c1"))).thenReturn(column);
     }
@@ -155,6 +161,8 @@ public class AbstractInserterTest {
             }
         }));
 
+        when(seg.isReadable()).thenReturn(true);
+
         when(seg.getAllShowIndex()).thenThrow(Exception.class);
 
         ins.putSegmentInfo(1, 2);
@@ -172,15 +180,11 @@ public class AbstractInserterTest {
     public void release() {
         IResourceLocation location = mock(IResourceLocation.class);
         when(location.getStoreType()).thenReturn(StoreType.FINE_IO);
-        when(column.getLocation()).thenReturn(location);
-
-        when(seg.isHistory()).thenReturn(true);
 
         new Ins(seg, Collections.singletonList("c1")).release();
 
-        verify(column.getDetailColumn()).release();
-        verify(column.getBitmapIndex()).release();
-        verify(seg).release();
+        verifyStatic(SegmentUtils.class);
+        SegmentUtils.releaseHisSeg(seg);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.iterator;
 
-import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.structure.stack.ArrayLimitedStack;
 import com.fr.swift.structure.stack.LimitedStack;
 
@@ -11,16 +11,16 @@ import java.util.Iterator;
  *
  * Created by Lyon on 2018/4/10.
  */
-public class PostOrderNodeIterator<N extends GroupNode> implements Iterator<N> {
+class PostOrderNodeIterator implements Iterator<SwiftNode> {
 
-    private LimitedStack<N> parentNodes;
-    private LimitedStack<Iterator<N>> iterators;
-    private N root;
-    private N next = null;
+    private LimitedStack<SwiftNode> parentNodes;
+    private LimitedStack<Iterator<SwiftNode>> iterators;
+    private SwiftNode root;
+    private SwiftNode next = null;
 
-    public PostOrderNodeIterator(int dimensionSize, N root) {
-        parentNodes = new ArrayLimitedStack<N>(dimensionSize);
-        iterators = new ArrayLimitedStack<Iterator<N>>(dimensionSize);
+    public PostOrderNodeIterator(int dimensionSize, SwiftNode root) {
+        parentNodes = new ArrayLimitedStack<SwiftNode>(dimensionSize);
+        iterators = new ArrayLimitedStack<Iterator<SwiftNode>>(dimensionSize);
         this.root = root;
         init();
     }
@@ -36,12 +36,12 @@ public class PostOrderNodeIterator<N extends GroupNode> implements Iterator<N> {
         next = getNext();
     }
 
-    private N getNext() {
-        N n = null;
+    private SwiftNode getNext() {
+        SwiftNode n = null;
         while (!iterators.isEmpty()) {
-            Iterator<N> it = iterators.peek();
+            Iterator<SwiftNode> it = iterators.peek();
             if (it.hasNext()) {
-                N node = it.next();
+                SwiftNode node = it.next();
                 if (iterators.size() != iterators.limit()) {
                     iterators.push(node.getChildren().iterator());
                     parentNodes.push(node);
@@ -66,8 +66,8 @@ public class PostOrderNodeIterator<N extends GroupNode> implements Iterator<N> {
     }
 
     @Override
-    public N next() {
-        N ret = next;
+    public SwiftNode next() {
+        SwiftNode ret = next;
         next = getNext();
         return ret;
     }

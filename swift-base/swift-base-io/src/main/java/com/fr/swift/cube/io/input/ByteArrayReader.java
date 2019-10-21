@@ -1,14 +1,11 @@
 package com.fr.swift.cube.io.input;
 
-import com.fr.swift.cube.io.output.ByteArrayWriter;
+import java.io.InputStream;
 
 /**
  * @author anchore
  */
 public interface ByteArrayReader extends ObjectReader<byte[]> {
-    String CONTENT = ByteArrayWriter.CONTENT;
-    String POSITION = ByteArrayWriter.POSITION;
-    String LENGTH = ByteArrayWriter.LENGTH;
 
-    byte[] NULL_VALUE = ByteArrayWriter.NULL_VALUE;
+    InputStream getStream(long pos);
 }

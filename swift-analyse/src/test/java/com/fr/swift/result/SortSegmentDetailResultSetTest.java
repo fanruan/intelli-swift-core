@@ -7,6 +7,7 @@ import com.fr.swift.query.group.by.CubeData;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.detail.SortSegmentDetailResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
@@ -35,7 +36,7 @@ public class SortSegmentDetailResultSetTest {
     private List<Row> expected;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         CubeData cubeData = new CubeData(2, 0, rowCount);
         DetailFilter filter = EasyMock.createMock(DetailFilter.class);
         EasyMock.expect(filter.createFilterIndex()).andReturn(BitMaps.newAllShowBitMap(rowCount)).anyTimes();
@@ -78,15 +79,6 @@ public class SortSegmentDetailResultSetTest {
     @Test
     public void getRowCount() {
         assertEquals(rowCount, rs.getRowCount());
-    }
-
-    @Test
-    public void getMerger() {
-        try {
-            rs.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
     }
 
     @Test

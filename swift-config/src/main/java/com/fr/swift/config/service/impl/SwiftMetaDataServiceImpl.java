@@ -11,7 +11,6 @@ import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.converter.FindList;
 import com.fr.swift.event.global.CleanMetaDataCacheEvent;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -39,7 +38,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     private TransactionManager transactionManager;
     private SwiftMetaDataDao swiftMetaDataDao;
 
-    private ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
+    private final ConcurrentHashMap<String, SwiftMetaData> metaDataCache = new ConcurrentHashMap<String, SwiftMetaData>();
 
     public SwiftMetaDataServiceImpl() {
         transactionManager = SwiftContext.get().getBean(TransactionManager.class);
@@ -101,7 +100,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Boolean work(ConfigSession session) throws SQLException {
                     for (SourceKey sourceKey : sourceKeys) {
                         swiftMetaDataDao.deleteSwiftMetaDataBean(session, sourceKey.getId());
-                        metaDataCache.remove(sourceKey);
+                        metaDataCache.remove(sourceKey.getId());
                     }
                     // 集群情况下才去发rpc
                     // 现在日志这边没必要
@@ -136,18 +135,44 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
                 public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
                     try {
                         final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
-                        swiftMetaDataDao.findAll(session).forEach(new FindList.SimpleEach<SwiftMetaDataBean>() {
-                            @Override
-                            public void each(int idx, SwiftMetaDataBean bean) throws Exception {
-                                result.put(bean.getId(), bean);
-                            }
-                        });
+                        for (SwiftMetaDataBean swiftMetaDataBean : swiftMetaDataDao.findAll(session)) {
+                            result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
+                        }
                         metaDataCache.putAll(result);
                         return result;
                     } catch (Exception e) {
-                        if (e instanceof SQLException) {
-                            throw (SQLException) e;
+                        throw new SQLException(e);
+                    }
+
+
+                }
+
+                @Override
+                public boolean needTransaction() {
+                    return false;
+                }
+            });
+
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("Select metadata error!", e);
+            return new HashMap<String, SwiftMetaData>();
+        }
+    }
+
+    @Override
+    public Map<String, SwiftMetaData> getFuzzyMetaData(final String fuzzyName) {
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Map<String, SwiftMetaData>>(false) {
+                @Override
+                public Map<String, SwiftMetaData> work(ConfigSession session) throws SQLException {
+                    try {
+                        final Map<String, SwiftMetaData> result = new HashMap<String, SwiftMetaData>();
+                        for (SwiftMetaDataBean swiftMetaDataBean : swiftMetaDataDao.fuzzyFind(session, fuzzyName)) {
+                            result.put(swiftMetaDataBean.getId(), swiftMetaDataBean);
                         }
+                        metaDataCache.putAll(result);
+                        return result;
+                    } catch (Exception e) {
                         throw new SQLException(e);
                     }
 
@@ -188,7 +213,6 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             }
         }
         return metaData;
-
     }
 
     @Override
@@ -230,7 +254,7 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<SwiftMetaData>>(false) {
                 @Override
                 public List<SwiftMetaData> work(ConfigSession session) {
-                    return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion).list());
+                    return new ArrayList<SwiftMetaData>(swiftMetaDataDao.find(session, criterion));
                 }
             });
         } catch (SQLException e) {

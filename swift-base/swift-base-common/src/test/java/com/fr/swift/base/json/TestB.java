@@ -1,6 +1,6 @@
 package com.fr.swift.base.json;
 
-import com.fr.swift.base.json.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author yee

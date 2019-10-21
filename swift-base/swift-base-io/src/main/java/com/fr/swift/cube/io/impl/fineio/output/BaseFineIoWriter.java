@@ -1,25 +1,26 @@
 package com.fr.swift.cube.io.impl.fineio.output;
 
-import com.fineio.io.Buffer;
-import com.fineio.io.file.IOFile;
+import com.fineio.accessor.buffer.Buf;
+import com.fineio.accessor.file.IAppendFile;
+import com.fineio.accessor.file.IWriteFile;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.util.IoUtil;
 
 /**
  * @author anchore
  */
-abstract class BaseFineIoWriter<Buf extends Buffer> implements Writer {
-    IOFile<Buf> ioFile;
+abstract class BaseFineIoWriter<B extends Buf> implements Writer {
+    IWriteFile<B> writeFile;
+    IAppendFile<B> appendFile;
 
-    @Override
-    public void flush() {
-        ioFile.close();
+    final boolean isOverwrite;
+
+    BaseFineIoWriter(boolean isOverwrite) {
+        this.isOverwrite = isOverwrite;
     }
 
     @Override
     public void release() {
-        if (ioFile != null) {
-            flush();
-            ioFile = null;
-        }
+        IoUtil.close(writeFile, appendFile);
     }
 }

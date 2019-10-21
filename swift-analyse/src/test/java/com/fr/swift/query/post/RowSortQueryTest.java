@@ -3,10 +3,11 @@ package com.fr.swift.query.post;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
+import com.fr.swift.query.query.Query;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupNode;
-import com.fr.swift.result.NodeQRSImpl;
+import com.fr.swift.result.NodeQueryResultSetImpl;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
@@ -46,8 +47,8 @@ public class RowSortQueryTest {
             root.addChild(child);
         }
         Collections.reverse(expected);
-        QueryResultSet<SwiftNode> rs = new NodeQRSImpl(200, root);
-        PostQuery<QueryResultSet> postQuery = EasyMock.createMock(PostQuery.class);
+        QueryResultSet<SwiftNode> rs = new NodeQueryResultSetImpl(200, root);
+        Query<QueryResultSet<SwiftNode>> postQuery = EasyMock.createMock(Query.class);
         EasyMock.expect(postQuery.getQueryResult()).andReturn(rs).anyTimes();
         EasyMock.replay(postQuery);
         query = new RowSortQuery(postQuery, Collections.<Sort>singletonList(new DescSort(1)));
@@ -57,11 +58,6 @@ public class RowSortQueryTest {
     public void getQueryResult() throws SQLException {
         QueryResultSet resultSet = query.getQueryResult();
         assertTrue(resultSet.hasNextPage());
-        try {
-            resultSet.getMerger();
-            fail();
-        } catch (Exception ignored) {
-        }
         try {
             resultSet.getPage();
             fail();

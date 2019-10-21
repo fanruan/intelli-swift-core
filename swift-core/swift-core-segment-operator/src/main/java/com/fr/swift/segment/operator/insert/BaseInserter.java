@@ -15,7 +15,6 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.operator.utils.InserterUtils;
 import com.fr.swift.source.Row;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +27,11 @@ public abstract class BaseInserter {
 
     protected Segment segment;
 
-    private List<String> fields;
+    protected List<String> fields;
 
-    protected Map<Integer, MutableBitMap> nullIndices = new HashMap<Integer, MutableBitMap>();
+    protected Map<String, MutableBitMap> nullIndices = new HashMap<>();
 
-    protected List<Column<Object>> columns = new ArrayList<Column<Object>>();
+    protected Map<String, Column<Object>> columns = new HashMap<>();
 
     BaseInserter(Segment segment) {
         this(segment, segment.getMetaData().getFieldNames());
@@ -41,7 +40,6 @@ public abstract class BaseInserter {
     public BaseInserter(Segment segment, List<String> fields) {
         this.fields = fields;
         this.segment = segment;
-
         initColumns();
     }
 
@@ -49,17 +47,17 @@ public abstract class BaseInserter {
         for (int i = 0; i < fields.size(); i++) {
             String field = fields.get(i);
             Column<Object> column = segment.getColumn(new ColumnKey(field));
-            columns.add(column);
-            nullIndices.put(i, BitMaps.newRoaringMutable());
+            columns.put(field, column);
+            nullIndices.put(field, BitMaps.newRoaringMutable());
         }
     }
 
     protected void putRow(int cursor, Row rowData) {
         for (int i = 0; i < fields.size(); i++) {
-            DetailColumn<Object> detail = columns.get(i).getDetailColumn();
+            DetailColumn<Object> detail = columns.get(fields.get(i)).getDetailColumn();
             if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
                 detail.put(cursor, null);
-                nullIndices.get(i).add(cursor);
+                nullIndices.get(fields.get(i)).add(cursor);
             } else {
                 detail.put(cursor, rowData.getValue(i));
             }
@@ -70,14 +68,14 @@ public abstract class BaseInserter {
         boolean readable = CubeUtil.isReadable(segment);
 
         for (int i = 0; i < columns.size(); i++) {
-            BitmapIndexedColumn bitmapIndex = columns.get(i).getBitmapIndex();
+            BitmapIndexedColumn bitmapIndex = columns.get(fields.get(i)).getBitmapIndex();
             ImmutableBitMap nullIndex;
             try {
                 nullIndex = readable ? bitmapIndex.getNullIndex() : BitMaps.newRoaringMutable();
             } catch (Exception e) {
                 nullIndex = BitMaps.newRoaringMutable();
             }
-            MutableBitMap newNullIndex = nullIndices.get(i);
+            MutableBitMap newNullIndex = nullIndices.get(fields.get(i));
             newNullIndex.or(nullIndex);
             bitmapIndex.putNullIndex(newNullIndex);
         }
@@ -101,8 +99,7 @@ public abstract class BaseInserter {
     }
 
     protected void release() {
-        SegmentUtils.releaseColumns(columns);
-        SegmentUtils.release(segment);
+        SegmentUtils.releaseHisSeg(segment);
     }
 
     public List<String> getFields() {

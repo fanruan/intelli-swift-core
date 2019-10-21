@@ -1,11 +1,10 @@
 package com.fr.swift.query.aggregator;
 
-import java.io.Serializable;
-
 /**
- * Created by Lyon on 2018/3/30.
+ * @author Lyon
+ * @date 2018/3/30
  */
-public interface Combiner<T> extends Serializable {
+public interface Combiner<T> {
 
     /**
      * 根据聚合的结果再计算

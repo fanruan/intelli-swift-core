@@ -5,15 +5,18 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+
 /**
- * Created by pony on 2018/3/27.
+ * @author pony
+ * @date 2018/3/27
  */
-public class DateMinAggregate extends AbstractAggregator<DateAmountAggregateValue> {
+public class DateMinAggregate extends AbstractAggregator<DateAmountAggregateValue> implements Serializable {
     protected static final Aggregator INSTANCE = new DateMinAggregate();
     private static final long serialVersionUID = 385852056373051802L;
 
     @Override
-    public DateAmountAggregateValue aggregate(RowTraversal traversal, Column column) {
+    public DateAmountAggregateValue aggregate(RowTraversal traversal, Column<?> column) {
         final DateAmountAggregateValue value = new DateAmountAggregateValue();
         final DetailColumn detailColumn = column.getDetailColumn();
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);

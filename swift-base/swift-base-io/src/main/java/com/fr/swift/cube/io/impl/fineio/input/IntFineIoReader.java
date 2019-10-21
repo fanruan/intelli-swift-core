@@ -1,7 +1,9 @@
 package com.fr.swift.cube.io.impl.fineio.input;
 
-import com.fineio.FineIO;
-import com.fineio.io.IntBuffer;
+import com.fineio.accessor.FineIOAccessor;
+import com.fineio.accessor.buffer.IntBuf;
+import com.fineio.accessor.file.IReadFile;
+import com.fineio.accessor.impl.BaseModel;
 import com.fineio.storage.Connector;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.input.IntReader;
@@ -11,9 +13,9 @@ import java.net.URI;
 /**
  * @author anchore
  */
-public class IntFineIoReader extends BaseFineIoReader<IntBuffer> implements IntReader {
+public class IntFineIoReader extends BaseFineIoReader<IntBuf> implements IntReader {
     private IntFineIoReader(URI uri, Connector connector) {
-        this.ioFile = FineIO.createIOFile(connector, uri, FineIO.MODEL.READ_INT);
+        readFile = (IReadFile<IntBuf>) FineIOAccessor.INSTANCE.createFile(connector, uri, BaseModel.ofInt().asRead());
     }
 
     public static IntReader build(URI location) {
@@ -25,6 +27,6 @@ public class IntFineIoReader extends BaseFineIoReader<IntBuffer> implements IntR
 
     @Override
     public int get(long pos) {
-        return FineIO.getInt(ioFile, pos);
+        return FineIOAccessor.INSTANCE.getInt(readFile, (int) pos);
     }
 }

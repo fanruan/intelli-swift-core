@@ -18,6 +18,4 @@ public interface SwiftRepository {
     long getSize(String path) throws IOException;
 
     boolean exists(String path);
-
-    void testConnection() throws Exception;
 }

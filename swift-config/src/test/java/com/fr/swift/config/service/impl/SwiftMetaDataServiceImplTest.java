@@ -2,8 +2,10 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.config.dao.SwiftMetaDataDao;
 import com.fr.swift.config.dao.impl.SwiftMetaDataDaoImpl;
+import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
@@ -15,11 +17,19 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +42,7 @@ import static junit.framework.TestCase.assertTrue;
  * @date 2019-01-04
  */
 @RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @PrepareForTest(SwiftContext.class)
 public class SwiftMetaDataServiceImplTest extends BaseServiceTest {
     private SwiftMetaDataService service;
@@ -46,7 +57,7 @@ public class SwiftMetaDataServiceImplTest extends BaseServiceTest {
 
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession(SwiftMetaDataBean.TYPE, mockData());
+        final ConfigSession mockConfigSession = mockSession(SwiftMetaDataBean.class, mockData());
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
@@ -153,22 +164,43 @@ public class SwiftMetaDataServiceImplTest extends BaseServiceTest {
 
     }
 
+    @Test
+    public void testGetFuzzyMetaData() throws SQLException {
+        PowerMockito.mockStatic(SwiftContext.class);
+        BeanFactory beanFactory = Mockito.mock(BeanFactory.class);
+        Mockito.when(SwiftContext.get()).thenReturn(beanFactory);
+        TransactionManager transactionManager = Mockito.mock(TransactionManager.class);
+        SwiftMetaDataDao swiftMetaDataDao = Mockito.mock(SwiftMetaDataDao.class);
+        Mockito.when(beanFactory.getBean(TransactionManager.class)).thenReturn(transactionManager);
+        Mockito.when(beanFactory.getBean(SwiftMetaDataDao.class)).thenReturn(swiftMetaDataDao);
+        final ConfigSession configSession = Mockito.mock(ConfigSession.class);
+
+        Mockito.when(transactionManager.doTransactionIfNeed(Mockito.any(BaseTransactionWorker.class))).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                TransactionManager.TransactionWorker worker = invocationOnMock.getArgument(0);
+                return worker.work(configSession);
+            }
+        });
+
+        Mockito.when(swiftMetaDataDao.fuzzyFind(configSession, "a")).thenReturn(Collections.<SwiftMetaDataBean>emptyList());
+        new SwiftMetaDataServiceImpl().getFuzzyMetaData("a");
+        Mockito.verify(swiftMetaDataDao).fuzzyFind(configSession, "a");
+
+    }
 
     private ObjectConverter[] mockData() {
         // Generate by Mock Plugin
         ObjectConverter converterA = PowerMock.createMock(ObjectConverter.class);
         SwiftMetaDataBean tableA = PowerMock.createMock(SwiftMetaDataBean.class);
-        EasyMock.expect(tableA.convert()).andReturn(converterA).anyTimes();
         EasyMock.expect(tableA.getId()).andReturn("tableA").anyTimes();
         EasyMock.expect(converterA.convert()).andReturn(tableA).anyTimes();
         ObjectConverter converterB = PowerMock.createMock(ObjectConverter.class);
         SwiftMetaDataBean tableB = PowerMock.createMock(SwiftMetaDataBean.class);
-        EasyMock.expect(tableB.convert()).andReturn(converterB).anyTimes();
         EasyMock.expect(tableB.getId()).andReturn("tableB").anyTimes();
         EasyMock.expect(converterB.convert()).andReturn(tableB).anyTimes();
         ObjectConverter converterC = PowerMock.createMock(ObjectConverter.class);
         SwiftMetaDataBean tableC = PowerMock.createMock(SwiftMetaDataBean.class);
-        EasyMock.expect(tableC.convert()).andReturn(converterC).anyTimes();
         EasyMock.expect(tableC.getId()).andReturn("tableC").anyTimes();
         EasyMock.expect(converterC.convert()).andReturn(tableC).anyTimes();
 

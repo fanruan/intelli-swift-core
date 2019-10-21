@@ -6,7 +6,7 @@ import com.fr.swift.basics.ProxyFactory;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.cluster.ClusterEntity;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.SwiftEventListener;
@@ -20,6 +20,7 @@ import com.fr.swift.service.DeleteService;
 import com.fr.swift.service.HistoryService;
 import com.fr.swift.service.IndexingService;
 import com.fr.swift.service.RealtimeService;
+import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
 import com.fr.swift.service.SwiftService;
 import com.fr.swift.service.UploadService;
@@ -84,37 +85,37 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
     }
 
     public void initService() {
-        List<SwiftServiceInfoBean> swiftServiceInfoBeanList = serviceInfoService.getAllServiceInfo();
-        for (SwiftServiceInfoBean swiftServiceInfoBean : swiftServiceInfoBeanList) {
-            ServiceType serviceType = ServiceType.getServiceType(swiftServiceInfoBean.getService());
+        List<SwiftServiceInfoEntity> SwiftServiceInfoEntityList = serviceInfoService.getAllServiceInfo();
+        for (SwiftServiceInfoEntity SwiftServiceInfoEntity : SwiftServiceInfoEntityList) {
+            ServiceType serviceType = ServiceType.getServiceType(SwiftServiceInfoEntity.getService());
             if (serviceType != null) {
-                URL url = UrlSelector.getInstance().getFactory().getURL(swiftServiceInfoBean.getClusterId());
+                URL url = UrlSelector.getInstance().getFactory().getURL(SwiftServiceInfoEntity.getClusterId());
                 switch (serviceType) {
                     case HISTORY:
-                        historyServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, HistoryService.class));
+                        historyServiceMap.put(SwiftServiceInfoEntity.getClusterId(), new ClusterEntity(url, serviceType, HistoryService.class));
                         break;
                     case REAL_TIME:
-                        realTimeServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, RealtimeService.class));
+                        realTimeServiceMap.put(SwiftServiceInfoEntity.getClusterId(), new ClusterEntity(url, serviceType, RealtimeService.class));
                         break;
                     case ANALYSE:
-                        analyseServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, AnalyseService.class));
+                        analyseServiceMap.put(SwiftServiceInfoEntity.getClusterId(), new ClusterEntity(url, serviceType, AnalyseService.class));
                         break;
                     case INDEXING:
-                        indexingServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, IndexingService.class));
+                        indexingServiceMap.put(SwiftServiceInfoEntity.getClusterId(), new ClusterEntity(url, serviceType, IndexingService.class));
                         break;
                     case COLLATE:
-                        collateServiceMap.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, CollateService.class));
+                        collateServiceMap.put(SwiftServiceInfoEntity.getClusterId(), new ClusterEntity(url, serviceType, CollateService.class));
                         break;
                     case DELETE:
-                        deleteSegmentServices.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, DeleteService.class));
+                        deleteSegmentServices.put(SwiftServiceInfoEntity.getClusterId(), new ClusterEntity(url, serviceType, DeleteService.class));
                         break;
                     case UPLOAD:
-                        uploadSegmentServices.put(swiftServiceInfoBean.getClusterId(), new ClusterEntity(url, serviceType, UploadService.class));
+                        uploadSegmentServices.put(SwiftServiceInfoEntity.getClusterId(), new ClusterEntity(url, serviceType, UploadService.class));
                         break;
                     default:
                 }
-                swiftServiceInfoBean.setServiceInfo(swiftProperty.getServerAddress());
-                serviceInfoService.saveOrUpdate(swiftServiceInfoBean);
+                SwiftServiceInfoEntity.setServiceInfo(swiftProperty.getServerAddress());
+                serviceInfoService.saveOrUpdate(SwiftServiceInfoEntity);
             }
         }
     }
@@ -189,7 +190,7 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
         SwiftLoggers.getLogger().info("{} register service :{}", service.getId(), service.getServiceType().name());
         synchronized (this) {
-            serviceInfoService.saveOrUpdate(new SwiftServiceInfoBean(
+            serviceInfoService.saveOrUpdate(new SwiftServiceInfoEntity(
                     service.getServiceType().name(), service.getId(), swiftProperty.getServerAddress(), false));
 
             URL url = UrlSelector.getInstance().getFactory().getURL(service.getId());
@@ -249,7 +250,7 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
 
         SwiftLoggers.getLogger().debug("{} unregister service :{}", service.getId(), service.getServiceType().name());
         synchronized (this) {
-            serviceInfoService.removeServiceInfo(new SwiftServiceInfoBean(service.getServiceType().name(), service.getId(), ""));
+            serviceInfoService.removeServiceInfo(new SwiftServiceInfoEntity(service.getServiceType().name(), service.getId(), "", false));
             switch (service.getServiceType()) {
                 case ANALYSE:
                     analyseServiceMap.remove(service.getId());
@@ -280,8 +281,8 @@ public class ClusterSwiftServerService extends AbstractSwiftService implements S
                 SwiftLoggers.getLogger().info("rpc告诉indexing节点执行任务");
                 try {
                     ProxyFactory factory = ProxySelector.getInstance().getFactory();
-                    IndexingService indexingService = factory.getProxy(IndexingService.class);
-                    indexingService.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
+                    ServiceContext serviceContext = factory.getProxy(ServiceContext.class);
+                    serviceContext.index(new DefaultIndexingStuff((Map<TaskKey, DataSource>) taskKeyMap));
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn(e);
                 }

@@ -1,7 +1,7 @@
 package com.fr.swift.config.convert.base;
 
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.SwiftConfigDao;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.util.ReflectUtils;
 
@@ -23,8 +23,8 @@ public abstract class AbstractSimpleConfigConvert<T> extends BaseConfigConvert<T
     }
 
     @Override
-    public T toBean(SwiftConfigDao<SwiftConfigBean> dao, ConfigSession session, Object... args) throws SQLException {
-        SwiftConfigBean entity = dao.select(session, getNameSpace());
+    public T toBean(SwiftConfigDao<SwiftConfigEntity> dao, ConfigSession session, Object... args) throws SQLException {
+        SwiftConfigEntity entity = dao.select(session, getNameSpace());
         if (null != entity) {
             try {
                 String path = entity.getConfigValue();
@@ -37,8 +37,8 @@ public abstract class AbstractSimpleConfigConvert<T> extends BaseConfigConvert<T
     }
 
     @Override
-    public List<SwiftConfigBean> toEntity(T t, Object... args) {
-        SwiftConfigBean entity = new SwiftConfigBean();
+    public List<SwiftConfigEntity> toEntity(T t, Object... args) {
+        SwiftConfigEntity entity = new SwiftConfigEntity();
         entity.setConfigKey(getNameSpace());
         entity.setConfigValue(t.toString());
         return Collections.singletonList(entity);

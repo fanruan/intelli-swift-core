@@ -1,5 +1,6 @@
 package com.fr.swift.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -8,6 +9,10 @@ import java.util.Date;
  * @date 2018-12-20
  */
 public class DateUtils {
+    private static String[] DATE_FORMATS = {
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-dd"
+    };
     public static Date string2Date(String string) {
         if (Strings.isBlank(string)) {
             return null;
@@ -29,6 +34,12 @@ public class DateUtils {
 
             return object2Date(longValue);
         } else {
+            for (String dateFormat : DATE_FORMATS) {
+                try {
+                    return new SimpleDateFormat(dateFormat).parse(string);
+                } catch (Exception ignore) {
+                }
+            }
             return null;
         }
     }
@@ -48,6 +59,9 @@ public class DateUtils {
             }
         }
 
+        if (null == date && null != obj) {
+            return string2Date(obj.toString());
+        }
         return date;
     }
 }

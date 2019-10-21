@@ -11,7 +11,7 @@ import com.fr.swift.util.IoUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
+import java.io.OutputStream;
 
 /**
  * @author anchore
@@ -78,7 +78,6 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
     @Override
     public IntIterator intIterator() {
         return new IntIterator() {
-
             com.fr.swift.bitmap.roaringbitmap.IntIterator itr = bitmap.getIntIterator();
 
             @Override
@@ -90,22 +89,7 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
             public boolean hasNext() {
                 return itr.hasNext();
             }
-
-            @Override
-            public Integer next() {
-                return nextInt();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
         };
-    }
-
-    @Override
-    public Iterator<Integer> iterator() {
-        return intIterator();
     }
 
     @Override
@@ -117,13 +101,28 @@ public abstract class BaseRoaringBitMap extends AbstractBitMap {
     public byte[] toBytes() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            bitmap.serialize(new DataOutputStream(baos));
+            DataOutputStream dataOutput = new DataOutputStream(baos);
+            dataOutput.write(getType().getHead());
+            bitmap.serialize(dataOutput);
             return baos.toByteArray();
         } catch (IOException e) {
             SwiftLoggers.getLogger().error(e);
             return new byte[0];
         } finally {
             IoUtil.close(baos);
+        }
+    }
+
+    @Override
+    public void writeBytes(OutputStream output) {
+        DataOutputStream dataOutput = new DataOutputStream(output);
+        try {
+            dataOutput.write(getType().getHead());
+            bitmap.serialize(dataOutput);
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+        } finally {
+            IoUtil.close(dataOutput);
         }
     }
 

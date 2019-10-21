@@ -2,8 +2,8 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.impl.SwiftConfigDaoImpl;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
@@ -42,7 +42,7 @@ public class SwiftFineIOConfigServiceImplTest extends BaseServiceTest {
         PowerMock.replay(SwiftContext.class);
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession(SwiftConfigBean.TYPE);
+        final ConfigSession mockConfigSession = mockSession(SwiftConfigEntity.class);
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
@@ -71,7 +71,7 @@ public class SwiftFineIOConfigServiceImplTest extends BaseServiceTest {
 
     @Test
     public void getCurrentConfig() {
-        assertNotNull(service.getCurrentConfig());
+        assertNotNull(service.getCurrentConfig(SwiftFineIOConnectorService.Type.CONNECTOR));
         PowerMock.verifyAll();
     }
 
@@ -80,7 +80,7 @@ public class SwiftFineIOConfigServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         FineIOConnectorConfig mockFineIOConnectorConfig = PowerMock.createMock(FineIOConnectorConfig.class);
         PowerMock.replayAll();
-        service.setCurrentConfig(mockFineIOConnectorConfig);
+        service.setCurrentConfig(mockFineIOConnectorConfig, SwiftFineIOConnectorService.Type.CONNECTOR);
 // do test
         PowerMock.verifyAll();
 

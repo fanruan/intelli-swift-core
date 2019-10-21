@@ -2,20 +2,18 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
-import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.event.ClusterEvent;
 import com.fr.swift.event.ClusterEventListener;
-import com.fr.swift.event.ClusterEventType;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.analyse.RequestSegLocationEvent;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.session.factory.SessionFactory;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
@@ -42,12 +40,10 @@ import java.util.Map;
  * 分析服务
  */
 @SwiftService(name = "analyse")
-@ProxyService(AnalyseService.class)
 @SwiftBean(name = "analyse")
 public class SwiftAnalyseService extends AbstractSwiftService implements AnalyseService, Serializable {
     private static final long serialVersionUID = 841582089735823794L;
 
-    private transient SessionFactory sessionFactory;
     private transient boolean loadable = true;
 
     private transient ClusterEventListener analyseClusterListener;
@@ -60,8 +56,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public boolean start() throws SwiftServiceException {
         boolean start = super.start();
-        sessionFactory = SwiftContext.get().getBean("swiftQuerySessionFactory", SessionFactory.class);
-        cacheSegments();
+//        cacheSegments();
         ClusterListenerHandler.addExtraListener(analyseClusterListener);
         return start;
     }
@@ -82,7 +77,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
-        sessionFactory = null;
         ClusterListenerHandler.removeExtraListener(analyseClusterListener);
         loadable = true;
         return true;
@@ -96,9 +90,9 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public QueryResultSet getQueryResult(String queryJson) throws Exception {
         SwiftLoggers.getLogger().debug(queryJson);
-        // TODO: 2018/12/12
         QueryBean info = QueryBeanFactory.create(queryJson);
-        return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
+        return QueryCacheBuilder.builder().getOrBuildCache(info).getQueryResultSet();
+//        return sessionFactory.openSession(info.getQueryId()).executeQuery(info);
     }
 
     @Override
@@ -124,10 +118,10 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
 
         @Override
         public void handleEvent(ClusterEvent clusterEvent) {
-            if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
-                SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
-                loadSegmentLocationInfo(clusterSegmentService);
-            }
+//            if (clusterEvent.getEventType() == ClusterEventType.JOIN_CLUSTER) {
+//                SwiftClusterSegmentService clusterSegmentService = SwiftContext.get().getBean(SwiftClusterSegmentService.class);
+//                loadSegmentLocationInfo(clusterSegmentService);
+//            }
         }
 
         private void loadSegmentLocationInfo(SwiftClusterSegmentService clusterSegmentService) {

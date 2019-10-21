@@ -2,8 +2,8 @@ package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.SegmentDestSelectRule;
-import com.fr.swift.config.bean.SwiftConfigBean;
 import com.fr.swift.config.dao.impl.SwiftConfigDaoImpl;
+import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
@@ -41,7 +41,7 @@ public class SegDestSelectRuleServiceImplTest extends BaseServiceTest {
         PowerMock.replay(SwiftContext.class);
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession(SwiftConfigBean.TYPE);
+        final ConfigSession mockConfigSession = mockSession(SwiftConfigEntity.class);
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override

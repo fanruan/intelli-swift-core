@@ -2,6 +2,7 @@ package com.fr.swift.segment.column;
 
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.impl.mem.IntMemIo;
+import com.fr.swift.util.IoUtil;
 
 /**
  * @author anchore
@@ -48,7 +49,6 @@ class IndexAndId implements Releasable {
 
     @Override
     public void release() {
-        indexToId.release();
-        idToIndex.release();
+        IoUtil.release(indexToId, idToIndex);
     }
 }

@@ -6,12 +6,17 @@ import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+import java.util.Map;
+
 /**
- * Created by pony on 2018/4/17.
+ * @author pony
+ * @date 2018/4/17
  */
-public class MetricFilterAggregator implements Aggregator {
+public class MetricFilterAggregator implements Serializable, Aggregator<AggregatorValue<?>> {
 
     private static final long serialVersionUID = 7648446984086973413L;
     private Aggregator aggregator;
@@ -24,13 +29,19 @@ public class MetricFilterAggregator implements Aggregator {
     }
 
     @Override
-    public AggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public AggregatorValue aggregate(RowTraversal traversal, Map<ColumnKey, Column<?>> columns) {
+        traversal = bitMap == null ? traversal : bitMap.getAnd(traversal.toBitMap());
+        return aggregator.aggregate(traversal, columns);
+    }
+
+    @Override
+    public AggregatorValue aggregate(RowTraversal traversal, Column<?> column) {
         traversal = bitMap == null ? traversal : bitMap.getAnd(traversal.toBitMap());
         return aggregator.aggregate(traversal, column);
     }
 
     @Override
-    public AggregatorValue createAggregatorValue(AggregatorValue value) {
+    public AggregatorValue createAggregatorValue(AggregatorValue<?> value) {
         return aggregator.createAggregatorValue(value);
     }
 
@@ -40,7 +51,7 @@ public class MetricFilterAggregator implements Aggregator {
     }
 
     @Override
-    public void combine(Object current, Object other) {
+    public void combine(AggregatorValue<?> current, AggregatorValue<?> other) {
         aggregator.combine(current, other);
     }
 }

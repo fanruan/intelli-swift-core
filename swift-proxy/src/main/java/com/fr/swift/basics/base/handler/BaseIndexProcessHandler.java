@@ -8,7 +8,7 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.IndexProcessHandler;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.service.IndexingService;
+import com.fr.swift.service.ServiceContext;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +31,8 @@ public abstract class BaseIndexProcessHandler extends BaseProcessHandler impleme
 
     @Override
     public List<URL> processUrl(Target[] targets, Object... args) {
-        IndexingService service = ProxySelector.getInstance().getFactory().getProxy(IndexingService.class);
+
+        ServiceContext service = ProxySelector.getInstance().getFactory().getProxy(ServiceContext.class);
         try {
             ServerCurrentStatus status = service.currentStatus();
             return Collections.singletonList(UrlSelector.getInstance().getFactory().getURL(status.getClusterId()));

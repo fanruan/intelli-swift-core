@@ -3,28 +3,32 @@ package com.fr.swift.segment.column.impl.base;
 //import com.fr.script.Calculator;
 //import com.fr.stable.Primitive;
 //import com.fr.stable.UtilEvalError;
+
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.formula.Formula;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
-//import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.util.Crasher;
 
 import java.util.Comparator;
 import java.util.Map;
 
+//import com.fr.swift.source.etl.utils.FormulaUtils;
+
 /**
  * Created by pony on 2018/5/10.
  */
 public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
-    private String formula;
+    //    private String formula;
     private Segment segment;
+    private Formula formula;
     //    private Calculator c = Calculator.createCalculator();
     private Map<String, ColumnKey> columnIndexMap;
     private DictionaryEncodedColumn hostColumn;
 
-    public DetailFormulaDicColumn(String formula, Segment segment) {
+    public DetailFormulaDicColumn(Formula formula, Segment segment) {
 ////        this.formula = FormulaUtils.getParameterIndexEncodedFormula(formula);
 ////        this.segment = segment;
 ////        this.columnIndexMap = FormulaUtils.createColumnIndexMap(formula, segment);
@@ -33,6 +37,11 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
 //        if (paras.length != 0) {
 //            hostColumn = segment.getColumn(new ColumnKey(paras[0])).getDictionaryEncodedColumn();
 //        }
+        //todo 先取一个用到的列暂时用下，如果一个都没用到，就
+        this.formula = formula;
+        if (formula.getColumnKeys() != null) {
+            hostColumn = segment.getColumn(formula.getColumnKeys()[0]).getDictionaryEncodedColumn();
+        }
     }
 
     @Override
@@ -66,13 +75,13 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
 //        } catch (UtilEvalError e) {
 //            return null;
 //        }
-        return null;
+        return formula.eval(hostColumn.getValue(index));
     }
 
     @Override
     public Object getValueByRow(int row) {
-        return null;
 //        return FormulaUtils.getCalculatorValue(c, formula, segment, columnIndexMap, row);
+        return formula.eval(hostColumn.getValueByRow(row));
     }
 
     @Override
@@ -108,11 +117,6 @@ public class DetailFormulaDicColumn implements DictionaryEncodedColumn {
     @Override
     public Putter putter() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void flush() {
-        Crasher.crash("unsupported");
     }
 
     @Override

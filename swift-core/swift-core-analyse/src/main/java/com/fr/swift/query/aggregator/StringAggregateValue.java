@@ -1,9 +1,12 @@
 package com.fr.swift.query.aggregator;
 
+import java.io.Serializable;
+
 /**
- * Created by pony on 2018/3/26.
+ * @author pony
+ * @date 2018/3/26
  */
-public class StringAggregateValue implements AggregatorValue<String> {
+public class StringAggregateValue implements AggregatorValue<String>, Serializable {
     private static final long serialVersionUID = 1724795657370108135L;
     private String value;
 
