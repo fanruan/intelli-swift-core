@@ -12,7 +12,6 @@ import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Assert;
 
-import javax.swing.text.Segment;
 import java.util.ArrayList;
 import java.util.List;
 

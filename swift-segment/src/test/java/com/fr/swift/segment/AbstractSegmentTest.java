@@ -1,4 +1,4 @@
-package com.fr.swift.segment.column.impl.base;
+package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
@@ -17,6 +17,7 @@ import com.fr.swift.cube.io.output.Writer;
 import com.fr.swift.segment.AbstractSegmentTest.Seg;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
