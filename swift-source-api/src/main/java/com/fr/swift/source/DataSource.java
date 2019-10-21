@@ -1,12 +1,10 @@
 package com.fr.swift.source;
 
-import com.fr.swift.source.core.CoreService;
-
 /**
  * Created by pony on 2017/10/19.
  * 数据源接口
  */
-public interface DataSource extends Source, CoreService {
+public interface DataSource {
 
     /**
      * 获取数据源的metadata信息
@@ -14,5 +12,7 @@ public interface DataSource extends Source, CoreService {
      * @return
      */
     SwiftMetaData getMetadata();
+
+    SourceKey getSourceKey();
 
 }
