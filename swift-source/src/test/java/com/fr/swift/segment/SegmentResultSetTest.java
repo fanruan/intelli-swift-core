@@ -1,4 +1,4 @@
-package com.fr.swift.segment.column.impl.base;
+package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.base.meta.MetaDataColumnBean;
@@ -8,9 +8,6 @@ import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentResultSet;
-import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
