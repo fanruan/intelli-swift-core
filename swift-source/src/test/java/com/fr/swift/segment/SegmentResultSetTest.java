@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -57,11 +58,11 @@ public class SegmentResultSetTest {
     public void setUp() throws Exception {
         mockStatic(SwiftContext.class, SegmentUtils.class);
         BeanFactory beanFactory = mock(BeanFactory.class);
-        when(SwiftContext.get()).thenReturn(beanFactory);
+        PowerMockito.when(SwiftContext.get()).thenReturn(beanFactory);
 
         SwiftCubePathService swiftCubePathService = mock(SwiftCubePathService.class);
-        when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
-        when(swiftCubePathService.getSwiftPath()).thenReturn("/");
+        PowerMockito.when(beanFactory.getBean(SwiftCubePathService.class)).thenReturn(swiftCubePathService);
+        PowerMockito.when(swiftCubePathService.getSwiftPath()).thenReturn("/");
 
         when(seg.isReadable()).thenReturn(true);
         when(seg.getMetaData()).thenReturn(meta);
@@ -79,14 +80,14 @@ public class SegmentResultSetTest {
         when(column.getDetailColumn()).thenReturn(detailColumn);
         when(column.getDictionaryEncodedColumn()).thenReturn(mock(DictionaryEncodedColumn.class));
 
-        when(detailColumn.get(0)).thenReturn("0");
-        when(detailColumn.get(1)).thenReturn("1");
-        when(detailColumn.get(2)).thenReturn("2");
-        when(detailColumn.get(3)).thenReturn("\0");
+        PowerMockito.when(detailColumn.get(0)).thenReturn("0");
+        PowerMockito.when(detailColumn.get(1)).thenReturn("1");
+        PowerMockito.when(detailColumn.get(2)).thenReturn("2");
+        PowerMockito.when(detailColumn.get(3)).thenReturn("\0");
 
         BitmapIndexedColumn bitmapIndex = mock(BitmapIndexedColumn.class);
         when(column.getBitmapIndex()).thenReturn(bitmapIndex);
-        when(bitmapIndex.getNullIndex()).thenReturn(new RangeBitmap(3, 4));
+        PowerMockito.when(bitmapIndex.getNullIndex()).thenReturn(new RangeBitmap(3, 4));
     }
 
     @Test
