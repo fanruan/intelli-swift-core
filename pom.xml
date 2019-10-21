@@ -41,6 +41,10 @@
         <module>swift-bitmap-api</module>
         <module>swift-config-api</module>
         <module>swift-beans</module>
+        <module>swift-segment</module>
+        <module>swift-segment-api</module>
+        <module>swift-source</module>
+        <module>swift-source-api</module>
     </modules>
     <properties>
         <jackson.version>2.9.8</jackson.version>
