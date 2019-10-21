@@ -73,11 +73,6 @@ public class GroupByTest extends TestCase {
             }
 
             @Override
-            public void flush() {
-
-            }
-
-            @Override
             public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
 
             }
@@ -105,8 +100,8 @@ public class GroupByTest extends TestCase {
     }
 
     private DictionaryEncodedColumn createDicColumn() {
-        final String[] keys = {"A","B","C"};
-        final int[] index = {0,1,2,1,2,1,0,2,1};
+        final String[] keys = {"A", "B", "C"};
+        final int[] index = {0, 1, 2, 1, 2, 1, 0, 2, 1};
         return new TempDictColumn() {
 
             @Override
@@ -133,7 +128,7 @@ public class GroupByTest extends TestCase {
         mBitMap.add(3);
         GroupByResult result = GroupBy.createGroupByResult(column, mBitMap, true);
         List<GroupByEntry> list = new ArrayList<GroupByEntry>();
-        while (result.hasNext()){
+        while (result.hasNext()) {
             list.add(result.next());
         }
         assertEquals(list.size(), 2);

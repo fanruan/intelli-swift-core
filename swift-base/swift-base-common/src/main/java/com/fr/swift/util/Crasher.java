@@ -2,7 +2,10 @@ package com.fr.swift.util;
 
 /**
  * @author anchore
+ *
+ * @deprecated 没啥太大作用，跟风BI抄过来的，一般的throw也能做得很好
  */
+@Deprecated
 public class Crasher {
     public static <T> T crash(String msg, Throwable t) {
         throw new CrashException(msg, t);

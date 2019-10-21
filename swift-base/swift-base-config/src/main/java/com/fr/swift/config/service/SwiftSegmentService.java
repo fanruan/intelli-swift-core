@@ -1,11 +1,13 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.config.oper.Page;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -23,6 +25,7 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
     boolean addSegments(List<SegmentKey> segments);
 
     /**
+     * 增加触发器，使删除segment后自动删除location和bucket
      * 批量删除Segment
      * todo 墙裂要求return删掉的seg key
      *
@@ -31,6 +34,12 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
      */
     boolean removeSegments(String... sourceKey);
 
+    /**
+     * 增加触发器，使删除segment后自动删除location和bucket
+     *
+     * @param segmentKeys
+     * @return
+     */
     boolean removeSegments(List<SegmentKey> segmentKeys);
 
     /**
@@ -65,4 +74,8 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
      * @return
      */
     SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
+
+    Page<SegmentKey> selectSelective(SegmentKey segmentKey, int page, int size);
+
+    Set<SegmentKey> getByIds(Set<String> segIds);
 }

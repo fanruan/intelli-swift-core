@@ -1,11 +1,10 @@
 package com.fr.swift.config.dao.impl;
 
-import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
-import com.fr.swift.converter.ObjectConverter;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +12,7 @@ import org.powermock.api.easymock.PowerMock;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,15 +32,15 @@ public class SwiftSegmentLocationDaoImplTest {
 
     @Test
     public void deleteBySourceKey() throws SQLException {
-        final SegLocationBean segmentKey = new SegLocationBean("clusterId", "segmentKey", "sourceKey");
+        final SwiftSegmentLocationEntity segmentKey = new SwiftSegmentLocationEntity("clusterId", "segmentKey", "sourceKey");
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
         // Generate by Mock Plugin
         ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
         mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
-        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SegLocationBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
-        mockConfigSession.delete(EasyMock.anyObject(SegLocationBean.TYPE));
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Collections.singletonList(segmentKey)).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SwiftSegmentLocationEntity.class))).andReturn(mockConfigQuery).anyTimes();
+        mockConfigSession.delete(EasyMock.anyObject(SwiftSegmentLocationEntity.class));
         EasyMock.expectLastCall().anyTimes();
         PowerMock.replayAll();
         assertTrue(swiftSegmentLocationDao.deleteBySourceKey(mockConfigSession, "sourceKey"));
@@ -50,43 +50,42 @@ public class SwiftSegmentLocationDaoImplTest {
     @Test
     public void findByClusterId() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        final SegLocationBean segmentKey = new SegLocationBean("clusterId", "segmentKey", "sourceKey");
+        final SwiftSegmentLocationEntity segmentKey = new SwiftSegmentLocationEntity("clusterId", "segmentKey", "sourceKey");
         ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
         mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
-        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SegLocationBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(segmentKey)).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SwiftSegmentLocationEntity.class))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
-        assertFalse(swiftSegmentLocationDao.findByClusterId(mockConfigSession, "clusterId").list().isEmpty());
+        assertFalse(swiftSegmentLocationDao.findByClusterId(mockConfigSession, "clusterId").isEmpty());
         PowerMock.verifyAll();
     }
 
     @Test
     public void findBySegmentId() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        final SegLocationBean segmentKey = new SegLocationBean("clusterId", "segmentKey", "sourceKey");
+        final SwiftSegmentLocationEntity segmentKey = new SwiftSegmentLocationEntity("clusterId", "segmentKey", "sourceKey");
         ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
         mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(segmentKey.convert())).anyTimes();
-        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SegLocationBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
+        EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(segmentKey)).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SwiftSegmentLocationEntity.class))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
-        assertFalse(swiftSegmentLocationDao.findBySegmentId(mockConfigSession, "segmentId").list().isEmpty());
+        assertFalse(swiftSegmentLocationDao.findBySegmentId(mockConfigSession, "segmentId").isEmpty());
         PowerMock.verifyAll();
     }
 
     @Test
     public void findAll() {
         ConfigSession mockConfigSession = PowerMock.createMock(ConfigSession.class);
-        ObjectConverter<SegLocationBean> mockEntity = (ObjectConverter<SegLocationBean>) PowerMock.createMock(SegLocationBean.TYPE);
+        SwiftSegmentLocationEntity mockEntity = PowerMock.createMock(SwiftSegmentLocationEntity.class);
         ConfigQuery mockConfigQuery = PowerMock.createMock(ConfigQuery.class);
         mockConfigQuery.where(EasyMock.notNull(ConfigWhere.class));
         EasyMock.expectLastCall().anyTimes();
         EasyMock.expect(mockConfigQuery.executeQuery()).andReturn(Arrays.asList(mockEntity)).anyTimes();
-        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SegLocationBean.TYPE))).andReturn(mockConfigQuery).anyTimes();
-        EasyMock.expect(mockEntity.convert()).andReturn(new SegLocationBean()).anyTimes();
+        EasyMock.expect(mockConfigSession.createEntityQuery(EasyMock.eq(SwiftSegmentLocationEntity.class))).andReturn(mockConfigQuery).anyTimes();
         PowerMock.replayAll();
-        assertFalse(swiftSegmentLocationDao.findAll(mockConfigSession).list().isEmpty());
+        assertFalse(swiftSegmentLocationDao.findAll(mockConfigSession).isEmpty());
         PowerMock.verifyAll();
     }
 }

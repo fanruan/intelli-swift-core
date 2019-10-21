@@ -11,11 +11,27 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public interface Importer {
+public interface Importer<R extends SwiftResultSet> {
 
-    void importData(SwiftResultSet swiftResultSet) throws Exception;
+    /**
+     * 导入数据
+     *
+     * @param swiftResultSet 承载数据的resultSet
+     * @throws Exception
+     */
+    void importData(R swiftResultSet) throws Exception;
 
+    /**
+     * 获取字段
+     *
+     * @return
+     */
     List<String> getFields();
 
+    /**
+     * 导入的Segment
+     *
+     * @return
+     */
     List<SegmentKey> getImportSegments();
 }

@@ -63,11 +63,11 @@ public class SwiftBeanScanner implements BeanScanner {
 
                     SwiftScope swiftScope = clazz.getAnnotation(SwiftScope.class);
                     try {
-                        if (swiftScope == null || swiftScope.value().equals(SwiftBeanDefinition.SINGLETON)) {
-                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftBeanDefinition.SINGLETON);
+                        if (swiftScope == null || swiftScope.value().equals(SwiftScope.SINGLETON)) {
+                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftScope.SINGLETON);
                             beanRegistry.registerBeanDefinition(beanName, definition);
-                        } else if (swiftScope.value().equals(SwiftBeanDefinition.PROTOTYPE)) {
-                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftBeanDefinition.PROTOTYPE);
+                        } else if (swiftScope.value().equals(SwiftScope.PROTOTYPE)) {
+                            SwiftBeanDefinition definition = new SwiftBeanDefinition(clazz, beanName, SwiftScope.PROTOTYPE);
                             beanRegistry.registerBeanDefinition(beanName, definition);
                         }
                     } catch (Exception e) {
@@ -142,7 +142,11 @@ public class SwiftBeanScanner implements BeanScanner {
                     if ((idx != -1) || recursive) {
                         if (name.endsWith(".class") && !entry.isDirectory()) {
                             try {
-                                String classFile = "jar:" + url.getPath() + name.substring(packageDirName.length() + 1);
+                                String pathHead = url.getPath();
+                                if (!pathHead.endsWith("/")) {
+                                    pathHead += "/";
+                                }
+                                String classFile = "jar:" + pathHead + name.substring(packageDirName.length() + 1);
                                 ClassAnnotations classAnnotations = ClassReader.read(new URL(classFile).openStream());
                                 calcSwiftBeans(classAnnotations, classes);
                             } catch (Exception ignore) {
@@ -190,7 +194,7 @@ public class SwiftBeanScanner implements BeanScanner {
     private void calcSwiftBeans(ClassAnnotations classAnnotations, List<Class<?>> classes) {
         for (String annotation : classAnnotations.getAnnotationNames()) {
             try {
-                if (annotation.equals(SwiftBean.class.getName())) {
+                if (SwiftBean.class.getName().equals(annotation)) {
                     try {
                         classes.add(Class.forName(classAnnotations.getClassName()));
                         continue;

@@ -8,6 +8,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.LongDictColumn;
+import com.fr.swift.util.IoUtil;
 import com.fr.swift.util.function.Function;
 
 import java.util.Arrays;
@@ -47,17 +48,17 @@ public class SubDateColumn extends BaseColumn<Long> {
 
     @Override
     public DetailColumn<Long> getDetailColumn() throws UnsupportedOperationException {
-        return detailColumn != null ? detailColumn : (detailColumn = new SubDetailColumn());
+        return detailColumn == null ? detailColumn = new SubDetailColumn() : detailColumn;
     }
 
     @Override
     public DictionaryEncodedColumn<Long> getDictionaryEncodedColumn() {
-        return dictColumn != null ? dictColumn : (dictColumn = new LongDictColumn(location, Comparators.<Long>asc()));
+        return dictColumn == null ? dictColumn = new LongDictColumn(location, Comparators.<Long>asc()) : dictColumn;
     }
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return indexColumn != null ? indexColumn : (indexColumn = new SubBitmapIndexedColumn());
+        return indexColumn == null ? indexColumn = new SubBitmapIndexedColumn() : indexColumn;
     }
 
     private class SubDetailColumn implements DetailColumn<Long> {
@@ -98,12 +99,7 @@ public class SubDateColumn extends BaseColumn<Long> {
 
         @Override
         public void release() {
-            baseDict.release();
-        }
-
-        @Override
-        public void flush() {
-            baseDict.flush();
+            IoUtil.release(baseDict);
         }
     }
 
@@ -135,13 +131,8 @@ public class SubDateColumn extends BaseColumn<Long> {
         }
 
         @Override
-        public void flush() {
-            deriveBitmapColumn.flush();
-        }
-
-        @Override
         public void release() {
-            deriveBitmapColumn.release();
+            IoUtil.release(deriveBitmapColumn);
         }
 
         @Override

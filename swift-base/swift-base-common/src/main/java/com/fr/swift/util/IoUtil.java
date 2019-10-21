@@ -13,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
 
 /**
  * @author anchore
@@ -85,6 +86,14 @@ public class IoUtil {
                 closable.close();
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
+            }
+        }
+    }
+
+    public static void close(Collection<? extends Closable> closables) {
+        if (closables != null) {
+            for (Closable closable : closables) {
+                close(closable);
             }
         }
     }

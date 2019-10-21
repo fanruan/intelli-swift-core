@@ -1,9 +1,9 @@
 package com.fr.swift.config.oper.proxy;
 
+import com.fr.swift.config.VersionConfigProperty;
 import com.fr.swift.config.oper.exception.SwiftConstraintViolationException;
 import com.fr.swift.config.oper.exception.SwiftEntityExistsException;
 import com.fr.swift.config.oper.exception.SwiftNonUniqueObjectException;
-import com.fr.swift.config.oper.impl.VersionConfigProperty;
 import com.fr.swift.util.ReflectUtils;
 
 /**
@@ -21,7 +21,7 @@ public class HibernateThrowableHelper {
         if (ReflectUtils.isAssignable(start.getClass(), VersionConfigProperty.get().getNonUniqueObjectException())) {
             return new SwiftNonUniqueObjectException(throwable);
         }
-        if (null != throwable.getCause()) {
+        if (null != start.getCause()) {
             return throwThrowable(throwable, start.getCause());
         } else {
             return throwable;

@@ -1,7 +1,6 @@
 package com.fr.swift.segment.relation;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.location.IResourceLocation;
 
@@ -11,7 +10,7 @@ import com.fr.swift.cube.io.location.IResourceLocation;
  * @modify yee
  * @description 每块数据接续着上一块的位置往下写
  */
-public interface RelationIndex extends Releasable, Flushable {
+public interface RelationIndex extends Releasable {
     /**
      * 主表行号 -> 外表所有匹配行号
      *

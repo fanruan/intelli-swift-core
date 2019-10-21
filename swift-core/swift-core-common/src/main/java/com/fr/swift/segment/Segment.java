@@ -1,7 +1,6 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.Column;
@@ -16,7 +15,7 @@ import com.fr.swift.source.SwiftMetaData;
  * @date 2017/10/9
  * 表示cube中一张表的一个分块,可以取得各个列
  */
-public interface Segment extends Releasable, Flushable {
+public interface Segment extends Releasable {
     /**
      * 获取该分片的总行数
      *

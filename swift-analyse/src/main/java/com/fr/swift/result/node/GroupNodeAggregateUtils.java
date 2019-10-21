@@ -3,7 +3,7 @@ package com.fr.swift.result.node;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.AggregatorValueUtils;
-import com.fr.swift.result.GroupNode;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.node.iterator.LeafNodeIterator;
 import com.fr.swift.result.node.iterator.NLevelGroupNodeIterator;
 
@@ -24,7 +24,7 @@ public class GroupNodeAggregateUtils {
      * @param aggregators
      * @return
      */
-    public static GroupNode aggregateMetric(int dimensionSize, GroupNode root, List<Aggregator> aggregators) {
+    public static SwiftNode aggregateMetric(int dimensionSize, SwiftNode root, List<Aggregator> aggregators) {
         return aggregate(dimensionSize, root, aggregators);
     }
 
@@ -37,13 +37,13 @@ public class GroupNodeAggregateUtils {
      * @param aggregators
      * @return
      */
-    public static GroupNode aggregate(int dimensionSize, GroupNode root,
-                                      List<Aggregator> aggregators) {
+    private static SwiftNode aggregate(int dimensionSize, SwiftNode root,
+                                       List<Aggregator> aggregators) {
         // 从第n个维度到第-1个维度(根节点)进行汇总
         for (int depth = dimensionSize - 1; depth >= -1; depth--) {
-            Iterator<GroupNode> iterator = new NLevelGroupNodeIterator(depth, root);
+            Iterator<SwiftNode> iterator = new NLevelGroupNodeIterator(depth, root);
             while (iterator.hasNext()) {
-                GroupNode node = iterator.next();
+                SwiftNode node = iterator.next();
                 mergeChildGroupNode(node, aggregators);
             }
         }
@@ -56,7 +56,7 @@ public class GroupNodeAggregateUtils {
      * @param groupNode
      * @param aggregators
      */
-    private static void mergeChildGroupNode(GroupNode groupNode, List<Aggregator> aggregators) {
+    private static void mergeChildGroupNode(SwiftNode groupNode, List<Aggregator> aggregators) {
         // >= 两个子节点才汇总
         if (groupNode.getChildrenSize() == 0) {
             return;
@@ -67,7 +67,7 @@ public class GroupNodeAggregateUtils {
             return;
         }
         // 节点的合计都是在叶子节点（聚合结果的二维表）的基础上做（如果没有切换汇总方式可以在聚合子节点的基础上做，后面再优化吧）
-        Iterator<GroupNode> iterator = new LeafNodeIterator(groupNode);
+        Iterator<SwiftNode> iterator = new LeafNodeIterator(groupNode);
         // 默认清空父节点的值。
         // FIXME: 2018/5/4 多个segment同时有expander的情况下父节点有可能不为空的，这时就有bug了！
         AggregatorValue[] valuesOfParent = createAggregateValues(iterator.next().getAggregatorValue(), aggregators);

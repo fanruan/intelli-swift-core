@@ -3,7 +3,7 @@ package com.fr.swift.cluster;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.cluster.service.ClusterSwiftServerService;
-import com.fr.swift.config.bean.SwiftServiceInfoBean;
+import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.service.AnalyseService;
@@ -39,9 +39,9 @@ public class ClusterSwiftServerServiceTest extends TestCase {
         EasyMock.replay(swiftProperty);
 
         SwiftServiceInfoService swiftServiceInfoService = EasyMock.createMock(SwiftServiceInfoService.class);
-        EasyMock.expect(swiftServiceInfoService.getAllServiceInfo()).andReturn(new ArrayList<SwiftServiceInfoBean>()).anyTimes();
-        EasyMock.expect(swiftServiceInfoService.saveOrUpdate(EasyMock.anyObject(SwiftServiceInfoBean.class))).andReturn(true).anyTimes();
-        EasyMock.expect(swiftServiceInfoService.removeServiceInfo(EasyMock.anyObject(SwiftServiceInfoBean.class))).andReturn(true).anyTimes();
+        EasyMock.expect(swiftServiceInfoService.getAllServiceInfo()).andReturn(new ArrayList<SwiftServiceInfoEntity>()).anyTimes();
+        EasyMock.expect(swiftServiceInfoService.saveOrUpdate(EasyMock.anyObject(SwiftServiceInfoEntity.class))).andReturn(true).anyTimes();
+        EasyMock.expect(swiftServiceInfoService.removeServiceInfo(EasyMock.anyObject(SwiftServiceInfoEntity.class))).andReturn(true).anyTimes();
         EasyMock.replay(swiftServiceInfoService);
 
         PowerMock.mockStatic(SwiftContext.class);

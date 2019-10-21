@@ -1,15 +1,19 @@
 package com.fr.swift.bitmap.impl;
 
-import com.fineio.base.Bits;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Assert;
+import com.fr.swift.util.IoUtil;
 
-import java.util.Iterator;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * @author anchore
@@ -31,40 +35,30 @@ public class RangeBitmap extends AbstractBitMap {
         return new RangeBitmap(start, end);
     }
 
-    public static ImmutableBitMap ofBytes(byte[] bytes, int offset) {
-        return new RangeBitmap(Bits.getInt(bytes, offset), Bits.getInt(bytes, offset + 4));
-    }
-
     @Override
     public ImmutableBitMap getAnd(ImmutableBitMap index) {
-        switch (index.getType()) {
-            case RANGE:
-                return FasterAggregation.and(this, ((RangeBitmap) index));
-            default:
-                return index.getAnd(this);
+        if (index instanceof RangeBitmap) {
+            return FasterAggregation.and(this, ((RangeBitmap) index));
         }
+        return index.getAnd(this);
     }
 
     @Override
     public ImmutableBitMap getOr(ImmutableBitMap index) {
-        switch (index.getType()) {
-            case RANGE:
-                return FasterAggregation.or(this, ((RangeBitmap) index));
-            default:
-                return index.getOr(this);
+        if (index instanceof RangeBitmap) {
+            return FasterAggregation.or(this, ((RangeBitmap) index));
         }
+        return index.getOr(this);
     }
 
     @Override
     public ImmutableBitMap getAndNot(ImmutableBitMap index) {
-        switch (index.getType()) {
-            case RANGE:
-                return FasterAggregation.andNot(this, ((RangeBitmap) index));
-            default:
-                MutableBitMap bitmap = toRealBitmap();
-                bitmap.andNot(index);
-                return bitmap;
+        if (index instanceof RangeBitmap) {
+            return FasterAggregation.andNot(this, ((RangeBitmap) index));
         }
+        MutableBitMap bitmap = toRealBitmap();
+        bitmap.andNot(index);
+        return bitmap;
     }
 
     @Override
@@ -95,16 +89,28 @@ public class RangeBitmap extends AbstractBitMap {
 
     private MutableBitMap toRealBitmap() {
         MutableRoaringBitmap bitmap = new MutableRoaringBitmap();
-        bitmap.flip((long) start, (long) end);
+        bitmap.flip(start, end);
         return RoaringMutableBitMap.of(bitmap);
     }
 
     @Override
     public byte[] toBytes() {
-        byte[] bytes = new byte[8];
-        Bits.putInt(bytes, 0, start);
-        Bits.putInt(bytes, 4, end);
-        return bytes;
+        return ByteBuffer.allocate(9)
+                // 兼容fineio Bits的小端法
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .put(getType().getHead())
+                .putInt(start).putInt(end).array();
+    }
+
+    @Override
+    public void writeBytes(OutputStream output) {
+        try {
+            output.write(toBytes());
+        } catch (IOException e) {
+            SwiftLoggers.getLogger().error(e);
+        } finally {
+            IoUtil.close(output);
+        }
     }
 
     @Override
@@ -137,7 +143,6 @@ public class RangeBitmap extends AbstractBitMap {
     @Override
     public IntIterator intIterator() {
         return new IntIterator() {
-
             private int cursor = start;
 
             @Override
@@ -149,21 +154,6 @@ public class RangeBitmap extends AbstractBitMap {
             public boolean hasNext() {
                 return cursor < end;
             }
-
-            @Override
-            public Integer next() {
-                return nextInt();
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
         };
-    }
-
-    @Override
-    public Iterator<Integer> iterator() {
-        return intIterator();
     }
 }

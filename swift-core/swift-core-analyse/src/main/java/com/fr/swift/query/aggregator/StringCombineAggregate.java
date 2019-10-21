@@ -5,11 +5,14 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.io.Serializable;
+
 /**
- * Created by pony on 2018/3/26.
+ * @author pony
+ * @date 2018/3/26
  */
-public class StringCombineAggregate implements Aggregator<StringAggregateValue> {
-    protected static final Aggregator INSTANCE = new StringCombineAggregate();
+public class StringCombineAggregate extends SingleColumnAggregator<StringAggregateValue> implements Serializable {
+    protected static final StringCombineAggregate INSTANCE = new StringCombineAggregate();
     private static final char TAG = '/';
     private static final long serialVersionUID = -7212555336149634716L;
 
@@ -33,7 +36,7 @@ public class StringCombineAggregate implements Aggregator<StringAggregateValue> 
     }
 
     @Override
-    public StringAggregateValue createAggregatorValue(AggregatorValue value) {
+    public StringAggregateValue createAggregatorValue(AggregatorValue<?> value) {
         return new StringAggregateValue();
     }
 

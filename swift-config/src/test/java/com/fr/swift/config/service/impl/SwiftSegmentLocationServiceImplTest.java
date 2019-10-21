@@ -1,9 +1,9 @@
 package com.fr.swift.config.service.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.bean.SegLocationBean;
 import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.dao.impl.SwiftSegmentLocationDaoImpl;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.BaseTransactionManager;
@@ -39,7 +39,7 @@ public class SwiftSegmentLocationServiceImplTest extends BaseServiceTest {
 
 
         // Generate by Mock Plugin
-        final ConfigSession mockConfigSession = mockSession(SegLocationBean.TYPE, mockData());
+        final ConfigSession mockConfigSession = mockSession(SwiftSegmentLocationEntity.class, mockData());
 
         BaseTransactionManager mockBaseTransactionManager = new BaseTransactionManager() {
             @Override
@@ -75,8 +75,7 @@ public class SwiftSegmentLocationServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         ObjectConverter tablePathA = PowerMock.createMock(ObjectConverter.class);
         // Generate by Mock Plugin
-        SegLocationBean mockSwiftTablePathBean = PowerMock.createMock(SegLocationBean.class);
-        EasyMock.expect(mockSwiftTablePathBean.convert()).andReturn(tablePathA).anyTimes();
+        SwiftSegmentLocationEntity mockSwiftTablePathBean = PowerMock.createMock(SwiftSegmentLocationEntity.class);
         EasyMock.expect(mockSwiftTablePathBean.getSourceKey()).andReturn("sourceKeyA").anyTimes();
 
         EasyMock.expect(tablePathA.convert()).andReturn(mockSwiftTablePathBean).anyTimes();
@@ -91,14 +90,12 @@ public class SwiftSegmentLocationServiceImplTest extends BaseServiceTest {
         // Generate by Mock Plugin
         ObjectConverter tablePathA = PowerMock.createMock(ObjectConverter.class);
         // Generate by Mock Plugin
-        SegLocationBean mockSwiftTablePathBean = PowerMock.createMock(SegLocationBean.class);
-        EasyMock.expect(mockSwiftTablePathBean.convert()).andReturn(tablePathA).anyTimes();
+        SwiftSegmentLocationEntity mockSwiftTablePathBean = PowerMock.createMock(SwiftSegmentLocationEntity.class);
         EasyMock.expect(mockSwiftTablePathBean.getSourceKey()).andReturn("sourceKeyA").anyTimes();
 
         EasyMock.expect(tablePathA.convert()).andReturn(mockSwiftTablePathBean).anyTimes();
         ObjectConverter tablePathB = PowerMock.createMock(ObjectConverter.class);
-        SegLocationBean mockSwiftTablePathBean1 = PowerMock.createMock(SegLocationBean.class);
-        EasyMock.expect(mockSwiftTablePathBean1.convert()).andReturn(tablePathB).anyTimes();
+        SwiftSegmentLocationEntity mockSwiftTablePathBean1 = PowerMock.createMock(SwiftSegmentLocationEntity.class);
         EasyMock.expect(mockSwiftTablePathBean1.getSourceKey()).andReturn("sourceKeyB").anyTimes();
         EasyMock.expect(tablePathB.convert()).andReturn(mockSwiftTablePathBean1).anyTimes();
         PowerMock.replay(tablePathA, tablePathB, mockSwiftTablePathBean, mockSwiftTablePathBean1);

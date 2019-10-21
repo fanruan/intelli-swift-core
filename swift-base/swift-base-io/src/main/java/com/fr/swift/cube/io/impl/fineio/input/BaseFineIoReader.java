@@ -1,24 +1,23 @@
 package com.fr.swift.cube.io.impl.fineio.input;
 
-import com.fineio.io.Buffer;
-import com.fineio.io.file.IOFile;
+import com.fineio.accessor.buffer.Buf;
+import com.fineio.accessor.file.IReadFile;
 import com.fr.swift.cube.io.input.Reader;
+import com.fr.swift.util.IoUtil;
 
 /**
  * @author anchore
  */
-abstract class BaseFineIoReader<Buf extends Buffer> implements Reader {
-    IOFile<Buf> ioFile;
+abstract class BaseFineIoReader<B extends Buf> implements Reader {
+    IReadFile<B> readFile;
 
     @Override
     public boolean isReadable() {
-        return ioFile != null && ioFile.exists();
+        return readFile != null && readFile.exists();
     }
 
-    /**
-     * FineIO的reader不需要进行释放，这里是空实现
-     */
     @Override
     public final void release() {
+        IoUtil.close(readFile);
     }
 }

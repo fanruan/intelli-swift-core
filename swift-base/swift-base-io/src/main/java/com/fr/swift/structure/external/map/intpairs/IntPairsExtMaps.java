@@ -19,6 +19,8 @@ public class IntPairsExtMaps {
         long bufferSize = PerformancePlugManager.getInstance().getDiskSortDumpThreshold();
         switch (classType) {
             case INTEGER:
+                return (ExternalMap<K, List<IntPair>>)
+                        new Int2IntPairsExtMap(bufferSize, (Comparator<Integer>) c, path);
             case LONG:
             case DATE:
                 return (ExternalMap<K, List<IntPair>>)

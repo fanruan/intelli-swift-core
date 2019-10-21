@@ -1,23 +1,33 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.structure.iterator.RowTraversal;
 
-/**
- * Created by Lyon on 2018/4/11.
- */
-public class DummyAggregator implements Aggregator<AggregatorValue> {
+import java.util.Map;
 
-    protected static final Aggregator INSTANCE = new DummyAggregator();
+/**
+ * @author Lyon
+ * @date 2018/4/11
+ */
+public enum DummyAggregator implements Aggregator<AggregatorValue<?>> {
+    //
+    INSTANCE;
+
     private static final long serialVersionUID = -8029762611968533612L;
 
     @Override
-    public AggregatorValue aggregate(RowTraversal traversal, Column column) {
+    public AggregatorValue<?> aggregate(RowTraversal traversal, Map<ColumnKey, Column<?>> columns) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public AggregatorValue createAggregatorValue(AggregatorValue value) {
+    public AggregatorValue<?> aggregate(RowTraversal traversal, Column<?> column) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public AggregatorValue<?> createAggregatorValue(AggregatorValue<?> value) {
         return null;
     }
 

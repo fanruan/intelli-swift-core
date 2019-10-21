@@ -43,7 +43,7 @@ public class SumAggregateTest extends TestCase {
 
 
         double sum = 17.0;
-        SumAggregate sumCalculator = (SumAggregate)SumAggregate.INSTANCE;
+        SumAggregate sumCalculator = (SumAggregate) SumAggregate.INSTANCE;
         DoubleAmountAggregatorValue an = sumCalculator.aggregate(bitMap, mockColumn);
         assertEquals(sum, an.getValue());
         control.verify();
@@ -68,7 +68,7 @@ public class SumAggregateTest extends TestCase {
         control.replay();
 
         double sum = 9.0;
-        SumAggregate sumCalculator = (SumAggregate)SumAggregate.INSTANCE;
+        SumAggregate sumCalculator = (SumAggregate) SumAggregate.INSTANCE;
         DoubleAmountAggregatorValue an = sumCalculator.aggregate(bitMap, mockColumn);
         assertEquals(sum, an.getValue());
         control.verify();
@@ -94,7 +94,7 @@ public class SumAggregateTest extends TestCase {
         control.replay();
 
         double sum = 19.0;
-        SumAggregate sumCalculator = (SumAggregate)SumAggregate.INSTANCE;
+        SumAggregate sumCalculator = (SumAggregate) SumAggregate.INSTANCE;
         DoubleAmountAggregatorValue an = sumCalculator.aggregate(bitMap, mockColumn);
         assertEquals(sum, an.getValue());
         control.verify();
@@ -106,16 +106,16 @@ public class SumAggregateTest extends TestCase {
         DoubleAmountAggregatorValue valueTest2 = new DoubleAmountAggregatorValue();
         DoubleAmountAggregatorValue otherTest2 = new DoubleAmountAggregatorValue();
 
-            valueTest1.setValue(-10.1);
-            valueTest2.setValue(10.4);
-            otherTest1.setValue(13.3);
-            otherTest2.setValue(0);
+        valueTest1.setValue(-10.1);
+        valueTest2.setValue(10.4);
+        otherTest1.setValue(13.3);
+        otherTest2.setValue(0);
 
-            SumAggregate sum = (SumAggregate)SumAggregate.INSTANCE;
-            sum.combine(valueTest1, otherTest1);
-            sum.combine(valueTest2, otherTest2);
+        SumAggregate sum = (SumAggregate) SumAggregate.INSTANCE;
+        sum.combine(valueTest1, otherTest1);
+        sum.combine(valueTest2, otherTest2);
 
-            assertEquals(valueTest1.getValue(), -10.1 + 13.3);
-            assertEquals(valueTest2.getValue(), 10.4);
+        assertEquals(valueTest1.getValue(), -10.1 + 13.3);
+        assertEquals(valueTest2.getValue(), 10.4);
     }
 }

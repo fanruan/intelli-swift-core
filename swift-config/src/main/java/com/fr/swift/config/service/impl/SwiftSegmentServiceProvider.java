@@ -3,6 +3,7 @@ package com.fr.swift.config.service.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.oper.ConfigWhere;
+import com.fr.swift.config.oper.Page;
 import com.fr.swift.config.service.SwiftClusterSegmentService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types.StoreType;
@@ -11,6 +12,7 @@ import com.fr.swift.source.SourceKey;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yee
@@ -63,6 +65,16 @@ public class SwiftSegmentServiceProvider implements SwiftSegmentService {
     @Override
     public SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType) {
         return service.tryAppendSegment(tableKey, storeType);
+    }
+
+    @Override
+    public Page<SegmentKey> selectSelective(SegmentKey segmentKey, int page, int size) {
+        return service.selectSelective(segmentKey, page, size);
+    }
+
+    @Override
+    public Set<SegmentKey> getByIds(Set<String> segIds) {
+        return service.getByIds(segIds);
     }
 
     @Override

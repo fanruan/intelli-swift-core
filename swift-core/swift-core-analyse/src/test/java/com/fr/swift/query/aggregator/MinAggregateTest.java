@@ -18,7 +18,7 @@ import static org.easymock.EasyMock.expectLastCall;
 
 public class MinAggregateTest extends TestCase {
 
-    private MinAggregate min = (MinAggregate)MinAggregate.INSTANCE;
+    private MinAggregate min = (MinAggregate) MinAggregate.INSTANCE;
 
 
     public void testAggregateInt() {
@@ -101,7 +101,7 @@ public class MinAggregateTest extends TestCase {
         otherTest1.setValue(-2);
         otherTest2.setValue(20);
 
-        MinAggregate min = (MinAggregate)MinAggregate.INSTANCE;
+        MinAggregate min = (MinAggregate) MinAggregate.INSTANCE;
         min.combine(valueTest1, otherTest1);
         min.combine(valueTest2, otherTest2);
 

@@ -1,6 +1,6 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 
@@ -33,7 +33,7 @@ public class PostQueryTestUtils {
     public static SwiftMetaData createMetaData(final String tableName, final String[] columnNames) {
         return new SwiftMetaData() {
             @Override
-            public SwiftDatabase getSwiftDatabase() {
+            public SwiftSchema getSwiftSchema() {
                 return null;
             }
 
@@ -115,6 +115,11 @@ public class PostQueryTestUtils {
             @Override
             public String getId() {
                 return null;
+            }
+
+            @Override
+            public SwiftMetaData clone() {
+                return this;
             }
         };
     }

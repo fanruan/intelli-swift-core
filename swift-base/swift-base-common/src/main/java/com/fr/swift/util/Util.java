@@ -16,15 +16,18 @@ public final class Util {
         return false;
     }
 
+    @Deprecated
     public static void requireNonNull(Object o, Object... objs) {
         Assert.notNull(o);
         requireNonNull(objs);
     }
 
+    @Deprecated
     public static void requireNonNull(Object o) {
         Assert.notNull(o);
     }
 
+    @Deprecated
     public static void requireNonNull(Object[] objs) {
         for (Object obj : objs) {
             Assert.notNull(obj);
@@ -44,6 +47,7 @@ public final class Util {
         }
         return o1.equals(o2);
     }
+
 
     public static int hashCode(Object o) {
         return o == null ? 0 : o.hashCode();

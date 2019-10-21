@@ -1,44 +1,42 @@
 package com.fr.swift.query.post;
 
-import com.fr.swift.result.BaseNodeQRS;
-import com.fr.swift.result.GroupNode;
+import com.fr.swift.query.group.by2.node.GroupPage;
+import com.fr.swift.query.query.Query;
+import com.fr.swift.result.BaseNodeQueryResultSet;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.result.SwiftNodeOperator;
 import com.fr.swift.result.node.GroupNodeUtils;
-import com.fr.swift.result.node.resultset.ChainedNodeQRS;
+import com.fr.swift.result.node.resultset.ChainedNodeQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.structure.Pair;
-
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /**
- * Created by Lyon on 2018/5/31.
+ *
+ * @author Lyon
+ * @date 2018/5/31
  */
-public class UpdateNodeDataQuery implements PostQuery<QueryResultSet> {
+public class UpdateNodeDataQuery implements Query<QueryResultSet<SwiftNode>> {
 
-    private QueryResultSet<Pair<SwiftNode, List<Map<Integer, Object>>>> resultSet;
+    private QueryResultSet<GroupPage> resultSet;
 
-    public UpdateNodeDataQuery(QueryResultSet<Pair<SwiftNode, List<Map<Integer, Object>>>> resultSet) {
+    public UpdateNodeDataQuery(QueryResultSet<GroupPage> resultSet) {
         this.resultSet = resultSet;
     }
 
     @Override
-    public QueryResultSet getQueryResult() throws SQLException {
-        return new ChainedNodeQRS(new SwiftNodeOperator() {
+    public QueryResultSet<SwiftNode> getQueryResult() {
+        return new ChainedNodeQueryResultSet(new SwiftNodeOperator() {
             @Override
             public SwiftNode apply(SwiftNode p) {
                 return p;
             }
-        }, new UpdateDataQRS(resultSet));
+        }, new UpdateDataQueryResultSet(resultSet));
     }
 
-    private static class UpdateDataQRS extends BaseNodeQRS {
+    private static class UpdateDataQueryResultSet extends BaseNodeQueryResultSet {
 
-        private QueryResultSet<Pair<SwiftNode, List<Map<Integer, Object>>>> resultSet;
+        private QueryResultSet<GroupPage> resultSet;
 
-        public UpdateDataQRS(QueryResultSet<Pair<SwiftNode, List<Map<Integer, Object>>>> resultSet) {
+        UpdateDataQueryResultSet(QueryResultSet<GroupPage> resultSet) {
             super(resultSet.getFetchSize());
             this.resultSet = resultSet;
         }
@@ -47,9 +45,9 @@ public class UpdateNodeDataQuery implements PostQuery<QueryResultSet> {
         public SwiftNode getPage() {
             SwiftNode ret = null;
             if (hasNextPage()) {
-                Pair<? extends SwiftNode, List<Map<Integer, Object>>> page = resultSet.getPage();
-                ret = page.getKey();
-                GroupNodeUtils.updateNodeData((GroupNode) page.getKey(), page.getValue());
+                GroupPage page = resultSet.getPage();
+                ret = page.getRoot();
+                GroupNodeUtils.updateNodeData(page.getRoot(), page.getGlobalDicts());
             }
             return ret;
         }

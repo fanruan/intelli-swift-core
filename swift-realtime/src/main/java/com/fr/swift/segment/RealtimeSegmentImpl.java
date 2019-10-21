@@ -9,6 +9,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.RealtimeDateColumn;
 import com.fr.swift.segment.column.RealtimeDoubleColumn;
+import com.fr.swift.segment.column.RealtimeIntColumn;
 import com.fr.swift.segment.column.RealtimeLongColumn;
 import com.fr.swift.segment.column.RealtimeStringColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
@@ -55,6 +56,7 @@ public class RealtimeSegmentImpl extends BaseSegment implements RealtimeSegment 
     protected Column<?> newColumn(IResourceLocation location, ClassType classType) {
         switch (classType) {
             case INTEGER:
+                return new RealtimeIntColumn(location);
             case LONG:
                 return new RealtimeLongColumn(location);
             case DOUBLE:

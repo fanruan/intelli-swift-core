@@ -2,6 +2,8 @@ package com.fr.swift.query.aggregator;
 
 import com.fr.swift.query.aggregator.extension.DistinctDateYMD;
 import com.fr.swift.query.aggregator.extension.TopPercentileAggregator;
+import com.fr.swift.query.info.funnel.FunnelAggregationBean;
+import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
 
 /**
  * Created by pony on 2018/3/26.
@@ -32,7 +34,7 @@ public class AggregatorFactory {
             case VARIANCE:
                 return VarianceAggregate.INSTANCE;
             case STANDARD_DEVIATION:
-                return StandarDeviationAggregate.INSTANCE;
+                return StandardDeviationAggregator.INSTANCE;
             case COUNT:
                 return CountAggregator.INSTANCE;
 
@@ -46,6 +48,16 @@ public class AggregatorFactory {
                     return new TopPercentileAggregator(percentile, numberOfSignificantValueDigits);
                 }
             }
+            case FUNNEL:
+                if (null != params) {
+                    return new FunnelAggregator((FunnelAggregationBean) params[0]);
+                }
+                return DummyAggregator.INSTANCE;
+            case FUNNEL_PATHS:
+                if (null != params) {
+                    return new FunnelPathsAggregator((FunnelPathsAggregationBean) params[0]);
+                }
+                return DummyAggregator.INSTANCE;
             default:
                 return DummyAggregator.INSTANCE;
         }

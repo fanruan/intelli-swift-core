@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.IoUtil;
 
 /**
@@ -69,16 +70,10 @@ public class BitMapColumn extends BaseBitmapColumn {
     }
 
     @Override
-    public void flush() {
-        if (indexWriter != null) {
-            indexWriter.flush();
-        }
-    }
-
-    @Override
     public void release() {
         IoUtil.release(indexWriter, indexReader);
         indexWriter = null;
         indexReader = null;
+        SwiftLoggers.getLogger().debug("swift bitmap released at {}", indexLocation.getPath());
     }
 }

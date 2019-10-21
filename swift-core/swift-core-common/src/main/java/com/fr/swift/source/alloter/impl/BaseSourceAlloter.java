@@ -1,6 +1,7 @@
 package com.fr.swift.source.alloter.impl;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.AllotRule;
@@ -15,9 +16,10 @@ import java.util.Map;
  * @author anchore
  * @date 2018/12/21
  */
-public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> implements SwiftSourceAlloter<A, R> {
+public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> implements SwiftSourceAlloter<A, R>, Cloneable {
 
     protected static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    protected static final SwiftSegmentBucketService BUCKET_SVC = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
 
     protected SourceKey tableKey;
 
@@ -27,7 +29,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
      * 逻辑order到实际order的映射
      * 处理order竞争的
      */
-    private Map<Integer, SegmentState> logicToReal = new HashMap<Integer, SegmentState>();
+    private Map<Integer, SegmentState> logicToReal = new HashMap<>();
 
     protected BaseSourceAlloter(SourceKey tableKey, A rule) {
         this.tableKey = tableKey;
@@ -44,7 +46,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
             segState = logicToReal.get(logicOrder);
         } else {
             // 新分配
-            segState = getInsertableSeg();
+            segState = getInsertableSeg(logicOrder);
             logicToReal.put(logicOrder, segState);
         }
         if (segState.incrementAndGet() < rule.getCapacity()) {
@@ -52,13 +54,13 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
             return segState.getSegInfo();
         }
         // 已满，再分配
-        segState = getInsertableSeg();
+        segState = getInsertableSeg(logicOrder);
         logicToReal.put(logicOrder, segState);
         segState.incrementAndGet();
         return segState.getSegInfo();
     }
 
-    protected abstract SegmentState getInsertableSeg();
+    protected abstract SegmentState getInsertableSeg(int logicOrder);
 
     /**
      * 计算逻辑seg order
@@ -104,5 +106,16 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
         SegmentInfo getSegInfo() {
             return segInfo;
         }
+    }
+
+    public void setSourceKey(SourceKey sourceKey) {
+        this.tableKey = sourceKey;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        BaseSourceAlloter clonedAlloter = (BaseSourceAlloter) super.clone();
+        clonedAlloter.logicToReal = new HashMap<>();
+        return clonedAlloter;
     }
 }
