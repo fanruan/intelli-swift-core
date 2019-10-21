@@ -18,6 +18,11 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-core-segment</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-io-api</artifactId>
             <version>${swift.version}</version>
         </dependency>
@@ -28,17 +33,17 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-analyse</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-bitmap</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-io</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-config-api</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

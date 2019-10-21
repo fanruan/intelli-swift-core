@@ -32,8 +32,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
 
-import javax.swing.text.Segment;
-
 /**
  * @author anchore
  * @date 2018/1/17
