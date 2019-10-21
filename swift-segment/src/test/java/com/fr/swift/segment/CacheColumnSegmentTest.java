@@ -1,11 +1,9 @@
-package com.fr.swift.segment.column.impl.base;
+package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.segment.CacheColumnSegment;
-import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
