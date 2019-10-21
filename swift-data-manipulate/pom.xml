@@ -3,45 +3,42 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.fr.intelligence</groupId>
         <artifactId>swift</artifactId>
+        <groupId>com.fr.intelligence</groupId>
         <version>2019.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>swift-cluster</artifactId>
 
+    <artifactId>swift-data-manipulate</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-repository</artifactId>
+            <artifactId>swift-bitmap</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-segment-operator</artifactId>
+            <artifactId>swift-data-manipulate-api</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-proxy</artifactId>
+            <artifactId>swift-core-common</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-service</artifactId>
+            <artifactId>swift-segment</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-proxy</artifactId>
+            <artifactId>swift-config</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-cluster-api</artifactId>
+            <artifactId>swift-query</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>
