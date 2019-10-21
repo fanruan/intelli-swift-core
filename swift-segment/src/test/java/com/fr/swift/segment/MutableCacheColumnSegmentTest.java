@@ -1,4 +1,4 @@
-package com.fr.swift.segment.column.impl.base;
+package com.fr.swift.segment;
 
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.source.SwiftMetaData;
