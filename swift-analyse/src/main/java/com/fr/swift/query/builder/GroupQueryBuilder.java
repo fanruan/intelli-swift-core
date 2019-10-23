@@ -118,7 +118,7 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
         boolean pagingQuery = isPagingQuery(info);
         List<Segment> segments = filterQueryInfo(info);
         // List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
-         for (Segment segment : segments) {
+        for (Segment segment : segments) {
             try {
                 List<Pair<Column, IndexInfo>> dimensionColumns = getDimensionSegments(segment, dimensions);
                 List<Column> metricColumns = getMetricSegments(segment, metrics);
