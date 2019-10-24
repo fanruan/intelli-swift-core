@@ -13,6 +13,7 @@ import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.source.SourceKey;
 
 import java.sql.SQLException;
@@ -166,7 +167,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                     }
                     List<SwiftSegmentLocationEntity> segLocations = segIds.isEmpty() ? Collections.<SwiftSegmentLocationEntity>emptyList() :
                             segmentLocationDao.find(session,
-                            ConfigWhereImpl.in("id.segmentId", segIds));
+                                    ConfigWhereImpl.in("id.segmentId", segIds));
                     for (SwiftSegmentLocationEntity segLocation : segLocations) {
                         segmentLocationDao.delete(session, segLocation);
                     }
@@ -208,6 +209,9 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                     for (SegmentKey segKey : segKeys) {
                         try {
                             segmentLocationDao.saveOrUpdate(session, toLocalSegLocation(segKey));
+                            for (SegmentContainer value : SegmentContainer.values()) {
+                                value.register(segKey);
+                            }
                         } catch (SQLException e) {
                             SwiftLoggers.getLogger().error(e);
                         }
