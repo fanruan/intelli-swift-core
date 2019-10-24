@@ -129,9 +129,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     private boolean addSegmentsWithoutTransaction(ConfigSession session, Collection<SegmentKey> segments) throws SQLException {
         for (SegmentKey segment : segments) {
             swiftSegmentDao.addOrUpdateSwiftSegment(session, segment);
-            for (SegmentContainer value : SegmentContainer.values()) {
-                value.register(segment);
-            }
+//            for (SegmentContainer value : SegmentContainer.values()) {
+//                value.register(segment);
+//            }
         }
         return true;
     }
