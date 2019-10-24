@@ -66,6 +66,10 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         this.swiftSchema = swiftSchema;
     }
 
+    public static String getHistoryId(String segmentOwner, int segmentOrder) {
+        return getId(new SourceKey(segmentOwner), segmentOrder, StoreType.FINE_IO);
+    }
+
     private static String getId(SourceKey segmentOwner, int segmentOrder, StoreType storeType) {
         return String.format("%s@%s@%d", segmentOwner.getId(), storeType, segmentOrder);
     }
