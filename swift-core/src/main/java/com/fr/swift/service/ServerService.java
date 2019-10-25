@@ -9,7 +9,7 @@ package com.fr.swift.service;
  */
 public interface ServerService {
 
-    public void startServerService() throws Exception;
+    void startServerService() throws Exception;
 
-    public void stopServerService() throws Exception;
+    void stopServerService() throws Exception;
 }

@@ -1,9 +1,7 @@
 package com.fr.swift.source;
 
-
 import com.fr.swift.source.core.CoreService;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
