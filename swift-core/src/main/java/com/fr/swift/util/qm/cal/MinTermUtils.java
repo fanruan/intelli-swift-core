@@ -62,10 +62,10 @@ class MinTermUtils {
         List<Product> sop = new ArrayList<Product>();
         BExprType type = expr.type();
         switch (type) {
-            case VAR:
+            case BExprType.VAR:
                 sop.add(createBVarProduct(bVarIntegerMap.size(), bVarIntegerMap.get(expr), 1));
                 break;
-            case NOT: {
+            case BExprType.NOT: {
                 BExpr child = ((BUExpr) expr).getChild();
                 if (child.type() == BExprType.VAR) {
                     sop.add(createBVarProduct(bVarIntegerMap.size(), bVarIntegerMap.get(child), 0));
@@ -92,13 +92,13 @@ class MinTermUtils {
                 }
                 break;
             }
-            case OR: {
+            case BExprType.OR: {
                 for (BExpr ep : ((BNExpr) expr).getChildrenExpr()) {
                     sop.addAll(expr2InternalSOP(ep, bVarIntegerMap));
                 }
                 break;
             }
-            case AND: {
+            case BExprType.AND: {
                 List<Product> lastSop = new ArrayList<Product>();
                 for (BExpr ep : ((BNExpr) expr).getChildrenExpr()) {
                     List<Product> current = expr2InternalSOP(ep, bVarIntegerMap);
@@ -149,14 +149,14 @@ class MinTermUtils {
         Set<BVar> bVarSet = new HashSet<BVar>();
         BExprType type = expr.type();
         switch (type) {
-            case VAR:
+            case BExprType.VAR:
                 bVarSet.add((BVar) expr);
                 break;
-            case NOT:
+            case BExprType.NOT:
                 bVarSet.addAll(countVars(((BUExpr) expr).getChild()));
                 break;
-            case AND:
-            case OR:
+            case BExprType.AND:
+            case BExprType.OR:
                 for (BExpr ep : ((BNExpr) expr).getChildrenExpr()) {
                     bVarSet.addAll(countVars(ep));
                 }
