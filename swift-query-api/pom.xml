@@ -9,7 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-config-api</artifactId>
+    <artifactId>swift-query-api</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
@@ -18,10 +19,13 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-analyse-api</artifactId>
+            <artifactId>swift-core-common</artifactId>
             <version>${swift.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-segment-api</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
-
 </project>

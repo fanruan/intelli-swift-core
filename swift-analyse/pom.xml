@@ -13,76 +13,48 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-generator</artifactId>
+            <artifactId>swift-analyse-api</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-analyse</artifactId>
+            <artifactId>swift-base-common</artifactId>
             <version>${swift.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>swift-core-segment</artifactId>
-                    <groupId>com.fr.intelligence</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-service</artifactId>
             <version>${swift.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>swift-core-generator</artifactId>
-                    <groupId>com.fr.intelligence</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>swift-core-analyse</artifactId>
-                    <groupId>com.fr.intelligence</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-analyse-base</artifactId>
-            <version>${swift.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jackson-annotations</artifactId>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-proxy</artifactId>
+            <artifactId>swift-bitmap</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-beans</artifactId>
+            <artifactId>swift-query</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-cluster</artifactId>
+            <artifactId>swift-config-api</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-analyse</artifactId>
+            <artifactId>swift-segment-api</artifactId>
             <version>${swift.version}</version>
-            <scope>test</scope>
-            <classifier>tests</classifier>
-            <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-exception-repair</artifactId>
+            <artifactId>swift-rpc</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-data-manipulate-api</artifactId>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 
