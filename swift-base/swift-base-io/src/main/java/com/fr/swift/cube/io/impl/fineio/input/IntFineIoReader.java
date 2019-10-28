@@ -27,6 +27,6 @@ public class IntFineIoReader extends BaseFineIoReader<IntBuf> implements IntRead
 
     @Override
     public int get(long pos) {
-        return FineIOAccessor.INSTANCE.getInt(readFile, (int) pos);
+        return FineIOAccessor.INSTANCE.getInt(readFile, pos);
     }
 }

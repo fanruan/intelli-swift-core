@@ -35,9 +35,9 @@ public class DoubleFineIoWriter extends BaseFineIoWriter<DoubleBuf> implements D
     @Override
     public void put(long pos, double val) {
         if (isOverwrite) {
-            FineIOAccessor.INSTANCE.put(writeFile, (int) pos, val);
+            FineIOAccessor.INSTANCE.put(writeFile, pos, val);
         } else {
-            FineIOAccessor.INSTANCE.put(appendFile, (int) pos, val);
+            FineIOAccessor.INSTANCE.put(appendFile, pos, val);
         }
     }
 }
