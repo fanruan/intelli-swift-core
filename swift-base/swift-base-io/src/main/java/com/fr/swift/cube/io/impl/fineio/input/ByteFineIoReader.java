@@ -27,6 +27,6 @@ public class ByteFineIoReader extends BaseFineIoReader<ByteBuf> implements ByteR
 
     @Override
     public byte get(long pos) {
-        return FineIOAccessor.INSTANCE.getByte(readFile, (int) pos);
+        return FineIOAccessor.INSTANCE.getByte(readFile, pos);
     }
 }
