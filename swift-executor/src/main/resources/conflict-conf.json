@@ -80,6 +80,8 @@
     }
   ],
   "stopTheWorldTaskTypes": [
-    "TREASURE_ANALYSIS"
+    "TREASURE_ANALYSIS",
+    "TREASURE_IMPORT",
+    "COLLATE"
   ]
 }

@@ -92,10 +92,21 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
 
             for (Map.Entry<URL, List<SegmentKey>> urlListEntry : collateMap.entrySet()) {
                 try {
+                    //分批collate，一批10块
                     URL url = urlListEntry.getKey();
-                    List<SegmentKey> segmentKeyList = urlListEntry.getValue();
-                    Invoker invoker = invokerCreator.createAsyncInvoker(ServiceContext.class, url);
-                    invoke(invoker, proxy, method, methodName, paramClass, sourceKey, segmentKeyList);
+                    List<SegmentKey> allSegmentKeyList = urlListEntry.getValue();
+                    List<SegmentKey> batchSegmentKeyList = new ArrayList<>();
+                    Invoker invoker = invokerCreator.createSyncInvoker(ServiceContext.class, url);
+                    for (int i = 0; i < allSegmentKeyList.size(); i++) {
+                        batchSegmentKeyList.add(allSegmentKeyList.get(i));
+                        if (batchSegmentKeyList.size() % SwiftFragmentFilter.FRAGMENT_NUMBER == 0) {
+                            invoke(invoker, proxy, method, methodName, paramClass, sourceKey, batchSegmentKeyList);
+                            batchSegmentKeyList.clear();
+                        }
+                    }
+                    if (batchSegmentKeyList.size() >= SwiftFragmentFilter.FRAGMENT_NUMBER * 0.8) {
+                        invoke(invoker, proxy, method, methodName, paramClass, sourceKey, batchSegmentKeyList);
+                    }
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error(e);
                 }
