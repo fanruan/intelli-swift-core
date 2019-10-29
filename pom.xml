@@ -45,6 +45,12 @@
         <module>swift-segment-api</module>
         <module>swift-source</module>
         <module>swift-source-api</module>
+        <module>swift-data-manipulate-api</module>
+        <module>swift-data-manipulate</module>
+        <module>swift-query-api</module>
+        <module>swift-query</module>
+        <module>swift-analyse-api</module>
+        <module>swift-rpc</module>
     </modules>
     <properties>
         <jackson.version>2.9.8</jackson.version>

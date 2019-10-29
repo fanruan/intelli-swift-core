@@ -9,19 +9,29 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-config-api</artifactId>
+    <artifactId>swift-query</artifactId>
     <dependencies>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-common</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-analyse-api</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
 
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-core-db</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-analyse</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-query-api</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-segment</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
