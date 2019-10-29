@@ -17,10 +17,10 @@
         <module>swift-core-source</module>
         <module>swift-core-common</module>
         <module>swift-core-generator</module>
-        <module>swift-core-analyse</module>
+<!--        <module>swift-core-analyse</module>-->
         <module>swift-core-service</module>
         <module>swift-core-segment-operator</module>
-        <module>swift-core-proxy</module>
+<!--        <module>swift-core-proxy</module>-->
     </modules>
 
     <dependencyManagement>

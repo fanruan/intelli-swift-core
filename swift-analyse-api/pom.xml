@@ -9,18 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-rpc</artifactId>
+    <artifactId>swift-analyse-api</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-rpc-api</artifactId>
+            <artifactId>swift-source-api</artifactId>
             <version>${swift.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-common</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
+
     </dependencies>
 
 </project>
