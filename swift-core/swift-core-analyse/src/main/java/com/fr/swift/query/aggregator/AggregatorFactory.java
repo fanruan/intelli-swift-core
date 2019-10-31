@@ -25,6 +25,8 @@ public class AggregatorFactory {
                 return HLLDistinctAggregator.INSTANCE;
             case STRING_COMBINE:
                 return StringCombineAggregate.INSTANCE;
+            case SINGLE_VALUE:
+                return SingleObjectAggregate.INSTANCE;
             case DATE_MAX:
                 return DateMaxAggregate.INSTANCE;
             case DATE_MIN:
