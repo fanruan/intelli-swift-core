@@ -49,8 +49,7 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -61,8 +60,7 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-config</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 

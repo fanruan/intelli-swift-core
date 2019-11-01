@@ -14,20 +14,17 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-history</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-realtime</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-defragmentation</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fineio</groupId>
@@ -38,20 +35,17 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-master</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-proxy</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-analyse</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 

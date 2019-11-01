@@ -19,44 +19,42 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-beans</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-data-manipulate-api</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-segment</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-repo</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-master-api</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-analyse-api</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-proxy</artifactId>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 

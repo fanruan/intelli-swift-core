@@ -35,8 +35,7 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-config-api</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 

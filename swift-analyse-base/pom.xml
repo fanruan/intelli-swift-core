@@ -21,25 +21,21 @@
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-common</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-db</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-analyse</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-beans</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
