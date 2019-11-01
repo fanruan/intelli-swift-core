@@ -39,26 +39,22 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-master-api</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-exception-repair-api</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-proxy</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 

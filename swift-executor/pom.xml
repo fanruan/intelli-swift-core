@@ -24,32 +24,27 @@
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-config-api</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-beans</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-config</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-source-api</artifactId>
-            <version>2019.1</version>
-            <scope>compile</scope>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 </project>
