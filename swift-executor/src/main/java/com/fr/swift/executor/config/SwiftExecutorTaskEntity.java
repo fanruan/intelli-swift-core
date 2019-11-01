@@ -35,7 +35,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     private final static String ID_SEPARATOR = ":";
 
     @Column(name = "executorTaskType")
-    protected String taskType;
+    protected String executorTaskType;
 
     @Column(name = "taskId")
     protected String taskId;
@@ -76,7 +76,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     @Column(name = "clusterId")
     protected String clusterId;
     @Transient
-    private ExecutorTaskType executorTaskType;
+    private ExecutorTaskType taskType;
 
     private SwiftExecutorTaskEntity() {
     }
@@ -86,8 +86,8 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
         this.taskId = task.getTaskId();
         this.sourceKey = task.getSourceKey().getId();
         this.createTime = task.getCreateTime();
-        this.executorTaskType = task.getExecutorTaskType();
-        this.taskType = task.getExecutorTaskType().name();
+        this.taskType = task.getExecutorTaskType();
+        this.executorTaskType = task.getExecutorTaskType().name();
         this.lockType = task.getLockType();
         this.lockKey = task.getLockKey();
         this.dbStatusType = task.getDbStatusType();
@@ -131,12 +131,12 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
         this.createTime = createTime;
     }
 
-    public ExecutorTaskType getExecutorTaskType() {
-        return executorTaskType;
+    public ExecutorTaskType getTaskType() {
+        return taskType;
     }
 
-    public void setExecutorTaskType(ExecutorTaskType executorTaskType) {
-        this.executorTaskType = executorTaskType;
+    public void setTaskType(ExecutorTaskType taskType) {
+        this.taskType = taskType;
     }
 
     public LockType getLockType() {
@@ -190,14 +190,14 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     @Override
     public ExecutorTask convert() {
         try {
-            Class<? extends ExecutorTask> clazz = ExecutorTypeContainer.getInstance().getClassByType(this.taskType);
+            Class<? extends ExecutorTask> clazz = ExecutorTypeContainer.getInstance().getClassByType(this.executorTaskType);
 
             TaskType taskTypeAnnotation = clazz.getAnnotation(TaskType.class);
-            executorTaskType = (ExecutorTaskType) Enum.valueOf(taskTypeAnnotation.type(), taskType);
+            taskType = (ExecutorTaskType) Enum.valueOf(taskTypeAnnotation.type(), executorTaskType);
             Constructor constructor = clazz.getDeclaredConstructor(SourceKey.class, boolean.class, ExecutorTaskType.class, LockType.class,
                     String.class, DBStatusType.class, String.class, long.class, String.class, int.class);
 
-            return (ExecutorTask) constructor.newInstance(new SourceKey(this.sourceKey), true, this.executorTaskType, this.lockType,
+            return (ExecutorTask) constructor.newInstance(new SourceKey(this.sourceKey), true, this.taskType, this.lockType,
                     this.lockKey, this.dbStatusType, this.taskId, this.createTime, this.taskContent, this.priority);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
