@@ -1,5 +1,6 @@
 package com.fr.swift.segment.event;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
@@ -41,6 +42,6 @@ public class PushSegmentLocationListener extends BaseSegmentLocationListener {
 
     //报告异常的方法抽出来，避免影响原有的逻辑的展示
     private void reportPushSegException(SegmentLocationInfo exceptionContext) {
-        ExceptionReporter.report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.SLAVE_PUSH_SEGMENT);
+        SwiftContext.get().getBean(ExceptionReporter.class).report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.SLAVE_PUSH_SEGMENT);
     }
 }

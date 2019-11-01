@@ -39,7 +39,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({ResourceDiscovery.class, SwiftContext.class})
+@PrepareForTest({SwiftContext.class})
 public class BitMapColumnTest {
 
     @Mock

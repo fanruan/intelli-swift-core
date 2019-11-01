@@ -18,8 +18,9 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-common</artifactId>
-            <version>${swift.version}</version>
+            <artifactId>swift-base</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

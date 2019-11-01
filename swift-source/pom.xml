@@ -46,6 +46,24 @@
             <artifactId>swift-core-segment</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.9.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-config</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 

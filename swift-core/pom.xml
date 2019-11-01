@@ -10,73 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-core</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>swift-core-segment</module>
-        <module>swift-core-db</module>
-        <module>swift-core-source</module>
-        <module>swift-core-common</module>
-        <module>swift-core-generator</module>
-<!--        <module>swift-core-analyse</module>-->
-        <module>swift-core-service</module>
-        <module>swift-core-segment-operator</module>
-<!--        <module>swift-core-proxy</module>-->
-    </modules>
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-segment-api</artifactId>
-            <version>${swift.version}</version>
+            <artifactId>swift-base</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-analyse</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-db</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-generator</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-proxy</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-segment</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-segment-operator</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-service</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-source</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

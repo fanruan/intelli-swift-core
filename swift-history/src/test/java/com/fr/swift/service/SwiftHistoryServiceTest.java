@@ -27,7 +27,6 @@ import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -85,8 +84,6 @@ public class SwiftHistoryServiceTest {
         Map<SourceKey, Set<String>> needDownload = new HashMap<SourceKey, Set<String>>();
         needDownload.put(new SourceKey("table"), Collections.singleton("seg0"));
         EasyMock.expect(SegmentHelper.checkSegmentExists(EasyMock.notNull(SwiftSegmentService.class), EasyMock.notNull(SwiftSegmentLocationService.class), EasyMock.notNull(SwiftSegmentManager.class))).andReturn(needDownload).anyTimes();
-        SegmentHelper.uploadRelation(EasyMock.anyObject(RelationSource.class), EasyMock.anyString());
-        EasyMock.expectLastCall().anyTimes();
         SegmentHelper.download(EasyMock.notNull(String.class), EasyMock.notNull(Set.class), EasyMock.eq(true));
         EasyMock.expectLastCall().anyTimes();
         SegmentHelper.download(EasyMock.notNull(String.class), EasyMock.notNull(Set.class), EasyMock.eq(false));

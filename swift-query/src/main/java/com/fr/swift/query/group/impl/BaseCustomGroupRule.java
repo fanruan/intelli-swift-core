@@ -2,10 +2,6 @@ package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.CustomGroupRule;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.core.Core;
-import com.fr.swift.source.core.CoreField;
-import com.fr.swift.source.core.CoreGenerator;
-import com.fr.swift.source.core.CoreService;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
@@ -26,10 +22,8 @@ import java.util.Map.Entry;
 abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implements CustomGroupRule<Base, Derive> {
     DictionaryEncodedColumn<Base> dictColumn;
 
-    @CoreField
     Derive otherGroupName;
 
-    @CoreField
     List<? extends CustomGroup<Base, Derive>> groups;
     /**
      * 新分组序号 -> (新分组值, 旧分组序号)
@@ -190,8 +184,7 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
      */
     abstract Derive format(Base val);
 
-    abstract static class CustomGroup<Base, Derive> implements CoreService {
-        @CoreField
+    abstract static class CustomGroup<Base, Derive> {
         Derive name;
 
         CustomGroup(Derive name) {
@@ -206,15 +199,6 @@ abstract class BaseCustomGroupRule<Base, Derive> extends BaseGroupRule implement
 
         boolean contains(Base val) {
             return values().contains(val);
-        }
-
-        @Override
-        public Core fetchObjectCore() {
-            try {
-                return new CoreGenerator(this).fetchObjectCore();
-            } catch (Exception ignore) {
-                return Core.EMPTY_CORE;
-            }
         }
     }
 }

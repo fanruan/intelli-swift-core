@@ -1,6 +1,5 @@
 package com.fr.swift.property;
 
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
 
@@ -107,13 +106,6 @@ public class SwiftProperty {
             initCluster();
             initClusterId();
             initMasterAddress();
-            initSelfStart();
-            initConfigDbDriverClass();
-            initConfigDbUsername();
-            initConfigDbPasswd();
-            initConfigDbDialect();
-            initConfigDbJdbcUrl();
-            initRedisConf();
             initJdbcServerProperties();
         } catch (IOException e) {
             Crasher.crash(e);
@@ -169,7 +161,7 @@ public class SwiftProperty {
         if (isCluster) {
             this.clusterId = properties.getProperty("swift.clusterId");
         } else {
-            this.clusterId = SwiftConfigConstants.LOCALHOST;
+            this.clusterId = "LOCAL";
         }
     }
 

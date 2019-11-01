@@ -22,14 +22,11 @@ import java.util.Set;
  * @author Marvin
  * @version 1.1
  * Created by Marvin on 9/5/2019
+ * 所有的健康探测方法均返回一个健康的服务构成的集合，如果集合为空则认为探测的服务是不健康的
  */
 
 @SwiftBean
 @ProxyService(ComponentHealthInspectService.class)
-
-/**
- * 所有的健康探测方法均返回一个健康的服务构成的集合，如果集合为空则认为探测的服务是不健康的
- */
 public class SwiftComponentHealthInspectService extends AbstractSwiftService implements ComponentHealthInspectService {
     @Override
     public Set<RpcHealthResultBean> inspectMasterRpcHealth(ServiceType target) {

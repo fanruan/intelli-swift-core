@@ -1,7 +1,6 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.source.core.CoreField;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.Comparator;
@@ -86,7 +85,6 @@ public class CustomStrGroupRule extends BaseCustomStrGroupRule<String> {
     }
 
     public static class StringGroup extends CustomGroup<String, String> {
-        @CoreField
         List<String> values;
 
         public StringGroup(String name, List<String> values) {

@@ -8,7 +8,6 @@ import com.fr.swift.query.filter.match.GeneralAndMatchFilter;
 import com.fr.swift.query.filter.match.GeneralOrMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.source.core.CoreField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +18,7 @@ import java.util.List;
 public class GeneralFilterInfo extends AbstractFilterInfo {
     public static final int OR = 0;
     public static final int AND = 1;
-    @CoreField
     private List<FilterInfo> children;
-    @CoreField
     private int type;
 
     public GeneralFilterInfo(List<FilterInfo> children, int type) {

@@ -41,6 +41,18 @@
             <artifactId>swift-query</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-source</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

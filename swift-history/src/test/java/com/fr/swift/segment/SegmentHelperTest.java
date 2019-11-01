@@ -17,8 +17,6 @@ import com.fr.swift.repository.SwiftRepository;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.service.listener.RemoteSender;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import org.easymock.EasyMock;
@@ -264,19 +262,7 @@ public class SegmentHelperTest {
 
         PowerMock.replay(SwiftContext.class, ProxySelector.class);
 
-
-        // Generate by Mock Plugin
-        RelationSource mockRelationSource = PowerMock.createMock(RelationSource.class);
-        EasyMock.expect(mockRelationSource.getForeignSource()).andReturn(new SourceKey("to")).anyTimes();
-        EasyMock.expect(mockRelationSource.getPrimarySource()).andReturn(new SourceKey("from")).anyTimes();
-        EasyMock.expect(mockRelationSource.getRelationType()).andReturn(RelationSourceType.FIELD_RELATION).once();
-        EasyMock.expect(mockRelationSource.getRelationType()).andReturn(RelationSourceType.RELATION).once();
-
-
         PowerMock.replayAll();
-
-        SegmentHelper.uploadRelation(mockRelationSource, "LOCAL");
-        SegmentHelper.uploadRelation(mockRelationSource, "LOCAL");
 
         PowerMock.verifyAll();
     }

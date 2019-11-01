@@ -18,16 +18,6 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-segment</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-io-api</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-segment-api</artifactId>
             <version>${swift.version}</version>
         </dependency>
@@ -38,6 +28,14 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-bitmap</artifactId>
+            <version>${swift.version}</version>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-io</artifactId>
             <version>${swift.version}</version>
         </dependency>
@@ -45,6 +43,13 @@
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-config-api</artifactId>
             <version>${swift.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-source</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

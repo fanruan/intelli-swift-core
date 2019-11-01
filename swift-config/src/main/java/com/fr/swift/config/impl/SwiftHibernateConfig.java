@@ -5,12 +5,11 @@ import com.fr.swift.config.SwiftConfig;
 import com.fr.swift.config.command.SwiftConfigCommandBus;
 import com.fr.swift.config.command.impl.SwiftConfigEntityCommandBusImpl;
 import com.fr.swift.config.command.impl.SwiftHibernateConfigCommandBus;
-import com.fr.swift.config.command.impl.SwiftSegmentCommandBusImpl;
 import com.fr.swift.config.entity.SwiftConfigEntity;
 import com.fr.swift.config.query.SwiftConfigQueryBus;
 import com.fr.swift.config.query.impl.SwiftConfigEntityQueryBusImpl;
 import com.fr.swift.config.query.impl.SwiftHibernateConfigQueryBus;
-import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.log.SwiftLoggers;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -32,9 +31,18 @@ public class SwiftHibernateConfig implements SwiftConfig {
 
     private void init() {
         commandBus.putIfAbsent(SwiftConfigEntity.class, new SwiftConfigEntityCommandBusImpl());
-        commandBus.putIfAbsent(SegmentKey.class, new SwiftSegmentCommandBusImpl());
+        putSegmentKeyCmdBus();
 
         queryBus.putIfAbsent(SwiftConfigEntity.class, new SwiftConfigEntityQueryBusImpl());
+    }
+
+    private void putSegmentKeyCmdBus() {
+        try {
+            final SwiftConfigCommandBus<?> cmdBus = (SwiftConfigCommandBus<?>) Class.forName("com.fr.swift.config.command.impl.SwiftSegmentCommandBusImpl").newInstance();
+            commandBus.putIfAbsent(Class.forName("com.fr.swift.segment.SegmentKey"), cmdBus);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("SwiftHibernateConfig register segment key cmd bus failed", e);
+        }
     }
 
     @Override

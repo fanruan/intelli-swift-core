@@ -7,7 +7,7 @@ import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -103,7 +103,7 @@ public abstract class BaseInserter {
     }
 
     protected void release() {
-        SegmentUtils.releaseHisSeg(segment);
+        SegmentUtil.releaseHisSeg(segment);
     }
 
     public List<String> getFields() {

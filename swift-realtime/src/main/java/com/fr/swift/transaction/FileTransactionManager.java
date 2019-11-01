@@ -7,7 +7,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.EmptyBitmap;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -87,6 +87,6 @@ public class FileTransactionManager extends AbstractTransactionManager {
 
     @Override
     public void close() {
-        SegmentUtils.releaseHisSeg(hisSegment);
+        SegmentUtil.releaseHisSeg(hisSegment);
     }
 }

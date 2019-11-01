@@ -14,18 +14,39 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-common</artifactId>
-            <version>${swift.version}</version>
+            <artifactId>swift-proxy-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-service</artifactId>
-            <version>${swift.version}</version>
+            <artifactId>swift-base</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-proxy</artifactId>
-            <version>${swift.version}</version>
+            <artifactId>swift-core</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-beans</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-rpc</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-cluster-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

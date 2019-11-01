@@ -19,19 +19,26 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-server</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-beans</artifactId>
+            <artifactId>swift-defragmentation</artifactId>
             <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-defragmentation</artifactId>
-            <version>${swift.version}</version>
+            <artifactId>swift-master-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-analyse-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-service</artifactId>
+            <version>2019.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

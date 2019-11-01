@@ -21,6 +21,36 @@
             <artifactId>swift-cluster-api</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-config-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-source-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-segment-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-query-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

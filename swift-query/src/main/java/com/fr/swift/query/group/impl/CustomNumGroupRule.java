@@ -1,7 +1,6 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.source.core.CoreField;
 import com.fr.swift.structure.array.IntList;
 
 import java.text.DecimalFormat;
@@ -70,7 +69,6 @@ public class CustomNumGroupRule extends BaseCustomStrGroupRule<Number> {
     }
 
     public static class NumIntervals extends CustomGroup<Number, String> {
-        @CoreField
         List<NumInterval> intervals = new ArrayList<NumInterval>(1);
 
         public NumIntervals(String name, List<NumInterval> intervals) {
@@ -106,22 +104,18 @@ public class CustomNumGroupRule extends BaseCustomStrGroupRule<Number> {
         /**
          * 是否为小于等于
          */
-        @CoreField
         boolean lessOrEq;
         /**
          * 是否为大于等于
          */
-        @CoreField
         private boolean greaterOrEq;
         /**
          * 下界
          */
-        @CoreField
         private double floor;
         /**
          * 上界
          */
-        @CoreField
         private double ceil;
 
         public NumInterval(double floor, boolean greaterOrEq, double ceil, boolean lessOrEq) {
