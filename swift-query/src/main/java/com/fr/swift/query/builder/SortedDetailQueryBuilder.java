@@ -1,6 +1,7 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -59,7 +60,7 @@ class SortedDetailQueryBuilder extends DetailQueryBuilder {
     private static ColumnTypeConstants.ClassType getClassType(SourceKey table, String columnName) {
         SwiftMetaDataColumn column;
         try {
-            column = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(columnName);
+            column = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(table.getId()).getColumn(columnName);
         } catch (SQLException e) {
             return Crasher.crash("failed to read metadata of table: " + table.toString(), e);
         }

@@ -1,5 +1,6 @@
 package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
@@ -15,7 +16,7 @@ import com.fr.swift.util.IoUtil;
 abstract class BaseDetailColumn<T, W extends Writer, R extends Reader> implements DetailColumn<T> {
     private static final String DETAIL = "detail";
 
-    static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
+    static final IResourceDiscovery DISCOVERY = SwiftContext.get().getBean(IResourceDiscovery.class);
 
     IResourceLocation location;
 

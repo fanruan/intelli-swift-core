@@ -6,6 +6,7 @@ import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -184,7 +185,7 @@ public class AbstractInserterTest {
         new Ins(seg, Collections.singletonList("c1")).release();
 
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.releaseHisSeg(seg);
+        SegmentUtil.releaseHisSeg(seg);
     }
 
     @Test

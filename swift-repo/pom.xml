@@ -15,7 +15,6 @@
             <groupId>com.fineio</groupId>
             <artifactId>fineio</artifactId>
             <version>${fineio.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>

@@ -10,9 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-io</artifactId>
-    <properties>
-        <fineio.version>3.0-RELEASE-SNAPSHOT</fineio.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -33,18 +30,20 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-bitmap-api</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-beans</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-structure</artifactId>
-            <version>${swift.version}</version>
+            <artifactId>swift-bitmap</artifactId>
+            <version>2019.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-source-api</artifactId>
+            <version>2019.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

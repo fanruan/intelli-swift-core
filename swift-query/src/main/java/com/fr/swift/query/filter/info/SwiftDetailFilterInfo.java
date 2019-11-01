@@ -7,7 +7,6 @@ import com.fr.swift.query.filter.match.DetailBasedMatchFilter;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.core.CoreField;
 
 /**
  * @author Lyon
@@ -16,12 +15,9 @@ import com.fr.swift.source.core.CoreField;
  */
 public class SwiftDetailFilterInfo<T> extends AbstractDetailFilterInfo {
 
-    @CoreField
     private T filterValue;
-    @CoreField
     private SwiftDetailFilterType type;
 
-    @CoreField
     private ColumnKey columnKey;
 
     public SwiftDetailFilterInfo(ColumnKey columnKey, T filterValue, SwiftDetailFilterType type) {

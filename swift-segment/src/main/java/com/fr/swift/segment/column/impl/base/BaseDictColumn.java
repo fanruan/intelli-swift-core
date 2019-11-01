@@ -1,5 +1,6 @@
 package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
@@ -28,7 +29,7 @@ abstract class BaseDictColumn<T, R extends Reader> extends AbstractDictColumn<T>
     private static final String GLOBAL_INDEX = "global_dict_index";
     private static final String GLOBAL_SIZE = "global_dict_size";
 
-    static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
+    static final IResourceDiscovery DISCOVERY = SwiftContext.get().getBean(IResourceDiscovery.class);
 
     IResourceLocation parent;
 

@@ -13,33 +13,24 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>swift-analyse</module>
         <module>swift-base</module>
         <module>swift-core</module>
-        <module>swift-cluster</module>
         <module>swift-defragmentation</module>
-        <module>swift-history</module>
-        <module>swift-indexing</module>
-        <module>swift-master</module>
-        <module>swift-realtime</module>
-        <module>swift-server</module>
-        <module>swift-slave</module>
-<!--        <module>swift-analyse-base</module>-->
-        <module>swift-proxy</module>
         <module>swift-api-server</module>
-        <module>swift-config</module>
         <module>swift-executor</module>
-        <module>swift-base-boot</module>
         <module>swift-exception-repair</module>
         <module>swift-repo</module>
         <module>swift-repo-api</module>
         <module>swift-io</module>
         <module>swift-io-api</module>
+        <module>swift-rpc</module>
         <module>swift-rpc-api</module>
+        <module>swift-cluster</module>
         <module>swift-cluster-api</module>
         <module>swift-bitmap</module>
         <module>swift-bitmap-api</module>
         <module>swift-config-api</module>
+        <module>swift-config</module>
         <module>swift-beans</module>
         <module>swift-segment</module>
         <module>swift-segment-api</module>
@@ -49,17 +40,23 @@
         <module>swift-data-manipulate</module>
         <module>swift-query-api</module>
         <module>swift-query</module>
+        <module>swift-boot</module>
+        <module>swift-proxy</module>
+
         <module>swift-analyse-api</module>
-        <module>swift-rpc</module>
+        <module>swift-analyse</module>
+        <module>swift-history</module>
+        <module>swift-master</module>
+        <module>swift-realtime</module>
+        <module>swift-master-api</module>
+        <module>swift-service</module>
+        <module>swift-service-api</module>
+        <module>swift-proxy-api</module>
+        <module>swift-exception-repair-api</module>
     </modules>
     <properties>
         <jackson.version>2.9.8</jackson.version>
+        <fineio.version>3.0-RELEASE-SNAPSHOT</fineio.version>
+        <cglib.version>3.2.5</cglib.version>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-    </dependencies>
 </project>

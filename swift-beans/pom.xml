@@ -8,9 +8,6 @@
         <version>2019.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <properties>
-        <cglib.version>3.2.5</cglib.version>
-    </properties>
     <artifactId>swift-beans</artifactId>
     <dependencies>
         <dependency>

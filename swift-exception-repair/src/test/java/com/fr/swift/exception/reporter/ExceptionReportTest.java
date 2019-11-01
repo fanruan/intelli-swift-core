@@ -50,7 +50,7 @@ public class ExceptionReportTest {
         PowerMockito.spy(ExceptionReporter.class);
         ExceptionContext context = PowerMockito.mock(ExceptionContext.class);
         PowerMockito.when(infoService.existsException((ExceptionInfo) ArgumentMatchers.any())).thenReturn(false);
-        ExceptionReporter.report(context, ExceptionInfoType.UPLOAD_SEGMENT);
+        SwiftContext.get().getBean(ExceptionReporter.class).report(context, ExceptionInfoType.UPLOAD_SEGMENT);
         Mockito.verify(queue).offer((ExceptionInfo) ArgumentMatchers.any());
     }
 }

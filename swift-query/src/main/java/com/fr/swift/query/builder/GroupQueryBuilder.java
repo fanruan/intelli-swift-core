@@ -1,6 +1,7 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -74,7 +75,7 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
     }
 
     private static List<Pair<SortType, ColumnTypeConstants.ClassType>> getComparatorsForMerging(SourceKey table, List<Dimension> dimensions, List<Metric> metrics) {
-        SwiftMetaData metaData = SwiftDatabase.getInstance().getTable(table).getMetadata();
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(table.getId());
         List<Pair<SortType, ColumnTypeConstants.ClassType>> comparators = new ArrayList<Pair<SortType, ColumnTypeConstants.ClassType>>();
         for (Dimension dimension : dimensions) {
             Sort sort = dimension.getSort();
