@@ -60,6 +60,7 @@ public class SwiftProperty {
     private int redisPort;
     private String redisPassward;
     private int redisTimeout;
+    private String[] executorTaskType;
 
     private SwiftProperty() {
         initProperties();
@@ -83,6 +84,7 @@ public class SwiftProperty {
             initRpcMaxObjectSize();
             initRpcAddress();
             initCluster();
+            initExecutorTaskType();
             initClusterId();
             initMasterAddress();
             initCubesPath();
@@ -134,6 +136,10 @@ public class SwiftProperty {
 
     private void initCubesPath() {
         this.cubesPath = properties.getProperty("swift.cubesPath");
+    }
+
+    private void initExecutorTaskType() {
+        this.executorTaskType = properties.getProperty("swift.executorTaskType").split(";");
     }
 
     public void setCluster(boolean cluster) {
@@ -209,4 +215,9 @@ public class SwiftProperty {
     public String getCubesPath() {
         return cubesPath;
     }
+
+    public String[] getExecutorTaskType() {
+        return executorTaskType;
+    }
+
 }
