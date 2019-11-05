@@ -6,9 +6,6 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.multi.ReadonlyMultiColumn;
-import com.fr.swift.segment.relation.CubeMultiRelation;
-import com.fr.swift.segment.relation.CubeMultiRelationPath;
-import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Assert;
 
@@ -80,7 +77,7 @@ public class ReadonlyMultiSegment implements Segment {
 
     @Override
     public void release() {
-        SegmentUtils.releaseHisSeg(segs);
+        SegmentUtil.releaseHisSeg(segs);
     }
 
     @Override
@@ -95,21 +92,6 @@ public class ReadonlyMultiSegment implements Segment {
 
     @Override
     public IResourceLocation getLocation() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public RelationIndex getRelation(CubeMultiRelation f) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public RelationIndex getRelation(CubeMultiRelationPath f) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath) {
         throw new UnsupportedOperationException();
     }
 }

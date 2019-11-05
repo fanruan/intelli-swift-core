@@ -38,7 +38,7 @@ import java.util.Collections;
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
 @PrepareForTest({SwiftContext.class, SwiftProperty.class, MasterManager.class, ServiceBeanFactory.class
         , ClusterSelector.class, SwiftServiceListenerManager.class, ClusterSwiftServerService.class
-        , TaskDispatcher.class, ExecutorManager.class})
+        , ExecutorManager.class})
 public class MasterManagerTest {
 
     @Mock

@@ -6,6 +6,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentResultSet;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.collate.segment.SegmentBuilder;
@@ -93,7 +94,7 @@ public class SegmentTransferTest {
 
         // finally release his seg
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.releaseHisSeg(Arrays.asList(oldSeg, newSeg));
+        SegmentUtil.releaseHisSeg(Arrays.asList(oldSeg, newSeg));
     }
 
     @Test
@@ -124,6 +125,6 @@ public class SegmentTransferTest {
 
         // finally release his seg
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.releaseHisSeg(Arrays.asList(oldSeg, newSeg));
+        SegmentUtil.releaseHisSeg(Arrays.asList(oldSeg, newSeg));
     }
 }

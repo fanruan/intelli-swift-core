@@ -1,8 +1,7 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.db.Table;
-import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.segment.bean.impl.HistSegLocationManager;
 import com.fr.swift.segment.bean.impl.RealTimeSegLocationManager;
 import com.fr.swift.service.ServiceType;
@@ -65,9 +64,9 @@ public class SegmentLocationProvider implements SegmentLocationManager {
     @Override
     public void removeTable(String cluster, SourceKey sourceKey) {
         if (null == sourceKey) {
-            for (Table table : SwiftDatabase.getInstance().getAllTables()) {
-                historyManager.removeTable(cluster, table.getSourceKey());
-                realTimeManager.removeTable(cluster, table.getSourceKey());
+            for (String tableKey : SwiftContext.get().getBean(SwiftMetaDataService.class).getAllMetaData().keySet()) {
+                historyManager.removeTable(cluster, new SourceKey(tableKey));
+                realTimeManager.removeTable(cluster, new SourceKey(tableKey));
             }
         } else {
             historyManager.removeTable(cluster, sourceKey);

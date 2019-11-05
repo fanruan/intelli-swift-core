@@ -4,7 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.result.BaseDetailQueryResultSet;
-import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
@@ -75,7 +75,7 @@ public class SegmentDetailResultSet extends BaseDetailQueryResultSet {
 
     @Override
     public void close() {
-        SegmentUtils.releaseHisColumn(columnList);
+        SegmentUtil.releaseHisColumn(columnList);
     }
 
 }

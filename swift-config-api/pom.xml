@@ -13,15 +13,14 @@
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-common</artifactId>
+            <artifactId>swift-base</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-analyse-api</artifactId>
-            <version>${swift.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.0</version>
         </dependency>
-
     </dependencies>
 
 </project>

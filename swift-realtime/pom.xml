@@ -16,17 +16,10 @@
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-cluster</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-analyse</artifactId>
-            <version>${swift.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-common</artifactId>
+            <artifactId>swift-core</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
@@ -36,9 +29,23 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-exception-repair</artifactId>
+            <artifactId>swift-exception-repair-api</artifactId>
             <version>${swift.version}</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-data-manipulate</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-proxy</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-service</artifactId>
+            <version>${swift.version}</version>
         </dependency>
     </dependencies>
 
