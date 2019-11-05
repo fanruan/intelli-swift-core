@@ -1,14 +1,15 @@
 package com.fr.swift.db.impl;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.IndexQuery;
+import com.fr.swift.query.query.QueryIndexRunner;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.util.Strings;
 
@@ -54,13 +55,15 @@ public class SwiftWhere implements Where, Serializable {
 
     @Override
     public ImmutableBitMap createWhereIndex(Table table, Segment segment) throws Exception {
-        IndexQuery<ImmutableBitMap> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, this, segment);
+        final QueryIndexRunner queryIndexRunner = (QueryIndexRunner) SwiftContext.get().getBean("queryIndexRunner");
+        IndexQuery<ImmutableBitMap> indexAfterFilter = queryIndexRunner.getBitMap(table, this, segment);
         return indexAfterFilter.getQueryIndex();
     }
 
     @Override
     public Map<URI, ImmutableBitMap> createWhereIndex(Table table) throws Exception {
-        Map<URI, IndexQuery<ImmutableBitMap>> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, this);
+        final QueryIndexRunner queryIndexRunner = (QueryIndexRunner) SwiftContext.get().getBean("queryIndexRunner");
+        Map<URI, IndexQuery<ImmutableBitMap>> indexAfterFilter = queryIndexRunner.getBitMap(table, this);
         Map<URI, ImmutableBitMap> whereIndexMap = new HashMap<URI, ImmutableBitMap>();
 
         for (Map.Entry<URI, IndexQuery<ImmutableBitMap>> entry : indexAfterFilter.entrySet()) {

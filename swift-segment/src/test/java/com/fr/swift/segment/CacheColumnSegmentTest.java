@@ -38,12 +38,12 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({ColumnTypeUtils.class, SwiftContext.class, CacheColumnSegment.class, SegmentUtils.class})
+@PrepareForTest({ColumnTypeUtils.class, SwiftContext.class, CacheColumnSegment.class, SegmentUtil.class})
 public class CacheColumnSegmentTest {
 
     @Before
     public void setUp() throws Exception {
-        mockStatic(ColumnTypeUtils.class, SwiftContext.class, SegmentUtils.class);
+        mockStatic(ColumnTypeUtils.class, SwiftContext.class, SegmentUtil.class);
         when(ColumnTypeUtils.getClassType(ArgumentMatchers.<SwiftMetaDataColumn>any())).thenReturn(ClassType.DOUBLE);
 
         BeanFactory beanFactory = mock(BeanFactory.class);
@@ -83,7 +83,7 @@ public class CacheColumnSegmentTest {
         seg.release();
 
         Map<ColumnKey, Column<?>> columns = Whitebox.getInternalState(seg, "columns");
-        verifyStatic(SegmentUtils.class);
-        SegmentUtils.releaseHisColumn(columns.values());
+        verifyStatic(SegmentUtil.class);
+        SegmentUtil.releaseHisColumn(columns.values());
     }
 }

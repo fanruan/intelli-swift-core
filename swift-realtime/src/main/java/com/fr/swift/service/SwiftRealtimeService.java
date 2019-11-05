@@ -31,7 +31,7 @@ import com.fr.swift.segment.SegmentDestination;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.segment.bean.impl.SegmentLocationInfoImpl;
-import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
+import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.impl.RealTimeSegDestImpl;
 import com.fr.swift.selector.ClusterSelector;
@@ -90,7 +90,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
-        ResourceDiscovery.getInstance().releaseAll();
+        SwiftContext.get().getBean(IResourceDiscovery.class).releaseAll();
         recoverable = true;
         segSvc = null;
         segLocationSvc = null;
@@ -151,7 +151,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
                 .setTableKey(tableKey).build();
         FileUtil.delete(bakPath);
         // 删内存
-        ResourceDiscovery.getInstance().releaseTable(meta.getSwiftSchema(), tableKey);
+        SwiftContext.get().getBean(IResourceDiscovery.class).releaseTable(meta.getSwiftSchema(), tableKey);
     }
 
     @Override
@@ -225,7 +225,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
         //报告异常的方法抽出来，避免影响原有的逻辑的展示
         private void reportPushSegException(SegmentLocationInfo exceptionContext) {
-            ExceptionReporter.report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.SLAVE_PUSH_SEGMENT);
+            SwiftContext.get().getBean(ExceptionReporter.class).report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.SLAVE_PUSH_SEGMENT);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.DataType;
@@ -17,7 +18,7 @@ import com.fr.swift.util.IoUtil;
 public class BitMapColumn extends BaseBitmapColumn {
     private static final String INDEX = "index";
 
-    private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
+    private static final IResourceDiscovery DISCOVERY = SwiftContext.get().getBean(IResourceDiscovery.class);
 
     private BitMapWriter indexWriter;
     private BitMapReader indexReader;

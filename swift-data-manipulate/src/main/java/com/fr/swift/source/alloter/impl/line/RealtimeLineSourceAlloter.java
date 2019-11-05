@@ -8,10 +8,9 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
             if (isSegInserting(segInfo)) {
                 continue;
             }
-            int rowCount = SegmentUtils.safeGetRowCount(newSeg(segKey));
+            int rowCount = SegmentUtil.safeGetRowCount(newSeg(segKey));
 
             // todo 暂时限制为未满的块，解除限制会出别的问题
             // TODO: 2019/5/30 anchore 是不是满了的可以直接在这触发transfer

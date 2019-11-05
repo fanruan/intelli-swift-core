@@ -9,6 +9,7 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.event.SegmentEvent;
@@ -60,7 +61,7 @@ public class SegmentTransfer {
             onFailed();
             SwiftLoggers.getLogger().error("seg transfer from {} to {} failed", realtSegKey, histSegKey, e);
         } finally {
-            SegmentUtils.releaseHisSeg(Arrays.asList(realtSeg, histSeg));
+            SegmentUtil.releaseHisSeg(Arrays.asList(realtSeg, histSeg));
         }
     }
 

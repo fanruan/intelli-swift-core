@@ -21,13 +21,7 @@ import com.fr.swift.segment.column.impl.IntColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.StringColumn;
 import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
-import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
-import com.fr.swift.segment.relation.CubeMultiRelation;
-import com.fr.swift.segment.relation.CubeMultiRelationPath;
-import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
@@ -37,7 +31,7 @@ import com.fr.swift.util.IoUtil;
  * @date 2018/1/17
  */
 public abstract class BaseSegment implements Segment {
-    private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
+    private static final IResourceDiscovery DISCOVERY = SwiftContext.get().getBean(IResourceDiscovery.class);
 
     private static final String ROW_COUNT = "row_count";
 
@@ -72,25 +66,6 @@ public abstract class BaseSegment implements Segment {
             default:
                 return Crasher.crash(String.format("cannot new correct column by class type: %s", classType));
         }
-    }
-
-    @Override
-    public RelationIndex getRelation(CubeMultiRelation relation) {
-        SourceKey primarySourceKey = relation.getPrimaryTable();
-        String relationKey = relation.getKey();
-        return RelationIndexImpl.newRelationIndex(getLocation(), primarySourceKey.getId(), relationKey);
-    }
-
-    @Override
-    public RelationIndex getRelation(CubeMultiRelationPath relationPath) {
-        SourceKey primarySourceKey = relationPath.getStartTable();
-        String relationKey = relationPath.getKey();
-        return RelationIndexImpl.newRelationIndex(getLocation(), primarySourceKey.getId(), relationKey);
-    }
-
-    @Override
-    public RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath) {
-        return RelationIndexImpl.newFieldRelationIndex(getLocation(), relationPath.getStartTable().getId(), f.getName());
     }
 
     @Override

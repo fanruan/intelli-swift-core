@@ -1,7 +1,8 @@
 package com.fr.swift.query.info.bean.parser;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -17,8 +18,6 @@ import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
-import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
-import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanSimplify;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -232,7 +231,7 @@ public class FilterInfoParser {
     private static ColumnTypeConstants.ClassType getClassType(SourceKey table, String columnName) {
         SwiftMetaDataColumn column = null;
         try {
-            column = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(columnName);
+            column = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(table.getId()).getColumn(columnName);
         } catch (SQLException e) {
             SwiftLoggers.getLogger().error("failed to read metadata of table: {}", table.toString());
             throw new RuntimeException("failed to read metadata of table: " + table.toString(), e);

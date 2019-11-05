@@ -20,7 +20,6 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.RelationColumn;
-import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.Source;

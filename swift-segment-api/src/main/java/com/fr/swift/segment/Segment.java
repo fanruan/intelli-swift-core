@@ -5,9 +5,6 @@ import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.relation.CubeMultiRelation;
-import com.fr.swift.segment.relation.CubeMultiRelationPath;
-import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SwiftMetaData;
 
 /**
@@ -32,16 +29,6 @@ public interface Segment extends Releasable {
      * @return
      */
     <T> Column<T> getColumn(ColumnKey key);
-
-    /**
-     * @param f foreign table
-     * @return relation index
-     */
-    RelationIndex getRelation(CubeMultiRelation f);
-
-    RelationIndex getRelation(CubeMultiRelationPath f);
-
-    RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath);
 
     /**
      * 获取未被删除的索引

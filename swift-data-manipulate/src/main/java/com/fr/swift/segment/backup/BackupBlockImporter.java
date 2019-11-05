@@ -8,6 +8,7 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
@@ -44,7 +45,7 @@ public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
 
         Inserter inserter = (Inserter) proxyFactory.getProxy(SwiftInserter.ofAppendMode(backupSeg));
 
-        return new Inserting(inserter, backupSeg, SegmentUtils.safeGetRowCount(backupSeg));
+        return new Inserting(inserter, backupSeg, SegmentUtil.safeGetRowCount(backupSeg));
     }
 
     @Override

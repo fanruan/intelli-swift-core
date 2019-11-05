@@ -10,7 +10,6 @@ import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.event.TransferRealtimeListener.TransferRealtimeEventData;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
-import com.fr.swift.service.transfer.SegmentTransfer;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
@@ -33,7 +32,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     @Override
     protected Inserting getInserting(SegmentKey segKey) {
         Segment seg = SegmentUtils.newSegment(segKey);
-        return new Inserting(SwiftInserter.ofAppendMode(seg), seg, SegmentUtils.safeGetRowCount(seg));
+        return new Inserting(SwiftInserter.ofAppendMode(seg), seg, SegmentUtil.safeGetRowCount(seg));
     }
 
     @Override

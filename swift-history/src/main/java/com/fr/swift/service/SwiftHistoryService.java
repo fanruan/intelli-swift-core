@@ -256,7 +256,7 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
 
         //报告异常的方法抽出来，避免影响原有的逻辑的展示
         private void reportPushSegException(SegmentLocationInfo exceptionContext) {
-            ExceptionReporter.report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.SLAVE_PUSH_SEGMENT);
+            SwiftContext.get().getBean(ExceptionReporter.class).report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.SLAVE_PUSH_SEGMENT);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -100,6 +101,6 @@ public class SwiftInserterTest {
 
         // release all
         verifyStatic(SegmentUtils.class);
-        SegmentUtils.releaseHisSeg(segment);
+        SegmentUtil.releaseHisSeg(segment);
     }
 }

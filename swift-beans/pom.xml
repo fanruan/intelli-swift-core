@@ -8,14 +8,11 @@
         <version>2019.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <properties>
-        <cglib.version>3.2.5</cglib.version>
-    </properties>
     <artifactId>swift-beans</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-common</artifactId>
+            <artifactId>swift-base</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>

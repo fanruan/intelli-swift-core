@@ -10,44 +10,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-base</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>swift-base-io</module>
-<!--        <module>swift-base-config</module>-->
-        <module>swift-base-structure</module>
-<!--        <module>swift-base-bitmap</module>-->
-<!--        <module>swift-base-repository</module>-->
-<!--        <module>swift-base-beans</module>-->
-        <module>swift-base-common</module>
-    </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-base-bitmap</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-base-config</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-base-io</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-base-structure</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-base-repository</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.fineio</groupId>
+            <artifactId>fineio</artifactId>
+            <version>${fineio.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

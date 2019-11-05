@@ -12,6 +12,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtil;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.alloter.AllotRule;
@@ -49,11 +50,11 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                 try {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                     builder.build();
-                    SegmentUtils.releaseHisSeg(segment);
+                    SegmentUtil.releaseHisSeg(segment);
                     SEG_LOCATION_SVC.saveOrUpdateLocal(Collections.singleton(segKey));
                 } catch (Throwable e) {
                     try {
-                        SegmentUtils.releaseHisSeg(segment);
+                        SegmentUtil.releaseHisSeg(segment);
                         SEG_SVC.removeSegments(segmentKeys);
                         for (SegmentKey key : segmentKeys) {
                             SegmentUtils.clearSegment(key);
@@ -75,7 +76,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
         } finally {
             // 释放读过的碎片块。这边直接释放碎片块，可能会导致还在session中的查询报错，刷新之后就没问题了
             for (SegmentItem item : items) {
-                SegmentUtils.releaseHisSeg(item.getSegments());
+                SegmentUtil.releaseHisSeg(item.getSegments());
             }
         }
     }

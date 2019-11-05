@@ -10,9 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-io</artifactId>
-    <properties>
-        <fineio.version>3.0-RELEASE-SNAPSHOT</fineio.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -28,12 +25,7 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-common</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-bitmap-api</artifactId>
+            <artifactId>swift-base</artifactId>
             <version>${swift.version}</version>
         </dependency>
         <dependency>
@@ -43,7 +35,13 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-base-structure</artifactId>
+            <artifactId>swift-bitmap</artifactId>
+            <version>${swift.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-source-api</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

@@ -46,13 +46,13 @@ public class GroupResultQuery extends AbstractResultQuery<QueryResultSet<GroupPa
         for (Pair<SortType, ColumnTypeConstants.ClassType> pair : comparators) {
             boolean isAsc = pair.getKey() == SortType.ASC;
             switch (pair.getValue()) {
-                case ClassType.DOUBLE:
-                case ClassType.LONG:
-                case ClassType.DATE:
-                case ClassType.INTEGER:
+                case DOUBLE:
+                case LONG:
+                case DATE:
+                case INTEGER:
                     list.add(isAsc ? Comparators.asc() : Comparators.desc());
                     break;
-                case ClassType.STRING:
+                case STRING:
                     list.add(isAsc ? Comparators.STRING_ASC : Comparators.reverse(Comparators.STRING_ASC));
                     break;
                 default:

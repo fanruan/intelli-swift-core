@@ -1,7 +1,5 @@
 package com.fr.swift.segment.column;
 
-import com.fr.swift.source.RelationSource;
-
 import java.io.Serializable;
 
 /**
@@ -11,8 +9,6 @@ import java.io.Serializable;
 public class ColumnKey implements Serializable {
     private static final long serialVersionUID = -8348275900712099698L;
     private String name;
-
-    private RelationSource relation;
 
     public ColumnKey(String name) {
         this.name = name;
@@ -27,14 +23,6 @@ public class ColumnKey implements Serializable {
 
     public String getName() {
         return name;
-    }
-
-    public RelationSource getRelation() {
-        return relation;
-    }
-
-    public void setRelation(RelationSource relation) {
-        this.relation = relation;
     }
 
     @Override
