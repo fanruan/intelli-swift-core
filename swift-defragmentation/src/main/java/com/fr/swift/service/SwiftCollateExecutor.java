@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -107,8 +108,8 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     }
                     if (!keys.isEmpty()) {
                         // TODO: 2019/9/12 先改成凌晨2点触发，单线程同步跑，防止宕机先
-                        SwiftContext.get().getBean(CollateService.class).appointCollate(tableEntry.getKey(), keys);
-//                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
+//                        SwiftContext.get().getBean(CollateService.class).appointCollate(tableEntry.getKey(), keys);
+                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
                     }
                 }
             } catch (Exception e) {
