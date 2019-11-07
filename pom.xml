@@ -14,7 +14,6 @@
 
     <modules>
         <module>swift-base</module>
-        <module>swift-base/swift-base-common</module>
         <module>swift-core</module>
         <module>swift-defragmentation</module>
         <module>swift-api-server</module>
