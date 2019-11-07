@@ -22,6 +22,16 @@
             <artifactId>swift-executor</artifactId>
             <version>${swift.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-data-manipulate</artifactId>
+            <version>2019.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
