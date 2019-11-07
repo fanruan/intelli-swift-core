@@ -5,8 +5,6 @@ import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.event.TransferRealtimeListener.TransferRealtimeEventData;
 
 import java.sql.SQLException;
 
@@ -38,29 +36,4 @@ public class TransferRealtimeListener implements SwiftEventListener<TransferReal
     public static void listen() {
     }
 
-    public static class TransferRealtimeEventData {
-        private SegmentKey segKey;
-        private boolean passive;
-
-        private TransferRealtimeEventData(SegmentKey segKey, boolean passive) {
-            this.segKey = segKey;
-            this.passive = passive;
-        }
-
-        public static TransferRealtimeEventData ofPassive(SegmentKey segKey) {
-            return new TransferRealtimeEventData(segKey, true);
-        }
-
-        public static TransferRealtimeEventData ofActive(SegmentKey segKey) {
-            return new TransferRealtimeEventData(segKey, false);
-        }
-
-        public SegmentKey getSegKey() {
-            return segKey;
-        }
-
-        public boolean isPassive() {
-            return passive;
-        }
-    }
 }
