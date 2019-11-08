@@ -282,10 +282,10 @@ public class MultiSkipList<E> {
             return (ent.element.equals(element));
         }
 
-        @Override
-        public String toString() {
-            return element.toString();
-        }
+//        @Override
+//        public String toString() {
+//            return element.toString();
+//        }
     }
 
     private static class SkipListItr<E> implements Iterator<E> {
