@@ -3,7 +3,7 @@ package com.fr.swift.source.core;
 
 import com.fr.swift.log.SwiftLoggers;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Iterator;
 import java.util.List;
@@ -39,11 +39,7 @@ public class MD5Utils {
     public static String getMD5String(String[] strings) {
         MessageDigest digest = getMessageDigest();
         for (int i = 0, len = strings.length; i < len; i++) {
-            try {
-                digest.update(strings[i].getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                SwiftLoggers.getLogger().error(e.getMessage(), e);
-            }
+            digest.update(strings[i].getBytes(StandardCharsets.UTF_8));
         }
         return getMD5String(digest.digest());
     }
@@ -52,11 +48,7 @@ public class MD5Utils {
         MessageDigest digest = getMessageDigest();
         Iterator<String> it = strings.iterator();
         while (it.hasNext()) {
-            try {
-                digest.update(it.next().getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                SwiftLoggers.getLogger().error(e.getMessage(), e);
-            }
+            digest.update(it.next().getBytes(StandardCharsets.UTF_8));
         }
         return getMD5String(digest.digest());
     }
