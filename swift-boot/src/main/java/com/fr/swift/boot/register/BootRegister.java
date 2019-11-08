@@ -1,4 +1,4 @@
-package com.fr.swift.boot.service;
+package com.fr.swift.boot.register;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.ProcessHandler;

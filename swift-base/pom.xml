@@ -10,19 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-base</artifactId>
-
     <dependencies>
         <dependency>
             <groupId>com.fineio</groupId>
             <artifactId>fineio</artifactId>
-            <version>${fineio.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

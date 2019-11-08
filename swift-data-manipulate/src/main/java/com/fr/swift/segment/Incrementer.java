@@ -7,7 +7,7 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
-import com.fr.swift.segment.event.TransferRealtimeListener.TransferRealtimeEventData;
+import com.fr.swift.segment.event.TransferRealtimeEventData;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
