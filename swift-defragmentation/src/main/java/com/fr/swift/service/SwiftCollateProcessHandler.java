@@ -101,7 +101,7 @@ public class SwiftCollateProcessHandler extends AbstractProcessHandler<Map<URL, 
                         batchSegmentKeyList.add(allSegmentKeyList.get(i));
                         if (batchSegmentKeyList.size() % SwiftFragmentFilter.FRAGMENT_NUMBER == 0) {
                             invoke(invoker, proxy, method, methodName, paramClass, sourceKey, batchSegmentKeyList);
-                            batchSegmentKeyList.clear();
+                            batchSegmentKeyList = new ArrayList<>();
                         }
                     }
                     if (batchSegmentKeyList.size() >= SwiftFragmentFilter.FRAGMENT_NUMBER * 0.8) {
