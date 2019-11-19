@@ -151,11 +151,4 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     public void remove(SourceKey sourceKey) {
         container.remove(sourceKey);
     }
-
-    @Override
-    public void clearContainerCache() {
-        synchronized (this) {
-            container.clear();
-        }
-    }
 }

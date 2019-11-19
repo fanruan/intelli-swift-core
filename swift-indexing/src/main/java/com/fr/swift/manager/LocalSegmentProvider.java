@@ -55,9 +55,4 @@ public class LocalSegmentProvider implements SwiftSegmentManager {
     public void remove(SourceKey sourceKey) {
         manager.remove(sourceKey);
     }
-
-    @Override
-    public void clearContainerCache() {
-        manager.clearContainerCache();
-    }
 }
