@@ -9,6 +9,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.executor.CollateExecutor;
@@ -20,6 +21,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,8 @@ import java.util.concurrent.TimeUnit;
 @SwiftBean
 public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
+    private static final String ALLOWED_TASK_TYPE = "TREASURE_ANALYSIS";
+
     private ScheduledExecutorService executorService;
 
     private SwiftSegmentService swiftSegmentService;
@@ -51,14 +55,16 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     @Override
     public void start() {
-        long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
-        initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
+        if (Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()).contains(ALLOWED_TASK_TYPE)) {
+            long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
+            initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
 
-        executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
+            executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
 //        executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
-        executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
+            executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
 
-        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+            swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+        }
     }
 
     @Override
