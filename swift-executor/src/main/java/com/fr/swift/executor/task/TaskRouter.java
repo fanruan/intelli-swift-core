@@ -153,11 +153,7 @@ public class TaskRouter {
 
         @Override
         public int compare(ExecutorTask task1, ExecutorTask task2) {
-            if (task1.getCreateTime() >= task2.getCreateTime()) {
-                return 1;
-            } else {
-                return -1;
-            }
+            return Long.compare(task1.getCreateTime(), task2.getCreateTime());
         }
     }
 

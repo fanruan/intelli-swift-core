@@ -61,6 +61,7 @@ public class SwiftProperty {
     private String redisPassward;
     private int redisTimeout;
     private String[] executorTaskType;
+    private String machineId;
 
     private SwiftProperty() {
         initProperties();
@@ -88,7 +89,7 @@ public class SwiftProperty {
             initClusterId();
             initMasterAddress();
             initCubesPath();
-
+            initMachineId();
         } catch (IOException e) {
             Crasher.crash(e);
         }
@@ -167,6 +168,9 @@ public class SwiftProperty {
         this.masterAddress = properties.getProperty("swift.masterAddress");
     }
 
+    private void initMachineId() {
+        this.machineId = properties.getProperty("swift.machine.id", rpcAddress);
+    }
 
     public int getRpcMaxObjectSize() {
         return rpcMaxObjectSize;
@@ -220,4 +224,7 @@ public class SwiftProperty {
         return executorTaskType;
     }
 
+    public String getMachineId() {
+        return machineId;
+    }
 }
