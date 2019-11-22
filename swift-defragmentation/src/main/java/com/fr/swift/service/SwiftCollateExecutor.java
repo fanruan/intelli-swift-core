@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 @SwiftBean
 public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
-    private static final String ALLOWED_TASK_TYPE = "COLLATE";
+    private static final String COLLATE_TASK = "COLLATE";
 
     private ScheduledExecutorService executorService;
 
@@ -55,14 +55,12 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     @Override
     public void start() {
-        if (Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()).contains(ALLOWED_TASK_TYPE)) {
+        if (Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()).contains(COLLATE_TASK)) {
             long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
             initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
-
             executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
-//        executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
             executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
-
+//            executorService.scheduleWithFixedDelay(this, 20, 100000, TimeUnit.SECONDS);
             swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
         }
     }
