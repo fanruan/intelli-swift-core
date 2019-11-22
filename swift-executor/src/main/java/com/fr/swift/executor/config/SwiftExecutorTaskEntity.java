@@ -82,7 +82,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     }
 
     public SwiftExecutorTaskEntity(ExecutorTask task) {
-        this.clusterId = SwiftProperty.getProperty().getClusterId();
+        this.clusterId = SwiftProperty.getProperty().getMachineId();
         this.taskId = task.getTaskId();
         this.sourceKey = task.getSourceKey().getId();
         this.createTime = task.getCreateTime();

@@ -178,6 +178,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             // TODO: 2019/1/24 先改成同步fire，避免fr rpc timeout
             SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, newSegKey);
         }
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, newKeys);
     }
 
     private void clearCollatedSegment(final List<SegmentKey> collateSegKeys, final SourceKey tableKey) {

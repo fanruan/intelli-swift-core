@@ -68,7 +68,7 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
                     try {
                         for (SwiftExecutorTaskEntity item : executorTaskDao.find(session, new Order[]{OrderImpl.asc("createTime")}
                                 , ConfigWhereImpl.eq("dbStatusType", DBStatusType.ACTIVE)
-                                , ConfigWhereImpl.eq("clusterId", SwiftProperty.getProperty().getClusterId())
+                                , ConfigWhereImpl.eq("clusterId", SwiftProperty.getProperty().getMachineId())
                                 , ConfigWhereImpl.gt("createTime", time)
                                 , ConfigWhereImpl.in("executorTaskType", Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()))
                         )) {

@@ -44,8 +44,8 @@ public enum SegmentContainer {
         segmentKeyMapSegment.put(segId, segmentKey);
     }
 
-    public void register(List<SegmentKey> segmentKey) {
-        for (SegmentKey key : segmentKey) {
+    public <T extends SegmentKey> void register(List<T> segmentKey) {
+        for (T key : segmentKey) {
             register(key);
         }
     }
@@ -129,7 +129,13 @@ public enum SegmentContainer {
         }
     }
 
-    public void remove(SegmentKey segmentKey) {
+    public <T extends SegmentKey> void remove(List<T> segmentKey) {
+        for (T key : segmentKey) {
+            remove(key);
+        }
+    }
+
+    public synchronized void remove(SegmentKey segmentKey) {
         segmentKeyMapSegment.remove(segmentKey.toString());
         SourceKey table = segmentKey.getTable();
         if (tableMapSegments.containsKey(table)) {
