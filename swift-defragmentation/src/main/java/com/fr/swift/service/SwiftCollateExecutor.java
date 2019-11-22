@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 @SwiftBean
 public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
-    private static final String ALLOWED_TASK_TYPE = "TREASURE_ANALYSIS";
+    private static final String ALLOWED_TASK_TYPE = "COLLATE";
 
     private ScheduledExecutorService executorService;
 
