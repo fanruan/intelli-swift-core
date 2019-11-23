@@ -20,7 +20,10 @@ public interface ExecutorTaskService {
 
     List<ExecutorTask> getActiveTasksBeforeTime(long time);
 
+    List<ExecutorTask> getRemoteActiveTasksBeforeTime(long time);
+
     boolean deleteTask(final ExecutorTask executorTask);
 
     ExecutorTask getExecutorTask(String taskId);
+
 }
