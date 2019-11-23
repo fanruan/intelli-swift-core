@@ -89,6 +89,36 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
+    public List<ExecutorTask> getRemoteActiveTasksBeforeTime(final long time) {
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<ExecutorTask>>() {
+                @Override
+                public List<ExecutorTask> work(ConfigSession session) {
+                    List<ExecutorTask> tasks = new ArrayList<ExecutorTask>();
+                    try {
+                        for (SwiftExecutorTaskEntity item : executorTaskDao.find(session, new Order[]{OrderImpl.asc("createTime")}
+                                , ConfigWhereImpl.eq("dbStatusType", DBStatusType.ACTIVE)
+                                , ConfigWhereImpl.neq("clusterId", SwiftProperty.getProperty().getMachineId())
+                                , ConfigWhereImpl.gt("createTime", time)
+                                , ConfigWhereImpl.in("executorTaskType", Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()))
+                        )) {
+
+                            tasks.add(item.convert());
+
+                        }
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
+                    }
+                    return tasks;
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("get active executorTasks error!", e);
+            return new ArrayList<ExecutorTask>();
+        }
+    }
+
+    @Override
     public boolean deleteTask(final ExecutorTask executorTask) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Boolean>() {
