@@ -46,6 +46,20 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
     @Override
     public List<Segment> filter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+        if (singleTableQueryInfo.getQuerySegment() == null || singleTableQueryInfo.getQuerySegment().isEmpty()) {
+            return reFilter(singleTableQueryInfo);
+        } else {
+            //允许exact query容错
+            List<Segment> filteredSegments = reFilter(singleTableQueryInfo);
+            if (filteredSegments.isEmpty()) {
+                singleTableQueryInfo.setQuerySegment(null);
+                filteredSegments = reFilter(singleTableQueryInfo);
+            }
+            return filteredSegments;
+        }
+    }
+
+    private List<Segment> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (isLineAllot(singleTableQueryInfo)) {
             return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
