@@ -20,6 +20,7 @@ import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.source.alloter.impl.BaseAllotRule;
 import com.fr.swift.source.alloter.impl.hash.HashAllotRule;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,9 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         if (singleTableQueryInfo.getQuerySegment() == null || singleTableQueryInfo.getQuerySegment().isEmpty()) {
             return reFilter(singleTableQueryInfo);
         } else {
+            if (isDataEmpty(singleTableQueryInfo)) {
+                return new ArrayList<>();
+            }
             //允许exact query容错
             List<Segment> filteredSegments = reFilter(singleTableQueryInfo);
             if (filteredSegments.isEmpty()) {
@@ -57,6 +61,17 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
             }
             return filteredSegments;
         }
+    }
+
+    private boolean isDataEmpty(SingleTableQueryInfo singleTableQueryInfo) {
+        Set<String> querySegments = singleTableQueryInfo.getQuerySegment();
+        if (querySegments.size() == 1) {
+            String segKey = (String) querySegments.toArray()[0];
+            if (segKey.contains("@FINE_IO@-1")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<Segment> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
