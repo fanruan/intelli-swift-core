@@ -4,6 +4,8 @@ import com.fr.swift.executor.ExecutorManager;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.TaskRouter;
+import com.fr.swift.executor.task.rule.BasicRules;
+import com.fr.swift.executor.task.rule.TaskRulesContainer;
 import com.fr.swift.executor.thread.TaskExecuteRunnable;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.SwiftExecutors;
@@ -75,6 +77,17 @@ public class TaskDispatcher {
                         executorLock.unlock();
                     }
                     ExecutorTask pickedTask = TaskRouter.getInstance().pickExecutorTask(executorLock);
+                    if (pickedTask != null) {
+                        String executorTaskType = pickedTask.getExecutorTaskType().name();
+                        try {
+                            BasicRules rule = TaskRulesContainer.getInstance().getClassByType(executorTaskType);
+                            if (rule.isRulesFiltered(pickedTask)) {
+                                continue;
+                            }
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
+                    }
                     if (pickedTask == null) {
                         boolean hasPolled = ExecutorManager.getInstance().pullMemTask();
                         if (!hasPolled) {
