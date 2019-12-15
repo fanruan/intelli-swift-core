@@ -8,7 +8,7 @@ import com.fr.swift.executor.task.ExecutorTask;
  * @description 任务的规则
  * @since swift 1.1
  */
-public interface BasicRules {
+public interface TaskRule {
     /**
      * 重复任务判定规则过滤
      *
