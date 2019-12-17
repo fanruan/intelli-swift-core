@@ -7,5 +7,5 @@ package com.fr.swift.executor.type;
  * @description
  */
 public enum DBStatusType {
-    ACTIVE, SUCCESS, FAILED
+    ACTIVE, SUCCESS, FAILED, REPEAT
 }
