@@ -27,6 +27,6 @@ public class LongFineIoReader extends BaseFineIoReader<LongBuf> implements LongR
 
     @Override
     public long get(long pos) {
-        return FineIOAccessor.INSTANCE.getLong(readFile, (int) pos);
+        return FineIOAccessor.INSTANCE.getLong(readFile, pos);
     }
 }

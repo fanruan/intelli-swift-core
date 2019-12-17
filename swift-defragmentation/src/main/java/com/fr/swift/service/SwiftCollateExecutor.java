@@ -2,12 +2,14 @@ package com.fr.swift.service;
 
 import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
 import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.executor.CollateExecutor;
@@ -19,6 +21,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +38,8 @@ import java.util.concurrent.TimeUnit;
 @SwiftBean
 public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
+    private static final String COLLATE_TASK = "COLLATE";
+
     private ScheduledExecutorService executorService;
 
     private SwiftSegmentService swiftSegmentService;
@@ -50,14 +55,14 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     @Override
     public void start() {
-        long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
-        initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
-
-        executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
-//        executorService.scheduleWithFixedDelay(this, 60, 60, TimeUnit.MINUTES);
-        executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
-
-        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+        if (Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()).contains(COLLATE_TASK)) {
+            long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
+            initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
+            executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
+            executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
+//            executorService.scheduleWithFixedDelay(this, 20, 100000, TimeUnit.SECONDS);
+            swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+        }
     }
 
     @Override
@@ -107,8 +112,8 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     }
                     if (!keys.isEmpty()) {
                         // TODO: 2019/9/12 先改成凌晨2点触发，单线程同步跑，防止宕机先
-                        SwiftContext.get().getBean(CollateService.class).appointCollate(tableEntry.getKey(), keys);
-//                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
+//                        SwiftContext.get().getBean(CollateService.class).appointCollate(tableEntry.getKey(), keys);
+                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
                     }
                 }
             } catch (Exception e) {

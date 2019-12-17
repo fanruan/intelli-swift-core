@@ -46,6 +46,7 @@ import java.util.Set;
  */
 @SwiftBean(name = "swiftClusterSegmentService")
 public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, SwiftSegmentService {
+    private final static int RETRY_NUMS = 20;
     /**
      * @deprecated 暂时留着给getOwnSegment、updateSegmentTable、selectSelective用，重构要去掉的
      */
@@ -129,9 +130,9 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     private boolean addSegmentsWithoutTransaction(ConfigSession session, Collection<SegmentKey> segments) throws SQLException {
         for (SegmentKey segment : segments) {
             swiftSegmentDao.addOrUpdateSwiftSegment(session, segment);
-            for (SegmentContainer value : SegmentContainer.values()) {
-                value.register(segment);
-            }
+//            for (SegmentContainer value : SegmentContainer.values()) {
+//                value.register(segment);
+//            }
         }
         return true;
     }
@@ -213,6 +214,7 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
     }
 
     private SegmentKey tryAppendSegmentWithoutLocation(final SourceKey tableKey, final StoreType storeType) throws SQLException {
+        int triedCount = 0;
         do {
             try {
                 return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<SegmentKey>() {
@@ -242,6 +244,10 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                         || cause instanceof SwiftEntityExistsException) {
                     // 主键冲突，继续尝试
                     continue;
+                } else {
+                    if (++triedCount <= RETRY_NUMS) {
+                        continue;
+                    }
                 }
                 throw e;
             }

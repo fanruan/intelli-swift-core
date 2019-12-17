@@ -63,11 +63,12 @@ public class TaskExecuteRunnable implements Runnable {
                 executorJob.run();
                 boolean success;
                 try {
-                    executorJob.get();
+                    Object result = executorJob.get();
                     success = true;
                     if (executorTask.isPersistent()) {
                         executorTask.setDbStatusType(DBStatusType.SUCCESS);
                         executorTask.setFinishTime(System.currentTimeMillis());
+                        executorTask.setCause(result.toString());
                         executorTaskService.saveOrUpdate(executorTask);
                     }
 //                    executorTaskService.deleteTask(executorTask);

@@ -166,7 +166,7 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
 
     /**
      * @param columnName
-     * @return
+     * @return -1:表示字段不存在
      * @throws SwiftMetaDataException
      * @descrption 同时规避无脑循环和并发初始化问题。
      */
@@ -190,7 +190,8 @@ public class SwiftMetaDataBean implements SwiftMetaData, Serializable {
             }
         }
         if (fieldIndexes.get(columnName) == null) {
-            throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
+            return -1;
+//            throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
         }
         return fieldIndexes.get(columnName);
     }

@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,7 +26,7 @@ public enum SegmentContainer {
      * instance
      */
     NORMAL, INDEXING;
-    private final Map<SourceKey, List<SegmentKey>> tableMapSegments = new ConcurrentHashMap<SourceKey, List<SegmentKey>>();
+    private final Map<SourceKey, Set<SegmentKey>> tableMapSegments = new ConcurrentHashMap<SourceKey, Set<SegmentKey>>();
     private final Map<String, SegmentKey> segmentKeyMapSegment = new ConcurrentHashMap<String, SegmentKey>();
 
 
@@ -36,16 +38,14 @@ public enum SegmentContainer {
         String segId = segmentKey.getId();
         SourceKey sourceKey = segmentKey.getTable();
         if (!tableMapSegments.containsKey(sourceKey)) {
-            tableMapSegments.put(sourceKey, new ArrayList<SegmentKey>());
+            tableMapSegments.put(sourceKey, new HashSet<SegmentKey>());
         }
-        if (!tableMapSegments.get(sourceKey).contains(segmentKey)) {
-            tableMapSegments.get(sourceKey).add(segmentKey);
-        }
+        tableMapSegments.get(sourceKey).add(segmentKey);
         segmentKeyMapSegment.put(segId, segmentKey);
     }
 
-    public void register(List<SegmentKey> segmentKey) {
-        for (SegmentKey key : segmentKey) {
+    public <T extends SegmentKey> void register(List<T> segmentKey) {
+        for (T key : segmentKey) {
             register(key);
         }
     }
@@ -56,9 +56,13 @@ public enum SegmentContainer {
         }
     }
 
+    private List<SegmentKey> getSegmentAsList(SourceKey sourceKey) {
+        return new ArrayList(tableMapSegments.get(sourceKey));
+    }
+
     public List<Segment> getSegments(SourceKey sourceKey, Integer tmpPath) {
         if (contains(sourceKey)) {
-            List<SegmentKey> list = tableMapSegments.get(sourceKey);
+            List<SegmentKey> list = getSegmentAsList(sourceKey);
             return createSegments(list, tmpPath);
         }
         return Collections.emptyList();
@@ -110,27 +114,32 @@ public enum SegmentContainer {
     }
 
 
-
     public void clear() {
         tableMapSegments.clear();
         segmentKeyMapSegment.clear();
     }
 
     public void remove(SourceKey sourceKey) {
-        List<SegmentKey> list = tableMapSegments.remove(sourceKey);
-        if (null == list) {
+        Set<SegmentKey> set = tableMapSegments.remove(sourceKey);
+        if (null == set) {
             return;
         }
-        for (SegmentKey pair : list) {
+        for (SegmentKey pair : set) {
             segmentKeyMapSegment.remove(pair.getId());
         }
     }
 
-    public void remove(SegmentKey segmentKey) {
+    public <T extends SegmentKey> void remove(List<T> segmentKey) {
+        for (T key : segmentKey) {
+            remove(key);
+        }
+    }
+
+    public synchronized void remove(SegmentKey segmentKey) {
         segmentKeyMapSegment.remove(segmentKey.toString());
         SourceKey table = segmentKey.getTable();
         if (tableMapSegments.containsKey(table)) {
-            List<SegmentKey> segmentKeys = tableMapSegments.get(table);
+            Set<SegmentKey> segmentKeys = tableMapSegments.get(table);
             if (segmentKeys != null) {
                 synchronized (segmentKeys) {
                     segmentKeys.remove(segmentKey);
@@ -138,5 +147,4 @@ public enum SegmentContainer {
             }
         }
     }
-
 }

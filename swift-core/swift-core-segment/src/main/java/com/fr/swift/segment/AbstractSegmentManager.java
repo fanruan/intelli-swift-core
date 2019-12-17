@@ -98,34 +98,37 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
             return getSegment(table);
         } else {
             Integer currentFolder = getCurrentFolder(tablePathService, table);
-            List<SegmentKey> keys = new ArrayList<SegmentKey>();
-            List<String> likeKeys = new ArrayList<String>();
-            List<String> notLikeKeys = new ArrayList<String>();
+            //table@MEMORY@0
+            List<SegmentKey> memSegKeys = new ArrayList<SegmentKey>();
+            //table@MEMORY
+            List<String> memSegKeyHeads = new ArrayList<String>();
+            //table@FINE_IO@1
+            List<String> hisSegKeys = new ArrayList<String>();
             for (String segmentId : segmentIds) {
                 if (segmentId.endsWith("-1")) {
-                    String likeKey = segmentId.substring(0, segmentId.length() - 2);
-                    if (!likeKeys.contains(likeKey)) {
+                    String memSegKeyHead = segmentId.substring(0, segmentId.length() - 2);
+                    if (!memSegKeyHeads.contains(memSegKeyHead)) {
                         List<SwiftSegmentLocationEntity> localSegLocations = segLocationSvc.find(
                                 ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
                                 ConfigWhereImpl.eq("sourceKey", table.getId()),
-                                ConfigWhereImpl.like("id.segmentId", likeKey, MatchMode.START));
+                                ConfigWhereImpl.like("id.segmentId", memSegKeyHead, MatchMode.START));
                         Set<String> segIds = new HashSet<>();
                         for (SwiftSegmentLocationEntity localSegLocation : localSegLocations) {
                             segIds.add(localSegLocation.getSegmentId());
                         }
-                        keys.addAll(segmentService.getByIds(segIds));
-                        SwiftLoggers.getLogger().debug("RealTime like segments {}", keys);
-                        likeKeys.add(likeKey);
+                        memSegKeys.addAll(segmentService.getByIds(segIds));
+                        SwiftLoggers.getLogger().debug("RealTime like segments {}", memSegKeys);
+                        memSegKeyHeads.add(memSegKeyHead);
                     }
                 } else {
-                    notLikeKeys.add(segmentId);
+                    hisSegKeys.add(segmentId);
                 }
             }
 
             List<SegmentKey> notMatchKeys = new ArrayList<SegmentKey>();
-            if (!notLikeKeys.isEmpty()) {
+            if (!hisSegKeys.isEmpty()) {
                 List<String> notMatch = new ArrayList<String>();
-                segments.addAll(container.getSegments(notLikeKeys, notMatch, currentFolder));
+                segments.addAll(container.getSegments(hisSegKeys, notMatch, currentFolder));
                 if (!notMatch.isEmpty()) {
                     List<SwiftSegmentLocationEntity> localSegLocations = segLocationSvc.find(
                             ConfigWhereImpl.eq("id.clusterId", SwiftProperty.getProperty().getClusterId()),
@@ -136,9 +139,10 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
                         notMatchSegIds.add(localSegLocation.getSegmentId());
                     }
                     notMatchKeys.addAll(segmentService.getByIds(notMatchSegIds));
+                    container.register(notMatchKeys);
                 }
             }
-            segments.addAll(container.getSegments(keys, notMatchKeys, currentFolder));
+            segments.addAll(container.getSegments(memSegKeys, notMatchKeys, currentFolder));
             if (!notMatchKeys.isEmpty()) {
                 List<Segment> list = keys2Segments(notMatchKeys, currentFolder);
                 segments.addAll(list);
