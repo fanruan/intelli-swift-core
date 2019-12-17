@@ -49,7 +49,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         //job to taskContent
         this.statusType = StatusType.WAITING;
         this.createTime = System.currentTimeMillis();
-        this.taskId = String.valueOf(createTime);
+        this.taskId = String.valueOf(System.nanoTime());
         this.priority = priority;
         this.taskContent = JsonBuilder.writeJsonString(job.serializedTag());
     }
@@ -114,10 +114,12 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
     public long getStartTime() {
         return startTime;
     }
+
     @Override
     public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
+
     @Override
     public SourceKey getSourceKey() {
         return sourceKey;
@@ -207,6 +209,8 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         result = 31 * result + (executorTaskType != null ? executorTaskType.hashCode() : 0);
         result = 31 * result + (lockType != null ? lockType.hashCode() : 0);
         result = 31 * result + (lockKey != null ? lockKey.hashCode() : 0);
+        result = 31 * result + priority;
+        result = 31 * result + (taskContent != null ? taskContent.hashCode() : 0);
         return result;
     }
 
@@ -235,6 +239,9 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
             return false;
         }
         if (priority != that.priority) {
+            return false;
+        }
+        if (taskContent != that.taskContent) {
             return false;
         }
         return lockKey != null ? lockKey.equals(that.lockKey) : that.lockKey == null;

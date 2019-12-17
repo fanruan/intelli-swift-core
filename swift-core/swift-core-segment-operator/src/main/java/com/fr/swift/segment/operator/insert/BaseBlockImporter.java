@@ -87,14 +87,13 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 }
                 insertings.get(segInfo).insert(row);
             }
-
+            IoUtil.release(this);
             onSucceed();
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
+            IoUtil.release(this);
             onFailed();
             throw e;
-        } finally {
-            IoUtil.release(this);
         }
     }
 

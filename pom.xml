@@ -32,7 +32,7 @@
         <module>swift-base-boot</module>
     </modules>
     <properties>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.9.10</jackson.version>
     </properties>
     <dependencies>
         <dependency>

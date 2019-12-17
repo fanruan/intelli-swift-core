@@ -28,6 +28,6 @@ public class DoubleFineIoReader extends BaseFineIoReader<DoubleBuf> implements D
 
     @Override
     public double get(long pos) {
-        return FineIOAccessor.INSTANCE.getDouble(readFile, (int) pos);
+        return FineIOAccessor.INSTANCE.getDouble(readFile, pos);
     }
 }

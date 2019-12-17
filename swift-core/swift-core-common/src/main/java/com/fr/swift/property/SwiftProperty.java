@@ -60,6 +60,8 @@ public class SwiftProperty {
     private int redisPort;
     private String redisPassward;
     private int redisTimeout;
+    private String[] executorTaskType;
+    private String machineId;
 
     private SwiftProperty() {
         initProperties();
@@ -83,10 +85,11 @@ public class SwiftProperty {
             initRpcMaxObjectSize();
             initRpcAddress();
             initCluster();
+            initExecutorTaskType();
             initClusterId();
             initMasterAddress();
             initCubesPath();
-
+            initMachineId();
         } catch (IOException e) {
             Crasher.crash(e);
         }
@@ -136,6 +139,10 @@ public class SwiftProperty {
         this.cubesPath = properties.getProperty("swift.cubesPath");
     }
 
+    private void initExecutorTaskType() {
+        this.executorTaskType = properties.getProperty("swift.executorTaskType").split(";");
+    }
+
     public void setCluster(boolean cluster) {
         this.isCluster = cluster;
     }
@@ -161,6 +168,9 @@ public class SwiftProperty {
         this.masterAddress = properties.getProperty("swift.masterAddress");
     }
 
+    private void initMachineId() {
+        this.machineId = properties.getProperty("swift.machine.id", rpcAddress);
+    }
 
     public int getRpcMaxObjectSize() {
         return rpcMaxObjectSize;
@@ -208,5 +218,13 @@ public class SwiftProperty {
 
     public String getCubesPath() {
         return cubesPath;
+    }
+
+    public String[] getExecutorTaskType() {
+        return executorTaskType;
+    }
+
+    public String getMachineId() {
+        return machineId;
     }
 }

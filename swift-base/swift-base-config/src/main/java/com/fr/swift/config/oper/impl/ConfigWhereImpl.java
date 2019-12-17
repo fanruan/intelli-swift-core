@@ -29,6 +29,10 @@ public class ConfigWhereImpl<T> implements ConfigWhere<T> {
         return new ConfigWhereImpl<Serializable>(column, value, Type.EQ);
     }
 
+    public static ConfigWhere<Serializable> neq(String column, Serializable value) {
+        return new ConfigWhereImpl<Serializable>(column, value, Type.NEQ);
+    }
+
     public static ConfigWhere<Collection> in(String column, Collection value) {
         return new ConfigWhereImpl<Collection>(column, value, Type.IN);
     }
