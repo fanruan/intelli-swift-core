@@ -17,20 +17,14 @@ import com.fr.swift.util.IoUtil;
 public class BitMapColumn extends BaseBitmapColumn {
     private static final String INDEX = "index";
 
-    private static final String NULL_INDEX = "nullIndex";
-
     private static final IResourceDiscovery DISCOVERY = ResourceDiscovery.getInstance();
 
     private BitMapWriter indexWriter;
-    private BitMapWriter nullIndexWriter;
     private BitMapReader indexReader;
-    private BitMapReader nullIndexReader;
     private IResourceLocation indexLocation;
-    private IResourceLocation nullIndexLocation;
 
     public BitMapColumn(IResourceLocation parent) {
         this.indexLocation = parent.buildChildLocation(INDEX);
-        this.nullIndexLocation = parent.buildChildLocation(NULL_INDEX);
     }
 
     private void initIndexWriter() {
@@ -45,56 +39,23 @@ public class BitMapColumn extends BaseBitmapColumn {
         }
     }
 
-    private void initNullIndexWriter() {
-        if (nullIndexWriter == null) {
-            nullIndexWriter = DISCOVERY.getWriter(nullIndexLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
-        }
-    }
-
-    private void initNullIndexReader() {
-        if (indexReader == null) {
-            nullIndexReader = DISCOVERY.getReader(nullIndexLocation, new BuildConf(IoType.READ, DataType.BITMAP));
-        }
-    }
-
     @Override
     public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
-        if (index != 0) {
-            initIndexWriter();
-            indexWriter.put(index, bitmap);
-        } else {
-            putNullIndex(bitmap);
-        }
-
+        initIndexWriter();
+        indexWriter.put(index, bitmap);
     }
 
     @Override
     public void putNullIndex(ImmutableBitMap bitMap) {
-        initNullIndexWriter();
-        nullIndexWriter.put(0, bitMap);
+        initIndexWriter();
+        indexWriter.resetContentPosition();
+        indexWriter.put(0, bitMap);
     }
 
     @Override
     public ImmutableBitMap getBitMapIndex(int index) {
-        // 兼容没有nullIndex结构的读
-        if (index != 0) {
-            initIndexReader();
-            return indexReader.get(index);
-        } else {
-            return getNullIndex();
-        }
-    }
-
-    @Override
-    public ImmutableBitMap getNullIndex() {
-        // 兼容没有nullIndex结构的读
-        try {
-            initNullIndexReader();
-            return nullIndexReader.get(0);
-        } catch (Exception e) {
-            initIndexReader();
-            return indexReader.get(0);
-        }
+        initIndexReader();
+        return indexReader.get(index);
     }
 
     @Override
@@ -110,11 +71,9 @@ public class BitMapColumn extends BaseBitmapColumn {
 
     @Override
     public void release() {
-        IoUtil.release(indexWriter, indexReader, nullIndexReader, nullIndexWriter);
+        IoUtil.release(indexWriter, indexReader);
         indexWriter = null;
         indexReader = null;
-        nullIndexWriter = null;
-        nullIndexReader = null;
         SwiftLoggers.getLogger().debug("swift bitmap released at {}", indexLocation.getPath());
     }
 }
