@@ -88,10 +88,12 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 insertings.get(segInfo).insert(row);
             }
             IoUtil.release(this);
+            processAfterSegmentDone(true);
             onSucceed();
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             IoUtil.release(this);
+            processAfterSegmentDone(false);
             onFailed();
             throw e;
         }
@@ -121,7 +123,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftSchema());
     }
 
-    protected void releaseFullIfExists() {
+    protected void releaseFullIfExists() throws Exception {
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (entry.getValue().isFull()) {
@@ -142,16 +144,24 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             IoUtil.release(entry.getValue());
-            indexIfNeed(entry.getKey());
-            // TODO: 2019/10/8 未满历史块不会走
-            if (entry.getValue().isFull()) {
-                handleFullSegment(entry.getKey());
-            }
-            itr.remove();
         }
     }
 
-    protected void indexIfNeed(SegmentInfo segInfo) {
+    protected void indexIfNeed(SegmentInfo segInfo) throws Exception {
+    }
+
+    protected void processAfterSegmentDone(boolean needIndex) throws Exception {
+        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
+            Entry<SegmentInfo, Inserting> entry = itr.next();
+            if (needIndex) {
+                indexIfNeed(entry.getKey());
+                // TODO: 2019/10/8 未满历史块不会走
+                if (entry.getValue().isFull()) {
+                    handleFullSegment(entry.getKey());
+                }
+            }
+            itr.remove();
+        }
     }
 
     public class Inserting<I extends Inserter> implements Releasable {

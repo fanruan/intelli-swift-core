@@ -57,13 +57,13 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     }
 
     @Override
-    protected void indexIfNeed(SegmentInfo segInfo) {
+    protected void indexIfNeed(SegmentInfo segInfo) throws Exception {
         try {
             // FIXME 2019/3/13 anchore 有临时路径的坑 tempDir应为当前导入的路径
             // todo 考虑异步，提升性能
             SegmentUtils.indexSegmentIfNeed(Collections.singletonList(insertings.get(segInfo).getSegment()));
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
+            throw e;
         }
     }
 
