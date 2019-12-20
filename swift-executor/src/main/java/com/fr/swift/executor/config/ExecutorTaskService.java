@@ -26,4 +26,5 @@ public interface ExecutorTaskService {
 
     ExecutorTask getExecutorTask(String taskId);
 
+    List<ExecutorTask> getSuccessTasksBeforeTime(long time);
 }
