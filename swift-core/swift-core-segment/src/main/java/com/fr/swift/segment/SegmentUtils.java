@@ -100,6 +100,8 @@ public class SegmentUtils {
     }
 
     public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {
+        final int MAX_RETRY_TIME = 3;
+
         if (segs == null || segs.isEmpty()) {
             return;
         }
@@ -122,7 +124,17 @@ public class SegmentUtils {
             try {
                 SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, columnKey, hisSegs).buildIndex();
             } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
+                // 索引失败后重新索引3次，若还失败，异常往上抛
+                int retryTime = 0;
+                while (retryTime++ < MAX_RETRY_TIME) {
+                    try {
+                        SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, columnKey, hisSegs).buildIndex();
+                    } catch (Exception e1) {
+                        if (retryTime >= MAX_RETRY_TIME) {
+                            throw e1;
+                        }
+                    }
+                }
             }
         }
     }
