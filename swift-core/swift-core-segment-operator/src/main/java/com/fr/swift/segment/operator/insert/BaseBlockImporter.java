@@ -81,6 +81,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 if (!insertings.containsKey(segInfo)) {
                     // 可能有满了的seg
                     releaseFullIfExists();
+                    indexFullIfExists();
                     SegmentKey segKey = newSegmentKey(segInfo);
                     insertings.put(segInfo, getInserting(segKey));
                     importSegKeys.add(segKey);
@@ -123,12 +124,19 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftSchema());
     }
 
-    protected void releaseFullIfExists() throws Exception {
+    protected void releaseFullIfExists() {
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (entry.getValue().isFull()) {
                 IoUtil.release(entry.getValue());
+            }
+        }
+    }
 
+    protected void indexFullIfExists() throws Exception {
+        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
+            Entry<SegmentInfo, Inserting> entry = itr.next();
+            if (entry.getValue().isFull()) {
                 indexIfNeed(entry.getKey());
 
                 // 处理满了的块，比如上传历史块或者持久化增量块
