@@ -63,7 +63,7 @@ public class TaskRouter {
      * @param task
      * @return
      */
-    public boolean remove(ExecutorTask task) {
+    public synchronized boolean remove(ExecutorTask task) {
         task.setStatusType(StatusType.RUNNING);
         return idleTasks.remove(task);
     }
