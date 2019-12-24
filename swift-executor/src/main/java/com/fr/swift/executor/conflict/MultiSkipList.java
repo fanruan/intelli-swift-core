@@ -240,6 +240,10 @@ public class MultiSkipList<E> {
         if (cur.element == null) {
             // 说明这个是头节点
             cur = cur.right;
+            if (cur.element == null) {
+                // 说明只剩下了头尾
+                return new Pair<>(false, null);
+            }
         }
         while (comparator.compare(cur.element, element) > 0) {
             cur = cur.right;
