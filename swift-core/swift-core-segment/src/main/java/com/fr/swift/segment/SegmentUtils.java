@@ -7,7 +7,6 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
@@ -121,21 +120,17 @@ public class SegmentUtils {
         // todo 或可多线程加速？
         for (int i = 0; i < metadata.getColumnCount(); i++) {
             ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
-            try {
-                SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, columnKey, hisSegs).buildIndex();
-            } catch (Exception e) {
-                // 索引失败后重新索引3次，若还失败，异常往上抛
-                int retryTime = 0;
-                while (retryTime++ < MAX_RETRY_TIME) {
-                    try {
-                        SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, columnKey, hisSegs).buildIndex();
-                    } catch (Exception e1) {
-                        if (retryTime >= MAX_RETRY_TIME) {
-                            throw e1;
-                        }
+            int retryTime = 0;
+            do {
+                try {
+                    SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, columnKey, hisSegs).buildIndex();
+                    break;
+                } catch (Exception e) {
+                    if (retryTime++ >= MAX_RETRY_TIME) {
+                        throw e;
                     }
                 }
-            }
+            } while (true);
         }
     }
 
