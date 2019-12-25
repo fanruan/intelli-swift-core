@@ -125,8 +125,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     protected void releaseFullIfExists() {
-        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
-            Entry<SegmentInfo, Inserting> entry = itr.next();
+        for (Entry<SegmentInfo, Inserting> entry : insertings.entrySet()) {
             if (entry.getValue().isFull()) {
                 IoUtil.release(entry.getValue());
             }
@@ -149,8 +148,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     @Override
     public void release() {
-        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
-            Entry<SegmentInfo, Inserting> entry = itr.next();
+        for (Entry<SegmentInfo, Inserting> entry : insertings.entrySet()) {
             IoUtil.release(entry.getValue());
         }
     }
