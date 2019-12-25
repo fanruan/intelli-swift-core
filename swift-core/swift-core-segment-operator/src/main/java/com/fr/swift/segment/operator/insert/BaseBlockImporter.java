@@ -91,7 +91,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             IoUtil.release(this);
             processAfterSegmentDone(true);
             onSucceed();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             IoUtil.release(this);
             processAfterSegmentDone(false);
