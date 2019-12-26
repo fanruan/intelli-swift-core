@@ -12,7 +12,6 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter.Inserting;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ListBasedRow;
@@ -38,14 +37,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -113,14 +113,17 @@ public class BaseBlockImporterTest {
         verify(inserting0, times(2)).insert(ArgumentMatchers.<Row>any());
         verify(inserting1).insert(ArgumentMatchers.<Row>any());
 
-        verifyStatic(SwiftEventDispatcher.class);
-        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, Whitebox.getInternalState(blockImporter, "importSegKeys"));
         // exception
-        when(resultSet.hasNext()).thenThrow(SQLException.class);
-        blockImporter.importData(resultSet);
-        verify(blockImporter).onFailed();
+        when(resultSet.hasNext()).thenThrow(new SQLException());
+        try {
+            blockImporter.importData(resultSet);
+            fail();
+        } catch (Exception e) {
+            verify(blockImporter).onFailed();
+        }
 
         // finally
+        verify(blockImporter, times(2)).processAfterSegmentDone(anyBoolean());
         verify(resultSet, times(2)).close();
         verify(blockImporter, times(2)).release();
     }
