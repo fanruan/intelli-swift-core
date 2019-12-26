@@ -7,7 +7,6 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
@@ -100,6 +99,8 @@ public class SegmentUtils {
     }
 
     public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {
+        final int MAX_RETRY_TIME = 3;
+
         if (segs == null || segs.isEmpty()) {
             return;
         }
@@ -119,11 +120,17 @@ public class SegmentUtils {
         // todo 或可多线程加速？
         for (int i = 0; i < metadata.getColumnCount(); i++) {
             ColumnKey columnKey = new ColumnKey(metadata.getColumnName(i + 1));
-            try {
-                SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, columnKey, hisSegs).buildIndex();
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
-            }
+            int retryTime = 0;
+            do {
+                try {
+                    SwiftContext.get().getBean("columnIndexer", SwiftColumnIndexer.class, columnKey, hisSegs).buildIndex();
+                    break;
+                } catch (Exception e) {
+                    if (retryTime++ >= MAX_RETRY_TIME) {
+                        throw e;
+                    }
+                }
+            } while (true);
         }
     }
 

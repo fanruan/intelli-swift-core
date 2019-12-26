@@ -81,6 +81,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 if (!insertings.containsKey(segInfo)) {
                     // 可能有满了的seg
                     releaseFullIfExists();
+                    indexFullIfExists();
                     SegmentKey segKey = newSegmentKey(segInfo);
                     insertings.put(segInfo, getInserting(segKey));
                     importSegKeys.add(segKey);
@@ -88,10 +89,12 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                 insertings.get(segInfo).insert(row);
             }
             IoUtil.release(this);
+            processAfterSegmentDone(true);
             onSucceed();
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             IoUtil.release(this);
+            processAfterSegmentDone(false);
             onFailed();
             throw e;
         }
@@ -122,11 +125,17 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     protected void releaseFullIfExists() {
+        for (Entry<SegmentInfo, Inserting> entry : insertings.entrySet()) {
+            if (entry.getValue().isFull()) {
+                IoUtil.release(entry.getValue());
+            }
+        }
+    }
+
+    protected void indexFullIfExists() throws Exception {
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (entry.getValue().isFull()) {
-                IoUtil.release(entry.getValue());
-
                 indexIfNeed(entry.getKey());
 
                 // 处理满了的块，比如上传历史块或者持久化增量块
@@ -139,19 +148,26 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     @Override
     public void release() {
-        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
-            Entry<SegmentInfo, Inserting> entry = itr.next();
+        for (Entry<SegmentInfo, Inserting> entry : insertings.entrySet()) {
             IoUtil.release(entry.getValue());
-            indexIfNeed(entry.getKey());
-            // TODO: 2019/10/8 未满历史块不会走
-            if (entry.getValue().isFull()) {
-                handleFullSegment(entry.getKey());
-            }
-            itr.remove();
         }
     }
 
-    protected void indexIfNeed(SegmentInfo segInfo) {
+    protected void indexIfNeed(SegmentInfo segInfo) throws Exception {
+    }
+
+    protected void processAfterSegmentDone(boolean needIndex) throws Exception {
+        for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
+            Entry<SegmentInfo, Inserting> entry = itr.next();
+            if (needIndex) {
+                indexIfNeed(entry.getKey());
+                // TODO: 2019/10/8 未满历史块不会走
+                if (entry.getValue().isFull()) {
+                    handleFullSegment(entry.getKey());
+                }
+            }
+            itr.remove();
+        }
     }
 
     public class Inserting<I extends Inserter> implements Releasable {
