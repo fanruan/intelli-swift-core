@@ -14,11 +14,19 @@ public interface ConfigQuery<Entity> {
      */
     List<Entity> executeQuery();
 
+    Number executeAggQuery();
+
     /**
      * 设置where条件
      * @param wheres
      */
     void where(ConfigWhere... wheres);
+
+    /**
+     * 设置聚合计算方式
+     * @param aggregation
+     */
+    void select(ConfigAggregation aggregation);
 
     /**
      * 设置排序

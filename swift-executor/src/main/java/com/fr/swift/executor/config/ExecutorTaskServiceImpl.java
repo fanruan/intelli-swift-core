@@ -3,9 +3,12 @@ package com.fr.swift.executor.config;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigAggregation;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.TransactionManager;
+import com.fr.swift.config.oper.impl.ConfigAggregationImpl;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.oper.impl.OrderImpl;
 import com.fr.swift.executor.task.ExecutorTask;
@@ -89,36 +92,6 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
-    public List<ExecutorTask> getSuccessTasksBeforeTime(final long time) {
-        try {
-            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<ExecutorTask>>() {
-                @Override
-                public List<ExecutorTask> work(ConfigSession session) {
-                    List<ExecutorTask> tasks = new ArrayList<ExecutorTask>();
-                    try {
-                        for (SwiftExecutorTaskEntity item : executorTaskDao.find(session, new Order[]{OrderImpl.asc("createTime")}
-                                , ConfigWhereImpl.eq("dbStatusType", DBStatusType.SUCCESS)
-                                , ConfigWhereImpl.eq("clusterId", SwiftProperty.getProperty().getMachineId())
-                                , ConfigWhereImpl.gt("createTime", time)
-                                , ConfigWhereImpl.in("executorTaskType", Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()))
-                        )) {
-
-                            tasks.add(item.convert());
-
-                        }
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().warn(e);
-                    }
-                    return tasks;
-                }
-            });
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().warn("get active executorTasks error!", e);
-            return new ArrayList<ExecutorTask>();
-        }
-    }
-
-    @Override
     public List<ExecutorTask> getRemoteActiveTasksBeforeTime(final long time) {
         try {
             return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<ExecutorTask>>() {
@@ -144,6 +117,50 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             });
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("get active executorTasks error!", e);
+            return new ArrayList<ExecutorTask>();
+        }
+    }
+
+    @Override
+    public List<ExecutorTask> getLatestSuccessTaskByInfo(final long time, final String executorType, final String appId,
+                                                         final String yearMonth, final String version) {
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<List<ExecutorTask>>() {
+                @Override
+                public List<ExecutorTask> work(ConfigSession session) {
+                    List<ExecutorTask> tasks = new ArrayList<ExecutorTask>();
+                    try {
+                        for (SwiftExecutorTaskEntity item : executorTaskDao.find(session, new Order[]{OrderImpl.asc("createTime")}
+                                , ConfigWhereImpl.eq("dbStatusType", DBStatusType.SUCCESS)
+                                , ConfigWhereImpl.eq("executorTaskType", executorType)
+                                , ConfigWhereImpl.eq("clusterId", SwiftProperty.getProperty().getMachineId())
+                                , ConfigWhereImpl.like("taskContent", appId, ConfigWhere.MatchMode.ANY)
+                                , ConfigWhereImpl.like("taskContent", yearMonth, ConfigWhere.MatchMode.ANY)
+                                , ConfigWhereImpl.like("taskContent", version, ConfigWhere.MatchMode.ANY)
+                                , ConfigWhereImpl.eq("createTime",
+                                        getAggregateValue(
+                                                ConfigAggregationImpl.max("createTime")
+                                                , ConfigWhereImpl.eq("dbStatusType", DBStatusType.SUCCESS)
+                                                , ConfigWhereImpl.eq("executorTaskType", executorType)
+                                                , ConfigWhereImpl.eq("clusterId", SwiftProperty.getProperty().getMachineId())
+                                                , ConfigWhereImpl.like("taskContent", appId, ConfigWhere.MatchMode.ANY)
+                                                , ConfigWhereImpl.like("taskContent", yearMonth, ConfigWhere.MatchMode.ANY)
+                                                , ConfigWhereImpl.like("taskContent", version, ConfigWhere.MatchMode.ANY)
+                                                , ConfigWhereImpl.gt("createTime", time)
+                                        ))
+                        )) {
+
+                            tasks.add(item.convert());
+
+                        }
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
+                    }
+                    return tasks;
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("get latest success executorTasks error!", e);
             return new ArrayList<ExecutorTask>();
         }
     }
@@ -183,6 +200,27 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             });
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("delete executorTasks error!", e);
+            return null;
+        }
+    }
+
+
+    private Number getAggregateValue(final ConfigAggregation aggregation, final ConfigWhere... criterions) {
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Number>() {
+                @Override
+                public Number work(ConfigSession session) {
+                    try {
+                        Number value = executorTaskDao.findValue(session, aggregation, criterions);
+                        return value;
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
+                    }
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("get aggregate value error!", e);
             return null;
         }
     }

@@ -22,9 +22,9 @@ public interface ExecutorTaskService {
 
     List<ExecutorTask> getRemoteActiveTasksBeforeTime(long time);
 
+    List<ExecutorTask> getLatestSuccessTaskByInfo(long time, String executorType, String appId, String yearMonth, String version);
+
     boolean deleteTask(final ExecutorTask executorTask);
 
     ExecutorTask getExecutorTask(String taskId);
-
-    List<ExecutorTask> getSuccessTasksBeforeTime(long time);
 }
