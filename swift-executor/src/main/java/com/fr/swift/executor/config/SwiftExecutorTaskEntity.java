@@ -195,10 +195,10 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
             TaskType taskTypeAnnotation = clazz.getAnnotation(TaskType.class);
             taskType = (ExecutorTaskType) Enum.valueOf(taskTypeAnnotation.type(), executorTaskType);
             Constructor constructor = clazz.getDeclaredConstructor(SourceKey.class, boolean.class, ExecutorTaskType.class, LockType.class,
-                    String.class, DBStatusType.class, String.class, long.class, String.class, int.class);
+                    String.class, DBStatusType.class, String.class, long.class, String.class, int.class, long.class, long.class);
 
             return (ExecutorTask) constructor.newInstance(new SourceKey(this.sourceKey), true, this.taskType, this.lockType,
-                    this.lockKey, this.dbStatusType, this.taskId, this.createTime, this.taskContent, this.priority);
+                    this.lockKey, this.dbStatusType, this.taskId, this.createTime, this.taskContent, this.priority, this.finishTime, this.startTime);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return null;
