@@ -1,5 +1,6 @@
 package com.fr.swift.config.dao;
 
+import com.fr.swift.config.oper.ConfigAggregation;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
@@ -116,5 +117,24 @@ public class BasicDao<T> implements SwiftConfigDao<T> {
     @Override
     public Page<T> findPage(ConfigSession session, int page, int size, ConfigWhere... criterion) {
         return findPage(session, page, size, null, criterion);
+    }
+
+    @Override
+    public Number findValue(ConfigSession session, ConfigAggregation aggregation, ConfigWhere... criterions) {
+        if (session == null) {
+            return null;
+        }
+        try {
+            ConfigQuery query = session.createEntityQuery(entityClass);
+            if (null != criterions && criterions.length > 0) {
+                query.where(criterions);
+            }
+            if (null != aggregation) {
+                query.select(aggregation);
+            }
+            return query.executeAggQuery();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
