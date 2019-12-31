@@ -92,13 +92,6 @@ public class ExecutorTaskServiceTest {
     }
 
     @Test
-    public void getSuccessTasksBeforeTime() {
-        Mockito.when(executorTaskDao.find(Mockito.eq(configSession), Mockito.any(Order[].class), Mockito.<ConfigWhere[]>any())).thenReturn(new ArrayList());
-        List<ExecutorTask> taskList = new ExecutorTaskServiceImpl().getSuccessTasksBeforeTime(0);
-        Mockito.verify(executorTaskDao).find(Mockito.eq(configSession), Mockito.any(Order[].class), Mockito.<ConfigWhere[]>any());
-    }
-
-    @Test
     public void getRemoteActiveTasksBeforeTime() {
         Mockito.when(executorTaskDao.find(Mockito.eq(configSession), Mockito.any(Order[].class), Mockito.<ConfigWhere[]>any())).thenReturn(new ArrayList());
         List<ExecutorTask> taskList = new ExecutorTaskServiceImpl().getRemoteActiveTasksBeforeTime(0);

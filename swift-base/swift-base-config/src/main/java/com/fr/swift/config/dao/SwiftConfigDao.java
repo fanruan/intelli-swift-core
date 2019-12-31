@@ -1,6 +1,7 @@
 package com.fr.swift.config.dao;
 
 
+import com.fr.swift.config.oper.ConfigAggregation;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
@@ -66,4 +67,13 @@ public interface SwiftConfigDao<T> {
     Page<T> findPage(ConfigSession session, int page, int size, Order[] orders, ConfigWhere... criterion);
 
     Page<T> findPage(ConfigSession session, int page, int size, ConfigWhere... criterion);
+
+    /**
+     * 查询满足where条件的某列的聚合值
+     * @param session
+     * @param aggregation
+     * @param criterions
+     * @return
+     */
+    Number findValue(ConfigSession session, ConfigAggregation aggregation, ConfigWhere... criterions);
 }
