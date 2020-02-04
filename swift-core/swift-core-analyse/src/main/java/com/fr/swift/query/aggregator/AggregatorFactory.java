@@ -1,7 +1,7 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.query.aggregator.extension.DistinctDateYMD;
-import com.fr.swift.query.aggregator.extension.FirstRowAggregator;
+import com.fr.swift.query.aggregator.extension.LimitRowAggregator;
 import com.fr.swift.query.aggregator.extension.TopPercentileAggregator;
 import com.fr.swift.query.info.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
@@ -42,8 +42,11 @@ public class AggregatorFactory {
                 return CountAggregator.INSTANCE;
 
             // extension
-            case FIRST_ROW:
-                return FirstRowAggregator.INSTANCE;
+            case LIMIT_ROW:
+                if (params != null && params.length == 1) {
+                    int limitRow = Integer.parseInt(params[0].toString());
+                    return new LimitRowAggregator(limitRow);
+                }
             case DISTINCT_DATE_YMD:
                 return DistinctDateYMD.INSTANCE;
             case TOP_PERCENTILE: {
