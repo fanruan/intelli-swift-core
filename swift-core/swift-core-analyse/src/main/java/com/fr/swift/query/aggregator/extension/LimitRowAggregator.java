@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * @author Moira
  * @date 2020/2/3
- * @description 分组聚合后每组只保留第一行的数据
+ * @description 分组聚合后每组只保留前几行的数据
  * @since swift 1.0
  */
 public class LimitRowAggregator extends SingleColumnAggregator<LimitRowAggregatorValue> implements Serializable {
