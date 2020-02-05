@@ -35,7 +35,7 @@ public class LimitRowAggregator extends SingleColumnAggregator<LimitRowAggregato
             @Override
             public boolean actionPerformed(int row) {
                 list.add(column.getDictionaryEncodedColumn().getValueByRow(row));
-                return limitRow - list.size() == 0;
+                return limitRow <= list.size();
             }
         });
         value.setValue(list);
