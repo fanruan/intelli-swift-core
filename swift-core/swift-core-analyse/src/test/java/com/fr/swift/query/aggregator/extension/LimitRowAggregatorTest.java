@@ -8,8 +8,8 @@ import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,28 +33,28 @@ public class LimitRowAggregatorTest {
         control.replay();
         LimitRowAggregatorValue limitRowAggregatorValue;
         limitRowAggregatorValue = aggregator.aggregate(traversal, mockColumn);
-        Set<Object> set = new HashSet<>();
-        set.add("aa");
-        assertEquals(limitRowAggregatorValue.calculateValue(), set);
+        List<Object> list = new ArrayList<>();
+        list.add("aa");
+        assertEquals(limitRowAggregatorValue.calculateValue(), list);
     }
 
     @Test
     public void testCombine() {
         LimitRowAggregatorValue value = new LimitRowAggregatorValue();
         LimitRowAggregatorValue other = new LimitRowAggregatorValue();
-        Set<Object> set1 = new HashSet<>();
-        Set<Object> set2 = new HashSet<>();
-        Set<Object> set3 = new HashSet<>();
-        set1.add("aa");
-        set2.add("bb");
-        set2.add("cc");
-        set3.addAll(set1);
-        set3.addAll(set2);
-        value.setValue(set1);
-        other.setValue(set2);
+        List<Object> list1 = new ArrayList<>();
+        List<Object> list2 = new ArrayList<>();
+        List<Object> list3 = new ArrayList<>();
+        list1.add("aa");
+        list2.add("bb");
+        list2.add("cc");
+        list3.addAll(list1);
+        list3.addAll(list2);
+        value.setValue(list1);
+        other.setValue(list2);
         LimitRowAggregator aggregator = new LimitRowAggregator(1);
         aggregator.combine(value, other);
-        assertEquals(set3, value.calculateValue());
+        assertEquals(list3, value.calculateValue());
 
     }
 }

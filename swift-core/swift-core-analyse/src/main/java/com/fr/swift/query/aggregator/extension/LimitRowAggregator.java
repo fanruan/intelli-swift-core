@@ -8,8 +8,8 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Moira
@@ -30,15 +30,15 @@ public class LimitRowAggregator extends SingleColumnAggregator<LimitRowAggregato
     @Override
     public LimitRowAggregatorValue aggregate(RowTraversal traversal, final Column column) {
         LimitRowAggregatorValue value = new LimitRowAggregatorValue();
-        final Set<Object> set = new HashSet<>();
+        final List<Object> list = new ArrayList<>();
         traversal.breakableTraversal(new BreakTraversalAction() {
             @Override
             public boolean actionPerformed(int row) {
-                set.add(column.getDictionaryEncodedColumn().getValueByRow(row));
-                return limitRow - set.size() == 0;
+                list.add(column.getDictionaryEncodedColumn().getValueByRow(row));
+                return limitRow - list.size() == 0;
             }
         });
-        value.setValue(set);
+        value.setValue(list);
         return value;
     }
 
