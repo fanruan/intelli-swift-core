@@ -18,6 +18,7 @@ public enum AggregatorType {
     // extension
     DISTINCT_DATE_YMD,
     TOP_PERCENTILE,
+    LIMIT_ROW,
 
     // FUNNEL
     FUNNEL, FUNNEL_PATHS
