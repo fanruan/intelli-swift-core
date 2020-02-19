@@ -1,10 +1,12 @@
 package com.fr.swift.config.dao;
 
+import com.fr.swift.config.oper.ConfigAggregation;
 import com.fr.swift.config.oper.ConfigQuery;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.Page;
+import com.fr.swift.config.oper.impl.ConfigAggregationImpl;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
 import com.fr.swift.config.oper.impl.OrderImpl;
 import org.junit.Before;
@@ -212,6 +214,31 @@ public class BasicDaoTest {
         Page page2 = mockBasicDao.findPage(mockConfigSession, 1, 10, ConfigWhereImpl.eq("", ""));
         assertTrue(page2.getData().isEmpty());
         Mockito.verify(mockConfigQuery, Mockito.times(2)).executeQuery(Mockito.anyInt(), Mockito.anyInt());
+        Mockito.verify(mockConfigQuery, Mockito.atLeastOnce()).where(Mockito.any(ConfigWhere.class));
+    }
+
+    @Test
+    public void findValue() {
+        ConfigSession mockConfigSession = Mockito.mock(ConfigSession.class);
+        ConfigQuery mockConfigQuery = Mockito.mock(ConfigQuery.class);
+        Mockito.when(mockConfigQuery.executeAggQuery()).then(new Answer<Number>() {
+            AtomicInteger time = new AtomicInteger(0);
+
+            @Override
+            public Number answer(InvocationOnMock invocationOnMock) throws Throwable {
+                if (time.getAndIncrement() < 1) {
+                    return 0;
+                }
+                return 1;
+            }
+        });
+        Mockito.doNothing().when(mockConfigQuery).select(Mockito.any(ConfigAggregation.class));
+        Mockito.doNothing().when(mockConfigQuery).where(Mockito.any(ConfigWhere.class));
+        Mockito.when(mockConfigSession.createEntityQuery(TestEntity.class)).thenReturn(mockConfigQuery);
+        assertTrue(mockBasicDao.findValue(mockConfigSession, ConfigAggregationImpl.max("")).doubleValue() == 0);
+        assertTrue(mockBasicDao.findValue(mockConfigSession, ConfigAggregationImpl.max(""), ConfigWhereImpl.eq("", "")).doubleValue() == 1);
+        Mockito.verify(mockConfigQuery, Mockito.times(2)).executeAggQuery();
+        Mockito.verify(mockConfigQuery, Mockito.atLeast(2)).select(Mockito.any(ConfigAggregation.class));
         Mockito.verify(mockConfigQuery, Mockito.atLeastOnce()).where(Mockito.any(ConfigWhere.class));
     }
 }

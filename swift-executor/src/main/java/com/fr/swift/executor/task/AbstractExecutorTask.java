@@ -11,6 +11,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 
 import java.lang.reflect.Constructor;
+import java.util.Objects;
 
 /**
  * This class created on 2019/2/11
@@ -241,7 +242,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         if (priority != that.priority) {
             return false;
         }
-        if (taskContent != that.taskContent) {
+        if (!Objects.equals(taskContent, that.taskContent)) {
             return false;
         }
         return lockKey != null ? lockKey.equals(that.lockKey) : that.lockKey == null;

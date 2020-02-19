@@ -3,7 +3,9 @@ package com.fr.swift.executor.config;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.oper.BaseTransactionWorker;
+import com.fr.swift.config.oper.ConfigAggregation;
 import com.fr.swift.config.oper.ConfigSession;
+import com.fr.swift.config.oper.ConfigWhere;
 import com.fr.swift.config.oper.Order;
 import com.fr.swift.config.oper.TransactionManager;
 import com.fr.swift.config.oper.impl.ConfigWhereImpl;
@@ -153,6 +155,27 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
             });
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("delete executorTasks error!", e);
+            return null;
+        }
+    }
+
+
+    private Number getAggregateValue(final ConfigAggregation aggregation, final ConfigWhere... criterions) {
+        try {
+            return transactionManager.doTransactionIfNeed(new BaseTransactionWorker<Number>() {
+                @Override
+                public Number work(ConfigSession session) {
+                    try {
+                        Number value = executorTaskDao.findValue(session, aggregation, criterions);
+                        return value;
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().warn(e);
+                    }
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().warn("get aggregate value error!", e);
             return null;
         }
     }
