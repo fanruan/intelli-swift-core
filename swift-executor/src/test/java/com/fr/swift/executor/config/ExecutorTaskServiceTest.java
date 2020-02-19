@@ -92,6 +92,13 @@ public class ExecutorTaskServiceTest {
     }
 
     @Test
+    public void getRemoteActiveTasksBeforeTime() {
+        Mockito.when(executorTaskDao.find(Mockito.eq(configSession), Mockito.any(Order[].class), Mockito.<ConfigWhere[]>any())).thenReturn(new ArrayList());
+        List<ExecutorTask> taskList = new ExecutorTaskServiceImpl().getRemoteActiveTasksBeforeTime(0);
+        Mockito.verify(executorTaskDao).find(Mockito.eq(configSession), Mockito.any(Order[].class), Mockito.<ConfigWhere[]>any());
+    }
+
+    @Test
     public void deleteTask() throws SQLException {
         new ExecutorTaskServiceImpl().deleteTask(executorTask);
         Mockito.verify(executorTaskDao).delete(configSession, (SwiftExecutorTaskEntity) executorTask.convert());

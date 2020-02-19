@@ -25,5 +25,4 @@ public interface ExecutorTaskService {
     boolean deleteTask(final ExecutorTask executorTask);
 
     ExecutorTask getExecutorTask(String taskId);
-
 }
