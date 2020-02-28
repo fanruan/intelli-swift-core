@@ -1,6 +1,6 @@
 package com.fr.swift.service.local;
 
-import com.fr.swift.SwiftContext;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.service.AbstractSwiftManager;
 import com.fr.swift.service.SwiftManager;
@@ -17,7 +17,8 @@ import com.fr.swift.util.ServiceBeanFactory;
 @SwiftBean(name = "serverManager")
 public class ServerManager extends AbstractSwiftManager implements SwiftManager {
 
-    private ServerServiceManager serverServiceManager = SwiftContext.get().getBean(ServerServiceManager.class);
+    @SwiftAutoWired
+    private ServerServiceManager serverServiceManager;
 
     @Override
     public void startUp() throws Exception {

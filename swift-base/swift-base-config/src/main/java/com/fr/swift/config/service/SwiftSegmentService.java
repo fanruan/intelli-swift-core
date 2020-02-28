@@ -25,6 +25,7 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
     boolean addSegments(List<SegmentKey> segments);
 
     /**
+     * 增加触发器，使删除segment后自动删除location和bucket
      * 批量删除Segment
      * todo 墙裂要求return删掉的seg key
      *
@@ -33,13 +34,14 @@ public interface SwiftSegmentService extends ConfigService<SegmentKey> {
      */
     boolean removeSegments(String... sourceKey);
 
-    boolean removeSegments(List<SegmentKey> segmentKeys);
-
     /**
-     * @param segments
+     * 增加触发器，使删除segment后自动删除location和bucket
+     *
+     * @param segmentKeys
      * @return
      */
-    boolean updateSegments(String sourceKey, List<SegmentKey> segments);
+    boolean removeSegments(List<SegmentKey> segmentKeys);
+
 
     /**
      * 获取所有Segment

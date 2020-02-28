@@ -15,7 +15,9 @@ abstract class BaseIntArray implements IntArray {
 
             @Override
             public int nextInt() {
-                return get(cursor++);
+                final int i = get(cursor);
+                cursor++;
+                return i;
             }
 
             @Override

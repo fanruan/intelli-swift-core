@@ -46,20 +46,22 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
     @Override
     public List<Segment> filter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
-        if (tableAllotRule == null || segmentBucket == null
-                || singleTableQueryInfo.getFilterInfo() == null || tableAllotRule.getAllotRule().getType() == BaseAllotRule.AllotType.LINE) {
+        if (isLineAllot(singleTableQueryInfo)) {
             return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
-        // List<Segment> segments = SEG_SVC.getSegmentsByIds(detailQueryInfo.getTable(), detailQueryInfo.getQuerySegment());
         Set<Integer> virtualOrders = getIndexSet(singleTableQueryInfo.getFilterInfo(), singleTableQueryInfo.getTable());
-        if (virtualOrders.contains(-1)) {
-            return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
-        }
-        return filterSegment(virtualOrders);
-
+        return filterSegment(virtualOrders, singleTableQueryInfo);
     }
 
-    public abstract List<Segment> filterSegment(Set<Integer> virtualOrders);
+    private boolean isLineAllot(SingleTableQueryInfo singleTableQueryInfo) {
+        if (tableAllotRule == null || segmentBucket == null
+                || singleTableQueryInfo.getFilterInfo() == null || tableAllotRule.getAllotRule().getType() == BaseAllotRule.AllotType.LINE) {
+            return true;
+        }
+        return false;
+    }
+
+    public abstract List<Segment> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo);
 
     public Set<Integer> getIndexSet(FilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
         Set<Integer> set = new HashSet<Integer>();
@@ -124,6 +126,4 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
             return allQuerySet;
         }
     }
-
-
 }

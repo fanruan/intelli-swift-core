@@ -1,8 +1,10 @@
 package com.fr.swift.base.meta;
 
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.util.Assert;
 
 import java.io.Serializable;
+import java.sql.Types;
 
 /**
  * @Author: Lucifer
@@ -24,30 +26,34 @@ public class MetaDataColumnBean implements SwiftMetaDataColumn, Serializable {
     public MetaDataColumnBean() {
     }
 
+    /**
+     * @deprecated 换静态工厂或Builder
+     */
+    @Deprecated
     public MetaDataColumnBean(String name, int sqlType) {
         this(name, null, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE);
     }
 
-    public MetaDataColumnBean(String name, String remark, int sqlType) {
-        this(name, remark, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE);
-    }
-
+    /**
+     * @deprecated 换静态工厂或Builder
+     */
+    @Deprecated
     public MetaDataColumnBean(String name, String remark, int sqlType, String columnId) {
         this(name, remark, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE, columnId);
     }
 
+    /**
+     * @deprecated 换静态工厂或Builder
+     */
+    @Deprecated
     public MetaDataColumnBean(String name, int sqlType, int size) {
         this(name, null, sqlType, size, DEFAULT_SCALE);
     }
 
-    public MetaDataColumnBean(String name, int sqlType, int size, String columnId) {
-        this(name, null, sqlType, size, DEFAULT_SCALE, columnId);
-    }
-
-    public MetaDataColumnBean(String name, int sqlType, int size, int scale) {
-        this(name, null, sqlType, size, scale);
-    }
-
+    /**
+     * @deprecated 换静态工厂或Builder
+     */
+    @Deprecated
     public MetaDataColumnBean(String name, String remark, int sqlType, int precision, int scale) {
         this.type = sqlType;
         this.name = name;
@@ -57,6 +63,10 @@ public class MetaDataColumnBean implements SwiftMetaDataColumn, Serializable {
         this.columnId = name;
     }
 
+    /**
+     * @deprecated 换静态工厂或Builder
+     */
+    @Deprecated
     public MetaDataColumnBean(String name, String remark, int sqlType, int precision, int scale, String columnId) {
         this.type = sqlType;
         this.name = name;
@@ -123,5 +133,88 @@ public class MetaDataColumnBean implements SwiftMetaDataColumn, Serializable {
     @Override
     public String toString() {
         return "{" + type + ", " + name + "}";
+    }
+
+    public static MetaDataColumnBean ofInt(String name) {
+        return new Builder().setName(name).setType(Types.INTEGER)
+                .setPrecision(10).setColumnId(name).build();
+    }
+
+    public static MetaDataColumnBean ofLong(String name) {
+        return new Builder().setName(name).setType(Types.BIGINT)
+                .setPrecision(19).setColumnId(name).build();
+    }
+
+    public static MetaDataColumnBean ofDouble(String name) {
+        return new Builder().setName(name).setType(Types.DOUBLE)
+                .setPrecision(22).setScale(15).setColumnId(name).build();
+    }
+
+    public static MetaDataColumnBean ofString(String name, int length) {
+        return new Builder().setName(name).setType(Types.VARCHAR)
+                .setPrecision(length).setColumnId(name).build();
+    }
+
+    public static MetaDataColumnBean ofString(String name) {
+        return ofString(name, 255);
+    }
+
+    public static MetaDataColumnBean ofDate(String name) {
+        return new Builder().setName(name).setType(Types.DATE)
+                .setColumnId(name).build();
+    }
+
+    public static class Builder {
+        private MetaDataColumnBean columnMeta = new MetaDataColumnBean();
+
+        public Builder() {
+        }
+
+        public Builder(SwiftMetaDataColumn columnMeta) {
+            this.columnMeta.name = columnMeta.getName();
+            this.columnMeta.type = columnMeta.getType();
+            this.columnMeta.precision = columnMeta.getPrecision();
+            this.columnMeta.scale = columnMeta.getScale();
+            this.columnMeta.columnId = columnMeta.getColumnId();
+            this.columnMeta.remark = columnMeta.getRemark();
+        }
+
+        public Builder setName(String name) {
+            columnMeta.name = name;
+            return this;
+        }
+
+        public Builder setType(int type) {
+            columnMeta.type = type;
+            return this;
+        }
+
+        public Builder setPrecision(int precision) {
+            columnMeta.precision = precision;
+            return this;
+        }
+
+        public Builder setScale(int scale) {
+            columnMeta.scale = scale;
+            return this;
+        }
+
+        public Builder setColumnId(String columnId) {
+            columnMeta.columnId = columnId;
+            return this;
+        }
+
+        public Builder setRemark(String remark) {
+            columnMeta.remark = remark;
+            return this;
+        }
+
+        public MetaDataColumnBean build() {
+            Assert.hasText(columnMeta.name);
+            Assert.hasText(columnMeta.columnId);
+            Assert.isTrue(columnMeta.precision >= 0);
+            Assert.isTrue(columnMeta.scale >= 0);
+            return columnMeta;
+        }
     }
 }

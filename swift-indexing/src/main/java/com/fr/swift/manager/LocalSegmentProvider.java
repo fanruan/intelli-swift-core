@@ -1,6 +1,8 @@
 package com.fr.swift.manager;
 
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.beans.annotation.SwiftQualifier;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -14,12 +16,9 @@ import java.util.List;
  */
 @SwiftBean(name = "localSegmentProvider")
 public class LocalSegmentProvider implements SwiftSegmentManager {
-
+    @SwiftAutoWired
+    @SwiftQualifier(name = "lineSegmentManager")
     private SwiftSegmentManager manager;
-
-    private LocalSegmentProvider() {
-        manager = new LineSegmentManager();
-    }
 
     @Override
     public Segment getSegment(SegmentKey key) {

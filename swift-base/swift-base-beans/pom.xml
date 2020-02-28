@@ -9,9 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>swift-base-beans</artifactId>
+    <properties>
+        <cglib.version>3.2.5</cglib.version>
+    </properties>
 
+    <artifactId>swift-base-beans</artifactId>
     <dependencies>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-common</artifactId>

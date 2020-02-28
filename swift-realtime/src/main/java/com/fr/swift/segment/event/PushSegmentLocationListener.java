@@ -3,6 +3,9 @@ package com.fr.swift.segment.event;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
+import com.fr.swift.exception.ExceptionInfoType;
+import com.fr.swift.exception.PushSegmentExceptionContext;
+import com.fr.swift.exception.reporter.ExceptionReporter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentLocationInfo;
 import com.fr.swift.service.listener.RemoteSender;
@@ -21,8 +24,9 @@ public class PushSegmentLocationListener extends BaseSegmentLocationListener {
             return ProxySelector.getProxy(RemoteSender.class).trigger(new PushSegLocationRpcEvent(segLocations));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
-            return null;
+            reportPushSegException(segLocations);
         }
+        return null;
     }
 
     static {
@@ -33,5 +37,10 @@ public class PushSegmentLocationListener extends BaseSegmentLocationListener {
     }
 
     public static void listen() {
+    }
+
+    //报告异常的方法抽出来，避免影响原有的逻辑的展示
+    private void reportPushSegException(SegmentLocationInfo exceptionContext) {
+        ExceptionReporter.report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.SLAVE_PUSH_SEGMENT);
     }
 }

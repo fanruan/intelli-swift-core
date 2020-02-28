@@ -14,9 +14,11 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.SwiftSchema;
 import com.fr.swift.event.history.HistoryCommonLoadRpcEvent;
 import com.fr.swift.event.history.HistoryLoadSegmentRpcEvent;
+import com.fr.swift.exception.DownloadExceptionContext;
+import com.fr.swift.exception.ExceptionInfoType;
+import com.fr.swift.exception.reporter.ExceptionReporter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.repository.SwiftRepository;
-import com.fr.swift.repository.exception.RepoNotFoundException;
 import com.fr.swift.repository.manager.SwiftRepositoryManager;
 import com.fr.swift.segment.container.SegmentContainer;
 import com.fr.swift.segment.relation.RelationIndexImpl;
@@ -48,37 +50,37 @@ import java.util.regex.Matcher;
 public class SegmentHelper {
     public static Map<SourceKey, Set<String>> checkSegmentExists(SwiftSegmentService segmentService, SwiftSegmentLocationService segLocationSvc, SwiftSegmentManager segmentManager) {
         final Map<SourceKey, Set<String>> needDownload = new HashMap<SourceKey, Set<String>>();
-        try {
-            SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-            Map<SourceKey, List<SegmentKey>> map = segmentService.getOwnSegments();
-            if (null != repository) {
-                for (Map.Entry<SourceKey, List<SegmentKey>> entry : map.entrySet()) {
-                    SourceKey table = entry.getKey();
-                    List<SegmentKey> value = entry.getValue();
-                    List<SegmentKey> notExists = new ArrayList<SegmentKey>();
+        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
+        Map<SourceKey, List<SegmentKey>> map = segmentService.getOwnSegments();
+        if (null != repository) {
+            for (Map.Entry<SourceKey, List<SegmentKey>> entry : map.entrySet()) {
+                SourceKey table = entry.getKey();
+                List<SegmentKey> value = entry.getValue();
+                List<SegmentKey> notExists = new ArrayList<SegmentKey>();
 
-                    for (SegmentKey segmentKey : value) {
-                        if (segmentKey.getStoreType().isPersistent()) {
-                            if (!segmentManager.getSegment(segmentKey).isReadable()) {
-                                String remotePath = new CubePathBuilder(segmentKey).build();
-                                String downLoadPath = String.format("%s/seg%d", segmentKey.getTable().getId(), segmentKey.getOrder());
-                                if (repository.exists(remotePath)) {
-                                    if (null == needDownload.get(table)) {
-                                        needDownload.put(table, new HashSet<String>());
-                                    }
-                                    needDownload.get(table).add(downLoadPath);
-                                } else {
-                                    notExists.add(segmentKey);
+                for (SegmentKey segmentKey : value) {
+                    if (segmentKey.getStoreType().isPersistent()) {
+                        if (!segmentManager.getSegment(segmentKey).isReadable()) {
+                            String remotePath = new CubePathBuilder(segmentKey).build();
+                            String downLoadPath = String.format("%s/seg%d", segmentKey.getTable().getId(), segmentKey.getOrder());
+                            if (repository.exists(remotePath)) {
+                                if (null == needDownload.get(table)) {
+                                    needDownload.put(table, new HashSet<String>());
                                 }
+                                needDownload.get(table).add(downLoadPath);
+                            } else {
+                                notExists.add(segmentKey);
                             }
                         }
                     }
-                    segLocationSvc.delete(new HashSet<>(notExists));
-                    segmentService.removeSegments(notExists);
+                }
+                segLocationSvc.delete(new HashSet<>(notExists));
+                segmentService.removeSegments(notExists);
+                //如果存在本地文件，也需要删除
+                for (SegmentKey notExist : notExists) {
+                    SegmentUtils.clearSegment(notExist);
                 }
             }
-        } catch (RepoNotFoundException e) {
-            SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
         return needDownload;
     }
@@ -111,6 +113,9 @@ public class SegmentHelper {
                     // 若下载整个seg失败则删掉，下载all show不删
                     FileUtil.delete(cubePath);
                 }
+                // TODO: 2019-08-23 replace考虑去掉，这里异常处理是直接下载，没有replace的
+                reportException(cubePath, remotePath);
+
                 SwiftLoggers.getLogger().error("Download {} with error! ", cubePath, e);
             }
         }
@@ -138,112 +143,109 @@ public class SegmentHelper {
         return downloadPaths;
     }
 
+    private static void reportException(String cubePath, String remotePath) {
+        DownloadExceptionContext downloadExceptionContext = new DownloadExceptionContext(remotePath, cubePath);
+        ExceptionReporter.report(downloadExceptionContext, ExceptionInfoType.DOWNLOAD_SEGMENT);
+    }
+
     public static void uploadTable(SwiftSegmentManager manager,
                                    final DataSource dataSource,
                                    String clusterId) throws Exception {
-        try {
-            SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-            if (null != repository) {
-                SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
-                SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
-                final SourceKey sourceKey = dataSource.getSourceKey();
-                SwiftTablePathEntity entity = tablePathService.get(sourceKey.getId());
-                Integer path = entity.getTablePath();
-                path = null == path ? -1 : path;
-                Integer tmpPath = entity.getTmpDir();
-                entity.setTablePath(tmpPath);
-                entity.setLastPath(path);
-                List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
-                if (null != segmentKeys) {
-                    SwiftSchema swiftSchema = dataSource.getMetadata().getSwiftSchema();
-                    repository.delete(new CubePathBuilder().setSwiftSchema(swiftSchema).setTableKey(sourceKey).build());
-                    for (SegmentKey segmentKey : segmentKeys) {
-                        try {
-                            String uploadPath = new CubePathBuilder(segmentKey).build();
-                            String local = new CubePathBuilder(segmentKey).setTempDir(tmpPath).build();
-                            repository.copyToRemote(local, uploadPath);
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error("upload error! ", e);
-                        }
+        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
+        if (null != repository) {
+            SwiftTablePathService tablePathService = SwiftContext.get().getBean(SwiftTablePathService.class);
+            SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+            final SourceKey sourceKey = dataSource.getSourceKey();
+            SwiftTablePathEntity entity = tablePathService.get(sourceKey.getId());
+            Integer path = entity.getTablePath();
+            path = null == path ? -1 : path;
+            Integer tmpPath = entity.getTmpDir();
+            entity.setTablePath(tmpPath);
+            entity.setLastPath(path);
+            List<SegmentKey> segmentKeys = SwiftContext.get().getBean(SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
+            if (null != segmentKeys) {
+                SwiftSchema swiftSchema = dataSource.getMetadata().getSwiftSchema();
+                repository.delete(new CubePathBuilder().setSwiftSchema(swiftSchema).setTableKey(sourceKey).build());
+                for (SegmentKey segmentKey : segmentKeys) {
+                    try {
+                        String uploadPath = new CubePathBuilder(segmentKey).build();
+                        String local = new CubePathBuilder(segmentKey).setTempDir(tmpPath).build();
+                        repository.copyToRemote(local, uploadPath);
+                    } catch (Exception e) {
+                        SwiftLoggers.getLogger().error("upload error! ", e);
                     }
-                    if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity)
-                            && locationService.delete(sourceKey.getId(), clusterId)) {
-                        String deletePath = new CubePathBuilder().asAbsolute()
-                                .setSwiftSchema(swiftSchema).setTempDir(path)
-                                .setTableKey(sourceKey).build();
-                        FileUtil.delete(deletePath);
-                        new File(deletePath).getParentFile().delete();
-                    }
-                    manager.remove(sourceKey);
-                    SegmentContainer.INDEXING.remove(sourceKey);
-                    manager.getSegment(sourceKey);
-                    ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new HistoryLoadSegmentRpcEvent(sourceKey, clusterId));
                 }
+                if (path.compareTo(tmpPath) != 0 && tablePathService.saveOrUpdate(entity)
+                        && locationService.delete(sourceKey.getId(), clusterId)) {
+                    String deletePath = new CubePathBuilder().asAbsolute()
+                            .setSwiftSchema(swiftSchema).setTempDir(path)
+                            .setTableKey(sourceKey).build();
+                    FileUtil.delete(deletePath);
+                    new File(deletePath).getParentFile().delete();
+                }
+                manager.remove(sourceKey);
+                SegmentContainer.INDEXING.remove(sourceKey);
+                manager.getSegment(sourceKey);
+                ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new HistoryLoadSegmentRpcEvent(sourceKey, clusterId));
             }
-        } catch (RepoNotFoundException e) {
-            SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
     }
 
     public static void uploadRelation(RelationSource relation, String clusterId) {
-        try {
-            SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
-            if (null != repository) {
-                SourceKey sourceKey = relation.getForeignSource();
-                SourceKey primary = relation.getPrimarySource();
-                Map<SegmentKey, List<String>> segNeedUpload = new HashMap<SegmentKey, List<String>>();
-                List<SegmentKey> segmentKeys = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
-                if (null != segmentKeys) {
-                    if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
-                        for (SegmentKey segmentKey : segmentKeys) {
-                            if (null == segNeedUpload.get(segmentKey)) {
-                                segNeedUpload.put(segmentKey, new ArrayList<String>());
-                            }
-                            try {
-                                String src = Strings.unifySlash(
-                                        String.format("%s/%s/%s",
-                                                new CubePathBuilder(segmentKey).setTempDir(CubeUtil.getCurrentDir(sourceKey)).build(),
-                                                RelationIndexImpl.RELATIONS_KEY,
-                                                primary.getId()
-                                        ));
-                                String dest = String.format("%s/%s/%s",
-                                        new CubePathBuilder(segmentKey).build(),
-                                        RelationIndexImpl.RELATIONS_KEY,
-                                        primary.getId());
-                                repository.copyToRemote(src, dest);
-                                segNeedUpload.get(segmentKey).add(dest);
-                            } catch (IOException e) {
-                                SwiftLoggers.getLogger().error("upload error! ", e);
-                            }
+        SwiftRepository repository = SwiftRepositoryManager.getManager().currentRepo();
+        if (null != repository) {
+            SourceKey sourceKey = relation.getForeignSource();
+            SourceKey primary = relation.getPrimarySource();
+            Map<SegmentKey, List<String>> segNeedUpload = new HashMap<SegmentKey, List<String>>();
+            List<SegmentKey> segmentKeys = SwiftContext.get().getBean(SwiftSegmentService.class).getSegmentByKey(sourceKey.getId());
+            if (null != segmentKeys) {
+                if (relation.getRelationType() != RelationSourceType.FIELD_RELATION) {
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        if (null == segNeedUpload.get(segmentKey)) {
+                            segNeedUpload.put(segmentKey, new ArrayList<String>());
                         }
-                    } else {
-                        for (SegmentKey segmentKey : segmentKeys) {
-                            if (null == segNeedUpload.get(segmentKey)) {
-                                segNeedUpload.put(segmentKey, new ArrayList<String>());
-                            }
-                            try {
-                                String src = Strings.unifySlash(
-                                        String.format("%s/field/%s/%s",
-                                                new CubePathBuilder(segmentKey).setTempDir(CubeUtil.getCurrentDir(sourceKey)).build(),
-                                                RelationIndexImpl.RELATIONS_KEY,
-                                                primary.getId()
-                                        ));
-                                String dest = String.format("%s/field/%s/%s",
-                                        new CubePathBuilder(segmentKey).build(),
-                                        RelationIndexImpl.RELATIONS_KEY,
-                                        primary.getId());
-                                repository.copyToRemote(src, dest);
-                                segNeedUpload.get(segmentKey).add(dest);
-                            } catch (IOException e) {
-                                SwiftLoggers.getLogger().error("upload error! ", e);
-                            }
+                        try {
+                            String src = Strings.unifySlash(
+                                    String.format("%s/%s/%s",
+                                            new CubePathBuilder(segmentKey).setTempDir(CubeUtil.getCurrentDir(sourceKey)).build(),
+                                            RelationIndexImpl.RELATIONS_KEY,
+                                            primary.getId()
+                                    ));
+                            String dest = String.format("%s/%s/%s",
+                                    new CubePathBuilder(segmentKey).build(),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId());
+                            repository.copyToRemote(src, dest);
+                            segNeedUpload.get(segmentKey).add(dest);
+                        } catch (IOException e) {
+                            SwiftLoggers.getLogger().error("upload error! ", e);
                         }
                     }
-                    ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey, segNeedUpload), clusterId));
+                } else {
+                    for (SegmentKey segmentKey : segmentKeys) {
+                        if (null == segNeedUpload.get(segmentKey)) {
+                            segNeedUpload.put(segmentKey, new ArrayList<String>());
+                        }
+                        try {
+                            String src = Strings.unifySlash(
+                                    String.format("%s/field/%s/%s",
+                                            new CubePathBuilder(segmentKey).setTempDir(CubeUtil.getCurrentDir(sourceKey)).build(),
+                                            RelationIndexImpl.RELATIONS_KEY,
+                                            primary.getId()
+                                    ));
+                            String dest = String.format("%s/field/%s/%s",
+                                    new CubePathBuilder(segmentKey).build(),
+                                    RelationIndexImpl.RELATIONS_KEY,
+                                    primary.getId());
+                            repository.copyToRemote(src, dest);
+                            segNeedUpload.get(segmentKey).add(dest);
+                        } catch (IOException e) {
+                            SwiftLoggers.getLogger().error("upload error! ", e);
+                        }
+                    }
                 }
+                ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class).trigger(new HistoryCommonLoadRpcEvent(Pair.of(sourceKey, segNeedUpload), clusterId));
             }
-        } catch (RepoNotFoundException e) {
-            SwiftLoggers.getLogger().error("Default repository not found.", e);
         }
     }
 

@@ -10,6 +10,7 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.StringColumn;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
+import com.fr.swift.util.function.Function;
 
 import java.util.Iterator;
 
@@ -26,7 +27,7 @@ public class MergeIterator {
 
     private final Iterator<GroupByEntry> iterator;
     private final DictionaryEncodedColumn<String> recordDic;
-    private final IMergeColumn associatedColumns;
+    private final AssociatedColumn associatedColumns;
     private final IMergeColumn groupColumns;
     private DetailColumn timestampDetails;
     private DictionaryEncodedColumn eventDict;
@@ -36,7 +37,7 @@ public class MergeIterator {
     public MergeIterator(TimeWindowFilter filter, IStep step, Iterator<GroupByEntry> iterator,
                          DictionaryEncodedColumn<String> recordDic, DetailColumn timestamp,
                          DictionaryEncodedColumn eventDict,
-                         DictionaryEncodedColumn associatedColumns, Column groupColumns,
+                         AssociatedColumn associatedColumns, Column groupColumns,
                          int postGroupIndex) {
         this.filter = filter;
         this.step = step;
@@ -45,7 +46,7 @@ public class MergeIterator {
         SwiftLoggers.getLogger().debug("segment his recordDic size: {}", recordDic.size());
         this.timestampDetails = timestamp;
         this.eventDict = eventDict;
-        this.associatedColumns = null == associatedColumns ? null : new OriginDecMergeColumn(associatedColumns);
+        this.associatedColumns = associatedColumns;
         this.groupColumns = mergeGroupColumn(groupColumns);
         this.postGroupIndex = postGroupIndex;
         if (associatedColumns != null) {
@@ -91,11 +92,17 @@ public class MergeIterator {
     private void singleRecord() {
         travels.traversal(new TraversalAction() {
             @Override
-            public void actionPerformed(int row) {
+            public void actionPerformed(final int row) {
                 long timestamp = timestampDetails.getLong(row);
                 int event = eventDict.getIndexByRow(row);
                 filter.add(event, timestamp,
-                        associatedColumns == null ? -1 : associatedColumns.getIndex(row),
+                        new Function<Integer, Integer>() {
+
+                            @Override
+                            public Integer apply(Integer p) {
+                                return associatedColumns == null ? -1 : associatedColumns.getIndex(p, row);
+                            }
+                        },
                         postGroupIndex == -1 ? null : step.isEqual(postGroupIndex, event, row) ? groupColumns.getValue(row) : null, row);
             }
         });

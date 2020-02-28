@@ -16,9 +16,9 @@ import java.util.Map;
  * @author anchore
  * @date 2018/12/21
  */
-public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> implements SwiftSourceAlloter<A, R> {
+public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> implements SwiftSourceAlloter<A, R>, Cloneable {
 
-    protected static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    protected static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
     protected static final SwiftSegmentBucketService BUCKET_SVC = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
 
     protected SourceKey tableKey;
@@ -29,7 +29,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
      * 逻辑order到实际order的映射
      * 处理order竞争的
      */
-    private Map<Integer, SegmentState> logicToReal = new HashMap<Integer, SegmentState>();
+    private Map<Integer, SegmentState> logicToReal = new HashMap<>();
 
     protected BaseSourceAlloter(SourceKey tableKey, A rule) {
         this.tableKey = tableKey;
@@ -106,5 +106,16 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
         SegmentInfo getSegInfo() {
             return segInfo;
         }
+    }
+
+    public void setSourceKey(SourceKey sourceKey) {
+        this.tableKey = sourceKey;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        BaseSourceAlloter clonedAlloter = (BaseSourceAlloter) super.clone();
+        clonedAlloter.logicToReal = new HashMap<>();
+        return clonedAlloter;
     }
 }

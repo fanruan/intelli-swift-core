@@ -17,7 +17,10 @@ import com.fr.swift.event.ClusterEventListener;
 import com.fr.swift.event.ClusterListenerHandler;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.event.global.PushSegLocationRpcEvent;
+import com.fr.swift.exception.ExceptionInfoType;
+import com.fr.swift.exception.PushSegmentExceptionContext;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.exception.reporter.ExceptionReporter;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
@@ -74,7 +77,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        segSvc = SwiftContext.get().getBean(SwiftSegmentService.class);
         segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         if (recoverable) {
             recover0();
@@ -173,7 +176,13 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
             SegmentLocationInfo info = loadSelfSegmentDestination();
             if (null != info) {
                 RemoteSender senderProxy = ProxySelector.getInstance().getFactory().getProxy(RemoteSender.class);
-                senderProxy.trigger(new PushSegLocationRpcEvent(info));
+                try {
+                    senderProxy.trigger(new PushSegLocationRpcEvent(info));
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().warn("Cannot sync native segment info to server! pushSegExceptionhander online", e);
+                    //收集异常信息
+                    reportPushSegException(info);
+                }
             }
         }
 
@@ -212,6 +221,11 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
         protected SegmentDestination createSegmentDestination(SegmentKey segmentKey) {
             String clusterId = ClusterSelector.getInstance().getFactory().getCurrentId();
             return new RealTimeSegDestImpl(clusterId, segmentKey.toString(), segmentKey.getOrder());
+        }
+
+        //报告异常的方法抽出来，避免影响原有的逻辑的展示
+        private void reportPushSegException(SegmentLocationInfo exceptionContext) {
+            ExceptionReporter.report(new PushSegmentExceptionContext(exceptionContext), ExceptionInfoType.SLAVE_PUSH_SEGMENT);
         }
     }
 }

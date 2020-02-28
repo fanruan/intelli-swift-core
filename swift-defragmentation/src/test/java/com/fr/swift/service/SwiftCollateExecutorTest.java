@@ -5,8 +5,8 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.config.entity.SwiftServiceInfoEntity;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.selector.ClusterSelector;
@@ -57,7 +57,7 @@ public class SwiftCollateExecutorTest {
     BeanFactory beanFactory;
 
     @Mock
-    SwiftSegmentServiceProvider swiftSegmentService;
+    SwiftSegmentService swiftSegmentService;
 
     @Mock
     SourceKey sourceKey;
@@ -76,7 +76,7 @@ public class SwiftCollateExecutorTest {
         PowerMockito.mockStatic(SwiftExecutors.class, SwiftContext.class, ProxySelector.class);
         Mockito.when(SwiftExecutors.newScheduledThreadPool(Mockito.anyInt(), Mockito.any(PoolThreadFactory.class))).thenReturn(executorService);
         Mockito.when(SwiftContext.get()).thenReturn(beanFactory);
-        Mockito.when(beanFactory.getBean(SwiftSegmentServiceProvider.class)).thenReturn(swiftSegmentService);
+        Mockito.when(beanFactory.getBean(SwiftSegmentService.class)).thenReturn(swiftSegmentService);
         Mockito.when(beanFactory.getBean(SwiftServiceInfoService.class)).thenReturn(swiftServiceInfoService);
         Constructor constructor = SwiftCollateExecutor.class.getDeclaredConstructor();
         constructor.setAccessible(true);

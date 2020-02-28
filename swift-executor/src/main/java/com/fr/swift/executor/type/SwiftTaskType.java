@@ -11,6 +11,7 @@ import java.util.List;
  * @description
  */
 public enum SwiftTaskType implements ExecutorTaskType {
+    //
     REALTIME,
     RECOVERY,
     TRANSFER,

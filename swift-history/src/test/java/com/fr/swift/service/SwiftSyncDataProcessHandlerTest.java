@@ -86,7 +86,6 @@ public class SwiftSyncDataProcessHandlerTest {
     private SwiftClusterSegmentService mockSwiftClusterSegmentService() {
         // Generate by Mock Plugin
         SwiftClusterSegmentService mockSwiftClusterSegmentService = PowerMock.createMock(SwiftClusterSegmentService.class);
-        EasyMock.expect(mockSwiftClusterSegmentService.updateSegmentTable(EasyMock.notNull(Map.class))).andReturn(true).anyTimes();
         PowerMock.replay(mockSwiftClusterSegmentService);
         return mockSwiftClusterSegmentService;
 

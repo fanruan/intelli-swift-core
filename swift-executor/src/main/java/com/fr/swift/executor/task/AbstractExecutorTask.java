@@ -1,16 +1,14 @@
 package com.fr.swift.executor.task;
 
 import com.fr.swift.base.json.JsonBuilder;
+import com.fr.swift.executor.config.SwiftExecutorTaskEntity;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.StatusType;
 import com.fr.swift.executor.type.TaskType;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
-
-import java.lang.reflect.Constructor;
 
 /**
  * This class created on 2019/2/11
@@ -31,10 +29,14 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
     protected StatusType statusType;
     protected String taskContent;
     protected T job;
+    protected int priority;
+    protected String cause;
+    protected long finishTime;
+    protected long startTime;
 
     //创建task
     protected AbstractExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType,
-                                   LockType lockType, String lockKey, DBStatusType dbStatusType, T job) throws Exception {
+                                   LockType lockType, String lockKey, DBStatusType dbStatusType, T job, int priority) throws Exception {
         this.sourceKey = sourceKey;
         this.persistent = persistent;
         this.executorTaskType = executorTaskType;
@@ -46,12 +48,13 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.statusType = StatusType.WAITING;
         this.createTime = System.currentTimeMillis();
         this.taskId = String.valueOf(createTime);
-
+        this.priority = priority;
         this.taskContent = JsonBuilder.writeJsonString(job.serializedTag());
     }
 
     protected AbstractExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
-                                   String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent) {
+                                   String lockKey, DBStatusType dbStatusType, String taskId, long createTime, String taskContent,
+                                   int priority) {
         this.sourceKey = sourceKey;
         this.persistent = persistent;
         this.executorTaskType = executorTaskType;
@@ -62,18 +65,47 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.createTime = createTime;
         this.taskId = taskId;
         this.taskContent = taskContent;
+        this.priority = priority;
     }
 
-    public static final Class TYPE = entityType();
-
-    private static Class entityType() {
-        try {
-            return Class.forName("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
+    @Override
+    public int getPriority() {
+        return priority;
     }
 
+    @Override
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    @Override
+    public void setCause(String cause) {
+        this.cause = cause;
+    }
+
+    @Override
+    public String getCause() {
+        return cause;
+    }
+
+    @Override
+    public void setFinishTime(long finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    @Override
+    public long getFinishTime() {
+        return finishTime;
+    }
+
+    @Override
+    public long getStartTime() {
+        return startTime;
+    }
+    @Override
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
     @Override
     public SourceKey getSourceKey() {
         return sourceKey;
@@ -151,6 +183,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
                 ", lockKey='" + lockKey + '\'' +
                 ", dbStatusType=" + dbStatusType +
                 ", statusType=" + statusType +
+                ", priority=" + priority +
                 '}';
     }
 
@@ -189,17 +222,14 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         if (lockType != that.lockType) {
             return false;
         }
+        if (priority != that.priority) {
+            return false;
+        }
         return lockKey != null ? lockKey.equals(that.lockKey) : that.lockKey == null;
     }
 
     @Override
-    public Object convert() {
-        try {
-            Constructor constructor = TYPE.getDeclaredConstructor(ExecutorTask.class);
-            return constructor.newInstance(this);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            return null;
-        }
+    public SwiftExecutorTaskEntity convert() {
+        return new SwiftExecutorTaskEntity(this);
     }
 }

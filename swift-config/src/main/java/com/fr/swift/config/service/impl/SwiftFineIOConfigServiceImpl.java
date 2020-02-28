@@ -1,13 +1,15 @@
 package com.fr.swift.config.service.impl;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.SwiftConfigConstants;
+import com.fr.swift.config.bean.CommonConnectorConfig;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
-import com.fr.swift.config.convert.FineIOConfigConvert;
-import com.fr.swift.config.service.SwiftConfigService;
+import com.fr.swift.config.command.SwiftConfigEntityCommandBus;
+import com.fr.swift.config.command.impl.SwiftConfigEntityCommandBusImpl;
+import com.fr.swift.config.query.SwiftConfigEntityQueryBus;
+import com.fr.swift.config.query.impl.SwiftConfigEntityQueryBusImpl;
 import com.fr.swift.config.service.SwiftFineIOConnectorService;
-import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.repository.exception.RepoNotFoundException;
+import com.fr.swift.cube.io.impl.fineio.connector.CommonConnectorType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,38 +22,32 @@ import java.util.Map;
  */
 @SwiftBean(name = "swiftFineIOConfigServiceImpl")
 public class SwiftFineIOConfigServiceImpl implements SwiftFineIOConnectorService {
-    private SwiftConfigService configService = SwiftContext.get().getBean(SwiftConfigService.class);
-    private Map<Type, List<ConfChangeListener>> changeListeners = new HashMap<Type, List<ConfChangeListener>>();
+    private SwiftConfigEntityCommandBus commandBus = new SwiftConfigEntityCommandBusImpl();
+    private SwiftConfigEntityQueryBus queryBus = new SwiftConfigEntityQueryBusImpl();
 
+    private Map<SwiftConfigConstants.Namespace, List<ConfChangeListener>> changeListeners = new HashMap<>();
 
-    @Override
-    public FineIOConnectorConfig getCurrentConfig(Type type) {
-        FineIOConfigConvert convert = type == Type.CONNECTOR ? FineIOConfigConvert.CONNECTOR : FineIOConfigConvert.PACKAGE;
-        return configService.getConfigBean(convert);
+    public SwiftFineIOConfigServiceImpl() {
+        changeListeners.put(SwiftConfigConstants.Namespace.FINE_IO_PACKAGE, new ArrayList<ConfChangeListener>());
+        changeListeners.put(SwiftConfigConstants.Namespace.FINE_IO_CONNECTOR, new ArrayList<ConfChangeListener>());
     }
 
     @Override
-    public void setCurrentConfig(FineIOConnectorConfig config, Type type) {
-        FineIOConfigConvert convert = type == Type.CONNECTOR ? FineIOConfigConvert.CONNECTOR : FineIOConfigConvert.PACKAGE;
-        FineIOConnectorConfig current = getCurrentConfig(type);
-        if (null != config && !config.equals(current)) {
-            configService.deleteConfigBean(convert, current);
-            configService.updateConfigBean(convert, config);
-            List<ConfChangeListener> confChangeListeners = changeListeners.get(type);
-            for (ConfChangeListener changeListener : confChangeListeners) {
-                try {
-                    changeListener.change(config);
-                } catch (RepoNotFoundException e) {
-                    SwiftLoggers.getLogger().warn("Cannot find default repository config.", e);
-                } catch (Exception e) {
-                    SwiftLoggers.getLogger().error("Cannot set swift repository config.", e);
-                }
-            }
+    public FineIOConnectorConfig getCurrentConfig(SwiftConfigConstants.Namespace type) {
+        return queryBus.select(type, FineIOConnectorConfig.class, new CommonConnectorConfig(CommonConnectorType.LZ4));
+    }
+
+    @Override
+    public void setCurrentConfig(FineIOConnectorConfig config, SwiftConfigConstants.Namespace namespace) {
+        for (ConfChangeListener confChangeListener : changeListeners.get(namespace)) {
+            confChangeListener.change(config);
         }
+        commandBus.delete(namespace);
+        commandBus.merge(namespace, config);
     }
 
     @Override
-    public void registerListener(ConfChangeListener listener, Type type) {
+    public void registerListener(ConfChangeListener listener, SwiftConfigConstants.Namespace type) {
         if (null == changeListeners.get(type)) {
             changeListeners.put(type, new ArrayList<ConfChangeListener>());
         }

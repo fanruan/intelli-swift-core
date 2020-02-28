@@ -1,11 +1,15 @@
 package com.fr.swift.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -273,6 +277,46 @@ public final class ReflectUtils {
             return Optional.of((T) newInstance(clazz, args));
         } catch (Exception e) {
             return Optional.empty();
+        }
+    }
+
+    public static List<Field> getFields(Class<?> clazz, Matcher<Field> matcher) {
+        List<Field> fields = new ArrayList<>();
+        final Field[] declaredFields = clazz.getDeclaredFields();
+        final Field[] clazzFields = clazz.getFields();
+        for (Field declaredField : declaredFields) {
+            if (matcher.matches(declaredField)) {
+                fields.add(declaredField);
+            }
+        }
+
+        for (Field clazzField : clazzFields) {
+            if (matcher.matches(clazzField) && !fields.contains(clazzField)) {
+                fields.add(clazzField);
+            }
+        }
+        return fields;
+    }
+
+    public interface Matcher<T> {
+        boolean matches(T t);
+    }
+
+    public static class AnnotatedElementsMatcher<T extends AnnotatedElement> implements Matcher<T> {
+
+        private Class<? extends Annotation> anno;
+
+        private AnnotatedElementsMatcher(Class<? extends Annotation> anno) {
+            this.anno = anno;
+        }
+
+        public static AnnotatedElementsMatcher of(Class<? extends Annotation> anno) {
+            return new AnnotatedElementsMatcher(anno);
+        }
+
+        @Override
+        public boolean matches(T annotatedElement) {
+            return annotatedElement.isAnnotationPresent(anno);
         }
     }
 }

@@ -8,12 +8,10 @@ import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.impl.SwiftDatabase;
-import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
@@ -58,7 +56,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         this.alloter = alloter;
     }
 
-    private void persistMeta() throws SQLException {
+    protected void persistMeta() throws SQLException {
         Database db = SwiftDatabase.getInstance();
         SourceKey tableKey = dataSource.getSourceKey();
         // todo 分布式导入可能有多线程坑
@@ -76,10 +74,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         try (R resultSet = swiftResultSet) {
             persistMeta();
 
-            int cursor = 0;
-            while (resultSet.hasNext()) {
+            for (int cursor = 0; resultSet.hasNext(); cursor++) {
                 Row row = resultSet.getNextRow();
-                SegmentInfo segInfo = allot(cursor++, row);
+                SegmentInfo segInfo = allot(cursor, row);
 
                 if (!insertings.containsKey(segInfo)) {
                     // 可能有满了的seg
@@ -95,6 +92,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             onFailed();
+            throw e;
         } finally {
             IoUtil.release(this);
         }
@@ -109,11 +107,14 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected abstract Inserting getInserting(SegmentKey segKey);
 
+    /**
+     * 处理满了的块，比如上传历史块或者持久化增量块
+     *
+     * @param segInfo seg info
+     */
     protected abstract void handleFullSegment(SegmentInfo segInfo);
 
-    protected void onSucceed() {
-        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
-    }
+    protected abstract void onSucceed();
 
     protected abstract void onFailed();
 
@@ -142,11 +143,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             IoUtil.release(entry.getValue());
-
             indexIfNeed(entry.getKey());
-
+            // TODO: 2019/10/8 未满历史块不会走
             if (entry.getValue().isFull()) {
-                // 处理满了的块，比如上传历史块或者持久化增量块
                 handleFullSegment(entry.getKey());
             }
             itr.remove();
