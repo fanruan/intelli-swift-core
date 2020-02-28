@@ -59,7 +59,8 @@ public class SwiftInserter extends BaseInserter implements Inserter {
 
     @Override
     public void insertData(Row rowData) {
-        putRow(cursor++, rowData);
+        putRow(cursor, rowData);
+        cursor++;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class SwiftInserter extends BaseInserter implements Inserter {
     @Override
     public void release() {
         try {
-            putNullIndex();
+            putNullIndex(cursor);
             putSegmentInfo(lastCursor, cursor);
         } finally {
             super.release();

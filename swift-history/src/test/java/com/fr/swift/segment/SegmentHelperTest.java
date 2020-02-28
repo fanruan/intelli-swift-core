@@ -171,7 +171,7 @@ public class SegmentHelperTest {
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftCubePathService.class))).andReturn(mockSwiftCubePathService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftTablePathService.class))).andReturn(mockSwiftTablePathService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentLocationService.class))).andReturn(mockSwiftMetaDataService).anyTimes();
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("segmentServiceProvider"), EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService).anyTimes();
         EasyMock.expect(SwiftContext.get()).andReturn(mockSwiftContext).anyTimes();
 
 
@@ -244,7 +244,7 @@ public class SegmentHelperTest {
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftCubePathService.class))).andReturn(mockSwiftCubePathService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftTablePathService.class))).andReturn(mockSwiftTablePathService).anyTimes();
         EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentLocationService.class))).andReturn(mockSwiftMetaDataService).anyTimes();
-        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq("segmentServiceProvider"), EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService).anyTimes();
+        EasyMock.expect(mockSwiftContext.getBean(EasyMock.eq(SwiftSegmentService.class))).andReturn(mockSwiftSegmentService).anyTimes();
         EasyMock.expect(SwiftContext.get()).andReturn(mockSwiftContext).anyTimes();
 
 

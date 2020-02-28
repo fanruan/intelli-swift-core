@@ -1,7 +1,7 @@
 package com.fr.swift.boot.service;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
+import com.fr.swift.beans.annotation.SwiftAutoWired;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.db.Where;
@@ -13,6 +13,7 @@ import com.fr.swift.executor.task.impl.DownloadExecutorTask;
 import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.task.impl.UploadExecutorTask;
+import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
@@ -37,9 +38,12 @@ import java.util.Set;
 @SwiftBean
 @ProxyService(ServiceContext.class)
 public class SwiftServiceContext implements ServiceContext {
-    private AnalyseService analyseService = SwiftContext.get().getBean(AnalyseService.class);
-    private HistoryService historyService = SwiftContext.get().getBean(HistoryService.class);
-    private BaseService baseService = SwiftContext.get().getBean(BaseService.class);
+    @SwiftAutoWired
+    private AnalyseService analyseService;
+    @SwiftAutoWired
+    private HistoryService historyService;
+    @SwiftAutoWired
+    private BaseService baseService;
 
     @Override
     public void cleanMetaCache(String[] sourceKeys) {
@@ -131,5 +135,10 @@ public class SwiftServiceContext implements ServiceContext {
             executorTasks.add(DownloadExecutorTask.ofAllShowIndex(segKey));
         }
         TaskProducer.produceTasks(executorTasks);
+    }
+
+    @Override
+    public void clearQuery(String queryId) throws Exception {
+        QueryCacheBuilder.builder().removeCache(queryId);
     }
 }

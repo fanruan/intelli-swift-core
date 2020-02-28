@@ -13,6 +13,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.event.SegmentEvent;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
@@ -69,7 +70,8 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     @Override
     protected void onSucceed() {
         segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
-        super.onSucceed();
+        SwiftLoggers.getLogger().error("import over, save seg location {}", importSegKeys);
+        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
     }
 
     @Override

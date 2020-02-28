@@ -78,6 +78,12 @@
             <classifier>tests</classifier>
             <type>test-jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-exception-repair</artifactId>
+            <version>${swift.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

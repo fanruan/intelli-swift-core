@@ -65,7 +65,7 @@ public class DropColumnAction extends BaseAlterTableAction {
                 }
             }
             SwiftMetaData newMeta = new SwiftMetaDataBean(oldMeta.getTableName(), columnMetas);
-            CONF_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
+            META_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
         } catch (SwiftMetaDataException e) {
             SwiftLoggers.getLogger().warn("alter meta failed, {}", Util.getRootCauseMessage(e));
         }

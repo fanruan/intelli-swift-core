@@ -9,6 +9,7 @@ import com.fr.swift.basics.handler.InsertSegmentProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.StatusProcessHandler;
 import com.fr.swift.basics.handler.SyncDataProcessHandler;
+import com.fr.swift.basics.handler.UpdateSegmentProcessHandler;
 import com.fr.swift.config.bean.ServerCurrentStatus;
 import com.fr.swift.db.Where;
 import com.fr.swift.result.SwiftResultSet;
@@ -25,9 +26,7 @@ import java.util.Set;
  * This class created on 2019/3/4
  *
  * @author Lucifer
- * @description
- *
- * extends各种service，避免接口不同步
+ * @description extends各种service，避免接口不同步
  */
 public interface ServiceContext {
 
@@ -39,12 +38,11 @@ public interface ServiceContext {
     @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
-    @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
+    @InvokeMethod(value = UpdateSegmentProcessHandler.class, target = Target.ANALYSE)
     void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
 
     @InvokeMethod(value = CommonProcessHandler.class, target = Target.ANALYSE)
     void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
-
 
     /**
      * realtime service methods
@@ -70,7 +68,6 @@ public interface ServiceContext {
 
     @InvokeMethod(StatusProcessHandler.class)
     ServerCurrentStatus currentStatus();
-
 
     //collate service methods
     @InvokeMethod(value = CollateProcessHandler.class)
@@ -101,4 +98,9 @@ public interface ServiceContext {
 
     @InvokeMethod(value = CommonProcessHandler.class, target = {Target.REAL_TIME, Target.HISTORY})
     void downloadAllShow(Set<SegmentKey> segKeys) throws Exception;
+
+    @InvokeMethod(value = CommonProcessHandler.class, target = {Target.ANALYSE})
+    void clearQuery(String queryId) throws Exception;
+
 }
+

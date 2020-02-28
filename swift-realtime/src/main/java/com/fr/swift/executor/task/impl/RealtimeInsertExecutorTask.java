@@ -25,6 +25,6 @@ public class RealtimeInsertExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.VIRTUAL_SEG,
                 Strings.EMPTY,
                 DBStatusType.ACTIVE,
-                new RealtimeInsertJob(sourceKey, resultSet));
+                new RealtimeInsertJob(sourceKey, resultSet), 0);
     }
 }

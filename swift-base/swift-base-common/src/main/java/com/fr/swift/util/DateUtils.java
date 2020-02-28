@@ -10,8 +10,8 @@ import java.util.Date;
  */
 public class DateUtils {
     private static String[] DATE_FORMATS = {
-            "yyyy-MM-dd",
-            "yyyy-MM-dd hh:mm:ss"
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-dd"
     };
     public static Date string2Date(String string) {
         if (Strings.isBlank(string)) {
@@ -59,6 +59,9 @@ public class DateUtils {
             }
         }
 
+        if (null == date && null != obj) {
+            return string2Date(obj.toString());
+        }
         return date;
     }
 }

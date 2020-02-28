@@ -1,5 +1,7 @@
 package com.fr.swift.query.query.funnel;
 
+import com.fr.swift.util.function.Function;
+
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public interface TimeWindowFilter {
      * @param timestamp 时间戳
      * @return 如果已经得到完整步骤，则返回true，否则返回false
      */
-    void add(int event, long timestamp, int associatedValue, Object groupValue, int row);
+    void add(int event, long timestamp, Function<Integer, Integer> associatedValue, Object groupValue, int row);
 
     /**
      * 返回结果

@@ -9,28 +9,28 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
+import com.fr.swift.util.Assert;
 import com.fr.swift.util.Strings;
-import com.fr.swift.util.Util;
 
 /**
  * Created by Lyon on 2017/11/27.
  */
-public class StringLikeFilter extends AbstractDetailFilter<String> {
+public class StringLikeFilter extends AbstractDetailFilter {
 
     private String like;
 
-    public StringLikeFilter(String like, Column<String> column) {
-        Util.requireNonNull(Strings.isEmpty(like) ? null : like);
+    public StringLikeFilter(String like, Column column) {
+        Assert.isFalse(Strings.isEmpty(like));
         this.like = like;
         this.column = column;
     }
 
     @Override
-    protected RowTraversal getIntIterator(DictionaryEncodedColumn<String> dict) {
+    protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
         IntList intList = IntListFactory.createIntList();
         for (int i = 0, size = dict.size(); i < size; i++) {
-            String data = dict.getValue(i);
-            if (data != null && data.contains(like)) {
+            Object data = dict.getValue(i);
+            if (data != null && data.toString().contains(like)) {
                 intList.add(i);
             }
         }

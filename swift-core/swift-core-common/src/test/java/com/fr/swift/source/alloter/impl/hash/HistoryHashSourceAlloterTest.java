@@ -51,7 +51,7 @@ public class HistoryHashSourceAlloterTest {
         when(SwiftContext.get()).thenReturn(beanFactory);
 
         SwiftSegmentService swiftSegmentService = mock(SwiftSegmentService.class);
-        when(beanFactory.getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(swiftSegmentService);
+        when(beanFactory.getBean(SwiftSegmentService.class)).thenReturn(swiftSegmentService);
         when(beanFactory.getBean(SwiftSegmentBucketService.class)).thenReturn(bucketService);
 
         when(swiftSegmentService.tryAppendSegment(ArgumentMatchers.<SourceKey>any(), ArgumentMatchers.<Types.StoreType>any())).thenAnswer(new Answer<SegmentKey>() {

@@ -1,6 +1,7 @@
 package com.fr.swift.repository.manager;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.config.service.SwiftFineIOConnectorService;
 import com.fr.swift.log.SwiftLoggers;
@@ -32,7 +33,7 @@ public class SwiftRepositoryManager {
                     }
                 }
             }
-        }, SwiftFineIOConnectorService.Type.PACKAGE);
+        }, SwiftConfigConstants.Namespace.FINE_IO_PACKAGE);
     }
 
     public static SwiftRepositoryManager getManager() {
@@ -44,7 +45,7 @@ public class SwiftRepositoryManager {
             synchronized (SwiftRepositoryManager.class) {
                 FineIOConnectorConfig config = null;
                 try {
-                    config = SwiftContext.get().getBean(SwiftFineIOConnectorService.class).getCurrentConfig(SwiftFineIOConnectorService.Type.PACKAGE);
+                    config = SwiftContext.get().getBean(SwiftFineIOConnectorService.class).getCurrentConfig(SwiftConfigConstants.Namespace.FINE_IO_PACKAGE);
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().warn("Cannot find repository config. Use default.");
                 }

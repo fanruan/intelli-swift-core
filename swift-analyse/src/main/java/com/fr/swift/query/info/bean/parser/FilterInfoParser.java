@@ -46,8 +46,10 @@ public class FilterInfoParser {
         if (null == bean) {
             return new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW);
         }
-        bean = FilterInfoBeanOptimizer.optimize(bean);
-        bean = FilterInfoBeanSimplify.simple(bean);
+        // TODO: 2019/9/12 多过滤条件性能差到无法跑出结果了。也可能是我不会用吧
+//        bean = FilterInfoBeanOptimizer.optimize(bean);
+        // TODO: 2019/9/12 反正有bug，也不敢说，先注释了吧。
+//        bean = FilterInfoBeanSimplify.simple(bean);
         switch (bean.getType()) {
             case AND:
             case OR:
@@ -96,13 +98,20 @@ public class FilterInfoParser {
             }
             case NUMBER_IN_RANGE: {
                 RangeFilterValueBean valueBean = (RangeFilterValueBean) bean.getFilterValue();
-                ColumnTypeConstants.ClassType classType = getClassType(table, ((NumberInRangeFilterBean) bean).getColumn());
+                ColumnTypeConstants.ClassType classType = null;
+                try {
+                    classType = getClassType(table, ((NumberInRangeFilterBean) bean).getColumn());
+                } catch (RuntimeException e) {
+                    // 这边证明meta中没定义该字段，可能是calField生成的自定义字段，默认用double比较
+                    SwiftLoggers.getLogger().warn(e);
+                    classType = ColumnTypeConstants.ClassType.DOUBLE;
+                }
                 SwiftNumberInRangeFilterValue filterValue = new SwiftNumberInRangeFilterValue();
                 if (valueBean.getStart() != null) {
-                    filterValue.setMin((Number) convert(valueBean.getStart(), classType));
+                    filterValue.setMin(convertNumber(valueBean.getStart(), classType));
                 }
                 if (valueBean.getEnd() != null) {
-                    filterValue.setMax((Number) convert(valueBean.getEnd(), classType));
+                    filterValue.setMax(convertNumber(valueBean.getEnd(), classType));
                 }
                 filterValue.setMinIncluded(valueBean.isStartIncluded());
                 filterValue.setMaxIncluded(valueBean.isEndIncluded());
@@ -225,7 +234,8 @@ public class FilterInfoParser {
         try {
             column = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(columnName);
         } catch (SQLException e) {
-            SwiftLoggers.getLogger(FilterInfoParser.class).error("failed to read metadata of table: " + table.toString());
+            SwiftLoggers.getLogger().error("failed to read metadata of table: {}", table.toString());
+            throw new RuntimeException("failed to read metadata of table: " + table.toString(), e);
         }
         return ColumnTypeUtils.getClassType(column);
     }
@@ -243,5 +253,18 @@ public class FilterInfoParser {
             default:
                 return origin == null ? "" : origin.toString();
         }
+    }
+
+    /**
+     * postQuery的，如果count(字符字段) 只用convert取出来的object是String
+     * 强转成Number会抛异常
+     *
+     * @param origin
+     * @param type
+     * @return
+     */
+    private static Number convertNumber(Object origin, ColumnTypeConstants.ClassType type) {
+        final Object convert = convert(origin, type);
+        return convert instanceof Number ? (Number) convert : Double.parseDouble(convert.toString());
     }
 }

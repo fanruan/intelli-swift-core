@@ -1,7 +1,8 @@
 package com.fr.swift.config;
 
-import com.fr.swift.segment.SegmentKey;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fr.swift.segment.SegmentDestination;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Set;
  * @author yee
  * @date 2018/6/11
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public interface DataSyncRule {
     /**
      * 计算每个节点应该load哪些segment

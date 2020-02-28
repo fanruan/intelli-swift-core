@@ -29,6 +29,15 @@ public class HavingFilterQuery implements Query<QueryResultSet<SwiftNode>> {
         SwiftNodeOperator operator = new SwiftNodeOperator() {
             @Override
             public SwiftNode apply(SwiftNode node) {
+                // 没有分组只有聚合的时候的post过滤
+                if (node.getChildren().isEmpty()) {
+                    for (MatchFilter matchFilter : matchFilterList) {
+                        if (!matchFilter.matches(node)) {
+                            return null;
+                        }
+                    }
+                    return node;
+                }
                 NodeFilter.filter(node, matchFilterList);
                 return node;
             }

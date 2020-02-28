@@ -8,6 +8,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 public class HisSegmentMergerImpl implements HisSegmentMerger {
 
-    private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
     private static final SwiftSegmentLocationService SEG_LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
     private static final SwiftSegmentBucketService BUCKET_SVC = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
     private static final int currentDir = 0;
@@ -58,8 +59,10 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                             SegmentUtils.clearSegment(key);
                         }
                     } catch (Exception ignore) {
+                        SwiftLoggers.getLogger().error("ignore exception", ignore);
                     }
-                    return new ArrayList<SegmentKey>();
+                    SwiftLoggers.getLogger().error("merge", e);
+                    return new ArrayList<>();
                 }
             }
             if (index != LINE_VIRTUAL_INDEX) {

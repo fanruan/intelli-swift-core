@@ -8,6 +8,7 @@ import com.fr.swift.api.info.api.DropRequestInfo;
 import com.fr.swift.api.info.api.InsertRequestInfo;
 import com.fr.swift.api.info.api.QueryRequestInfo;
 import com.fr.swift.api.info.api.TruncateRequestInfo;
+import com.fr.swift.api.info.jdbc.CatalogRequestInfo;
 import com.fr.swift.api.info.jdbc.ColumnsRequestInfo;
 import com.fr.swift.api.info.jdbc.SqlRequestInfo;
 import com.fr.swift.api.info.jdbc.TablesRequestInfo;
@@ -26,6 +27,7 @@ import com.fr.swift.base.json.JsonBuilder;
         @JsonSubTypes.Type(name = "AUTH", value = AuthRequestInfo.class),
         @JsonSubTypes.Type(name = "SQL", value = SqlRequestInfo.class),
         @JsonSubTypes.Type(name = "TABLES", value = TablesRequestInfo.class),
+        @JsonSubTypes.Type(name = "CATALOGS", value = CatalogRequestInfo.class),
         @JsonSubTypes.Type(name = "COLUMNS", value = ColumnsRequestInfo.class),
         @JsonSubTypes.Type(name = "CREATE_TABLE", value = CreateTableRequestInfo.class),
         @JsonSubTypes.Type(name = "DELETE", value = DeleteRequestInfo.class),

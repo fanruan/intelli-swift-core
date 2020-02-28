@@ -10,8 +10,6 @@ import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.cube.io.impl.fineio.connector.ConnectorManager;
 import com.fr.swift.cube.io.impl.fineio.connector.SwiftConnectorCreator;
 import com.fr.swift.repository.SwiftRepository;
-import com.fr.swift.repository.exception.RepoNotFoundException;
-import com.fr.swift.util.Crasher;
 
 import java.io.IOException;
 
@@ -24,12 +22,9 @@ public class SwiftRepositoryImpl implements SwiftRepository {
     private PackageManager packageManager;
 
     public SwiftRepositoryImpl(FineIOConnectorConfig config) {
-        try {
-            packageManager = new ZipPackageManager(ConnectorManager.getInstance().getConnector(),
-                    SwiftConnectorCreator.createPackConnector(config));
-        } catch (Crasher.CrashException e) {
-            throw new RepoNotFoundException(e.getMessage());
-        }
+        Connector connector = ConnectorManager.getInstance().getConnector();
+        packageManager = new ZipPackageManager((com.fineio.storage.v3.Connector) connector,
+                SwiftConnectorCreator.createPackConnector(config));
     }
 
     @Override
@@ -52,7 +47,7 @@ public class SwiftRepositoryImpl implements SwiftRepository {
     @Override
     public boolean copyToRemote(String local, String remote) throws IOException {
         Connector connector = ConnectorManager.getInstance().getConnector();
-        Block block = connector.list(local);
+        Block block = ((com.fineio.storage.v3.Connector) connector).list(local);
         if (block instanceof DirectoryBlock) {
             for (Block file : ((DirectoryBlock) block).getFiles()) {
                 if (file instanceof DirectoryBlock) {
@@ -68,7 +63,7 @@ public class SwiftRepositoryImpl implements SwiftRepository {
     @Override
     public boolean zipToRemote(String local, String remote) throws IOException {
         Connector connector = ConnectorManager.getInstance().getConnector();
-        Block list = connector.list(local);
+        Block list = ((com.fineio.storage.v3.Connector) connector).list(local);
         packageManager.packageDir(remote, list.getPath());
         return true;
     }

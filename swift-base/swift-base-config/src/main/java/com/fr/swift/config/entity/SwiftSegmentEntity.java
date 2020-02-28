@@ -7,6 +7,7 @@ import com.fr.swift.annotation.persistence.Entity;
 import com.fr.swift.annotation.persistence.Enumerated;
 import com.fr.swift.annotation.persistence.Id;
 import com.fr.swift.annotation.persistence.Table;
+import com.fr.swift.config.annotation.DeleteCascade;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftSchema;
@@ -31,10 +32,12 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
 
     @JsonProperty("id")
     @Id
+    @DeleteCascade(target = SwiftSegmentBucketElement.class, column = "unionKey.realSegmentKey")
     private String id;
 
     @JsonProperty(COLUMN_SEGMENT_OWNER)
     @Column(name = COLUMN_SEGMENT_OWNER)
+    @DeleteCascade(target = SwiftSegmentBucketElement.class, column = "unionKey.sourceKey")
     private String segmentOwner;
 
     @JsonProperty(COLUMN_SEGMENT_ORDER)
