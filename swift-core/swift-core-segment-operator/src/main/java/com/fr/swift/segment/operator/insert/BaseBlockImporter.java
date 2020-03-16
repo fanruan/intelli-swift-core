@@ -49,7 +49,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected SwiftTableAllotRuleService swiftTableAllotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
 
-    protected final SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+    protected SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
@@ -63,9 +63,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         if (!db.existsTable(tableKey)) {
             db.createTable(tableKey, dataSource.getMetadata());
         }
-        if (swiftTableAllotRuleService.getAllotRuleByTable(dataSource.getSourceKey()) == null) {
+        if (swiftTableAllotRuleService.getByTale(dataSource.getSourceKey()) == null) {
             SwiftTableAllotRule swiftTableAllotRule = new SwiftTableAllotRule(dataSource.getSourceKey().getId(), alloter.getAllotRule().getType().name(), alloter.getAllotRule());
-            swiftTableAllotRuleService.saveAllotRule(swiftTableAllotRule);
+            swiftTableAllotRuleService.save(swiftTableAllotRule);
         }
     }
 
@@ -121,7 +121,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected abstract void onFailed();
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
-        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftSchema());
+        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
     }
 
     protected void releaseFullIfExists() {

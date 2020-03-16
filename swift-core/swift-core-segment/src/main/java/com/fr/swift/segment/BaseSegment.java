@@ -14,7 +14,6 @@ import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.RelationColumn;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DoubleColumn;
 import com.fr.swift.segment.column.impl.IntColumn;
@@ -22,12 +21,7 @@ import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.StringColumn;
 import com.fr.swift.segment.column.impl.base.IResourceDiscovery;
 import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
-import com.fr.swift.segment.relation.CubeMultiRelation;
-import com.fr.swift.segment.relation.CubeMultiRelationPath;
-import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.IoUtil;
@@ -74,24 +68,6 @@ public abstract class BaseSegment implements Segment {
         }
     }
 
-    @Override
-    public RelationIndex getRelation(CubeMultiRelation relation) {
-        SourceKey primarySourceKey = relation.getPrimaryTable();
-        String relationKey = relation.getKey();
-        return RelationIndexImpl.newRelationIndex(getLocation(), primarySourceKey.getId(), relationKey);
-    }
-
-    @Override
-    public RelationIndex getRelation(CubeMultiRelationPath relationPath) {
-        SourceKey primarySourceKey = relationPath.getStartTable();
-        String relationKey = relationPath.getKey();
-        return RelationIndexImpl.newRelationIndex(getLocation(), primarySourceKey.getId(), relationKey);
-    }
-
-    @Override
-    public RelationIndex getRelation(ColumnKey f, CubeMultiRelationPath relationPath) {
-        return RelationIndexImpl.newFieldRelationIndex(getLocation(), relationPath.getStartTable().getId(), f.getName());
-    }
 
     @Override
     public SwiftMetaData getMetaData() {
@@ -180,10 +156,6 @@ public abstract class BaseSegment implements Segment {
         bitMapWriter = null;
         bitMapReader = null;
         SwiftLoggers.getLogger().debug("swift seg released row count and all show at {}", location.getPath());
-    }
-
-    Column createRelationColumn(ColumnKey key) {
-        return ((RelationColumn) SwiftContext.get().getBean("relationColumn", key)).buildRelationColumn(this);
     }
 
     @Override

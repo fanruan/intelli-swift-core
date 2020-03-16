@@ -1,8 +1,8 @@
 package com.fr.swift.db.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.MetaDataColumnEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.db.impl.AddColumnActionTest.SupplierResultSet;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
@@ -76,7 +76,7 @@ public class DropColumnActionTest {
             }
         }), 25));
 
-        new DropColumnAction(new MetaDataColumnBean("s", Types.VARCHAR)).alter(table);
+        new DropColumnAction(new MetaDataColumnEntity("s", Types.VARCHAR)).alter(table);
 
         table = SwiftDatabase.getInstance().getTable(tableKey);
 
@@ -89,7 +89,7 @@ public class DropColumnActionTest {
     public void dropVoidColumn() throws Exception {
         SourceKey tableKey = new SourceKey(meta.getTableName());
         com.fr.swift.db.Table table = SwiftDatabase.getInstance().createTable(tableKey, meta);
-        new DropColumnAction(new MetaDataColumnBean("voidColumn", Types.BIT)).alter(table);
+        new DropColumnAction(new MetaDataColumnEntity("voidColumn", Types.BIT)).alter(table);
 
         table = SwiftDatabase.getInstance().getTable(tableKey);
         Assert.assertEquals(2, table.getMeta().getColumnCount());
@@ -120,10 +120,10 @@ public class DropColumnActionTest {
         String s;
 
         static SwiftMetaData getMeta() {
-            return new SwiftMetaDataBean("A",
+            return new SwiftMetaDataEntity("A",
                     Arrays.<SwiftMetaDataColumn>asList(
-                            new MetaDataColumnBean("l", Types.BIGINT),
-                            new MetaDataColumnBean("s", Types.VARCHAR)));
+                            new MetaDataColumnEntity("l", Types.BIGINT),
+                            new MetaDataColumnEntity("s", Types.VARCHAR)));
         }
     }
 }

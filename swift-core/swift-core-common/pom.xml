@@ -5,16 +5,33 @@
     <parent>
         <artifactId>swift-core</artifactId>
         <groupId>com.fr.intelligence</groupId>
-        <version>2019.1</version>
+        <version>2020.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-core-common</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-io</artifactId>
+            <version>${swift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fr.intelligence</groupId>
+            <artifactId>swift-base-common</artifactId>
             <version>${swift.version}</version>
         </dependency>
     </dependencies>

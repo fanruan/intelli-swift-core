@@ -2,17 +2,18 @@ package com.fr.swift.config.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.swift.annotation.persistence.Column;
-import com.fr.swift.annotation.persistence.Entity;
-import com.fr.swift.annotation.persistence.Enumerated;
-import com.fr.swift.annotation.persistence.Id;
-import com.fr.swift.annotation.persistence.Table;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER;
@@ -43,13 +44,13 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
 
     @JsonProperty(COLUMN_STORE_TYPE)
     @Column(name = COLUMN_STORE_TYPE)
-    @Enumerated(Enumerated.EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private Types.StoreType storeType;
 
     @JsonProperty("swiftSchema")
     @Column(name = "swiftSchema")
-    @Enumerated(Enumerated.EnumType.STRING)
-    private SwiftSchema swiftSchema;
+    @Enumerated(EnumType.STRING)
+    private SwiftDatabase swiftSchema;
 
     public SwiftSegmentEntity() {
     }
@@ -58,7 +59,7 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema());
     }
 
-    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftSchema swiftSchema) {
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
         id = getId(segmentOwner, segmentOrder, storeType);
         this.segmentOwner = segmentOwner.getId();
         this.segmentOrder = segmentOrder;
@@ -119,11 +120,11 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     @Override
-    public SwiftSchema getSwiftSchema() {
+    public SwiftDatabase getSwiftSchema() {
         return swiftSchema;
     }
 
-    public void setSwiftSchema(SwiftSchema swiftSchema) {
+    public void setSwiftSchema(SwiftDatabase swiftSchema) {
         this.swiftSchema = swiftSchema;
     }
 

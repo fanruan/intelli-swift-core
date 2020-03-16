@@ -1,8 +1,6 @@
 package com.fr.swift.query.info.bean.parser;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.config.entity.SwiftColumnIndexingConf;
-import com.fr.swift.config.service.IndexingConfService;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.query.group.Groups;
 import com.fr.swift.query.group.impl.NoGroupRule;
@@ -35,7 +33,6 @@ class DimensionParser {
      * TODO: 2018/6/7 解析各类bean过程中相关参数的合法性校验以及相关异常处理规范
      */
     static List<Dimension> parse(SourceKey table, List<DimensionBean> dimensionBeans, List<SortBean> sortBeans) {
-        IndexingConfService service = SwiftContext.get().getBean(IndexingConfService.class);
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0; i < dimensionBeans.size(); i++) {
             DimensionBean dimensionBean = dimensionBeans.get(i);
@@ -45,27 +42,25 @@ class DimensionParser {
             if (sortBean != null) {
                 sort = sortBean.getType() == SortType.ASC ? new AscSort(i) : new DescSort(i);
             }
-            SwiftColumnIndexingConf conf = service.getColumnConf(table, dimensionBean.getColumn());
             switch (dimensionBean.getType()) {
                 case GROUP:
                     dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
-                            new IndexInfoImpl(conf.isRequireIndex(), conf.isRequireGlobalDict())));
+                            new IndexInfoImpl(true, true)));
                     break;
                 case GROUP_FORMULA:
                     dimensions.add(new GroupFormulaDimension(i, Groups.newGroup(new NoGroupRule()), sort, FormulaParser.parse(dimensionBean.getFormula())));
                     break;
                 case DETAIL:
                     dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
-                            new IndexInfoImpl(conf.isRequireIndex(), conf.isRequireGlobalDict())));
+                            new IndexInfoImpl(true, true)));
                     break;
                 case DETAIL_ALL_COLUMN: {
-                    SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(table.getId());
+                    SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMeta(table);
                     List<String> fields = meta.getFieldNames();
                     for (int n = 0; n < fields.size(); n++) {
-                        SwiftColumnIndexingConf conf1 = service.getColumnConf(table, fields.get(n));
                         dimensions.add(new DetailDimension(n, new ColumnKey(fields.get(n)),
                                 Groups.newGroup(new NoGroupRule()), sort,
-                                new IndexInfoImpl(conf1.isRequireIndex(), conf1.isRequireGlobalDict())));
+                                new IndexInfoImpl(true, true)));
                     }
                     break;
                 }

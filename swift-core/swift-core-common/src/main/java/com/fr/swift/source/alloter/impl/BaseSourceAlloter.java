@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> implements SwiftSourceAlloter<A, R>, Cloneable {
 
-    protected static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-    protected static final SwiftSegmentBucketService BUCKET_SVC = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
+    protected final SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
+    protected final SwiftSegmentBucketService bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
 
     protected SourceKey tableKey;
 

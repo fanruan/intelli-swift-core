@@ -2,8 +2,14 @@ package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.storage.Connector;
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.ConfigInputUtil;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftFineIOConnectorService;
+import com.fr.swift.cube.io.impl.fineio.connector.config.CommonConnectorConfig;
+import com.fr.swift.log.SwiftLoggers;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * @author yee
@@ -13,16 +19,11 @@ public class SwiftConnectorManager implements IConnectorManager {
     private volatile static SwiftConnectorManager instance;
     private SwiftCubePathService pathService = SwiftContext.get().getBean(SwiftCubePathService.class);
     private ConnectorProvider provider = SwiftContext.get().getBean(ConnectorProvider.class);
-    private SwiftFineIOConnectorService fineIOConnectorService = SwiftContext.get().getBean(SwiftFineIOConnectorService.class);
     private volatile Connector connector;
+    private static String FINEIO_TPYE = "LZ4";
 
     private SwiftConnectorManager() {
-        pathService.registerPathChangeListener(new SwiftCubePathService.PathChangeListener() {
-            @Override
-            public void changed(String path) {
-                connector = null;
-            }
-        });
+        pathService.registerPathChangeListener(path -> connector = null);
     }
 
     public static SwiftConnectorManager getInstance() {
@@ -33,18 +34,24 @@ public class SwiftConnectorManager implements IConnectorManager {
             if (null != instance) {
                 return instance;
             }
+            try (InputStream in = ConfigInputUtil.getConfigInputStream("public.conf")) {
+                Properties properties = new Properties();
+                properties.load(in);
+                FINEIO_TPYE = properties.getProperty("fineio.type");
+            } catch (IOException e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+
             instance = new SwiftConnectorManager();
         }
         return instance;
     }
 
-
-    @Override
     public Connector getConnector() {
         if (null == connector) {
             synchronized (this) {
                 if (null == connector) {
-                    connector = provider.apply(fineIOConnectorService.getCurrentConfig(SwiftFineIOConnectorService.Type.CONNECTOR));
+                    connector = provider.apply(new CommonConnectorConfig(CommonConnectorType.valueOf(FINEIO_TPYE.toUpperCase())));
                 }
             }
         }

@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class ScheduledRealtimeTransfer implements Runnable {
     private static final int MIN_PUT_THRESHOLD = LineAllotRule.MEM_STEP / 2;
 
-    private final SwiftSegmentManager localSegments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private final SwiftSegmentManager localSegments = SwiftContext.get().getBean(SwiftSegmentManager.class);
 
     private ScheduledRealtimeTransfer() {
         SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(getClass())).

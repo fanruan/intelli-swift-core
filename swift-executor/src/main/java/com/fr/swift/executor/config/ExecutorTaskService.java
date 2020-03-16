@@ -14,15 +14,17 @@ import java.util.Set;
  */
 public interface ExecutorTaskService {
 
-    boolean saveOrUpdate(final ExecutorTask executorTask) throws SQLException;
+    void save(final ExecutorTask executorTask) throws SQLException;
 
-    boolean batchSaveOrUpdate(final Set<ExecutorTask> executorTasks) throws SQLException;
+    void update(final ExecutorTask executorTask) throws SQLException;
+
+    void batchSave(final Set<ExecutorTask> executorTasks) throws SQLException;
 
     List<ExecutorTask> getActiveTasksBeforeTime(long time);
 
     List<ExecutorTask> getRemoteActiveTasksBeforeTime(long time);
 
-    boolean deleteTask(final ExecutorTask executorTask);
+    void delete(final ExecutorTask executorTask);
 
-    ExecutorTask getExecutorTask(String taskId);
+    ExecutorTask get(String taskId);
 }

@@ -17,8 +17,6 @@ import com.fr.swift.query.info.bean.element.filter.impl.NotFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NullFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.NumberInRangeFilterBean;
 import com.fr.swift.query.info.bean.element.filter.impl.value.RangeFilterValueBean;
-import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanOptimizer;
-import com.fr.swift.query.info.bean.parser.optimize.FilterInfoBeanSimplify;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;

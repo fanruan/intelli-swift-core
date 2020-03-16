@@ -1,8 +1,8 @@
 package com.fr.swift.db;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.MetaDataColumnEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SwiftSegmentManager;
@@ -39,8 +39,8 @@ public class TableTest {
             db.dropTable(sk);
         }
 
-        t = db.createTable(sk, new SwiftMetaDataBean(sk.getId(),
-                Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("A", Types.DATE))));
+        t = db.createTable(sk, new SwiftMetaDataEntity(sk.getId(),
+                Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnEntity("A", Types.DATE))));
     }
 
     private void checkResult() {

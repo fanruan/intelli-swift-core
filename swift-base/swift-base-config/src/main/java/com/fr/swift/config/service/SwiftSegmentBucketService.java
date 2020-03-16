@@ -14,5 +14,8 @@ public interface SwiftSegmentBucketService {
 
     SwiftSegmentBucket getBucketByTable(SourceKey sourceKey);
 
-    boolean saveElement(SwiftSegmentBucketElement element);
+    void save(SwiftSegmentBucketElement element);
+
+    void delete(SwiftSegmentBucketElement element);
+
 }

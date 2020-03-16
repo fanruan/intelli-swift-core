@@ -24,7 +24,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 public abstract class AbstractSegmentRecovery implements SegmentRecovery {
-    protected SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    protected SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean(SwiftSegmentManager.class);
 
     @Override
     public void recover(SourceKey tableKey) {

@@ -42,7 +42,7 @@ class BaseQueryBuilder {
 
     static List<Segment> filterQueryInfo(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         SourceKey table = queryInfo.getTable();
-        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(table);
+        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getByTale(table);
         SwiftSegmentBucket swiftSegmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(table);
         switch (queryInfo.getType()) {
             case GROUP:
