@@ -67,6 +67,7 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     @Override
     protected void onSucceed() {
         segLocationSvc.saveOnNode(SwiftProperty.getProperty().getMachineId(), new HashSet<>(importSegKeys));
+        segmentService.addSegments(importSegKeys);
         SwiftLoggers.getLogger().debug("import over, save seg location {}", importSegKeys);
         SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
     }

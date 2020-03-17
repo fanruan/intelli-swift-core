@@ -1,0 +1,36 @@
+package com.fr.swift.segment;
+
+import com.fr.swift.annotation.service.InnerService;
+import com.fr.swift.source.SourceKey;
+
+import java.util.List;
+import java.util.Set;
+
+/**
+ * @author lucifer
+ * @date 2020/3/17
+ * @description
+ * @since swift 1.1
+ */
+@InnerService
+public interface SegmentService {
+
+    void addSegment(SegmentKey segmentKey);
+
+    void addSegments(List<SegmentKey> segmentKeys);
+
+    Segment getSegment(SegmentKey key);
+
+    List<Segment> getSegments(SourceKey tableKey);
+
+    List<Segment> getSegments(Set<String> segKeys);
+
+    List<SegmentKey> getSegmentKeys(SourceKey tableKey);
+
+    boolean exist(SegmentKey segmentKey);
+
+    SegmentKey removeSegment(SegmentKey segmentKey);
+
+    List<SegmentKey> removeSegments(List<SegmentKey> segmentKeys);
+
+}

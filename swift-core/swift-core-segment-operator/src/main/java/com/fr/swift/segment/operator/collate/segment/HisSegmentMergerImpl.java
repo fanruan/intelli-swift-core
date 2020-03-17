@@ -9,7 +9,6 @@ import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -19,7 +18,6 @@ import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,8 +26,7 @@ import java.util.List;
  */
 public class HisSegmentMergerImpl implements HisSegmentMerger {
 
-    private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-    private static final SwiftSegmentLocationService SEG_LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+    private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
     private static final SwiftSegmentBucketService BUCKET_SVC = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
     private static final int currentDir = 0;
     private static final int LINE_VIRTUAL_INDEX = -1;
@@ -51,7 +48,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                     builder.build();
                     SegmentUtils.releaseHisSeg(segment);
-                    SEG_LOCATION_SVC.saveOnNode(SwiftProperty.getProperty().getMachineId(), Collections.singleton(segKey));
+//                    SEG_LOCATION_SVC.saveOnNode(SwiftProperty.getProperty().getMachineId(), Collections.singleton(segKey));
                 } catch (Throwable e) {
                     try {
                         SegmentUtils.releaseHisSeg(segment);

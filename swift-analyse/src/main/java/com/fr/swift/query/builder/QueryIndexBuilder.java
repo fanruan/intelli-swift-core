@@ -13,7 +13,7 @@ import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.LocalIndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -62,12 +62,12 @@ public class QueryIndexBuilder {
 
     static class Builder implements LocalDetailIndexQueryBuilder {
 
-        private final SwiftSegmentManager localSegmentProvider = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+        private final SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
         @Override
         public Map<URI, IndexQuery<ImmutableBitMap>> buildLocalQuery(DetailQueryInfo info) {
             Map<URI, IndexQuery<ImmutableBitMap>> queries = new HashMap<URI, IndexQuery<ImmutableBitMap>>();
-            List<Segment> segments = localSegmentProvider.getSegmentsByIds(info.getTable(), info.getQuerySegment());
+            List<Segment> segments = segmentService.getSegments(info.getQuerySegment());
             for (Segment segment : segments) {
                 queries.put(segment.getLocation().getUri(), buildLocalQuery(info, segment));
             }

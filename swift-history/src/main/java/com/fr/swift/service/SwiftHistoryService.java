@@ -7,8 +7,8 @@ import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 
 import java.io.Serializable;
@@ -23,17 +23,17 @@ import java.util.List;
 public class SwiftHistoryService extends AbstractSwiftService implements HistoryService, Serializable {
     private static final long serialVersionUID = -6013675740141588108L;
 
-    private transient SwiftSegmentManager segmentManager;
+    private transient SegmentService segmentService;
 
-    private transient SwiftSegmentService segmentService;
+    private transient SwiftSegmentService swiftSegmentService;
 
     private transient SwiftSegmentLocationService segLocationSvc;
 
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        segmentManager = SwiftContext.get().getBean(SwiftSegmentManager.class);
-        segmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
+        segmentService = SwiftContext.get().getBean(SegmentService.class);
+        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
         segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         return true;
     }
@@ -41,8 +41,8 @@ public class SwiftHistoryService extends AbstractSwiftService implements History
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
-        segmentManager = null;
         segmentService = null;
+        swiftSegmentService = null;
         segLocationSvc = null;
         return true;
     }

@@ -6,7 +6,7 @@ import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -106,7 +106,7 @@ public class AddColumnActionTest {
     }
 
     private void checkSeg(com.fr.swift.db.Table table) {
-        List<Segment> segs = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(table.getSourceKey());
+        List<Segment> segs = SwiftContext.get().getBean(SegmentService.class).getSegments(table.getSourceKey());
         for (Segment seg : segs) {
             int rowCount = seg.getRowCount();
             com.fr.swift.segment.column.Column<Object> column = seg.getColumn(new ColumnKey("d"));

@@ -45,14 +45,14 @@ class DimensionParser {
             switch (dimensionBean.getType()) {
                 case GROUP:
                     dimensions.add(new GroupDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
-                            new IndexInfoImpl(true, true)));
+                            new IndexInfoImpl(true, false)));
                     break;
                 case GROUP_FORMULA:
                     dimensions.add(new GroupFormulaDimension(i, Groups.newGroup(new NoGroupRule()), sort, FormulaParser.parse(dimensionBean.getFormula())));
                     break;
                 case DETAIL:
                     dimensions.add(new DetailDimension(i, columnKey, Groups.newGroup(new NoGroupRule()), sort,
-                            new IndexInfoImpl(true, true)));
+                            new IndexInfoImpl(true, false)));
                     break;
                 case DETAIL_ALL_COLUMN: {
                     SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMeta(table);
@@ -60,7 +60,7 @@ class DimensionParser {
                     for (int n = 0; n < fields.size(); n++) {
                         dimensions.add(new DetailDimension(n, new ColumnKey(fields.get(n)),
                                 Groups.newGroup(new NoGroupRule()), sort,
-                                new IndexInfoImpl(true, true)));
+                                new IndexInfoImpl(true, false)));
                     }
                     break;
                 }

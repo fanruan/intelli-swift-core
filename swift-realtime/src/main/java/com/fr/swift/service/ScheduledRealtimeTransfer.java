@@ -8,7 +8,7 @@ import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.TransferRealtimeListener.TransferRealtimeEventData;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class ScheduledRealtimeTransfer implements Runnable {
     private static final int MIN_PUT_THRESHOLD = LineAllotRule.MEM_STEP / 2;
 
-    private final SwiftSegmentManager localSegments = SwiftContext.get().getBean(SwiftSegmentManager.class);
+    private final SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
     private ScheduledRealtimeTransfer() {
         SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(getClass())).
@@ -35,12 +35,12 @@ public class ScheduledRealtimeTransfer implements Runnable {
     @Override
     public void run() {
         for (final Table table : SwiftDatabase.getInstance().getAllTables()) {
-            for (final SegmentKey segKey : localSegments.getSegmentKeys(table.getSourceKey())) {
+            for (final SegmentKey segKey : segmentService.getSegmentKeys(table.getSourceKey())) {
                 try {
                     if (segKey.getStoreType().isPersistent()) {
                         continue;
                     }
-                    Segment realtimeSeg = localSegments.getSegment(segKey);
+                    Segment realtimeSeg = segmentService.getSegment(segKey);
                     if (realtimeSeg.isReadable() && realtimeSeg.getAllShowIndex().getCardinality() >= MIN_PUT_THRESHOLD) {
                         SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofPassive(segKey));
                     }

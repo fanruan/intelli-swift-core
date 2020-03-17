@@ -7,7 +7,7 @@ import com.fr.swift.db.Where;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 
@@ -24,20 +24,19 @@ public class SwiftDeleteService extends AbstractSwiftService implements DeleteSe
 
     private static final long serialVersionUID = 1;
 
-    private transient SwiftSegmentManager segmentManager;
+    private transient SegmentService segmentService;
 
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-
+        segmentService = SwiftContext.get().getBean(SegmentService.class);
         return true;
     }
 
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
-        segmentManager = null;
+        segmentService = null;
 
         return true;
     }
@@ -45,10 +44,10 @@ public class SwiftDeleteService extends AbstractSwiftService implements DeleteSe
     @Override
     public boolean delete(final SourceKey tableKey, final Where where) {
         boolean success = true;
-        List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
+        List<SegmentKey> segmentKeys = segmentService.getSegmentKeys(tableKey);
 
         for (SegmentKey segKey : segmentKeys) {
-            if (!segmentManager.existsSegment(segKey)) {
+            if (!segmentService.exist(segKey)) {
                 continue;
             }
 

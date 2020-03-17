@@ -8,7 +8,7 @@ import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.source.SwiftMetaData;
@@ -36,7 +36,7 @@ public class DropColumnAction extends BaseAlterTableAction {
         }
         SwiftLoggers.getLogger().info("drop column {} of {}", relatedColumnMeta, table);
 
-        List<SegmentKey> segKeys = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegmentKeys(table.getSourceKey());
+        List<SegmentKey> segKeys = SwiftContext.get().getBean(SegmentService.class).getSegmentKeys(table.getSourceKey());
         for (final SegmentKey segKey : segKeys) {
             if (segKey.getStoreType().isTransient()) {
                 // 删内存

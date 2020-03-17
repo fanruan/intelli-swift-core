@@ -13,6 +13,7 @@ import com.fr.swift.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.local.LocalUrl;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
@@ -29,6 +30,7 @@ import com.fr.swift.structure.Pair;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -59,9 +61,9 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         final String methodName = method.getName();
 
         final CountDownLatch latch = new CountDownLatch(pairs.size());
-        final List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<QueryResultSet<?>>());
+        final List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<>());
         for (final Pair<URL, Set<String>> pair : pairs) {
-            queryBean.setSegments(pair.getValue() == null ? Collections.<String>emptySet() : pair.getValue());
+            queryBean.setSegments(pair.getValue() == null ? Collections.emptySet() : pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
             final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
             RpcFuture<?> rpcFuture = (RpcFuture<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, query);
@@ -123,6 +125,6 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
 
     @Override
     public List<Pair<URL, Set<String>>> processUrl(Target[] targets, Object... args) {
-        return null;
+        return Collections.singletonList(new Pair<>(new LocalUrl(), new HashSet()));
     }
 }

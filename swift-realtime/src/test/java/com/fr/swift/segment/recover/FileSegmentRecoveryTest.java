@@ -6,7 +6,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.SwiftMetaData;
 import org.junit.Test;
@@ -41,8 +41,8 @@ public class FileSegmentRecoveryTest {
     public void recover() throws Exception {
         mockStatic(SwiftContext.class);
         when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
-        SwiftSegmentManager segmentManager = mock(SwiftSegmentManager.class);
-        when(SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class)).thenReturn(segmentManager);
+        SegmentService segmentManager = mock(SegmentService.class);
+        when(SwiftContext.get().getBean(SegmentService.class)).thenReturn(segmentManager);
 
         Segment realtimeSeg = mock(Segment.class);
         SegmentKey segKey = mock(SegmentKey.class);
