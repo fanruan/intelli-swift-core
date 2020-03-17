@@ -1,7 +1,5 @@
 package com.fr.swift.segment.container;
 
-import com.fr.swift.converter.FindList;
-import com.fr.swift.converter.FindListImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -96,18 +94,12 @@ public enum SegmentContainer {
 
     private List<Segment> createSegments(List<SegmentKey> list, final Integer tmpPath) {
         try {
-            Collections.sort(list, new Comparator<SegmentKey>() {
-                @Override
-                public int compare(SegmentKey o1, SegmentKey o2) {
-                    return o1.getOrder() - o2.getOrder();
-                }
-            });
-            return new FindListImpl<Segment>(list).forEach(new FindList.ConvertEach<SegmentKey, Segment>() {
-                @Override
-                public Segment forEach(int idx, SegmentKey segmentKey) throws Exception {
-                    return SegmentUtils.newSegment(segmentKey, tmpPath);
-                }
-            });
+            Collections.sort(list, Comparator.comparingInt(SegmentKey::getOrder));
+            List<Segment> segments = new ArrayList<>();
+            for (SegmentKey segmentKey : list) {
+                segments.add(SegmentUtils.newSegment(segmentKey, tmpPath));
+            }
+            return segments;
         } catch (Exception e) {
             return Collections.emptyList();
         }

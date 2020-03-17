@@ -11,8 +11,8 @@ import com.fr.swift.source.SourceKey;
  */
 public interface SwiftTableAllotRuleService {
 
-    SwiftTableAllotRule getAllotRuleByTable(SourceKey sourceKey);
+    SwiftTableAllotRule getByTale(SourceKey sourceKey);
 
-    boolean saveAllotRule(SwiftTableAllotRule swiftTableAllotRule);
+    void save(SwiftTableAllotRule swiftTableAllotRule);
 
 }

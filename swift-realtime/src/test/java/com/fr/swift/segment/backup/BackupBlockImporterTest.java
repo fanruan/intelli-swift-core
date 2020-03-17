@@ -80,6 +80,6 @@ public class BackupBlockImporterTest {
         // verify new Inserting
         assertEquals(proxyInserter, Whitebox.getInternalState(inserting, "inserter"));
         assertEquals(backupSeg, Whitebox.getInternalState(inserting, "seg"));
-        assertEquals(1, Whitebox.getInternalState(inserting, "rowCount"));
+        assertEquals(1, (int) Whitebox.getInternalState(inserting, "rowCount"));
     }
 }

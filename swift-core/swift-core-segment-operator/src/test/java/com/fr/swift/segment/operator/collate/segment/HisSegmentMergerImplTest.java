@@ -10,8 +10,7 @@ import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.db.SwiftSchema;
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
@@ -54,7 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({SwiftContext.class, SwiftDatabase.class, SegmentUtils.class})
+@PrepareForTest({SwiftContext.class, com.fr.swift.db.impl.SwiftDatabase.class, SegmentUtils.class})
 public class HisSegmentMergerImplTest {
 
     @Before
@@ -73,7 +72,7 @@ public class HisSegmentMergerImplTest {
             public SegmentKey answer(InvocationOnMock invocation) throws Throwable {
                 SourceKey tableKey = invocation.getArgument(0);
                 Types.StoreType storeType = invocation.getArgument(1);
-                return new SwiftSegmentEntity(tableKey, order++, storeType, SwiftSchema.CUBE);
+                return new SwiftSegmentEntity(tableKey, order++, storeType, SwiftDatabase.CUBE);
             }
         });
 
@@ -93,7 +92,7 @@ public class HisSegmentMergerImplTest {
         when(dataSource.getSourceKey()).thenReturn(tableKey);
         SwiftMetaData metaData = mock(SwiftMetaData.class);
         when(dataSource.getMetadata()).thenReturn(metaData);
-        when(metaData.getSwiftSchema()).thenReturn(SwiftSchema.CUBE);
+        when(metaData.getSwiftDatabase()).thenReturn(SwiftDatabase.CUBE);
         when(metaData.getFieldNames()).thenReturn(Collections.singletonList("a"));
 
         Segment testSeg0 = mock(Segment.class);

@@ -1,12 +1,12 @@
 package com.fr.swift.config.entity;
 
-import com.fr.swift.annotation.persistence.Column;
-import com.fr.swift.annotation.persistence.Embeddable;
-import com.fr.swift.annotation.persistence.Entity;
-import com.fr.swift.annotation.persistence.Id;
-import com.fr.swift.annotation.persistence.Table;
 import com.fr.swift.source.SourceKey;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**

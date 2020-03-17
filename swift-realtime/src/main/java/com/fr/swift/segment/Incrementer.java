@@ -4,6 +4,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
@@ -45,10 +46,8 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     @Override
     protected void onSucceed() {
         for (SegmentKey importSegKey : importSegKeys) {
-            if (!segLocationSvc.containsLocal(importSegKey)) {
-                // 不存在则更新seg location
-                segLocationSvc.saveOrUpdateLocal(Collections.singleton(importSegKey));
-            }
+            // 不存在则更新seg location
+            segLocationSvc.saveOnNode(SwiftProperty.getProperty().getMachineId(), Collections.singleton(importSegKey));
         }
         if (!importSegKeys.isEmpty()) {
             // 发送-1，告诉查询节点，本节点已有该表增量块

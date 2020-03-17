@@ -1,6 +1,6 @@
 package com.fr.swift.source.resultset.importing.file.impl;
 
-import com.fr.swift.base.meta.MetaDataColumnBean;
+import com.fr.swift.config.entity.MetaDataColumnEntity;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
@@ -125,19 +125,19 @@ public abstract class BaseFileLineParser implements FileLineParser {
             }
             if (isSkipFirstLine()) {
                 if (col.matches(NUMBER_REG)) {
-                    columns.add(new MetaDataColumnBean(columnNameSplit.getValue(i).toString(), Types.DOUBLE));
+                    columns.add(new MetaDataColumnEntity(columnNameSplit.getValue(i).toString(), Types.DOUBLE));
                 } else if (isDate) {
-                    columns.add(new MetaDataColumnBean(columnNameSplit.getValue(i).toString(), Types.DATE));
+                    columns.add(new MetaDataColumnEntity(columnNameSplit.getValue(i).toString(), Types.DATE));
                 } else {
-                    columns.add(new MetaDataColumnBean(columnNameSplit.getValue(i).toString(), Types.VARCHAR));
+                    columns.add(new MetaDataColumnEntity(columnNameSplit.getValue(i).toString(), Types.VARCHAR));
                 }
             } else {
                 if (col.matches(NUMBER_REG)) {
-                    columns.add(new MetaDataColumnBean(String.format("Number%d", i), Types.DOUBLE));
+                    columns.add(new MetaDataColumnEntity(String.format("Number%d", i), Types.DOUBLE));
                 } else if (isDate) {
-                    columns.add(new MetaDataColumnBean(String.format("Date%d", i), Types.DATE));
+                    columns.add(new MetaDataColumnEntity(String.format("Date%d", i), Types.DATE));
                 } else {
-                    columns.add(new MetaDataColumnBean(String.format("Varchar%d", i), Types.VARCHAR));
+                    columns.add(new MetaDataColumnEntity(String.format("Varchar%d", i), Types.VARCHAR));
                 }
             }
         }

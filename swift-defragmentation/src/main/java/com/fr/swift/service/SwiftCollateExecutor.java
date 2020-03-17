@@ -1,30 +1,19 @@
 package com.fr.swift.service;
 
-import com.fr.swift.ClusterNodeService;
 import com.fr.swift.SwiftContext;
-import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.entity.SwiftServiceInfoEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.SwiftServiceInfoService;
-import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.selector.ClusterSelector;
 import com.fr.swift.service.executor.CollateExecutor;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -44,8 +33,6 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private SwiftSegmentService swiftSegmentService;
 
-    private SwiftServiceInfoService serviceInfoService = SwiftContext.get().getBean(SwiftServiceInfoService.class);
-
     private static DateFormat DATE_FORMAT = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
     private static DateFormat DAY_FORMAT = new SimpleDateFormat("yy-MM-dd");
     private static long ONE_DAY = 24 * 60 * 60 * 1000;
@@ -61,7 +48,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
             executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
             executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
 //            executorService.scheduleWithFixedDelay(this, 20, 100000, TimeUnit.SECONDS);
-            swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+            swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
         }
     }
 
@@ -88,34 +75,34 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
         try {
 
             //DEC-7562 collate触发的时候，查一下数据库自己是不是master，避免依然间隙存在2个master同时触发
-            if (ClusterSelector.getInstance().getFactory().isCluster()) {
-                String masterId = ClusterSelector.getInstance().getFactory().getMasterId();
-                List<SwiftServiceInfoEntity> masterServiceInfoEntityList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
-                if (!masterServiceInfoEntityList.isEmpty()) {
-                    SwiftServiceInfoEntity masterServiceEntity = masterServiceInfoEntityList.get(0);
-                    if (!masterServiceEntity.getClusterId().equals(masterId)) {
-                        SwiftLoggers.getLogger().error(String.format("Config master is %s,but self master is %s! Skip this collate task!", masterServiceEntity.getClusterId(), masterId));
-                        return;
-                    }
-                }
-            }
+//            if (ClusterSelector.getInstance().getFactory().isCluster()) {
+//                String masterId = ClusterSelector.getInstance().getFactory().getMasterId();
+//                List<SwiftServiceInfoEntity> masterServiceInfoEntityList = serviceInfoService.getServiceInfoByService(ClusterNodeService.SERVICE);
+//                if (!masterServiceInfoEntityList.isEmpty()) {
+//                    SwiftServiceInfoEntity masterServiceEntity = masterServiceInfoEntityList.get(0);
+//                    if (!masterServiceEntity.getClusterId().equals(masterId)) {
+//                        SwiftLoggers.getLogger().error(String.format("Config master is %s,but self master is %s! Skip this collate task!", masterServiceEntity.getClusterId(), masterId));
+//                        return;
+//                    }
+//                }
+//            }
 
             try {
-                Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getAllSegments();
-                for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
-                    List<SegmentKey> keys = new ArrayList<SegmentKey>();
-                    for (SegmentKey key : tableEntry.getValue()) {
-                        if (key.getStoreType().isTransient()) {
-                            continue;
-                        }
-                        keys.add(key);
-                    }
-                    if (!keys.isEmpty()) {
-                        // TODO: 2019/9/12 先改成凌晨2点触发，单线程同步跑，防止宕机先
-//                        SwiftContext.get().getBean(CollateService.class).appointCollate(tableEntry.getKey(), keys);
-                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
-                    }
-                }
+//                Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getAllSegments();
+//                for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
+//                    List<SegmentKey> keys = new ArrayList<SegmentKey>();
+//                    for (SegmentKey key : tableEntry.getValue()) {
+//                        if (key.getStoreType().isTransient()) {
+//                            continue;
+//                        }
+//                        keys.add(key);
+//                    }
+//                    if (!keys.isEmpty()) {
+//                        // TODO: 2019/9/12 先改成凌晨2点触发，单线程同步跑，防止宕机先
+////                        SwiftContext.get().getBean(CollateService.class).appointCollate(tableEntry.getKey(), keys);
+//                        ProxySelector.getProxy(ServiceContext.class).appointCollate(tableEntry.getKey(), keys);
+//                    }
+//                }
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }

@@ -44,9 +44,6 @@ public class CacheColumnSegment extends BaseSegment {
                 return (Column<T>) column;
             }
         } catch (SwiftMetaDataColumnAbsentException e) {
-            if (key.getRelation() != null) {
-                return createRelationColumn(key);
-            }
             SwiftLoggers.getLogger().error("getColumn failed", e);
             return null;
         } catch (Exception e) {

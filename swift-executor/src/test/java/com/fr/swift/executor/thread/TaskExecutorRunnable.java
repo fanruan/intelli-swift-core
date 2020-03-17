@@ -81,16 +81,11 @@ public class TaskExecutorRunnable {
         Assert.assertNull(taskExecuteRunnable.getExecutorTask());
         Assert.assertEquals(taskExecuteRunnable.getThreadName(), "testThread");
         Assert.assertTrue(taskExecuteRunnable.isIdle());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                taskExecuteRunnable.run();
-            }
-        }).start();
+        new Thread(() -> taskExecuteRunnable.run()).start();
         Thread.sleep(100l);
         Mockito.verify(executorJob).run();
         Mockito.verify(executorJob).get();
-        executorTaskService.deleteTask(task1);
+        executorTaskService.delete(task1);
         Mockito.verify(jobListener).onDone(true);
         Assert.assertEquals(ConsumeQueue.getInstance().size(), 0);
     }

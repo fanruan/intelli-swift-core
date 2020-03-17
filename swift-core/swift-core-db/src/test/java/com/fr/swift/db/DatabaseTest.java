@@ -1,7 +1,7 @@
 package com.fr.swift.db;
 
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.MetaDataColumnEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
@@ -33,12 +33,12 @@ public class DatabaseTest {
     @Test
     public void tableOpFlow() throws SQLException {
         List<SwiftMetaDataColumn> columnMetas = Arrays.<SwiftMetaDataColumn>asList(
-                new MetaDataColumnBean("A", Types.VARCHAR),
-                new MetaDataColumnBean("B", Types.DATE),
-                new MetaDataColumnBean("C", Types.INTEGER)
+                new MetaDataColumnEntity("A", Types.VARCHAR),
+                new MetaDataColumnEntity("B", Types.DATE),
+                new MetaDataColumnEntity("C", Types.INTEGER)
         );
         SourceKey tableKey = new SourceKey("a");
-        SwiftMetaData meta = new SwiftMetaDataBean("a", columnMetas);
+        SwiftMetaData meta = new SwiftMetaDataEntity("a", columnMetas);
 
         if (db.existsTable(tableKey)) {
             db.dropTable(tableKey);

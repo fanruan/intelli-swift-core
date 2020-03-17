@@ -7,6 +7,7 @@ import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
@@ -65,7 +66,7 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
 
     @Override
     protected void onSucceed() {
-        segLocationSvc.saveOrUpdateLocal(new HashSet<>(importSegKeys));
+        segLocationSvc.saveOnNode(SwiftProperty.getProperty().getMachineId(), new HashSet<>(importSegKeys));
         SwiftLoggers.getLogger().debug("import over, save seg location {}", importSegKeys);
         SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
     }

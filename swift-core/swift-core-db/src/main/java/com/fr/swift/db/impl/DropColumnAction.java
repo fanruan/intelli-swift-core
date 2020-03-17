@@ -1,7 +1,7 @@
 package com.fr.swift.db.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Table;
@@ -64,8 +64,8 @@ public class DropColumnAction extends BaseAlterTableAction {
                     columnMetas.add(columnMeta);
                 }
             }
-            SwiftMetaData newMeta = new SwiftMetaDataBean(oldMeta.getTableName(), columnMetas);
-            CONF_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
+            SwiftMetaData newMeta = new SwiftMetaDataEntity(oldMeta.getTableName(), columnMetas);
+            CONF_SVC.updateMeta(newMeta);
         } catch (SwiftMetaDataException e) {
             SwiftLoggers.getLogger().warn("alter meta failed, {}", Util.getRootCauseMessage(e));
         }

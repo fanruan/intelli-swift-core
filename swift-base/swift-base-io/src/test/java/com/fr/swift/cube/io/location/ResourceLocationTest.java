@@ -3,11 +3,9 @@ package com.fr.swift.cube.io.location;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftCubePathService.PathChangeListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -41,27 +39,24 @@ public class ResourceLocationTest {
         final SwiftCubePathService pathService = mock(SwiftCubePathService.class);
         when(SwiftContext.get().getBean(SwiftCubePathService.class)).thenReturn(pathService);
         when(pathService.getSwiftPath()).thenReturn("1", "q");
-        final PathChangeListener[] pathChangeListener = {null};
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                pathChangeListener[0] = invocation.getArgument(0);
-                return null;
-            }
-        }).when(pathService).registerPathChangeListener(any(PathChangeListener.class));
+        final SwiftCubePathService.PathChangeListener[] pathChangeListener = {null};
+        doAnswer((Answer<Void>) invocation -> {
+            pathChangeListener[0] = invocation.getArgument(0);
+            return null;
+        }).when(pathService).registerPathChangeListener(any(SwiftCubePathService.PathChangeListener.class));
 
         new ResourceLocation("a");
 
-        assertThat(Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("1");
+        assertThat((String) Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("1");
 
         new ResourceLocation("b");
 
-        assertThat(Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("1");
+        assertThat((String) Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("1");
 
         pathChangeListener[0].changed("2");
 
         new ResourceLocation("c");
 
-        assertThat(Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("2");
+        assertThat((String) Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("2");
     }
 }

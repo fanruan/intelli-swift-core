@@ -1,8 +1,9 @@
 package com.fr.swift.config.entity.key;
 
-import com.fr.swift.annotation.persistence.Column;
-import com.fr.swift.annotation.persistence.Embeddable;
 import com.fr.swift.source.SourceKey;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 
 /**
