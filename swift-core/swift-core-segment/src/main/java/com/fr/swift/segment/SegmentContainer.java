@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author yee
@@ -46,7 +45,7 @@ public enum SegmentContainer implements SegmentService {
     @Override
     public void addSegment(SegmentKey segmentKey) {
         segmentKeyMap.put(segmentKey.getId(), segmentKey);
-        tableMap.computeIfAbsent(segmentKey.getTable(), n -> Stream.of(segmentKey).collect(Collectors.toSet()));
+        tableMap.computeIfAbsent(segmentKey.getTable(), n -> new HashSet<>()).add(segmentKey);
     }
 
     @Override
@@ -84,19 +83,18 @@ public enum SegmentContainer implements SegmentService {
 
     @Override
     public boolean exist(SegmentKey segmentKey) {
-        return segmentKeyMap.containsKey(segmentKey);
+        return segmentKeyMap.containsKey(segmentKey.getId());
     }
 
     @Override
     public SegmentKey removeSegment(SegmentKey segmentKey) {
-        SegmentKey removedSegmentKey = segmentKeyMap.remove(segmentKey);
-        tableMap.getOrDefault(segmentKey.getTable(), new HashSet<>())
-                .removeIf(s -> removedSegmentKey != null);
+        SegmentKey removedSegmentKey = segmentKeyMap.remove(segmentKey.getId());
+        tableMap.getOrDefault(segmentKey.getTable(), new HashSet<>()).remove(removedSegmentKey);
         return removedSegmentKey;
     }
 
     @Override
     public List<SegmentKey> removeSegments(List<SegmentKey> segmentKeys) {
-        return segmentKeys.stream().map(this::removeSegment).filter(s -> s == null).collect(Collectors.toList());
+        return segmentKeys.stream().map(this::removeSegment).filter(s -> s != null).collect(Collectors.toList());
     }
 }

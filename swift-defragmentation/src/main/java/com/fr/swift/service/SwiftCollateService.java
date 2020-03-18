@@ -146,7 +146,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             List<Segment> segments = getSegmentsByKeys(collateSegKeys);
             if (!collateSegKeys.isEmpty() && segments.isEmpty()) {
                 // 要合并的块全部标记删除了
-                clearCollatedSegment(collateSegKeys, tableKey);
+                clearCollatedSegment(collateSegKeys);
                 continue;
             }
             List<SegmentKey> newSegmentKeys = merger.merge(table, segments, alloter, classifiedFragmentEntry.getKey());
@@ -157,9 +157,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             }
             locationService.saveOnNode(SwiftProperty.getProperty().getMachineId(), new HashSet<>(newSegmentKeys));
             segmentService.addSegments(newSegmentKeys);
-            segmentService.removeSegments(collateSegKeys);
             fireUploadHistory(newSegmentKeys);
-            clearCollatedSegment(collateSegKeys, tableKey);
+            clearCollatedSegment(collateSegKeys);
             SwiftLoggers.getLogger().info("Finish collate ! Collated segs: {} ; New segs: {}", collateSegKeys.toString(), newSegmentKeys);
         }
     }
@@ -185,9 +184,10 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, newKeys);
     }
 
-    private void clearCollatedSegment(final List<SegmentKey> collateSegKeys, final SourceKey tableKey) {
-        segLocationSvc.deleteOnNode(SwiftProperty.getProperty().getMachineId(), new HashSet<>(collateSegKeys));
+    private void clearCollatedSegment(final List<SegmentKey> collateSegKeys) {
         swiftSegmentService.delete(collateSegKeys);
+        segmentService.removeSegments(collateSegKeys);
+
         CommonExecutor.get().execute(() -> {
             for (SegmentKey collateSegKey : collateSegKeys) {
                 SegmentUtils.clearSegment(collateSegKey);
