@@ -4,11 +4,9 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.swift.util.function.Function;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -57,15 +55,12 @@ public class QueryCacheBuilder {
 
     public QueryCache getOrBuildCache(QueryBean queryBean) {
         SwiftLoggers.getLogger().debug("get queryCache [{}]!", queryBean.getQueryId());
-        final QueryCache value = new QueryCache(queryBean, new Function<QueryBean, QueryResultSet>() {
-            @Override
-            public QueryResultSet apply(QueryBean queryBean) {
-                try {
-                    final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
-                    return serviceContext.getQueryResult(QueryBeanFactory.queryBean2String(queryBean));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+        final QueryCache value = new QueryCache(queryBean, q -> {
+            try {
+                final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
+                return serviceContext.getQueryResult(QueryBeanFactory.queryBean2String(q));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         });
         QueryCache queryCache = cacheContainer.putIfAbsent(queryBean.getQueryId(), value);

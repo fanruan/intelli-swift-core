@@ -6,7 +6,7 @@ import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.db.impl.AddColumnActionTest.SupplierResultSet;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.source.ListBasedRow;
@@ -101,7 +101,7 @@ public class DropColumnActionTest {
     }
 
     private void checkSeg(com.fr.swift.db.Table table) {
-        List<Segment> segs = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(table.getSourceKey());
+        List<Segment> segs = SwiftContext.get().getBean(SegmentService.class).getSegments(table.getSourceKey());
         for (Segment seg : segs) {
             Assert.assertNull(seg.getColumn(new ColumnKey("s")));
         }

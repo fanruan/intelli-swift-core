@@ -1,5 +1,6 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.annotation.service.DbService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * @author yee
  * @date 2018/6/6
  */
+@DbService
 public interface SwiftMetaDataService {
 
     void saveMeta(SwiftMetaData meta);

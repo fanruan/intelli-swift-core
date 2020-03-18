@@ -36,7 +36,7 @@ public class SwiftSegmentBucketServiceImpl implements SwiftSegmentBucketService 
         }
 
         for (SwiftSegmentBucketElement bucketElement : bucketElements) {
-            List<SegmentKey> segmentKey = swiftSegmentService.getOwnSegments(new SourceKey(bucketElement.getRealSegmentKey()));
+            List<SegmentKey> segmentKey = swiftSegmentService.getOwnSegments(new SourceKey(bucketElement.getSourceKey()));
             swiftSegmentBucket.put(bucketElement.getBucketIndex(), segmentKey.get(0));
         }
         return swiftSegmentBucket;

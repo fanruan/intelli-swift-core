@@ -11,7 +11,7 @@ import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.backup.AllShowIndexBackup;
 
 /**
@@ -23,7 +23,7 @@ import com.fr.swift.segment.backup.AllShowIndexBackup;
  */
 public class RealtimeSwiftDeleter implements WhereDeleter {
 
-    private static final SwiftSegmentManager LOCAL_SEGS = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private static final SegmentService LOCAL_SEGS = SwiftContext.get().getBean(SegmentService.class);
 
     private SegmentKey segKey;
 

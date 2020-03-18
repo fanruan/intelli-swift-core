@@ -12,6 +12,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
@@ -50,6 +51,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected SwiftTableAllotRuleService swiftTableAllotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
 
     protected SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+
+    protected SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;

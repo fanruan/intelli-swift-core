@@ -10,8 +10,8 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.collate.segment.SegmentBuilder;
@@ -26,7 +26,7 @@ import java.util.Collections;
 public class SegmentTransfer {
     private static final SwiftSegmentLocationService SEG_LOCATION_SVC = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
-    private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+    private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
 
     protected SegmentKey realtSegKey;
 
@@ -64,7 +64,7 @@ public class SegmentTransfer {
     private void onSucceed() {
         remove(realtSegKey);
         SEG_LOCATION_SVC.saveOnNode(SwiftProperty.getProperty().getMachineId(), Collections.singleton(histSegKey));
-        SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(histSegKey);
+        SwiftContext.get().getBean(SegmentService.class).getSegment(histSegKey);
         SwiftLoggers.getLogger().info("seg transferred from {} to {}", realtSegKey, histSegKey);
 
         SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.REMOVE_SEG, Collections.singletonList(realtSegKey));

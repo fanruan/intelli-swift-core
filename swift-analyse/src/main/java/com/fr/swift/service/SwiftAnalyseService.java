@@ -13,7 +13,7 @@ import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -44,7 +44,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     private void cacheSegments() throws SwiftMetaDataException {
         SwiftSegmentService segmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
         SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
-        SwiftSegmentManager manager = SwiftContext.get().getBean(SwiftSegmentManager.class);
+        SegmentService manager = SwiftContext.get().getBean(SegmentService.class);
         for (SwiftMetaData metadata : metaDataService.getAllMetas()) {
             List<SegmentKey> segmentKeys = segmentService.getOwnSegments(new SourceKey(metadata.getTableName()));
             for (SegmentKey segmentKey : segmentKeys) {
