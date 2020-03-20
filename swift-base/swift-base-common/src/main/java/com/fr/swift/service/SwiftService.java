@@ -1,7 +1,6 @@
 package com.fr.swift.service;
 
 import com.fr.swift.annotation.service.OuterService;
-import com.fr.swift.exception.SwiftServiceException;
 
 /**
  * @author pony
@@ -15,7 +14,7 @@ public interface SwiftService {
      * 启动服务
      *
      * @return 是否成功
-     * @throws SwiftServiceException ex
+     * @throws Exception ex
      */
     boolean start() throws Exception;
 
@@ -23,7 +22,7 @@ public interface SwiftService {
      * 关闭服务
      *
      * @return 是否成功
-     * @throws SwiftServiceException ex
+     * @throws Exception ex
      */
     boolean shutdown() throws Exception;
 
