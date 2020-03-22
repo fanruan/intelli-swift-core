@@ -1,5 +1,7 @@
 package com.fr.swift.service;
 
+import com.fr.swift.annotation.service.InnerService;
+
 /**
  * This class created on 2018/8/7
  *
@@ -7,6 +9,7 @@ package com.fr.swift.service;
  * @description
  * @since Advanced FineBI 5.0
  */
+@InnerService
 public interface ServerService {
 
     public void startServerService() throws Exception;

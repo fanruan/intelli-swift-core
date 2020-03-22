@@ -1,29 +1,30 @@
 package com.fr.swift.service;
 
-import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.annotation.service.OuterService;
 
 /**
  * @author pony
  * @date 2017/10/10
  * swift的服务
  */
+@OuterService
 public interface SwiftService {
 
     /**
      * 启动服务
      *
      * @return 是否成功
-     * @throws SwiftServiceException ex
+     * @throws Exception ex
      */
-    boolean start() throws SwiftServiceException;
+    boolean start() throws Exception;
 
     /**
      * 关闭服务
      *
      * @return 是否成功
-     * @throws SwiftServiceException ex
+     * @throws Exception ex
      */
-    boolean shutdown() throws SwiftServiceException;
+    boolean shutdown() throws Exception;
 
     /**
      * 服务的类型。

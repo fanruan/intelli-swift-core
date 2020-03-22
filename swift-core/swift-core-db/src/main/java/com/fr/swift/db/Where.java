@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.Segment;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * @author anchore
  * @date 2018/3/26
  */
-public interface Where {
+public interface Where extends Serializable {
 
     /**
      * 获取过滤信息
@@ -22,7 +23,8 @@ public interface Where {
 
     /**
      * 创建符合条件的BitMap
-     * @param table 表
+     *
+     * @param table   表
      * @param segment 数据块
      * @return
      * @throws Exception

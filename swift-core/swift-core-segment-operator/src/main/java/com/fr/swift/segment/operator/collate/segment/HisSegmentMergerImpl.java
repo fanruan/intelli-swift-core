@@ -3,7 +3,6 @@ package com.fr.swift.segment.operator.collate.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
-import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
@@ -35,7 +34,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
     public List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter, int index) {
         AllotRule rule = alloter.getAllotRule();
         Partitioner partitioner = new LinePartitioner(rule.getCapacity());
-        List<SegmentKey> segmentKeys = new ArrayList<SegmentKey>();
+        List<SegmentKey> segmentKeys = new ArrayList<>();
         List<String> fields = dataSource.getMetadata().getFieldNames();
         List<SegmentItem> items = partitioner.partition(segments);
         try {
@@ -48,7 +47,6 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                     builder.build();
                     SegmentUtils.releaseHisSeg(segment);
-//                    SEG_LOCATION_SVC.saveOnNode(SwiftProperty.getProperty().getMachineId(), Collections.singleton(segKey));
                 } catch (Throwable e) {
                     try {
                         SegmentUtils.releaseHisSeg(segment);
