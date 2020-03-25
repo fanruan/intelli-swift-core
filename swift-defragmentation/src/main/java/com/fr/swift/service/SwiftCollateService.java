@@ -41,9 +41,12 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class created on 2018/7/9
@@ -98,8 +101,48 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
-    public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeyList) throws Exception {
-        collateSegments(tableKey, segmentKeyList);
+    public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeysList) throws Exception {
+        Set<SegmentKey> segmentKeysSet = segmentKeysList.stream().collect(Collectors.toSet());
+
+        SwiftSegmentBucketService bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
+        Map<SegmentKey, Integer> bucketIndexMap = bucketService.getBucketByTable(tableKey).getBucketIndexMap();
+
+        Map<Integer, List<SegmentKey>> segKeysByBucketMap = new HashMap<>();
+        for (Map.Entry<SegmentKey, Integer> entry : bucketIndexMap.entrySet()) {
+            int bucketIndex = entry.getValue();
+            segKeysByBucketMap.putIfAbsent(bucketIndex, new ArrayList<SegmentKey>());
+            if (segmentKeysSet.contains(entry.getKey())) {
+                segKeysByBucketMap.get(bucketIndex).add(entry.getKey());
+            }
+        }
+
+        Map<Integer, List<SegmentKey>> collateMap = new HashMap<>();
+
+        for (Map.Entry<Integer, List<SegmentKey>> entry : segKeysByBucketMap.entrySet()) {
+            int bucketIndex = entry.getKey();
+            List<SegmentKey> segmentKeyList = entry.getValue();
+            if (segmentKeyList.size() >= SwiftFragmentFilter.FRAGMENT_NUMBER) {
+                collateMap.computeIfAbsent(bucketIndex, k -> new ArrayList<>()).addAll(segmentKeyList);
+            }
+        }
+        for (Map.Entry<Integer, List<SegmentKey>> bucketListEntry : collateMap.entrySet()) {
+            try {
+                //分批collate，一批 5 - 100 块
+                List<SegmentKey> allSegmentKeyList = bucketListEntry.getValue();
+                if (allSegmentKeyList.size() < SwiftFragmentFilter.MAX_FRAGMENT_NUMBER) {
+                    collateSegments(tableKey, allSegmentKeyList);
+                } else {
+                    int batch = allSegmentKeyList.size() / SwiftFragmentFilter.MAX_FRAGMENT_NUMBER;
+                    int count = 0;
+                    for (; count < batch; count++) {
+                        collateSegments(tableKey, allSegmentKeyList.subList(count * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER, (count + 1) * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER));
+                    }
+                    collateSegments(tableKey, allSegmentKeyList.subList(count * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER, allSegmentKeyList.size()));
+                }
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+        }
     }
 
     @Override

@@ -15,12 +15,14 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.source.alloter.impl.BaseAllotRule;
 import com.fr.swift.source.alloter.impl.hash.HashAllotRule;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +109,11 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
                     set = orSet;
                 }
             } else {
+                int logicOrder = getMultiHashKeyVirtualOrder(table, childrenFilterInfoList);
+                if (logicOrder != ALL_SEGMENT) {
+                    set.add(logicOrder);
+                    return set;
+                }
                 for (FilterInfo filter : childrenFilterInfoList) {
                     set.addAll(getIndexSet(filter, table));
                 }
@@ -117,7 +124,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         } else if (filterInfo instanceof SwiftDetailFilterInfo) {
             if (((SwiftDetailFilterInfo) filterInfo).getType() == SwiftDetailFilterType.IN) {
                 // getVirtualOrder
-                set.addAll(getVirtualOrder((SwiftDetailFilterInfo) filterInfo, table));
+                set.addAll(getSingleHashKeyVirtualOrder((SwiftDetailFilterInfo) filterInfo, table));
             } else {
                 //所有都要查
                 set.add(ALL_SEGMENT);
@@ -129,17 +136,46 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return set;
     }
 
-    private Set<Integer> getVirtualOrder(SwiftDetailFilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
+    private int getMultiHashKeyVirtualOrder(SourceKey table, List<FilterInfo> childrenFilterInfoList) throws SwiftMetaDataException {
+        AllotRule allotRule = this.tableAllotRule.getAllotRule();
+        HashAllotRule hashAllotRule = (HashAllotRule) allotRule;
+        int hashKeyCount = hashAllotRule.getFieldIndexes().size();
+        Map<String, Object> filterInfoMap = new HashMap<>();
+        if (childrenFilterInfoList.size() == hashKeyCount) {
+            for (FilterInfo filterInfo : childrenFilterInfoList) {
+                if (!(filterInfo instanceof SwiftDetailFilterInfo)) {
+                    return ALL_SEGMENT;
+                } else {
+                    SwiftDetailFilterInfo filter = (SwiftDetailFilterInfo) filterInfo;
+                    filterInfoMap.put(filter.getColumnKey().getName(), ((HashSet) filter.getFilterValue()).toArray()[0]);
+                }
+            }
+            List<String> hashKeyList = new ArrayList<>(hashKeyCount);
+            SwiftMetaData metadata = SwiftDatabase.getInstance().getTable(table).getMetadata();
+            for (Object fieldIndex : hashAllotRule.getFieldIndexes()) {
+                int index = ((Number) fieldIndex).intValue() + 1;
+                hashKeyList.add(metadata.getColumn(index).getName());
+            }
+            if (hashKeyList.containsAll(filterInfoMap.keySet())) {
+                List keys = new ArrayList();
+                for (String hashKey : hashKeyList) {
+                    keys.add(filterInfoMap.get(hashKey));
+                }
+                return hashAllotRule.getHashFunction().indexOf(keys);
+            }
+        }
+        return ALL_SEGMENT;
+    }
+
+    private Set<Integer> getSingleHashKeyVirtualOrder(SwiftDetailFilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
         //获取hash后对应桶中的segments
         AllotRule allotRule = this.tableAllotRule.getAllotRule();
         Set<Object> filterValues = (Set<Object>) filterInfo.getFilterValue();
-
         HashAllotRule hashAllotRule = (HashAllotRule) allotRule;
         //计算所有字段名
-        int hashFieldIndex = hashAllotRule.getFieldIndex();
+        int hashFieldIndex = ((Number) hashAllotRule.getFieldIndexes().get(0)).intValue();
         SwiftMetaDataColumn swiftMetaDataColumn = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(hashFieldIndex + 1);
         String hashColumnName = swiftMetaDataColumn.getName(); //hash字段名
-
         if (filterInfo.getColumnKey().getName().equals(hashColumnName)) {
             //计算索引值 key的order 根据filterValue计算
             Set<Integer> hashIndexSet = new HashSet<Integer>();

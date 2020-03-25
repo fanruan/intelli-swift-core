@@ -29,6 +29,9 @@ public class CommonSegmentFilter extends AbstractSegmentFilter {
         List<Segment> segmentList = new ArrayList<Segment>();
         List<SegmentKey> segmentKeyList = new ArrayList<SegmentKey>();
         for (Integer hashKey : virtualOrders) {
+            if (bucketMap.get(hashKey) == null) {
+                continue;
+            }
             segmentKeyList.addAll(bucketMap.get(hashKey));
         }
         for (SegmentKey segmentKey : segmentKeyList) {

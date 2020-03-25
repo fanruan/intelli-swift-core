@@ -26,6 +26,8 @@ public class SwiftDeleteService extends AbstractSwiftService implements DeleteSe
 
     private transient SwiftSegmentManager segmentManager;
 
+    private List<SegmentKey> segmentKeys;
+
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
@@ -44,9 +46,10 @@ public class SwiftDeleteService extends AbstractSwiftService implements DeleteSe
 
     @Override
     public boolean delete(final SourceKey tableKey, final Where where) {
+        if (segmentKeys == null) {
+            segmentKeys = segmentManager.getSegmentKeys(tableKey);
+        }
         boolean success = true;
-        List<SegmentKey> segmentKeys = segmentManager.getSegmentKeys(tableKey);
-
         for (SegmentKey segKey : segmentKeys) {
             if (!segmentManager.existsSegment(segKey)) {
                 continue;
@@ -67,5 +70,9 @@ public class SwiftDeleteService extends AbstractSwiftService implements DeleteSe
     @Override
     public ServiceType getServiceType() {
         return ServiceType.DELETE;
+    }
+
+    public void setSegmentKeys(List<SegmentKey> segmentKeys) {
+        this.segmentKeys = segmentKeys;
     }
 }

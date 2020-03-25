@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+
 /**
  * @author lucifer
  * @date 2019-06-27
@@ -28,7 +30,7 @@ public class RealtimeHashSourceAlloterTest extends HistoryHashSourceAlloterTest 
         RealtimeHashSourceAlloter alloter = new RealtimeHashSourceAlloter(new SourceKey("a"), new HashAllotRule());
 
         TimeHashFunction timeHashFunction = new TimeHashFunction();
-        RealtimeHashSourceAlloter alloter2 = new RealtimeHashSourceAlloter(new SourceKey("b"), new HashAllotRule(0, timeHashFunction));
+        RealtimeHashSourceAlloter alloter2 = new RealtimeHashSourceAlloter(new SourceKey("b"), new HashAllotRule(Collections.singletonList(0), timeHashFunction));
 
         HashRowInfo hashRowInfo1 = new HashRowInfo(new ListBasedRow(0));
         HashRowInfo hashRowInfo2 = new HashRowInfo(new ListBasedRow(1));
