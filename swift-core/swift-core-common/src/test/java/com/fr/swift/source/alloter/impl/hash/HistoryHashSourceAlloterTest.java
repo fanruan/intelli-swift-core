@@ -73,7 +73,7 @@ public class HistoryHashSourceAlloterTest {
         HistoryHashSourceAlloter alloter = new HistoryHashSourceAlloter(new SourceKey("a"), new HashAllotRule());
 
         TimeHashFunction timeHashFunction = new TimeHashFunction();
-        HistoryHashSourceAlloter alloter2 = new HistoryHashSourceAlloter(new SourceKey("b"), new HashAllotRule(Collections.singletonList(0), timeHashFunction));
+        HistoryHashSourceAlloter alloter2 = new HistoryHashSourceAlloter(new SourceKey("b"), new HashAllotRule(new int[]{0}, timeHashFunction));
 
         HashRowInfo hashRowInfo1 = new HashRowInfo(new ListBasedRow(0));
         HashRowInfo hashRowInfo2 = new HashRowInfo(new ListBasedRow(1));

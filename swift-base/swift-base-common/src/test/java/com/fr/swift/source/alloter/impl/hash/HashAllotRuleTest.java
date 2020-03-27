@@ -23,7 +23,7 @@ public class HashAllotRuleTest {
         Assert.assertTrue(hashAllotRule.getHashFunction() instanceof HashFunction);
         Assert.assertEquals(hashAllotRule.getCapacity(), 10000000);
 
-        hashAllotRule = new HashAllotRule(Collections.singletonList(0), 16, 1000);
+        hashAllotRule = new HashAllotRule(new int[]{0}, 16, 1000);
         Assert.assertEquals(hashAllotRule.getCapacity(), 1000);
 
     }

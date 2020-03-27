@@ -25,12 +25,7 @@ public class LinePartitioner implements Partitioner {
     @Override
     public List<SegmentItem> partition(List<Segment> segments) {
         // 先排序 从低到高
-        Collections.sort(segments, new Comparator<Segment>() {
-            @Override
-            public int compare(Segment o1, Segment o2) {
-                return o1.getAllShowIndex().getCardinality() - o2.getAllShowIndex().getCardinality();
-            }
-        });
+        segments.sort(Comparator.comparingInt(o -> o.getAllShowIndex().getCardinality()));
         List<ImmutableBitMap> allShows = new ArrayList<ImmutableBitMap>();
         for (Segment segment : segments) {
             allShows.add(segment.getAllShowIndex());

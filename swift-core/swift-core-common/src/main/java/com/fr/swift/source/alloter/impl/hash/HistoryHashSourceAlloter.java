@@ -8,6 +8,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,12 +23,13 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
 
     @Override
     protected int getLogicOrder(HashRowInfo rowInfo) {
-        List keys = new ArrayList();
-        for (Object fieldIndex : rule.getFieldIndexes()) {
-            keys.add(rowInfo.getRow().getValue(((Number) fieldIndex).intValue()));
+        // TODO: 2020/3/26 不用每次都进行计算
+        List<Object> keys = new ArrayList<>();
+        int[] fieldIndexes = rule.getFieldIndexes();
+        for (int fieldIndex : fieldIndexes) {
+            keys.add(rowInfo.getRow().getValue(fieldIndex));
         }
-        int index = rule.getHashFunction().indexOf(keys);
-        return index;
+        return rule.getHashFunction().indexOf(keys);
     }
 
     @Override

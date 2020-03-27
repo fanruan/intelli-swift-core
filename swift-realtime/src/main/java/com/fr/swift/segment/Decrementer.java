@@ -1,12 +1,19 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.config.service.SwiftSegmentService;
+import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
-import com.fr.swift.segment.operator.delete.RealtimeSwiftDeleter;
-import com.fr.swift.segment.operator.delete.SwiftWhereDeleter;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
+import com.fr.swift.source.SourceKey;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018/7/4
@@ -18,20 +25,39 @@ import com.fr.swift.segment.operator.delete.WhereDeleter;
 @SwiftBean(name = "decrementer")
 @SwiftScope("prototype")
 public class Decrementer implements WhereDeleter {
-    private SegmentKey segKey;
 
-    public Decrementer(SegmentKey segKey) {
-        this.segKey = segKey;
+    private SourceKey tableKey;
+
+    private final SwiftSegmentService swiftSegmentService;
+
+    public Decrementer(SourceKey tableKey) {
+        this.tableKey = tableKey;
+        swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
     }
 
     @Override
-    public ImmutableBitMap delete(Where where) throws Exception {
-        WhereDeleter whereDeleter;
-        if (segKey.getStoreType().isTransient()) {
-            whereDeleter = new RealtimeSwiftDeleter(segKey);
-        } else {
-            whereDeleter = new SwiftWhereDeleter(segKey);
+    public Map<SegmentKey, ImmutableBitMap> delete(Where where) throws Exception {
+        List<SegmentKey> removeSegList = new ArrayList<>();
+        Table table = SwiftDatabase.getInstance().getTable(tableKey);
+        Map<SegmentKey, ImmutableBitMap> indexAfterFilterMap = where.createWhereIndex(table);
+        for (Map.Entry<SegmentKey, ImmutableBitMap> entry : indexAfterFilterMap.entrySet()) {
+            SegmentKey segKey = entry.getKey();
+            Segment seg = SegmentUtils.newSegment(segKey);
+            ImmutableBitMap indexAfterFilter = entry.getValue();
+            ImmutableBitMap originAllShowIndex = seg.getAllShowIndex();
+            ImmutableBitMap allShowIndex = originAllShowIndex.getAndNot(indexAfterFilter);
+            seg.putAllShowIndex(allShowIndex);
+            if (allShowIndex.getCardinality() == 0) {
+                removeSegList.add(segKey);
+            }
+            if (seg.isHistory()) {
+                seg.release();
+            }
         }
-        return whereDeleter.delete(where);
+        if (!removeSegList.isEmpty()) {
+            swiftSegmentService.removeSegments(removeSegList);
+            SegmentUtils.clearSegments(removeSegList);
+        }
+        return indexAfterFilterMap;
     }
 }

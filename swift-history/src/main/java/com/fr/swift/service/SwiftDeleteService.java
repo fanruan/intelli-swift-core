@@ -6,13 +6,8 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author anchore
@@ -20,59 +15,37 @@ import java.util.List;
  */
 @SwiftService(name = "swiftDeleteService")
 @SwiftBean(name = "swiftDeleteService")
-public class SwiftDeleteService extends AbstractSwiftService implements DeleteService, Serializable {
+public class SwiftDeleteService extends AbstractSwiftService implements DeleteService {
 
-    private static final long serialVersionUID = 1;
-
-    private transient SwiftSegmentManager segmentManager;
-
-    private List<SegmentKey> segmentKeys;
+    private static final long serialVersionUID = 3658186285116833374L;
 
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
-
         return true;
     }
 
     @Override
     public boolean shutdown() throws SwiftServiceException {
         super.shutdown();
-        segmentManager = null;
-
         return true;
     }
 
     @Override
     public boolean delete(final SourceKey tableKey, final Where where) {
-        if (segmentKeys == null) {
-            segmentKeys = segmentManager.getSegmentKeys(tableKey);
-        }
         boolean success = true;
-        for (SegmentKey segKey : segmentKeys) {
-            if (!segmentManager.existsSegment(segKey)) {
-                continue;
-            }
-
-            try {
-                WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", segKey);
-                whereDeleter.delete(where);
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
-                success = false;
-            }
+        try {
+            WhereDeleter whereDeleter = (WhereDeleter) SwiftContext.get().getBean("decrementer", tableKey);
+            whereDeleter.delete(where);
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+            success = false;
         }
-
         return success;
     }
 
     @Override
     public ServiceType getServiceType() {
         return ServiceType.DELETE;
-    }
-
-    public void setSegmentKeys(List<SegmentKey> segmentKeys) {
-        this.segmentKeys = segmentKeys;
     }
 }

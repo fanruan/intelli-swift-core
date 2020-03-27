@@ -13,6 +13,7 @@ import com.fr.swift.query.info.SegmentFilter;
 import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -27,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Create by lifan on 2019-07-24 17:00
@@ -48,7 +50,13 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     }
 
     @Override
-    public List<Segment> filter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+    public List<Segment> filterSegs(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+        List<SegmentKey> segmentKeyList = filterSegKeys(singleTableQueryInfo);
+        return segmentKeyList.stream().map(SegmentUtils::newSegment).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SegmentKey> filterSegKeys(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (singleTableQueryInfo.getQuerySegment() == null || singleTableQueryInfo.getQuerySegment().isEmpty()) {
             return reFilter(singleTableQueryInfo);
         } else {
@@ -56,12 +64,12 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
                 return new ArrayList<>();
             }
             //允许exact query容错
-            List<Segment> filteredSegments = reFilter(singleTableQueryInfo);
-            if (filteredSegments.isEmpty()) {
+            List<SegmentKey> filteredSegKeys = reFilter(singleTableQueryInfo);
+            if (filteredSegKeys.isEmpty()) {
                 singleTableQueryInfo.setQuerySegment(null);
-                filteredSegments = reFilter(singleTableQueryInfo);
+                filteredSegKeys = reFilter(singleTableQueryInfo);
             }
-            return filteredSegments;
+            return filteredSegKeys;
         }
     }
 
@@ -76,9 +84,9 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return false;
     }
 
-    private List<Segment> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+    private List<SegmentKey> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (isLineAllot(singleTableQueryInfo)) {
-            return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
+            return SEG_SVC.getSegmentKeysByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
         Set<Integer> virtualOrders = getIndexSet(singleTableQueryInfo.getFilterInfo(), singleTableQueryInfo.getTable());
         return filterSegment(virtualOrders, singleTableQueryInfo);
@@ -92,7 +100,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return false;
     }
 
-    public abstract List<Segment> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo);
+    protected abstract List<SegmentKey> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo);
 
     public Set<Integer> getIndexSet(FilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
         Set<Integer> set = new HashSet<Integer>();
@@ -139,25 +147,26 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     private int getMultiHashKeyVirtualOrder(SourceKey table, List<FilterInfo> childrenFilterInfoList) throws SwiftMetaDataException {
         AllotRule allotRule = this.tableAllotRule.getAllotRule();
         HashAllotRule hashAllotRule = (HashAllotRule) allotRule;
-        int hashKeyCount = hashAllotRule.getFieldIndexes().size();
-        Map<String, Object> filterInfoMap = new HashMap<>();
+        int hashKeyCount = hashAllotRule.getFieldIndexes().length;
+        Map<String, String> filterInfoMap = new HashMap<>();
         if (childrenFilterInfoList.size() == hashKeyCount) {
             for (FilterInfo filterInfo : childrenFilterInfoList) {
                 if (!(filterInfo instanceof SwiftDetailFilterInfo)) {
                     return ALL_SEGMENT;
                 } else {
                     SwiftDetailFilterInfo filter = (SwiftDetailFilterInfo) filterInfo;
-                    filterInfoMap.put(filter.getColumnKey().getName(), ((HashSet) filter.getFilterValue()).toArray()[0]);
+                    filterInfoMap.put(filter.getColumnKey().getName(), String.valueOf(((HashSet) filter.getFilterValue()).toArray()[0]));
                 }
             }
             List<String> hashKeyList = new ArrayList<>(hashKeyCount);
             SwiftMetaData metadata = SwiftDatabase.getInstance().getTable(table).getMetadata();
-            for (Object fieldIndex : hashAllotRule.getFieldIndexes()) {
-                int index = ((Number) fieldIndex).intValue() + 1;
+            int[] fieldIndexes = hashAllotRule.getFieldIndexes();
+            for (int fieldIndex : fieldIndexes) {
+                int index = fieldIndex + 1;
                 hashKeyList.add(metadata.getColumn(index).getName());
             }
             if (hashKeyList.containsAll(filterInfoMap.keySet())) {
-                List keys = new ArrayList();
+                List<Object> keys = new ArrayList();
                 for (String hashKey : hashKeyList) {
                     keys.add(filterInfoMap.get(hashKey));
                 }
@@ -173,7 +182,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         Set<Object> filterValues = (Set<Object>) filterInfo.getFilterValue();
         HashAllotRule hashAllotRule = (HashAllotRule) allotRule;
         //计算所有字段名
-        int hashFieldIndex = ((Number) hashAllotRule.getFieldIndexes().get(0)).intValue();
+        int hashFieldIndex = hashAllotRule.getFieldIndexes()[0];
         SwiftMetaDataColumn swiftMetaDataColumn = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(hashFieldIndex + 1);
         String hashColumnName = swiftMetaDataColumn.getName(); //hash字段名
         if (filterInfo.getColumnKey().getName().equals(hashColumnName)) {
