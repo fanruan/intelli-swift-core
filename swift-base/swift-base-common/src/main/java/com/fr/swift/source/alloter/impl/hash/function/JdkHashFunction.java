@@ -2,6 +2,8 @@ package com.fr.swift.source.alloter.impl.hash.function;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 /**
  * @author lucifer
  * @date 2019-06-24
@@ -26,6 +28,11 @@ public class JdkHashFunction implements HashFunction {
         int hashCode = (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
         int index = (partitions - 1) & hashCode;
         return index;
+    }
+
+    @Override
+    public int indexOf(List<Object> keys) {
+        return 0;
     }
 
     @Override

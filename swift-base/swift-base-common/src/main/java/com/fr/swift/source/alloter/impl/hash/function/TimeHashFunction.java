@@ -3,6 +3,7 @@ package com.fr.swift.source.alloter.impl.hash.function;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * @author Marvin
@@ -51,6 +52,11 @@ public class TimeHashFunction implements HashFunction {
                 throw new IllegalStateException("Unexpected value: " + partitionsType);
         }
         return index;
+    }
+
+    @Override
+    public int indexOf(List<Object> keys) {
+        return 0;
     }
 
     @Override

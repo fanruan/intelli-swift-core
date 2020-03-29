@@ -113,7 +113,6 @@ public class SwiftSegmentServiceImpl implements SwiftClusterSegmentService, Swif
                                 value.remove(segmentKey);
                             }
                             swiftSegmentDao.deleteById(session, segmentKey.getId());
-                            segmentBucketDao.deleteBySegmentKey(session, segmentKey.getId());
                         }
                     } catch (Throwable e) {
                         throw new SQLException(e);
