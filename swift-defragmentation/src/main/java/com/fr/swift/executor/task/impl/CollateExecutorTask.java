@@ -15,6 +15,7 @@ import com.fr.swift.source.SourceKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class created on 2019/2/14
@@ -31,7 +32,7 @@ public class CollateExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.TABLE,
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,
-                new CollateJob(sourceKey, segmentKeys), 0);
+                new CollateJob(sourceKey, segmentKeys.stream().map(SegmentKey::getId).collect(Collectors.toList())), 0);
     }
 
     public CollateExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
@@ -45,6 +46,6 @@ public class CollateExecutorTask extends AbstractExecutorTask<Job> {
             SegmentKey segmentKey = JsonBuilder.readValue(map, SwiftSegmentEntity.class);
             segmentKeyList.add(segmentKey);
         }
-        this.job = new CollateJob(sourceKey, segmentKeyList);
+        this.job = new CollateJob(sourceKey, segmentKeyList.stream().map(SegmentKey::getId).collect(Collectors.toList()));
     }
 }

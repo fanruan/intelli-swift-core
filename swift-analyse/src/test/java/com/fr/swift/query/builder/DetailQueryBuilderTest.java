@@ -96,7 +96,7 @@ public class DetailQueryBuilderTest {
         List<Segment> segments = Arrays.asList(segment);
 
         mockStatic(BaseQueryBuilder.class);
-        when(BaseQueryBuilder.filterQueryInfo(detailQueryInfo)).thenReturn(segments);
+        when(BaseQueryBuilder.filterQuerySegs(detailQueryInfo)).thenReturn(segments);
 
         //mock List<Dimensions>
         List dimensions = new ArrayList();

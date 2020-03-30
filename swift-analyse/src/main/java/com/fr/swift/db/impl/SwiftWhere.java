@@ -9,11 +9,10 @@ import com.fr.swift.query.QueryRunnerProvider;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.IndexQuery;
-import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.util.Strings;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,19 +52,16 @@ public class SwiftWhere implements Where, Serializable {
     }
 
     @Override
-    public ImmutableBitMap createWhereIndex(Table table, Segment segment) throws Exception {
-        IndexQuery<ImmutableBitMap> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, this, segment);
+    public ImmutableBitMap createWhereIndex(Table table, SegmentKey segmentKey) throws Exception {
+        IndexQuery<ImmutableBitMap> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, this, segmentKey);
         return indexAfterFilter.getQueryIndex();
     }
 
     @Override
-    public Map<URI, ImmutableBitMap> createWhereIndex(Table table) throws Exception {
-        Map<URI, IndexQuery<ImmutableBitMap>> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, this);
-        Map<URI, ImmutableBitMap> whereIndexMap = new HashMap<URI, ImmutableBitMap>();
-
-        for (Map.Entry<URI, IndexQuery<ImmutableBitMap>> entry : indexAfterFilter.entrySet()) {
-            whereIndexMap.put(entry.getKey(), entry.getValue().getQueryIndex());
-        }
+    public Map<SegmentKey, ImmutableBitMap> createWhereIndex(Table table) throws Exception {
+        Map<SegmentKey, IndexQuery<ImmutableBitMap>> indexAfterFilter = QueryRunnerProvider.getInstance().executeIndexQuery(table, this);
+        Map<SegmentKey, ImmutableBitMap> whereIndexMap = new HashMap<>();
+        indexAfterFilter.forEach((segmentKey, indexQuery) -> whereIndexMap.put(segmentKey, indexQuery.getQueryIndex()));
         return whereIndexMap;
     }
 }

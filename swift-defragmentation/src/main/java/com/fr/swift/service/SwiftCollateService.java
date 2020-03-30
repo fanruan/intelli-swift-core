@@ -98,8 +98,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
-    public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeyList) throws Exception {
-        collateSegments(tableKey, segmentKeyList);
+    public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeysList) throws Exception {
+        collateSegments(tableKey, segmentKeysList);
     }
 
     @Override

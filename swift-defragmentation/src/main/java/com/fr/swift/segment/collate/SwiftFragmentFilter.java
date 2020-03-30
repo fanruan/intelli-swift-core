@@ -19,9 +19,11 @@ import java.util.List;
 public class SwiftFragmentFilter implements FragmentFilter {
 
     /**
-     * 碎片块数 >= 10
+     * 碎片块数 >= 5 < 100
      */
-    public static final int FRAGMENT_NUMBER = 10;
+    public static final int FRAGMENT_NUMBER = 5;
+
+    public static final int MAX_FRAGMENT_NUMBER = 100;
 
     private final SwiftSegmentManager localSegments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
 
