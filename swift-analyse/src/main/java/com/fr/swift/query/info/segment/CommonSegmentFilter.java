@@ -3,7 +3,6 @@ package com.fr.swift.query.info.segment;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.query.info.SingleTableQueryInfo;
-import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 
 import java.util.ArrayList;
@@ -21,19 +20,18 @@ public class CommonSegmentFilter extends AbstractSegmentFilter {
     }
 
     @Override
-    public List<Segment> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo) {
+    protected List<SegmentKey> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo) {
         if (virtualOrders.contains(ALL_SEGMENT)) {
-            return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
+            return SEG_SVC.getSegmentKeysByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
         Map<Integer, List<SegmentKey>> bucketMap = segmentBucket.getBucketMap();
-        List<Segment> segmentList = new ArrayList<Segment>();
         List<SegmentKey> segmentKeyList = new ArrayList<SegmentKey>();
         for (Integer hashKey : virtualOrders) {
+            if (bucketMap.get(hashKey) == null) {
+                continue;
+            }
             segmentKeyList.addAll(bucketMap.get(hashKey));
         }
-        for (SegmentKey segmentKey : segmentKeyList) {
-            segmentList.add(SEG_SVC.getSegment(segmentKey));
-        }
-        return segmentList;
+        return segmentKeyList;
     }
 }
