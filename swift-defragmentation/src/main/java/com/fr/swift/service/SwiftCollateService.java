@@ -41,11 +41,9 @@ import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.util.concurrent.CommonExecutor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * This class created on 2018/7/9
@@ -101,41 +99,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     @Override
     public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeysList) throws Exception {
-        Set<SegmentKey> segmentKeysSet = new HashSet<>(segmentKeysList);
-
-        SwiftSegmentBucketService bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
-        Map<SegmentKey, Integer> bucketIndexMap = bucketService.getBucketByTable(tableKey).getBucketIndexMap();
-
-        Map<Integer, List<SegmentKey>> segKeysByBucketMap = new HashMap<>();
-        bucketIndexMap.entrySet()
-                .stream()
-                .filter((entry) -> segmentKeysSet.contains(entry.getKey()))
-                .forEach((entry) -> segKeysByBucketMap.computeIfAbsent(entry.getValue(), k -> new ArrayList<>()).add(entry.getKey()));
-
-        Map<Integer, List<SegmentKey>> collateMap = new HashMap<>();
-        segKeysByBucketMap.entrySet()
-                .stream()
-                .filter((entry) -> entry.getValue().size() >= SwiftFragmentFilter.FRAGMENT_NUMBER)
-                .forEach((entry) -> collateMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).addAll(entry.getValue()));
-
-        for (Map.Entry<Integer, List<SegmentKey>> bucketListEntry : collateMap.entrySet()) {
-            try {
-                //分批collate，一批 5 - 100 块
-                List<SegmentKey> allSegmentKeyList = bucketListEntry.getValue();
-                if (allSegmentKeyList.size() < SwiftFragmentFilter.MAX_FRAGMENT_NUMBER) {
-                    collateSegments(tableKey, allSegmentKeyList);
-                } else {
-                    int batch = allSegmentKeyList.size() / SwiftFragmentFilter.MAX_FRAGMENT_NUMBER;
-                    int count = 0;
-                    for (; count < batch; count++) {
-                        collateSegments(tableKey, allSegmentKeyList.subList(count * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER, (count + 1) * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER));
-                    }
-                    collateSegments(tableKey, allSegmentKeyList.subList(count * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER, allSegmentKeyList.size()));
-                }
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
-            }
-        }
+        collateSegments(tableKey, segmentKeysList);
     }
 
     @Override
