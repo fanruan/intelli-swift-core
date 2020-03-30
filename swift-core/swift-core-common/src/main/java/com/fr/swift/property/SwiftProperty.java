@@ -46,6 +46,10 @@ public class SwiftProperty {
 
     private String cubesPath;
 
+    private boolean isMigration;
+
+    private Set<String> migrationTableName;
+
     /**
      * swift业务相关service
      */
@@ -89,6 +93,8 @@ public class SwiftProperty {
             initClusterId();
             initMasterAddress();
             initCubesPath();
+            initNeedMigration();
+            initMigrationTableName();
             initMachineId();
         } catch (IOException e) {
             Crasher.crash(e);
@@ -137,6 +143,15 @@ public class SwiftProperty {
 
     private void initCubesPath() {
         this.cubesPath = properties.getProperty("swift.cubesPath");
+    }
+
+    private void initNeedMigration() {
+        this.isMigration = Boolean.parseBoolean(properties.getProperty("swift.isMigration"));
+    }
+
+    private void initMigrationTableName() {
+        String[] tableNames = properties.getProperty("swift.migrationTableName").split(";");
+        this.migrationTableName = new HashSet<>(Arrays.asList(tableNames));
     }
 
     private void initExecutorTaskType() {
@@ -218,6 +233,14 @@ public class SwiftProperty {
 
     public String getCubesPath() {
         return cubesPath;
+    }
+
+    public boolean isMigration() {
+        return isMigration;
+    }
+
+    public Set<String> getMigrationTableSet() {
+        return migrationTableName;
     }
 
     public String[] getExecutorTaskType() {
