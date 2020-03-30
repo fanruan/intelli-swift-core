@@ -80,7 +80,7 @@ public class HistoryBlockImporterTest {
 
         assertEquals(inserter, Whitebox.getInternalState(inserting, "inserter"));
         assertEquals(seg, Whitebox.getInternalState(inserting, "seg"));
-        assertEquals(0, Whitebox.getInternalState(inserting, "rowCount"));
+        assertEquals(0, (int) Whitebox.getInternalState(inserting, "rowCount"));
 
     }
 

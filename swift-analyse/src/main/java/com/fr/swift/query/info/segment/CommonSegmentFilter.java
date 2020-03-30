@@ -23,7 +23,7 @@ public class CommonSegmentFilter extends AbstractSegmentFilter {
     @Override
     public List<Segment> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo) {
         if (virtualOrders.contains(ALL_SEGMENT)) {
-            return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
+            return SEG_SVC.getSegments(singleTableQueryInfo.getQuerySegment());
         }
         Map<Integer, List<SegmentKey>> bucketMap = segmentBucket.getBucketMap();
         List<Segment> segmentList = new ArrayList<Segment>();

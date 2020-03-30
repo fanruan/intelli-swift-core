@@ -92,7 +92,7 @@ public class HistoryHashSourceAlloterTest {
         Assert.assertEquals(newSegInfo(6), alloter2.allot(hashRowInfo7));
         Assert.assertEquals(newSegInfo(7), alloter2.allot(hashRowInfo8));
         Assert.assertEquals(newSegInfo(8), alloter2.allot(hashRowInfo9));
-        Mockito.verify(bucketService, Mockito.times(9)).saveElement(Mockito.any(SwiftSegmentBucketElement.class));
+        Mockito.verify(bucketService, Mockito.times(9)).save(Mockito.any(SwiftSegmentBucketElement.class));
 
 
     }

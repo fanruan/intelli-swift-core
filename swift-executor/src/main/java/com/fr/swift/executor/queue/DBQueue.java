@@ -29,12 +29,12 @@ public final class DBQueue {
     private DBQueue() {
     }
 
-    public boolean put(Set<ExecutorTask> tasks) throws SQLException {
-        return executorTaskService.batchSaveOrUpdate(tasks);
+    public void put(Set<ExecutorTask> tasks) throws SQLException {
+        executorTaskService.batchSave(tasks);
     }
 
-    public boolean put(ExecutorTask task) throws SQLException {
-        return executorTaskService.saveOrUpdate(task);
+    public void put(ExecutorTask task) throws SQLException {
+        executorTaskService.save(task);
     }
 
     public synchronized List<ExecutorTask> pullAll() {

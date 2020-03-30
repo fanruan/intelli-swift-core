@@ -24,7 +24,7 @@ public class DeleteExecutorTask extends AbstractExecutorTask<Job> {
 
     public DeleteExecutorTask(SourceKey sourceKey, Where where) throws Exception {
         super(sourceKey,
-                true,
+                false,
                 SwiftTaskType.DELETE,
                 LockType.TABLE,
                 sourceKey.getId(),

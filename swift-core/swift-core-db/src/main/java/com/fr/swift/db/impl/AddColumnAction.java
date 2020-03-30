@@ -1,6 +1,6 @@
 package com.fr.swift.db.impl;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.db.Table;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SwiftMetaData;
@@ -29,9 +29,9 @@ public class AddColumnAction extends BaseAlterTableAction {
     private void alterMeta(Table table) {
         SwiftMetaData oldMeta = table.getMetadata();
         try {
-            SwiftMetaData newMeta = new SwiftMetaDataBean.Builder(oldMeta)
+            SwiftMetaData newMeta = new SwiftMetaDataEntity.Builder(oldMeta)
                     .addField(relatedColumnMeta).build();
-            CONF_SVC.updateMetaData(table.getSourceKey().getId(), newMeta);
+            CONF_SVC.updateMeta(newMeta);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("alter meta failed: {}", e);
         }

@@ -13,7 +13,7 @@ import com.fr.swift.query.info.SegmentFilter;
 import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.alloter.AllotRule;
@@ -33,7 +33,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
     protected final static int ALL_SEGMENT = -1;
 
-    protected static final SwiftSegmentManager SEG_SVC = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    protected static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
 
     protected SwiftTableAllotRule tableAllotRule;
     protected SwiftSegmentBucket segmentBucket;
@@ -76,7 +76,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
     private List<Segment> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (isLineAllot(singleTableQueryInfo)) {
-            return SEG_SVC.getSegmentsByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
+            return SEG_SVC.getSegments(singleTableQueryInfo.getQuerySegment());
         }
         Set<Integer> virtualOrders = getIndexSet(singleTableQueryInfo.getFilterInfo(), singleTableQueryInfo.getTable());
         return filterSegment(virtualOrders, singleTableQueryInfo);

@@ -8,8 +8,8 @@
 //import com.fr.swift.result.GroupNode;
 //import com.fr.swift.result.NodeResultSet;
 //import com.fr.swift.result.NodeResultSetImpl;
-//import com.fr.swift.source.SwiftMetaData;
-//import com.fr.swift.source.SwiftMetaDataColumn;
+//import com.fr.swift.meta.SwiftMetaData;
+//import com.fr.swift.meta.SwiftMetaDataColumn;
 //import com.fr.swift.structure.Pair;
 //import com.fr.swift.structure.iterator.MapperIterator;
 //import com.fr.swift.structure.iterator.Tree2RowIterator;

@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.fr.intelligence</groupId>
         <artifactId>swift</artifactId>
-        <version>2019.1</version>
+        <version>2020.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,6 @@
         <module>swift-core-db</module>
         <module>swift-core-source</module>
         <module>swift-core-common</module>
-        <module>swift-core-generator</module>
         <module>swift-core-analyse</module>
         <module>swift-core-service</module>
         <module>swift-core-segment-operator</module>
@@ -38,11 +37,6 @@
             <dependency>
                 <groupId>com.fr.intelligence</groupId>
                 <artifactId>swift-core-db</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-core-generator</artifactId>
                 <version>${swift.version}</version>
             </dependency>
             <dependency>

@@ -1,9 +1,9 @@
 package com.fr.swift.source.resultset.importing.file;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.resultset.importing.BaseImportResultSet;
@@ -61,8 +61,8 @@ public abstract class BaseStreamImportResultSet<Paths> extends BaseImportResultS
         return metaData;
     }
 
-    protected void initMetaData(SwiftSchema database, String tableName, List<SwiftMetaDataColumn> columns) {
-        metaData = new SwiftMetaDataBean(tableName, database, null, tableName, null, columns);
-        SwiftContext.get().getBean(SwiftMetaDataService.class).saveOrUpdate(metaData);
+    protected void initMetaData(SwiftDatabase database, String tableName, List<SwiftMetaDataColumn> columns) {
+        metaData = new SwiftMetaDataEntity(tableName, database, null, tableName, null, columns);
+        SwiftContext.get().getBean(SwiftMetaDataService.class).saveMeta(metaData);
     }
 }

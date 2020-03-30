@@ -24,13 +24,13 @@ public class SwiftSegmentBucket {
 
     public SwiftSegmentBucket(SourceKey sourceKey) {
         this.sourceKey = sourceKey.getId();
-        this.bucketMap = new HashMap<Integer, List<SegmentKey>>();
-        this.bucketIndexMap = new HashMap<SegmentKey, Integer>();
+        this.bucketMap = new HashMap<>();
+        this.bucketIndexMap = new HashMap<>();
     }
 
     public void put(Integer key, SegmentKey value) {
         if (!bucketMap.containsKey(key)) {
-            bucketMap.put(key, new ArrayList<SegmentKey>());
+            bucketMap.put(key, new ArrayList<>());
         }
         bucketMap.get(key).add(value);
         getBucketIndexMap().put(value, key);
