@@ -9,16 +9,16 @@ import org.junit.Test;
  * @description
  * @since ness engine demoF
  */
-public class YearMonthHashFunctionTest {
+public class DateAppIdHashFunctionTest {
 
     @Test
     public void indexOf() {
-        HashFunction yearMonthFunction = new YearMonthHashFunction();
+        HashFunction yearMonthFunction = new DateAppIdHashFunction(0);
         Assert.assertEquals(yearMonthFunction.indexOf("201909"), 201909);
     }
 
     @Test
     public void getType() {
-        Assert.assertEquals(new YearMonthHashFunction().getType(), HashType.YEAR_MONTH);
+        Assert.assertEquals(new DateAppIdHashFunction(0).getType(), HashType.YEAR_MONTH);
     }
 }

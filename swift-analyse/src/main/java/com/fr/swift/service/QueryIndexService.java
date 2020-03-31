@@ -11,9 +11,8 @@ import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryIndexRunner;
-import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
 
-import java.net.URI;
 import java.util.Map;
 
 /**
@@ -32,12 +31,12 @@ public class QueryIndexService implements QueryIndexRunner {
     }
 
     @Override
-    public Map<URI, IndexQuery<ImmutableBitMap>> getBitMap(Table table, Where where) throws Exception {
+    public Map<SegmentKey, IndexQuery<ImmutableBitMap>> getBitMap(Table table, Where where) throws Exception {
         return QueryIndexBuilder.buildQuery(createQueryBean(table, where));
     }
 
     @Override
-    public IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, Segment segment) {
-        return QueryIndexBuilder.buildQuery(createQueryBean(table, where), segment);
+    public IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, SegmentKey segmentKey) {
+        return QueryIndexBuilder.buildQuery(createQueryBean(table, where), segmentKey);
     }
 }

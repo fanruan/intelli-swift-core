@@ -15,8 +15,7 @@ abstract class BaseHashSourceAlloter extends BaseSourceAlloter<HashAllotRule, Ha
 
     @Override
     protected int getLogicOrder(HashRowInfo rowInfo) {
-        Object key = rowInfo.getRow().getValue(rule.getFieldIndex());
-        int index = rule.getHashFunction().indexOf(key);
-        return index;
+        Object key = rowInfo.getRow().getValue(rule.getFieldIndexes()[0]);
+        return rule.getHashFunction().indexOf(key);
     }
 }

@@ -139,6 +139,19 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     }
 
     @Override
+    public Map<SourceKey, List<SegmentKey>> getOwnSegments(final String nodeId) {
+        final Map<SourceKey, List<SegmentKey>> result = new HashMap<>();
+        for (SegmentKey segmentKey : getSegKeyOnNode(nodeId)) {
+            SourceKey sourceKey = segmentKey.getTable();
+            if (!result.containsKey(sourceKey)) {
+                result.put(sourceKey, new ArrayList<>());
+            }
+            result.get(sourceKey).add(segmentKey);
+        }
+        return result;
+    }
+
+    @Override
     public List<SegmentKey> getOwnSegments(final SourceKey tableKey) {
         // TODO: 2020/3/13
         String machineId = SwiftProperty.getProperty().getMachineId();

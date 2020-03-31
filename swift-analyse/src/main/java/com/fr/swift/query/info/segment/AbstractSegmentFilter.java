@@ -15,16 +15,19 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.alloter.AllotRule;
 import com.fr.swift.source.alloter.impl.BaseAllotRule;
 import com.fr.swift.source.alloter.impl.hash.HashAllotRule;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Create by lifan on 2019-07-24 17:00
@@ -46,7 +49,13 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     }
 
     @Override
-    public List<Segment> filter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+    public List<Segment> filterSegs(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+        List<SegmentKey> segmentKeyList = filterSegKeys(singleTableQueryInfo);
+        return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SegmentKey> filterSegKeys(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (singleTableQueryInfo.getQuerySegment() == null || singleTableQueryInfo.getQuerySegment().isEmpty()) {
             return reFilter(singleTableQueryInfo);
         } else {
@@ -54,12 +63,12 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
                 return new ArrayList<>();
             }
             //允许exact query容错
-            List<Segment> filteredSegments = reFilter(singleTableQueryInfo);
-            if (filteredSegments.isEmpty()) {
+            List<SegmentKey> filteredSegKeys = reFilter(singleTableQueryInfo);
+            if (filteredSegKeys.isEmpty()) {
                 singleTableQueryInfo.setQuerySegment(null);
-                filteredSegments = reFilter(singleTableQueryInfo);
+                filteredSegKeys = reFilter(singleTableQueryInfo);
             }
-            return filteredSegments;
+            return filteredSegKeys;
         }
     }
 
@@ -74,9 +83,9 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return false;
     }
 
-    private List<Segment> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+    private List<SegmentKey> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (isLineAllot(singleTableQueryInfo)) {
-            return SEG_SVC.getSegments(singleTableQueryInfo.getQuerySegment());
+            return SEG_SVC.getSegmentKeysByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
         Set<Integer> virtualOrders = getIndexSet(singleTableQueryInfo.getFilterInfo(), singleTableQueryInfo.getTable());
         return filterSegment(virtualOrders, singleTableQueryInfo);
@@ -90,7 +99,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return false;
     }
 
-    public abstract List<Segment> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo);
+    protected abstract List<SegmentKey> filterSegment(Set<Integer> virtualOrders, SingleTableQueryInfo singleTableQueryInfo);
 
     public Set<Integer> getIndexSet(FilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
         Set<Integer> set = new HashSet<Integer>();
@@ -107,6 +116,11 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
                     set = orSet;
                 }
             } else {
+                int logicOrder = getMultiHashKeyVirtualOrder(table, childrenFilterInfoList);
+                if (logicOrder != ALL_SEGMENT) {
+                    set.add(logicOrder);
+                    return set;
+                }
                 for (FilterInfo filter : childrenFilterInfoList) {
                     set.addAll(getIndexSet(filter, table));
                 }
@@ -117,7 +131,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         } else if (filterInfo instanceof SwiftDetailFilterInfo) {
             if (((SwiftDetailFilterInfo) filterInfo).getType() == SwiftDetailFilterType.IN) {
                 // getVirtualOrder
-                set.addAll(getVirtualOrder((SwiftDetailFilterInfo) filterInfo, table));
+                set.addAll(getSingleHashKeyVirtualOrder((SwiftDetailFilterInfo) filterInfo, table));
             } else {
                 //所有都要查
                 set.add(ALL_SEGMENT);
@@ -129,17 +143,47 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return set;
     }
 
-    private Set<Integer> getVirtualOrder(SwiftDetailFilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
+    private int getMultiHashKeyVirtualOrder(SourceKey table, List<FilterInfo> childrenFilterInfoList) throws SwiftMetaDataException {
+        AllotRule allotRule = this.tableAllotRule.getAllotRule();
+        HashAllotRule hashAllotRule = (HashAllotRule) allotRule;
+        int hashKeyCount = hashAllotRule.getFieldIndexes().length;
+        Map<String, String> filterInfoMap = new HashMap<>();
+        if (childrenFilterInfoList.size() == hashKeyCount) {
+            for (FilterInfo filterInfo : childrenFilterInfoList) {
+                if (!(filterInfo instanceof SwiftDetailFilterInfo)) {
+                    return ALL_SEGMENT;
+                } else {
+                    SwiftDetailFilterInfo filter = (SwiftDetailFilterInfo) filterInfo;
+                    filterInfoMap.put(filter.getColumnKey().getName(), String.valueOf(((HashSet) filter.getFilterValue()).toArray()[0]));
+                }
+            }
+            List<String> hashKeyList = new ArrayList<>(hashKeyCount);
+            SwiftMetaData metadata = SwiftDatabase.getInstance().getTable(table).getMetadata();
+            int[] fieldIndexes = hashAllotRule.getFieldIndexes();
+            for (int fieldIndex : fieldIndexes) {
+                int index = fieldIndex + 1;
+                hashKeyList.add(metadata.getColumn(index).getName());
+            }
+            if (hashKeyList.containsAll(filterInfoMap.keySet())) {
+                List<Object> keys = new ArrayList();
+                for (String hashKey : hashKeyList) {
+                    keys.add(filterInfoMap.get(hashKey));
+                }
+                return hashAllotRule.getHashFunction().indexOf(keys);
+            }
+        }
+        return ALL_SEGMENT;
+    }
+
+    private Set<Integer> getSingleHashKeyVirtualOrder(SwiftDetailFilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
         //获取hash后对应桶中的segments
         AllotRule allotRule = this.tableAllotRule.getAllotRule();
         Set<Object> filterValues = (Set<Object>) filterInfo.getFilterValue();
-
         HashAllotRule hashAllotRule = (HashAllotRule) allotRule;
         //计算所有字段名
-        int hashFieldIndex = hashAllotRule.getFieldIndex();
+        int hashFieldIndex = hashAllotRule.getFieldIndexes()[0];
         SwiftMetaDataColumn swiftMetaDataColumn = SwiftDatabase.getInstance().getTable(table).getMetadata().getColumn(hashFieldIndex + 1);
         String hashColumnName = swiftMetaDataColumn.getName(); //hash字段名
-
         if (filterInfo.getColumnKey().getName().equals(hashColumnName)) {
             //计算索引值 key的order 根据filterValue计算
             Set<Integer> hashIndexSet = new HashSet<Integer>();

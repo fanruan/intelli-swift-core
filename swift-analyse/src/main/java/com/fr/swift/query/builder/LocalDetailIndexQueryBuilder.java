@@ -3,10 +3,7 @@ package com.fr.swift.query.builder;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.IndexQuery;
-import com.fr.swift.segment.Segment;
-
-import java.net.URI;
-import java.util.Map;
+import com.fr.swift.segment.SegmentKey;
 
 /**
  * This class created on 2018/7/4
@@ -17,8 +14,5 @@ import java.util.Map;
  */
 public interface LocalDetailIndexQueryBuilder {
 
-    Map<URI, IndexQuery<ImmutableBitMap>> buildLocalQuery(DetailQueryInfo info);
-
-    IndexQuery<ImmutableBitMap> buildLocalQuery(DetailQueryInfo info, Segment segment);
-
+    IndexQuery<ImmutableBitMap> buildLocalQuery(DetailQueryInfo info, SegmentKey segmentKey);
 }

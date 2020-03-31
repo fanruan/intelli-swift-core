@@ -27,6 +27,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
+import java.util.Collections;
+
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -71,7 +73,7 @@ public class HistoryHashSourceAlloterTest {
         HistoryHashSourceAlloter alloter = new HistoryHashSourceAlloter(new SourceKey("a"), new HashAllotRule());
 
         TimeHashFunction timeHashFunction = new TimeHashFunction();
-        HistoryHashSourceAlloter alloter2 = new HistoryHashSourceAlloter(new SourceKey("b"), new HashAllotRule(0, timeHashFunction));
+        HistoryHashSourceAlloter alloter2 = new HistoryHashSourceAlloter(new SourceKey("b"), new HashAllotRule(new int[]{0}, timeHashFunction));
 
         HashRowInfo hashRowInfo1 = new HashRowInfo(new ListBasedRow(0));
         HashRowInfo hashRowInfo2 = new HashRowInfo(new ListBasedRow(1));

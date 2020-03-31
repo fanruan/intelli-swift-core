@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.annotation.service.InnerService;
 import com.fr.swift.source.SourceKey;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +27,8 @@ public interface SegmentService {
     List<Segment> getSegments(Set<String> segKeys);
 
     List<SegmentKey> getSegmentKeys(SourceKey tableKey);
+
+    List<SegmentKey> getSegmentKeysByIds(SourceKey tableKey, Collection<String> segmentIds);
 
     boolean exist(SegmentKey segmentKey);
 
