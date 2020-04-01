@@ -2,6 +2,7 @@ package com.fr.swift.query.info;
 
 
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public interface SegmentFilter {
      * @return
      * @description 根据导入方式查询segment
      */
-    List<Segment> filter(SingleTableQueryInfo singleTableQueryInfo) throws Exception;
+    List<Segment> filterSegs(SingleTableQueryInfo singleTableQueryInfo) throws Exception;
 
+    List<SegmentKey> filterSegKeys(SingleTableQueryInfo singleTableQueryInfo) throws Exception;
 }

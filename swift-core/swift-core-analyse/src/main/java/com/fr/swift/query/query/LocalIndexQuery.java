@@ -18,7 +18,7 @@ public class LocalIndexQuery implements IndexQuery {
     }
 
     @Override
-    public ImmutableBitMap getQueryIndex() throws Exception {
+    public ImmutableBitMap getQueryIndex() {
         return bitMap;
     }
 }

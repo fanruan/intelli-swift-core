@@ -8,6 +8,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,14 @@ public enum SegmentContainer implements SegmentService {
     @Override
     public List<SegmentKey> getSegmentKeys(SourceKey tableKey) {
         return tableMap.computeIfAbsent(tableKey, n -> new HashSet<>()).stream().collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SegmentKey> getSegmentKeysByIds(SourceKey tableKey, Collection<String> segmentIds) {
+        return tableMap.computeIfAbsent(tableKey, n -> new HashSet<>())
+                .stream()
+                .filter(s -> segmentIds.contains(s.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -36,5 +36,7 @@ public interface SwiftSegmentService {
 
     Map<SourceKey, List<SegmentKey>> getTransferedSegments();
 
+    Map<SourceKey, List<SegmentKey>> getOwnSegments(final String nodeId);
+
     List<SegmentKey> getOwnSegments(SourceKey tableKey);
 }

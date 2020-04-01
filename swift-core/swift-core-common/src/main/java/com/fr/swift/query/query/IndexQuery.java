@@ -11,5 +11,5 @@ import com.fr.swift.bitmap.ImmutableBitMap;
  */
 public interface IndexQuery<T extends ImmutableBitMap> {
 
-    T getQueryIndex() throws Exception;
+    T getQueryIndex();
 }

@@ -19,6 +19,8 @@ import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.service.executor.CollateExecutor;
+import com.fr.swift.service.executor.MigrationExecutor;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,8 @@ public class BootRegister {
 
     public static void registerListener() {
         TaskDispatcher.getInstance();
+        SwiftContext.get().getBean(CollateExecutor.class).start();
+        SwiftContext.get().getBean(MigrationExecutor.class).start();
 //        TransferRealtimeListener.listen();
     }
 

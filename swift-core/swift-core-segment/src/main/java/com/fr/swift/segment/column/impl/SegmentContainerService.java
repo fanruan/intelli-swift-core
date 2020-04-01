@@ -7,6 +7,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.source.SourceKey;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -48,6 +49,11 @@ public class SegmentContainerService implements SegmentService {
     @Override
     public List<SegmentKey> getSegmentKeys(SourceKey tableKey) {
         return SegmentContainer.LOCAL.getSegmentKeys(tableKey);
+    }
+
+    @Override
+    public List<SegmentKey> getSegmentKeysByIds(SourceKey tableKey, Collection<String> segmentIds) {
+        return SegmentContainer.LOCAL.getSegmentKeysByIds(tableKey, segmentIds);
     }
 
     @Override

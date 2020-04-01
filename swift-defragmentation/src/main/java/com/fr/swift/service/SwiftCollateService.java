@@ -54,8 +54,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private static final long serialVersionUID = 7259915342007294244L;
 
-    private transient SwiftSegmentLocationService segLocationSvc;
-
     private transient SegmentService segmentService;
 
     private transient Database database;
@@ -78,7 +76,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentService = SwiftContext.get().getBean(SegmentService.class);
         database = SwiftDatabase.getInstance();
         swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
-        segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
         allotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
         locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
@@ -91,7 +88,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentService = null;
         database = null;
         swiftSegmentService = null;
-        segLocationSvc = null;
         bucketService = null;
         allotRuleService = null;
         locationService = null;
@@ -99,8 +95,8 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     @Override
-    public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeyList) throws Exception {
-        collateSegments(tableKey, segmentKeyList);
+    public void appointCollate(final SourceKey tableKey, final List<SegmentKey> segmentKeysList) throws Exception {
+        collateSegments(tableKey, segmentKeysList);
     }
 
     @Override

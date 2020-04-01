@@ -2,9 +2,13 @@ package com.fr.swift.source.alloter.impl.hash;
 
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author anchore
@@ -18,8 +22,12 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
 
     @Override
     protected int getLogicOrder(HashRowInfo rowInfo) {
-        int virtualOrder = super.getLogicOrder(rowInfo);
-        return virtualOrder;
+        List<Object> keys = new ArrayList<>();
+        int[] fieldIndexes = rule.getFieldIndexes();
+        for (int fieldIndex : fieldIndexes) {
+            keys.add(rowInfo.getRow().getValue(fieldIndex));
+        }
+        return rule.getHashFunction().indexOf(keys);
     }
 
     @Override
@@ -27,6 +35,7 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
         SegmentKey segKey = segmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftSegmentBucketElement bucketElement = new SwiftSegmentBucketElement(tableKey, virtualOrder, segKey.getId());
         bucketService.save(bucketElement);
+        SwiftLoggers.getLogger().debug("importing, append new seg {} in bucket {}", segKey, virtualOrder);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
     }
