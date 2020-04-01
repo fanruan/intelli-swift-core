@@ -1,12 +1,5 @@
 package com.fr.swift.executor.config;
 
-import com.fr.swift.annotation.persistence.Column;
-import com.fr.swift.annotation.persistence.Entity;
-import com.fr.swift.annotation.persistence.Enumerated;
-import com.fr.swift.annotation.persistence.Id;
-import com.fr.swift.annotation.persistence.Table;
-import com.fr.swift.annotation.persistence.Transient;
-import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.type.DBStatusType;
@@ -17,8 +10,18 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.source.SourceKey;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class created on 2019/2/26
@@ -28,7 +31,7 @@ import java.lang.reflect.Constructor;
  */
 @Entity
 @Table(name = "fine_swift_executor_tasks")
-public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<ExecutorTask> {
+public class SwiftExecutorTaskEntity implements Serializable {
 
     private static final long serialVersionUID = -7333801707856105168L;
 
@@ -51,7 +54,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     private String id;
 
     @Column(name = "lockType")
-    @Enumerated(Enumerated.EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     protected LockType lockType;
 
     @Column(name = "lockKey")
@@ -70,7 +73,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     protected long startTime;
 
     @Column(name = "dbStatusType")
-    @Enumerated(Enumerated.EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     protected DBStatusType dbStatusType;
 
     @Column(name = "clusterId")
@@ -81,7 +84,7 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
     private SwiftExecutorTaskEntity() {
     }
 
-    public SwiftExecutorTaskEntity(ExecutorTask task) {
+    private SwiftExecutorTaskEntity(ExecutorTask task) {
         this.clusterId = SwiftProperty.getProperty().getMachineId();
         this.taskId = task.getTaskId();
         this.sourceKey = task.getSourceKey().getId();
@@ -187,7 +190,6 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
         this.priority = priority;
     }
 
-    @Override
     public ExecutorTask convert() {
         try {
             Class<? extends ExecutorTask> clazz = ExecutorTypeContainer.getInstance().getClassByType(this.executorTaskType);
@@ -203,5 +205,17 @@ public class SwiftExecutorTaskEntity implements Serializable, ObjectConverter<Ex
             SwiftLoggers.getLogger().error(e);
             return null;
         }
+    }
+
+    public static SwiftExecutorTaskEntity convertEntity(ExecutorTask executorTask) {
+        return new SwiftExecutorTaskEntity(executorTask);
+    }
+
+    public static Collection<SwiftExecutorTaskEntity> convertEntities(Collection<ExecutorTask> executorTasks) {
+        Set<SwiftExecutorTaskEntity> entities = new HashSet<>();
+        for (ExecutorTask executorTask : executorTasks) {
+            entities.add(convertEntity(executorTask));
+        }
+        return entities;
     }
 }

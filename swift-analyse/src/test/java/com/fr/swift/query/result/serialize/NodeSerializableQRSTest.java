@@ -2,7 +2,7 @@
 //
 //package com.fr.swift.query.result.serialize;
 //
-//import com.fr.swift.base.meta.SwiftMetaDataBean;
+//import com.fr.swift.meta.SwiftMetaDataBean;
 //import com.fr.swift.query.aggregator.Aggregator;
 //import com.fr.swift.query.group.by2.node.GroupPage;
 //import com.fr.swift.query.sort.SortType;

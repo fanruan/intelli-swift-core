@@ -13,8 +13,7 @@ import com.fr.swift.query.info.SegmentFilter;
 import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -37,7 +36,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
     protected final static int ALL_SEGMENT = -1;
 
-    protected static final SwiftSegmentManager SEG_SVC = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    protected static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
 
     protected SwiftTableAllotRule tableAllotRule;
     protected SwiftSegmentBucket segmentBucket;
@@ -52,7 +51,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     @Override
     public List<Segment> filterSegs(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterSegKeys(singleTableQueryInfo);
-        return segmentKeyList.stream().map(SegmentUtils::newSegment).collect(Collectors.toList());
+        return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
     }
 
     @Override

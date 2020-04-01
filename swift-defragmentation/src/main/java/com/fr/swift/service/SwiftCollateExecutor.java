@@ -4,7 +4,6 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.config.service.impl.SwiftSegmentServiceProvider;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
@@ -61,7 +60,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
             executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
             executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
 //            executorService.scheduleWithFixedDelay(this, 20, 100000, TimeUnit.SECONDS);
-            swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
+            swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
         }
     }
 
@@ -86,7 +85,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private void triggerCollate() {
         try {
-            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getAllSegments();
+            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getOwnSegments(SwiftProperty.getProperty().getMachineId());
             for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
                 SourceKey tableKey = tableEntry.getKey();
                 List<SegmentKey> keys = new ArrayList<SegmentKey>();
@@ -135,6 +134,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     }
                 }
             }
+
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }

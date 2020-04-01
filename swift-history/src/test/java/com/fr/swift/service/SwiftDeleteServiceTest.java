@@ -5,7 +5,7 @@ import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.db.Where;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 import org.junit.Before;
@@ -45,7 +45,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({SwiftContext.class})
 public class SwiftDeleteServiceTest {
     @Mock
-    private SwiftSegmentManager segmentManager;
+    private SegmentService segmentService;
 
     @Before
     public void setUp() throws Exception {
@@ -54,7 +54,7 @@ public class SwiftDeleteServiceTest {
         BeanFactory beanFactory = mock(BeanFactory.class);
         when(SwiftContext.get()).thenReturn(beanFactory);
 
-        when(beanFactory.getBean("localSegmentProvider", SwiftSegmentManager.class)).thenReturn(segmentManager);
+        when(beanFactory.getBean(SegmentService.class)).thenReturn(segmentService);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class SwiftDeleteServiceTest {
         deleteService.start();
 
         assertTrue(deleteService.shutdown());
-        assertNull(Whitebox.getInternalState(deleteService, SwiftSegmentManager.class));
+        assertNull(Whitebox.getInternalState(deleteService, SegmentService.class));
     }
 
     @Test
@@ -82,8 +82,8 @@ public class SwiftDeleteServiceTest {
         SourceKey tableKey = new SourceKey("t");
 
         List<SegmentKey> segKeys = Arrays.asList(mock(SegmentKey.class), mock(SegmentKey.class), mock(SegmentKey.class));
-        when(segmentManager.getSegmentKeys(tableKey)).thenReturn(segKeys);
-        when(segmentManager.existsSegment(ArgumentMatchers.<SegmentKey>any())).thenReturn(false, true, true);
+        when(segmentService.getSegmentKeys(tableKey)).thenReturn(segKeys);
+        when(segmentService.exist(ArgumentMatchers.any())).thenReturn(false, true, true);
 
         WhereDeleter whereDeleter = mock(WhereDeleter.class);
         when(SwiftContext.get().getBean(eq("decrementer"), any())).thenReturn(whereDeleter);

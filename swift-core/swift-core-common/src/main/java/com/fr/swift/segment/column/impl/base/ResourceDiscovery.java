@@ -10,7 +10,7 @@ import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.IoUtil;
@@ -80,7 +80,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
     }
 
     private static boolean isMinor(String path) {
-        return path.contains(SwiftSchema.MINOR_CUBE.getDir());
+        return path.contains(SwiftDatabase.MINOR_CUBE.getDir());
     }
 
     private static String getSegPath(String path) {
@@ -140,7 +140,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
     }
 
     @Override
-    public void releaseTable(SwiftSchema schema, SourceKey tableKey) {
+    public void releaseTable(SwiftDatabase schema, SourceKey tableKey) {
         synchronized (cubeMemIos) {
             for (Iterator<Entry<String, ConcurrentMap<String, MemIo>>> segItr = cubeMemIos.entrySet().iterator(); segItr.hasNext(); ) {
                 Entry<String, ConcurrentMap<String, MemIo>> segEntry = segItr.next();
@@ -159,7 +159,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
     }
 
     @Override
-    public void releaseSegment(SwiftSchema schema, SourceKey tableKey, int segOrder) {
+    public void releaseSegment(SwiftDatabase schema, SourceKey tableKey, int segOrder) {
         synchronized (cubeMemIos) {
             for (Iterator<Entry<String, ConcurrentMap<String, MemIo>>> segItr = cubeMemIos.entrySet().iterator(); segItr.hasNext(); ) {
                 Entry<String, ConcurrentMap<String, MemIo>> segEntry = segItr.next();
@@ -176,7 +176,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
     }
 
     @Override
-    public void releaseColumn(SwiftSchema schema, SourceKey tableKey, ColumnKey columnKey) {
+    public void releaseColumn(SwiftDatabase schema, SourceKey tableKey, ColumnKey columnKey) {
         synchronized (cubeMemIos) {
             for (Entry<String, ConcurrentMap<String, MemIo>> segEntry : cubeMemIos.entrySet()) {
                 String segPath = segEntry.getKey();

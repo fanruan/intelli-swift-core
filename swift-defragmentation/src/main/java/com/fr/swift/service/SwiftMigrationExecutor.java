@@ -5,7 +5,6 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
-import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -21,8 +20,8 @@ import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -57,17 +56,15 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
 
     public static final int CURRENT_DIR = 1;
 
-    private SwiftSegmentService segmentService;
+    private SwiftSegmentService swiftSegmentService;
 
-    private SwiftSegmentManager segmentManager;
+    private SegmentService segmentService;
 
     private SwiftTableAllotRuleService allotRuleService;
 
     private SwiftSegmentBucketService bucketService;
 
-    private SwiftSegmentLocationService segLocationService;
-
-    private SwiftConfigService configService;
+    private SwiftSegmentLocationService locationService;
 
     private Database database;
 
@@ -78,12 +75,11 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
     @Override
     public void start() {
         if (SwiftProperty.getProperty().isMigration()) {
-            segmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
-            segmentManager = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+            swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
+            segmentService = SwiftContext.get().getBean(SegmentService.class);
             allotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
             bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
-            segLocationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
-            configService = SwiftContext.get().getBean(SwiftConfigService.class);
+            locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
             database = SwiftDatabase.getInstance();
             triggerMigration();
         }
@@ -91,11 +87,11 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
 
     @Override
     public void stop() {
+        swiftSegmentService = null;
         segmentService = null;
-        segmentManager = null;
         allotRuleService = null;
         bucketService = null;
-        segLocationService = null;
+        locationService = null;
         database = null;
     }
 
@@ -104,7 +100,7 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
         try {
             Set<String> tableNamesSet = SwiftProperty.getProperty().getMigrationTableSet();
             tableNamesSet.removeIf(String::isEmpty);
-            Map<SourceKey, List<SegmentKey>> allSegmentsMap = segmentService.getAllSegments();
+            Map<SourceKey, List<SegmentKey>> allSegmentsMap = swiftSegmentService.getOwnSegments(SwiftProperty.getProperty().getMachineId());
             if (!tableNamesSet.isEmpty()) {
                 allSegmentsMap.entrySet().removeIf((entry) -> !tableNamesSet.contains(entry.getKey().getId()));
             }
@@ -140,7 +136,7 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
 
         if (!segmentKeys.isEmpty()) {
             for (SegmentKey segmentKey : segmentKeys) {
-                Segment segment = segmentManager.getSegment(segmentKey);
+                Segment segment = segmentService.getSegment(segmentKey);
                 Column appIdColumn = segment.getColumn(new ColumnKey(APPID));
                 Column yearMonthColumn = segment.getColumn(new ColumnKey(YEARMONTH));
                 BitmapIndexedColumn appIdBitMapIndex = appIdColumn.getBitmapIndex();
@@ -163,7 +159,7 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
                                 add(appId);
                             }});
 
-                            SegmentKey newSegmentKey = segmentService.tryAppendSegment(tableKey, Types.StoreType.FINE_IO);
+                            SegmentKey newSegmentKey = swiftSegmentService.tryAppendSegment(tableKey, Types.StoreType.FINE_IO);
                             String cubePath = new CubePathBuilder(newSegmentKey).setTempDir(CURRENT_DIR).build();
                             ResourceLocation location = new ResourceLocation(cubePath, newSegmentKey.getStoreType());
                             Segment newSegment = new CacheColumnSegment(location, tableMetadata);
@@ -171,13 +167,13 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
                                 SegmentBuilder segmentBuilder = new SegmentBuilder(newSegment, fieldNames, Collections.singletonList(segment), Collections.singletonList(unionBitMap));
                                 segmentBuilder.build();
                                 SegmentUtils.releaseHisSeg(newSegment);
-                                segLocationService.saveOrUpdateLocal(Collections.singleton(newSegmentKey));
-                                bucketService.saveElement(new SwiftSegmentBucketElement(tableKey, bucketIndex, newSegmentKey.getId()));
+                                locationService.saveOnNode(SwiftProperty.getProperty().getMachineId(), (Collections.singleton(newSegmentKey)));
+                                bucketService.save(new SwiftSegmentBucketElement(tableKey, bucketIndex, newSegmentKey.getId()));
                             } catch (Throwable e) {
                                 try {
                                     SegmentUtils.releaseHisSeg(newSegment);
                                     SegmentUtils.clearSegment(newSegmentKey);
-                                    segmentService.removeSegments(Collections.singletonList(newSegmentKey));
+                                    swiftSegmentService.delete(Collections.singletonList(newSegmentKey));
                                 } catch (Exception ignore) {
                                     SwiftLoggers.getLogger().error("ignore exception", ignore);
                                 }
@@ -190,7 +186,7 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
                     }
                 }
                 if (success) {
-                    segmentService.removeSegments(segmentKeys);
+                    swiftSegmentService.delete(segmentKeys);
                 }
             }
         }
@@ -198,12 +194,12 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
 
     private HashAllotRule getOrInitAllotRule(SourceKey tableKey, List<String> fieldNames) {
         HashAllotRule hashAllotRule;
-        SwiftTableAllotRule allotRule = allotRuleService.getAllotRuleByTable(tableKey);
+        SwiftTableAllotRule allotRule = allotRuleService.getByTale(tableKey);
         if (allotRule == null || allotRule.getAllotRule().getType() != BaseAllotRule.AllotType.HASH) {
             hashAllotRule = new HashAllotRule(
                     new int[]{fieldNames.indexOf(YEARMONTH), fieldNames.indexOf(APPID)},
                     new DateAppIdHashFunction(0));
-            allotRuleService.saveAllotRule(new SwiftTableAllotRule(tableKey.getId(), hashAllotRule.getType().name(), hashAllotRule));
+            allotRuleService.save(new SwiftTableAllotRule(tableKey.getId(), hashAllotRule.getType().name(), hashAllotRule));
         } else {
             hashAllotRule = (HashAllotRule) allotRule.getAllotRule();
         }

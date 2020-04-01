@@ -17,7 +17,7 @@ public abstract class AbstractInvokerCreator implements InvokerCreator {
 
     @Override
     public <T> Invoker<T> createAsyncInvoker(Class<T> clazz, URL url) {
-        if (urlIsNull(url) || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId())) {
+        if (urlIsNull(url) || url.getDestination().getId().equals(SwiftProperty.getProperty().getMachineId())) {
             T service = clazz.cast(ProxyServiceRegistry.get().getService(clazz.getName()));
             return new LocalInvoker<T>(service, clazz, url, false);
         }
@@ -26,7 +26,7 @@ public abstract class AbstractInvokerCreator implements InvokerCreator {
 
     @Override
     public <T> Invoker<T> createSyncInvoker(Class<T> clazz, URL url) {
-        if (urlIsNull(url) || url.getDestination().getId().equals(SwiftProperty.getProperty().getClusterId())) {
+        if (urlIsNull(url) || url.getDestination().getId().equals(SwiftProperty.getProperty().getMachineId())) {
             T service = clazz.cast(ProxyServiceRegistry.get().getService(clazz.getName()));
             return new LocalInvoker<T>(service, clazz, url);
         }

@@ -5,7 +5,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class SwiftFragmentFilter implements FragmentFilter {
 
     public static final int MAX_FRAGMENT_NUMBER = 100;
 
-    private final SwiftSegmentManager localSegments = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    private final SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
     private SwiftSourceAlloter alloter;
 
@@ -38,7 +38,7 @@ public class SwiftFragmentFilter implements FragmentFilter {
         int fragmentSize = alloter.getAllotRule().getCapacity() * 2 / 3;
         List<SegmentKey> fragmentKeys = new ArrayList<SegmentKey>();
         for (SegmentKey segKey : segKeys) {
-            Segment seg = localSegments.getSegment(segKey);
+            Segment seg = segmentService.getSegment(segKey);
             if (isNeed2Collect(seg, fragmentSize)) {
                 fragmentKeys.add(segKey);
             }

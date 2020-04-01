@@ -1,6 +1,6 @@
 package com.fr.swift.query.result.serialize;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import org.junit.Before;
@@ -68,7 +68,7 @@ public class DetailSerializableQRSTest {
     @Test
     public void convert() {
         try {
-            qrs.convert(new SwiftMetaDataBean());
+            qrs.convert(new SwiftMetaDataEntity());
             fail();
         } catch (Exception ignored) {
         }

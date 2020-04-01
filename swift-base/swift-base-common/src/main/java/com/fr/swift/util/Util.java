@@ -1,5 +1,9 @@
 package com.fr.swift.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author anchore
  */
@@ -79,5 +83,19 @@ public final class Util {
             return Optional.of(e);
         }
         return Optional.empty();
+    }
+
+    public static <T> List<List<T>> toSlices(Collection<T> list, int sliceSize) {
+        List<List<T>> slices = new ArrayList<List<T>>();
+        List<T> slice = new ArrayList<T>();
+        for (T elem : list) {
+            slice.add(elem);
+            if (slice.size() >= sliceSize) {
+                slices.add(slice);
+                slice = new ArrayList<T>();
+            }
+        }
+        slices.add(slice);
+        return slices;
     }
 }

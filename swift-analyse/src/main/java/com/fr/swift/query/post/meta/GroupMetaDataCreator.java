@@ -1,10 +1,10 @@
 package com.fr.swift.query.post.meta;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.MetaDataColumnEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.AggregationBean;
@@ -18,6 +18,7 @@ import com.fr.swift.query.info.funnel.FunnelAggregationBean;
 import com.fr.swift.query.info.funnel.FunnelPathsAggregationBean;
 import com.fr.swift.query.info.funnel.FunnelVirtualStep;
 import com.fr.swift.query.info.funnel.group.post.PostGroupBean;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Strings;
@@ -36,8 +37,8 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
     @Override
     public SwiftMetaData create(GroupQueryInfoBean queryBean) throws SwiftMetaDataException {
         final String tableName = queryBean.getTableName();
-        SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(queryBean.getTableName());
-        SwiftSchema schema = meta.getSwiftSchema();
+        SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMeta(new SourceKey(queryBean.getTableName()));
+        SwiftDatabase schema = meta.getSwiftDatabase();
         List<DimensionBean> dimensionBeans = queryBean.getDimensions();
         dimensionColumns = createDimension(meta, dimensionBeans);
         List<AggregationBean> metricBeans = queryBean.getAggregations();
@@ -51,7 +52,7 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                 case CAL_FIELD:
                     CalculatedFieldBean calculatedFieldBean = ((CalculatedFieldQueryInfoBean) postQueryInfoBean).getCalField();
                     String name = calculatedFieldBean.getName();
-                    metaDataColumns.add(new MetaDataColumnBean(name, null, Types.DOUBLE, null));
+                    metaDataColumns.add(new MetaDataColumnEntity(name, null, Types.DOUBLE, null));
                     break;
                 case FUNNEL_TIME_AVG:
                 case FUNNEL_CONVERSION_RATE:
@@ -64,13 +65,13 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                     for (int i = 0; i < events.size() - 1; i++) {
                         FunnelVirtualStep event1 = events.get(i);
                         FunnelVirtualStep event2 = events.get(i + 1);
-                        metaDataColumns.add(new MetaDataColumnBean(event1.getName() + "-" + event2.getName(), null, Types.DOUBLE, null));
+                        metaDataColumns.add(new MetaDataColumnEntity(event1.getName() + "-" + event2.getName(), null, Types.DOUBLE, null));
                     }
                     break;
                 default:
             }
         }
-        return new SwiftMetaDataBean(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
+        return new SwiftMetaDataEntity(null, schema, schema.getName(), tableName, tableName, metaDataColumns);
     }
 
     private FunnelPathsAggregationBean getFunnelMetric(List<AggregationBean> metricBeans) {
@@ -94,17 +95,17 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
                     createFunnelColumns((FunnelAggregationBean) metricBean, dimensionColumns, metaDataColumns);
                     break;
                 case FUNNEL_PATHS:
-                    dimensionColumns.add(new MetaDataColumnBean("funnel_time", null, Types.VARCHAR, null));
-                    dimensionColumns.add(new MetaDataColumnBean("funnel_path", null, Types.VARCHAR, null));
-                    metaDataColumns.add(new MetaDataColumnBean("conversion_rate", null, Types.BIGINT, null));
+                    dimensionColumns.add(new MetaDataColumnEntity("funnel_time", null, Types.VARCHAR, null));
+                    dimensionColumns.add(new MetaDataColumnEntity("funnel_path", null, Types.VARCHAR, null));
+                    metaDataColumns.add(new MetaDataColumnEntity("conversion_rate", null, Types.BIGINT, null));
                     break;
                 default:
                     String alias = metricBean.getAlias();
                     String column = metricBean.getColumn();
                     SwiftMetaDataColumn metaDataColumn = Strings.isEmpty(column) ?
-                            new MetaDataColumnBean(Strings.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
+                            new MetaDataColumnEntity(Strings.EMPTY, null, Types.DOUBLE, null) : meta.getColumn(column);
                     String name = alias == null ? column : alias;
-                    metaDataColumns.add(new MetaDataColumnBean(name, metaDataColumn.getRemark(), getMetricColumnType(metaDataColumn.getType()),
+                    metaDataColumns.add(new MetaDataColumnEntity(name, metaDataColumn.getRemark(), getMetricColumnType(metaDataColumn.getType()),
                             metaDataColumn.getPrecision(), metaDataColumn.getScale(), metaDataColumn.getColumnId()));
             }
 
@@ -113,10 +114,10 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
     }
 
     private void createFunnelColumns(FunnelAggregationBean funnelBean, List<SwiftMetaDataColumn> dimensionColumns, List<SwiftMetaDataColumn> metricColumns) {
-        dimensionColumns.add(new MetaDataColumnBean("funnel_time", null, Types.VARCHAR, null));
+        dimensionColumns.add(new MetaDataColumnEntity("funnel_time", null, Types.VARCHAR, null));
         PostGroupBean postGroup = funnelBean.getPostGroup();
         if (null != postGroup) {
-            dimensionColumns.add(new MetaDataColumnBean(postGroup.getColumn(), null, Types.VARCHAR, null));
+            dimensionColumns.add(new MetaDataColumnEntity(postGroup.getColumn(), null, Types.VARCHAR, null));
         }
         List<FunnelVirtualStep> events = funnelBean.getSteps();
         for (int i = 0; i < events.size(); i++) {
@@ -127,7 +128,7 @@ public class GroupMetaDataCreator extends BaseMetaDataCreator<GroupQueryInfoBean
             } else {
                 name = event.getName();
             }
-            metricColumns.add(new MetaDataColumnBean(name, null, Types.BIGINT, null));
+            metricColumns.add(new MetaDataColumnEntity(name, null, Types.BIGINT, null));
         }
     }
 

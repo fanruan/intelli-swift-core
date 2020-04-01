@@ -4,7 +4,6 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -28,11 +27,11 @@ public class Decrementer implements WhereDeleter {
 
     private SourceKey tableKey;
 
-    private final SwiftSegmentService swiftSegmentService;
+    private final SegmentService segmentService;
 
     public Decrementer(SourceKey tableKey) {
         this.tableKey = tableKey;
-        swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        segmentService = SwiftContext.get().getBean(SegmentService.class);
     }
 
     @Override
@@ -51,12 +50,14 @@ public class Decrementer implements WhereDeleter {
                 removeSegList.add(segKey);
             }
             if (seg.isHistory()) {
-                seg.release();
+                if (seg.isHistory()) {
+                    seg.release();
+                }
             }
-        }
-        if (!removeSegList.isEmpty()) {
-            swiftSegmentService.removeSegments(removeSegList);
-            SegmentUtils.clearSegments(removeSegList);
+            if (!removeSegList.isEmpty()) {
+                segmentService.removeSegments(removeSegList);
+                SegmentUtils.clearSegments(removeSegList);
+            }
         }
         return indexAfterFilterMap;
     }

@@ -7,10 +7,8 @@ import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.StatusType;
 import com.fr.swift.executor.type.TaskType;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 
-import java.lang.reflect.Constructor;
 import java.util.Objects;
 
 /**
@@ -248,14 +246,4 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         return lockKey != null ? lockKey.equals(that.lockKey) : that.lockKey == null;
     }
 
-    @Override
-    public Object convert() {
-        try {
-            Constructor constructor = TYPE.getDeclaredConstructor(ExecutorTask.class);
-            return constructor.newInstance(this);
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            return null;
-        }
-    }
 }

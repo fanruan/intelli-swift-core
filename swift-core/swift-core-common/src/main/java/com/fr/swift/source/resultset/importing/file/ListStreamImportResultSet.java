@@ -1,6 +1,6 @@
 package com.fr.swift.source.resultset.importing.file;
 
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -16,7 +16,7 @@ public class ListStreamImportResultSet extends BaseStreamImportResultSet<List<St
     private SingleStreamImportResultSet current;
     private int currentPathIdx = 0;
 
-    public ListStreamImportResultSet(SwiftSchema database, String tableName, List<String> strings, FileLineParser parser) {
+    public ListStreamImportResultSet(SwiftDatabase database, String tableName, List<String> strings, FileLineParser parser) {
         super(strings, parser);
         this.current = new SingleStreamImportResultSet(database, tableName, strings.get(0), parser);
     }
