@@ -88,7 +88,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private void triggerCollate() {
         try {
-            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getAllSegments();
+            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getOwnSegments();
             for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
                 SourceKey tableKey = tableEntry.getKey();
                 List<SegmentKey> keys = new ArrayList<SegmentKey>();
