@@ -1,6 +1,5 @@
 package com.fr.swift.property;
 
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.util.ConfigInputUtil;
 import com.fr.swift.util.Crasher;
 
@@ -66,6 +65,7 @@ public class SwiftProperty {
     private int redisTimeout;
     private String[] executorTaskType;
     private String machineId;
+    private String collateTime;
 
     private SwiftProperty() {
         initProperties();
@@ -96,9 +96,18 @@ public class SwiftProperty {
             initNeedMigration();
             initMigrationTableName();
             initMachineId();
+            initCollateTime();
         } catch (IOException e) {
             Crasher.crash(e);
         }
+    }
+
+    private void initCollateTime() {
+        collateTime = (String) properties.getOrDefault("swift.collate.time", "2:00:00");
+    }
+
+    public String getCollateTime() {
+        return collateTime;
     }
 
     public void setSwiftServiceNames(Set<String> swiftServiceNames) {
@@ -164,11 +173,7 @@ public class SwiftProperty {
 
     //TODO 配置要修改
     private void initClusterId() {
-        if (isCluster) {
-            this.clusterId = properties.getProperty("swift.clusterId");
-        } else {
-            this.clusterId = SwiftConfigConstants.LOCALHOST;
-        }
+        this.clusterId = properties.getProperty("swift.machine.id");
     }
 
     public void setClusterId(String clusterId) {
