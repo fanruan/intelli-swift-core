@@ -2,7 +2,6 @@ package com.fr.swift.executor.task.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
@@ -17,7 +16,6 @@ import com.fr.swift.source.SourceKey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
