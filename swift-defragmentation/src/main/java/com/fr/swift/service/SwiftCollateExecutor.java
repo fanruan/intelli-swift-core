@@ -56,10 +56,12 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
     @Override
     public void start() {
         if (Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()).contains(COLLATE_TASK)) {
-            long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
+            long initDelay = getTimeMillis(SwiftProperty.getProperty().getCollateTime()) - System.currentTimeMillis();
             initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
             executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
             executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
+            SwiftLoggers.getLogger().info("Start collate executor at {}", SwiftProperty.getProperty().getCollateTime());
+
 //            executorService.scheduleWithFixedDelay(this, 20, 100000, TimeUnit.SECONDS);
             swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentServiceProvider.class);
         }
@@ -86,7 +88,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private void triggerCollate() {
         try {
-            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getAllSegments();
+            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getOwnSegments();
             for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
                 SourceKey tableKey = tableEntry.getKey();
                 List<SegmentKey> keys = new ArrayList<SegmentKey>();
@@ -97,7 +99,6 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     keys.add(key);
                 }
                 if (!keys.isEmpty()) {
-                    // TODO: 2019/9/12 先改成凌晨2点触发，单线程同步跑，防止宕机先
                     Set<SegmentKey> segmentKeysSet = new HashSet<>(keys);
 
                     SwiftSegmentBucketService bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);

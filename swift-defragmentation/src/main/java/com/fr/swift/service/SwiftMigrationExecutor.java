@@ -33,13 +33,19 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.impl.BaseAllotRule;
 import com.fr.swift.source.alloter.impl.hash.HashAllotRule;
+import com.fr.swift.source.alloter.impl.hash.HistoryHashSourceAlloter;
 import com.fr.swift.source.alloter.impl.hash.function.DateAppIdHashFunction;
+import com.fr.swift.source.resultset.progress.ProgressResultSet;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -132,68 +138,77 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
     }
 
     private void appointMigration(SourceKey tableKey, List<SegmentKey> segmentKeys) {
+        String startYearMonth = "201901";
+
         Table table = database.getTable(tableKey);
         SwiftMetaData tableMetadata = table.getMetadata();
         List<String> fieldNames = tableMetadata.getFieldNames();
 
         HashAllotRule hashAllotRule = getOrInitAllotRule(tableKey, fieldNames);
 
-        if (!segmentKeys.isEmpty()) {
-            for (SegmentKey segmentKey : segmentKeys) {
-                Segment segment = segmentManager.getSegment(segmentKey);
-                Column appIdColumn = segment.getColumn(new ColumnKey(APPID));
-                Column yearMonthColumn = segment.getColumn(new ColumnKey(YEARMONTH));
-                BitmapIndexedColumn appIdBitMapIndex = appIdColumn.getBitmapIndex();
-                BitmapIndexedColumn yearMonthBitmapIndex = yearMonthColumn.getBitmapIndex();
-                DictionaryEncodedColumn appIdKeyIndex = appIdColumn.getDictionaryEncodedColumn();
-                DictionaryEncodedColumn yearMonthKeyIndex = yearMonthColumn.getDictionaryEncodedColumn();
-
-                boolean success = true;
-                for (int i = 1; i < appIdKeyIndex.size(); i++) {
-                    String appId = appIdKeyIndex.getValue(i).toString();
-                    ImmutableBitMap appIdBitMap = appIdBitMapIndex.getBitMapIndex(i);
-                    for (int j = 1; j < yearMonthKeyIndex.size(); j++) {
-                        ImmutableBitMap yearMonthBitMap = yearMonthBitmapIndex.getBitMapIndex(j);
-                        ImmutableBitMap unionBitMap = appIdBitMap.getAnd(yearMonthBitMap);
-
-                        if (unionBitMap.getCardinality() > 0) {
-                            String yearMonth = yearMonthKeyIndex.getValue(j).toString();
-                            int bucketIndex = hashAllotRule.getHashFunction().indexOf(new ArrayList<Object>(2) {{
-                                add(yearMonth);
-                                add(appId);
-                            }});
-
-                            SegmentKey newSegmentKey = segmentService.tryAppendSegment(tableKey, Types.StoreType.FINE_IO);
-                            String cubePath = new CubePathBuilder(newSegmentKey).setTempDir(CURRENT_DIR).build();
-                            ResourceLocation location = new ResourceLocation(cubePath, newSegmentKey.getStoreType());
-                            Segment newSegment = new CacheColumnSegment(location, tableMetadata);
-                            try {
-                                SegmentBuilder segmentBuilder = new SegmentBuilder(newSegment, fieldNames, Collections.singletonList(segment), Collections.singletonList(unionBitMap));
-                                segmentBuilder.build();
-                                SegmentUtils.releaseHisSeg(newSegment);
-                                segLocationService.saveOrUpdateLocal(Collections.singleton(newSegmentKey));
-                                bucketService.saveElement(new SwiftSegmentBucketElement(tableKey, bucketIndex, newSegmentKey.getId()));
-                            } catch (Throwable e) {
-                                try {
-                                    SegmentUtils.releaseHisSeg(newSegment);
-                                    SegmentUtils.clearSegment(newSegmentKey);
-                                    segmentService.removeSegments(Collections.singletonList(newSegmentKey));
-                                } catch (Exception ignore) {
-                                    SwiftLoggers.getLogger().error("ignore exception", ignore);
-                                }
-                                success = false;
-                                SwiftLoggers.getLogger().error("build new segment failed", e);
-                            }
-                            SwiftLoggers.getLogger().info("migrate table: {} segment: {}  bitMap: {} to bucket {} success:",
-                                    tableKey.toString(), segmentKey.getId(), unionBitMap.toString(), bucketIndex, success);
-                        }
-                    }
+        Map<SegmentKey, Set<String>> map = new ConcurrentHashMap<>();
+        ExecutorService executorService = SwiftExecutors.newFixedThreadPool(6);
+        List<Future> futureList = new ArrayList<>();
+        for (SegmentKey segmentKey : segmentKeys) {
+            Future f = executorService.submit(() -> {
+                Set<String> yearMonths = new HashSet<>();
+                SwiftResultSet resultSet = new ProgressResultSet(new SegmentResultSet(SegmentUtils.newSegment(segmentKey)), tableKey.getId());
+                try {
+                    Importer importer = new MigImporter(table, new HistoryHashSourceAlloter(tableKey, hashAllotRule), startYearMonth, yearMonths);
+                    importer.importData(resultSet);
+                    map.put(segmentKey, yearMonths);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
                 }
-                if (success) {
-                    segmentService.removeSegments(segmentKeys);
+            });
+            futureList.add(f);
+        }
+        for (Future future : futureList) {
+            try {
+                future.get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        Map<String, Set<SegmentKey>> segMap = new HashMap<>();
+        for (Map.Entry<SegmentKey, Set<String>> entry : map.entrySet()) {
+            for (String yearMonth : entry.getValue()) {
+                segMap.computeIfAbsent(yearMonth, n -> new HashSet<>()).add(entry.getKey());
+            }
+        }
+        for (Map.Entry<String, Set<SegmentKey>> entry : segMap.entrySet()) {
+            for (SegmentKey segmentKey : entry.getValue()) {
+                SwiftResultSet resultSet = new ProgressResultSet(new SegmentResultSet(SegmentUtils.newSegment(segmentKey)), tableKey.getId());
+                try {
+                    Importer importer = new MigImporter(table, new HistoryHashSourceAlloter(tableKey, hashAllotRule), entry.getKey(), null);
+                    importer.importData(resultSet);
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
                 }
             }
         }
+        return;
+
+
+//        List<List<SegmentKey>> lists = new ArrayList<>();
+//        List<SegmentKey> list = null;
+//        for (SegmentKey segmentKey : segmentKeys) {
+//            if (list == null || list.size() >= 10) {
+//                list = new ArrayList<>();
+//                lists.add(list);
+//            }
+//            list.add(segmentKey);
+//        }
+//        for (List<SegmentKey> segmentKeyList : lists) {
+//            Segment segment = new ReadonlyMultiSegment(segmentKeyList.stream().map(SegmentUtils::newSegment).collect(Collectors.toList()));
+//            SwiftResultSet resultSet = new ProgressResultSet(new SegmentResultSet(segment), tableKey.getId());
+//            try {
+//                Importer importer = new MigImporter(table, new HistoryHashSourceAlloter(tableKey, hashAllotRule), ym);
+//                importer.importData(resultSet);
+//            } catch (Exception e) {
+//                SwiftLoggers.getLogger().error(e);
+//            }
+//        }
     }
 
     private HashAllotRule getOrInitAllotRule(SourceKey tableKey, List<String> fieldNames) {

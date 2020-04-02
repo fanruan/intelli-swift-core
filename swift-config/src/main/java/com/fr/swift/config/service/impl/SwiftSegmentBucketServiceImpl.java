@@ -4,8 +4,10 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.dao.SwiftSegmentBucketDao;
 import com.fr.swift.config.dao.SwiftSegmentDao;
+import com.fr.swift.config.dao.SwiftSegmentLocationDao;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
+import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.config.oper.BaseTransactionWorker;
 import com.fr.swift.config.oper.ConfigSession;
 import com.fr.swift.config.oper.TransactionManager;
@@ -16,7 +18,10 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author lucifer
@@ -29,11 +34,13 @@ public class SwiftSegmentBucketServiceImpl implements SwiftSegmentBucketService 
     private SwiftSegmentBucketDao swiftSegmentBucketDao;
     private TransactionManager transactionManager;
     private SwiftSegmentDao swiftSegmentDao;
+    private SwiftSegmentLocationDao locationDao;
 
     public SwiftSegmentBucketServiceImpl() {
         this.swiftSegmentBucketDao = SwiftContext.get().getBean(SwiftSegmentBucketDao.class);
         this.transactionManager = SwiftContext.get().getBean(TransactionManager.class);
         this.swiftSegmentDao = SwiftContext.get().getBean(SwiftSegmentDao.class);
+        this.locationDao = SwiftContext.get().getBean(SwiftSegmentLocationDao.class);
     }
 
     @Override
@@ -44,6 +51,18 @@ public class SwiftSegmentBucketServiceImpl implements SwiftSegmentBucketService 
                 public SwiftSegmentBucket work(ConfigSession session) throws SQLException {
                     List<SwiftSegmentBucketElement> elementList = swiftSegmentBucketDao.find(session,
                             ConfigWhereImpl.eq("unionKey.sourceKey", sourceKey.getId()));
+                    List<SwiftSegmentLocationEntity> locationEntities = locationDao.find(session, ConfigWhereImpl.eq("sourceKey", sourceKey.getId()));
+                    Set<String> locationKeys = new HashSet<>();
+                    for (SwiftSegmentLocationEntity locationEntity : locationEntities) {
+                        locationKeys.add(locationEntity.getSegmentId());
+                    }
+                    Iterator<SwiftSegmentBucketElement> iterator = elementList.iterator();
+                    while (iterator.hasNext()) {
+                        SwiftSegmentBucketElement next = iterator.next();
+                        if (!locationKeys.contains(next.getRealSegmentKey())) {
+                            iterator.remove();
+                        }
+                    }
                     SwiftSegmentBucket swiftSegmentBucket = new SwiftSegmentBucket(sourceKey);
                     for (SwiftSegmentBucketElement bucketElement : elementList) {
                         SegmentKey segmentKey = swiftSegmentDao.select(session, bucketElement.getRealSegmentKey());
