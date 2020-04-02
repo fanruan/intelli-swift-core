@@ -185,7 +185,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             this.rowCount = rowCount;
         }
 
-        void insert(Row row) throws Exception {
+        public void insert(Row row) throws Exception {
             inserter.insertData(row);
             rowCount++;
         }

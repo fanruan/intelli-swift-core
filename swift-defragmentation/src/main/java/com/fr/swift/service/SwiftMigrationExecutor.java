@@ -2,32 +2,23 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftConfigService;
 import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
-import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.io.Types;
-import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.segment.CacheColumnSegment;
-import com.fr.swift.segment.Segment;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentResultSet;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.column.BitmapIndexedColumn;
-import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.operator.collate.segment.SegmentBuilder;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.service.executor.MigrationExecutor;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -39,7 +30,8 @@ import com.fr.swift.source.resultset.progress.ProgressResultSet;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -110,7 +102,7 @@ public class SwiftMigrationExecutor implements MigrationExecutor {
         try {
             Set<String> tableNamesSet = SwiftProperty.getProperty().getMigrationTableSet();
             tableNamesSet.removeIf(String::isEmpty);
-            Map<SourceKey, List<SegmentKey>> allSegmentsMap = segmentService.getAllSegments();
+            Map<SourceKey, List<SegmentKey>> allSegmentsMap = segmentService.getOwnSegments();
             if (!tableNamesSet.isEmpty()) {
                 allSegmentsMap.entrySet().removeIf((entry) -> !tableNamesSet.contains(entry.getKey().getId()));
             }
