@@ -19,6 +19,7 @@ import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.netty.rpc.service.SwiftRpcService;
 import com.fr.swift.service.executor.CollateExecutor;
 import com.fr.swift.service.executor.MigrationExecutor;
 
@@ -32,6 +33,14 @@ import java.util.Map;
  * @description
  */
 public class BootRegister {
+
+    /**
+     * start rpc service
+     */
+    public static void startServerService() {
+        SwiftRpcService swiftRpcService = SwiftRpcService.getInstance();
+        swiftRpcService.startServerService();
+    }
 
     public static void registerEntity() throws ClassNotFoundException {
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentEntity");
