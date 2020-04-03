@@ -84,6 +84,9 @@ public enum SegmentContainer implements SegmentService {
 
     @Override
     public List<SegmentKey> getSegmentKeysByIds(SourceKey tableKey, Collection<String> segmentIds) {
+        if (null == segmentIds || segmentIds.isEmpty()) {
+            return getSegmentKeys(tableKey);
+        }
         return tableMap.computeIfAbsent(tableKey, n -> new HashSet<>())
                 .stream()
                 .filter(s -> segmentIds.contains(s.getId()))
