@@ -8,6 +8,8 @@ import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.query.cache.QueryCacheBuilder;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
@@ -85,5 +87,15 @@ public class SwiftServiceContext implements ServiceContext {
         //delete改为同步删。
         //        return TaskProducer.produceTask(new DeleteExecutorTask(tableKey, where));
         return (boolean) new DeleteExecutorTask(tableKey, where).getJob().call();
+    }
+
+    @Override
+    public void clearQuery(String queryId) {
+        QueryCacheBuilder.builder().removeCache(queryId);
+    }
+
+    @Override
+    public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception {
+        throw new UnsupportedOperationException("insert not support");
     }
 }
