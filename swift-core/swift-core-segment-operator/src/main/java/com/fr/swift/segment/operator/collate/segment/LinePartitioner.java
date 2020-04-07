@@ -7,7 +7,6 @@ import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.segment.Segment;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -32,10 +31,12 @@ public class LinePartitioner implements Partitioner {
         }
         List<SegmentItem> items = new ArrayList<SegmentItem>();
         int count = 0;
+        int combineNum = 0;
         List<Segment> list = new ArrayList<Segment>();
         List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
         for (int i = 0; i < segments.size(); i++) {
             count += allShows.get(i).getCardinality();
+            combineNum += 1;
             list.add(segments.get(i));
             if (count >= capacity * 2 / 3) {
                 ImmutableBitMap immutableBitMap = null;
@@ -58,9 +59,11 @@ public class LinePartitioner implements Partitioner {
                     immutableBitMap = allShows.get(i);
                 }
                 bitMaps.add(immutableBitMap);
-                // create segmentItem
-                items.add(new SegmentItem(new ArrayList<Segment>(list), new ArrayList<ImmutableBitMap>(bitMaps)));
+                if (combineNum != 1) {
+                    items.add(new SegmentItem(new ArrayList<>(list), new ArrayList<>(bitMaps)));
+                }
                 count = 0;
+                combineNum = 0;
                 list.clear();
                 bitMaps.clear();
             } else {
