@@ -57,6 +57,7 @@ public class LinePartitioner implements Partitioner {
                     immutableBitMap = allShows.get(i);
                 }
                 bitMaps.add(immutableBitMap);
+                items.add(new SegmentItem(new ArrayList<>(list), new ArrayList<>(bitMaps)));
                 count = 0;
                 list.clear();
                 bitMaps.clear();
