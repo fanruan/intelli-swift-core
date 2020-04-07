@@ -31,12 +31,10 @@ public class LinePartitioner implements Partitioner {
         }
         List<SegmentItem> items = new ArrayList<SegmentItem>();
         int count = 0;
-        int combineNum = 0;
         List<Segment> list = new ArrayList<Segment>();
         List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
         for (int i = 0; i < segments.size(); i++) {
             count += allShows.get(i).getCardinality();
-            combineNum += 1;
             list.add(segments.get(i));
             if (count >= capacity * 2 / 3) {
                 ImmutableBitMap immutableBitMap = null;
@@ -52,18 +50,14 @@ public class LinePartitioner implements Partitioner {
                         }
                     });
                     allShow = allShow.getAndNot(bitMap);
-                    allShows.set(i, allShow);
+                    allShows.set(i, bitMap);
                     i--;
-                    immutableBitMap = bitMap;
+                    immutableBitMap = allShow;
                 } else {
                     immutableBitMap = allShows.get(i);
                 }
                 bitMaps.add(immutableBitMap);
-                if (combineNum != 1) {
-                    items.add(new SegmentItem(new ArrayList<>(list), new ArrayList<>(bitMaps)));
-                }
                 count = 0;
-                combineNum = 0;
                 list.clear();
                 bitMaps.clear();
             } else {
