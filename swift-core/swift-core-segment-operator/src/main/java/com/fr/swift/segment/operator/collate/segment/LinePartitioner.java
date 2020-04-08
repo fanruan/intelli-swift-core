@@ -7,6 +7,8 @@ import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.segment.Segment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -22,6 +24,8 @@ public class LinePartitioner implements Partitioner {
 
     @Override
     public List<SegmentItem> partition(List<Segment> segments) {
+        // 先排序 从低到高
+        segments.sort(Comparator.comparingInt(o -> o.getAllShowIndex().getCardinality()));
         List<ImmutableBitMap> allShows = new ArrayList<ImmutableBitMap>();
         for (Segment segment : segments) {
             allShows.add(segment.getAllShowIndex());
@@ -33,7 +37,7 @@ public class LinePartitioner implements Partitioner {
         for (int i = 0; i < segments.size(); i++) {
             count += allShows.get(i).getCardinality();
             list.add(segments.get(i));
-            if (count >= capacity) {
+            if (count >= capacity * 2 / 3) {
                 ImmutableBitMap immutableBitMap = null;
                 if (count > capacity) {
                     final MutableBitMap bitMap = BitMaps.newRoaringMutable();

@@ -23,5 +23,7 @@ public interface SwiftSegmentManager {
 
     List<Segment> getSegmentsByIds(SourceKey table, Collection<String> segmentIds);
 
+    List<SegmentKey> getSegmentKeysByIds(SourceKey table, Collection<String> segmentIds);
+
     void remove(SourceKey sourceKey);
 }

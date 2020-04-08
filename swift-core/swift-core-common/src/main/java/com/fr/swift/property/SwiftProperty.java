@@ -1,6 +1,5 @@
 package com.fr.swift.property;
 
-import com.fr.swift.config.SwiftConfigConstants;
 import com.fr.swift.util.ConfigInputUtil;
 import com.fr.swift.util.Crasher;
 
@@ -46,6 +45,10 @@ public class SwiftProperty {
 
     private String cubesPath;
 
+    private boolean isMigration;
+
+    private Set<String> migrationTableName;
+
     /**
      * swift业务相关service
      */
@@ -62,6 +65,7 @@ public class SwiftProperty {
     private int redisTimeout;
     private String[] executorTaskType;
     private String machineId;
+    private String collateTime;
 
     private SwiftProperty() {
         initProperties();
@@ -89,10 +93,21 @@ public class SwiftProperty {
             initClusterId();
             initMasterAddress();
             initCubesPath();
+            initNeedMigration();
+            initMigrationTableName();
             initMachineId();
+            initCollateTime();
         } catch (IOException e) {
             Crasher.crash(e);
         }
+    }
+
+    private void initCollateTime() {
+        collateTime = (String) properties.getOrDefault("swift.collate.time", "2:00:00");
+    }
+
+    public String getCollateTime() {
+        return collateTime;
     }
 
     public void setSwiftServiceNames(Set<String> swiftServiceNames) {
@@ -139,6 +154,15 @@ public class SwiftProperty {
         this.cubesPath = properties.getProperty("swift.cubesPath");
     }
 
+    private void initNeedMigration() {
+        this.isMigration = Boolean.parseBoolean(properties.getProperty("swift.isMigration"));
+    }
+
+    private void initMigrationTableName() {
+        String[] tableNames = properties.getProperty("swift.migrationTableName").split(";");
+        this.migrationTableName = new HashSet<>(Arrays.asList(tableNames));
+    }
+
     private void initExecutorTaskType() {
         this.executorTaskType = properties.getProperty("swift.executorTaskType").split(";");
     }
@@ -149,11 +173,7 @@ public class SwiftProperty {
 
     //TODO 配置要修改
     private void initClusterId() {
-        if (isCluster) {
-            this.clusterId = properties.getProperty("swift.clusterId");
-        } else {
-            this.clusterId = SwiftConfigConstants.LOCALHOST;
-        }
+        this.clusterId = properties.getProperty("swift.machine.id");
     }
 
     public void setClusterId(String clusterId) {
@@ -218,6 +238,14 @@ public class SwiftProperty {
 
     public String getCubesPath() {
         return cubesPath;
+    }
+
+    public boolean isMigration() {
+        return isMigration;
+    }
+
+    public Set<String> getMigrationTableSet() {
+        return migrationTableName;
     }
 
     public String[] getExecutorTaskType() {

@@ -73,7 +73,7 @@ public class SwiftHistoryServiceTest {
 
         // Generate by Mock Plugin
         WhereDeleter mockWhereDeleter = PowerMock.createMock(WhereDeleter.class);
-        ImmutableBitMap mockImmutableBitMap = PowerMock.createMock(ImmutableBitMap.class);
+        Map<SegmentKey, ImmutableBitMap> mockImmutableBitMap = PowerMock.createMock(Map.class);
         EasyMock.expect(mockImmutableBitMap.isEmpty()).andReturn(true).anyTimes();
         EasyMock.expect(mockWhereDeleter.delete(EasyMock.anyObject(Where.class))).andReturn(mockImmutableBitMap).anyTimes();
 

@@ -152,6 +152,14 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     }
 
     @Override
+    public List<SegmentKey> getSegmentKeysByIds(SourceKey table, Collection<String> segmentIds) {
+        if (null == segmentIds || segmentIds.isEmpty()) {
+            return segmentService.getSegmentByKey(table.getId());
+        }
+        return new ArrayList<>(segmentService.getByIds(new HashSet<>(segmentIds)));
+    }
+
+    @Override
     public void remove(SourceKey sourceKey) {
         container.remove(sourceKey);
     }

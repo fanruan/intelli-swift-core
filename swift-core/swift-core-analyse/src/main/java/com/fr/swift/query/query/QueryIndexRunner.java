@@ -4,8 +4,8 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
 
-import java.net.URI;
 import java.util.Map;
 
 /**
@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public interface QueryIndexRunner {
 
-    Map<URI, IndexQuery<ImmutableBitMap>> getBitMap(Table table, Where where) throws Exception;
+    Map<SegmentKey, IndexQuery<ImmutableBitMap>> getBitMap(Table table, Where where) throws Exception;
 
-    IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, Segment segment) throws Exception;
+    IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, SegmentKey segmentKey) throws Exception;
 }
