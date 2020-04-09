@@ -20,7 +20,7 @@ public class HistoryLineSourceAlloter extends BaseLineSourceAlloter {
     @Override
     protected SegmentState getInsertableSeg(int logicOrder) {
         // todo 另外还要处理脏配置
-        SegmentKey segKey = segmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
+        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftLoggers.getLogger().debug("importing, append new seg {}", segKey);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);

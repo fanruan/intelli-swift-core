@@ -3,6 +3,7 @@ package com.fr.swift.config.service.impl;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.context.ContextUtil;
+import com.fr.swift.property.SwiftProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -32,6 +33,6 @@ public class SwiftCubePathServiceImpl implements SwiftCubePathService {
 
     @Override
     public String getSwiftPath() {
-        return ContextUtil.getClassPath();
+        return SwiftProperty.get().getCubesPath() == null ? ContextUtil.getClassPath() : SwiftProperty.get().getCubesPath();
     }
 }

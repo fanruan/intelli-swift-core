@@ -2,6 +2,8 @@ package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -25,6 +27,7 @@ import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -74,6 +77,7 @@ public class SegmentContainerTest {
         when(SwiftContext.get()).thenReturn(swiftContext);
         when(swiftContext.getBean(SwiftMetaDataService.class)).thenReturn(metaDataService);
         when(swiftContext.getBean(SwiftSegmentService.class)).thenReturn(swiftSegmentService);
+
         when(metaDataService.getAllMetas()).thenReturn(Stream.of(
                 new SwiftMetaDataEntity.Builder().setTableName("testA").setSwiftSchema(SwiftDatabase.CUBE).setFields(Collections.singletonList(null)).build()
                 , new SwiftMetaDataEntity.Builder().setTableName("testB").setSwiftSchema(SwiftDatabase.CUBE).setFields(Collections.singletonList(null)).build()
@@ -82,11 +86,16 @@ public class SegmentContainerTest {
         when(swiftSegmentService.getOwnSegments(new SourceKey("testA"))).thenReturn(Stream.of(a0, a1).collect(Collectors.toList()));
         when(swiftSegmentService.getOwnSegments(new SourceKey("testB"))).thenReturn(Stream.of(b0, b1).collect(Collectors.toList()));
         when(swiftSegmentService.getOwnSegments(new SourceKey("testC"))).thenReturn(Stream.of(c0, c1).collect(Collectors.toList()));
+
+        when(swiftSegmentService.getBucketByTable(new SourceKey("testA"))).thenReturn(new SwiftSegmentBucket(new SourceKey("testA")));
+        when(swiftSegmentService.getBucketByTable(new SourceKey("testB"))).thenReturn(new SwiftSegmentBucket(new SourceKey("testC")));
+        when(swiftSegmentService.getBucketByTable(new SourceKey("testC"))).thenReturn(new SwiftSegmentBucket(new SourceKey("testC")));
+
         doReturn(segment).when(SegmentUtils.class, "newSegment", Mockito.any(SegmentKey.class));
     }
 
     @Test
-    public void test() {
+    public void testSegment() {
         assertTrue(SegmentContainer.LOCAL.exist(a0));
         assertTrue(SegmentContainer.LOCAL.exist(a1));
         assertFalse(SegmentContainer.LOCAL.exist(a2));
@@ -112,5 +121,17 @@ public class SegmentContainerTest {
         assertFalse(SegmentContainer.LOCAL.exist(d1));
         assertFalse(SegmentContainer.LOCAL.exist(d2));
 
+        assertNotNull(SegmentContainer.LOCAL.getBucketByTable(new SourceKey("testD")));
+
+        assertTrue(SegmentContainer.LOCAL.getBucketByTable(new SourceKey("testA")).getBucketMap().isEmpty());
+        assertTrue(SegmentContainer.LOCAL.getBucketByTable(new SourceKey("testA")).getBucketIndexMap().isEmpty());
+        SegmentContainer.LOCAL.saveBucket(new SwiftSegmentBucketElement("testA", 0, "testA@FINE_IO@0"));
+        assertEquals(SegmentContainer.LOCAL.getBucketByTable(new SourceKey("testA")).getBucketMap().get(0).size(), 1);
+        assertEquals(SegmentContainer.LOCAL.getBucketByTable(new SourceKey("testA")).getBucketIndexMap().size(), 1);
+        assertEquals(SegmentContainer.LOCAL.getBucketByTable(new SourceKey("testA")).getBucketMap().get(0).get(0).getId(), "testA@FINE_IO@0");
+
+        SegmentContainer.LOCAL.deleteBucket(a0);
+        assertTrue(SegmentContainer.LOCAL.getBucketByTable(new SourceKey("testA")).getBucketMap().get(0).isEmpty());
+        assertTrue(SegmentContainer.LOCAL.getBucketByTable(new SourceKey("testA")).getBucketIndexMap().isEmpty());
     }
 }

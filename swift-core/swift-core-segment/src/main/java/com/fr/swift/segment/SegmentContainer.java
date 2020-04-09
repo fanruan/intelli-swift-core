@@ -1,6 +1,8 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -30,6 +32,7 @@ public enum SegmentContainer implements SegmentService {
 
     private final Map<SourceKey, Set<SegmentKey>> tableMap = new ConcurrentHashMap<>();
     private final Map<String, SegmentKey> segmentKeyMap = new ConcurrentHashMap<>();
+    private final Map<SourceKey, SwiftSegmentBucket> bucketMap = new ConcurrentHashMap<>();
 
     SegmentContainer() {
         List<SwiftMetaData> allMetas = metaDataService.getAllMetas();
@@ -37,6 +40,9 @@ public enum SegmentContainer implements SegmentService {
             try {
                 List<SegmentKey> segmentKeyList = swiftSegmentService.getOwnSegments(new SourceKey(meta.getTableName()));
                 addSegments(segmentKeyList);
+                SourceKey tableKey = new SourceKey(meta.getTableName());
+                SwiftSegmentBucket bucket = swiftSegmentService.getBucketByTable(tableKey);
+                bucketMap.put(tableKey, bucket);
             } catch (SwiftMetaDataException e) {
                 SwiftLoggers.getLogger().error(e);
             }
@@ -108,5 +114,20 @@ public enum SegmentContainer implements SegmentService {
     @Override
     public List<SegmentKey> removeSegments(List<SegmentKey> segmentKeys) {
         return segmentKeys.stream().map(this::removeSegment).filter(s -> s != null).collect(Collectors.toList());
+    }
+
+    @Override
+    public SwiftSegmentBucket getBucketByTable(SourceKey sourceKey) {
+        return bucketMap.computeIfAbsent(sourceKey, n -> new SwiftSegmentBucket(sourceKey));
+    }
+
+    void saveBucket(SwiftSegmentBucketElement element) {
+        SourceKey sourceKey = new SourceKey(element.getSourceKey());
+        bucketMap.computeIfAbsent(sourceKey, n -> new SwiftSegmentBucket(sourceKey))
+                .put(element.getBucketIndex(), segmentKeyMap.get(element.getRealSegmentKey()));
+    }
+
+    void deleteBucket(SegmentKey segmentKey) {
+        bucketMap.computeIfAbsent(segmentKey.getTable(), n -> new SwiftSegmentBucket(segmentKey.getTable())).remove(segmentKey);
     }
 }

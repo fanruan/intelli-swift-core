@@ -47,7 +47,6 @@ class DetailQueryBuilder extends BaseQueryBuilder {
         List<Query<DetailQueryResultSet>> queries = new ArrayList<Query<DetailQueryResultSet>>();
         //根据分开规则提前区分segment
         List<Segment> segments = filterQuerySegs(detailQueryInfo);
-//        List<Segment> segments = SEG_SVC.getSegmentsByIds(detailQueryInfo.getTable(), detailQueryInfo.getQuerySegment());
         List<Dimension> dimensions = detailQueryInfo.getDimensions();
         for (Segment seg : segments) {
             try {

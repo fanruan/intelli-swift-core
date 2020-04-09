@@ -23,19 +23,11 @@ public class SwiftProperty {
 
     private boolean isCluster;
 
-    private String clusterId;
-
-    private String masterAddress;
-
     private String rpcAddress;
 
     private int rpcMaxObjectSize;
 
     private String cubesPath;
-
-    private boolean isMigration;
-
-    private Set<String> migrationTableName;
 
     /**
      * swift业务相关service
@@ -56,7 +48,7 @@ public class SwiftProperty {
 
     private static final SwiftProperty INSTANCE = new SwiftProperty();
 
-    public static SwiftProperty getProperty() {
+    public static SwiftProperty get() {
         return INSTANCE;
     }
 
@@ -73,11 +65,7 @@ public class SwiftProperty {
             initRpcAddress();
             initCluster();
             initExecutorTaskType();
-            initClusterId();
-            initMasterAddress();
             initCubesPath();
-            initNeedMigration();
-            initMigrationTableName();
             initMachineId();
         } catch (IOException e) {
             Crasher.crash(e);
@@ -128,42 +116,12 @@ public class SwiftProperty {
         this.cubesPath = properties.getProperty("swift.cubesPath");
     }
 
-    private void initNeedMigration() {
-        this.isMigration = Boolean.parseBoolean(properties.getProperty("swift.isMigration"));
-    }
-
-    private void initMigrationTableName() {
-        String[] tableNames = properties.getProperty("swift.migrationTableName").split(";");
-        this.migrationTableName = new HashSet<>(Arrays.asList(tableNames));
-    }
-
     private void initExecutorTaskType() {
         this.executorTaskType = properties.getProperty("swift.executorTaskType").split(";");
     }
 
     public void setCluster(boolean cluster) {
         this.isCluster = cluster;
-    }
-
-    //TODO 配置要修改
-    private void initClusterId() {
-        if (isCluster) {
-            this.clusterId = properties.getProperty("swift.clusterId");
-        } else {
-            this.clusterId = "LOCAL";
-        }
-    }
-
-    public void setClusterId(String clusterId) {
-        this.clusterId = clusterId;
-    }
-
-    public void setMasterAddress(String masterId) {
-        this.masterAddress = masterId;
-    }
-
-    private void initMasterAddress() {
-        this.masterAddress = properties.getProperty("swift.masterAddress");
     }
 
     private void initMachineId() {
@@ -182,15 +140,6 @@ public class SwiftProperty {
         return isCluster;
     }
 
-    @Deprecated
-    public String getClusterId() {
-        return clusterId;
-    }
-
-    public String getMasterAddress() {
-        return masterAddress;
-    }
-
     public Set<String> getSwiftServiceNames() {
         return new HashSet<String>(swiftServiceNames);
     }
@@ -201,14 +150,6 @@ public class SwiftProperty {
 
     public String getCubesPath() {
         return cubesPath;
-    }
-
-    public boolean isMigration() {
-        return isMigration;
-    }
-
-    public Set<String> getMigrationTableSet() {
-        return migrationTableName;
     }
 
     public String[] getExecutorTaskType() {

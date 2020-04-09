@@ -1,6 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.annotation.service.InnerService;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Collection;
@@ -18,6 +19,11 @@ public interface SegmentService {
 
     void addSegment(SegmentKey segmentKey);
 
+    /**
+     * mutableImport、slimImport、collate、historyBLock
+     *
+     * @param segmentKeys
+     */
     void addSegments(List<SegmentKey> segmentKeys);
 
     Segment getSegment(SegmentKey key);
@@ -35,5 +41,7 @@ public interface SegmentService {
     SegmentKey removeSegment(SegmentKey segmentKey);
 
     List<SegmentKey> removeSegments(List<SegmentKey> segmentKeys);
+
+    SwiftSegmentBucket getBucketByTable(SourceKey sourceKey);
 
 }

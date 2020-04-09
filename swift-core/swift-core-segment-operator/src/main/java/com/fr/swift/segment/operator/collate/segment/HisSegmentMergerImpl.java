@@ -2,7 +2,6 @@ package com.fr.swift.segment.operator.collate.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
-import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
@@ -26,7 +25,6 @@ import java.util.List;
 public class HisSegmentMergerImpl implements HisSegmentMerger {
 
     private static final SwiftSegmentService SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
-    private static final SwiftSegmentBucketService BUCKET_SVC = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
     private static final int currentDir = 0;
     private static final int LINE_VIRTUAL_INDEX = -1;
 
@@ -64,7 +62,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
             if (index != LINE_VIRTUAL_INDEX) {
                 for (SegmentKey segmentKey : segmentKeys) {
                     SwiftSegmentBucketElement element = new SwiftSegmentBucketElement(dataSource.getSourceKey(), index, segmentKey.getId());
-                    BUCKET_SVC.save(element);
+                    SEG_SVC.saveBucket(element);
                 }
             }
             return segmentKeys;

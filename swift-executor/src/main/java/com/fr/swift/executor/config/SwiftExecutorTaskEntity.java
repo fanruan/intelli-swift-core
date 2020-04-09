@@ -85,7 +85,7 @@ public class SwiftExecutorTaskEntity implements Serializable {
     }
 
     private SwiftExecutorTaskEntity(ExecutorTask task) {
-        this.clusterId = SwiftProperty.getProperty().getMachineId();
+        this.clusterId = SwiftProperty.get().getMachineId();
         this.taskId = task.getTaskId();
         this.sourceKey = task.getSourceKey().getId();
         this.createTime = task.getCreateTime();

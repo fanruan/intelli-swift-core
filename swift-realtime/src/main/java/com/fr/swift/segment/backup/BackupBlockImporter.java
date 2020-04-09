@@ -56,7 +56,7 @@ public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
     @Override
     protected void onSucceed() {
         for (SegmentKey importSegKey : importSegKeys) {
-            segLocationSvc.saveOnNode(SwiftProperty.getProperty().getMachineId(), Collections.singleton(importSegKey));
+            segLocationSvc.saveOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(importSegKey));
         }
     }
 
