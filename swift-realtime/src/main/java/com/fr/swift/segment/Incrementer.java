@@ -46,7 +46,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
 
     @Override
     protected void onSucceed() {
-        segLocationSvc.saveOnNode(SwiftProperty.getProperty().getMachineId(), new HashSet<>(importSegKeys));
+        segLocationSvc.saveOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(importSegKeys));
         segmentService.addSegments(importSegKeys);
         if (!importSegKeys.isEmpty()) {
             // 发送-1，告诉查询节点，本节点已有该表增量块

@@ -32,9 +32,10 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
 
     @Override
     protected SegmentState getInsertableSeg(int virtualOrder) {
-        SegmentKey segKey = segmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
+        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftSegmentBucketElement bucketElement = new SwiftSegmentBucketElement(tableKey, virtualOrder, segKey.getId());
-        bucketService.save(bucketElement);
+        swiftSegmentService.saveBucket(bucketElement);
+
         SwiftLoggers.getLogger().debug("importing, append new seg {} in bucket {}", segKey, virtualOrder);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);

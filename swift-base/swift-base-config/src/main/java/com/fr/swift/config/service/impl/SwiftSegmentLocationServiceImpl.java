@@ -19,6 +19,7 @@ import java.util.Set;
 /**
  * @author yee
  * @date 2018/7/24
+ * @description seglocation db service
  */
 @SwiftBean(name = "swiftSegmentLocationService")
 public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationService {

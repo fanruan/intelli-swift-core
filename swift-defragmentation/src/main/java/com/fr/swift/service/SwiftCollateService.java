@@ -5,7 +5,6 @@ import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
-import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
@@ -60,8 +59,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private transient SwiftSegmentService swiftSegmentService;
 
-    private transient SwiftSegmentBucketService bucketService;
-
     private transient SwiftTableAllotRuleService allotRuleService;
 
     private transient SwiftSegmentLocationService locationService;
@@ -76,7 +73,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentService = SwiftContext.get().getBean(SegmentService.class);
         database = SwiftDatabase.getInstance();
         swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
-        bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
         allotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
         locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         return true;
@@ -88,7 +84,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         segmentService = null;
         database = null;
         swiftSegmentService = null;
-        bucketService = null;
         allotRuleService = null;
         locationService = null;
         return true;
@@ -106,7 +101,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
 
     private void collateSegments(SourceKey tableKey, final List<SegmentKey> collateSegKeys) throws Exception {
         SwiftTableAllotRule allotRule = allotRuleService.getByTale(tableKey);
-        SwiftSegmentBucket segmentBucket = bucketService.getBucketByTable(tableKey);
+        SwiftSegmentBucket segmentBucket = segmentService.getBucketByTable(tableKey);
         SwiftSourceAlloter alloter;
         if (allotRule == null) {
             alloter = new HistoryLineSourceAlloter(tableKey, new LineAllotRule());
@@ -151,7 +146,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 // 合并失败
                 continue;
             }
-            locationService.saveOnNode(SwiftProperty.getProperty().getMachineId(), new HashSet<>(newSegmentKeys));
+            locationService.saveOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(newSegmentKeys));
             segmentService.addSegments(newSegmentKeys);
             fireUploadHistory(newSegmentKeys);
             clearCollatedSegment(collateSegKeys);

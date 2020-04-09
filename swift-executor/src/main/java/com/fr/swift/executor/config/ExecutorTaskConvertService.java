@@ -41,9 +41,9 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
     @Override
     public List<ExecutorTask> getActiveTasksBeforeTime(long time) {
         final List<SwiftExecutorTaskEntity> entities = dao.select(criteria -> criteria.add(Restrictions.eq("dbStatusType", DBStatusType.ACTIVE))
-                .add(Restrictions.eq("clusterId", SwiftProperty.getProperty().getMachineId()))
+                .add(Restrictions.eq("clusterId", SwiftProperty.get().getMachineId()))
                 .add(Restrictions.gt("createTime", time))
-                .add(Restrictions.in("executorTaskType", Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()))));
+                .add(Restrictions.in("executorTaskType", Arrays.asList(SwiftProperty.get().getExecutorTaskType()))));
         List<ExecutorTask> tasks = new ArrayList<>();
         for (SwiftExecutorTaskEntity entity : entities) {
             tasks.add(entity.convert());
@@ -54,9 +54,9 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
     @Override
     public List<ExecutorTask> getRemoteActiveTasksBeforeTime(long time) {
         final List<SwiftExecutorTaskEntity> entities = dao.select(criteria -> criteria.add(Restrictions.eq("dbStatusType", DBStatusType.ACTIVE))
-                .add(Restrictions.ne("clusterId", SwiftProperty.getProperty().getMachineId()))
+                .add(Restrictions.ne("clusterId", SwiftProperty.get().getMachineId()))
                 .add(Restrictions.gt("createTime", time))
-                .add(Restrictions.in("executorTaskType", Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()))));
+                .add(Restrictions.in("executorTaskType", Arrays.asList(SwiftProperty.get().getExecutorTaskType()))));
         List<ExecutorTask> tasks = new ArrayList<>();
         for (SwiftExecutorTaskEntity entity : entities) {
             tasks.add(entity.convert());

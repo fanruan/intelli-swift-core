@@ -2,13 +2,13 @@ package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.collate.SwiftFragmentFilter;
 import com.fr.swift.service.executor.CollateExecutor;
 import com.fr.swift.source.SourceKey;
@@ -54,7 +54,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     @Override
     public void start() {
-        if (Arrays.asList(SwiftProperty.getProperty().getExecutorTaskType()).contains(COLLATE_TASK)) {
+        if (Arrays.asList(SwiftProperty.get().getExecutorTaskType()).contains(COLLATE_TASK)) {
             long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
             initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
             executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
@@ -85,7 +85,7 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private void triggerCollate() {
         try {
-            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getOwnSegments(SwiftProperty.getProperty().getMachineId());
+            Map<SourceKey, List<SegmentKey>> allSegments = swiftSegmentService.getOwnSegments(SwiftProperty.get().getMachineId());
             for (Map.Entry<SourceKey, List<SegmentKey>> tableEntry : allSegments.entrySet()) {
                 SourceKey tableKey = tableEntry.getKey();
                 List<SegmentKey> keys = new ArrayList<SegmentKey>();
@@ -99,8 +99,8 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     // TODO: 2019/9/12 先改成凌晨2点触发，单线程同步跑，防止宕机先
                     Set<SegmentKey> segmentKeysSet = new HashSet<>(keys);
 
-                    SwiftSegmentBucketService bucketService = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
-                    Map<SegmentKey, Integer> bucketIndexMap = bucketService.getBucketByTable(tableEntry.getKey()).getBucketIndexMap();
+                    SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
+                    Map<SegmentKey, Integer> bucketIndexMap = segmentService.getBucketByTable(tableEntry.getKey()).getBucketIndexMap();
 
                     Map<Integer, List<SegmentKey>> segKeysByBucketMap = new HashMap<>();
                     bucketIndexMap.entrySet()

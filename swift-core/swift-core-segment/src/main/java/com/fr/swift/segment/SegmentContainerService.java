@@ -1,13 +1,14 @@
-package com.fr.swift.segment.column.impl;
+package com.fr.swift.segment;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentContainer;
-import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentService;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftSegmentBucketElement;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -20,15 +21,18 @@ import java.util.Set;
 @SwiftBean(name = "segmentService")
 public class SegmentContainerService implements SegmentService {
 
+    private SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
+
     @Override
     public void addSegment(SegmentKey segmentKey) {
         SegmentContainer.LOCAL.addSegment(segmentKey);
+        addElementByKeys(segmentKey == null ? Collections.EMPTY_LIST : Collections.singletonList(segmentKey));
     }
 
     @Override
     public void addSegments(List<SegmentKey> segmentKeys) {
         SegmentContainer.LOCAL.addSegments(segmentKeys);
-
+        addElementByKeys(segmentKeys);
     }
 
     @Override
@@ -63,11 +67,33 @@ public class SegmentContainerService implements SegmentService {
 
     @Override
     public SegmentKey removeSegment(SegmentKey segmentKey) {
-        return SegmentContainer.LOCAL.removeSegment(segmentKey);
+        SegmentKey removedSegkey = SegmentContainer.LOCAL.removeSegment(segmentKey);
+        deleteElementByKeys(removedSegkey == null ? Collections.EMPTY_LIST : Collections.singletonList(removedSegkey));
+        return removedSegkey;
     }
 
     @Override
     public List<SegmentKey> removeSegments(List<SegmentKey> segmentKeys) {
-        return SegmentContainer.LOCAL.removeSegments(segmentKeys);
+        List<SegmentKey> removedSegkeys = SegmentContainer.LOCAL.removeSegments(segmentKeys);
+        deleteElementByKeys(removedSegkeys);
+        return removedSegkeys;
+    }
+
+    @Override
+    public SwiftSegmentBucket getBucketByTable(SourceKey sourceKey) {
+        return SegmentContainer.LOCAL.getBucketByTable(sourceKey);
+    }
+
+    private void addElementByKeys(Collection<SegmentKey> keys) {
+        List<SwiftSegmentBucketElement> elements = swiftSegmentService.getBucketElementsByKeys(keys);
+        for (SwiftSegmentBucketElement element : elements) {
+            SegmentContainer.LOCAL.saveBucket(element);
+        }
+    }
+
+    private void deleteElementByKeys(Collection<SegmentKey> keys) {
+        for (SegmentKey key : keys) {
+            SegmentContainer.LOCAL.deleteBucket(key);
+        }
     }
 }

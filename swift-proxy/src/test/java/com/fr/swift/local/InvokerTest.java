@@ -45,7 +45,7 @@ public class InvokerTest {
         Mockito.when(ProxyServiceRegistry.get().getService(ITestInvoker.class.getName())).thenReturn(new ITestInvokerImpl());
 
         SwiftProperty swiftProperty = Mockito.mock(SwiftProperty.class);
-        Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
+        Mockito.when(SwiftProperty.get()).thenReturn(swiftProperty);
 
         ProcessHandlerRegistry processHandlerRegistry = Mockito.mock(ProcessHandlerRegistry.class);
         Mockito.when(ProxyProcessHandlerRegistry.get()).thenReturn(processHandlerRegistry);

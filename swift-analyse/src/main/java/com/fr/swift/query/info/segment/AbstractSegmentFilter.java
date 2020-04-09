@@ -57,16 +57,16 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     @Override
     public List<SegmentKey> filterSegKeys(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (singleTableQueryInfo.getQuerySegment() == null || singleTableQueryInfo.getQuerySegment().isEmpty()) {
-            return reFilter(singleTableQueryInfo);
+            return filter(singleTableQueryInfo);
         } else {
             if (isDataEmpty(singleTableQueryInfo)) {
                 return new ArrayList<>();
             }
             //允许exact query容错
-            List<SegmentKey> filteredSegKeys = reFilter(singleTableQueryInfo);
+            List<SegmentKey> filteredSegKeys = exactFilter(singleTableQueryInfo);
             if (filteredSegKeys.isEmpty()) {
                 singleTableQueryInfo.setQuerySegment(null);
-                filteredSegKeys = reFilter(singleTableQueryInfo);
+                filteredSegKeys = filter(singleTableQueryInfo);
             }
             return filteredSegKeys;
         }
@@ -83,12 +83,30 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return false;
     }
 
-    private List<SegmentKey> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+    /**
+     * 非精确计算
+     *
+     * @param singleTableQueryInfo
+     * @return
+     * @throws SwiftMetaDataException
+     */
+    private List<SegmentKey> filter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (isLineAllot(singleTableQueryInfo)) {
             return SEG_SVC.getSegmentKeysByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
         Set<Integer> virtualOrders = getIndexSet(singleTableQueryInfo.getFilterInfo(), singleTableQueryInfo.getTable());
         return filterSegment(virtualOrders, singleTableQueryInfo);
+    }
+
+    /**
+     * 精确计算segments
+     *
+     * @param singleTableQueryInfo
+     * @return
+     * @throws SwiftMetaDataException
+     */
+    private List<SegmentKey> exactFilter(SingleTableQueryInfo singleTableQueryInfo) {
+        return SEG_SVC.getSegmentKeysByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
     }
 
     private boolean isLineAllot(SingleTableQueryInfo singleTableQueryInfo) {

@@ -32,7 +32,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
 
     @Override
     protected SegmentState getInsertableSeg(int logicOrder) {
-        List<SegmentKey> segKeys = segmentService.getOwnSegments(tableKey);
+        List<SegmentKey> segKeys = swiftSegmentService.getOwnSegments(tableKey);
         segKeys = segKeys == null ? new ArrayList<>() : segKeys;
 
         Collections.sort(segKeys, Comparator.comparingInt(SegmentKey::getOrder));
@@ -54,7 +54,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
             }
         }
         // 全是历史块 或 全在inserting 或 全都满了；所以重新new一块
-        SegmentKey newSegKey = segmentService.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
+        SegmentKey newSegKey = swiftSegmentService.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType());
         return new SegmentState(segInfo);
     }

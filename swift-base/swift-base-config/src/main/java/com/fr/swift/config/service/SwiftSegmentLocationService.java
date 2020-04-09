@@ -14,6 +14,12 @@ import java.util.Set;
  */
 @DbService
 public interface SwiftSegmentLocationService {
+    /**
+     * mutableImport、slimImport、collate、historyBLock
+     *
+     * @param nodeId
+     * @param segKeys
+     */
     void saveOnNode(String nodeId, Set<SegmentKey> segKeys);
 
     void deleteOnNode(String nodeId, Set<SegmentKey> segKeys);

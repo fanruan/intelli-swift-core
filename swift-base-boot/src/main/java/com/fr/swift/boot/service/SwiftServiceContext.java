@@ -38,7 +38,7 @@ public class SwiftServiceContext implements ServiceContext {
         SwiftContext.get().getBean(AnalyseService.class).start();
         SwiftContext.get().getBean(CollateService.class).start();
         SwiftContext.get().getBean(DeleteService.class).start();
-        List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.getProperty().getServerServiceNames());
+        List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.get().getServerServiceNames());
         for (ServerService serverService : serverServiceList) {
             serverService.startServerService();
         }
@@ -50,7 +50,7 @@ public class SwiftServiceContext implements ServiceContext {
         SwiftContext.get().getBean(AnalyseService.class).shutdown();
         SwiftContext.get().getBean(CollateService.class).shutdown();
         SwiftContext.get().getBean(DeleteService.class).shutdown();
-        List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.getProperty().getServerServiceNames());
+        List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.get().getServerServiceNames());
         for (ServerService serverService : serverServiceList) {
             serverService.stopServerService();
         }
@@ -64,7 +64,7 @@ public class SwiftServiceContext implements ServiceContext {
 
     @Override
     public String getId() {
-        return SwiftProperty.getProperty().getMachineId();
+        return SwiftProperty.get().getMachineId();
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.fr.swift.config.service;
 
 import com.fr.swift.annotation.service.DbService;
+import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,4 +42,12 @@ public interface SwiftSegmentService {
     Map<SourceKey, List<SegmentKey>> getOwnSegments(final String nodeId);
 
     List<SegmentKey> getOwnSegments(SourceKey tableKey);
+
+    SwiftSegmentBucket getBucketByTable(SourceKey sourceKey);
+
+    List<SwiftSegmentBucketElement> getBucketElementsByKeys(Collection<SegmentKey> segmentKeys);
+
+    void saveBucket(SwiftSegmentBucketElement element);
+
+    void deleteBucket(SwiftSegmentBucketElement element);
 }
