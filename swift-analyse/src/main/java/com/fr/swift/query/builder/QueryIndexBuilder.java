@@ -13,7 +13,6 @@ import com.fr.swift.query.query.LocalIndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +54,7 @@ public class QueryIndexBuilder extends BaseQueryBuilder {
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }
-            Segment seg = SegmentUtils.newSegment(segmentKey);
+            Segment seg = SEG_SVC.getSegment(segmentKey);
             DetailFilter detailFilter = FilterBuilder.buildDetailFilter(seg, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND));
             return new LocalIndexQuery(detailFilter.createFilterIndex());
         }

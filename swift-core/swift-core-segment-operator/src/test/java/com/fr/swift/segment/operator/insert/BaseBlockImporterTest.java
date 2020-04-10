@@ -6,8 +6,7 @@ import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.Database;
-import com.fr.swift.db.SwiftSchema;
-import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
@@ -54,15 +53,15 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(MockitoJUnitRunner.class)
-@PrepareForTest({SwiftContext.class, SwiftDatabase.class, SwiftEventDispatcher.class, SegmentUtils.class})
+@PrepareForTest({SwiftContext.class, com.fr.swift.db.impl.SwiftDatabase.class, SwiftEventDispatcher.class, SegmentUtils.class})
 public class BaseBlockImporterTest {
 
     @Before
     public void setUp() throws Exception {
         mockStatic(SwiftContext.class, SwiftEventDispatcher.class);
         when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
-        mockStatic(SwiftDatabase.class);
-        when(SwiftDatabase.getInstance()).thenReturn(mock(Database.class));
+        mockStatic(com.fr.swift.db.impl.SwiftDatabase.class);
+        when(com.fr.swift.db.impl.SwiftDatabase.getInstance()).thenReturn(mock(Database.class));
     }
 
     @Test
@@ -82,7 +81,7 @@ public class BaseBlockImporterTest {
         when(alloter.allot(ArgumentMatchers.<RowInfo>any())).thenReturn(segInfo0, segInfo0, segInfo1);
 
         when(dataSource.getSourceKey()).thenReturn(mock(SourceKey.class));
-        when(dataSource.getMetadata().getSwiftSchema()).thenReturn(SwiftSchema.CUBE);
+        when(dataSource.getMetadata().getSwiftDatabase()).thenReturn(SwiftDatabase.CUBE);
 
         BaseBlockImporter<?, SwiftResultSet> blockImporter = spy(new BlockImporter<SwiftSourceAlloter<?, RowInfo>>(dataSource, alloter));
 
@@ -94,10 +93,10 @@ public class BaseBlockImporterTest {
         blockImporter.importData(resultSet);
 
         //verify persist meta
-        verify(SwiftDatabase.getInstance()).existsTable(dataSource.getSourceKey());
-        verify(SwiftDatabase.getInstance()).createTable(dataSource.getSourceKey(), dataSource.getMetadata());
-        verify(allotRuleService).getAllotRuleByTable(dataSource.getSourceKey());
-        verify(allotRuleService).saveAllotRule(Mockito.any(SwiftTableAllotRule.class));
+        verify(com.fr.swift.db.impl.SwiftDatabase.getInstance()).existsTable(dataSource.getSourceKey());
+        verify(com.fr.swift.db.impl.SwiftDatabase.getInstance()).createTable(dataSource.getSourceKey(), dataSource.getMetadata());
+        verify(allotRuleService).getByTale(dataSource.getSourceKey());
+        verify(allotRuleService).save(Mockito.any(SwiftTableAllotRule.class));
 
         verify(resultSet, times(4)).hasNext();
         verify(resultSet, times(3)).getNextRow();

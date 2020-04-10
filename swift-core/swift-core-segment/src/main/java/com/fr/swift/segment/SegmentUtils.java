@@ -47,7 +47,7 @@ public class SegmentUtils {
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(cubePath, storeType);
         SourceKey sourceKey = segmentKey.getTable();
-        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMetaDataByKey(sourceKey.getId());
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMeta(sourceKey);
 
         Assert.notNull(metaData);
         return SegmentUtils.newSegment(location, metaData);

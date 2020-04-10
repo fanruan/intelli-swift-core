@@ -10,7 +10,7 @@
 //import com.fr.swift.result.NodeResultSetImpl;
 //import com.fr.swift.segment.column.ColumnKey;
 //import com.fr.swift.source.Row;
-//import com.fr.swift.source.SwiftMetaData;
+//import com.fr.swift.meta.SwiftMetaData;
 //import com.fr.swift.structure.Pair;
 //import junit.framework.TestCase;
 //import org.easymock.EasyMock;

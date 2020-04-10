@@ -6,7 +6,7 @@ import com.fr.swift.executor.type.LockType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.ConfigInputUtil;
+import com.fr.swift.config.ConfigInputUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;

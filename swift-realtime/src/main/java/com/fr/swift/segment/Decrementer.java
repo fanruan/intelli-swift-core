@@ -28,11 +28,15 @@ public class Decrementer implements WhereDeleter {
 
     private SourceKey tableKey;
 
+    private final SegmentService segmentService;
+
     private final SwiftSegmentService swiftSegmentService;
+
 
     public Decrementer(SourceKey tableKey) {
         this.tableKey = tableKey;
-        swiftSegmentService = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        segmentService = SwiftContext.get().getBean(SegmentService.class);
+        swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
     }
 
     @Override
@@ -51,12 +55,15 @@ public class Decrementer implements WhereDeleter {
                 removeSegList.add(segKey);
             }
             if (seg.isHistory()) {
-                seg.release();
+                if (seg.isHistory()) {
+                    seg.release();
+                }
             }
-        }
-        if (!removeSegList.isEmpty()) {
-            swiftSegmentService.removeSegments(removeSegList);
-            SegmentUtils.clearSegments(removeSegList);
+            if (!removeSegList.isEmpty()) {
+                swiftSegmentService.delete(removeSegList);
+                segmentService.removeSegments(removeSegList);
+                SegmentUtils.clearSegments(removeSegList);
+            }
         }
         return indexAfterFilterMap;
     }

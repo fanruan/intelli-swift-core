@@ -5,7 +5,7 @@
     <parent>
         <artifactId>fine-swift</artifactId>
         <groupId>com.fr.intelligence</groupId>
-        <version>2019.1</version>
+        <version>2020.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,21 +16,30 @@
         <module>swift-analyse</module>
         <module>swift-base</module>
         <module>swift-core</module>
-        <module>swift-cluster</module>
         <module>swift-defragmentation</module>
         <module>swift-history</module>
         <module>swift-indexing</module>
-        <module>swift-master</module>
         <module>swift-realtime</module>
-        <module>swift-server</module>
-        <module>swift-slave</module>
         <module>swift-analyse-base</module>
         <module>swift-proxy</module>
-        <module>swift-api-server</module>
-        <module>swift-config</module>
         <module>swift-executor</module>
         <module>swift-base-boot</module>
+        <module>swift-api-server</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <properties>
         <jackson.version>2.9.10</jackson.version>
     </properties>

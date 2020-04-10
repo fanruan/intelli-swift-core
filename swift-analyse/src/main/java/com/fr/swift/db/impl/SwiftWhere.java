@@ -12,7 +12,6 @@ import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.util.Strings;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +22,10 @@ import java.util.Map;
  * @description
  * @since Advanced FineBI 5.0
  */
-public class SwiftWhere implements Where, Serializable {
+public class SwiftWhere implements Where {
 
     private static final long serialVersionUID = 1116521843669790563L;
+
     private transient FilterBean filterBean;
     private String filterBeanJson;
 

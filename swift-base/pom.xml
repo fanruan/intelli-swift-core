@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.fr.intelligence</groupId>
         <artifactId>swift</artifactId>
-        <version>2019.1</version>
+        <version>2020.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,6 @@
         <module>swift-base-config</module>
         <module>swift-base-structure</module>
         <module>swift-base-bitmap</module>
-        <module>swift-base-repository</module>
         <module>swift-base-beans</module>
         <module>swift-base-common</module>
     </modules>
@@ -41,11 +40,6 @@
             <dependency>
                 <groupId>com.fr.intelligence</groupId>
                 <artifactId>swift-base-structure</artifactId>
-                <version>${swift.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fr.intelligence</groupId>
-                <artifactId>swift-base-repository</artifactId>
                 <version>${swift.version}</version>
             </dependency>
         </dependencies>

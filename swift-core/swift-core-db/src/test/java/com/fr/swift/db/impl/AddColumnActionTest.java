@@ -1,12 +1,12 @@
 package com.fr.swift.db.impl;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.MetaDataColumnEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -81,7 +81,7 @@ public class AddColumnActionTest {
             }
         }), 25));
 
-        new AddColumnAction(new MetaDataColumnBean("d", Types.DOUBLE)).alter(table);
+        new AddColumnAction(new MetaDataColumnEntity("d", Types.DOUBLE)).alter(table);
 
         table = SwiftDatabase.getInstance().getTable(tableKey);
 
@@ -94,7 +94,7 @@ public class AddColumnActionTest {
     public void addPresentedColumn() throws Exception {
         SourceKey tableKey = new SourceKey(meta.getTableName());
         com.fr.swift.db.Table table = SwiftDatabase.getInstance().createTable(tableKey, meta);
-        new AddColumnAction(new MetaDataColumnBean("i", Types.VARCHAR)).alter(table);
+        new AddColumnAction(new MetaDataColumnEntity("i", Types.VARCHAR)).alter(table);
 
         table = SwiftDatabase.getInstance().getTable(tableKey);
         Assert.assertEquals(1, table.getMeta().getColumnCount());
@@ -106,7 +106,7 @@ public class AddColumnActionTest {
     }
 
     private void checkSeg(com.fr.swift.db.Table table) {
-        List<Segment> segs = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).getSegment(table.getSourceKey());
+        List<Segment> segs = SwiftContext.get().getBean(SegmentService.class).getSegments(table.getSourceKey());
         for (Segment seg : segs) {
             int rowCount = seg.getRowCount();
             com.fr.swift.segment.column.Column<Object> column = seg.getColumn(new ColumnKey("d"));
@@ -171,8 +171,8 @@ public class AddColumnActionTest {
         long i = -1;
 
         static SwiftMetaData getMeta() {
-            return new SwiftMetaDataBean("A",
-                    Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("i", Types.BIGINT)));
+            return new SwiftMetaDataEntity("A",
+                    Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnEntity("i", Types.BIGINT)));
         }
     }
 }

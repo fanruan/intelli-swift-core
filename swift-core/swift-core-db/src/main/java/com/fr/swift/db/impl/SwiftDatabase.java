@@ -7,6 +7,8 @@ import com.fr.swift.db.AlterTableAction;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.NoSuchTableException;
 import com.fr.swift.db.Table;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
@@ -15,7 +17,6 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * @author anchore
@@ -31,7 +32,7 @@ public class SwiftDatabase implements Database, Serializable {
         }
 
         Table table = new SwiftTable(tableKey, meta);
-        CONF_SVC.addMetaData(tableKey.getId(), meta);
+        CONF_SVC.saveMeta(meta);
         return table;
     }
 
@@ -40,23 +41,28 @@ public class SwiftDatabase implements Database, Serializable {
         if (!existsTable(tableKey)) {
             return Crasher.crash(new NoSuchTableException(tableKey.getId()));
         }
-        SwiftMetaData meta = CONF_SVC.getMetaDataByKey(tableKey.getId());
+        SwiftMetaData meta = CONF_SVC.getMeta(tableKey);
         return new SwiftTable(tableKey, meta);
     }
 
     @Override
     public synchronized List<Table> getAllTables() {
         List<Table> tables = new ArrayList<Table>();
-        for (Entry<String, SwiftMetaData> entry : CONF_SVC.getAllMetaData().entrySet()) {
-            SourceKey tableKey = new SourceKey(entry.getKey());
-            tables.add(new SwiftTable(tableKey, entry.getValue()));
+        for (SwiftMetaData metaData : CONF_SVC.getAllMetas()) {
+            SourceKey tableKey = null;
+            try {
+                tableKey = new SourceKey(metaData.getTableName());
+            } catch (SwiftMetaDataException e) {
+                SwiftLoggers.getLogger().error(e);
+            }
+            tables.add(new SwiftTable(tableKey, metaData));
         }
         return tables;
     }
 
     @Override
     public synchronized boolean existsTable(SourceKey tableKey) {
-        return CONF_SVC.containsMeta(tableKey);
+        return CONF_SVC.existsMeta(tableKey);
     }
 
     @Override
@@ -69,11 +75,19 @@ public class SwiftDatabase implements Database, Serializable {
     }
 
     @Override
+    public void updateTable(SwiftMetaData meta) throws SQLException {
+        if (!existsTable(new SourceKey(meta.getTableName()))) {
+            throw new NoSuchTableException(meta.getTableName());
+        }
+        CONF_SVC.updateMeta(meta);
+    }
+
+    @Override
     public synchronized void dropTable(SourceKey tableKey) throws SQLException {
         if (!existsTable(tableKey)) {
             throw new NoSuchTableException(tableKey.getId());
         }
-        CONF_SVC.removeMetaDatas(tableKey);
+        CONF_SVC.deleteMeta(tableKey);
     }
 
     private static final Database INSTANCE = new SwiftDatabase();

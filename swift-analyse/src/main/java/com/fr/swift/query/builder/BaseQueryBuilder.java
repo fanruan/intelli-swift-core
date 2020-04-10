@@ -3,7 +3,6 @@ package com.fr.swift.query.builder;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
-import com.fr.swift.config.service.SwiftSegmentBucketService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -24,7 +23,7 @@ import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
@@ -41,18 +40,18 @@ import java.util.stream.Collectors;
  * @date 2019/6/27
  */
 class BaseQueryBuilder {
+    protected static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
     protected static final SwiftTableAllotRuleService ALLOT_RULE_SERVICE = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
-    protected static final SwiftSegmentBucketService SEGMENT_BUCKET_SERVICE = SwiftContext.get().getBean(SwiftSegmentBucketService.class);
 
     static List<Segment> filterQuerySegs(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(queryInfo);
-        return segmentKeyList.stream().map(SegmentUtils::newSegment).collect(Collectors.toList());
+        return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
     }
 
     static List<SegmentKey> filterQuerySegKeys(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         SourceKey table = queryInfo.getTable();
-        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getAllotRuleByTable(table);
-        SwiftSegmentBucket swiftSegmentBucket = SEGMENT_BUCKET_SERVICE.getBucketByTable(table);
+        SwiftTableAllotRule allotRule = ALLOT_RULE_SERVICE.getByTale(table);
+        SwiftSegmentBucket swiftSegmentBucket = SEG_SVC.getBucketByTable(table);
         if (queryInfo.getType() == QueryType.GROUP) {
             GroupQueryInfo groupQueryInfo = (GroupQueryInfo) queryInfo;
             List<Metric> metrics = groupQueryInfo.getMetrics();

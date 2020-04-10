@@ -39,6 +39,15 @@ public interface Database {
     void alterTable(SourceKey tableKey, AlterTableAction alterAction) throws SQLException;
 
     /**
+     * 更新metadata
+     *
+     * @param meta
+     * @throws SQLException
+     */
+    void updateTable(SwiftMetaData meta) throws SQLException;
+
+
+    /**
      * 是否存在表
      *
      * @param tableKey 表key
