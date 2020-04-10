@@ -7,13 +7,13 @@
       "semaphore": 1
     },
     {
-      "sourceKey": null,
+      "sourceKey": "TREASURE_IMPORT",
       "executorTaskType": "TREASURE_IMPORT",
       "lockKey": null,
-      "semaphore": 1
+      "semaphore": 3
     },
     {
-      "sourceKey": null,
+      "sourceKey": "TREASURE_ANALYSIS",
       "executorTaskType": "TREASURE_ANALYSIS",
       "lockKey": null,
       "semaphore": 1
@@ -80,8 +80,6 @@
     }
   ],
   "stopTheWorldTaskTypes": [
-    "TREASURE_ANALYSIS",
-    "TREASURE_IMPORT",
     "COLLATE"
   ]
 }
