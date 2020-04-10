@@ -21,9 +21,9 @@ public class SwiftFragmentFilter implements FragmentFilter {
     /**
      * 碎片块数 >= 5 < 100
      */
-    public static final int FRAGMENT_NUMBER = 2;
+    public static final int FRAGMENT_NUMBER = 5;
 
-    public static final int MAX_FRAGMENT_NUMBER = 100;
+    public static final int MAX_FRAGMENT_NUMBER = 50;
 
     private final SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
