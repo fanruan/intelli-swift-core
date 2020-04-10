@@ -57,8 +57,9 @@ public class LinePartitioner implements Partitioner {
         Iterator<SegmentPartition> iterator = partitions.iterator();
         while (iterator.hasNext()) {
             SegmentPartition next = iterator.next();
-            if (next.getSegments().size() <= 1
-                    || (next.getSegments().size() >= 2 && next.getSegments().size() <= 4 && next.getCardinality() < capacity * 4 / 5)) {
+            //seg.size == 1且capacity>=4/5的进不来
+            //2<=seg.size<=4时capacity才可能>=4/5
+            if (next.getSegmentKeys().size() < 5 && next.getCardinality() < capacity * 4 / 5) {
                 iterator.remove();
             }
         }

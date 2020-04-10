@@ -59,7 +59,6 @@ public class LinePartitionerTest {
             when(allShow.getCardinality()).thenReturn(10000);
             segmentList.add(segmentKey);
         }
-
     }
 
     @Test
