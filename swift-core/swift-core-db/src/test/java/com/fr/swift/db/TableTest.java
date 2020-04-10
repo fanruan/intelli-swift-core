@@ -1,11 +1,11 @@
 package com.fr.swift.db;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.MetaDataColumnEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
@@ -39,13 +39,13 @@ public class TableTest {
             db.dropTable(sk);
         }
 
-        t = db.createTable(sk, new SwiftMetaDataBean(sk.getId(),
-                Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnBean("A", Types.DATE))));
+        t = db.createTable(sk, new SwiftMetaDataEntity(sk.getId(),
+                Collections.<SwiftMetaDataColumn>singletonList(new MetaDataColumnEntity("A", Types.DATE))));
     }
 
     private void checkResult() {
-        DetailColumn<Object> detailColumn = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class).
-                getSegment(sk).get(0).getColumn(new ColumnKey("A")).getDetailColumn();
+        DetailColumn<Object> detailColumn = SwiftContext.get().getBean(SegmentService.class).
+                getSegments(sk).get(0).getColumn(new ColumnKey("A")).getDetailColumn();
         assertEquals(2L, detailColumn.get(0));
         assertEquals(3L, detailColumn.get(1));
         assertEquals(45L, detailColumn.get(2));

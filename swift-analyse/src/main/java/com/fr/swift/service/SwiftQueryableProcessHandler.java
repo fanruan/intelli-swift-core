@@ -10,12 +10,11 @@ import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
-import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.local.LocalUrl;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
@@ -25,19 +24,14 @@ import com.fr.swift.query.result.SerializedQueryResultSetMerger;
 import com.fr.swift.query.result.serialize.BaseSerializedQueryResultSet;
 import com.fr.swift.result.qrs.EmptyQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.segment.SegmentDestination;
-import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.Strings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
@@ -59,17 +53,17 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
         SourceKey table = new SourceKey(queryBean.getTableName());
-        List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
-        List<Pair<URL, Set<String>>> pairs = processUrl(targets, segmentDestinations);
-
+        // TODO: 2020/3/13
+//        List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
+        List<Pair<URL, Set<String>>> pairs = processUrl(targets);
         final Class<?> proxyClass = method.getDeclaringClass();
         final Class<?>[] parameterTypes = method.getParameterTypes();
         final String methodName = method.getName();
 
         final CountDownLatch latch = new CountDownLatch(pairs.size());
-        final List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<QueryResultSet<?>>());
+        final List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<>());
         for (final Pair<URL, Set<String>> pair : pairs) {
-            queryBean.setSegments(pair.getValue() == null ? Collections.<String>emptySet() : pair.getValue());
+            queryBean.setSegments(pair.getValue() == null ? Collections.emptySet() : pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);
             final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
             RpcFuture<?> rpcFuture = (RpcFuture<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, query);
@@ -131,23 +125,6 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
 
     @Override
     public List<Pair<URL, Set<String>>> processUrl(Target[] targets, Object... args) {
-        List<SegmentDestination> uris = (List<SegmentDestination>) args[0];
-        Map<String, Pair<URL, Set<String>>> map = new HashMap<String, Pair<URL, Set<String>>>();
-        for (SegmentDestination destination : uris) {
-            String clusterId = destination.getClusterId();
-            if (!map.containsKey(clusterId)) {
-                URL url = UrlSelector.getInstance().getFactory().getURL(clusterId);
-                map.put(clusterId, Pair.<URL, Set<String>>of(url, new HashSet<String>()));
-            }
-            String segmentId = destination.getSegmentId();
-            if (Strings.isNotEmpty(segmentId)) {
-                map.get(clusterId).getValue().add(segmentId);
-            }
-        }
-        if (map.isEmpty() && !SwiftProperty.getProperty().isCluster()) {
-            // 单机
-            map.put(Strings.EMPTY, Pair.<URL, Set<String>>of(null, new HashSet<String>()));
-        }
-        return Collections.unmodifiableList(new ArrayList<>(map.values()));
+        return Collections.singletonList(new Pair<>(new LocalUrl(), new HashSet()));
     }
 }

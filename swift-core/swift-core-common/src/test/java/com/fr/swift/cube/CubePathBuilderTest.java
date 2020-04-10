@@ -2,7 +2,7 @@ package com.fr.swift.cube;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import org.easymock.EasyMock;
@@ -46,13 +46,13 @@ public class CubePathBuilderTest {
 
     @Test(expected = RuntimeException.class)
     public void testWrongBuild1() {
-        new CubePathBuilder().setSwiftSchema(SwiftSchema.CUBE).setTempDir(1).asBackup().build();
+        new CubePathBuilder().setSwiftSchema(SwiftDatabase.CUBE).setTempDir(1).asBackup().build();
     }
 
     @Test
     public void testBuild() {
         SourceKey tableKey = new SourceKey("table1");
-        SwiftSchema swiftSchema = SwiftSchema.CUBE;
+        SwiftDatabase swiftSchema = SwiftDatabase.CUBE;
         String columnId = "column1";
         int segOrder = 10;
 
@@ -95,7 +95,7 @@ public class CubePathBuilderTest {
     @Test
     public void testBuildFromSegKey() {
         SourceKey tableKey = new SourceKey("table1");
-        SwiftSchema swiftSchema = SwiftSchema.CUBE;
+        SwiftDatabase swiftSchema = SwiftDatabase.CUBE;
         int segOrder = 10;
 
         SegmentKey segKey = EasyMock.mock(SegmentKey.class);

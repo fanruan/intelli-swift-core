@@ -11,14 +11,12 @@ import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.property.SwiftProperty;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -47,7 +45,7 @@ public class InvokerTest {
         Mockito.when(ProxyServiceRegistry.get().getService(ITestInvoker.class.getName())).thenReturn(new ITestInvokerImpl());
 
         SwiftProperty swiftProperty = Mockito.mock(SwiftProperty.class);
-        Mockito.when(SwiftProperty.getProperty()).thenReturn(swiftProperty);
+        Mockito.when(SwiftProperty.get()).thenReturn(swiftProperty);
 
         ProcessHandlerRegistry processHandlerRegistry = Mockito.mock(ProcessHandlerRegistry.class);
         Mockito.when(ProxyProcessHandlerRegistry.get()).thenReturn(processHandlerRegistry);

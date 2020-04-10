@@ -51,7 +51,7 @@ public class DBQueueTest {
     @Test
     public void testputAndPull() throws SQLException {
         DBQueue.getInstance().put(executorTask);
-        Mockito.verify(executorTaskService).saveOrUpdate(executorTask);
+        Mockito.verify(executorTaskService).save(executorTask);
 
         List<ExecutorTask> list = DBQueue.getInstance().pullAll();
         Assert.assertEquals(list.size(), 1);

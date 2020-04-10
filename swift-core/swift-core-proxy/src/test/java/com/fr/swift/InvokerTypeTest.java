@@ -18,12 +18,9 @@ public class InvokerTypeTest extends TestCase {
     }
 
     public void testTarget() {
-        assertEquals(Target.NONE.name(), "NONE");
         assertEquals(Target.HISTORY.name(), "HISTORY");
         assertEquals(Target.ANALYSE.name(), "ANALYSE");
         assertEquals(Target.REAL_TIME.name(), "REAL_TIME");
-        assertEquals(Target.INDEXING.name(), "INDEXING");
         assertEquals(Target.ALL.name(), "ALL");
-
     }
 }

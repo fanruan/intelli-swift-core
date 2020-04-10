@@ -4,13 +4,14 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.SegmentKey;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * @author anchore
  * @date 2018/3/26
  */
-public interface Where {
+public interface Where extends Serializable {
 
     /**
      * 获取过滤信息

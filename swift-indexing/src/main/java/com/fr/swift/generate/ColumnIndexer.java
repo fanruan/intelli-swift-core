@@ -28,9 +28,6 @@ import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intlist.BaseIntListExternalMap;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
-import com.fr.swift.task.TaskResult.Type;
-import com.fr.swift.task.impl.BaseWorker;
-import com.fr.swift.task.impl.TaskResultImpl;
 import com.fr.swift.util.Assert;
 
 import java.util.Comparator;
@@ -47,7 +44,7 @@ import static com.fr.swift.segment.column.impl.base.FakeStringDetailColumn.EXTER
  */
 @SwiftBean(name = "columnIndexer")
 @SwiftScope("prototype")
-public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
+public class ColumnIndexer<T> implements SwiftColumnIndexer {
 
     private SwiftMetaData meta;
     private ColumnKey key;
@@ -56,7 +53,7 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
     /**
      * segments通过外部传入
      *
-     * @param key column key
+     * @param key      column key
      * @param segments segs
      */
     public ColumnIndexer(ColumnKey key, List<Segment> segments) {
@@ -66,17 +63,6 @@ public class ColumnIndexer<T> extends BaseWorker implements SwiftColumnIndexer {
         this.meta = segments.get(0).getMetaData();
         this.key = key;
         this.segments = segments;
-    }
-
-    @Override
-    public void work() {
-        try {
-            buildIndex();
-            workOver(new TaskResultImpl(Type.SUCCEEDED));
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            workOver(new TaskResultImpl(Type.FAILED, e));
-        }
     }
 
     @Override

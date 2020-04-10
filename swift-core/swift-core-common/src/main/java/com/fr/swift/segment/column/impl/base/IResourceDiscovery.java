@@ -5,7 +5,7 @@ import com.fr.swift.cube.io.impl.mem.MemIo;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Clearable;
@@ -38,11 +38,11 @@ public interface IResourceDiscovery extends Clearable {
 
     Map<String, MemIo> removeCubeResource(String basePath);
 
-    void releaseTable(SwiftSchema schema, SourceKey tableKey);
+    void releaseTable(SwiftDatabase schema, SourceKey tableKey);
 
-    void releaseSegment(SwiftSchema schema, SourceKey tableKey, int segOrder);
+    void releaseSegment(SwiftDatabase schema, SourceKey tableKey, int segOrder);
 
-    void releaseColumn(SwiftSchema schema, SourceKey tableKey, ColumnKey columnKey);
+    void releaseColumn(SwiftDatabase schema, SourceKey tableKey, ColumnKey columnKey);
 
     /**
      * 删除所有内存数据

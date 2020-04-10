@@ -1,7 +1,6 @@
 package com.fr.swift.cube.io.impl.fineio.connector;
 
 import com.fineio.storage.Connector;
-import com.fineio.v3.connector.PackageConnector;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.bean.FineIOConnectorConfig;
 import com.fr.swift.cube.io.impl.fineio.connector.annotation.ConnectorBuilder;
@@ -58,16 +57,5 @@ public class SwiftConnectorCreator {
             return INSTANCE.builderMap.get(key).setBasePath(fineIOConnectorConfig.basePath()).build();
         }
         return Crasher.crash(String.format("Cannot build connector witch type is %s", key));
-    }
-
-    public static PackageConnector createPackConnector(FineIOConnectorConfig connectorConfig) {
-        String name = connectorConfig.type();
-        if (INSTANCE.packageBuilder.containsKey(name)) {
-            return INSTANCE.packageBuilder.get(name).build(connectorConfig);
-        }
-        if (INSTANCE.packageBuilder.containsKey("DEFAULT"))  {
-            return INSTANCE.packageBuilder.get("DEFAULT").build(connectorConfig);
-        }
-        return Crasher.crash(String.format("Cannot build package connector witch type is %s", name));
     }
 }

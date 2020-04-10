@@ -30,7 +30,7 @@ public abstract class BaseInvokerTest extends TestCase {
 }
 
 interface ITestInvoker {
-    @InvokeMethod(value = ProcessHandler.class, target = Target.NONE)
+    @InvokeMethod(value = ProcessHandler.class, target = Target.ALL)
     String print(String id, String name, int age, long time);
 }
 

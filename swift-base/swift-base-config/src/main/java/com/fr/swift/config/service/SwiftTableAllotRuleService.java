@@ -1,5 +1,6 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.annotation.service.DbService;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.source.SourceKey;
 
@@ -9,10 +10,11 @@ import com.fr.swift.source.SourceKey;
  * @description
  * @since advanced swift 1.0
  */
+@DbService
 public interface SwiftTableAllotRuleService {
 
-    SwiftTableAllotRule getAllotRuleByTable(SourceKey sourceKey);
+    SwiftTableAllotRule getByTale(SourceKey sourceKey);
 
-    boolean saveAllotRule(SwiftTableAllotRule swiftTableAllotRule);
+    void save(SwiftTableAllotRule swiftTableAllotRule);
 
 }

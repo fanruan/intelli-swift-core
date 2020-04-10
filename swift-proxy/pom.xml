@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.fr.intelligence</groupId>
         <artifactId>swift</artifactId>
-        <version>2019.1</version>
+        <version>2020.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

@@ -8,7 +8,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,7 +22,6 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
 
     @Override
     protected int getLogicOrder(HashRowInfo rowInfo) {
-        // TODO: 2020/3/26 不用每次都进行计算
         List<Object> keys = new ArrayList<>();
         int[] fieldIndexes = rule.getFieldIndexes();
         for (int fieldIndex : fieldIndexes) {
@@ -34,9 +32,10 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
 
     @Override
     protected SegmentState getInsertableSeg(int virtualOrder) {
-        SegmentKey segKey = SEG_SVC.tryAppendSegment(tableKey, StoreType.FINE_IO);
+        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftSegmentBucketElement bucketElement = new SwiftSegmentBucketElement(tableKey, virtualOrder, segKey.getId());
-        BUCKET_SVC.saveElement(bucketElement);
+        swiftSegmentService.saveBucket(bucketElement);
+
         SwiftLoggers.getLogger().debug("importing, append new seg {} in bucket {}", segKey, virtualOrder);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
