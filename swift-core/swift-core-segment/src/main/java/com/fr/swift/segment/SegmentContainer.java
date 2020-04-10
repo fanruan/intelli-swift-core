@@ -68,6 +68,12 @@ public enum SegmentContainer implements SegmentService {
     }
 
     @Override
+    public List<Segment> getSegments(List<SegmentKey> keys) {
+        return keys.stream().map(this::getSegment).collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<Segment> getSegments(SourceKey tableKey) {
         Set<SegmentKey> segmentKeys = tableMap.computeIfAbsent(tableKey, n -> new HashSet<>());
         return segmentKeys.stream()

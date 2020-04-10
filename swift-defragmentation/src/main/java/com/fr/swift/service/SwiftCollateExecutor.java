@@ -55,10 +55,11 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
     @Override
     public void start() {
         if (Arrays.asList(SwiftProperty.get().getExecutorTaskType()).contains(COLLATE_TASK)) {
-            long initDelay = getTimeMillis("2:00:00") - System.currentTimeMillis();
+            long initDelay = getTimeMillis(SwiftProperty.get().getCollateTime()) - System.currentTimeMillis();
             initDelay = initDelay > 0 ? initDelay : ONE_DAY + initDelay;
             executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory(getClass()));
             executorService.scheduleAtFixedRate(this, initDelay, ONE_DAY, TimeUnit.MILLISECONDS);
+            SwiftLoggers.getLogger().info("Start collate executor at {}", SwiftProperty.get().getCollateTime());
 //            executorService.scheduleWithFixedDelay(this, 20, 100000, TimeUnit.SECONDS);
             swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
         }

@@ -12,8 +12,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.alloter.AllotRule;
-import com.fr.swift.source.alloter.SwiftSourceAlloter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +27,11 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
     private static final int LINE_VIRTUAL_INDEX = -1;
 
     @Override
-    public List<SegmentKey> merge(DataSource dataSource, List<Segment> segments, SwiftSourceAlloter alloter, int index) {
-        AllotRule rule = alloter.getAllotRule();
-        Partitioner partitioner = new LinePartitioner(rule.getCapacity());
+    public List<SegmentKey> merge(DataSource dataSource, List<SegmentPartition> segmentPartitions, int index) {
         List<SegmentKey> segmentKeys = new ArrayList<>();
         List<String> fields = dataSource.getMetadata().getFieldNames();
-        List<SegmentItem> items = partitioner.partition(segments);
         try {
-            for (SegmentItem item : items) {
+            for (SegmentPartition item : segmentPartitions) {
                 SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO);
                 segmentKeys.add(segKey);
                 ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
@@ -68,7 +63,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
             return segmentKeys;
         } finally {
             // 释放读过的碎片块。这边直接释放碎片块，可能会导致还在session中的查询报错，刷新之后就没问题了
-            for (SegmentItem item : items) {
+            for (SegmentPartition item : segmentPartitions) {
                 SegmentUtils.releaseHisSeg(item.getSegments());
             }
         }

@@ -21,7 +21,7 @@ public class SwiftFragmentFilter implements FragmentFilter {
     /**
      * 碎片块数 >= 5 < 100
      */
-    public static final int FRAGMENT_NUMBER = 5;
+    public static final int FRAGMENT_NUMBER = 2;
 
     public static final int MAX_FRAGMENT_NUMBER = 100;
 
@@ -35,7 +35,7 @@ public class SwiftFragmentFilter implements FragmentFilter {
 
     @Override
     public List<SegmentKey> filter(Collection<SegmentKey> segKeys) {
-        int fragmentSize = alloter.getAllotRule().getCapacity() * 2 / 3;
+        int fragmentSize = alloter.getAllotRule().getCapacity() * 4 / 5;
         List<SegmentKey> fragmentKeys = new ArrayList<SegmentKey>();
         for (SegmentKey segKey : segKeys) {
             Segment seg = segmentService.getSegment(segKey);

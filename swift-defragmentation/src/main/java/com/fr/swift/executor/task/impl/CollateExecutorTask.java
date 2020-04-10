@@ -1,7 +1,6 @@
 package com.fr.swift.executor.task.impl;
 
 import com.fr.swift.base.json.JsonBuilder;
-import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.executor.task.AbstractExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.impl.CollateJob;
@@ -14,7 +13,6 @@ import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -40,12 +38,11 @@ public class CollateExecutorTask extends AbstractExecutorTask<Job> {
                                int priority) throws Exception {
         super(sourceKey, persistent, executorTaskType, lockType, lockKey, dbStatusType, taskId, createTime, taskContent, priority);
         List list = JsonBuilder.readValue(taskContent, List.class);
-        List<SegmentKey> segmentKeyList = new ArrayList<SegmentKey>();
+        List<String> segmentIds = new ArrayList<>();
         for (Object o : list) {
-            Map<String, Object> map = (Map<String, Object>) o;
-            SegmentKey segmentKey = JsonBuilder.readValue(map, SwiftSegmentEntity.class);
-            segmentKeyList.add(segmentKey);
+            String segmentId = (String) o;
+            segmentIds.add(segmentId);
         }
-        this.job = new CollateJob(sourceKey, segmentKeyList.stream().map(SegmentKey::getId).collect(Collectors.toList()));
+        this.job = new CollateJob(sourceKey, segmentIds);
     }
 }
