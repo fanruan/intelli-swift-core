@@ -21,6 +21,6 @@ public interface CollateService extends SwiftService {
      * @param segmentKeyList
      * @throws Exception
      */
-    void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception;
+    List<SegmentKey> appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception;
 
 }

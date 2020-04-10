@@ -28,6 +28,8 @@ public interface SegmentService {
 
     Segment getSegment(SegmentKey key);
 
+    List<Segment> getSegments(List<SegmentKey> keys);
+
     List<Segment> getSegments(SourceKey tableKey);
 
     List<Segment> getSegments(Set<String> segKeys);

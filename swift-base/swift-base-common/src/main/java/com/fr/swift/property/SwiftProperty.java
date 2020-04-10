@@ -41,6 +41,7 @@ public class SwiftProperty {
 
     private String[] executorTaskType;
     private String machineId;
+    private String collateTime;
 
     private SwiftProperty() {
         initProperties();
@@ -67,6 +68,7 @@ public class SwiftProperty {
             initExecutorTaskType();
             initCubesPath();
             initMachineId();
+            initCollateTime();
         } catch (IOException e) {
             Crasher.crash(e);
         }
@@ -80,6 +82,14 @@ public class SwiftProperty {
 
     public void setServerServiceNames(Set<String> serverServiceNames) {
         this.serverServiceNames = serverServiceNames;
+    }
+
+    private void initCollateTime() {
+        collateTime = (String) properties.getOrDefault("swift.collate.time", "2:00:00");
+    }
+
+    public String getCollateTime() {
+        return collateTime;
     }
 
     private void initSwiftServiceNames() {
