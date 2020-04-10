@@ -10,13 +10,13 @@
       "sourceKey": "TREASURE_IMPORT",
       "executorTaskType": "TREASURE_IMPORT",
       "lockKey": null,
-      "semaphore": 4
+      "semaphore": 3
     },
     {
       "sourceKey": "TREASURE_ANALYSIS",
       "executorTaskType": "TREASURE_ANALYSIS",
       "lockKey": null,
-      "semaphore": 4
+      "semaphore": 1
     },
     {
       "sourceKey": null,
