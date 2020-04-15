@@ -129,14 +129,14 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
                     set.remove(ALL_SEGMENT);
                 }
             }
-        } else if (filterInfo instanceof SwiftDetailFilterInfo) {
-            if (((SwiftDetailFilterInfo) filterInfo).getType() == SwiftDetailFilterType.IN) {
-                // getVirtualOrder
-                set.addAll(getSingleHashKeyVirtualOrder((SwiftDetailFilterInfo) filterInfo, table));
-            } else {
-                //所有都要查
-                set.add(ALL_SEGMENT);
-            }
+//        } else if (filterInfo instanceof SwiftDetailFilterInfo) {
+//            if (((SwiftDetailFilterInfo) filterInfo).getType() == SwiftDetailFilterType.IN) {
+//                // getVirtualOrder
+//                set.addAll(getSingleHashKeyVirtualOrder((SwiftDetailFilterInfo) filterInfo, table));
+//            } else {
+//                //所有都要查
+//                set.add(ALL_SEGMENT);
+//            }
         } else {
             //所有都要查
             set.add(ALL_SEGMENT);
@@ -151,11 +151,11 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         Map<String, String> filterInfoMap = new HashMap<>();
         if (childrenFilterInfoList.size() == hashKeyCount) {
             for (FilterInfo filterInfo : childrenFilterInfoList) {
-                if (!(filterInfo instanceof SwiftDetailFilterInfo)) {
-                    return ALL_SEGMENT;
-                } else {
+                if (filterInfo instanceof SwiftDetailFilterInfo && ((SwiftDetailFilterInfo) filterInfo).getType() == SwiftDetailFilterType.IN) {
                     SwiftDetailFilterInfo filter = (SwiftDetailFilterInfo) filterInfo;
                     filterInfoMap.put(filter.getColumnKey().getName(), String.valueOf(((HashSet) filter.getFilterValue()).toArray()[0]));
+                } else {
+                    return ALL_SEGMENT;
                 }
             }
             List<String> hashKeyList = new ArrayList<>(hashKeyCount);
