@@ -39,9 +39,9 @@ public class HistoryLineSourceAlloterTest {
         when(SwiftContext.get()).thenReturn(beanFactory);
 
         SwiftSegmentService swiftSegmentService = mock(SwiftSegmentService.class);
-        when(beanFactory.getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(swiftSegmentService);
+        when(beanFactory.getBean(SwiftSegmentService.class)).thenReturn(swiftSegmentService);
 
-        when(swiftSegmentService.tryAppendSegment(ArgumentMatchers.<SourceKey>any(), ArgumentMatchers.<StoreType>any())).thenAnswer(new Answer<SegmentKey>() {
+        when(swiftSegmentService.tryAppendSegment(ArgumentMatchers.any(), ArgumentMatchers.any())).thenAnswer(new Answer<SegmentKey>() {
             int order = 0;
 
             @Override

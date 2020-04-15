@@ -5,7 +5,7 @@
     <parent>
         <artifactId>swift-core</artifactId>
         <groupId>com.fr.intelligence</groupId>
-        <version>2019.1</version>
+        <version>2020.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -19,13 +19,8 @@
         </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
-            <artifactId>swift-core-generator</artifactId>
-            <version>${swift.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-core-proxy</artifactId>
-            <version>2019.1</version>
+            <version>${swift.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

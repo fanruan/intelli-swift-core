@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.BackupSegment;
 import com.fr.swift.segment.Segment;
@@ -55,10 +56,7 @@ public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
     @Override
     protected void onSucceed() {
         for (SegmentKey importSegKey : importSegKeys) {
-            if (!segLocationSvc.containsLocal(importSegKey)) {
-                // 不存在则更新seg location
-                segLocationSvc.saveOrUpdateLocal(Collections.singleton(importSegKey));
-            }
+            segLocationSvc.saveOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(importSegKey));
         }
     }
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.BaseRequestInfo;
 import com.fr.swift.api.info.RequestType;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 
 /**
  * @author yee
@@ -14,7 +14,7 @@ public class TableRequestInfo extends BaseRequestInfo<ApiRequestParserVisitor> {
     @JsonProperty(value = "auth")
     private String authCode;
     @JsonProperty(value = "database")
-    private SwiftSchema database;
+    private SwiftDatabase database;
     @JsonProperty(value = "table")
     private String table;
 
@@ -31,11 +31,11 @@ public class TableRequestInfo extends BaseRequestInfo<ApiRequestParserVisitor> {
         this.authCode = authCode;
     }
 
-    public SwiftSchema getDatabase() {
+    public SwiftDatabase getDatabase() {
         return database;
     }
 
-    public void setDatabase(SwiftSchema database) {
+    public void setDatabase(SwiftDatabase database) {
         this.database = database;
     }
 

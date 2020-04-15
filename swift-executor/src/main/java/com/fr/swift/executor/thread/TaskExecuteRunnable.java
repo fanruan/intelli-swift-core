@@ -69,7 +69,7 @@ public class TaskExecuteRunnable implements Runnable {
                         executorTask.setDbStatusType(DBStatusType.SUCCESS);
                         executorTask.setFinishTime(System.currentTimeMillis());
                         executorTask.setCause(result.toString());
-                        executorTaskService.saveOrUpdate(executorTask);
+                        executorTaskService.update(executorTask);
                     }
 //                    executorTaskService.deleteTask(executorTask);
                 } catch (Exception e) {
@@ -94,7 +94,7 @@ public class TaskExecuteRunnable implements Runnable {
                     if (executorTask.isPersistent()) {
                         executorTask.setCause(cause.toString().substring(0, Math.min(cause.length(), 4000)));
                         executorTask.setFinishTime(System.currentTimeMillis());
-                        executorTaskService.saveOrUpdate(executorTask);
+                        executorTaskService.update(executorTask);
                     }
                 }
                 if (jobListener != null) {

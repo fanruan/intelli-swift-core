@@ -24,7 +24,6 @@ public enum SwiftConfigRegistryImpl implements SwiftConfigRegistry {
     @Override
     public void registerEntity(String className, ClassLoader loader) throws ClassNotFoundException {
         dynamicEntities.putIfAbsent(className, loader.loadClass(className));
-
     }
 
     @Override

@@ -4,9 +4,9 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author lucifer
@@ -24,16 +24,20 @@ public class SwiftSegmentBucket {
 
     public SwiftSegmentBucket(SourceKey sourceKey) {
         this.sourceKey = sourceKey.getId();
-        this.bucketMap = new HashMap<>();
-        this.bucketIndexMap = new HashMap<>();
+        this.bucketMap = new ConcurrentHashMap<>();
+        this.bucketIndexMap = new ConcurrentHashMap<>();
     }
 
     public void put(Integer key, SegmentKey value) {
-        if (!bucketMap.containsKey(key)) {
-            bucketMap.put(key, new ArrayList<>());
-        }
-        bucketMap.get(key).add(value);
+        bucketMap.computeIfAbsent(key, n -> new ArrayList<>()).add(value);
         getBucketIndexMap().put(value, key);
+    }
+
+    public void remove(SegmentKey value) {
+        Integer removedKey = bucketIndexMap.remove(value);
+        if (removedKey != null) {
+            bucketMap.computeIfAbsent(removedKey, n -> new ArrayList<>()).remove(value);
+        }
     }
 
     public Map<Integer, List<SegmentKey>> getBucketMap() {

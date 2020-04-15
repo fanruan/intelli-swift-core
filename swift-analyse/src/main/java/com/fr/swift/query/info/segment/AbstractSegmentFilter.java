@@ -13,8 +13,7 @@ import com.fr.swift.query.info.SegmentFilter;
 import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -37,7 +36,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
     protected final static int ALL_SEGMENT = -1;
 
-    protected static final SwiftSegmentManager SEG_SVC = SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class);
+    protected static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
 
     protected SwiftTableAllotRule tableAllotRule;
     protected SwiftSegmentBucket segmentBucket;
@@ -52,22 +51,22 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     @Override
     public List<Segment> filterSegs(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterSegKeys(singleTableQueryInfo);
-        return segmentKeyList.stream().map(SegmentUtils::newSegment).collect(Collectors.toList());
+        return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
     }
 
     @Override
     public List<SegmentKey> filterSegKeys(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (singleTableQueryInfo.getQuerySegment() == null || singleTableQueryInfo.getQuerySegment().isEmpty()) {
-            return reFilter(singleTableQueryInfo);
+            return filter(singleTableQueryInfo);
         } else {
             if (isDataEmpty(singleTableQueryInfo)) {
                 return new ArrayList<>();
             }
             //允许exact query容错
-            List<SegmentKey> filteredSegKeys = reFilter(singleTableQueryInfo);
+            List<SegmentKey> filteredSegKeys = exactFilter(singleTableQueryInfo);
             if (filteredSegKeys.isEmpty()) {
                 singleTableQueryInfo.setQuerySegment(null);
-                filteredSegKeys = reFilter(singleTableQueryInfo);
+                filteredSegKeys = filter(singleTableQueryInfo);
             }
             return filteredSegKeys;
         }
@@ -84,12 +83,30 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         return false;
     }
 
-    private List<SegmentKey> reFilter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
+    /**
+     * 非精确计算
+     *
+     * @param singleTableQueryInfo
+     * @return
+     * @throws SwiftMetaDataException
+     */
+    private List<SegmentKey> filter(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         if (isLineAllot(singleTableQueryInfo)) {
             return SEG_SVC.getSegmentKeysByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
         Set<Integer> virtualOrders = getIndexSet(singleTableQueryInfo.getFilterInfo(), singleTableQueryInfo.getTable());
         return filterSegment(virtualOrders, singleTableQueryInfo);
+    }
+
+    /**
+     * 精确计算segments
+     *
+     * @param singleTableQueryInfo
+     * @return
+     * @throws SwiftMetaDataException
+     */
+    private List<SegmentKey> exactFilter(SingleTableQueryInfo singleTableQueryInfo) {
+        return SEG_SVC.getSegmentKeysByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
     }
 
     private boolean isLineAllot(SingleTableQueryInfo singleTableQueryInfo) {

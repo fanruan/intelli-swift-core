@@ -1,8 +1,8 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.base.meta.MetaDataColumnBean;
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.MetaDataColumnEntity;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.beans.factory.BeanFactory;
 import com.fr.swift.bitmap.impl.RangeBitmap;
 import com.fr.swift.config.service.SwiftCubePathService;
@@ -46,9 +46,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({SwiftContext.class, SegmentUtils.class})
 public class SegmentResultSetTest {
 
-    private final SwiftMetaData meta = new SwiftMetaDataBean("DEMO_CONTRACT",
+    private final SwiftMetaData meta = new SwiftMetaDataEntity("DEMO_CONTRACT",
             Collections.<SwiftMetaDataColumn>singletonList(
-                    new MetaDataColumnBean("合同ID", Types.VARCHAR)));
+                    new MetaDataColumnEntity("合同ID", Types.VARCHAR)));
 
     @Mock
     private Segment seg;

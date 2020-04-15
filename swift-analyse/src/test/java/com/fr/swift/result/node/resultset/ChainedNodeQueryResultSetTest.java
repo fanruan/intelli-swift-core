@@ -1,6 +1,6 @@
 package com.fr.swift.result.node.resultset;
 
-import com.fr.swift.base.meta.SwiftMetaDataBean;
+import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.result.BaseNodeQueryResultSet;
 import com.fr.swift.result.GroupNode;
 import com.fr.swift.result.SwiftNode;
@@ -75,7 +75,7 @@ public class ChainedNodeQueryResultSetTest {
                 return p;
             }
         }, create());
-        assertNotNull(rs.convert(new SwiftMetaDataBean()));
+        assertNotNull(rs.convert(new SwiftMetaDataEntity()));
     }
 
     @Test
