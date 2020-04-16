@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +41,8 @@ import java.util.concurrent.TimeUnit;
 public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private static final String COLLATE_TASK = "COLLATE";
+
+    private static final int LINE_VIRTUAL_INDEX = -1;
 
     private ScheduledExecutorService executorService;
 
@@ -104,10 +107,15 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     Map<SegmentKey, Integer> bucketIndexMap = segmentService.getBucketByTable(tableEntry.getKey()).getBucketIndexMap();
 
                     Map<Integer, List<SegmentKey>> segKeysByBucketMap = new HashMap<>();
-                    bucketIndexMap.entrySet()
-                            .stream()
-                            .filter((entry) -> segmentKeysSet.contains(entry.getKey()))
-                            .forEach((entry) -> segKeysByBucketMap.computeIfAbsent(entry.getValue(), k -> new ArrayList<>()).add(entry.getKey()));
+                    if (!bucketIndexMap.isEmpty()) {
+                        bucketIndexMap.entrySet()
+                                .stream()
+                                .filter((entry) -> segmentKeysSet.contains(entry.getKey()))
+                                .forEach((entry) -> segKeysByBucketMap.computeIfAbsent(entry.getValue(), k -> new ArrayList<>()).add(entry.getKey()));
+                    } else {
+                        segKeysByBucketMap.putAll(Collections.singletonMap(LINE_VIRTUAL_INDEX, keys));
+                    }
+
 
                     Map<Integer, List<SegmentKey>> collateMap = new HashMap<>();
                     segKeysByBucketMap.entrySet()
