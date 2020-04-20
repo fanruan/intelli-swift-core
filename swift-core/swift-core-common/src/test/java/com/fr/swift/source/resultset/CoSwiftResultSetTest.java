@@ -39,7 +39,7 @@ public class CoSwiftResultSetTest {
         int i = 0;
         while (resultSet.hasNext()) {
             Row row = resultSet.getNextRow();
-            Assert.assertEquals(i++, row.getValue(0));
+            Assert.assertEquals(i++, (int) row.getValue(0));
         }
         Assert.assertEquals(5, i);
     }

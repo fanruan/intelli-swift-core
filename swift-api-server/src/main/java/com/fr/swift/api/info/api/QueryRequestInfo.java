@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.api.info.ApiInvocation;
 import com.fr.swift.api.info.BaseRequestInfo;
 import com.fr.swift.api.info.RequestType;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 
 /**
  * @author yee
@@ -18,7 +18,7 @@ public class QueryRequestInfo extends BaseRequestInfo<ApiRequestParserVisitor> {
     private String queryJson;
 
     @JsonProperty("database")
-    private SwiftSchema database;
+    private SwiftDatabase database;
 
     public QueryRequestInfo() {
         super(RequestType.JSON_QUERY);
@@ -41,11 +41,11 @@ public class QueryRequestInfo extends BaseRequestInfo<ApiRequestParserVisitor> {
         this.queryJson = queryJson;
     }
 
-    public SwiftSchema getDatabase() {
+    public SwiftDatabase getDatabase() {
         return database;
     }
 
-    public void setDatabase(SwiftSchema database) {
+    public void setDatabase(SwiftDatabase database) {
         this.database = database;
     }
 

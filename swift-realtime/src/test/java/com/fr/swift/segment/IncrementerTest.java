@@ -63,7 +63,7 @@ public class IncrementerTest {
 
         assertEquals(inserter, Whitebox.getInternalState(inserting, "inserter"));
         assertEquals(seg, Whitebox.getInternalState(inserting, "seg"));
-        assertEquals(1, Whitebox.getInternalState(inserting, "rowCount"));
+        assertEquals(1, (int) Whitebox.getInternalState(inserting, "rowCount"));
     }
 
     @Test

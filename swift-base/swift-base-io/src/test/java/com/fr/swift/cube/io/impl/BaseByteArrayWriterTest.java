@@ -60,7 +60,7 @@ public class BaseByteArrayWriterTest {
         verify(dataWriter).put(1, (byte) 2);
         verify(dataWriter).put(2, (byte) 3);
 
-        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+        assertEquals(3L, (long) Whitebox.getInternalState(byteArrayWriter, "curPos"));
 
         byteArrayWriter.put(1, null);
 
@@ -68,13 +68,13 @@ public class BaseByteArrayWriterTest {
         verify(lenWriter).put(1, 0);
         verifyNoMoreInteractions(dataWriter);
 
-        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+        assertEquals(3L, (long) Whitebox.getInternalState(byteArrayWriter, "curPos"));
 
         when(lastPosReader.isReadable()).thenReturn(true);
         when(lastPosReader.get(0)).thenReturn(3L);
 
         byteArrayWriter = new BaseByteArrayWriter(dataWriter, posWriter, lenWriter, false, lastPosWriter, lastPosReader);
-        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+        assertEquals(3L, (long) Whitebox.getInternalState(byteArrayWriter, "curPos"));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class BaseByteArrayWriterTest {
         verify(dataWriter).put(1, (byte) 2);
         verify(dataWriter).put(2, (byte) 3);
 
-        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+        assertEquals(3L, (long) Whitebox.getInternalState(byteArrayWriter, "curPos"));
 
         output = byteArrayWriter.putStream(1);
         output.close();
@@ -101,13 +101,13 @@ public class BaseByteArrayWriterTest {
         verify(lenWriter).put(1, 0);
         verifyNoMoreInteractions(dataWriter);
 
-        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+        assertEquals(3L, (long) Whitebox.getInternalState(byteArrayWriter, "curPos"));
 
         when(lastPosReader.isReadable()).thenReturn(true);
         when(lastPosReader.get(0)).thenReturn(3L);
 
         byteArrayWriter = new BaseByteArrayWriter(dataWriter, posWriter, lenWriter, false, lastPosWriter, lastPosReader);
-        assertEquals(3L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+        assertEquals(3L, (long) Whitebox.getInternalState(byteArrayWriter, "curPos"));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class BaseByteArrayWriterTest {
         Whitebox.setInternalState(byteArrayWriter, "curPos", 1L);
 
         byteArrayWriter.resetContentPosition();
-        assertEquals(0L, Whitebox.getInternalState(byteArrayWriter, "curPos"));
+        assertEquals(0L, (long) Whitebox.getInternalState(byteArrayWriter, "curPos"));
     }
 
     @Test

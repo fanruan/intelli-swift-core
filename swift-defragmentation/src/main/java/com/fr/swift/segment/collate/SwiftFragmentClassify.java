@@ -2,11 +2,14 @@ package com.fr.swift.segment.collate;
 
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.operator.collate.segment.LinePartitioner;
+import com.fr.swift.segment.operator.collate.segment.Partitioner;
+import com.fr.swift.segment.operator.collate.segment.SegmentPartition;
+import com.fr.swift.source.alloter.AllotRule;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,32 +23,30 @@ public class SwiftFragmentClassify {
 
     private SwiftSegmentBucket segmentBucket;
 
+    private AllotRule allotRule;
+
     private static final int LINE_VIRTUAL_INDEX = -1;
 
-    public SwiftFragmentClassify(SwiftSegmentBucket segmentBucket) {
+    public SwiftFragmentClassify(SwiftSegmentBucket segmentBucket, AllotRule allotRule) {
         this.segmentBucket = segmentBucket;
+        this.allotRule = allotRule;
     }
 
-    public Map<Integer, List<SegmentKey>> classify(Collection<SegmentKey> segKeys) {
-        Map<Integer, List<SegmentKey>> resultMap = new HashMap<Integer, List<SegmentKey>>();
+    public Map<Integer, List<SegmentPartition>> classify(Collection<SegmentKey> segKeys) {
+        Map<Integer, List<SegmentKey>> segKeyClassifyMap = new HashMap<>();
         Map<SegmentKey, Integer> bucketIndexMap = segmentBucket.getBucketIndexMap();
         for (SegmentKey segKey : segKeys) {
-            Integer index = bucketIndexMap.get(segKey);
-            if (index == null) {
-                index = LINE_VIRTUAL_INDEX;
-            }
-            if (!resultMap.containsKey(index)) {
-                resultMap.put(index, new ArrayList<SegmentKey>());
-            }
-            resultMap.get(index).add(segKey);
+            Integer index = bucketIndexMap.get(segKey) == null ? LINE_VIRTUAL_INDEX : bucketIndexMap.get(segKey);
+            segKeyClassifyMap.computeIfAbsent(index, n -> new ArrayList<>()).add(segKey);
         }
-        Iterator<Integer> iterator = resultMap.keySet().iterator();
-        while (iterator.hasNext()) {
-            List<SegmentKey> segmentKeys = resultMap.get(iterator.next());
-            if (segmentKeys.size() < SwiftFragmentFilter.FRAGMENT_NUMBER) {
-                iterator.remove();
+        Map<Integer, List<SegmentPartition>> itemMap = new HashMap<>();
+        for (Map.Entry<Integer, List<SegmentKey>> classifyEntry : segKeyClassifyMap.entrySet()) {
+            if (classifyEntry.getValue().size() >= SwiftFragmentFilter.FRAGMENT_NUMBER) {
+                Partitioner partitioner = new LinePartitioner(allotRule.getCapacity());
+                List<SegmentPartition> items = partitioner.partition(classifyEntry.getValue());
+                itemMap.put(classifyEntry.getKey(), items);
             }
         }
-        return resultMap;
+        return itemMap;
     }
 }

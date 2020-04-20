@@ -1,10 +1,6 @@
 package com.fr.swift.service;
 
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.segment.SegmentLocationInfo;
-import com.fr.swift.source.SourceKey;
-
-import java.util.List;
 
 /**
  * @author yee
@@ -22,7 +18,4 @@ public interface AnalyseService extends SwiftService {
      */
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
-    void updateSegmentInfo(SegmentLocationInfo locationInfo, SegmentLocationInfo.UpdateType updateType);
-
-    void removeSegments(String clusterId, SourceKey sourceKey, List<String> segmentKeys);
 }

@@ -1,9 +1,12 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.annotation.service.DbService;
+
 /**
  * @author yee
  * @date 2018/6/6
  */
+@DbService
 public interface SwiftCubePathService {
     /**
      * 设置cube更新路径

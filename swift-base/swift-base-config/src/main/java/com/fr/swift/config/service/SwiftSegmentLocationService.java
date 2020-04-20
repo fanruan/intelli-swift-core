@@ -1,35 +1,38 @@
 package com.fr.swift.config.service;
 
+import com.fr.swift.annotation.service.DbService;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * @author yee
  * @date 2018/7/24
  */
-public interface SwiftSegmentLocationService extends ConfigService<SwiftSegmentLocationEntity> {
-    boolean delete(String table, String clusterId);
-
+@DbService
+public interface SwiftSegmentLocationService {
     /**
-     * @param segKeys seg keys
-     * @return seg key -> 所有出现的node id
+     * mutableImport、slimImport、collate、historyBLock
+     *
+     * @param nodeId
+     * @param segKeys
      */
-    Map<SegmentKey, Set<String>> findLocationsBySegKeys(Set<SegmentKey> segKeys);
+    void saveOnNode(String nodeId, Set<SegmentKey> segKeys);
 
-    Map<String, List<SwiftSegmentLocationEntity>> findAll();
+    void deleteOnNode(String nodeId, Set<SegmentKey> segKeys);
 
-    List<SwiftSegmentLocationEntity> findBySourceKey(SourceKey sourceKey);
+    void deleteOnNode(String nodeId, SourceKey tableKey);
 
-    void saveOrUpdateLocal(Set<SegmentKey> segKeys);
+    boolean existsOnNode(String nodeId, SegmentKey segKey);
 
-    void delete(Set<SegmentKey> segKeys);
+    List<SwiftSegmentLocationEntity> getTableMatchedSegOnNode(String nodeId, SourceKey tableKey, String segIdStartsWith);
 
-    boolean containsLocal(SegmentKey segKey);
+    List<SwiftSegmentLocationEntity> getTableMatchedSegOnNode(String nodeId, SourceKey tableKey, List<String> inSegIds);
 
-    Map<SourceKey, List<SwiftSegmentLocationEntity>> getAllLocal();
+    List<SwiftSegmentLocationEntity> getTableSegsByClusterId(SourceKey tableKey, String clusterId);
+
+    List<SwiftSegmentLocationEntity> getSegLocations(String clusterId, SourceKey tableKey);
 }

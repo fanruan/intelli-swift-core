@@ -7,7 +7,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.HistoryLineSourceAlloter;
@@ -41,14 +41,14 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class FragmentFilterTest {
 
     @Mock
-    SwiftSegmentManager localSegments;
+    SegmentService segmentService;
 
     @Before
     public void setUp() throws Exception {
         mockStatic(SwiftContext.class);
         BeanFactory beanFactory = mock(BeanFactory.class);
         when(SwiftContext.get()).thenReturn(beanFactory);
-        when(SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class)).thenReturn(localSegments);
+        when(SwiftContext.get().getBean(SegmentService.class)).thenReturn(segmentService);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class FragmentFilterTest {
             when(location.getStoreType()).thenReturn(Types.StoreType.FINE_IO);
             when(segment.getLocation()).thenReturn(location);
             when(segment.getRowCount()).thenReturn(10);
-            when(localSegments.getSegment(segmentKey)).thenReturn(segment);
+            when(segmentService.getSegment(segmentKey)).thenReturn(segment);
             segmentKeyList.add(segmentKey);
         }
         for (int i = 0; i < 10; i++) {
@@ -78,7 +78,7 @@ public class FragmentFilterTest {
             when(segment.getAllShowIndex()).thenReturn(allShowIndex);
             when(allShowIndex.isFull()).thenReturn(false);
             when(allShowIndex.getCardinality()).thenReturn(10 * i);
-            when(localSegments.getSegment(segmentKey)).thenReturn(segment);
+            when(segmentService.getSegment(segmentKey)).thenReturn(segment);
             segmentKeyList.add(segmentKey);
         }
         Assert.assertEquals(17, rule.filter(segmentKeyList).size());
@@ -95,7 +95,7 @@ public class FragmentFilterTest {
             ImmutableBitMap allShowIndex = mock(ImmutableBitMap.class);
             when(segment.getAllShowIndex()).thenReturn(allShowIndex);
             when(allShowIndex.isFull()).thenReturn(true);
-            when(localSegments.getSegment(segmentKey)).thenReturn(segment);
+            when(segmentService.getSegment(segmentKey)).thenReturn(segment);
             segmentKeyList.add(segmentKey);
         }
         Assert.assertTrue(rule.filter(segmentKeyList).isEmpty());

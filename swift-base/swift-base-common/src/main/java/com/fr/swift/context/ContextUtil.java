@@ -20,13 +20,4 @@ public class ContextUtil {
             return path;
         }
     }
-
-//    public static String getContextPath() {
-//        String frPath = WorkContext.getCurrent().getPath();
-//        if (frPath != null) {
-//            return frPath + "/../";
-//        }
-//        String classPath = getClassPath();
-//        return new File(classPath).isDirectory() ? classPath + "/../" : classPath + "/../../";
-//    }
 }

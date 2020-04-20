@@ -6,7 +6,7 @@ import com.fr.swift.db.Database;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.recover.AbstractSegmentRecoveryTest.SegRecovery;
 import com.fr.swift.source.SourceKey;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class AbstractSegmentRecoveryTest {
     public void setUp() throws Exception {
         mockStatic(SwiftContext.class);
         when(SwiftContext.get()).thenReturn(mock(BeanFactory.class));
-        when(SwiftContext.get().getBean("localSegmentProvider", SwiftSegmentManager.class)).thenReturn(mock(SwiftSegmentManager.class));
+        when(SwiftContext.get().getBean(SegmentService.class)).thenReturn(mock(SegmentService.class));
     }
 
     @Test

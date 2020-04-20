@@ -12,6 +12,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
@@ -49,7 +50,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected SwiftTableAllotRuleService swiftTableAllotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
 
-    protected final SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+    protected SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
+
+    protected SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
@@ -63,9 +66,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         if (!db.existsTable(tableKey)) {
             db.createTable(tableKey, dataSource.getMetadata());
         }
-        if (swiftTableAllotRuleService.getAllotRuleByTable(dataSource.getSourceKey()) == null) {
+        if (swiftTableAllotRuleService.getByTale(dataSource.getSourceKey()) == null) {
             SwiftTableAllotRule swiftTableAllotRule = new SwiftTableAllotRule(dataSource.getSourceKey().getId(), alloter.getAllotRule().getType().name(), alloter.getAllotRule());
-            swiftTableAllotRuleService.saveAllotRule(swiftTableAllotRule);
+            swiftTableAllotRuleService.save(swiftTableAllotRule);
         }
     }
 
@@ -121,7 +124,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected abstract void onFailed();
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
-        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftSchema());
+        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
     }
 
     protected void releaseFullIfExists() {
@@ -185,7 +188,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             this.rowCount = rowCount;
         }
 
-        public void insert(Row row) throws Exception {
+        void insert(Row row) throws Exception {
             inserter.insertData(row);
             rowCount++;
         }

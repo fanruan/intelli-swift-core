@@ -1,6 +1,5 @@
 package com.fr.swift.executor.task;
 
-import com.fr.swift.converter.ObjectConverter;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.ExecutorTaskType;
@@ -14,7 +13,7 @@ import com.fr.swift.source.SourceKey;
  * @author Lucifer
  * @description
  */
-public interface ExecutorTask<T extends Job> extends ObjectConverter {
+public interface ExecutorTask<T extends Job> {
 
     String getTaskId();
 

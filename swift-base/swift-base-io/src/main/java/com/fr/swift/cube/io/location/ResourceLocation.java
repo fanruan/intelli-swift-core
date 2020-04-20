@@ -2,7 +2,6 @@ package com.fr.swift.cube.io.location;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftCubePathService;
-import com.fr.swift.config.service.SwiftCubePathService.PathChangeListener;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.util.Strings;
 
@@ -26,12 +25,7 @@ public class ResourceLocation implements IResourceLocation {
     private static void initBasePath() {
         SwiftCubePathService cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
         basePath = cubePathService.getSwiftPath();
-        cubePathService.registerPathChangeListener(new PathChangeListener() {
-            @Override
-            public void changed(String path) {
-                basePath = path;
-            }
-        });
+        cubePathService.registerPathChangeListener(path -> basePath = path);
     }
 
     private URI uri;

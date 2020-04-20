@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.cube.io.Types.StoreType;
-import com.fr.swift.db.SwiftSchema;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SourceKey;
 
 /**
@@ -15,7 +15,7 @@ public interface SegmentKey {
 
     StoreType getStoreType();
 
-    SwiftSchema getSwiftSchema();
+    SwiftDatabase getSwiftSchema();
 
     String getId();
 
