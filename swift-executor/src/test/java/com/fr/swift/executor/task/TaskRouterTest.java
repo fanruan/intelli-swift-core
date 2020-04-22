@@ -45,6 +45,8 @@ public class TaskRouterTest {
     ExecutorTask task7;
     @Mock
     ExecutorTask task8;
+    @Mock
+    ExecutorTask task9;
 
     @Before
     public void setUp() throws Exception {
@@ -53,6 +55,7 @@ public class TaskRouterTest {
         setLockKey();
         setLockType();
         setPriority();
+        setTaskContent();
         ConsumeQueue.getInstance().offer(task1);
         ConsumeQueue.getInstance().offer(task2);
         ConsumeQueue.getInstance().offer(task3);
@@ -62,6 +65,7 @@ public class TaskRouterTest {
         taskList.add(task6);
         taskList.add(task7);
         taskList.add(task8);
+        taskList.add(task9);
         TaskRouter.getInstance().addTasks(taskList);
     }
 
@@ -70,9 +74,9 @@ public class TaskRouterTest {
         Lock lock = new ReentrantLock();
         ExecutorTask pickedTask;
 
-        // 测表级锁: 7, 8 都是表名不冲突的，但 8 的优先级更高，所以选 8
+        // 测表级锁: 7, 8, 9 都是表名不冲突的，但 8, 9 的优先级更高, 且 8 重复 1，所以选 9
         pickedTask = TaskRouter.getInstance().pickExecutorTask(lock);
-        Assert.assertEquals(pickedTask.getSourceKey().toString(), "focus8");
+        Assert.assertEquals(pickedTask.getSourceKey().toString(), "focus9");
         ConsumeQueue.getInstance().offer(pickedTask);
 
         // 测表级锁: 4, 5, 6 的表名都冲突了，只能选 7
@@ -109,6 +113,7 @@ public class TaskRouterTest {
         Mockito.when(task6.getSourceKey()).thenReturn(new SourceKey("focus_point"));
         Mockito.when(task7.getSourceKey()).thenReturn(new SourceKey("focus7"));
         Mockito.when(task8.getSourceKey()).thenReturn(new SourceKey("focus8"));
+        Mockito.when(task9.getSourceKey()).thenReturn(new SourceKey("focus9"));
     }
 
     private void setExecutorType() {
@@ -120,6 +125,7 @@ public class TaskRouterTest {
         Mockito.when(task6.getExecutorTaskType()).thenReturn(SwiftTaskType.DOWNLOAD);
         Mockito.when(task7.getExecutorTaskType()).thenReturn(SwiftTaskType.TRANSFER);
         Mockito.when(task8.getExecutorTaskType()).thenReturn(SwiftTaskType.RECOVERY);
+        Mockito.when(task9.getExecutorTaskType()).thenReturn(SwiftTaskType.UPLOAD);
     }
 
     private void setLockType() {
@@ -131,6 +137,7 @@ public class TaskRouterTest {
         Mockito.when(task6.getLockType()).thenReturn(LockType.TABLE);
         Mockito.when(task7.getLockType()).thenReturn(LockType.TABLE);
         Mockito.when(task8.getLockType()).thenReturn(LockType.TABLE);
+        Mockito.when(task9.getLockType()).thenReturn(LockType.TABLE);
     }
 
     private void setLockKey() {
@@ -142,6 +149,7 @@ public class TaskRouterTest {
         Mockito.when(task6.getLockKey()).thenReturn("body6");
         Mockito.when(task7.getLockKey()).thenReturn("body7");
         Mockito.when(task8.getLockKey()).thenReturn("body8");
+        Mockito.when(task9.getLockKey()).thenReturn("body9");
     }
 
     private void setPriority() {
@@ -153,5 +161,18 @@ public class TaskRouterTest {
         Mockito.when(task6.getPriority()).thenReturn(0);
         Mockito.when(task7.getPriority()).thenReturn(0);
         Mockito.when(task8.getPriority()).thenReturn(1);
+        Mockito.when(task9.getPriority()).thenReturn(1);
+    }
+
+    private void setTaskContent() {
+        Mockito.when(task1.getTaskContent()).thenReturn("{\"clientAppId\":\"test1\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
+        Mockito.when(task2.getTaskContent()).thenReturn("{\"clientAppId\":\"test2\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
+        Mockito.when(task3.getTaskContent()).thenReturn("{\"clientAppId\":\"test3\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
+        Mockito.when(task4.getTaskContent()).thenReturn("{\"clientAppId\":\"test4\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
+        Mockito.when(task5.getTaskContent()).thenReturn("{\"clientAppId\":\"test5\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
+        Mockito.when(task6.getTaskContent()).thenReturn("{\"clientAppId\":\"test6\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
+        Mockito.when(task7.getTaskContent()).thenReturn("{\"clientAppId\":\"test7\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
+        Mockito.when(task8.getTaskContent()).thenReturn("{\"clientAppId\":\"test1\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
+        Mockito.when(task9.getTaskContent()).thenReturn("{\"clientAppId\":\"test9\",\"yearMonth\":\"202004\",\"version\":\"3.0\"}");
     }
 }
