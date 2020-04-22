@@ -71,7 +71,8 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
 
     @Override
     public ExecutorTask get(String taskId) {
-        final List<SwiftExecutorTaskEntity> tasks = dao.select(criteria -> criteria.add(Restrictions.eq("id", taskId)));
+        final List<SwiftExecutorTaskEntity> tasks = dao.select(criteria -> criteria.add(Restrictions.eq("id", taskId))
+                .add(Restrictions.eq("clusterId", SwiftProperty.get().getMachineId())));
         if (tasks.isEmpty()) {
             return null;
 
