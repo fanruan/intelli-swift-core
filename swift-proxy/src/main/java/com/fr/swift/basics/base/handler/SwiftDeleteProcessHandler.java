@@ -6,13 +6,14 @@ import com.fr.swift.basics.InvokerCreator;
 import com.fr.swift.basics.RpcFuture;
 import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
-import com.fr.swift.basics.handler.BroadcastProcessHandler;
+import com.fr.swift.basics.handler.DeleteProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.db.Where;
 import com.fr.swift.local.LocalUrl;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.structure.Pair;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -28,10 +29,10 @@ import java.util.concurrent.Future;
  */
 @SwiftBean
 @SwiftScope("prototype")
-@RegisteredHandler(BroadcastProcessHandler.class)
-public class SwiftBroadcastProcessHandler extends BaseProcessHandler implements BroadcastProcessHandler {
+@RegisteredHandler(DeleteProcessHandler.class)
+public class SwiftDeleteProcessHandler extends BaseProcessHandler implements DeleteProcessHandler {
 
-    public SwiftBroadcastProcessHandler(InvokerCreator invokerCreator) {
+    public SwiftDeleteProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
     }
 
@@ -43,17 +44,18 @@ public class SwiftBroadcastProcessHandler extends BaseProcessHandler implements 
         final Class<?>[] parameterTypes = method.getParameterTypes();
         final String methodName = method.getName();
         List<URL> urls = processUrl(targets);
-        List<Future> futures = new ArrayList<>();
+        List<Pair<URL, Future>> futures = new ArrayList<>();
         for (URL url : urls) {
-            final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
+            Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
             RpcFuture<?> rpcFuture = (RpcFuture<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
-            futures.add(rpcFuture);
+            futures.add(new Pair<>(url, rpcFuture));
         }
-        for (Future future : futures) {
+        for (Pair<URL, Future> future : futures) {
             try {
-                future.get();
+                future.getValue().get();
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
+//                new DeleteExecutorTask()
             }
         }
         return true;

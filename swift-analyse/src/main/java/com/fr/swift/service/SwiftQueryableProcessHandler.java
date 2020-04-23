@@ -56,12 +56,12 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         // TODO: 2020/3/13
 //        List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
         List<Pair<URL, Set<String>>> pairs = processUrl(targets);
-        final Class<?> proxyClass = method.getDeclaringClass();
-        final Class<?>[] parameterTypes = method.getParameterTypes();
-        final String methodName = method.getName();
+        Class<?> proxyClass = method.getDeclaringClass();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        String methodName = method.getName();
 
-        final CountDownLatch latch = new CountDownLatch(pairs.size());
-        final List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<>());
+        CountDownLatch latch = new CountDownLatch(pairs.size());
+        List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<>());
         for (final Pair<URL, Set<String>> pair : pairs) {
             queryBean.setSegments(pair.getValue() == null ? Collections.emptySet() : pair.getValue());
             final String query = QueryBeanFactory.queryBean2String(queryBean);

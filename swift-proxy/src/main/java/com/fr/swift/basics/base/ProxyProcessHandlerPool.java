@@ -34,7 +34,7 @@ public class ProxyProcessHandlerPool implements ProcessHandlerPool {
         if (!handlerMap.containsKey(invokerCreator.getType())) {
             synchronized (this) {
                 if (!handlerMap.containsKey(invokerCreator.getType())) {
-                    handlerMap.put(invokerCreator.getType(), new HashMap<Class<? extends ProcessHandler>, ProcessHandler>());
+                    handlerMap.put(invokerCreator.getType(), new HashMap<>());
                 }
             }
         }
