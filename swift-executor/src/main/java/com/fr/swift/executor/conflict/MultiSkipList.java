@@ -34,24 +34,34 @@ public class MultiSkipList<E> {
         clear();
     }
 
-    public static void main(String[] args) {
-        MultiSkipList<Integer> multiSkipList = new MultiSkipList<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return Integer.compare(o1, o2);
+    /**
+     * 插队后，不上升，直接插入到最底层的某个位置
+     * 需要限制插队的频次
+     *
+     * @param element
+     * @param position
+     * @return
+     */
+    public boolean add(E element, int position) {
+        if (size < position) {
+            return add(element);
+        } else {
+            SkipListNode<E> newNode = new SkipListNode<>(element);
+            SkipListNode curNode = bottomHead.right;
+            while (curNode.right != null && position > 0) {
+                curNode = curNode.right;
+                position--;
             }
-        });
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < 100000; i++) {
-            multiSkipList.add(i);
+            if (curNode.left != null) {
+                SkipListNode leftNode = curNode.left;
+                horizontalLink(leftNode, newNode);
+                horizontalLink(newNode, curNode);
+                size++;
+            } else {
+                return false;
+            }
         }
-        System.out.println(multiSkipList.levels);
-        System.out.println(System.currentTimeMillis() - start);
-        start = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
-            multiSkipList.remove(i);
-        }
-        System.out.println(System.currentTimeMillis() - start);
+        return true;
     }
 
     public boolean add(E element) {
@@ -149,6 +159,23 @@ public class MultiSkipList<E> {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 非线程安全toList
+     *
+     * @return
+     */
+    public List<E> toList() {
+        List<E> list = new ArrayList<>();
+        SkipListNode curNode = bottomHead;
+        while (curNode != null) {
+            if (curNode.element != null) {
+                list.add((E) curNode.element);
+            }
+            curNode = curNode.right;
+        }
+        return list;
     }
 
     public void clear() {
@@ -314,5 +341,42 @@ public class MultiSkipList<E> {
         public void remove() {
             throw new UnsupportedOperationException();
         }
+    }
+
+    /**
+     * 打印当前skiplist结构，非线程安全
+     */
+    public void print() {
+        SkipListNode[][] arrays = new SkipListNode[levels + 1][size + 2];
+        SkipListNode curNode = bottomHead;
+        arrays[levels][0] = curNode;
+        for (int i = 0; i < size; i++) {
+            curNode = curNode.right;
+            arrays[levels][i + 1] = curNode;
+        }
+        arrays[levels][size + 1] = curNode.right;
+        for (int i = levels; i >= 0; i--) {
+            for (int j = 0; j < size + 2; j++) {
+                if (arrays[i][j] != null) {
+                    if (arrays[i][j].up != null) {
+                        arrays[i - 1][j] = arrays[i][j].up;
+                    }
+                }
+
+            }
+        }
+        for (SkipListNode[] array : arrays) {
+            for (SkipListNode node : array) {
+                if (node == null) {
+                    System.out.print(String.format("%-6s", "") + "--");
+                } else if (node.element != null) {
+                    System.out.print(String.format("%-6s", node.element) + "--");
+                } else {
+                    System.out.print(String.format("%-12s", node.hashCode()) + "--");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println("----------");
     }
 }

@@ -1,12 +1,15 @@
 package com.fr.swift.executor.task;
 
+import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.executor.conflict.CustomizeTaskConflict;
 import com.fr.swift.executor.conflict.MultiSkipList;
 import com.fr.swift.executor.conflict.TaskConflict;
 import com.fr.swift.executor.queue.ConsumeQueue;
+import com.fr.swift.executor.task.rule.TaskKey;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.StatusType;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
@@ -14,6 +17,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -34,13 +39,12 @@ public class TaskRouter {
         return INSTANCE;
     }
 
+    private final static Long VIEW_EXPIRE_TIME = TimeUnit.MINUTES.toMillis(3);
+
+    private Pair<Long, List<ExecutorTask>> taskView;
+
     private TaskRouter() {
-        this.idleTasks = new MultiSkipList<>(new Comparator<ExecutorTask>() {
-            @Override
-            public int compare(ExecutorTask o1, ExecutorTask o2) {
-                return Integer.compare(o1.getPriority(), o2.getPriority());
-            }
-        });
+        this.idleTasks = new MultiSkipList<>(Comparator.comparingInt(ExecutorTask::getPriority));
     }
 
     public synchronized boolean addTasks(List<ExecutorTask> taskList) {
@@ -55,6 +59,34 @@ public class TaskRouter {
             initTaskConflicts();
         }
         return idleTasks;
+    }
+
+    public synchronized boolean moveTask(ExecutorTask task, int position) {
+        boolean removed = idleTasks.remove(task);
+        boolean moved = false;
+        if (removed) {
+            moved = idleTasks.add(task, position);
+            if (moved) {
+                getTaskView(true);
+            }
+        }
+        return removed && moved;
+    }
+
+    /**
+     * 最多每3min被动更新一次task view
+     *
+     * @return
+     */
+    public synchronized Pair<Long, List<ExecutorTask>> getTaskView(boolean refresh) {
+        if (refresh || taskView == null) {
+            taskView = new Pair<>(System.currentTimeMillis(), idleTasks.toList());
+        } else {
+            if ((System.currentTimeMillis() - taskView.getKey()) >= VIEW_EXPIRE_TIME) {
+                taskView = new Pair<>(System.currentTimeMillis(), idleTasks.toList());
+            }
+        }
+        return taskView;
     }
 
     /**
@@ -78,6 +110,9 @@ public class TaskRouter {
             Iterator<ExecutorTask> iterator = idleTasks.iterator();
             while (iterator.hasNext()) {
                 ExecutorTask curTask = iterator.next();
+                if (isRepeat(curTask)) {
+                    continue;
+                }
                 if (isQualified(curTask)) {
                     taskPicked = curTask;
                     break;
@@ -93,6 +128,22 @@ public class TaskRouter {
         } else {
             return null;
         }
+    }
+
+    private boolean isRepeat(ExecutorTask curTask) {
+        try {
+            TaskKey curTaskKey = new TaskKey(JsonBuilder.readValue(curTask.getTaskContent(), Map.class));
+            List<ExecutorTask> taskList = ConsumeQueue.getInstance().getTaskList();
+            for (ExecutorTask task : taskList) {
+                TaskKey taskKey = new TaskKey(JsonBuilder.readValue(task.getTaskContent(), Map.class));
+                if (curTaskKey.equals(taskKey)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e.toString());
+        }
+        return false;
     }
 
     public synchronized void clear() {
@@ -161,29 +212,10 @@ public class TaskRouter {
      * 读取配置文件对进行初始化
      */
     private void initTaskConflicts() {
-
-//        InputStream swiftIn = null;
-//        try {
-//            SwiftLoggers.getLogger().info("read external swift.properties!");
-//            swiftIn = new BufferedInputStream(new FileInputStream(("swift.properties")));
-//        } catch (FileNotFoundException e) {
-//            SwiftLoggers.getLogger().warn("Failed to read external swift.properties, read internal swift.properties instead!");
-//            swiftIn = SwiftProperty.class.getClassLoader().getResourceAsStream("swift.properties");
-//        }
-
         try {
             taskConflict = new CustomizeTaskConflict();
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-
-
-//        try {
-//            String path = TaskRouter.class.getClassLoader().getResource("conflict-conf.json").getPath();
-//            taskConflict = new CustomizeTaskConflict(path);
-//        } catch (Exception e) {
-//            // TODO 需要对这个错误进行处理，否则并发限制失效
-//            SwiftLoggers.getLogger().error(e);
-//        }
     }
 }
