@@ -1,6 +1,7 @@
 package com.fr.swift.executor.task.job.impl;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.db.Where;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.log.SwiftLoggers;
@@ -28,6 +29,7 @@ public class DeleteJob extends BaseJob<Boolean, FilterBean> {
     public Boolean call() {
         try {
             SwiftContext.get().getBean(DeleteService.class).delete(sourceKey, where);
+            SwiftLoggers.getLogger().info("Delete from table [{}] with [{}] success!", sourceKey.getId(), JsonBuilder.writeJsonString(where.getFilterBean()));
             return true;
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
