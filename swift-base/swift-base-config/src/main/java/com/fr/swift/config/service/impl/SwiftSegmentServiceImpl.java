@@ -104,7 +104,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
             } catch (ConstraintViolationException ignore) {
             } catch (PersistenceException fIgnore) {
                 if (!(fIgnore.getCause() instanceof ConstraintViolationException)) {
-                    throw new RuntimeException(fIgnore);
+                    throw fIgnore;
                 }
             }
         }
