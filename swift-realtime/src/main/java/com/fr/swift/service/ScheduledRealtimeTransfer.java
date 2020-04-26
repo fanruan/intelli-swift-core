@@ -42,7 +42,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
                     }
                     Segment realtimeSeg = segmentService.getSegment(segKey);
                     if (realtimeSeg.isReadable() && realtimeSeg.getAllShowIndex().getCardinality() >= MIN_PUT_THRESHOLD) {
-                        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofPassive(segKey));
+                        SwiftEventDispatcher.asyncFire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofPassive(segKey));
                     }
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("Segkey {} persist failed", segKey.getTable().getId(), e);

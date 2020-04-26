@@ -45,6 +45,8 @@ public abstract class BaseProcessHandler<T> extends AbstractProcessHandler<T> im
      * @param args
      * @return
      */
-    protected abstract Object mergeResult(List resultList, Object... args) throws Throwable;
+    protected Object mergeResult(List resultList, Object... args) throws Throwable {
+        return null;
+    }
 
 }

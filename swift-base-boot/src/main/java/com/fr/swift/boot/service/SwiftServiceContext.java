@@ -86,7 +86,7 @@ public class SwiftServiceContext implements ServiceContext {
     public boolean delete(SourceKey tableKey, Where where) throws Exception {
         //delete改为同步删。
         //        return TaskProducer.produceTask(new DeleteExecutorTask(tableKey, where));
-        return (boolean) new DeleteExecutorTask(tableKey, where).getJob().call();
+        return (boolean) DeleteExecutorTask.of(tableKey, where).getJob().call();
     }
 
     @Override

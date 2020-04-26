@@ -80,6 +80,7 @@
     }
   ],
   "stopTheWorldTaskTypes": [
-    "COLLATE"
+    "COLLATE",
+    "DELETE"
   ]
 }

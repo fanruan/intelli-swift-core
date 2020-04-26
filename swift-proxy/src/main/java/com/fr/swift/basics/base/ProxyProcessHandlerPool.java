@@ -20,7 +20,7 @@ public class ProxyProcessHandlerPool implements ProcessHandlerPool {
 
     private static final ProcessHandlerPool INSTANCE = new ProxyProcessHandlerPool();
 
-    private Map<InvokerType, Map<Class<? extends ProcessHandler>, ProcessHandler>> handlerMap = new HashMap<InvokerType, Map<Class<? extends ProcessHandler>, ProcessHandler>>();
+    private Map<InvokerType, Map<Class<? extends ProcessHandler>, ProcessHandler>> handlerMap = new HashMap<>();
 
     private ProxyProcessHandlerPool() {
     }
@@ -33,18 +33,13 @@ public class ProxyProcessHandlerPool implements ProcessHandlerPool {
     public ProcessHandler getProcessHandler(Class<? extends ProcessHandler> aClass, InvokerCreator invokerCreator) throws Exception {
         if (!handlerMap.containsKey(invokerCreator.getType())) {
             synchronized (this) {
-                if (!handlerMap.containsKey(invokerCreator.getType())) {
-                    handlerMap.put(invokerCreator.getType(), new HashMap<>());
-                }
+                handlerMap.computeIfAbsent(invokerCreator.getType(), n -> new HashMap<>());
             }
         }
         Map<Class<? extends ProcessHandler>, ProcessHandler> processHandlerMap = handlerMap.get(invokerCreator.getType());
         if (!processHandlerMap.containsKey(aClass)) {
             synchronized (this) {
-                if (!processHandlerMap.containsKey(aClass)) {
-                    ProcessHandler handler = SwiftContext.get().getBean(aClass, invokerCreator);
-                    processHandlerMap.put(aClass, handler);
-                }
+                processHandlerMap.computeIfAbsent(aClass, n -> SwiftContext.get().getBean(n, invokerCreator));
             }
         }
         return processHandlerMap.get(aClass);

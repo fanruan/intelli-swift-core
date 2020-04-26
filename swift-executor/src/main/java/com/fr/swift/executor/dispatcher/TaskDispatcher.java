@@ -37,7 +37,7 @@ public class TaskDispatcher {
         return INSTANCE;
     }
 
-    private static long TASK_PULL_INTERVAL = 10000L;
+    private static long TASK_PULL_INTERVAL = TimeUnit.SECONDS.toMillis(10);
 
     private static int EXECUTE_THREAD_NUM;
 
