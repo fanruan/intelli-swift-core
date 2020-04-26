@@ -21,6 +21,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -101,6 +102,10 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
                 segmentDao.insert(entity);
                 return entity;
             } catch (ConstraintViolationException ignore) {
+            } catch (PersistenceException fIgnore) {
+                if (!(fIgnore.getCause() instanceof ConstraintViolationException)) {
+                    throw new RuntimeException(fIgnore);
+                }
             }
         }
     }
