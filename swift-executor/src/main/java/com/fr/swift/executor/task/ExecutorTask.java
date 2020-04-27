@@ -90,4 +90,6 @@ public interface ExecutorTask<T extends Job> {
     void setStartTime(long startTime);
 
     long getStartTime();
+
+    String getClusterId();
 }

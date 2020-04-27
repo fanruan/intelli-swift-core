@@ -7,6 +7,7 @@ import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.StatusType;
 import com.fr.swift.executor.type.TaskType;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Objects;
@@ -34,6 +35,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
     protected String cause;
     protected long finishTime;
     protected long startTime;
+    protected String clusterId;
 
     //创建task
     protected AbstractExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType,
@@ -49,8 +51,9 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.statusType = StatusType.WAITING;
         this.createTime = System.currentTimeMillis();
         this.taskId = String.valueOf(System.nanoTime());
-        this.priority = priority;
         this.taskContent = JsonBuilder.writeJsonString(job.serializedTag());
+        this.priority = priority;
+        this.clusterId = SwiftProperty.get().getMachineId();
     }
 
     protected AbstractExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,
@@ -67,16 +70,7 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.taskId = taskId;
         this.taskContent = taskContent;
         this.priority = priority;
-    }
-
-    public static final Class TYPE = entityType();
-
-    private static Class entityType() {
-        try {
-            return Class.forName("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
+        this.clusterId = SwiftProperty.get().getMachineId();
     }
 
     @Override
@@ -180,8 +174,14 @@ public abstract class AbstractExecutorTask<T extends Job> implements ExecutorTas
         this.statusType = statusType;
     }
 
+    @Override
     public String getTaskContent() {
         return taskContent;
+    }
+
+    @Override
+    public String getClusterId() {
+        return clusterId;
     }
 
     @Override

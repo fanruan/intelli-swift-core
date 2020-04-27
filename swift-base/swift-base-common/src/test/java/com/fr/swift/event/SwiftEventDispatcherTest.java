@@ -22,7 +22,7 @@ public class SwiftEventDispatcherTest {
         };
         SwiftEventDispatcher.listen(Evt.EVT1, listener);
 
-        SwiftEventDispatcher.fire(Evt.EVT1, "data1");
+        SwiftEventDispatcher.asyncFire(Evt.EVT1, "data1");
 
         SwiftEventListener<Object> listener1 = new SwiftEventListener<Object>() {
             @Override
@@ -31,8 +31,8 @@ public class SwiftEventDispatcherTest {
             }
         };
         SwiftEventDispatcher.listen(Evt.EVT2, listener1);
-        SwiftEventDispatcher.fire(Evt.EVT1, "data1");
-        SwiftEventDispatcher.fire(Evt.EVT2, "data2");
+        SwiftEventDispatcher.asyncFire(Evt.EVT1, "data1");
+        SwiftEventDispatcher.asyncFire(Evt.EVT2, "data2");
 
         Thread.sleep(1000);
 
@@ -51,7 +51,7 @@ public class SwiftEventDispatcherTest {
         };
         SwiftEventDispatcher.listen(Evt.EVT1, listener);
         SwiftEventDispatcher.remove(listener);
-        SwiftEventDispatcher.fire(Evt.EVT1);
+        SwiftEventDispatcher.asyncFire(Evt.EVT1);
         Assert.assertEquals(0, i.get());
 
         Thread.sleep(1000);
@@ -59,7 +59,7 @@ public class SwiftEventDispatcherTest {
 
     @Test
     public void testFireBlackHole() throws InterruptedException {
-        SwiftEventDispatcher.fire(Evt.EVT1);
+        SwiftEventDispatcher.asyncFire(Evt.EVT1);
 
         Thread.sleep(1000);
     }
