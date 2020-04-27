@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invocation;
@@ -10,6 +11,7 @@ import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
+import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
@@ -24,16 +26,18 @@ import com.fr.swift.query.result.SerializedQueryResultSetMerger;
 import com.fr.swift.query.result.serialize.BaseSerializedQueryResultSet;
 import com.fr.swift.result.qrs.EmptyQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.Pair;
+import com.fr.swift.segment.SegmentService;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 /**
  * @author yee
@@ -48,24 +52,28 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         super(invokerCreator);
     }
 
+    private static Map<String, String> clusterMap = new HashMap<>();
+
+    static {
+        clusterMap.put("CLOUD_1", "127.0.0.1:7000");
+        clusterMap.put("CLOUD_2", "127.0.0.1:7001");
+    }
+
     @Override
     public QueryResultSet<?> processResult(final Method method, Target[] targets, Object... args) throws Throwable {
         String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
-        SourceKey table = new SourceKey(queryBean.getTableName());
-        // TODO: 2020/3/13
-//        List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
-        List<Pair<URL, Set<String>>> pairs = processUrl(targets);
+        Set<String> segments = queryBean.getSegments();
+        List<URL> urls = processUrl(targets, segments);
         Class<?> proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
 
-        CountDownLatch latch = new CountDownLatch(pairs.size());
+        CountDownLatch latch = new CountDownLatch(urls.size());
         List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<>());
-        for (final Pair<URL, Set<String>> pair : pairs) {
-            queryBean.setSegments(pair.getValue() == null ? Collections.emptySet() : pair.getValue());
+        for (URL url : urls) {
             final String query = QueryBeanFactory.queryBean2String(queryBean);
-            final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
+            final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
             RpcFuture<?> rpcFuture = (RpcFuture<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, query);
             rpcFuture.addCallback(new AsyncRpcCallback() {
                 @Override
@@ -81,7 +89,7 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
                                 BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
                                     @Override
                                     public <D> BaseSerializedQueryResultSet<D> invoke() {
-                                        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, url);
                                         Invocation invocation = new SwiftInvocation(method, new Object[]{query});
                                         try {
                                             return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
@@ -124,7 +132,19 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
     }
 
     @Override
-    public List<Pair<URL, Set<String>>> processUrl(Target[] targets, Object... args) {
-        return Collections.singletonList(new Pair<>(new LocalUrl(), new HashSet()));
+    public List<URL> processUrl(Target[] targets, Object... args) {
+        HashSet<String> querySegments = (HashSet<String>) args[0];
+        List<URL> urls = new ArrayList<>();
+        boolean isExact = true;
+        if (querySegments.size() == 1) {
+            String segKey = (String) querySegments.toArray()[0];
+            if (segKey.contains("@FINE_IO@-1")) {
+                isExact = false;
+            }
+        }
+        if (isExact && !SwiftContext.get().getBean(SegmentService.class).existAll(querySegments)) {
+            urls = clusterMap.keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
+        }
+        return urls.isEmpty() ? Collections.singletonList(new LocalUrl()) : urls;
     }
 }

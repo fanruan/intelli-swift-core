@@ -40,6 +40,8 @@ public interface SegmentService {
 
     boolean exist(SegmentKey segmentKey);
 
+    boolean existAll(Collection<String> segmentIds);
+
     SegmentKey removeSegment(SegmentKey segmentKey);
 
     List<SegmentKey> removeSegments(List<SegmentKey> segmentKeys);
