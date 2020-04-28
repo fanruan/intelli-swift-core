@@ -112,7 +112,7 @@ public enum SegmentContainer implements SegmentService {
 
     @Override
     public boolean existAll(Collection<String> segmentIds) {
-        return segmentIds.stream().allMatch(segmentKeyMap::containsKey);
+        return segmentKeyMap.keySet().containsAll(segmentIds);
     }
 
     @Override

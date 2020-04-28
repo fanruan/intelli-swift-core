@@ -135,14 +135,14 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
     public List<URL> processUrl(Target[] targets, Object... args) {
         HashSet<String> querySegments = (HashSet<String>) args[0];
         List<URL> urls = new ArrayList<>();
-        boolean isExact = true;
+        boolean hasExactSegs = true;
         if (querySegments.size() == 1) {
             String segKey = (String) querySegments.toArray()[0];
             if (segKey.contains("@FINE_IO@-1")) {
-                isExact = false;
+                hasExactSegs = false;
             }
         }
-        if (isExact && !SwiftContext.get().getBean(SegmentService.class).existAll(querySegments)) {
+        if (hasExactSegs && !SwiftContext.get().getBean(SegmentService.class).existAll(querySegments)) {
             urls = clusterMap.keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
         }
         return urls.isEmpty() ? Collections.singletonList(new LocalUrl()) : urls;
