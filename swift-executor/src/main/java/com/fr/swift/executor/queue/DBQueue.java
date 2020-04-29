@@ -34,7 +34,11 @@ public final class DBQueue {
     }
 
     public void put(ExecutorTask task) throws SQLException {
-        executorTaskService.save(task);
+        try {
+            executorTaskService.save(task);
+        } catch (Exception e) {
+            executorTaskService.update(task);
+        }
     }
 
     public synchronized List<ExecutorTask> pullAll() {

@@ -1,12 +1,12 @@
 package com.fr.swift.executor.conflict;
 
 import com.fr.swift.base.json.JsonBuilder;
+import com.fr.swift.config.ConfigInputUtil;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.config.ConfigInputUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -95,12 +95,20 @@ public class CustomizeTaskConflict implements TaskConflict {
         if (stopTheWorldTaskTypes.contains(executorTask.getExecutorTaskType().name())) {
             // 如果队列中有其他类型的任务，认为冲突
             for (ExecutorTask task : inQueueTasks) {
-                if (!task.getExecutorTaskType().name().equals(executorTask.getExecutorTaskType().name())) {
+                if (task.getExecutorTaskType() != executorTask.getExecutorTaskType()) {
                     return true;
                 }
             }
             // 这里希望信号量能够控制到这个任务，所以不默认不冲突
             // return false;
+        }
+        //如果队列中已经有了stopTheWorld，也检查一遍
+        for (ExecutorTask inQueueTask : inQueueTasks) {
+            if (stopTheWorldTaskTypes.contains(inQueueTask.getExecutorTaskType().name())) {
+                if (executorTask.getExecutorTaskType() != inQueueTask.getExecutorTaskType()) {
+                    return true;
+                }
+            }
         }
         // 优先进行虚拟锁检查
         if (LockType.isVirtualLock(executorTask)) {
