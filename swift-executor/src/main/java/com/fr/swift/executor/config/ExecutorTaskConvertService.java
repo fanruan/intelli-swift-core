@@ -5,6 +5,8 @@ import com.fr.swift.config.dao.SwiftDaoImpl;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.property.SwiftProperty;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.sql.SQLException;
@@ -52,16 +54,15 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
     }
 
     @Override
-    public List<ExecutorTask> getRemoteActiveTasksBeforeTime(long time) {
-        final List<SwiftExecutorTaskEntity> entities = dao.select(criteria -> criteria.add(Restrictions.eq("dbStatusType", DBStatusType.ACTIVE))
-                .add(Restrictions.ne("clusterId", SwiftProperty.get().getMachineId()))
+    public List<Object[]> getActiveTasksGroupByCluster(long time) {
+        ProjectionList projections = Projections.projectionList().add(Projections.groupProperty("clusterId"))
+                .add(Projections.groupProperty("executorTaskType"))
+                .add(Projections.rowCount());
+        List select = dao.select(criteria -> criteria.setProjection(projections)
+                .add(Restrictions.eq("dbStatusType", DBStatusType.ACTIVE))
                 .add(Restrictions.gt("createTime", time))
                 .add(Restrictions.in("executorTaskType", Arrays.asList(SwiftProperty.get().getExecutorTaskType()))));
-        List<ExecutorTask> tasks = new ArrayList<>();
-        for (SwiftExecutorTaskEntity entity : entities) {
-            tasks.add(entity.convert());
-        }
-        return tasks;
+        return select;
     }
 
     @Override

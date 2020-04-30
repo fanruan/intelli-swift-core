@@ -7,7 +7,6 @@ import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.TaskType;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.source.SourceKey;
 
 import javax.persistence.Column;
@@ -85,7 +84,7 @@ public class SwiftExecutorTaskEntity implements Serializable {
     }
 
     private SwiftExecutorTaskEntity(ExecutorTask task) {
-        this.clusterId = SwiftProperty.get().getMachineId();
+        this.clusterId = task.getClusterId();
         this.taskId = task.getTaskId();
         this.sourceKey = task.getSourceKey().getId();
         this.createTime = task.getCreateTime();

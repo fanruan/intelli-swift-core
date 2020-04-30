@@ -2,7 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
-import com.fr.swift.basics.handler.BroadcastProcessHandler;
+import com.fr.swift.basics.handler.DeleteProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.result.SwiftResultSet;
@@ -25,7 +25,7 @@ public interface ServiceContext extends SwiftService {
 
     void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception;
 
-    @InvokeMethod(value = BroadcastProcessHandler.class, target = Target.ALL)
+    @InvokeMethod(value = DeleteProcessHandler.class, target = Target.ALL)
     boolean delete(SourceKey tableKey, Where where) throws Exception;
 
     void clearQuery(String queryId);
