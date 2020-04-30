@@ -28,7 +28,9 @@ public class DeleteJob extends BaseJob<Boolean, FilterBean> {
     @Override
     public Boolean call() {
         try {
-            SwiftContext.get().getBean(DeleteService.class).delete(sourceKey, where);
+            synchronized (DeleteJob.class) {
+                SwiftContext.get().getBean(DeleteService.class).delete(sourceKey, where);
+            }
             SwiftLoggers.getLogger().info("Delete from table [{}] with [{}] success!", sourceKey.getId(), JsonBuilder.writeJsonString(where.getFilterBean()));
             return true;
         } catch (Exception e) {
