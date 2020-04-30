@@ -1,11 +1,9 @@
 package com.fr.swift.executor.task;
 
-import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.executor.conflict.CustomizeTaskConflict;
 import com.fr.swift.executor.conflict.MultiSkipList;
 import com.fr.swift.executor.conflict.TaskConflict;
 import com.fr.swift.executor.queue.ConsumeQueue;
-import com.fr.swift.executor.task.rule.TaskKey;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.StatusType;
 import com.fr.swift.log.SwiftLoggers;
@@ -17,7 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -110,9 +107,6 @@ public class TaskRouter {
             Iterator<ExecutorTask> iterator = idleTasks.iterator();
             while (iterator.hasNext()) {
                 ExecutorTask curTask = iterator.next();
-                if (isRepeat(curTask)) {
-                    continue;
-                }
                 if (isQualified(curTask)) {
                     taskPicked = curTask;
                     break;
@@ -128,22 +122,6 @@ public class TaskRouter {
         } else {
             return null;
         }
-    }
-
-    private boolean isRepeat(ExecutorTask curTask) {
-        try {
-            TaskKey curTaskKey = new TaskKey(JsonBuilder.readValue(curTask.getTaskContent(), Map.class));
-            List<ExecutorTask> taskList = ConsumeQueue.getInstance().getTaskList();
-            for (ExecutorTask task : taskList) {
-                TaskKey taskKey = new TaskKey(JsonBuilder.readValue(task.getTaskContent(), Map.class));
-                if (curTaskKey.equals(taskKey)) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e.toString());
-        }
-        return false;
     }
 
     public synchronized void clear() {

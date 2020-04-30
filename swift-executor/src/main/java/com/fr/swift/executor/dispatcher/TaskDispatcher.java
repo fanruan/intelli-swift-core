@@ -79,17 +79,6 @@ public class TaskDispatcher {
                         executorLock.unlock();
                     }
                     ExecutorTask pickedTask = TaskRouter.getInstance().pickExecutorTask(executorLock);
-                    if (pickedTask != null) {
-                        try {
-                            ExecutorTaskType executorTaskType = pickedTask.getExecutorTaskType();
-                            TaskRule rule = TaskRuleContainer.getInstance().getRulesByType(executorTaskType);
-                            if (rule != null && rule.isRulesFiltered(pickedTask)) {
-                                continue;
-                            }
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
-                    }
                     if (pickedTask == null) {
                         boolean hasPolled = ExecutorManager.getInstance().pullMemTask();
                         if (!hasPolled) {
@@ -101,6 +90,15 @@ public class TaskDispatcher {
                             }
                         }
                     } else {
+                        try {
+                            ExecutorTaskType executorTaskType = pickedTask.getExecutorTaskType();
+                            TaskRule rule = TaskRuleContainer.getInstance().getRulesByType(executorTaskType);
+                            if (rule != null && rule.isRulesFiltered(pickedTask)) {
+                                continue;
+                            }
+                        } catch (Exception e) {
+                            SwiftLoggers.getLogger().error(e);
+                        }
                         ConsumeQueue.getInstance().offer(pickedTask);
                     }
                 } catch (InterruptedException e) {
