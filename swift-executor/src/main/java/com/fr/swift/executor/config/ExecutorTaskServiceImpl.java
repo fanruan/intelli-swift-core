@@ -48,6 +48,11 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
+    public List<Object[]> getMaxtimeByContent(String... likes) {
+        return convertService.getMaxtimeByContent(likes);
+    }
+
+    @Override
     public void delete(ExecutorTask executorTask) {
         convertService.delete(executorTask);
     }
