@@ -24,6 +24,8 @@ public interface ExecutorTaskService {
 
     List<Object[]> getActiveTasksGroupByCluster(long time);
 
+    List<Object[]> getMaxtimeByContent(String... likes);
+
     void delete(final ExecutorTask executorTask);
 
     ExecutorTask get(String taskId);
