@@ -3,6 +3,7 @@ package com.fr.swift.boot.trigger;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceContext;
+import com.fr.swift.trigger.SwiftPriorityInitTrigger;
 
 /**
  * @author lucifer

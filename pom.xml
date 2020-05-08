@@ -25,6 +25,7 @@
         <module>swift-executor</module>
         <module>swift-base-boot</module>
         <module>swift-api-server</module>
+        <module>swift-cluster-base</module>
     </modules>
 
     <build>

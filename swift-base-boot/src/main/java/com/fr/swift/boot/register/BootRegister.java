@@ -8,9 +8,12 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.boot.trigger.ClusterInitTrigger;
 import com.fr.swift.boot.trigger.ServicePriorityInitiator;
 import com.fr.swift.boot.trigger.SwiftServiceInitTrigger;
 import com.fr.swift.boot.trigger.TaskDispatcherInitTrigger;
+import com.fr.swift.cluster.base.handler.JoinClusterListenerHandler;
+import com.fr.swift.cluster.base.handler.LeftClusterListenerHandler;
 import com.fr.swift.config.SwiftConfigRegistryImpl;
 import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
@@ -53,8 +56,11 @@ public class BootRegister {
     }
 
     public static void registerListener() {
-        ServicePriorityInitiator.register(new SwiftServiceInitTrigger());
-        ServicePriorityInitiator.register(new TaskDispatcherInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new SwiftServiceInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new TaskDispatcherInitTrigger());
+        JoinClusterListenerHandler.listen();
+        LeftClusterListenerHandler.listen();
+        ServicePriorityInitiator.getInstance().register(new ClusterInitTrigger());
 //        TransferRealtimeListener.listen();
     }
 
