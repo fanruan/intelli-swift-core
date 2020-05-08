@@ -1,6 +1,7 @@
 package com.fr.swift.boot.trigger;
 
-import com.fr.swift.util.Crasher;
+import com.fr.swift.trigger.BaseServiceInitiator;
+import com.fr.swift.trigger.SwiftPriorityInitTrigger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,34 +12,16 @@ import java.util.List;
  * @description
  * @since swift 1.1
  */
-public class ServicePriorityInitiator {
+public class ServicePriorityInitiator extends BaseServiceInitiator {
+    private static List<SwiftPriorityInitTrigger> triggers = new ArrayList<>();
 
-    private static List<SwiftPriorityInitTrigger> TRIGGERS = new ArrayList<>();
+    private static ServicePriorityInitiator INSTANCE = new ServicePriorityInitiator();
 
-
-    public static void register(SwiftPriorityInitTrigger trigger) {
-        synchronized (TRIGGERS) {
-            TRIGGERS.add(trigger);
-        }
+    private ServicePriorityInitiator() {
+        super(triggers);
     }
 
-    public static void unregister(SwiftPriorityInitTrigger trigger) {
-        synchronized (TRIGGERS) {
-            TRIGGERS.remove(trigger);
-        }
-    }
-
-    public static void initByPrioriry() {
-        synchronized (TRIGGERS) {
-            List<SwiftPriorityInitTrigger> triggers = new ArrayList<>(TRIGGERS);
-            triggers.sort((t1, t2) -> Integer.compare(t2.priority(), t1.priority()));
-            triggers.forEach(trigger -> {
-                try {
-                    trigger.trigger(null);
-                } catch (Exception e) {
-                    Crasher.crash(e);
-                }
-            });
-        }
+    public static ServicePriorityInitiator getInstance() {
+        return INSTANCE;
     }
 }

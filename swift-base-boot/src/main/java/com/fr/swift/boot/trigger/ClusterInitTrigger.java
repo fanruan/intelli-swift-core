@@ -3,8 +3,9 @@ package com.fr.swift.boot.trigger;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.ClusterRegistry;
 import com.fr.swift.cluster.base.service.ClusterBootService;
-import com.fr.swift.cluster.base.trigger.MasterServiceInitiator;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.cluster.base.initiator.MasterServiceInitiator;
+import com.fr.swift.trigger.SwiftPriorityInitTrigger;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class ClusterInitTrigger implements SwiftPriorityInitTrigger {
             ((ClusterBootService) SwiftContext.get().getBean(maxPriorityService.get())).init();
 
         } else {
-            MasterServiceInitiator.init(null);
+            MasterServiceInitiator.getInstance().initByPriority(null);
         }
     }
 

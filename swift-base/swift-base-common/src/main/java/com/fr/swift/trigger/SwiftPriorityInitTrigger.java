@@ -1,4 +1,4 @@
-package com.fr.swift.boot.trigger;
+package com.fr.swift.trigger;
 
 /**
  * @author lucifer

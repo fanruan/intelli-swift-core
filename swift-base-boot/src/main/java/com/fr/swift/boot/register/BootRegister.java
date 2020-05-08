@@ -56,11 +56,11 @@ public class BootRegister {
     }
 
     public static void registerListener() {
-        ServicePriorityInitiator.register(new SwiftServiceInitTrigger());
-        ServicePriorityInitiator.register(new TaskDispatcherInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new SwiftServiceInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new TaskDispatcherInitTrigger());
         JoinClusterListenerHandler.listen();
         LeftClusterListenerHandler.listen();
-        ServicePriorityInitiator.register(new ClusterInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new ClusterInitTrigger());
 //        TransferRealtimeListener.listen();
     }
 

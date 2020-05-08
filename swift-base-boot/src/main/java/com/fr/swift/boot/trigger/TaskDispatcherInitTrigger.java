@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.executor.dispatcher.TaskDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.executor.CollateExecutor;
+import com.fr.swift.trigger.SwiftPriorityInitTrigger;
 
 /**
  * @author lucifer
