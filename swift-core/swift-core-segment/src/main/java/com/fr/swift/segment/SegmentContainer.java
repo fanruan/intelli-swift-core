@@ -111,6 +111,11 @@ public enum SegmentContainer implements SegmentService {
     }
 
     @Override
+    public boolean existAll(Collection<String> segmentIds) {
+        return segmentKeyMap.keySet().containsAll(segmentIds);
+    }
+
+    @Override
     public SegmentKey removeSegment(SegmentKey segmentKey) {
         SegmentKey removedSegmentKey = segmentKeyMap.remove(segmentKey.getId());
         tableMap.getOrDefault(segmentKey.getTable(), new HashSet<>()).remove(removedSegmentKey);

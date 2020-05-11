@@ -33,7 +33,7 @@ public abstract class AbstractProcessHandler<T> implements ProcessHandler {
      *
      * @return
      */
-    protected abstract T processUrl(Target[] targets, Object... args);
+    protected abstract T processUrl(Target[] targets, Object... args) throws Exception;
 
     /**
      * @param invoker

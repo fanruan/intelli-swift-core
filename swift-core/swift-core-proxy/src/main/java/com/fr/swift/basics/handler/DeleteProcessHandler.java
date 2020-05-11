@@ -8,5 +8,5 @@ import com.fr.swift.basics.ProcessHandler;
  * @description
  * @since swift 1.1
  */
-public interface BroadcastProcessHandler extends ProcessHandler {
+public interface DeleteProcessHandler extends ProcessHandler {
 }

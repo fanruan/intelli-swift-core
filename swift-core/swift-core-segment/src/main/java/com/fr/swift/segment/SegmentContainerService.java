@@ -71,6 +71,11 @@ public class SegmentContainerService implements SegmentService {
     }
 
     @Override
+    public boolean existAll(Collection<String> segmentIds) {
+        return SegmentContainer.LOCAL.existAll(segmentIds);
+    }
+
+    @Override
     public SegmentKey removeSegment(SegmentKey segmentKey) {
         SegmentKey removedSegkey = SegmentContainer.LOCAL.removeSegment(segmentKey);
         deleteElementByKeys(removedSegkey == null ? Collections.EMPTY_LIST : Collections.singletonList(removedSegkey));

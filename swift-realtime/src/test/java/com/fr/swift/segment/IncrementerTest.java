@@ -79,6 +79,6 @@ public class IncrementerTest {
         incrementer.handleFullSegment(segInfo);
 
         verifyStatic(SwiftEventDispatcher.class);
-        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, segKey);
+        SwiftEventDispatcher.asyncFire(SegmentEvent.TRANSFER_REALTIME, segKey);
     }
 }
