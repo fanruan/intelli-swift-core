@@ -9,6 +9,10 @@ import com.fr.swift.event.SwiftEvent;
  */
 public enum ClusterEvent implements SwiftEvent {
     /**
+     * 成为主节点
+     */
+    BECOME_MASTER,
+    /**
      * 加入集群
      */
     JOIN,

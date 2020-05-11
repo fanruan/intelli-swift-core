@@ -113,7 +113,7 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
             return EmptyQueryResultSet.get();
         }
         QueryResultSet<?> resultAfterMerge = (QueryResultSet<?>) mergeResult(resultSets, queryBean.getQueryType());
-        Query<QueryResultSet<?>> postQuery = QueryBuilder.<QueryResultSet<?>>buildPostQuery(resultAfterMerge, queryBean);
+        Query<QueryResultSet<?>> postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
     }
 
@@ -122,22 +122,28 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         return SerializedQueryResultSetMerger.merge((QueryType) args[0], resultList);
     }
 
+    /**
+     * querySegments == null或empty，查所有节点
+     * querySegments全在本地，查本地
+     * querySegments包含@FINE_IO@-1，查本地
+     * 其他情况查所有节点
+     *
+     * @param targets
+     * @param args
+     * @return
+     */
     @Override
     public List<URL> processUrl(Target[] targets, Object... args) {
         HashSet<String> querySegments = (HashSet<String>) args[0];
-        List<URL> urls = new ArrayList<>();
-        if (querySegments != null) {
-            boolean empty = false;
-            if (querySegments.size() == 1) {
-                String segKey = (String) querySegments.toArray()[0];
-                if (segKey.contains("@FINE_IO@-1")) {
-                    empty = true;
-                }
-            }
-            if (!empty && !SwiftContext.get().getBean(SegmentService.class).existAll(querySegments)) {
-                urls = nodeContainer.getOnlineNodes().keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
-            }
+        if (querySegments == null || querySegments.isEmpty()) {
+            return nodeContainer.getOnlineNodes().keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
         }
-        return urls.isEmpty() ? Collections.singletonList(new LocalUrl()) : urls;
+        if (SwiftContext.get().getBean(SegmentService.class).existAll(querySegments)) {
+            return Collections.singletonList(new LocalUrl());
+        }
+        if (querySegments.size() == 1 && ((String) querySegments.toArray()[0]).contains("@FINE_IO@-1")) {
+            return Collections.singletonList(new LocalUrl());
+        }
+        return nodeContainer.getOnlineNodes().keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
     }
 }
