@@ -17,12 +17,6 @@ public class DateAppIdHashFunction implements HashFunction {
     @JsonProperty("partitions")
     private int partitions;
 
-    private DateAppIdType partitionsType = DateAppIdType.ALL;
-
-    public static final String APPID = "appId";
-
-    public static final String YEARMONTH = "yearMonth";
-
     private static DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("yyyyMM");
 
     public DateAppIdHashFunction() {
@@ -34,17 +28,9 @@ public class DateAppIdHashFunction implements HashFunction {
 
     @Override
     public int indexOf(Object key) {
-        switch (partitionsType) {
-            case APPID:
-                String appIdStr = String.valueOf(key);
-                int appIdValue = partitions != 0 ? Math.abs(appIdStr.hashCode()) % partitions : 0;
-                return appIdValue;
-            case YEAR_MONTH:
-            default:
-                String yearMonthStr = String.valueOf(key);
-                YearMonth yearMonth = YearMonth.parse(yearMonthStr, yearMonthFormatter);
-                return yearMonth.getYear() * 100 + yearMonth.getMonthValue();
-        }
+        String yearMonthStr = String.valueOf(key);
+        YearMonth yearMonth = YearMonth.parse(yearMonthStr, yearMonthFormatter);
+        return yearMonth.getYear() * 100 + yearMonth.getMonthValue();
     }
 
     @Override
@@ -56,21 +42,6 @@ public class DateAppIdHashFunction implements HashFunction {
 
     @Override
     public HashType getType() {
-        return HashType.APPID_YEARMONTH;
-    }
-
-    @Override
-    public void switchPartitionType(String typeName) {
-        switch (typeName) {
-            case APPID:
-                this.partitionsType = DateAppIdType.APPID;
-                break;
-            case YEARMONTH:
-                this.partitionsType = DateAppIdType.YEAR_MONTH;
-                break;
-            default:
-                this.partitionsType = DateAppIdType.ALL;
-                break;
-        }
+        return HashType.YEAR_MONTH;
     }
 }

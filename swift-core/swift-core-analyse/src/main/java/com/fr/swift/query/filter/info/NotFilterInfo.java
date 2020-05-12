@@ -37,8 +37,4 @@ public class NotFilterInfo extends AbstractFilterInfo {
     public MatchFilter createMatchFilter() {
         return null;
     }
-
-    public FilterInfo getFilterInfo(){
-        return filterInfo;
-    }
 }

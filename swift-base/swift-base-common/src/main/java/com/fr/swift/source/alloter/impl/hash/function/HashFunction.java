@@ -27,5 +27,4 @@ public interface HashFunction {
 
     HashType getType();
 
-    void switchPartitionType(String typeName);
 }

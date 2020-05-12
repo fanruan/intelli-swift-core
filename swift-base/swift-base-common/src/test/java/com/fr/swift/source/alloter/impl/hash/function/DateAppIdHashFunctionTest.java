@@ -19,6 +19,6 @@ public class DateAppIdHashFunctionTest {
 
     @Test
     public void getType() {
-        Assert.assertEquals(new DateAppIdHashFunction(0).getType(), HashType.APPID_YEARMONTH);
+        Assert.assertEquals(new DateAppIdHashFunction(0).getType(), HashType.YEAR_MONTH);
     }
 }
