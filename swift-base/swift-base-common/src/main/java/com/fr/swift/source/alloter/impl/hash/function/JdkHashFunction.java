@@ -39,4 +39,8 @@ public class JdkHashFunction implements HashFunction {
     public HashType getType() {
         return HashType.JDK;
     }
+
+    @Override
+    public void switchPartitionType(String typeName) {
+    }
 }
