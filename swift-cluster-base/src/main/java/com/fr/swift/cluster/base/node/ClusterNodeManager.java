@@ -13,6 +13,8 @@ public interface ClusterNodeManager extends ClusterNodeContainer {
 
     void setCurrentNode(String currentNodeId, String currentNodeAddress);
 
+    void putHistoryNode(String historyNodeId, String historyNodeAddress);
+
     void handleNodeChange(Map<String, String> nodes);
 
 }
