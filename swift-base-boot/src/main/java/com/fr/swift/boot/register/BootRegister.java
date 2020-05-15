@@ -24,6 +24,7 @@ import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.quartz.ScheduleTaskTrigger;
 
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,10 @@ public class BootRegister {
         JoinClusterListenerHandler.listen();
         LeftClusterListenerHandler.listen();
 //        TransferRealtimeListener.listen();
+    }
+
+    public static void triggerScheduleTask() {
+        ScheduleTaskTrigger.getInstance().trigger();
     }
 
     public static void registerProxy() {
