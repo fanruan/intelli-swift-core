@@ -60,13 +60,10 @@ public class BootRegister {
         ServicePriorityInitiator.getInstance().register(new SwiftServiceInitTrigger());
         ServicePriorityInitiator.getInstance().register(new TaskDispatcherInitTrigger());
         ServicePriorityInitiator.getInstance().register(new ClusterInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new ScheduleTaskTrigger());
         JoinClusterListenerHandler.listen();
         LeftClusterListenerHandler.listen();
 //        TransferRealtimeListener.listen();
-    }
-
-    public static void triggerScheduleTask() {
-        ScheduleTaskTrigger.getInstance().trigger();
     }
 
     public static void registerProxy() {

@@ -17,6 +17,8 @@ public class SchedulerProperty {
 
     private Properties properties;
 
+    private String executorMachineId;
+
     private SchedulerProperty() {
         initProperty();
     }
@@ -32,13 +34,19 @@ public class SchedulerProperty {
         InputStream quartzIn = ConfigInputUtil.getConfigInputStream("quartz.properties");
         try (InputStream in = quartzIn) {
             properties.load(in);
+            executorMachineId = properties.getProperty("executor.machine.id", "CLOUD_1");
         } catch (IOException e) {
             Crasher.crash(e);
+            executorMachineId = "CLOUD_1";
         }
     }
 
     public Properties getProperties() {
         return properties;
+    }
+
+    public String getExecutorMachineId() {
+        return executorMachineId;
     }
 }
 
