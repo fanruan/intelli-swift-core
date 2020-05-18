@@ -4,6 +4,7 @@ import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftWhere;
 import com.fr.swift.executor.task.AbstractExecutorTask;
+import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.job.Job;
 import com.fr.swift.executor.task.job.impl.DeleteJob;
 import com.fr.swift.executor.type.DBStatusType;
@@ -29,7 +30,26 @@ public class DeleteExecutorTask extends AbstractExecutorTask<Job> {
                 LockType.TABLE,
                 sourceKey.getId(),
                 DBStatusType.ACTIVE,
-                new DeleteJob(sourceKey, where), 0);
+                new DeleteJob(sourceKey, where), 10);
+    }
+
+    public DeleteExecutorTask(SourceKey sourceKey, Where where, String clusterId) throws Exception {
+        super(sourceKey,
+                false,
+                SwiftTaskType.DELETE,
+                LockType.TABLE,
+                sourceKey.getId(),
+                DBStatusType.ACTIVE,
+                new DeleteJob(sourceKey, where), 10);
+        this.clusterId = clusterId;
+    }
+
+    public static ExecutorTask of(SourceKey sourceKey, Where where) throws Exception {
+        return new DeleteExecutorTask(sourceKey, where);
+    }
+
+    public static ExecutorTask ofByCluster(SourceKey sourceKey, Where where, String clusterId) throws Exception {
+        return new DeleteExecutorTask(sourceKey, where, clusterId);
     }
 
     public DeleteExecutorTask(SourceKey sourceKey, boolean persistent, ExecutorTaskType executorTaskType, LockType lockType,

@@ -162,6 +162,6 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
                 }
             }
         });
-        SwiftEventDispatcher.fire(SyncSegmentLocationEvent.REMOVE_SEG, collateSegKeys);
+        SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.REMOVE_SEG, collateSegKeys);
     }
 }

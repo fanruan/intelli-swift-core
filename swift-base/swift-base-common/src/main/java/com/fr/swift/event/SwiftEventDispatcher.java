@@ -54,19 +54,14 @@ public class SwiftEventDispatcher {
         }
     }
 
-    public static <T> void fire(final SwiftEvent event, final T content) {
+    public static <T> void asyncFire(final SwiftEvent event, final T content) {
         Assert.notNull(event);
 
-        EXEC.execute(new Runnable() {
-            @Override
-            public void run() {
-                syncFire(event, content);
-            }
-        });
+        EXEC.execute(() -> syncFire(event, content));
     }
 
-    public static void fire(SwiftEvent event) {
-        fire(event, null);
+    public static void asyncFire(SwiftEvent event) {
+        asyncFire(event, null);
     }
 
     public static <T> void syncFire(final SwiftEvent event, final T content) {

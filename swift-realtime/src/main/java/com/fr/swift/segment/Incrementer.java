@@ -41,7 +41,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     protected void handleFullSegment(SegmentInfo segInfo) {
         // 增量块已满，transfer掉
         SegmentKey segKey = newSegmentKey(segInfo);
-        SwiftEventDispatcher.fire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofActive(segKey));
+        SwiftEventDispatcher.asyncFire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofActive(segKey));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
             // 发送-1，告诉查询节点，本节点已有该表增量块
             SwiftSegmentEntity allMemSegKeyEntities = new SwiftSegmentEntity(importSegKeys.get(0));
             allMemSegKeyEntities.setSegmentOrder(-1);
-            SwiftEventDispatcher.fire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(allMemSegKeyEntities));
+            SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(allMemSegKeyEntities));
         }
     }
 
