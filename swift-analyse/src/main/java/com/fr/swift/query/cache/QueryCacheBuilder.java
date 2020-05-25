@@ -46,8 +46,8 @@ public class QueryCacheBuilder {
                     final QueryCache value = iterator.next().getValue();
                     if (value.getIdle() > TimeUnit.MINUTES.toMillis(DEFAULT_TIMEOUT)) {
                         value.clear();
+                        iterator.remove();
                     }
-                    iterator.remove();
                 }
             }
         };

@@ -60,6 +60,11 @@ public class ClusterNodeSelector implements Selector<ClusterNodeManager> {
         }
 
         @Override
+        public void putHistoryNode(String historyNodeId, String historyNodeAddress) {
+
+        }
+
+        @Override
         public void setCurrentNode(String currentNodeId, String currentNodeAddress) {
         }
 
