@@ -26,6 +26,4 @@ public interface HashFunction {
     int indexOf(List<Object> keys);
 
     HashType getType();
-
-    void switchPartitionType(String typeName);
 }

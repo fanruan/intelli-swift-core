@@ -21,9 +21,7 @@ public class SegmentFuzzyBucket {
 
     private Map<Integer, List<SegmentKey>> bucketMap;
 
-    private Map<Integer, HashSet<Integer>> yearMonthFuzzy = new HashMap<>();
-
-    private Map<Integer, HashSet<Integer>> appIdFuzzy = new HashMap<>();
+    private Map<Integer, HashSet<Integer>> keyFuzzy = new HashMap<>();
 
     public SegmentFuzzyBucket(SwiftSegmentBucket segmentBucket) {
         this.bucketMap = segmentBucket.getBucketMap();
@@ -32,8 +30,10 @@ public class SegmentFuzzyBucket {
 
     private void init() {
         Set<Integer> bucketKeys = bucketMap.keySet();
-        bucketKeys.forEach(bucketKey -> yearMonthFuzzy.computeIfAbsent(bucketKey / 100, k -> new HashSet<>()).add(bucketKey));
-        bucketKeys.forEach(bucketKey -> appIdFuzzy.computeIfAbsent(bucketKey % 100, k -> new HashSet<>()).add(bucketKey));
+        for (Integer bucketKey : bucketKeys) {
+            keyFuzzy.computeIfAbsent(bucketKey / 100, k -> new HashSet<>()).add(bucketKey);
+            keyFuzzy.computeIfAbsent(bucketKey % 100, k -> new HashSet<>()).add(bucketKey);
+        }
     }
 
     public Set<Integer> getIncludedKey(Set<Integer> hashValueSet) {
@@ -41,13 +41,8 @@ public class SegmentFuzzyBucket {
             return bucketMap.keySet();
         }
         Set<Integer> resultSet = new HashSet();
-        for (Integer hashValue : hashValueSet) {
-            if (appIdFuzzy.containsKey(hashValue)) {
-                resultSet.addAll(appIdFuzzy.get(hashValue));
-            } else if (yearMonthFuzzy.containsKey(hashValue)) {
-                resultSet.addAll(yearMonthFuzzy.get(hashValue));
-            }
-        }
+        hashValueSet.stream().filter(hashValue -> keyFuzzy.containsKey(hashValue))
+                .map(hashValue -> keyFuzzy.get(hashValue)).forEach(resultSet::addAll);
         return resultSet;
     }
 

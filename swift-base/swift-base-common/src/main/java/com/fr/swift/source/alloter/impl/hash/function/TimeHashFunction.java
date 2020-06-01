@@ -63,8 +63,4 @@ public class TimeHashFunction implements HashFunction {
     public HashType getType() {
         return HashType.TIME;
     }
-
-    @Override
-    public void switchPartitionType(String typeName) {
-    }
 }

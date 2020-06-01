@@ -8,7 +8,6 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
-import com.fr.swift.query.filter.info.NotFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.info.SegmentFilter;
 import com.fr.swift.query.info.SingleTableQueryInfo;
@@ -160,9 +159,12 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
             } else {
                 set.add(ALL_SEGMENT);
             }
-        } else if (filterInfo instanceof NotFilterInfo) {
-            set.addAll(segmentFuzzyBucket.getNotIncludedKey(getIndexSet(((NotFilterInfo) filterInfo).getFilterInfo(), table)));
-        } else {
+        }
+        // TODO: 2020/6/1  not 有逻辑 bug
+//        else if (filterInfo instanceof NotFilterInfo) {
+//            set.addAll(segmentFuzzyBucket.getNotIncludedKey(getIndexSet(((NotFilterInfo) filterInfo).getFilterInfo(), table)));
+//        }
+        else {
             set.add(ALL_SEGMENT);
         }
         return set;
@@ -181,7 +183,6 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 
         String columnKey = filterInfo.getColumnKey().getName();
         if (hashKeys.contains(columnKey)) {
-            hashAllotRule.getHashFunction().switchPartitionType(columnKey);
             Set<Integer> hashIndexSet = new HashSet<>();
             Set<Object> filterValues = (Set<Object>) filterInfo.getFilterValue();
             for (Object filterValue : filterValues) {
