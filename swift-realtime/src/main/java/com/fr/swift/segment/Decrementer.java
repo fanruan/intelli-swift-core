@@ -58,9 +58,7 @@ public class Decrementer implements WhereDeleter {
                     removeSegList.add(segKey);
                 }
                 if (seg.isHistory()) {
-                    if (seg.isHistory()) {
-                        seg.release();
-                    }
+                    seg.release();
                 }
                 if (!removeSegList.isEmpty()) {
                     swiftSegmentService.delete(removeSegList);
