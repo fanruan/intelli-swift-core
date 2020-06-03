@@ -58,6 +58,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
     }
 
     private void recursionCreateBean(Map<String, SwiftBeanDefinition> beanDefinitionMap) {
+        Exception e = null;
         for (String singletonNotLoadName : singletonNotLoadNames) {
             SwiftBeanDefinition swiftBeanDefinition = beanDefinitionMap.get(singletonNotLoadName);
             try {
@@ -66,10 +67,11 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
                 beanNamesLoaded.add(swiftBeanDefinition.getBeanName());
             } catch (Exception ignore) {
                 SwiftLoggers.getLogger().debug(ignore);
+                e = ignore;
             }
         }
         if (beanNamesLoaded.isEmpty() && !singletonNotLoadNames.isEmpty()) {
-            Crasher.crash("RecursionCreateBean will trap in a dead circle! Please check beans " + singletonNotLoadNames.toString());
+            Crasher.crash("RecursionCreateBean will trap in a dead circle! Please check beans " + singletonNotLoadNames.toString(), e);
         }
         singletonNotLoadNames.removeAll(beanNamesLoaded);
     }
