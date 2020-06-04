@@ -66,9 +66,13 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         if (!db.existsTable(tableKey)) {
             db.createTable(tableKey, dataSource.getMetadata());
         }
-        if (swiftTableAllotRuleService.getByTale(dataSource.getSourceKey()) == null) {
+        //以dbAllotRule为准
+        SwiftTableAllotRule dbAllotRule = swiftTableAllotRuleService.getByTale(dataSource.getSourceKey());
+        if (dbAllotRule == null) {
             SwiftTableAllotRule swiftTableAllotRule = new SwiftTableAllotRule(dataSource.getSourceKey().getId(), alloter.getAllotRule().getType().name(), alloter.getAllotRule());
             swiftTableAllotRuleService.save(swiftTableAllotRule);
+        } else {
+            alloter.setAllotRule(dbAllotRule.getAllotRule());
         }
     }
 

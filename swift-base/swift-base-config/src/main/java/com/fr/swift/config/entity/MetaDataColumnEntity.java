@@ -5,6 +5,7 @@ import com.fr.swift.util.Assert;
 
 import java.io.Serializable;
 import java.sql.Types;
+import java.util.Objects;
 
 /**
  * @Author: Lucifer
@@ -59,6 +60,24 @@ public class MetaDataColumnEntity implements SwiftMetaDataColumn, Serializable {
         this.precision = precision;
         this.scale = scale;
         this.columnId = columnId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MetaDataColumnEntity that = (MetaDataColumnEntity) o;
+        return type == that.type &&
+                precision == that.precision &&
+                scale == that.scale &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(remark, that.remark) &&
+                Objects.equals(columnId, that.columnId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, name, remark, precision, scale, columnId);
     }
 
     @Override

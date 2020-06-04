@@ -84,6 +84,10 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
         return rule;
     }
 
+    public void setAllotRule(AllotRule rule) {
+        this.rule = (A) rule;
+    }
+
     protected static class SegmentState {
 
         private SegmentInfo segInfo;
