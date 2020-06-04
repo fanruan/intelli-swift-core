@@ -15,6 +15,4 @@ public interface SwiftSourceAlloter<A extends AllotRule, R extends RowInfo> {
     SegmentInfo allot(R rowInfo);
 
     A getAllotRule();
-
-    void setAllotRule(AllotRule allotRule);
 }
