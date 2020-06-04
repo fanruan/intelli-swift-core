@@ -79,7 +79,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     @Override
     public void importData(R swiftResultSet) throws Exception {
         try (R resultSet = swiftResultSet) {
-            persistMeta();
+//            persistMeta();
 
             for (int cursor = 0; resultSet.hasNext(); cursor++) {
                 Row row = resultSet.getNextRow();
