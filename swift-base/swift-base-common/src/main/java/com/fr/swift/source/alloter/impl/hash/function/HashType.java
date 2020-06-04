@@ -7,5 +7,5 @@ package com.fr.swift.source.alloter.impl.hash.function;
  * @since advanced swift 1.0
  */
 public enum HashType {
-    JDK, TIME, YEAR_MONTH
+    JDK, TIME, APPID_YEARMONTH
 }
