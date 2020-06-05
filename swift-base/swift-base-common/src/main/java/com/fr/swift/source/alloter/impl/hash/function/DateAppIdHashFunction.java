@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author lucifer
@@ -17,6 +19,8 @@ public class DateAppIdHashFunction implements HashFunction {
     @JsonProperty("partitions")
     private int partitions;
 
+    private static Pattern pattern = Pattern.compile("\\d{6}");
+
     private static DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("yyyyMM");
 
     public DateAppIdHashFunction() {
@@ -28,20 +32,23 @@ public class DateAppIdHashFunction implements HashFunction {
 
     @Override
     public int indexOf(Object key) {
-        String yearMonthStr = String.valueOf(key);
-        YearMonth yearMonth = YearMonth.parse(yearMonthStr, yearMonthFormatter);
-        return yearMonth.getYear() * 100 + yearMonth.getMonthValue();
+        String hashKey = String.valueOf(key);
+        Matcher matcher = pattern.matcher(hashKey);
+        if (matcher.matches()) {
+            YearMonth yearMonth = YearMonth.parse(hashKey, yearMonthFormatter);
+            return yearMonth.getYear() * 100 + yearMonth.getMonthValue();
+        }
+        int appIdValue = partitions != 0 ? Math.abs(hashKey.hashCode()) % partitions : 0;
+        return appIdValue;
     }
 
     @Override
     public int indexOf(List<Object> keys) {
-        String appIdStr = String.valueOf(keys.get(1));
-        int appIdValue = partitions != 0 ? Math.abs(appIdStr.hashCode()) % partitions : 0;
-        return indexOf(keys.get(0)) * 100 + appIdValue;
+        return indexOf(keys.get(0)) * 10 + indexOf(keys.get(1));
     }
 
     @Override
     public HashType getType() {
-        return HashType.YEAR_MONTH;
+        return HashType.APPID_YEARMONTH;
     }
 }
