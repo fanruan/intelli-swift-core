@@ -44,7 +44,7 @@ public class DateAppIdHashFunction implements HashFunction {
 
     @Override
     public int indexOf(List<Object> keys) {
-        return indexOf(keys.get(0)) * 10 + indexOf(keys.get(1));
+        return indexOf(keys.get(0)) * 100 + indexOf(keys.get(1));
     }
 
     @Override
