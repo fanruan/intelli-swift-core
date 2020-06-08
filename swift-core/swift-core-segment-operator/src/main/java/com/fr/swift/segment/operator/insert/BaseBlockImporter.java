@@ -2,12 +2,9 @@ package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.cube.io.Releasable;
-import com.fr.swift.db.Database;
-import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Segment;
@@ -17,7 +14,6 @@ import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
@@ -27,7 +23,6 @@ import com.fr.swift.source.alloter.impl.line.LineRowInfo;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.IoUtil;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,23 +54,10 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         this.alloter = alloter;
     }
 
-    protected void persistMeta() throws SQLException {
-        Database db = SwiftDatabase.getInstance();
-        SourceKey tableKey = dataSource.getSourceKey();
-        // todo 分布式导入可能有多线程坑
-        if (!db.existsTable(tableKey)) {
-            db.createTable(tableKey, dataSource.getMetadata());
-        }
-        if (swiftTableAllotRuleService.getByTale(dataSource.getSourceKey()) == null) {
-            SwiftTableAllotRule swiftTableAllotRule = new SwiftTableAllotRule(dataSource.getSourceKey().getId(), alloter.getAllotRule().getType().name(), alloter.getAllotRule());
-            swiftTableAllotRuleService.save(swiftTableAllotRule);
-        }
-    }
 
     @Override
     public void importData(R swiftResultSet) throws Exception {
         try (R resultSet = swiftResultSet) {
-            persistMeta();
 
             for (int cursor = 0; resultSet.hasNext(); cursor++) {
                 Row row = resultSet.getNextRow();

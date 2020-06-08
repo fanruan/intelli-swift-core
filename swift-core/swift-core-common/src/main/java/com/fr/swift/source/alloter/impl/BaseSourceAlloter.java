@@ -84,6 +84,7 @@ public abstract class BaseSourceAlloter<A extends AllotRule, R extends RowInfo> 
         return rule;
     }
 
+
     protected static class SegmentState {
 
         private SegmentInfo segInfo;
