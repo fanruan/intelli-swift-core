@@ -7,7 +7,6 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.Reader;
 
 /**
  * @author Heng.J
