@@ -4,7 +4,7 @@ import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.ReflectUtils;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -179,7 +179,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
             if (paramTypes.length == parameterTypes.length) {
                 boolean matched = true;
                 for (int i = 0; i < paramTypes.length; i++) {
-                    if (!ReflectUtils.isAssignable(parameterTypes[i], paramTypes[i])) {
+                    if (!ClassUtils.isAssignable(parameterTypes[i], paramTypes[i])) {
                         matched = false;
                         break;
                     }
