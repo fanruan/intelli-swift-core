@@ -8,8 +8,13 @@ import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
+import com.fr.swift.boot.trigger.ClusterInitTrigger;
+import com.fr.swift.boot.trigger.ServicePriorityInitiator;
+import com.fr.swift.boot.trigger.SwiftServiceInitTrigger;
+import com.fr.swift.boot.trigger.TaskDispatcherInitTrigger;
+import com.fr.swift.cluster.base.handler.JoinClusterListenerHandler;
+import com.fr.swift.cluster.base.handler.LeftClusterListenerHandler;
 import com.fr.swift.config.SwiftConfigRegistryImpl;
-import com.fr.swift.executor.dispatcher.TaskDispatcher;
 import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
@@ -19,8 +24,7 @@ import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.service.executor.CollateExecutor;
-import com.fr.swift.service.executor.MigrationExecutor;
+import com.fr.swift.quartz.ScheduleTaskTrigger;
 
 import java.util.List;
 import java.util.Map;
@@ -39,10 +43,8 @@ public class BootRegister {
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTablePathEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftMetaDataEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
-
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentBucketElement");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTableAllotRule");
-
     }
 
     public static void registerExecutorTask() {
@@ -55,9 +57,12 @@ public class BootRegister {
     }
 
     public static void registerListener() {
-        TaskDispatcher.getInstance();
-        SwiftContext.get().getBean(CollateExecutor.class).start();
-        SwiftContext.get().getBean(MigrationExecutor.class).start();
+        ServicePriorityInitiator.getInstance().register(new SwiftServiceInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new TaskDispatcherInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new ClusterInitTrigger());
+        ServicePriorityInitiator.getInstance().register(new ScheduleTaskTrigger());
+        JoinClusterListenerHandler.listen();
+        LeftClusterListenerHandler.listen();
 //        TransferRealtimeListener.listen();
     }
 

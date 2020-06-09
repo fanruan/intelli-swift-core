@@ -63,7 +63,7 @@ public class SegmentTransfer {
 
     private void onSucceed() {
         remove(realtSegKey);
-        SEG_LOCATION_SVC.saveOnNode(SwiftProperty.getProperty().getMachineId(), Collections.singleton(histSegKey));
+        SEG_LOCATION_SVC.saveOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(histSegKey));
         SwiftContext.get().getBean(SegmentService.class).getSegment(histSegKey);
         SwiftLoggers.getLogger().info("seg transferred from {} to {}", realtSegKey, histSegKey);
 
@@ -73,7 +73,7 @@ public class SegmentTransfer {
     }
 
     protected void remove(final SegmentKey segKey) {
-        SEG_LOCATION_SVC.deleteOnNode(SwiftProperty.getProperty().getMachineId(), Collections.singleton(segKey));
+        SEG_LOCATION_SVC.deleteOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(segKey));
         SEG_SVC.delete(segKey);
         SegmentUtils.clearSegment(segKey);
         SwiftLoggers.getLogger().info("seg {} removed", segKey);

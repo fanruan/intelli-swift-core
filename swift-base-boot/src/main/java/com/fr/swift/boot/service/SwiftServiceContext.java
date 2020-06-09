@@ -8,6 +8,8 @@ import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.query.cache.QueryCacheBuilder;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
@@ -36,7 +38,7 @@ public class SwiftServiceContext implements ServiceContext {
         SwiftContext.get().getBean(AnalyseService.class).start();
         SwiftContext.get().getBean(CollateService.class).start();
         SwiftContext.get().getBean(DeleteService.class).start();
-        List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.getProperty().getServerServiceNames());
+        List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.get().getServerServiceNames());
         for (ServerService serverService : serverServiceList) {
             serverService.startServerService();
         }
@@ -48,7 +50,7 @@ public class SwiftServiceContext implements ServiceContext {
         SwiftContext.get().getBean(AnalyseService.class).shutdown();
         SwiftContext.get().getBean(CollateService.class).shutdown();
         SwiftContext.get().getBean(DeleteService.class).shutdown();
-        List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.getProperty().getServerServiceNames());
+        List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.get().getServerServiceNames());
         for (ServerService serverService : serverServiceList) {
             serverService.stopServerService();
         }
@@ -62,7 +64,7 @@ public class SwiftServiceContext implements ServiceContext {
 
     @Override
     public String getId() {
-        return SwiftProperty.getProperty().getMachineId();
+        return SwiftProperty.get().getMachineId();
     }
 
     @Override
@@ -84,6 +86,16 @@ public class SwiftServiceContext implements ServiceContext {
     public boolean delete(SourceKey tableKey, Where where) throws Exception {
         //delete改为同步删。
         //        return TaskProducer.produceTask(new DeleteExecutorTask(tableKey, where));
-        return (boolean) new DeleteExecutorTask(tableKey, where).getJob().call();
+        return (boolean) DeleteExecutorTask.of(tableKey, where).getJob().call();
+    }
+
+    @Override
+    public void clearQuery(String queryId) {
+        QueryCacheBuilder.builder().removeCache(queryId);
+    }
+
+    @Override
+    public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception {
+        throw new UnsupportedOperationException("insert not support");
     }
 }

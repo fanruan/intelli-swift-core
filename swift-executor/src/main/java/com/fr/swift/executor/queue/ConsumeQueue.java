@@ -48,7 +48,7 @@ public class ConsumeQueue {
     }
 
     public List<ExecutorTask> getTaskList() {
-        return taskList;
+        return new ArrayList<>(taskList);
     }
 
     public int size() {

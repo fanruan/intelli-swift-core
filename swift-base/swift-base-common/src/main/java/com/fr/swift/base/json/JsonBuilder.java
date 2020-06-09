@@ -4,13 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author yee
  * @date 2018-12-04
  */
 public class JsonBuilder {
-    private static final ObjectMapper DEFAULT = new ObjectMapper();
+    private static final ObjectMapper DEFAULT = new ObjectMapper().setTimeZone(TimeZone.getDefault());
 
     public static <T> T readValue(Map<String, Object> jsonMap, Class<T> reference) throws Exception {
         return DEFAULT.readValue(DEFAULT.writeValueAsString(jsonMap), reference);

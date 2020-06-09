@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.basic.URL;
 import com.fr.swift.basics.AsyncRpcCallback;
 import com.fr.swift.basics.Invocation;
@@ -10,6 +11,7 @@ import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.base.SwiftInvocation;
 import com.fr.swift.basics.base.handler.BaseProcessHandler;
+import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
@@ -24,8 +26,7 @@ import com.fr.swift.query.result.SerializedQueryResultSetMerger;
 import com.fr.swift.query.result.serialize.BaseSerializedQueryResultSet;
 import com.fr.swift.result.qrs.EmptyQueryResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
-import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.Pair;
+import com.fr.swift.segment.SegmentService;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 /**
  * @author yee
@@ -52,20 +54,17 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
     public QueryResultSet<?> processResult(final Method method, Target[] targets, Object... args) throws Throwable {
         String queryJson = (String) args[0];
         final QueryBean queryBean = QueryBeanFactory.create(queryJson);
-        SourceKey table = new SourceKey(queryBean.getTableName());
-        // TODO: 2020/3/13
-//        List<SegmentDestination> segmentDestinations = SegmentLocationProvider.getInstance().getSegmentLocationURI(table);
-        List<Pair<URL, Set<String>>> pairs = processUrl(targets);
-        final Class<?> proxyClass = method.getDeclaringClass();
-        final Class<?>[] parameterTypes = method.getParameterTypes();
-        final String methodName = method.getName();
+        Set<String> segments = queryBean.getSegments();
+        List<URL> urls = processUrl(targets, segments);
+        Class<?> proxyClass = method.getDeclaringClass();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        String methodName = method.getName();
 
-        final CountDownLatch latch = new CountDownLatch(pairs.size());
-        final List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<>());
-        for (final Pair<URL, Set<String>> pair : pairs) {
-            queryBean.setSegments(pair.getValue() == null ? Collections.emptySet() : pair.getValue());
+        CountDownLatch latch = new CountDownLatch(urls.size());
+        List<QueryResultSet<?>> resultSets = Collections.synchronizedList(new ArrayList<>());
+        for (URL url : urls) {
             final String query = QueryBeanFactory.queryBean2String(queryBean);
-            final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, pair.getKey());
+            final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
             RpcFuture<?> rpcFuture = (RpcFuture<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, query);
             rpcFuture.addCallback(new AsyncRpcCallback() {
                 @Override
@@ -81,7 +80,7 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
                                 BaseSerializedQueryResultSet.SyncInvoker syncInvoker = new BaseSerializedQueryResultSet.SyncInvoker() {
                                     @Override
                                     public <D> BaseSerializedQueryResultSet<D> invoke() {
-                                        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, pair.getKey());
+                                        Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, url);
                                         Invocation invocation = new SwiftInvocation(method, new Object[]{query});
                                         try {
                                             return (BaseSerializedQueryResultSet<D>) invoker.invoke(invocation).recreate();
@@ -114,7 +113,7 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
             return EmptyQueryResultSet.get();
         }
         QueryResultSet<?> resultAfterMerge = (QueryResultSet<?>) mergeResult(resultSets, queryBean.getQueryType());
-        Query<QueryResultSet<?>> postQuery = QueryBuilder.<QueryResultSet<?>>buildPostQuery(resultAfterMerge, queryBean);
+        Query<QueryResultSet<?>> postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
     }
 
@@ -123,8 +122,28 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         return SerializedQueryResultSetMerger.merge((QueryType) args[0], resultList);
     }
 
+    /**
+     * querySegments == null或empty，查所有节点
+     * querySegments全在本地，查本地
+     * querySegments包含@FINE_IO@-1，查本地
+     * 其他情况查所有节点
+     *
+     * @param targets
+     * @param args
+     * @return
+     */
     @Override
-    public List<Pair<URL, Set<String>>> processUrl(Target[] targets, Object... args) {
-        return Collections.singletonList(new Pair<>(new LocalUrl(), new HashSet()));
+    public List<URL> processUrl(Target[] targets, Object... args) {
+        HashSet<String> querySegments = (HashSet<String>) args[0];
+        if (querySegments == null || querySegments.isEmpty()) {
+            return nodeContainer.getOnlineNodes().keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
+        }
+        if (SwiftContext.get().getBean(SegmentService.class).existAll(querySegments)) {
+            return Collections.singletonList(new LocalUrl());
+        }
+        if (querySegments.size() == 1 && ((String) querySegments.toArray()[0]).contains("@FINE_IO@-1")) {
+            return Collections.singletonList(new LocalUrl());
+        }
+        return nodeContainer.getOnlineNodes().keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
     }
 }

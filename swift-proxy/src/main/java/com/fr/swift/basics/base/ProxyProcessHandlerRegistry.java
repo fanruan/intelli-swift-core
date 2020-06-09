@@ -18,7 +18,7 @@ public class ProxyProcessHandlerRegistry implements ProcessHandlerRegistry {
 
     private static final ProxyProcessHandlerRegistry INSTANCE = new ProxyProcessHandlerRegistry();
 
-    private Map<Class<? extends ProcessHandler>, Class<? extends ProcessHandler>> handlerMap = new ConcurrentHashMap<Class<? extends ProcessHandler>, Class<? extends ProcessHandler>>();
+    private Map<Class<? extends ProcessHandler>, Class<? extends ProcessHandler>> handlerMap = new ConcurrentHashMap<>();
 
     private ProxyProcessHandlerRegistry() {
     }

@@ -4,10 +4,7 @@ import com.fr.swift.executor.ExecutorManager;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.TaskRouter;
-import com.fr.swift.executor.task.rule.TaskRule;
-import com.fr.swift.executor.task.rule.TaskRuleContainer;
 import com.fr.swift.executor.thread.TaskExecuteRunnable;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
@@ -37,7 +34,7 @@ public class TaskDispatcher {
         return INSTANCE;
     }
 
-    private static long TASK_PULL_INTERVAL = 10000L;
+    private static long TASK_PULL_INTERVAL = TimeUnit.SECONDS.toMillis(10);
 
     private static int EXECUTE_THREAD_NUM;
 
@@ -79,17 +76,6 @@ public class TaskDispatcher {
                         executorLock.unlock();
                     }
                     ExecutorTask pickedTask = TaskRouter.getInstance().pickExecutorTask(executorLock);
-                    if (pickedTask != null) {
-                        try {
-                            ExecutorTaskType executorTaskType = pickedTask.getExecutorTaskType();
-                            TaskRule rule = TaskRuleContainer.getInstance().getRulesByType(executorTaskType);
-                            if (rule != null && rule.isRulesFiltered(pickedTask)) {
-                                continue;
-                            }
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
-                    }
                     if (pickedTask == null) {
                         boolean hasPolled = ExecutorManager.getInstance().pullMemTask();
                         if (!hasPolled) {

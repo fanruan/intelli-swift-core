@@ -20,9 +20,9 @@ public class ConfigInputUtil {
         InputStream tempIn = null;
         try {
             SwiftLoggers.getLogger().info("read external {} !", fileName);
-            tempIn = new BufferedInputStream(new FileInputStream((fileName)));
+            tempIn = new BufferedInputStream(new FileInputStream(fileName));
         } catch (FileNotFoundException e) {
-            SwiftLoggers.getLogger().warn("Failed to read external {}, read internal {} instead!", fileName, fileName);
+            SwiftLoggers.getLogger().info("Failed to read external {}, read internal {} instead!", fileName, fileName);
             tempIn = SwiftProperty.class.getClassLoader().getResourceAsStream(fileName);
         }
         return tempIn;
