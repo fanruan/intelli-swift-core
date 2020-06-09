@@ -17,8 +17,6 @@ import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.PersistenceException;
@@ -72,7 +70,10 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
     @Override
     public List<SegmentKey> getTableSegKeys(final SourceKey tableKey) {
-        final List<?> segKeys = segmentDao.select(criteria -> criteria.add(Restrictions.eq(COLUMN_SEGMENT_OWNER, tableKey.getId())));
+
+        List<?> segKeys = segmentDao.selectQuery((query, builder, from) ->
+                query.select(from)
+                        .where(builder.equal(from.get(COLUMN_SEGMENT_OWNER), tableKey.getId())));
         return (List<SegmentKey>) segKeys;
     }
 
@@ -83,7 +84,10 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
         }
         final Set<SegmentKey> segKeys = new HashSet<>();
         for (final List<String> slice : Util.toSlices(segIds, 500)) {
-            final List<?> select = segmentDao.select(criteria -> criteria.add(Restrictions.in("id", slice)));
+            List<?> select = segmentDao.selectQuery((query, builder, from) ->
+                    query.select(from)
+                            .where(from.get("id").in(slice))
+            );
             segKeys.addAll((List<SegmentKey>) select);
         }
         return segKeys;
@@ -94,9 +98,10 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
         final SwiftDatabase swiftDatabase = metaDataService.getMeta(tableKey).getSwiftDatabase();
         for (; ; ) {
             try {
-                final List<?> select = segmentDao.select(criteria -> criteria.setProjection(Projections.max(COLUMN_SEGMENT_ORDER))
-                        .add(Restrictions.eq(COLUMN_SEGMENT_OWNER, tableKey.getId()))
-                        .add(Restrictions.eq(COLUMN_STORE_TYPE, storeType)));
+                List<?> select = segmentDao.selectQuery((query, builder, from) ->
+                        query.select(builder.max(from.get(COLUMN_SEGMENT_ORDER)))
+                                .where(builder.equal(from.get(COLUMN_SEGMENT_OWNER), tableKey.getId())
+                                        , builder.equal(from.get(COLUMN_STORE_TYPE), storeType)));
                 int maxOrder = select.get(0) == null ? -1 : (Integer) select.get(0);
                 final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase);
                 segmentDao.insert(entity);
@@ -137,8 +142,9 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     @Override
     public Map<SourceKey, List<SegmentKey>> getTransferedSegments() {
         final Map<SourceKey, List<SegmentKey>> result = new HashMap<SourceKey, List<SegmentKey>>();
-        final List<?> select = segmentDao.select(criteria -> criteria.add(Restrictions.eq("storeType", StoreType.FINE_IO)));
-
+        final List<?> select = segmentDao.selectQuery((query, builder, from) ->
+                query.select(from)
+                        .where(builder.equal(from.get("storeType"), StoreType.FINE_IO)));
         for (SegmentKey segmentKey : (List<SegmentKey>) select) {
             SourceKey sourceKey = segmentKey.getTable();
             if (!result.containsKey(sourceKey)) {
@@ -181,7 +187,10 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
             for (SwiftSegmentLocationEntity segLocation : slice) {
                 segIdSlice.add(segLocation.getSegmentId());
             }
-            final List<?> select = segmentDao.select(criteria -> criteria.add(Restrictions.in("id", segIdSlice)));
+            List<?> select = segmentDao.selectQuery((query, builder, from) ->
+                    query.select(from)
+                            .where(from.get("id").in(segIdSlice))
+            );
             segKeys.addAll((List<SegmentKey>) select);
         }
         return segKeys;
@@ -192,14 +201,15 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
         if (segmentKeys == null || segmentKeys.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
-        return (List<SwiftSegmentBucketElement>) bucketDao.select
-                (criteria -> criteria.add(Restrictions.in("unionKey.realSegmentKey", segmentKeys.stream()
-                        .map(k -> k.getId()).collect(Collectors.toList()))));
+        return (List<SwiftSegmentBucketElement>) bucketDao.selectQuery((query, builder, from) ->
+                query.select(from)
+                        .where(from.get("unionKey").get("realSegmentKey").in(segmentKeys.stream().map(k -> k.getId()).collect(Collectors.toList()))));
     }
 
     @Override
     public SwiftSegmentBucket getBucketByTable(SourceKey sourceKey) {
-        final List<SwiftSegmentBucketElement> bucketElements = (List<SwiftSegmentBucketElement>) bucketDao.select(criteria -> criteria.add(Restrictions.eq("unionKey.sourceKey", sourceKey.getId())));
+        List<SwiftSegmentBucketElement> bucketElements = (List<SwiftSegmentBucketElement>) bucketDao.selectQuery((query, builder, from) ->
+                query.select(from).where(builder.equal(from.get("unionKey").get("sourceKey"), sourceKey.getId())));
         SwiftSegmentBucket swiftSegmentBucket = new SwiftSegmentBucket(sourceKey);
         if (bucketElements == null || bucketElements.isEmpty()) {
             return swiftSegmentBucket;
@@ -222,8 +232,10 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
     @Override
     public void deleteBucket(SwiftSegmentBucketElement element) {
-        bucketDao.delete(criteria -> criteria.add(Restrictions.eq("bucketIndex", element.getBucketIndex()))
-                .add(Restrictions.eq("realSegmentKey", element.getRealSegmentKey()))
-                .add(Restrictions.eq("sourceKey", element.getSourceKey())));
+        bucketDao.deleteQuery((query, builder, from) ->
+                query.select(from)
+                        .where(builder.equal(from.get("bucketIndex"), element.getBucketIndex())
+                                , builder.equal(from.get("realSegmentKey"), element.getRealSegmentKey())
+                                , builder.equal(from.get("sourceKey"), element.getRealSegmentKey())));
     }
 }
