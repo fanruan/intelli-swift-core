@@ -7,6 +7,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Reader;
 
 /**
  * @author Heng.J
@@ -20,7 +21,7 @@ public class ConfigInputUtil {
         InputStream tempIn = null;
         try {
             SwiftLoggers.getLogger().info("read external {} !", fileName);
-            tempIn = new BufferedInputStream(new FileInputStream((fileName)));
+            tempIn = new BufferedInputStream(new FileInputStream(fileName));
         } catch (FileNotFoundException e) {
             SwiftLoggers.getLogger().info("Failed to read external {}, read internal {} instead!", fileName, fileName);
             tempIn = SwiftProperty.class.getClassLoader().getResourceAsStream(fileName);
