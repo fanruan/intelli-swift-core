@@ -1,12 +1,14 @@
 package com.fr.swift.config.dao;
 
 import com.fr.swift.config.HibernateManager;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -89,8 +91,8 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
     }
 
     @Override
-    public void delete(CriteriaProcessor criteriaProcessor) {
-        delete((List<T>) select(criteriaProcessor));
+    public void deleteQuery(CriteriaQueryProcessor criteriaQueryProcessor) {
+        delete((List<T>) selectQuery(criteriaQueryProcessor));
     }
 
     @Override
@@ -108,19 +110,21 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
     }
 
     @Override
-    public List<?> select(CriteriaProcessor criteriaProcessor) {
+    public List<?> selectQuery(CriteriaQueryProcessor criteriaQueryProcessor) {
         try (Session session = sessionFactory.openSession()) {
-            Criteria criteria = session.createCriteria(entityClass);
-            if (criteriaProcessor != null) {
-                criteriaProcessor.process(criteria);
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery query = criteriaBuilder.createQuery(entityClass);
+            Root from = query.from(entityClass);
+            if (criteriaQueryProcessor != null) {
+                criteriaQueryProcessor.process(query, criteriaBuilder, from);
             }
-            return criteria.list();
+            return session.createQuery(query).getResultList();
         }
     }
 
     @Override
     public List<?> selectAll() {
-        return select(null);
+        return selectQuery(null);
     }
 
     @Override
