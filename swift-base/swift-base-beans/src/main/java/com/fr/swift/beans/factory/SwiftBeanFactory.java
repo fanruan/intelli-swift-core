@@ -8,6 +8,7 @@ import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -166,6 +167,19 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         return resultList;
     }
 
+    @Override
+    public List<Method> getMethodsByAnnotations(Class<? extends Annotation> annotation) {
+        Map<String, SwiftBeanDefinition> swiftBeanDefinitionMap = getBeanDefinitionMap();
+        List<Method> methods = new ArrayList<>();
+        for (Map.Entry<String, SwiftBeanDefinition> entry : swiftBeanDefinitionMap.entrySet()) {
+            for (Method method : entry.getValue().getClazz().getDeclaredMethods()) {
+                if (!method.isBridge() && method.getAnnotation(annotation) != null) {
+                    methods.add(method);
+                }
+            }
+        }
+        return methods;
+    }
 
     private <T> T createBean(Class<T> tClass, Object... params) throws Exception {
         Class<?>[] parameterTypes = new Class[params.length];

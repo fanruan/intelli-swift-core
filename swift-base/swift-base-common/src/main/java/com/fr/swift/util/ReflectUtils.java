@@ -1,5 +1,6 @@
 package com.fr.swift.util;
 
+import com.fr.swift.base.json.JsonBuilder;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -7,6 +8,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author yee
@@ -45,12 +47,9 @@ public final class ReflectUtils {
             return fieldValue;
         } else if (tClass.isEnum()) {
             return Enum.valueOf(tClass, fieldValue);
-//            Object obj = MAPPER.string2Object(fieldValue, tClass);
-//            return obj;
+        } else if (ClassUtils.isAssignable(Map.class, tClass)) {
+            return JsonBuilder.readValue(fieldValue, tClass);
         }
-//        else {
-//            return JsonBuilder.readValue(fieldValue, tClass);
-//        }
         return null;
     }
 
@@ -120,7 +119,6 @@ public final class ReflectUtils {
         }
     }
 
-    
 
     public static <T> T newInstance(Class<T> c) throws IllegalAccessException, InstantiationException {
         return c.newInstance();

@@ -1,6 +1,7 @@
 package com.fr.swift.mapper;
 
 import com.fr.swift.annotation.mapper.MapperColumn;
+import com.fr.swift.annotation.mapper.MapperTransfer;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -65,6 +66,11 @@ public class SwiftMapperFactory implements MapperFactory {
             Object value = row.getValue(i);
             String fieldName = fieldNames.get(i);
             Field targetField = fieldMap.get(fieldName);
+            if (targetField.getAnnotation(MapperTransfer.class) != null) {
+                MapperTransfer annotation = targetField.getAnnotation(MapperTransfer.class);
+                Class<? extends MapperTransferFunc> func = annotation.using();
+                value = func.newInstance().transfer(value);
+            }
             Optional.ofNullable(value).ifPresent(v -> {
                 try {
                     FieldUtils.writeField(targetField, target,
