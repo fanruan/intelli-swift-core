@@ -68,7 +68,7 @@ public class SwiftMapperFactory implements MapperFactory {
             Field targetField = fieldMap.get(fieldName);
             if (targetField.getAnnotation(MapperTransfer.class) != null) {
                 MapperTransfer annotation = targetField.getAnnotation(MapperTransfer.class);
-                Class<? extends MapperTransferFunc> func = annotation.using();
+                Class<? extends MapperTransferFunction> func = annotation.using();
                 value = func.newInstance().transfer(value);
             }
             Optional.ofNullable(value).ifPresent(v -> {

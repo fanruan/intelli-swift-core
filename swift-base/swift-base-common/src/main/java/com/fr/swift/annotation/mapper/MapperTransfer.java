@@ -1,6 +1,6 @@
 package com.fr.swift.annotation.mapper;
 
-import com.fr.swift.mapper.MapperTransferFunction;
+import com.fr.swift.mapper.AbstractMapperTransferFunction;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MapperTransfer {
-    Class<? extends MapperTransferFunction> using();
+    Class<? extends AbstractMapperTransferFunction> using();
 }

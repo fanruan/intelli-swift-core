@@ -6,5 +6,7 @@ package com.fr.swift.mapper;
  * @description
  * @since swift 1.1
  */
-public abstract class MapperTransferFunction<T> implements MapperTransferFunc {
+public interface MapperTransferFunction<T> {
+
+    T transfer(Object value);
 }
