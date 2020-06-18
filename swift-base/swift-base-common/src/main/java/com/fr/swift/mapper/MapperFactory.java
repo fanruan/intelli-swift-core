@@ -18,7 +18,7 @@ public interface MapperFactory {
 
     <T> T getMappered(Row row, SwiftMetaData metaData, Class<T> tClass) throws Exception;
 
-    static MapperFactory createMapper() {
-        return new SwiftMapperFactory();
+    static MapperFactory getMapper() {
+        return SwiftMapperFactory.get();
     }
 }

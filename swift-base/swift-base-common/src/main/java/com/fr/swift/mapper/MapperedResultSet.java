@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class MapperedResultSet<T> implements SwiftResultSet {
 
-    private static MapperFactory mapperFactory = MapperFactory.createMapper();
+    private static MapperFactory mapperFactory = MapperFactory.getMapper();
 
     private SwiftResultSet swiftResultSet;
 
