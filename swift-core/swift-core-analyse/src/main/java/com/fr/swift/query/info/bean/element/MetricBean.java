@@ -3,9 +3,9 @@ package com.fr.swift.query.info.bean.element;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
+import com.fr.swift.util.Strings;
 
 /**
- *
  * @author Lyon
  * @date 2018/6/2
  */
@@ -40,6 +40,12 @@ public class MetricBean implements AggregationBean {
     public MetricBean(String column, AggregatorType type) {
         this.type = type;
         this.column = column;
+    }
+
+    public MetricBean(String column, AggregatorType type, String alias) {
+        this.type = type;
+        this.column = column;
+        this.alias = alias;
     }
 
     public MetricBean() {
@@ -91,6 +97,51 @@ public class MetricBean implements AggregationBean {
         this.params = params;
     }
 
+    public static MetricBean ofAverage(String column) {
+        return new MetricBean.Builder().setType(AggregatorType.AVERAGE)
+                .setColumn(column).setAlias(Strings.toHumpString(AggregatorType.AVERAGE.toString(), column)).build();
+    }
+
+    public static MetricBean ofAverage(String column, String alias) {
+        return new MetricBean.Builder().setType(AggregatorType.AVERAGE).setColumn(column).setAlias(alias).build();
+    }
+
+    public static MetricBean ofCount(String column) {
+        return new MetricBean.Builder().setType(AggregatorType.COUNT)
+                .setColumn(column).setAlias(Strings.toHumpString(AggregatorType.COUNT.toString(), column)).build();
+    }
+
+    public static MetricBean ofCount(String column, String alias) {
+        return new MetricBean.Builder().setType(AggregatorType.COUNT).setColumn(column).setAlias(alias).build();
+    }
+
+    public static MetricBean ofDistinct(String column) {
+        return new MetricBean.Builder().setType(AggregatorType.DISTINCT)
+                .setColumn(column).setAlias(Strings.toHumpString(AggregatorType.DISTINCT.toString(), column)).build();
+    }
+
+    public static MetricBean ofDistinct(String column, String alias) {
+        return new MetricBean.Builder().setType(AggregatorType.DISTINCT).setColumn(column).setAlias(alias).build();
+    }
+
+    public static MetricBean ofMax(String column) {
+        return new MetricBean.Builder().setType(AggregatorType.MAX).setColumn(column)
+                .setAlias(Strings.toHumpString(AggregatorType.MAX.toString(), column)).build();
+    }
+
+    public static MetricBean ofMax(String column, String alias) {
+        return new MetricBean.Builder().setType(AggregatorType.MAX).setColumn(column).setAlias(alias).build();
+    }
+
+    public static MetricBean ofMin(String column) {
+        return new MetricBean.Builder().setType(AggregatorType.MIN).setColumn(column)
+                .setAlias(Strings.toHumpString(AggregatorType.MIN.toString(), column)).build();
+    }
+
+    public static MetricBean ofMin(String column, String alias) {
+        return new MetricBean.Builder().setType(AggregatorType.MIN).setColumn(column).setAlias(alias).build();
+    }
+
     public static Builder builder(String column, AggregatorType type) {
         return new Builder(column, type);
     }
@@ -98,8 +149,22 @@ public class MetricBean implements AggregationBean {
     public static class Builder {
         private MetricBean bean;
 
+        public Builder() {
+            bean = new MetricBean();
+        }
+
         public Builder(String column, AggregatorType type) {
             bean = new MetricBean(column, type);
+        }
+
+        public Builder setType(AggregatorType type) {
+            bean.setType(type);
+            return this;
+        }
+
+        public Builder setColumn(String column) {
+            bean.setColumn(column);
+            return this;
         }
 
         public Builder setAlias(String alias) {

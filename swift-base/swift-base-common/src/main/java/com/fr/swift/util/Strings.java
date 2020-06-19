@@ -133,4 +133,12 @@ public final class Strings {
         }
         return result;
     }
+
+    public static String toHumpString(String left, String right) {
+        char[] chars = right.toCharArray();
+        if (chars[0] >= 'a' && chars[0] <= 'z') {
+            chars[0] = (char) (chars[0] - 32);
+        }
+        return left.toLowerCase() + new String(chars);
+    }
 }
