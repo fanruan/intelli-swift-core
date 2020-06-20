@@ -36,6 +36,9 @@ public class MessageSendingRecordEntity implements Serializable {
     @Column(name = "messageFlag")
     private boolean messageFlag;
 
+    public MessageSendingRecordEntity() {
+    }
+
     public MessageSendingRecordEntity(String messageId, String appId, String yearMonth, long javaTime, long pythonTime, boolean messageFlag) {
         this.messageId = messageId;
         this.appId = appId;

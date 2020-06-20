@@ -5,6 +5,7 @@ import com.fr.swift.config.dao.SwiftDao;
 import com.fr.swift.config.dao.SwiftDaoImpl;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author xiqiu
@@ -14,7 +15,7 @@ import java.sql.SQLException;
  */
 @SwiftBean(name = "messageSendingRecordService")
 public class MessageSendingRecordServiceImpl implements MessageSendingRecordService {
-    private SwiftDao dao = new SwiftDaoImpl(MessageSendingRecordServiceImpl.class);
+    private SwiftDao dao = new SwiftDaoImpl(MessageSendingRecordEntity.class);
 
 
     @Override
@@ -28,4 +29,12 @@ public class MessageSendingRecordServiceImpl implements MessageSendingRecordServ
 
     }
 
+    @Override
+    public List<MessageSendingRecordEntity> getById(String messageId) throws SQLException {
+        List<MessageSendingRecordEntity> entities = dao.selectQuery((query, builder, from) ->
+                query.select(from)
+                        .where(builder.equal(from.get("messageId"), messageId)
+                        ));
+        return entities;
+    }
 }

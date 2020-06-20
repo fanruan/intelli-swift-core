@@ -1,8 +1,7 @@
 package com.fr.swift.executor.message;
 
-import com.fr.swift.executor.message.MessageSendingRecordEntity;
-
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author xiqiu
@@ -15,5 +14,7 @@ public interface MessageSendingRecordService {
     void save(final MessageSendingRecordEntity messageSendingRecordEntity) throws SQLException;
 
     void update(final MessageSendingRecordEntity messageSendingRecordEntity) throws SQLException;
+
+    List<MessageSendingRecordEntity> getById(String messageId) throws SQLException;
 
 }
