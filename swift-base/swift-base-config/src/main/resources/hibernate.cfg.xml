@@ -10,14 +10,14 @@
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">root123</property>
 
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
         <property name="hbm2ddl.auto">update</property>
         <property name="hibernate.jdbc.batch_size">100</property>
-        <!--        <property name="hibernate.proxool.existing_pool">-->
-        <!--            com.alibaba.druid.support.hibernate.DruidConnectionProvider-->
-        <!--        </property>-->
-        <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider
+        <property name="hibernate.proxool.existing_pool">
+            com.alibaba.druid.support.hibernate.DruidConnectionProvider
         </property>
+        <!--        <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider-->
+        <!--        </property>-->
         <property name="hibernate.current_session_context_class">thread</property>
     </session-factory>
 </hibernate-configuration>

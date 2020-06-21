@@ -7,8 +7,6 @@ import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
@@ -38,7 +36,8 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     @Override
     public SwiftMetaData getMeta(final SourceKey tableKey) {
-        final List<?> metas = dao.select(criteria -> criteria.add(Restrictions.eq("id", tableKey.getId())));
+        final List<?> metas = dao.selectQuery((query, builder, from) ->
+                query.select(from).where(builder.equal(from.get("id"), tableKey.getId())));
         if (metas.isEmpty()) {
             return null;
         }
@@ -53,12 +52,15 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
 
     @Override
     public void deleteMeta(final SourceKey tableKey) {
-        dao.delete(criteria -> criteria.add(Restrictions.eq("id", tableKey.getId())));
+        dao.deleteQuery((query, builder, from) ->
+                query.select(from)
+                        .where(builder.equal(from.get("id"), tableKey.getId())));
     }
 
     @Override
     public List<SwiftMetaData> getFuzzyMetaData(SourceKey tableKey) {
-        List<?> metas = dao.select(criteria -> criteria.add(Restrictions.like("id", tableKey.getId(), MatchMode.ANYWHERE)));
+        List<?> metas = dao.selectQuery((query, builder, from) ->
+                query.select(from).where(builder.like(from.get("id"), "%" + tableKey.getId() + "%")));
         return (List<SwiftMetaData>) metas;
     }
 }
