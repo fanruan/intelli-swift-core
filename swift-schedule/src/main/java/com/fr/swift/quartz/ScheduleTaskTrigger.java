@@ -5,6 +5,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.quartz.entity.TaskDefine;
 import com.fr.swift.quartz.service.QuartzJobService;
 import com.fr.swift.trigger.SwiftPriorityInitTrigger;
+import org.quartz.SchedulerException;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 public class ScheduleTaskTrigger implements SwiftPriorityInitTrigger {
 
     @Override
-    public void trigger(Object data) {
+    public void init() {
         try {
             QuartzJobService quartzJobService = SwiftContext.get().getBean(QuartzJobService.class);
             SwiftLoggers.getLogger().info("starting schedule task...");
@@ -28,6 +29,13 @@ public class ScheduleTaskTrigger implements SwiftPriorityInitTrigger {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error("trigger calc data size task failed : {}", e.getMessage());
         }
+    }
+
+    @Override
+    public void destroy() throws SchedulerException {
+        QuartzJobService quartzJobService = SwiftContext.get().getBean(QuartzJobService.class);
+        SwiftLoggers.getLogger().info("stoping schedule task...");
+        quartzJobService.stop();
     }
 
     @Override
