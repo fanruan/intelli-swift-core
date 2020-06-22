@@ -60,7 +60,7 @@ public class SwiftMapperFactory implements MapperFactory {
             if (targetField.getAnnotation(MapperTransfer.class) != null) {
                 MapperTransfer annotation = targetField.getAnnotation(MapperTransfer.class);
                 Class<? extends MapperTransferFunction> func = annotation.using();
-                value = func.newInstance().transfer(value);
+                value = func.newInstance().transfer(value, annotation.paramValue());
             }
             Optional.ofNullable(value).ifPresent(
                     LambdaWrapper.rethrowConsumer(v -> FieldUtils.writeField(targetField, target,

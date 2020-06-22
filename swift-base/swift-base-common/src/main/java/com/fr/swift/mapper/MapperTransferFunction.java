@@ -8,5 +8,5 @@ package com.fr.swift.mapper;
  */
 public interface MapperTransferFunction<T> {
 
-    T transfer(Object value);
+    T transfer(Object value, String[] paramValue);
 }

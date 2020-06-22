@@ -17,4 +17,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MapperTransfer {
     Class<? extends AbstractMapperTransferFunction> using();
+
+    String[] paramValue() default {};
 }
