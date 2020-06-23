@@ -61,6 +61,16 @@ public class TaskDispatcher {
         dispachTthread.start();
     }
 
+    public void stop() throws InterruptedException {
+        dispachTthread.interrupt();
+        while (!ConsumeQueue.getInstance().getTaskList().isEmpty()) {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(10));
+        }
+        for (Thread thread : threads) {
+            thread.interrupt();
+        }
+    }
+
     private class DispatchRunnable implements Runnable {
 
         @Override

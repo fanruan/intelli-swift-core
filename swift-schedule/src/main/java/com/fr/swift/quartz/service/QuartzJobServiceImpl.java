@@ -41,6 +41,10 @@ public class QuartzJobServiceImpl implements QuartzJobService {
         }
     }
 
+    public void stop() throws SchedulerException {
+        scheduler.shutdown();
+    }
+
     @Override
     public void scheduleJob(TaskDefine define) throws SchedulerException {
         JobKey jobKey = define.getJobKey();

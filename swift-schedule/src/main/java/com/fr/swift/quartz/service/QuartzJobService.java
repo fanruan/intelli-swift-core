@@ -14,15 +14,17 @@ import org.quartz.SchedulerException;
  */
 public interface QuartzJobService {
 
-    public void scheduleJob(TaskDefine define) throws SchedulerException;
+    void stop() throws SchedulerException;
 
-    public void pauseJob(JobKey jobKey) throws SchedulerException;
+    void scheduleJob(TaskDefine define) throws SchedulerException;
 
-    public void resumeJob(JobKey jobKey) throws SchedulerException;
+    void pauseJob(JobKey jobKey) throws SchedulerException;
 
-    public boolean deleteJob(JobKey jobKey) throws SchedulerException;
+    void resumeJob(JobKey jobKey) throws SchedulerException;
 
-    public boolean modifyJobCron(TaskDefine define);
+    boolean deleteJob(JobKey jobKey) throws SchedulerException;
 
-    public JobDetail getJobDetail(JobKey jobKey, Class<? extends Job> jobClass);
+    boolean modifyJobCron(TaskDefine define);
+
+    JobDetail getJobDetail(JobKey jobKey, Class<? extends Job> jobClass);
 }
