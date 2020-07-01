@@ -142,6 +142,16 @@ public class MetricBean implements AggregationBean {
         return new MetricBean.Builder().setType(AggregatorType.MIN).setColumn(column).setAlias(alias).build();
     }
 
+
+    public static MetricBean ofMedian(String column) {
+        return new MetricBean.Builder().setType(AggregatorType.MEDIAN).setColumn(column)
+                .setAlias(Strings.toHumpString(AggregatorType.MEDIAN.toString(), column)).build();
+    }
+
+    public static MetricBean ofMedian(String column, String alias) {
+        return new MetricBean.Builder().setType(AggregatorType.MEDIAN).setColumn(column).setAlias(alias).build();
+    }
+
     public static Builder builder(String column, AggregatorType type) {
         return new Builder(column, type);
     }
