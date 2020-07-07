@@ -6,9 +6,19 @@ package com.fr.swift.trigger;
  * @description
  * @since swift 1.1
  */
-public interface SwiftPriorityInitTrigger<D> {
+public interface SwiftPriorityInitTrigger<E extends TriggerEvent> {
 
-    void trigger(D data) throws Exception;
+    default void trigger(E e) throws Exception {
+        if (e == TriggerEvent.INIT) {
+            init();
+        } else {
+            destroy();
+        }
+    }
+
+    void init() throws Exception;
+
+    void destroy() throws Exception;
 
     int priority();
 

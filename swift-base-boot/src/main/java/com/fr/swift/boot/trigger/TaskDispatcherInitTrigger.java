@@ -13,12 +13,21 @@ import com.fr.swift.trigger.SwiftPriorityInitTrigger;
  * @since swift 1.1
  */
 public class TaskDispatcherInitTrigger implements SwiftPriorityInitTrigger {
+
     @Override
-    public void trigger(Object data) {
+    public void init() {
         SwiftLoggers.getLogger().info("starting task dispatcher...");
         TaskDispatcher.getInstance();
         SwiftLoggers.getLogger().info("starting collate executor...");
         SwiftContext.get().getBean(CollateExecutor.class).start();
+    }
+
+    @Override
+    public void destroy() throws InterruptedException {
+        SwiftLoggers.getLogger().info("stoping task dispatcher...");
+        TaskDispatcher.getInstance().stop();
+        SwiftLoggers.getLogger().info("stoping collate executor...");
+        SwiftContext.get().getBean(CollateExecutor.class).stop();
     }
 
     @Override
