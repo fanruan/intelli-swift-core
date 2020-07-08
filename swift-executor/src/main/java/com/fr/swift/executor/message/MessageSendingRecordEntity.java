@@ -39,10 +39,10 @@ public class MessageSendingRecordEntity implements Serializable {
     @Column(name = "lateMapFlag")
     private boolean lateMapFlag;
 
-    @Column(name = "javaResultBean")
+    @Column(name = "javaResultBean", length = 1000)
     private String javaResultBean;
 
-    @Column(name = "pythonResultBean")
+    @Column(name = "pythonResultBean", length = 1000)
     private String pythonResultBean;
 
     public MessageSendingRecordEntity() {
