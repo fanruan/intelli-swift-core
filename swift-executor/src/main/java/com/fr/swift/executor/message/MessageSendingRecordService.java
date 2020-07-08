@@ -17,6 +17,6 @@ public interface MessageSendingRecordService {
 
     List<MessageSendingRecordEntity> getById(String messageId) throws SQLException;
 
-    List<MessageSendingRecordEntity> getAllEntity() throws SQLException;
+    List<MessageSendingRecordEntity> getUnfinishedEntity() throws SQLException;
 
 }

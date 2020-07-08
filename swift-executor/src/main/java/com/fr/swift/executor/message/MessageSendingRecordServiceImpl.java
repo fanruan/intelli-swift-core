@@ -41,7 +41,7 @@ public class MessageSendingRecordServiceImpl implements MessageSendingRecordServ
     }
 
     @Override
-    public List<MessageSendingRecordEntity> getAllEntity() throws SQLException {
+    public List<MessageSendingRecordEntity> getUnfinishedEntity() throws SQLException {
         // java 和 python time 任何一个为0，即为未完成的消息
         List<MessageSendingRecordEntity> entities = dao.selectQuery((query, builder, from) ->
                 query.select(from).where(builder.or(builder.equal(from.get("pythonTime"), 0),
