@@ -12,10 +12,6 @@ import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.TransferRealtimeListener.TransferRealtimeEventData;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.util.concurrent.PoolThreadFactory;
-import com.fr.swift.util.concurrent.SwiftExecutors;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author anchore
@@ -28,8 +24,9 @@ public class ScheduledRealtimeTransfer implements Runnable {
     private final SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
     private ScheduledRealtimeTransfer() {
-        SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(getClass())).
-                scheduleWithFixedDelay(this, 1, 1, TimeUnit.HOURS);
+        // TODO: 2020/6/17 先注释
+//        SwiftExecutors.newSingleThreadScheduledExecutor(new PoolThreadFactory(getClass())).
+//                scheduleWithFixedDelay(this, 1, 1, TimeUnit.HOURS);
     }
 
     @Override

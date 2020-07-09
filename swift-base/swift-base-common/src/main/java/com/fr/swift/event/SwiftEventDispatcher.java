@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class SwiftEventDispatcher {
 
-    private static final ConcurrentMap<SwiftEvent, List<SwiftEventListener>> EVENTS = new ConcurrentHashMap<SwiftEvent, List<SwiftEventListener>>();
+    private static final ConcurrentMap<SwiftEvent, List<SwiftEventListener>> EVENTS = new ConcurrentHashMap<>();
 
     private static final ExecutorService EXEC = SwiftExecutors.newSingleThreadExecutor(new PoolThreadFactory(SwiftEventDispatcher.class));
 
@@ -31,7 +31,7 @@ public class SwiftEventDispatcher {
             if (EVENTS.containsKey(event)) {
                 EVENTS.get(event).add(listener);
             } else {
-                List<SwiftEventListener> listeners = new ArrayList<SwiftEventListener>(Collections.singleton(listener));
+                List<SwiftEventListener> listeners = new ArrayList<>(Collections.singleton(listener));
                 EVENTS.put(event, listeners);
             }
         }
