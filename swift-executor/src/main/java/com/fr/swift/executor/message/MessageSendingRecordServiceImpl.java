@@ -1,7 +1,6 @@
 package com.fr.swift.executor.message;
 
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.config.dao.SwiftDao;
 import com.fr.swift.config.dao.SwiftDaoImpl;
 
@@ -14,7 +13,6 @@ import java.util.List;
  * @description
  * @since swift 1.1
  */
-@SwiftScope(value = "prototype")
 @SwiftBean(name = "messageSendingRecordService")
 public class MessageSendingRecordServiceImpl implements MessageSendingRecordService {
     private SwiftDao dao = new SwiftDaoImpl(MessageSendingRecordEntity.class);
