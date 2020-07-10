@@ -1,12 +1,14 @@
 package com.fr.swift.util;
 
 import com.fr.swift.base.json.JsonBuilder;
+import com.fr.swift.log.SwiftLoggers;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
@@ -16,7 +18,7 @@ import java.util.Map;
  */
 public final class ReflectUtils {
 
-    public static Object parseObject(Class tClass, String fieldValue) throws Exception {
+    public static Object parseObject(Class tClass, String fieldValue) {
         if (ClassUtils.isPrimitiveOrWrapper(tClass)) {
             Class clazz = ClassUtils.isPrimitiveWrapper(tClass) ? tClass : ClassUtils.primitiveToWrapper(tClass);
             if (ClassUtils.isAssignable(clazz, Integer.class)) {
@@ -48,7 +50,12 @@ public final class ReflectUtils {
         } else if (tClass.isEnum()) {
             return Enum.valueOf(tClass, fieldValue);
         } else if (ClassUtils.isAssignable(Map.class, tClass)) {
-            return JsonBuilder.readValue(fieldValue, tClass);
+            try {
+                return JsonBuilder.readValue(fieldValue, tClass);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(String.format("error json line: {}", fieldValue));
+            }
+            return Collections.emptyMap();
         }
         return null;
     }
