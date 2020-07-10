@@ -36,16 +36,29 @@ public class MessageSendingRecordEntity implements Serializable {
     @Column(name = "messageFlag")
     private boolean messageFlag;
 
+    @Column(name = "lateMapFlag")
+    private boolean lateMapFlag;
+
+    @Column(name = "javaResultBean", length = 1000)
+    private String javaResultBean;
+
+    @Column(name = "pythonResultBean", length = 1000)
+    private String pythonResultBean;
+
     public MessageSendingRecordEntity() {
     }
 
-    public MessageSendingRecordEntity(String messageId, String appId, String yearMonth, long javaTime, long pythonTime, boolean messageFlag) {
+    public MessageSendingRecordEntity(String messageId, String appId, String yearMonth, long javaTime, long pythonTime,
+                                      boolean messageFlag, boolean lateMapFlag, String javaResultBean, String pythonResultBean) {
         this.messageId = messageId;
         this.appId = appId;
         this.yearMonth = yearMonth;
         this.javaTime = javaTime;
         this.pythonTime = pythonTime;
         this.messageFlag = messageFlag;
+        this.lateMapFlag = lateMapFlag;
+        this.javaResultBean = javaResultBean;
+        this.pythonResultBean = pythonResultBean;
     }
 
     public String getMessageId() {
@@ -94,5 +107,29 @@ public class MessageSendingRecordEntity implements Serializable {
 
     public void setMessageFlag(boolean messageFlag) {
         this.messageFlag = messageFlag;
+    }
+
+    public boolean isLateMapFlag() {
+        return lateMapFlag;
+    }
+
+    public void setLateMapFlag(boolean lateMapFlag) {
+        this.lateMapFlag = lateMapFlag;
+    }
+
+    public String getJavaResultBean() {
+        return javaResultBean;
+    }
+
+    public void setJavaResultBean(String javaResultBean) {
+        this.javaResultBean = javaResultBean;
+    }
+
+    public String getPythonResultBean() {
+        return pythonResultBean;
+    }
+
+    public void setPythonResultBean(String pythonResultBean) {
+        this.pythonResultBean = pythonResultBean;
     }
 }
