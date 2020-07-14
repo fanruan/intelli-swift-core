@@ -101,6 +101,10 @@ public class SwiftExecutorTaskEntity implements Serializable {
         this.startTime = task.getStartTime();
     }
 
+    public String getExecutorTaskType() {
+        return executorTaskType;
+    }
+
     public String getId() {
         return id;
     }
@@ -147,6 +151,14 @@ public class SwiftExecutorTaskEntity implements Serializable {
 
     public void setLockType(LockType lockType) {
         this.lockType = lockType;
+    }
+
+    public long getFinishTime() {
+        return finishTime;
+    }
+
+    public long getStartTime() {
+        return startTime;
     }
 
     public void setDbStatusType(DBStatusType dbStatusType) {

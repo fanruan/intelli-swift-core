@@ -53,6 +53,16 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
+    public SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes) {
+        return convertService.getRepeatTaskByTime(createTime, likes);
+    }
+
+    @Override
+    public List<SwiftExecutorTaskEntity> getRepeatTaskByTime(long beginTime, long endTime, String... likes) {
+        return convertService.getRepeatTaskByTime(beginTime, endTime, likes);
+    }
+
+    @Override
     public void delete(ExecutorTask executorTask) {
         convertService.delete(executorTask);
     }

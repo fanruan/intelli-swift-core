@@ -26,6 +26,10 @@ public interface ExecutorTaskService {
 
     List<Object[]> getMaxtimeByContent(String... likes);
 
+    SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes);
+
+    List<SwiftExecutorTaskEntity> getRepeatTaskByTime(long beginTime, long endTime, String... likes);
+
     void delete(final ExecutorTask executorTask);
 
     ExecutorTask get(String taskId);
