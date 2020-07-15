@@ -6,9 +6,11 @@ import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.property.SwiftProperty;
 
+import javax.persistence.criteria.Predicate;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -86,6 +88,42 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
             }
         });
         return select;
+    }
+
+    @Override
+    public SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes) {
+        final List<SwiftExecutorTaskEntity> tasks = dao.selectQuery((query, builder, from) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            for (String v : likes) {
+                Predicate taskContent = builder.like(from.get("taskContent"), "%" + v + "%");
+                predicateList.add(taskContent);
+            }
+            predicateList.add(builder.equal(from.get("createTime"), createTime));
+            query.select(from).where(predicateList.toArray(new Predicate[]{}));
+        });
+        if (tasks.isEmpty()) {
+            return null;
+        }
+        return tasks.get(0);
+    }
+
+    @Override
+    public List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes) {
+        final List<SwiftExecutorTaskEntity> tasks = dao.selectQuery((query, builder, from) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            for (String v : likes) {
+                Predicate taskContent = builder.like(from.get("taskContent"), "%" + v + "%");
+                predicateList.add(taskContent);
+            }
+            predicateList.add(builder.gt(from.get("createTime"), beginTime));
+            predicateList.add(builder.lt(from.get("createTime"), endTime));
+            predicateList.add(builder.equal(from.get("dbStatusType"), DBStatusType.REPEAT));
+            query.select(from).where(predicateList.toArray(new Predicate[]{}));
+        });
+        if (tasks.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return tasks;
     }
 
     @Override
