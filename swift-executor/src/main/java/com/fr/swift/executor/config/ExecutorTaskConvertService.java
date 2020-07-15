@@ -108,7 +108,7 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
     }
 
     @Override
-    public List<SwiftExecutorTaskEntity> getRepeatTaskByTime(long beginTime, long endTime, String... likes) {
+    public List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes) {
         final List<SwiftExecutorTaskEntity> tasks = dao.selectQuery((query, builder, from) -> {
             List<Predicate> predicateList = new ArrayList<>();
             for (String v : likes) {

@@ -28,7 +28,7 @@ public interface ExecutorTaskService {
 
     SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes);
 
-    List<SwiftExecutorTaskEntity> getRepeatTaskByTime(long beginTime, long endTime, String... likes);
+    List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes);
 
     void delete(final ExecutorTask executorTask);
 
