@@ -61,8 +61,12 @@ public class SwiftMapperFactory implements MapperFactory {
                 Class<? extends MapperTransferFunction> func = annotation.using();
                 value = func.newInstance().transfer(value, annotation.paramValue());
             }
-            // 这边写"0"是防止数值字段为null时，用Strings.EMPTY抛NumberFormatException
-            Object o = Optional.ofNullable(value).orElse("0");
+            Object o;
+            if (targetField.getType() == String.class) {
+                o = Optional.ofNullable(value).orElse(Strings.EMPTY);
+            } else {
+                o = Optional.ofNullable(value).orElse("0");
+            }
             FieldUtils.writeField(targetField, target,
                     ReflectUtils.parseObject(targetField.getType(), o.toString()), true);
         }
