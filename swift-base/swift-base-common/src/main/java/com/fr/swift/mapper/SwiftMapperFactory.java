@@ -7,7 +7,6 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.ReflectUtils;
 import com.fr.swift.util.Strings;
-import com.fr.swift.util.exception.LambdaWrapper;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Constructor;
@@ -62,9 +61,10 @@ public class SwiftMapperFactory implements MapperFactory {
                 Class<? extends MapperTransferFunction> func = annotation.using();
                 value = func.newInstance().transfer(value, annotation.paramValue());
             }
-            Optional.ofNullable(value).ifPresent(
-                    LambdaWrapper.rethrowConsumer(v -> FieldUtils.writeField(targetField, target,
-                            ReflectUtils.parseObject(targetField.getType(), v.toString()), true)));
+            // 这边写"0"是防止数值字段为null时，用Strings.EMPTY抛NumberFormatException
+            Object o = Optional.ofNullable(value).orElse("0");
+            FieldUtils.writeField(targetField, target,
+                    ReflectUtils.parseObject(targetField.getType(), o.toString()), true);
         }
         return target;
     }
