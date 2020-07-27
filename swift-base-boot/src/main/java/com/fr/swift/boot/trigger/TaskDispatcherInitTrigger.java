@@ -26,6 +26,8 @@ public class TaskDispatcherInitTrigger implements SwiftPriorityInitTrigger {
     public void destroy() throws InterruptedException {
         SwiftLoggers.getLogger().info("stopping task dispatcher...");
         TaskDispatcher.getInstance().stop();
+        SwiftLoggers.getLogger().info("stopping collate executor...");
+        SwiftContext.get().getBean(CollateExecutor.class).stop();
     }
 
     @Override
