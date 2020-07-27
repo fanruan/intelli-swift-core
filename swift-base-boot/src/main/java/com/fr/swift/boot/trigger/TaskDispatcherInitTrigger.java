@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.executor.dispatcher.TaskDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.executor.CollateExecutor;
+import com.fr.swift.service.executor.MigrateExecutor;
 import com.fr.swift.trigger.SwiftPriorityInitTrigger;
 
 /**
@@ -20,14 +21,16 @@ public class TaskDispatcherInitTrigger implements SwiftPriorityInitTrigger {
         TaskDispatcher.getInstance();
         SwiftLoggers.getLogger().info("starting collate executor...");
         SwiftContext.get().getBean(CollateExecutor.class).start();
+        SwiftLoggers.getLogger().info("starting migrate executor...");
+        SwiftContext.get().getBean(MigrateExecutor.class).start();
     }
 
     @Override
     public void destroy() throws InterruptedException {
-        SwiftLoggers.getLogger().info("stoping task dispatcher...");
+        SwiftLoggers.getLogger().info("stopping task dispatcher...");
         TaskDispatcher.getInstance().stop();
-        SwiftLoggers.getLogger().info("stoping collate executor...");
-        SwiftContext.get().getBean(CollateExecutor.class).stop();
+        SwiftLoggers.getLogger().info("stopping migrate executor...");
+        SwiftContext.get().getBean(MigrateExecutor.class).stop();
     }
 
     @Override
