@@ -53,7 +53,7 @@ public final class ReflectUtils {
             try {
                 return JsonBuilder.readValue(fieldValue, tClass);
             } catch (Exception e) {
-                SwiftLoggers.getLogger().error(String.format("error json line: {}", fieldValue));
+                SwiftLoggers.getLogger().error("error json line: {}", fieldValue);
             }
             return Collections.emptyMap();
         }
