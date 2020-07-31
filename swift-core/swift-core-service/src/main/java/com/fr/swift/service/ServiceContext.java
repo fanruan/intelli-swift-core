@@ -11,7 +11,6 @@ import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -36,5 +35,5 @@ public interface ServiceContext extends SwiftService {
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
     @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
-    boolean migrate(Map<File, SegmentKey> segments, boolean remote, String path, String prePath) throws Exception;
+    boolean migrate(Map<SegmentKey, byte[]> segments, String location);
 }

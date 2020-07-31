@@ -8,17 +8,13 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.MigrateProperty;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.service.executor.MigrateExecutor;
-import com.fr.swift.structure.Pair;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
-import java.io.File;
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -55,13 +51,10 @@ public class SwiftMigrateExecutor implements Runnable, MigrateExecutor {
         MigrateProperty migrateProperty = MigrateProperty.get();
         List<SegmentKey> allSegments = swiftSegmentService.getSegKeyOnNode(SwiftProperty.get().getMachineId());
         //TODO: 2020/7/29 还需要根据块生成时间还是最近被访问排序筛选
-        Map<File, SegmentKey> limit = allSegments.stream().limit(migrateProperty.getMaxNum())
-                .map(r -> new Pair<>(new File(SegmentUtils.newSegment(r).getLocation().getAbsolutePath()), r))
-                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+        List<SegmentKey> limit = allSegments.stream().limit(migrateProperty.getMaxNum())
+                .collect(Collectors.toList());
         try {
-            TaskProducer.produceTask(new MigrateExecutorTask(
-                    limit, migrateProperty.isRemote(), migrateProperty.getBackupPath(),
-                    SwiftProperty.get().getCubesPath()));
+            TaskProducer.produceTask(new MigrateExecutorTask(limit, migrateProperty.getBackupPath()));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
@@ -74,8 +67,7 @@ public class SwiftMigrateExecutor implements Runnable, MigrateExecutor {
 
     @Override
     public void run() {
-        Calendar cal = Calendar.getInstance();
-        int currentDay = cal.get(Calendar.DATE);
+        int currentDay = LocalDate.now().getDayOfMonth();
         if (currentDay >= MigrateProperty.get().getDay()) {
             SwiftLoggers.getLogger().info("Start migrate executor at {}", MigrateProperty.get().getStartTime());
             triggerMigrate();

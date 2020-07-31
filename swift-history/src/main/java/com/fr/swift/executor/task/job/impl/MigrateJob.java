@@ -1,12 +1,14 @@
 package com.fr.swift.executor.task.job.impl;
 
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.ServiceContext;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,27 +21,25 @@ import java.util.stream.Collectors;
  */
 public class MigrateJob extends BaseJob<Boolean, List<String>> {
 
-    List<String> segmentIds;
-    List<SegmentKey> segmentKeys;
-    Map<File, SegmentKey> segments;
-    boolean remote;
-    String path;
-    String prePath;
+    private List<String> segmentIds;
+    private List<SegmentKey> segmentKeys;
+    private String path;
 
 
-    public MigrateJob(Map<File, SegmentKey> segments, boolean remote, String path, String prePath) {
-        this.segmentKeys = new ArrayList<>(segments.values());
+    public MigrateJob(List<SegmentKey> segmentKeys, String path) {
+        this.segmentKeys = segmentKeys;
         this.segmentIds = segmentKeys.stream().map(SegmentKey::getId).collect(Collectors.toList());
-        this.segments = segments;
-        this.remote = remote;
         this.path = path;
-        this.prePath = prePath;
     }
 
     @Override
     public Boolean call() throws Exception {
         final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
-        return serviceContext.migrate(segments, remote, path, prePath);
+        Map<SegmentKey, byte[]> segments = new HashMap<>();
+        for (SegmentKey segmentKey : segmentKeys) {
+            segments.put(segmentKey, Files.readAllBytes(Paths.get(new CubePathBuilder(segmentKey).asAbsolute().build())));
+        }
+        return serviceContext.migrate(segments, path);
     }
 
     @Override

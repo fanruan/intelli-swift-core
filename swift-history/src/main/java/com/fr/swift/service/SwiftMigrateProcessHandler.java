@@ -14,7 +14,6 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.base.node.ClusterNode;
 import com.fr.swift.local.LocalUrl;
-import com.fr.swift.property.MigrateProperty;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -35,9 +34,11 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
 
     @Override
     protected URL processUrl(Target[] targets, Object... args) throws Exception {
-        if (MigrateProperty.get().isRemote()) {
+        String[] split = args[1].toString().split(":");
+        if (split.length > 1) {
+            args[1] = split[1];
             Map<String, ClusterNode> onlineNodes = nodeContainer.getOnlineNodes();
-            return UrlSelector.getInstance().getFactory().getURL(onlineNodes.get(MigrateProperty.get().getBackupCluster()));
+            return UrlSelector.getInstance().getFactory().getURL(onlineNodes.get(split[0]));
         } else {
             return new LocalUrl();
         }
@@ -55,12 +56,10 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
         rpcFuture.addCallback(new AsyncRpcCallback() {
             @Override
             public void success(final Object result) {
-                System.out.println("成功");
             }
 
             @Override
             public void fail(Exception e) {
-                System.out.println("失败");
             }
         });
         return null;

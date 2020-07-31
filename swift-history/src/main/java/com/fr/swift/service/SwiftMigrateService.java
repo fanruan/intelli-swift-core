@@ -2,12 +2,15 @@ package com.fr.swift.service;
 
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
-import com.fr.swift.disk.DiskUtil;
+import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -25,23 +28,28 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
     }
 
     @Override
-    public boolean appointLocalMigrate(Map<File, SegmentKey> segments, String path, String prePath) throws Exception {
+    public boolean appointMigrate(Map<SegmentKey, byte[]> segments, String location) {
+        //todo：2020/7/29 还需要检查location是否是本地cube或本地迁移配置文件中的地址，符合则继续
         long t = System.currentTimeMillis();
-        segments.forEach((segment, segmentKey) -> {
-            String destPath = path + segment.getAbsolutePath().substring(prePath.length());
-            DiskUtil.copyFile(segment, new File(destPath));
-        });
-        SwiftLoggers.getLogger().info("Migration spends ", System.currentTimeMillis() - t);
-        return true;
-    }
-
-    @Override
-    public boolean appointRemoteMigrate(Map<File, SegmentKey> segments, String path, String prePath) throws Exception {
-        //todo：2020/7/29 还需要检查path是否是本地cube或本地迁移配置文件中的地址，都符合则继续
-        long t = System.currentTimeMillis();
-        segments.forEach((segment, segmentKey) -> {
-            String destPath = path + segment.getAbsolutePath().substring(prePath.length());
-            DiskUtil.copyFile(segment, new File(destPath));
+        segments.forEach((segment, data) -> {
+            //暂时先这样写，之后改到IoUtil里
+            String destPath = location + new CubePathBuilder(segment).build();
+            File file = new File(destPath);
+            BufferedOutputStream bos = null;
+            try {
+                bos = new BufferedOutputStream(new FileOutputStream(file));
+                bos.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (bos != null) {
+                    try {
+                        bos.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
         });
         SwiftLoggers.getLogger().info("Migration spends ", System.currentTimeMillis() - t);
         return true;

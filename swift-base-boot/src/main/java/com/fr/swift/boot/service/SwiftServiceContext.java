@@ -22,7 +22,6 @@ import com.fr.swift.service.ServiceType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.ServiceBeanFactory;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -103,11 +102,8 @@ public class SwiftServiceContext implements ServiceContext {
     }
 
     @Override
-    public boolean migrate(Map<File, SegmentKey> segments, boolean remote, String path, String prePath) throws Exception {
+    public boolean migrate(Map<SegmentKey, byte[]> segments, String location) {
         MigrateService migrateService = SwiftContext.get().getBean(MigrateService.class);
-        if (remote) {
-            return migrateService.appointRemoteMigrate(segments, path, prePath);
-        }
-        return migrateService.appointLocalMigrate(segments, path, prePath);
+        return migrateService.appointMigrate(segments, location);
     }
 }
