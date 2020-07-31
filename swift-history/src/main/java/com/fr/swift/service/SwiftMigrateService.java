@@ -35,20 +35,10 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
             //暂时先这样写，之后改到IoUtil里
             String destPath = location + new CubePathBuilder(segment).build();
             File file = new File(destPath);
-            BufferedOutputStream bos = null;
-            try {
-                bos = new BufferedOutputStream(new FileOutputStream(file));
+            try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
                 bos.write(data);
             } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (bos != null) {
-                    try {
-                        bos.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
+                SwiftLoggers.getLogger().error(e.getMessage());
             }
         });
         SwiftLoggers.getLogger().info("Migration spends ", System.currentTimeMillis() - t);
