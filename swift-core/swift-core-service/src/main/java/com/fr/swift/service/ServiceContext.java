@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.DeleteProcessHandler;
+import com.fr.swift.basics.handler.MigrateProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.result.SwiftResultSet;
@@ -11,6 +12,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2019/3/4
@@ -31,4 +33,7 @@ public interface ServiceContext extends SwiftService {
     void clearQuery(String queryId);
 
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
+
+    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
+    boolean migrate(Map<SegmentKey, byte[]> segments, String location);
 }

@@ -61,6 +61,11 @@ public class SegmentContainerService implements SegmentService {
     }
 
     @Override
+    public List<SegmentKey> getSegmentKeys(List<String> segmentIds) {
+        return SegmentContainer.LOCAL.getSegmentKeys(segmentIds);
+    }
+
+    @Override
     public List<SegmentKey> getSegmentKeysByIds(SourceKey tableKey, Collection<String> segmentIds) {
         return SegmentContainer.LOCAL.getSegmentKeysByIds(tableKey, segmentIds);
     }

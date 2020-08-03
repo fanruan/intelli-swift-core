@@ -15,6 +15,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
 import com.fr.swift.service.DeleteService;
+import com.fr.swift.service.MigrateService;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
@@ -22,6 +23,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.ServiceBeanFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2019/3/5
@@ -97,5 +99,11 @@ public class SwiftServiceContext implements ServiceContext {
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception {
         throw new UnsupportedOperationException("insert not support");
+    }
+
+    @Override
+    public boolean migrate(Map<SegmentKey, byte[]> segments, String location) {
+        MigrateService migrateService = SwiftContext.get().getBean(MigrateService.class);
+        return migrateService.appointMigrate(segments, location);
     }
 }
