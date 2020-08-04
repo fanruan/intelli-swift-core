@@ -8,6 +8,7 @@ import com.fr.swift.segment.SegmentUtils;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -67,8 +68,8 @@ public class SegmentPartition {
      * @return 返回碎片块中被访问时间最近的被访问时间
      */
     public Date getVisitedTime() {
-        //todo:2020/7/29 还要验证一下存在null情况的取max情况
-        return segmentKeys.stream().map(SegmentKey::getVisitedTime).max(Comparator.comparing(Date::getTime)).orElse(new Date());
+        return segmentKeys.stream().map(SegmentKey::getVisitedTime).filter(Objects::nonNull)
+                .max(Comparator.comparing(Date::getTime)).orElse(null);
     }
 
 }
