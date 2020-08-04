@@ -38,7 +38,7 @@ public class SegmentTransfer {
     }
 
     private static SegmentKey getHistorySegKey(SegmentKey realtimeSegKey) {
-        return new SwiftSegmentEntity(realtimeSegKey.getTable(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema());
+        return new SwiftSegmentEntity(realtimeSegKey.getTable(), realtimeSegKey.getOrder(), StoreType.FINE_IO, realtimeSegKey.getSwiftSchema(), realtimeSegKey.getCreateTime());
     }
 
     public void transfer() {

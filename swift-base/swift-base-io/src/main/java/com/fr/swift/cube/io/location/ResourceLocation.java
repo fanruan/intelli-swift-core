@@ -1,7 +1,5 @@
 package com.fr.swift.cube.io.location;
 
-import com.fr.swift.SwiftContext;
-import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.util.Strings;
 
@@ -16,31 +14,32 @@ public class ResourceLocation implements IResourceLocation {
     private static final String SEPARATOR = "/";
     private static final StoreType DEFAULT_STORE_TYPE = StoreType.FINE_IO;
 
-    private static String basePath;
 
-    static {
-        initBasePath();
-    }
-
-    private static void initBasePath() {
-        SwiftCubePathService cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
-        basePath = cubePathService.getSwiftPath();
-        cubePathService.registerPathChangeListener(path -> basePath = path);
-    }
+//    static {
+//        initBasePath();
+//    }
+//
+//    private static void initBasePath() {
+//        SwiftCubePathService cubePathService = SwiftContext.get().getBean(SwiftCubePathService.class);
+//        basePath = cubePathService.getSwiftPath();
+//        cubePathService.registerPathChangeListener(path -> basePath = path);
+//    }
 
     private URI uri;
     private StoreType storeType;
+    //默认路径不设置为cubePath，有可能用到其他硬盘位置
+    private String basePath;
 
-    public ResourceLocation(String path) {
-        this(path, DEFAULT_STORE_TYPE);
+    public ResourceLocation(String path, String basePath) {
+        this(path, DEFAULT_STORE_TYPE, basePath);
     }
 
-    public ResourceLocation(String path, StoreType storeType) {
+    public ResourceLocation(String path, StoreType storeType, String basePath) {
         path = Strings.trimSeparator(path, "\\", SEPARATOR);
 //        path = SEPARATOR + path;
         path = Strings.trimSeparator(path, SEPARATOR);
         uri = URI.create(path);
-
+        this.basePath = basePath;
         this.storeType = storeType;
     }
 
@@ -67,13 +66,13 @@ public class ResourceLocation implements IResourceLocation {
 
     @Override
     public IResourceLocation buildChildLocation(String child) {
-        return new ResourceLocation(getPath() + SEPARATOR + child, storeType);
+        return new ResourceLocation(getPath() + SEPARATOR + child, storeType, basePath);
     }
 
     @Override
     public IResourceLocation getParent() {
         String parent = new File(uri.getPath()).getParent();
-        return new ResourceLocation(parent, storeType);
+        return new ResourceLocation(parent, storeType, basePath);
     }
 
     @Override
@@ -83,7 +82,7 @@ public class ResourceLocation implements IResourceLocation {
 
     @Override
     public IResourceLocation addSuffix(String suffix) {
-        return new ResourceLocation(getPath() + suffix, storeType);
+        return new ResourceLocation(getPath() + suffix, storeType, basePath);
     }
 
     @Override

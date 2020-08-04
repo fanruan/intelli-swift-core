@@ -58,7 +58,7 @@ public class CacheColumnSegmentTest {
         SwiftMetaData meta = mock(SwiftMetaData.class);
         when(meta.getColumnId("c")).thenReturn("cId");
 
-        CacheColumnSegment seg = spy(new CacheColumnSegment(new ResourceLocation("/"), meta));
+        CacheColumnSegment seg = spy(new CacheColumnSegment(new ResourceLocation("/", "D:"), meta));
 
         Column column = mock(Column.class);
         doReturn(column).when(seg, "newColumn", any(), any());
@@ -76,7 +76,7 @@ public class CacheColumnSegmentTest {
         SwiftMetaData meta = mock(SwiftMetaData.class);
         when(meta.getColumnId("c")).thenReturn("cId");
 
-        CacheColumnSegment seg = new CacheColumnSegment(new ResourceLocation("/"), meta);
+        CacheColumnSegment seg = new CacheColumnSegment(new ResourceLocation("/", "D:"), meta);
 
         seg.getColumn(new ColumnKey("cId"));
 

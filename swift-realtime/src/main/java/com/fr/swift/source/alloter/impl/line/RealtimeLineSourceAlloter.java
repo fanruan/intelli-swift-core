@@ -14,8 +14,8 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,7 +35,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         List<SegmentKey> segKeys = swiftSegmentService.getOwnSegments(tableKey);
         segKeys = segKeys == null ? new ArrayList<>() : segKeys;
 
-        Collections.sort(segKeys, Comparator.comparingInt(SegmentKey::getOrder));
+        segKeys.sort(Comparator.comparingInt(SegmentKey::getOrder));
 
         for (SegmentKey segKey : segKeys) {
             if (segKey.getStoreType().isPersistent()) {
@@ -54,7 +54,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
             }
         }
         // 全是历史块 或 全在inserting 或 全都满了；所以重新new一块
-        SegmentKey newSegKey = swiftSegmentService.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
+        SegmentKey newSegKey = swiftSegmentService.tryAppendSegment(tableKey, Types.StoreType.MEMORY, new Date(), null);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType());
         return new SegmentState(segInfo);
     }
@@ -66,7 +66,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
      * @return 需要的seg
      */
     Segment newSeg(SegmentKey key) {
-        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).build(), key.getStoreType());
+        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).build(), key.getStoreType(), key.getLocation());
         SwiftMetaData metaData = META_SVC.getMeta(tableKey);
         return SwiftContext.get().getBean("realtimeSegment", Segment.class, location, metaData);
     }

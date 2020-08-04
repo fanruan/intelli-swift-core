@@ -66,7 +66,7 @@ public class IResourceDiscoveryTest {
         ExecutorService exec = Executors.newFixedThreadPool(8);
         try {
             List<Future<Reader>> readers = new ArrayList<Future<Reader>>();
-            final IResourceLocation location = new ResourceLocation("/cubes/table/seg0/column/int/seg0/c1", StoreType.MEMORY);
+            final IResourceLocation location = new ResourceLocation("/cubes/table/seg0/column/int/seg0/c1", StoreType.MEMORY, "D:");
             for (int i = 0; i < 16; i++) {
                 readers.add(exec.submit(new Callable<Reader>() {
                     @Override
@@ -92,7 +92,7 @@ public class IResourceDiscoveryTest {
         ExecutorService exec = Executors.newFixedThreadPool(8);
         try {
             List<Future<Writer>> writers = new ArrayList<Future<Writer>>();
-            final IResourceLocation location = new ResourceLocation("/cubes/table/seg0/column/int/seg0/c1", StoreType.MEMORY);
+            final IResourceLocation location = new ResourceLocation("/cubes/table/seg0/column/int/seg0/c1", StoreType.MEMORY, "D:");
             for (int i = 0; i < 16; i++) {
                 writers.add(exec.submit(new Callable<Writer>() {
                     @Override
@@ -123,9 +123,9 @@ public class IResourceDiscoveryTest {
 
         CubePathBuilder cubePathBuilder = new CubePathBuilder();
         // schema/table/seg0/column
-        ResourceLocation location = new ResourceLocation(cubePathBuilder.setSwiftSchema(schema).setTableKey(tableKey).setSegOrder(0).setColumnId(columnKey.getName()).build(), StoreType.MEMORY);
+        ResourceLocation location = new ResourceLocation(cubePathBuilder.setSwiftSchema(schema).setTableKey(tableKey).setSegOrder(0).setColumnId(columnKey.getName()).build(), StoreType.MEMORY, "D:");
         // schema/table1/seg0/column
-        ResourceLocation location1 = new ResourceLocation(cubePathBuilder.setTableKey(tableKey1).build(), StoreType.MEMORY);
+        ResourceLocation location1 = new ResourceLocation(cubePathBuilder.setTableKey(tableKey1).build(), StoreType.MEMORY, "D:");
 
         ((IntIo) DISCOVERY.getWriter(location, conf)).put(0, 1);
         ((IntIo) DISCOVERY.getWriter(location1, conf)).put(0, 1);
@@ -147,11 +147,11 @@ public class IResourceDiscoveryTest {
 
         CubePathBuilder cubePathBuilder = new CubePathBuilder();
         // schema/table/seg0/column
-        ResourceLocation location = new ResourceLocation(cubePathBuilder.setSwiftSchema(schema).setTableKey(tableKey).setSegOrder(0).setColumnId(columnKey.getName()).build(), StoreType.MEMORY);
+        ResourceLocation location = new ResourceLocation(cubePathBuilder.setSwiftSchema(schema).setTableKey(tableKey).setSegOrder(0).setColumnId(columnKey.getName()).build(), StoreType.MEMORY, "D:");
         // schema/table/seg1/column
-        ResourceLocation location1 = new ResourceLocation(cubePathBuilder.setSegOrder(1).build(), StoreType.MEMORY);
+        ResourceLocation location1 = new ResourceLocation(cubePathBuilder.setSegOrder(1).build(), StoreType.MEMORY, "D:");
         // schema/table1/seg1/column
-        ResourceLocation location2 = new ResourceLocation(cubePathBuilder.setTableKey(tableKey1).build(), StoreType.MEMORY);
+        ResourceLocation location2 = new ResourceLocation(cubePathBuilder.setTableKey(tableKey1).build(), StoreType.MEMORY, "D:");
 
         ((IntIo) DISCOVERY.getWriter(location, conf)).put(0, 1);
         ((IntIo) DISCOVERY.getWriter(location1, conf)).put(0, 1);
@@ -177,24 +177,24 @@ public class IResourceDiscoveryTest {
 
         CubePathBuilder cubePathBuilder = new CubePathBuilder();
         // schema/table/seg0/column
-        ResourceLocation location = new ResourceLocation(cubePathBuilder.setSwiftSchema(schema).setTableKey(tableKey).setSegOrder(0).setColumnId(columnKey.getName()).build(), StoreType.MEMORY);
+        ResourceLocation location = new ResourceLocation(cubePathBuilder.setSwiftSchema(schema).setTableKey(tableKey).setSegOrder(0).setColumnId(columnKey.getName()).build(), StoreType.MEMORY, "D:");
         // schema/table/seg0/column1
-        ResourceLocation location1 = new ResourceLocation(cubePathBuilder.setColumnId(columnKey1.getName()).build(), StoreType.MEMORY);
+        ResourceLocation location1 = new ResourceLocation(cubePathBuilder.setColumnId(columnKey1.getName()).build(), StoreType.MEMORY, "D:");
 
         // schema/table/seg1/column1
-        ResourceLocation location2 = new ResourceLocation(cubePathBuilder.setSegOrder(1).build(), StoreType.MEMORY);
+        ResourceLocation location2 = new ResourceLocation(cubePathBuilder.setSegOrder(1).build(), StoreType.MEMORY, "D:");
         // schema/table/seg1/column
-        ResourceLocation location3 = new ResourceLocation(cubePathBuilder.setColumnId(columnKey.getName()).build(), StoreType.MEMORY);
+        ResourceLocation location3 = new ResourceLocation(cubePathBuilder.setColumnId(columnKey.getName()).build(), StoreType.MEMORY, "D:");
 
         // schema/table1/seg0/column
-        ResourceLocation location4 = new ResourceLocation(cubePathBuilder.setSwiftSchema(schema).setTableKey(tableKey1).setSegOrder(0).setColumnId(columnKey.getName()).build(), StoreType.MEMORY);
+        ResourceLocation location4 = new ResourceLocation(cubePathBuilder.setSwiftSchema(schema).setTableKey(tableKey1).setSegOrder(0).setColumnId(columnKey.getName()).build(), StoreType.MEMORY, "D:");
         // schema/table1/seg0/column1
-        ResourceLocation location5 = new ResourceLocation(cubePathBuilder.setColumnId(columnKey1.getName()).build(), StoreType.MEMORY);
+        ResourceLocation location5 = new ResourceLocation(cubePathBuilder.setColumnId(columnKey1.getName()).build(), StoreType.MEMORY, "D:");
 
         // schema/table1/seg1/column1
-        ResourceLocation location6 = new ResourceLocation(cubePathBuilder.setSegOrder(1).build(), StoreType.MEMORY);
+        ResourceLocation location6 = new ResourceLocation(cubePathBuilder.setSegOrder(1).build(), StoreType.MEMORY, "D:");
         // schema/table1/seg1/column
-        ResourceLocation location7 = new ResourceLocation(cubePathBuilder.setColumnId(columnKey.getName()).build(), StoreType.MEMORY);
+        ResourceLocation location7 = new ResourceLocation(cubePathBuilder.setColumnId(columnKey.getName()).build(), StoreType.MEMORY, "D:");
 
         ((IntIo) DISCOVERY.getWriter(location, conf)).put(0, 1);
         ((IntIo) DISCOVERY.getWriter(location1, conf)).put(0, 1);

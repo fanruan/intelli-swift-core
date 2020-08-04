@@ -23,7 +23,7 @@ public class MedianAggregateTest extends TestCase {
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
-        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu", "D:"));
 //        IntDetailColumn detailColumn = control.createMock(IntDetailColumn.class);
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
@@ -50,7 +50,7 @@ public class MedianAggregateTest extends TestCase {
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
-        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu", "D:"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();

@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,8 +28,8 @@ public class CollateExecutorTaskTest {
             "\"test@FINE_IO@0\",\"order\":0},{\"sourceKey\":\"test\",\"storeType\":\"MEMORY\"" +
             ",\"swiftSchema\":\"CUBE\",\"id\":\"test@MEMORY@1\",\"order\":1}]";
 
-    final SegmentKey segmentKey1 = new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    final SegmentKey segmentKey2 = new SwiftSegmentEntity(new SourceKey("test"), 1, Types.StoreType.MEMORY, SwiftDatabase.CUBE);
+    final SegmentKey segmentKey1 = new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    final SegmentKey segmentKey2 = new SwiftSegmentEntity(new SourceKey("test"), 1, Types.StoreType.MEMORY, SwiftDatabase.CUBE, new Date());
 
     @Test
     public void testSerialize() throws Exception {

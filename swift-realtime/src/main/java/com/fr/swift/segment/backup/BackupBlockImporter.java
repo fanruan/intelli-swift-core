@@ -35,7 +35,7 @@ public class BackupBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exten
     protected Inserting getInserting(SegmentKey segKey) {
         Segment realtimeSeg = SegmentUtils.newSegment(segKey);
 
-        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).asBackup().build(), StoreType.NIO);
+        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).asBackup().build(), StoreType.NIO, segKey.getLocation());
         Segment backupSeg = new BackupSegment(location, dataSource.getMetadata());
 
         // 备份包裹事务

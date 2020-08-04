@@ -24,7 +24,7 @@ public class BackupLineSourceAlloter extends RealtimeLineSourceAlloter {
 
     @Override
     Segment newSeg(SegmentKey key) {
-        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).asBackup().build(), StoreType.NIO);
+        IResourceLocation location = new ResourceLocation(new CubePathBuilder(key).asBackup().build(), StoreType.NIO, key.getLocation());
         SwiftMetaData metaData = META_SVC.getMeta(tableKey);
         return new BackupSegment(location, metaData);
     }

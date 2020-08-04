@@ -8,6 +8,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,7 @@ public interface SwiftSegmentService {
 
     void delete(List<SegmentKey> segKeys);
 
-    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
+    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType, Date segmentTime, Date visitedTime);
 
     List<SegmentKey> getTableSegKeys(SourceKey tableKey);
 
@@ -50,4 +51,6 @@ public interface SwiftSegmentService {
     void saveBucket(SwiftSegmentBucketElement element);
 
     void deleteBucket(SwiftSegmentBucketElement element);
+
+    void updateSegments(List<SegmentKey> segKeys);
 }

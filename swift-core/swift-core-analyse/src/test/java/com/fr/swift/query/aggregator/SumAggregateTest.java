@@ -29,7 +29,7 @@ public class SumAggregateTest extends TestCase {
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
 //        IntDetailColumn mockIntColumn = control.createMock(IntDetailColumn.class);
-        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu", "D:"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         DictionaryEncodedColumn dictionaryEncodedColumn = control.createMock(DictionaryEncodedColumn.class);
@@ -54,7 +54,7 @@ public class SumAggregateTest extends TestCase {
         RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        LongDetailColumn longDetailColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
+        LongDetailColumn longDetailColumn = new TempLongDetailColumn(new ResourceLocation("liu", "D:"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         DictionaryEncodedColumn dictionaryEncodedColumn = control.createMock(DictionaryEncodedColumn.class);
@@ -79,7 +79,7 @@ public class SumAggregateTest extends TestCase {
         RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        DoubleDetailColumn doubleDetailColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));
+        DoubleDetailColumn doubleDetailColumn = new TempDoubleDetailColumn(new ResourceLocation("liu", "D:"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         DictionaryEncodedColumn dictionaryEncodedColumn = control.createMock(DictionaryEncodedColumn.class);

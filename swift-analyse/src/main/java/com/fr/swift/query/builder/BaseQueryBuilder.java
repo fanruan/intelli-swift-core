@@ -2,7 +2,9 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -30,6 +32,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +48,7 @@ class BaseQueryBuilder {
 
     static List<Segment> filterQuerySegs(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(queryInfo);
+        SwiftContext.get().getBean(SwiftSegmentService.class).updateSegments(segmentKeyList.stream().map(r -> new SwiftSegmentEntity(r).setVisitedTime(new Date())).collect(Collectors.toList()));
         return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
     }
 

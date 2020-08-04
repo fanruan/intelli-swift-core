@@ -121,7 +121,7 @@ public class AbstractSegmentTest {
 
     @Test
     public void putRowCount() {
-        new Seg(new ResourceLocation(path), mock(SwiftMetaData.class)).putRowCount(3);
+        new Seg(new ResourceLocation(path, "D:"), mock(SwiftMetaData.class)).putRowCount(3);
 
         verify(intWriter).put(0, 3);
     }
@@ -130,13 +130,13 @@ public class AbstractSegmentTest {
     public void getRowCount() {
         when(intReader.get(0)).thenReturn(3);
 
-        Assert.assertEquals(3, new Seg(new ResourceLocation(path), mock(SwiftMetaData.class)).getRowCount());
+        Assert.assertEquals(3, new Seg(new ResourceLocation(path, "D:"), mock(SwiftMetaData.class)).getRowCount());
     }
 
     @Test
     public void putAllShowIndex() {
         ImmutableBitMap bitmap = mock(ImmutableBitMap.class);
-        new Seg(new ResourceLocation(path), mock(SwiftMetaData.class)).putAllShowIndex(bitmap);
+        new Seg(new ResourceLocation(path, "D:"), mock(SwiftMetaData.class)).putAllShowIndex(bitmap);
 
         verify(bitmapWriter).put(0, bitmap);
     }
@@ -146,13 +146,13 @@ public class AbstractSegmentTest {
         ImmutableBitMap bitmap = mock(ImmutableBitMap.class);
         when(bitmapReader.get(0)).thenReturn(bitmap);
 
-        Seg seg = new Seg(new ResourceLocation(path), mock(SwiftMetaData.class));
+        Seg seg = new Seg(new ResourceLocation(path, "D:"), mock(SwiftMetaData.class));
         Assert.assertEquals(bitmap, seg.getAllShowIndex());
     }
 
     @Test
     public void isReadable() {
-        Seg seg = spy(new Seg(new ResourceLocation(path), mock(SwiftMetaData.class)));
+        Seg seg = spy(new Seg(new ResourceLocation(path, "D:"), mock(SwiftMetaData.class)));
         doReturn(true).when(seg).isHistory();
 
         when(intReader.isReadable()).thenReturn(false);
@@ -175,7 +175,7 @@ public class AbstractSegmentTest {
 
     @Test
     public void release() {
-        Seg seg = new Seg(new ResourceLocation(path), mock(SwiftMetaData.class));
+        Seg seg = new Seg(new ResourceLocation(path, "D:"), mock(SwiftMetaData.class));
         seg.putRowCount(3);
         seg.getRowCount();
         seg.putAllShowIndex(mock(ImmutableBitMap.class));

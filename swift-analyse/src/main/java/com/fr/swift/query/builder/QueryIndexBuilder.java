@@ -1,6 +1,8 @@
 package com.fr.swift.query.builder;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -41,6 +43,8 @@ public class QueryIndexBuilder extends BaseQueryBuilder {
         QueryInfoBean infoBean = (QueryInfoBean) bean;
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(info);
+        //更新块的被访问信息
+        SwiftContext.get().getBean(SwiftSegmentService.class).updateSegments(segmentKeyList);
         Builder builder = new Builder();
         Map<SegmentKey, IndexQuery<ImmutableBitMap>> queries = new HashMap<>();
         segmentKeyList.forEach(segmentKey -> queries.put(segmentKey, builder.buildLocalQuery(info, segmentKey)));

@@ -7,6 +7,8 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
+import java.util.Date;
+
 /**
  * @author yee
  * @date 2017/12/13
@@ -20,7 +22,7 @@ public class HistoryLineSourceAlloter extends BaseLineSourceAlloter {
     @Override
     protected SegmentState getInsertableSeg(int logicOrder) {
         // todo 另外还要处理脏配置
-        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
+        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO, new Date(), null);
         SwiftLoggers.getLogger().debug("importing, append new seg {}", segKey);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);

@@ -32,9 +32,9 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
         List<String> fields = dataSource.getMetadata().getFieldNames();
         try {
             for (SegmentPartition item : segmentPartitions) {
-                SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO);
+                SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO, item.getCreateTime(), item.getVisitedTime());
                 segmentKeys.add(segKey);
-                ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
+                ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType(), segKey.getLocation());
                 Segment segment = new CacheColumnSegment(location, dataSource.getMetadata());
                 try {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());

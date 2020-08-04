@@ -3,6 +3,7 @@ package com.fr.swift.query.info.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -51,6 +52,8 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     @Override
     public List<Segment> filterSegs(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterSegKeys(singleTableQueryInfo);
+        //更新块的被访问信息
+        SwiftContext.get().getBean(SwiftSegmentService.class).updateSegments(segmentKeyList);
         return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
     }
 

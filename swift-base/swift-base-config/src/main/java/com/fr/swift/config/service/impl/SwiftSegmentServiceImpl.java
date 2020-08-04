@@ -23,6 +23,7 @@ import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -94,7 +95,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     }
 
     @Override
-    public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType) {
+    public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType, Date segmentTime, Date visitedTime) {
         final SwiftDatabase swiftDatabase = metaDataService.getMeta(tableKey).getSwiftDatabase();
         for (; ; ) {
             try {
@@ -103,8 +104,8 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
                                 .where(builder.equal(from.get(COLUMN_SEGMENT_OWNER), tableKey.getId())
                                         , builder.equal(from.get(COLUMN_STORE_TYPE), storeType)));
                 int maxOrder = select.get(0) == null ? -1 : (Integer) select.get(0);
-                final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase);
-                segmentDao.insert(entity);
+                final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase, segmentTime);
+                segmentDao.insert(entity.setVisitedTime(visitedTime));
                 return entity;
             } catch (ConstraintViolationException ignore) {
             } catch (PersistenceException fIgnore) {
@@ -194,6 +195,14 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
             segKeys.addAll((List<SegmentKey>) select);
         }
         return segKeys;
+    }
+
+    public void updateSegments(List<SegmentKey> segKeys) {
+        List<SegmentKey> entities = new ArrayList<>();
+        for (SegmentKey segKey : segKeys) {
+            entities.add(new SwiftSegmentEntity(segKey));
+        }
+        segmentDao.update(entities);
     }
 
     @Override

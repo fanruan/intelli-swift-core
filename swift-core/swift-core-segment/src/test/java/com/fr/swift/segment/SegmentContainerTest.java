@@ -22,6 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,22 +55,22 @@ public class SegmentContainerTest {
     @Mock
     Segment segment;
 
-    SegmentKey a0 = new SwiftSegmentEntity(new SourceKey("testA"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    SegmentKey a1 = new SwiftSegmentEntity(new SourceKey("testA"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    SegmentKey a2 = new SwiftSegmentEntity(new SourceKey("testA"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
+    SegmentKey a0 = new SwiftSegmentEntity(new SourceKey("testA"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    SegmentKey a1 = new SwiftSegmentEntity(new SourceKey("testA"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    SegmentKey a2 = new SwiftSegmentEntity(new SourceKey("testA"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
 
-    SegmentKey b0 = new SwiftSegmentEntity(new SourceKey("testB"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    SegmentKey b1 = new SwiftSegmentEntity(new SourceKey("testB"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    SegmentKey b2 = new SwiftSegmentEntity(new SourceKey("testB"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
+    SegmentKey b0 = new SwiftSegmentEntity(new SourceKey("testB"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    SegmentKey b1 = new SwiftSegmentEntity(new SourceKey("testB"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    SegmentKey b2 = new SwiftSegmentEntity(new SourceKey("testB"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
 
-    SegmentKey c0 = new SwiftSegmentEntity(new SourceKey("testC"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    SegmentKey c1 = new SwiftSegmentEntity(new SourceKey("testC"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    SegmentKey c2 = new SwiftSegmentEntity(new SourceKey("testC"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
+    SegmentKey c0 = new SwiftSegmentEntity(new SourceKey("testC"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    SegmentKey c1 = new SwiftSegmentEntity(new SourceKey("testC"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    SegmentKey c2 = new SwiftSegmentEntity(new SourceKey("testC"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
 
     SwiftMetaData d = new SwiftMetaDataEntity.Builder().setTableName("testD").setSwiftSchema(SwiftDatabase.CUBE).setFields(Collections.singletonList(null)).build();
-    SegmentKey d0 = new SwiftSegmentEntity(new SourceKey("testD"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    SegmentKey d1 = new SwiftSegmentEntity(new SourceKey("testD"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
-    SegmentKey d2 = new SwiftSegmentEntity(new SourceKey("testD"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
+    SegmentKey d0 = new SwiftSegmentEntity(new SourceKey("testD"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    SegmentKey d1 = new SwiftSegmentEntity(new SourceKey("testD"), 1, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    SegmentKey d2 = new SwiftSegmentEntity(new SourceKey("testD"), 2, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
 
     @Before
     public void setUp() throws Exception {

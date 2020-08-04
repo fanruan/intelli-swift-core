@@ -130,19 +130,19 @@ public class DictColumnTest {
 
     @Test
     public void size() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         assertEquals(1, new IntDictColumn(location, Comparators.<Integer>asc()).size());
     }
 
     @Test
     public void getIndexByRow() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         assertEquals(1, new IntDictColumn(location, Comparators.<Integer>asc()).getIndexByRow(0));
     }
 
     @Test
     public void getIndex() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         assertEquals(0, new IntDictColumn(location, Comparators.<Integer>asc()).getIndex(null));
         assertEquals(0, new StringDictColumn(location, Comparators.<String>asc()).getIndex(""));
 
@@ -151,14 +151,14 @@ public class DictColumnTest {
 
     @Test
     public void getComparator() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         Comparator<Integer> comparator = Comparators.asc();
         assertEquals(comparator, new IntDictColumn(location, comparator).getComparator());
     }
 
     @Test
     public void isReadable() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         new IntDictColumn(location, Comparators.<Integer>asc()).isReadable();
 
         verify(intReader).isReadable();
@@ -167,7 +167,7 @@ public class DictColumnTest {
 
     @Test
     public void release() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         IntDictColumn intDictColumn = new IntDictColumn(location, Comparators.<Integer>asc());
         intDictColumn.release();
         verifyZeroInteractions(intWriter);
@@ -193,14 +193,14 @@ public class DictColumnTest {
 
     @Test
     public void getValueByRow() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
 
         assertEquals(1, new IntDictColumn(location, Comparators.<Integer>asc()).getValueByRow(0).intValue());
     }
 
     @Test
     public void putValue() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         new IntDictColumn(location, Comparators.<Integer>asc()).putter().putValue(1, 1);
         new LongDictColumn(location, Comparators.<Long>asc()).putter().putValue(1, 1L);
         new DoubleDictColumn(location, Comparators.<Double>asc()).putter().putValue(1, 1D);
@@ -214,7 +214,7 @@ public class DictColumnTest {
 
     @Test
     public void getValue() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         IntDictColumn intDictColumn = new IntDictColumn(location, Comparators.<Integer>asc());
         LongDictColumn longDictColumn = new LongDictColumn(location, Comparators.<Long>asc());
         DoubleDictColumn doubleDictColumn = new DoubleDictColumn(location, Comparators.<Double>asc());

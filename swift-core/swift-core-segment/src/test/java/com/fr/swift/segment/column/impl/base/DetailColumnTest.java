@@ -124,7 +124,7 @@ public class DetailColumnTest {
 
     @Test
     public void put() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         new IntDetailColumn(location).put(0, 1);
         new LongDetailColumn(location).put(0, 1L);
         new DoubleDetailColumn(location).put(0, 1D);
@@ -138,7 +138,7 @@ public class DetailColumnTest {
 
     @Test
     public void get() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         IntDetailColumn intDetailColumn = new IntDetailColumn(location);
         LongDetailColumn longDetailColumn = new LongDetailColumn(location);
         DoubleDetailColumn doubleDetailColumn = new DoubleDetailColumn(location);
@@ -154,7 +154,7 @@ public class DetailColumnTest {
 
     @Test
     public void isReadable() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         assertTrue(new IntDetailColumn(location).isReadable());
         assertTrue(new LongDetailColumn(location).isReadable());
         assertTrue(new DoubleDetailColumn(location).isReadable());
@@ -165,7 +165,7 @@ public class DetailColumnTest {
 
     @Test
     public void release() {
-        ResourceLocation location = new ResourceLocation("");
+        ResourceLocation location = new ResourceLocation("", "D:");
         IntDetailColumn intDetailColumn = new IntDetailColumn(location);
         intDetailColumn.put(0, 1);
         intDetailColumn.get(0);

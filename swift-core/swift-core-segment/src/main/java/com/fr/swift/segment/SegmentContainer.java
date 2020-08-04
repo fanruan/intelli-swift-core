@@ -84,7 +84,7 @@ public enum SegmentContainer implements SegmentService {
     @Override
     public List<Segment> getSegments(Set<String> segKeys) {
         return segKeys.stream()
-                .filter(s -> segmentKeyMap.containsKey(s))
+                .filter(segmentKeyMap::containsKey)
                 .map(s -> SegmentUtils.newSegment(segmentKeyMap.get(s)))
                 .collect(Collectors.toList());
     }

@@ -24,7 +24,7 @@ public class AverageAggregateTest {
         RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        IntDetailColumn mockIntColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+        IntDetailColumn mockIntColumn = new TempIntDetailColumn(new ResourceLocation("liu", "D:"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         DictionaryEncodedColumn dictionaryEncodedColumn = control.createMock(DictionaryEncodedColumn.class);
@@ -53,7 +53,7 @@ public class AverageAggregateTest {
         RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        LongDetailColumn mockLongColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
+        LongDetailColumn mockLongColumn = new TempLongDetailColumn(new ResourceLocation("liu", "D:"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         DictionaryEncodedColumn dictionaryEncodedColumn = control.createMock(DictionaryEncodedColumn.class);
@@ -82,7 +82,7 @@ public class AverageAggregateTest {
         RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        DoubleDetailColumn mockDoubleColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));
+        DoubleDetailColumn mockDoubleColumn = new TempDoubleDetailColumn(new ResourceLocation("liu", "D:"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         DictionaryEncodedColumn dictionaryEncodedColumn = control.createMock(DictionaryEncodedColumn.class);

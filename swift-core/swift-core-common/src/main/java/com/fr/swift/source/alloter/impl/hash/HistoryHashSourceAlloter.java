@@ -8,6 +8,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
 
     @Override
     protected SegmentState getInsertableSeg(int virtualOrder) {
-        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
+        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO, new Date(), null);
         SwiftSegmentBucketElement bucketElement = new SwiftSegmentBucketElement(tableKey, virtualOrder, segKey.getId());
         swiftSegmentService.saveBucket(bucketElement);
 

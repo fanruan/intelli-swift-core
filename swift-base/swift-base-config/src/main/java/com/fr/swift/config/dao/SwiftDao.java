@@ -26,6 +26,8 @@ public interface SwiftDao<T> {
 
     List<?> selectQuery(CriteriaQueryProcessor criteriaQueryProcessor);
 
+    void update(Collection<T> entities);
+
     List<?> selectAll();
 
     List<?> select(String hql, QueryProcessor queryProcessor);
