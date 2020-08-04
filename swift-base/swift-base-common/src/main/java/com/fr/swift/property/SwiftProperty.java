@@ -137,7 +137,7 @@ public class SwiftProperty {
 
     private void initMachineId() {
         this.machineId = properties.getProperty("swift.machine.id", rpcAddress);
-        this.isBackupNode = Boolean.parseBoolean(properties.getProperty("swift.isBackupNode", rpcAddress));
+        this.isBackupNode = Boolean.parseBoolean(properties.getProperty("swift.isBackupNode"));
     }
 
     public int getRpcMaxObjectSize() {
