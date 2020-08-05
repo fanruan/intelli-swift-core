@@ -40,9 +40,10 @@ public class SwiftSegmentVisitedEntity implements Serializable, SegmentVisited {
     }
 
     //合并块使用
-    public SwiftSegmentVisitedEntity(String id, int visits) {
+    public SwiftSegmentVisitedEntity(String id, int visits, Date visitedTime) {
         this.id = id;
         this.visits = visits;
+        this.visitedTime = visitedTime;
     }
 
     @Override

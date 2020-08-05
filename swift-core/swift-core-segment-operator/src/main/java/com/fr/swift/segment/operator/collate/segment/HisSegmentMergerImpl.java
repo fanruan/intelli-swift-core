@@ -38,7 +38,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
             for (SegmentPartition item : segmentPartitions) {
                 SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO);
                 segmentKeys.add(segKey);
-                segmentVisiteds.add(new SwiftSegmentVisitedEntity(segKey.getId(), item.getVisits()));
+                segmentVisiteds.add(new SwiftSegmentVisitedEntity(segKey.getId(), item.getVisits(), item.getVisitedTime()));
                 ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType(), segKey.getLocation());
                 Segment segment = new CacheColumnSegment(location, dataSource.getMetadata());
                 try {

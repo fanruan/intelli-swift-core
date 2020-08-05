@@ -63,13 +63,6 @@ public class SegmentPartition {
     }
 
     /**
-     * @return 返回碎片块中最新的块的创建时间
-     */
-    public Date getCreateTime() {
-        return segmentKeys.stream().map(SegmentInfo::getCreateTime).max(Comparator.comparing(Date::getTime)).orElse(new Date());
-    }
-
-    /**
      * @return 返回碎片块中被访问时间最近的被访问时间
      */
     public Date getVisitedTime() {
