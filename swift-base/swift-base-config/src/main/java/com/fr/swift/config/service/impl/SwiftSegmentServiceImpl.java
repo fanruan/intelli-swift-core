@@ -203,7 +203,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
         if (segmentKeys == null || segmentKeys.isEmpty()) {
             return Collections.emptyList();
         }
-        return (List<SegmentVisited>) bucketDao.selectQuery((query, builder, from) ->
+        return (List<SegmentVisited>) segmentInfoDao.selectQuery((query, builder, from) ->
                 query.select(from)
                         .where(from.get("id").in(segmentKeys.stream().map(k -> k.getId()).collect(Collectors.toList()))));
     }

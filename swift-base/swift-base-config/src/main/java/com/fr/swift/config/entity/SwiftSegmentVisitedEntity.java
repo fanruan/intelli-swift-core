@@ -26,6 +26,9 @@ public class SwiftSegmentVisitedEntity implements Serializable, SegmentVisited {
     @Column(name = "visits")
     private int visits;
 
+    public SwiftSegmentVisitedEntity() {
+    }
+
     //查询块使用
     public SwiftSegmentVisitedEntity(SegmentVisited segmentVisited) {
         this.id = segmentVisited.getId();
