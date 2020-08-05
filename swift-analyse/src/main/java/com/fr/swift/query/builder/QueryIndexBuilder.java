@@ -1,8 +1,6 @@
 package com.fr.swift.query.builder;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.query.filter.FilterBuilder;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -15,6 +13,7 @@ import com.fr.swift.query.query.LocalIndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentVisited;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +43,8 @@ public class QueryIndexBuilder extends BaseQueryBuilder {
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(info);
         //更新块的被访问信息
-        SwiftContext.get().getBean(SwiftSegmentService.class).updateSegments(segmentKeyList);
+        List<SegmentVisited> visitedSegments = SEG_SVC.getVisitedSegments(segmentKeyList);
+        SWIFT_SEG_SVC.updateVisiteds(visitedSegments);
         Builder builder = new Builder();
         Map<SegmentKey, IndexQuery<ImmutableBitMap>> queries = new HashMap<>();
         segmentKeyList.forEach(segmentKey -> queries.put(segmentKey, builder.buildLocalQuery(info, segmentKey)));

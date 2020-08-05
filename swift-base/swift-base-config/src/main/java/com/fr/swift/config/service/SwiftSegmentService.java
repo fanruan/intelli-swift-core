@@ -5,10 +5,10 @@ import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentVisited;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +26,7 @@ public interface SwiftSegmentService {
 
     void delete(List<SegmentKey> segKeys);
 
-    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType, Date segmentTime, Date visitedTime);
+    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
 
     List<SegmentKey> getTableSegKeys(SourceKey tableKey);
 
@@ -44,11 +44,21 @@ public interface SwiftSegmentService {
 
     List<SegmentKey> getOwnSegments(SourceKey tableKey);
 
+    List<SegmentVisited> getVisitedByKeys(Collection<SegmentKey> segmentKeys);
+
     SwiftSegmentBucket getBucketByTable(SourceKey sourceKey);
 
     List<SwiftSegmentBucketElement> getBucketElementsByKeys(Collection<SegmentKey> segmentKeys);
 
     void saveBucket(SwiftSegmentBucketElement element);
+
+    void saveBuckets(Collection<SwiftSegmentBucketElement> element);
+
+    void saveVisited(SegmentVisited segmentVisited);
+
+    void saveVisiteds(Collection<SegmentVisited> segmentVisited);
+
+    void updateVisiteds(Collection<SegmentVisited> segmentVisited);
 
     void deleteBucket(SwiftSegmentBucketElement element);
 

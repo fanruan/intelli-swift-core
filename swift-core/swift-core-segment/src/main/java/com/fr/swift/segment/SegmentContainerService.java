@@ -71,6 +71,16 @@ public class SegmentContainerService implements SegmentService {
     }
 
     @Override
+    public List<SegmentInfo> getSegmentInfos(List<SegmentKey> keys) {
+        return SegmentContainer.LOCAL.getSegmentInfos(keys);
+    }
+
+    @Override
+    public List<SegmentVisited> getVisitedSegments(List<SegmentKey> keys) {
+        return SegmentContainer.LOCAL.getVisitedSegments(keys);
+    }
+
+    @Override
     public boolean exist(SegmentKey segmentKey) {
         return SegmentContainer.LOCAL.exist(segmentKey);
     }

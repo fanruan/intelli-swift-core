@@ -2,6 +2,7 @@ package com.fr.swift.query.info.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftSegmentVisitedEntity;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.db.impl.SwiftDatabase;
@@ -15,6 +16,7 @@ import com.fr.swift.query.info.SingleTableQueryInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
+import com.fr.swift.segment.SegmentVisited;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.AllotRule;
@@ -36,6 +38,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     protected final static int ALL_SEGMENT = -1;
 
     protected static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
+    protected static final SwiftSegmentService SWIFT_SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
 
     protected SwiftTableAllotRule tableAllotRule;
     protected SwiftSegmentBucket segmentBucket;
@@ -53,7 +56,8 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     public List<Segment> filterSegs(SingleTableQueryInfo singleTableQueryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterSegKeys(singleTableQueryInfo);
         //更新块的被访问信息
-        SwiftContext.get().getBean(SwiftSegmentService.class).updateSegments(segmentKeyList);
+        List<SegmentVisited> visited = SEG_SVC.getVisitedSegments(segmentKeyList).stream().map(SwiftSegmentVisitedEntity::new).collect(Collectors.toList());
+        SWIFT_SEG_SVC.updateVisiteds(visited);
         return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
     }
 

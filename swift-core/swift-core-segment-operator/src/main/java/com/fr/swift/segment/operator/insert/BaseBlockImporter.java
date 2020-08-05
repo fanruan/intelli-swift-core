@@ -24,7 +24,6 @@ import com.fr.swift.util.Assert;
 import com.fr.swift.util.IoUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +106,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected abstract void onFailed();
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
-        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase(), new Date());
+        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
     }
 
     protected void releaseFullIfExists() {

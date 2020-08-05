@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
+import com.fr.swift.config.entity.SwiftSegmentInfo;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -33,6 +34,7 @@ public enum SegmentContainer implements SegmentService {
     private final Map<SourceKey, Set<SegmentKey>> tableMap = new ConcurrentHashMap<>();
     private final Map<String, SegmentKey> segmentKeyMap = new ConcurrentHashMap<>();
     private final Map<SourceKey, SwiftSegmentBucket> bucketMap = new ConcurrentHashMap<>();
+    private final Map<String, SegmentInfo> segmentInfoMap = new ConcurrentHashMap<>();
 
     SegmentContainer() {
         List<SwiftMetaData> allMetas = metaDataService.getAllMetas();
@@ -40,11 +42,23 @@ public enum SegmentContainer implements SegmentService {
             try {
                 List<SegmentKey> segmentKeyList = swiftSegmentService.getOwnSegments(new SourceKey(meta.getTableName()));
                 addSegments(segmentKeyList);
+                addVisited(segmentKeyList);
                 SourceKey tableKey = new SourceKey(meta.getTableName());
                 SwiftSegmentBucket bucket = swiftSegmentService.getBucketByTable(tableKey);
                 bucketMap.put(tableKey, bucket);
             } catch (SwiftMetaDataException e) {
                 SwiftLoggers.getLogger().error(e);
+            }
+        }
+    }
+
+    private void addVisited(List<SegmentKey> segmentKeys) {
+        List<SegmentVisited> visitedByKeys = swiftSegmentService.getVisitedByKeys(segmentKeys);
+        for (SegmentKey seg : segmentKeys) {
+            for (SegmentVisited visited : visitedByKeys) {
+                if (seg.getId().equals(visited.getId())) {
+                    segmentInfoMap.put(seg.getId(), new SwiftSegmentInfo(seg, visited));
+                }
             }
         }
     }
@@ -110,6 +124,23 @@ public enum SegmentContainer implements SegmentService {
         return tableMap.computeIfAbsent(tableKey, n -> new HashSet<>())
                 .stream()
                 .filter(s -> segmentIds.contains(s.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SegmentInfo> getSegmentInfos(List<SegmentKey> keys) {
+        return keys.stream().map(SegmentKey::getId)
+                .filter(segmentInfoMap::containsKey)
+                .map(segmentInfoMap::get)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SegmentVisited> getVisitedSegments(List<SegmentKey> keys) {
+        return keys.stream().map(SegmentKey::getId)
+                .filter(segmentInfoMap::containsKey)
+                .map(segmentInfoMap::get)
+                .map(SegmentInfo::getSegmentVisited)
                 .collect(Collectors.toList());
     }
 

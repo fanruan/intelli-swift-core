@@ -1,14 +1,16 @@
 package com.fr.swift.source.alloter.impl.hash;
 
+
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
+import com.fr.swift.config.entity.SwiftSegmentVisitedEntity;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentVisited;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,11 +35,12 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
 
     @Override
     protected SegmentState getInsertableSeg(int virtualOrder) {
-        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO, new Date(), null);
+        SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftSegmentBucketElement bucketElement = new SwiftSegmentBucketElement(tableKey, virtualOrder, segKey.getId());
+        SegmentVisited segmentVisited = new SwiftSegmentVisitedEntity(segKey.getId());
         swiftSegmentService.saveBucket(bucketElement);
-
         SwiftLoggers.getLogger().debug("importing, append new seg {} in bucket {}", segKey, virtualOrder);
+        swiftSegmentService.saveVisited(segmentVisited);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
     }

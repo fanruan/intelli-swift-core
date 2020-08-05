@@ -25,8 +25,6 @@ public interface SegmentKey {
 
     String getLocation();
 
-    Date getVisitedTime();
-
     @Override
     boolean equals(Object o);
 

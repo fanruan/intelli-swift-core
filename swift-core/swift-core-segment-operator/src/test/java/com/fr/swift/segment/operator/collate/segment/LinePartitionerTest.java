@@ -2,6 +2,7 @@ package com.fr.swift.segment.operator.collate.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentInfo;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
 import org.junit.Before;
@@ -34,30 +35,35 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PrepareForTest(SegmentUtils.class)
 public class LinePartitionerTest {
 
-    List<SegmentKey> segmentList = new ArrayList<>();
+    List<SegmentInfo> segmentList = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception {
         mockStatic(SegmentUtils.class);
         int count = 500000;
         for (int i = 0; i <= 10; i++) {
+            SegmentInfo segmentInfo = mock(SegmentInfo.class);
             SegmentKey segmentKey = mock(SegmentKey.class);
             Segment segment = mock(Segment.class);
             ImmutableBitMap allShow = mock(ImmutableBitMap.class);
             PowerMockito.doReturn(segment).when(SegmentUtils.class, "newSegment", segmentKey);
+            when(segmentInfo.getSegmentKey()).thenReturn(segmentKey);
             when(segment.getAllShowIndex()).thenReturn(allShow);
             when(allShow.getCardinality()).thenReturn(count);
+
             count += 500000;
-            segmentList.add(segmentKey);
+            segmentList.add(segmentInfo);
         }
         for (int i = 0; i <= 5; i++) {
+            SegmentInfo segmentInfo = mock(SegmentInfo.class);
             SegmentKey segmentKey = mock(SegmentKey.class);
             Segment segment = mock(Segment.class);
             ImmutableBitMap allShow = mock(ImmutableBitMap.class);
             PowerMockito.doReturn(segment).when(SegmentUtils.class, "newSegment", segmentKey);
+            when(segmentInfo.getSegmentKey()).thenReturn(segmentKey);
             when(segment.getAllShowIndex()).thenReturn(allShow);
             when(allShow.getCardinality()).thenReturn(10000);
-            segmentList.add(segmentKey);
+            segmentList.add(segmentInfo);
         }
     }
 

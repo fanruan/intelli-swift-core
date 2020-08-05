@@ -16,6 +16,7 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.TableNotExistException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.segment.SegmentInfo;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.SegmentUtils;
@@ -120,13 +121,14 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         }
         Table table = database.getTable(tableKey);
         List<SegmentKey> filterFragments = new SwiftFragmentFilter(alloter).filter(allCollateSegKeys);
+        List<SegmentInfo> segmentInfos = segmentService.getSegmentInfos(filterFragments);
         SwiftLoggers.getLogger().info("Start collate task! Collate segs: {}! ", filterFragments.toString());
         //DEC-7562  check collate的segs配置是否还存在,任何一个不存在直接退出。
         List<SegmentKey> allSegmentKeyList = segmentService.getSegmentKeys(tableKey);
         if (!allSegmentKeyList.containsAll(allCollateSegKeys)) {
             return Collections.EMPTY_LIST;
         }
-        Map<Integer, List<SegmentPartition>> classifiedFragments = new SwiftFragmentClassify(segmentBucket, alloter.getAllotRule()).classify(filterFragments);
+        Map<Integer, List<SegmentPartition>> classifiedFragments = new SwiftFragmentClassify(segmentBucket, alloter.getAllotRule()).classify(segmentInfos);
         List<SegmentKey> resultSegs = new ArrayList<>();
         for (Map.Entry<Integer, List<SegmentPartition>> itemEntry : classifiedFragments.entrySet()) {
             HisSegmentMerger merger = new HisSegmentMergerImpl();

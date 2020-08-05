@@ -8,6 +8,7 @@ import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
+import com.fr.swift.config.entity.SwiftSegmentVisitedEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
@@ -15,6 +16,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentVisited;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
 import org.hibernate.exception.ConstraintViolationException;
@@ -23,7 +25,6 @@ import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,7 +44,7 @@ import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_STOR
 @SwiftBean(name = "swiftSegmentService")
 public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     private SwiftDao<SegmentKey> segmentDao = new SwiftDaoImpl<>(SwiftSegmentEntity.class);
-
+    private SwiftDao<SegmentVisited> segmentInfoDao = new SwiftDaoImpl<>(SwiftSegmentVisitedEntity.class);
     private SwiftDao<SwiftSegmentBucketElement> bucketDao = new SwiftDaoImpl<>(SwiftSegmentBucketElement.class);
 
     private SwiftMetaDataService metaDataService = SwiftContext.get().getBean(SwiftMetaDataService.class);
@@ -95,7 +96,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     }
 
     @Override
-    public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType, Date segmentTime, Date visitedTime) {
+    public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType) {
         final SwiftDatabase swiftDatabase = metaDataService.getMeta(tableKey).getSwiftDatabase();
         for (; ; ) {
             try {
@@ -104,8 +105,8 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
                                 .where(builder.equal(from.get(COLUMN_SEGMENT_OWNER), tableKey.getId())
                                         , builder.equal(from.get(COLUMN_STORE_TYPE), storeType)));
                 int maxOrder = select.get(0) == null ? -1 : (Integer) select.get(0);
-                final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase, segmentTime);
-                segmentDao.insert(entity.setVisitedTime(visitedTime));
+                final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase);
+                segmentDao.insert(entity);
                 return entity;
             } catch (ConstraintViolationException ignore) {
             } catch (PersistenceException fIgnore) {
@@ -197,6 +198,16 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
         return segKeys;
     }
 
+    @Override
+    public List<SegmentVisited> getVisitedByKeys(Collection<SegmentKey> segmentKeys) {
+        if (segmentKeys == null || segmentKeys.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return (List<SegmentVisited>) bucketDao.selectQuery((query, builder, from) ->
+                query.select(from)
+                        .where(from.get("id").in(segmentKeys.stream().map(k -> k.getId()).collect(Collectors.toList()))));
+    }
+
     public void updateSegments(List<SegmentKey> segKeys) {
         List<SegmentKey> entities = new ArrayList<>();
         for (SegmentKey segKey : segKeys) {
@@ -237,6 +248,26 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     public void saveBucket(SwiftSegmentBucketElement element) {
         bucketDao.insert(element);
 
+    }
+
+    @Override
+    public void saveBuckets(Collection<SwiftSegmentBucketElement> elements) {
+        bucketDao.insert(elements);
+    }
+
+    @Override
+    public void saveVisited(SegmentVisited segmentVisited) {
+        segmentInfoDao.insert(segmentVisited);
+    }
+
+    @Override
+    public void saveVisiteds(Collection<SegmentVisited> segmentVisiteds) {
+        segmentInfoDao.insert(segmentVisiteds);
+    }
+
+    @Override
+    public void updateVisiteds(Collection<SegmentVisited> segmentVisited) {
+        segmentInfoDao.update(segmentVisited);
     }
 
     @Override

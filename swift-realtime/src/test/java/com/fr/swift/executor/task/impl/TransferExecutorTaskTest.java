@@ -12,8 +12,6 @@ import com.fr.swift.source.SourceKey;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Date;
-
 /**
  * This class created on 2019/3/7
  *
@@ -23,7 +21,7 @@ import java.util.Date;
 public class TransferExecutorTaskTest {
 
     String json = "{\"sourceKey\":\"test\",\"storeType\":\"FINE_IO\",\"swiftSchema\":\"CUBE\",\"id\":\"test@FINE_IO@0\",\"order\":0}";
-    final SegmentKey segmentKey = new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE, new Date());
+    final SegmentKey segmentKey = new SwiftSegmentEntity(new SourceKey("test"), 0, Types.StoreType.FINE_IO, SwiftDatabase.CUBE);
 
     @Test
     public void testSerialize() throws Exception {

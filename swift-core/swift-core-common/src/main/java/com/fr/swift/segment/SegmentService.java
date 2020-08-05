@@ -40,6 +40,10 @@ public interface SegmentService {
 
     List<SegmentKey> getSegmentKeysByIds(SourceKey tableKey, Collection<String> segmentIds);
 
+    List<SegmentInfo> getSegmentInfos(List<SegmentKey> keys);
+
+    List<SegmentVisited> getVisitedSegments(List<SegmentKey> keys);
+
     boolean exist(SegmentKey segmentKey);
 
     boolean existAll(Collection<String> segmentIds);

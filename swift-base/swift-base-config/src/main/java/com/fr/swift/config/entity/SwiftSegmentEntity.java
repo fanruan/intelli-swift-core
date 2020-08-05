@@ -62,9 +62,6 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Column(name = "location")
     private String location;
 
-    @JsonProperty("visitedTime")
-    @Column(name = "visitedTime")
-    private Date visitedTime;
 
     public SwiftSegmentEntity() {
     }
@@ -77,16 +74,15 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         this.swiftSchema = segKey.getSwiftSchema();
         this.createTime = segKey.getCreateTime();
         this.location = segKey.getLocation();
-        this.visitedTime = segKey.getVisitedTime();
     }
 
-    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, Date createTime) {
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
         id = getId(segmentOwner, segmentOrder, storeType);
         this.segmentOwner = segmentOwner.getId();
         this.segmentOrder = segmentOrder;
         this.storeType = storeType;
         this.swiftSchema = swiftSchema;
-        this.createTime = createTime;
+        this.createTime = new Date();
         this.location = SwiftProperty.get().getCubesPath();
     }
 
@@ -161,15 +157,6 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         return location;
     }
 
-    @Override
-    public Date getVisitedTime() {
-        return visitedTime;
-    }
-
-    public SwiftSegmentEntity setVisitedTime(Date visitedTime) {
-        this.visitedTime = visitedTime;
-        return this;
-    }
 
     public SwiftSegmentEntity setLocation(String location) {
         this.location = location;
