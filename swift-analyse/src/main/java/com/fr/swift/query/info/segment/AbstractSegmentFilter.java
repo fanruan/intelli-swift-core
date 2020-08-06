@@ -3,7 +3,6 @@ package com.fr.swift.query.info.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
-import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -36,7 +35,6 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
     protected final static int ALL_SEGMENT = -1;
 
     protected static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
-    protected static final SwiftSegmentService SWIFT_SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
 
     protected SwiftTableAllotRule tableAllotRule;
     protected SwiftSegmentBucket segmentBucket;
