@@ -71,7 +71,7 @@ public class SegmentContainerService implements SegmentService {
     }
 
     @Override
-    public List<SegmentInfo> getSegmentInfos(List<SegmentKey> keys) {
+    public List<SegmentVisitedInfo> getSegmentInfos(List<SegmentKey> keys) {
         return SegmentContainer.LOCAL.getSegmentInfos(keys);
     }
 

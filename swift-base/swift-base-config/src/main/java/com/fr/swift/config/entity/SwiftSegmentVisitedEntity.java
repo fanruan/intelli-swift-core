@@ -21,8 +21,14 @@ public class SwiftSegmentVisitedEntity implements Serializable, SegmentVisited {
     private static final long serialVersionUID = -2484152446737089735L;
     @Id
     private String id;
+    /**
+     * 最近一次被访问的时间
+     */
     @Column(name = "visitedTime")
     private Date visitedTime;
+    /**
+     * 被访问总次数
+     */
     @Column(name = "visits")
     private int visits;
 

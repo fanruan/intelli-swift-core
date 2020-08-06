@@ -1,8 +1,8 @@
 package com.fr.swift.segment.collate;
 
 import com.fr.swift.config.entity.SwiftSegmentBucket;
-import com.fr.swift.segment.SegmentInfo;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentVisitedInfo;
 import com.fr.swift.segment.operator.collate.segment.LinePartitioner;
 import com.fr.swift.segment.operator.collate.segment.Partitioner;
 import com.fr.swift.segment.operator.collate.segment.SegmentPartition;
@@ -33,15 +33,15 @@ public class SwiftFragmentClassify {
         this.allotRule = allotRule;
     }
 
-    public Map<Integer, List<SegmentPartition>> classify(Collection<SegmentInfo> segKeys) {
-        Map<Integer, List<SegmentInfo>> segKeyClassifyMap = new HashMap<>();
+    public Map<Integer, List<SegmentPartition>> classify(Collection<SegmentVisitedInfo> segKeys) {
+        Map<Integer, List<SegmentVisitedInfo>> segKeyClassifyMap = new HashMap<>();
         Map<SegmentKey, Integer> bucketIndexMap = segmentBucket.getBucketIndexMap();
-        for (SegmentInfo segKey : segKeys) {
+        for (SegmentVisitedInfo segKey : segKeys) {
             Integer index = bucketIndexMap.get(segKey.getSegmentKey()) == null ? LINE_VIRTUAL_INDEX : bucketIndexMap.get(segKey.getSegmentKey());
             segKeyClassifyMap.computeIfAbsent(index, n -> new ArrayList<>()).add(segKey);
         }
         Map<Integer, List<SegmentPartition>> itemMap = new HashMap<>();
-        for (Map.Entry<Integer, List<SegmentInfo>> classifyEntry : segKeyClassifyMap.entrySet()) {
+        for (Map.Entry<Integer, List<SegmentVisitedInfo>> classifyEntry : segKeyClassifyMap.entrySet()) {
             if (classifyEntry.getValue().size() >= SwiftFragmentFilter.FRAGMENT_NUMBER) {
                 Partitioner partitioner = new LinePartitioner(allotRule.getCapacity());
                 List<SegmentPartition> items = partitioner.partition(classifyEntry.getValue());

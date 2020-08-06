@@ -34,7 +34,7 @@ public enum SegmentContainer implements SegmentService {
     private final Map<SourceKey, Set<SegmentKey>> tableMap = new ConcurrentHashMap<>();
     private final Map<String, SegmentKey> segmentKeyMap = new ConcurrentHashMap<>();
     private final Map<SourceKey, SwiftSegmentBucket> bucketMap = new ConcurrentHashMap<>();
-    private final Map<String, SegmentInfo> segmentInfoMap = new ConcurrentHashMap<>();
+    private final Map<String, SegmentVisitedInfo> segmentInfoMap = new ConcurrentHashMap<>();
 
     SegmentContainer() {
         List<SwiftMetaData> allMetas = metaDataService.getAllMetas();
@@ -128,7 +128,7 @@ public enum SegmentContainer implements SegmentService {
     }
 
     @Override
-    public List<SegmentInfo> getSegmentInfos(List<SegmentKey> keys) {
+    public List<SegmentVisitedInfo> getSegmentInfos(List<SegmentKey> keys) {
         return keys.stream().map(SegmentKey::getId)
                 .filter(segmentInfoMap::containsKey)
                 .map(segmentInfoMap::get)
@@ -140,7 +140,7 @@ public enum SegmentContainer implements SegmentService {
         return keys.stream().map(SegmentKey::getId)
                 .filter(segmentInfoMap::containsKey)
                 .map(segmentInfoMap::get)
-                .map(SegmentInfo::getSegmentVisited)
+                .map(SegmentVisitedInfo::getSegmentVisited)
                 .collect(Collectors.toList());
     }
 

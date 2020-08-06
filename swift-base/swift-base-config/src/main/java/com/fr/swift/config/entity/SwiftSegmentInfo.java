@@ -1,8 +1,8 @@
 package com.fr.swift.config.entity;
 
-import com.fr.swift.segment.SegmentInfo;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentVisited;
+import com.fr.swift.segment.SegmentVisitedInfo;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  * @description
  * @since swift-1.2.0
  */
-public class SwiftSegmentInfo implements SegmentInfo {
+public class SwiftSegmentInfo implements SegmentVisitedInfo {
     private SegmentKey segmentKey;
     private SegmentVisited segmentVisited;
 

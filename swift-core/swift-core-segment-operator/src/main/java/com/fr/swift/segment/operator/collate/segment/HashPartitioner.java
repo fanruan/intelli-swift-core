@@ -1,6 +1,6 @@
 package com.fr.swift.segment.operator.collate.segment;
 
-import com.fr.swift.segment.SegmentInfo;
+import com.fr.swift.segment.SegmentVisitedInfo;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 // TODO: 2019/2/21
 public class HashPartitioner implements Partitioner {
     @Override
-    public List<SegmentPartition> partition(List<SegmentInfo> segmentKeys) {
+    public List<SegmentPartition> partition(List<SegmentVisitedInfo> segmentKeys) {
         return null;
     }
 }

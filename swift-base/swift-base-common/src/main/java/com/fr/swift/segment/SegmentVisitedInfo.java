@@ -8,7 +8,7 @@ import java.util.Date;
  * @description
  * @since swift-1.2.0
  */
-public interface SegmentInfo {
+public interface SegmentVisitedInfo {
     SegmentKey getSegmentKey();
 
     SegmentVisited getSegmentVisited();

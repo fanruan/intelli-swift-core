@@ -1,8 +1,8 @@
 package com.fr.swift.segment.operator.collate.segment;
 
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentInfo;
 import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SegmentVisitedInfo;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,13 +32,13 @@ public class LinePartitioner implements Partitioner {
      * @return
      */
     @Override
-    public List<SegmentPartition> partition(List<SegmentInfo> segmentKeys) {
+    public List<SegmentPartition> partition(List<SegmentVisitedInfo> segmentKeys) {
         // 先排序 从低到高
         segmentKeys.sort(Comparator.comparingInt(key -> SegmentUtils.newSegment(key.getSegmentKey()).getAllShowIndex().getCardinality()));
         int count = 0;
-        List<SegmentInfo> list = new ArrayList<>();
+        List<SegmentVisitedInfo> list = new ArrayList<>();
         List<SegmentPartition> partitions = new ArrayList<>();
-        for (SegmentInfo segmentKey : segmentKeys) {
+        for (SegmentVisitedInfo segmentKey : segmentKeys) {
             Segment segment = SegmentUtils.newSegment(segmentKey.getSegmentKey());
             count += segment.getAllShowIndex().getCardinality();
             if (count >= capacity) {
