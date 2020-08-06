@@ -3,7 +3,8 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
-import com.fr.swift.config.entity.SwiftSegmentInfo;
+import com.fr.swift.config.entity.SwiftSegmentVisitedEntity;
+import com.fr.swift.config.entity.SwiftSegmentVisitedInfo;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -11,6 +12,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +59,7 @@ public enum SegmentContainer implements SegmentService {
         for (SegmentKey seg : segmentKeys) {
             for (SegmentVisited visited : visitedByKeys) {
                 if (seg.getId().equals(visited.getId())) {
-                    segmentInfoMap.put(seg.getId(), new SwiftSegmentInfo(seg, visited));
+                    segmentInfoMap.put(seg.getId(), new SwiftSegmentVisitedInfo(seg, visited));
                 }
             }
         }
@@ -105,7 +107,7 @@ public enum SegmentContainer implements SegmentService {
 
     @Override
     public List<SegmentKey> getSegmentKeys(SourceKey tableKey) {
-        return tableMap.computeIfAbsent(tableKey, n -> new HashSet<>()).stream().collect(Collectors.toList());
+        return new ArrayList<>(tableMap.computeIfAbsent(tableKey, n -> new HashSet<>()));
     }
 
     @Override
@@ -145,6 +147,14 @@ public enum SegmentContainer implements SegmentService {
     }
 
     @Override
+    public void updateVisitedSegments(Collection<SegmentKey> keys) {
+        for (SegmentKey key : keys) {
+            SegmentVisitedInfo segmentVisitedInfo = segmentInfoMap.get(key.getId());
+            segmentInfoMap.put(key.getId(), new SwiftSegmentVisitedInfo(key, new SwiftSegmentVisitedEntity(segmentVisitedInfo.getSegmentVisited())));
+        }
+    }
+
+    @Override
     public boolean exist(SegmentKey segmentKey) {
         return segmentKeyMap.containsKey(segmentKey.getId());
     }
@@ -179,5 +189,13 @@ public enum SegmentContainer implements SegmentService {
 
     void deleteBucket(SegmentKey segmentKey) {
         bucketMap.computeIfAbsent(segmentKey.getTable(), n -> new SwiftSegmentBucket(segmentKey.getTable())).remove(segmentKey);
+    }
+
+    void saveVisited(SegmentVisitedInfo segmentVisitedInfo) {
+        segmentInfoMap.put(segmentVisitedInfo.getId(), segmentVisitedInfo);
+    }
+
+    void deleteVisited(String id) {
+        segmentInfoMap.remove(id);
     }
 }

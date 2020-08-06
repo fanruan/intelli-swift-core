@@ -44,7 +44,8 @@ public class QueryIndexBuilder extends BaseQueryBuilder {
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(info);
         //更新块的被访问信息
         List<SegmentVisited> visitedSegments = SEG_SVC.getVisitedSegments(segmentKeyList);
-        SWIFT_SEG_SVC.updateVisiteds(visitedSegments);
+        SWIFT_SEG_SVC.updateVisitedSegments(visitedSegments);
+        SEG_SVC.updateVisitedSegments(segmentKeyList);
         Builder builder = new Builder();
         Map<SegmentKey, IndexQuery<ImmutableBitMap>> queries = new HashMap<>();
         segmentKeyList.forEach(segmentKey -> queries.put(segmentKey, builder.buildLocalQuery(info, segmentKey)));

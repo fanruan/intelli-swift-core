@@ -256,17 +256,17 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     }
 
     @Override
-    public void saveVisited(SegmentVisited segmentVisited) {
+    public void saveVisitedSegment(SegmentVisited segmentVisited) {
         segmentInfoDao.insert(segmentVisited);
     }
 
     @Override
-    public void saveVisiteds(Collection<SegmentVisited> segmentVisiteds) {
+    public void saveVisitedSegments(Collection<SegmentVisited> segmentVisiteds) {
         segmentInfoDao.insert(segmentVisiteds);
     }
 
     @Override
-    public void updateVisiteds(Collection<SegmentVisited> segmentVisited) {
+    public void updateVisitedSegments(Collection<SegmentVisited> segmentVisited) {
         segmentInfoDao.update(segmentVisited);
     }
 

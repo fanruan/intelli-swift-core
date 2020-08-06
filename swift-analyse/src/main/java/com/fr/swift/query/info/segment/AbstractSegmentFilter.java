@@ -57,7 +57,8 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         List<SegmentKey> segmentKeyList = filterSegKeys(singleTableQueryInfo);
         //更新块的被访问信息
         List<SegmentVisited> visited = SEG_SVC.getVisitedSegments(segmentKeyList).stream().map(SwiftSegmentVisitedEntity::new).collect(Collectors.toList());
-        SWIFT_SEG_SVC.updateVisiteds(visited);
+        SWIFT_SEG_SVC.updateVisitedSegments(visited);
+        SEG_SVC.updateVisitedSegments(segmentKeyList);
         return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
     }
 

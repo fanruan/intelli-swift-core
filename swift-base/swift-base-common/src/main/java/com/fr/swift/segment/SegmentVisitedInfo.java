@@ -13,6 +13,8 @@ public interface SegmentVisitedInfo {
 
     SegmentVisited getSegmentVisited();
 
+    String getId();
+
     Date getCreateTime();
 
     Date getVisitedTime();

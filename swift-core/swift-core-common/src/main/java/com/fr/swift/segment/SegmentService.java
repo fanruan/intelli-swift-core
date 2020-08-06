@@ -44,6 +44,8 @@ public interface SegmentService {
 
     List<SegmentVisited> getVisitedSegments(List<SegmentKey> keys);
 
+    void updateVisitedSegments(Collection<SegmentKey> keys);
+
     boolean exist(SegmentKey segmentKey);
 
     boolean existAll(Collection<String> segmentIds);

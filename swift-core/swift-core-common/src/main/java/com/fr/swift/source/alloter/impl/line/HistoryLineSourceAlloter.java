@@ -25,7 +25,7 @@ public class HistoryLineSourceAlloter extends BaseLineSourceAlloter {
         SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftLoggers.getLogger().debug("importing, append new seg {}", segKey);
         SegmentVisited segmentVisited = new SwiftSegmentVisitedEntity(segKey.getId());
-        swiftSegmentService.saveVisited(segmentVisited);
+        swiftSegmentService.saveVisitedSegment(segmentVisited);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
     }

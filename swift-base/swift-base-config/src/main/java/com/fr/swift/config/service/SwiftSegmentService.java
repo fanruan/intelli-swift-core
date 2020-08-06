@@ -54,11 +54,11 @@ public interface SwiftSegmentService {
 
     void saveBuckets(Collection<SwiftSegmentBucketElement> element);
 
-    void saveVisited(SegmentVisited segmentVisited);
+    void saveVisitedSegment(SegmentVisited segmentVisited);
 
-    void saveVisiteds(Collection<SegmentVisited> segmentVisited);
+    void saveVisitedSegments(Collection<SegmentVisited> segmentVisited);
 
-    void updateVisiteds(Collection<SegmentVisited> segmentVisited);
+    void updateVisitedSegments(Collection<SegmentVisited> segmentVisited);
 
     void deleteBucket(SwiftSegmentBucketElement element);
 

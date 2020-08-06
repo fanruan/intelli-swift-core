@@ -40,7 +40,7 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
         SegmentVisited segmentVisited = new SwiftSegmentVisitedEntity(segKey.getId());
         swiftSegmentService.saveBucket(bucketElement);
         SwiftLoggers.getLogger().debug("importing, append new seg {} in bucket {}", segKey, virtualOrder);
-        swiftSegmentService.saveVisited(segmentVisited);
+        swiftSegmentService.saveVisitedSegment(segmentVisited);
         SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
     }

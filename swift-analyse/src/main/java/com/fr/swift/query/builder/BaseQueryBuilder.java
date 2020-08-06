@@ -55,7 +55,8 @@ class BaseQueryBuilder {
 
     private static void updateVisitedSegs(List<SegmentKey> segmentKeyList) {
         List<SegmentVisited> visited = SEG_SVC.getVisitedSegments(segmentKeyList).stream().map(SwiftSegmentVisitedEntity::new).collect(Collectors.toList());
-        SWIFT_SEG_SVC.updateVisiteds(visited);
+        SWIFT_SEG_SVC.updateVisitedSegments(visited);
+        SEG_SVC.updateVisitedSegments(segmentKeyList);
     }
 
     static List<SegmentKey> filterQuerySegKeys(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {

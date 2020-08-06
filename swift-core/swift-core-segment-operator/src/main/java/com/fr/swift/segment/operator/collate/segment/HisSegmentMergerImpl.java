@@ -61,7 +61,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
             }
             if (index != LINE_VIRTUAL_INDEX) {
                 SEG_SVC.saveBuckets(segmentKeys.stream().map(r -> new SwiftSegmentBucketElement(dataSource.getSourceKey(), index, r.getId())).collect(Collectors.toList()));
-                SEG_SVC.saveVisiteds(segmentVisiteds);
+                SEG_SVC.saveVisitedSegments(segmentVisiteds);
             }
             return segmentKeys;
         } finally {

@@ -12,11 +12,11 @@ import java.util.Date;
  * @description
  * @since swift-1.2.0
  */
-public class SwiftSegmentInfo implements SegmentVisitedInfo {
+public class SwiftSegmentVisitedInfo implements SegmentVisitedInfo {
     private SegmentKey segmentKey;
     private SegmentVisited segmentVisited;
 
-    public SwiftSegmentInfo(SegmentKey segmentKey, SegmentVisited segmentVisited) {
+    public SwiftSegmentVisitedInfo(SegmentKey segmentKey, SegmentVisited segmentVisited) {
         this.segmentKey = segmentKey;
         this.segmentVisited = segmentVisited;
     }
@@ -37,6 +37,11 @@ public class SwiftSegmentInfo implements SegmentVisitedInfo {
     @Override
     public SegmentVisited getSegmentVisited() {
         return segmentVisited;
+    }
+
+    @Override
+    public String getId() {
+        return segmentKey.getId();
     }
 
     @Override

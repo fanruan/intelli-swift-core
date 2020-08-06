@@ -70,6 +70,9 @@ public class SegmentPartition {
                 .max(Comparator.comparing(Date::getTime)).orElse(null);
     }
 
+    /**
+     * @return 返回碎片块中被访问总次数
+     */
     public int getVisits() {
         return segmentKeys.stream().mapToInt(SegmentVisitedInfo::getVisits).sum();
     }
