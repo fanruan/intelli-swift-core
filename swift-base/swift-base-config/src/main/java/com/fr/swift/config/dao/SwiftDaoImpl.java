@@ -77,7 +77,7 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
                 for (T entity : entities) {
                     session.delete(entity);
                 }
-                tx.commit();
+                SwiftDaoUtils.deadlockFreeCommit(tx);
             } catch (Throwable e) {
                 tx.rollback();
                 throw e;
