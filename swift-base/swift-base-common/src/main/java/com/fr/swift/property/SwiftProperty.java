@@ -42,6 +42,7 @@ public class SwiftProperty {
     private String[] executorTaskType;
     private String machineId;
     private String collateTime;
+    private boolean isBackupNode;
 
     private SwiftProperty() {
         initProperties();
@@ -136,6 +137,7 @@ public class SwiftProperty {
 
     private void initMachineId() {
         this.machineId = properties.getProperty("swift.machine.id", rpcAddress);
+        this.isBackupNode = Boolean.parseBoolean(properties.getProperty("swift.isBackupNode"));
     }
 
     public int getRpcMaxObjectSize() {
@@ -148,6 +150,10 @@ public class SwiftProperty {
 
     public boolean isCluster() {
         return isCluster;
+    }
+
+    public boolean isBackupNode() {
+        return isBackupNode;
     }
 
     public Set<String> getSwiftServiceNames() {

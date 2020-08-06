@@ -79,7 +79,7 @@ public class BitMapColumnTest {
 
     @Test
     public void putNullIndex() {
-        new BitMapColumn(new ResourceLocation("")).putNullIndex(new EmptyBitmap());
+        new BitMapColumn(new ResourceLocation("", "D:")).putNullIndex(new EmptyBitmap());
 
         verify(bitmapWriter).resetContentPosition();
         verify(bitmapWriter).put(anyLong(), ArgumentMatchers.<ImmutableBitMap>any());
@@ -87,24 +87,24 @@ public class BitMapColumnTest {
 
     @Test
     public void getNullIndex() {
-        BitmapAssert.equals(new RangeBitmap(1, 3), new BitMapColumn(new ResourceLocation("")).getNullIndex());
+        BitmapAssert.equals(new RangeBitmap(1, 3), new BitMapColumn(new ResourceLocation("", "D:")).getNullIndex());
     }
 
     @Test
     public void putBitMapIndex() {
-        new BitMapColumn(new ResourceLocation("")).putBitMapIndex(0, new EmptyBitmap());
+        new BitMapColumn(new ResourceLocation("", "D:")).putBitMapIndex(0, new EmptyBitmap());
 
         verify(bitmapWriter).put(anyLong(), ArgumentMatchers.<ImmutableBitMap>any());
     }
 
     @Test
     public void getBitMapIndex() {
-        BitmapAssert.equals(new RangeBitmap(1, 3), new BitMapColumn(new ResourceLocation("")).getBitMapIndex(0));
+        BitmapAssert.equals(new RangeBitmap(1, 3), new BitMapColumn(new ResourceLocation("", "D:")).getBitMapIndex(0));
     }
 
     @Test
     public void isReadable() {
-        new BitMapColumn(new ResourceLocation("")).isReadable();
+        new BitMapColumn(new ResourceLocation("", "D:")).isReadable();
 
         verify(bitmapReader).isReadable();
         verify(bitmapReader).release();
@@ -112,7 +112,7 @@ public class BitMapColumnTest {
 
     @Test
     public void release() {
-        BitMapColumn bitMapColumn = new BitMapColumn(new ResourceLocation(""));
+        BitMapColumn bitMapColumn = new BitMapColumn(new ResourceLocation("", "D:"));
         bitMapColumn.release();
 
         verifyZeroInteractions(bitmapReader, bitmapWriter);

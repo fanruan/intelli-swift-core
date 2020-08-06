@@ -5,6 +5,7 @@ import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentVisited;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Collection;
@@ -43,11 +44,23 @@ public interface SwiftSegmentService {
 
     List<SegmentKey> getOwnSegments(SourceKey tableKey);
 
+    List<SegmentVisited> getVisitedByKeys(Collection<SegmentKey> segmentKeys);
+
     SwiftSegmentBucket getBucketByTable(SourceKey sourceKey);
 
     List<SwiftSegmentBucketElement> getBucketElementsByKeys(Collection<SegmentKey> segmentKeys);
 
     void saveBucket(SwiftSegmentBucketElement element);
 
+    void saveBuckets(Collection<SwiftSegmentBucketElement> element);
+
+    void saveVisitedSegment(SegmentVisited segmentVisited);
+
+    void saveVisitedSegments(Collection<SegmentVisited> segmentVisited);
+
+    void updateVisitedSegments(Collection<SegmentVisited> segmentVisited);
+
     void deleteBucket(SwiftSegmentBucketElement element);
+
+    void updateSegments(List<SegmentKey> segKeys);
 }

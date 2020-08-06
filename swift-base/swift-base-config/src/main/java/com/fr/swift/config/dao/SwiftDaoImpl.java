@@ -97,10 +97,17 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
 
     @Override
     public void update(T entity) {
+        update(Collections.singletonList(entity));
+    }
+
+    @Override
+    public void update(Collection<T> entities) {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
-                session.update(entity);
+                for (T entity : entities) {
+                    session.update(entity);
+                }
                 tx.commit();
             } catch (Throwable e) {
                 tx.rollback();

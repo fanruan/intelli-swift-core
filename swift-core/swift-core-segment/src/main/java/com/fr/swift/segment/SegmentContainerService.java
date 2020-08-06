@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
+import com.fr.swift.config.entity.SwiftSegmentVisitedInfo;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.source.SourceKey;
 
@@ -27,12 +28,14 @@ public class SegmentContainerService implements SegmentService {
     public void addSegment(SegmentKey segmentKey) {
         SegmentContainer.LOCAL.addSegment(segmentKey);
         addElementByKeys(segmentKey == null ? Collections.EMPTY_LIST : Collections.singletonList(segmentKey));
+        addVisitedSegments(segmentKey == null ? Collections.EMPTY_LIST : Collections.singletonList(segmentKey));
     }
 
     @Override
     public void addSegments(List<SegmentKey> segmentKeys) {
         SegmentContainer.LOCAL.addSegments(segmentKeys);
         addElementByKeys(segmentKeys);
+        addVisitedSegments(segmentKeys);
     }
 
     @Override
@@ -71,6 +74,39 @@ public class SegmentContainerService implements SegmentService {
     }
 
     @Override
+    public List<SegmentVisitedInfo> getSegmentInfos(List<SegmentKey> keys) {
+        return SegmentContainer.LOCAL.getSegmentInfos(keys);
+    }
+
+    @Override
+    public List<SegmentVisited> getVisitedSegments(List<SegmentKey> keys) {
+        return SegmentContainer.LOCAL.getVisitedSegments(keys);
+    }
+
+    @Override
+    public void updateVisitedSegments(Collection<SegmentKey> keys) {
+        SegmentContainer.LOCAL.updateVisitedSegments(keys);
+    }
+
+    public void addVisitedSegments(Collection<SegmentKey> keys) {
+        List<SegmentVisited> visitedByKeys = swiftSegmentService.getVisitedByKeys(keys);
+        for (SegmentVisited segmentVisited : visitedByKeys) {
+            for (SegmentKey segmentKey : keys) {
+                if (segmentKey.getId().equals(segmentVisited.getId())) {
+                    SegmentContainer.LOCAL.saveVisited(new SwiftSegmentVisitedInfo(segmentKey, segmentVisited));
+                }
+            }
+        }
+    }
+
+    private void deleteVisitedSegments(Collection<SegmentKey> keys) {
+        for (SegmentKey key : keys) {
+            SegmentContainer.LOCAL.deleteVisited(key.getId());
+        }
+    }
+
+
+    @Override
     public boolean exist(SegmentKey segmentKey) {
         return SegmentContainer.LOCAL.exist(segmentKey);
     }
@@ -84,6 +120,7 @@ public class SegmentContainerService implements SegmentService {
     public SegmentKey removeSegment(SegmentKey segmentKey) {
         SegmentKey removedSegkey = SegmentContainer.LOCAL.removeSegment(segmentKey);
         deleteElementByKeys(removedSegkey == null ? Collections.EMPTY_LIST : Collections.singletonList(removedSegkey));
+        deleteVisitedSegments(removedSegkey == null ? Collections.EMPTY_LIST : Collections.singletonList(removedSegkey));
         return removedSegkey;
     }
 
@@ -91,6 +128,7 @@ public class SegmentContainerService implements SegmentService {
     public List<SegmentKey> removeSegments(List<SegmentKey> segmentKeys) {
         List<SegmentKey> removedSegkeys = SegmentContainer.LOCAL.removeSegments(segmentKeys);
         deleteElementByKeys(removedSegkeys);
+        deleteVisitedSegments(removedSegkeys);
         return removedSegkeys;
     }
 

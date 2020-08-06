@@ -2,7 +2,9 @@ package com.fr.swift.query.builder;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
+import com.fr.swift.config.entity.SwiftSegmentVisitedEntity;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -24,6 +26,7 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
+import com.fr.swift.segment.SegmentVisited;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
@@ -42,10 +45,18 @@ import java.util.stream.Collectors;
 class BaseQueryBuilder {
     protected static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
     protected static final SwiftTableAllotRuleService ALLOT_RULE_SERVICE = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
+    protected static final SwiftSegmentService SWIFT_SEG_SVC = SwiftContext.get().getBean(SwiftSegmentService.class);
 
     static List<Segment> filterQuerySegs(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(queryInfo);
+        updateVisitedSegs(segmentKeyList);
         return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
+    }
+
+    private static void updateVisitedSegs(List<SegmentKey> segmentKeyList) {
+        List<SegmentVisited> visited = SEG_SVC.getVisitedSegments(segmentKeyList).stream().map(SwiftSegmentVisitedEntity::new).collect(Collectors.toList());
+        SWIFT_SEG_SVC.updateVisitedSegments(visited);
+        SEG_SVC.updateVisitedSegments(segmentKeyList);
     }
 
     static List<SegmentKey> filterQuerySegKeys(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {

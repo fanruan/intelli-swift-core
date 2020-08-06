@@ -135,8 +135,8 @@ public class ResourceDiscovery implements IResourceDiscovery {
     }
 
     @Override
-    public Map<String, MemIo> removeCubeResource(String basePath) {
-        return cubeMemIos.remove(new ResourceLocation(basePath).getPath());
+    public Map<String, MemIo> removeCubeResource(String basePath, String location) {
+        return cubeMemIos.remove(new ResourceLocation(basePath, location).getPath());
     }
 
     @Override

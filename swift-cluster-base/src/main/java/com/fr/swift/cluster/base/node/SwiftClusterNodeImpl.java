@@ -12,14 +12,16 @@ public class SwiftClusterNodeImpl implements ClusterNode {
     private boolean isMaster;
     private String ip;
     private int port;
+    private boolean isBackupNode;
 
-    public SwiftClusterNodeImpl(String nodeId, String nodeAddress) {
+    public SwiftClusterNodeImpl(String nodeId, String nodeAddress, boolean isBackupNode) {
         this.address = nodeAddress;
         this.nodeId = nodeId;
         this.isMaster = false;
         String[] addressArr = address.split(":");
         this.ip = addressArr[0];
         this.port = Integer.parseInt(addressArr[1]);
+        this.isBackupNode = isBackupNode;
     }
 
     public String getIp() {
@@ -43,6 +45,11 @@ public class SwiftClusterNodeImpl implements ClusterNode {
     @Override
     public boolean isMaster() {
         return isMaster;
+    }
+
+    @Override
+    public boolean isBackupNode() {
+        return isBackupNode;
     }
 
     @Override

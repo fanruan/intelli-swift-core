@@ -2,6 +2,7 @@ package com.fr.swift.segment.operator.collate.segment;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
+import com.fr.swift.config.entity.SwiftSegmentVisitedEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.io.Types;
@@ -11,10 +12,12 @@ import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.SegmentVisited;
 import com.fr.swift.source.DataSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author lyon
@@ -29,12 +32,14 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
     @Override
     public List<SegmentKey> merge(DataSource dataSource, List<SegmentPartition> segmentPartitions, int index) {
         List<SegmentKey> segmentKeys = new ArrayList<>();
+        List<SegmentVisited> segmentVisiteds = new ArrayList<>();
         List<String> fields = dataSource.getMetadata().getFieldNames();
         try {
             for (SegmentPartition item : segmentPartitions) {
                 SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO);
                 segmentKeys.add(segKey);
-                ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
+                segmentVisiteds.add(new SwiftSegmentVisitedEntity(segKey.getId(), item.getVisits(), item.getVisitedTime()));
+                ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType(), segKey.getLocation());
                 Segment segment = new CacheColumnSegment(location, dataSource.getMetadata());
                 try {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
@@ -55,10 +60,8 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                 }
             }
             if (index != LINE_VIRTUAL_INDEX) {
-                for (SegmentKey segmentKey : segmentKeys) {
-                    SwiftSegmentBucketElement element = new SwiftSegmentBucketElement(dataSource.getSourceKey(), index, segmentKey.getId());
-                    SEG_SVC.saveBucket(element);
-                }
+                SEG_SVC.saveBuckets(segmentKeys.stream().map(r -> new SwiftSegmentBucketElement(dataSource.getSourceKey(), index, r.getId())).collect(Collectors.toList()));
+                SEG_SVC.saveVisitedSegments(segmentVisiteds);
             }
             return segmentKeys;
         } finally {

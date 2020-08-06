@@ -1,6 +1,6 @@
 package com.fr.swift.segment.operator.collate.segment;
 
-import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentVisitedInfo;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ public interface Partitioner {
      * @param segmentKeys 待合并的碎片块
      * @return
      */
-    List<SegmentPartition> partition(List<SegmentKey> segmentKeys);
+    List<SegmentPartition> partition(List<SegmentVisitedInfo> segmentKeys);
 }

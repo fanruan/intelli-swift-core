@@ -62,7 +62,7 @@ public class RealtimeSegmentImplTest {
         SwiftMetaData meta = mock(SwiftMetaData.class);
         when(meta.getColumnId("c")).thenReturn("cId");
 
-        RealtimeSegmentImpl seg = spy(new RealtimeSegmentImpl(new ResourceLocation("/"), meta));
+        RealtimeSegmentImpl seg = spy(new RealtimeSegmentImpl(new ResourceLocation("/", "D:"), meta));
 
         // no cache of column
         assertNotEquals(seg.getColumn(new ColumnKey("c")), seg.getColumn(new ColumnKey("c")));

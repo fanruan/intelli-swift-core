@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
@@ -15,6 +16,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER;
@@ -52,11 +54,26 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Enumerated(EnumType.STRING)
     private SwiftDatabase swiftSchema;
 
+    @JsonProperty("createTime")
+    @Column(name = "createTime")
+    private Date createTime;
+
+    @JsonProperty("location")
+    @Column(name = "location")
+    private String location;
+
+
     public SwiftSegmentEntity() {
     }
 
     public SwiftSegmentEntity(SegmentKey segKey) {
-        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema());
+        id = getId(segKey.getTable(), segKey.getOrder(), segKey.getStoreType());
+        this.segmentOwner = segKey.getTable().getId();
+        this.segmentOrder = segKey.getOrder();
+        this.storeType = segKey.getStoreType();
+        this.swiftSchema = segKey.getSwiftSchema();
+        this.createTime = segKey.getCreateTime();
+        this.location = segKey.getLocation();
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
@@ -65,6 +82,8 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         this.segmentOrder = segmentOrder;
         this.storeType = storeType;
         this.swiftSchema = swiftSchema;
+        this.createTime = new Date();
+        this.location = SwiftProperty.get().getCubesPath();
     }
 
     public static String getHistoryId(String segmentOwner, int segmentOrder) {
@@ -126,6 +145,22 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
 
     public void setSwiftSchema(SwiftDatabase swiftSchema) {
         this.swiftSchema = swiftSchema;
+    }
+
+    @Override
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    @Override
+    public String getLocation() {
+        return location;
+    }
+
+
+    public SwiftSegmentEntity setLocation(String location) {
+        this.location = location;
+        return this;
     }
 
     @Override

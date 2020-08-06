@@ -36,7 +36,7 @@ public interface IResourceDiscovery extends Clearable {
     @Override
     void clear();
 
-    Map<String, MemIo> removeCubeResource(String basePath);
+    Map<String, MemIo> removeCubeResource(String basePath, String location);
 
     void releaseTable(SwiftDatabase schema, SourceKey tableKey);
 

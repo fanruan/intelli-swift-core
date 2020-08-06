@@ -45,17 +45,17 @@ public class ResourceLocationTest {
             return null;
         }).when(pathService).registerPathChangeListener(any(SwiftCubePathService.PathChangeListener.class));
 
-        new ResourceLocation("a");
+        new ResourceLocation("a", "C:");
 
         assertThat((String) Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("1");
 
-        new ResourceLocation("b");
+        new ResourceLocation("b", "C:");
 
         assertThat((String) Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("1");
 
         pathChangeListener[0].changed("2");
 
-        new ResourceLocation("c");
+        new ResourceLocation("c", "C:");
 
         assertThat((String) Whitebox.getInternalState(ResourceLocation.class, "basePath")).isEqualTo("2");
     }

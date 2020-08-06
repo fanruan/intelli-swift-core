@@ -141,7 +141,7 @@ public class CompatibleHistorySegmentTest {
         ImmutableBitMap bitmap = mock(ImmutableBitMap.class);
         when(bitmapReader.get(0)).thenReturn(bitmap, mock(ImmutableBitMap.class));
 
-        CompatibleHistorySegment seg = new CompatibleHistorySegment(new ResourceLocation("/"), mock(SwiftMetaData.class));
+        CompatibleHistorySegment seg = new CompatibleHistorySegment(new ResourceLocation("/", "D:"), mock(SwiftMetaData.class));
         assertEquals(bitmap, seg.getAllShowIndex());
         // cache all show
         assertEquals(bitmap, seg.getAllShowIndex());
@@ -149,7 +149,7 @@ public class CompatibleHistorySegmentTest {
 
     @Test
     public void release() {
-        CompatibleHistorySegment seg = new CompatibleHistorySegment(new ResourceLocation("/"), mock(SwiftMetaData.class));
+        CompatibleHistorySegment seg = new CompatibleHistorySegment(new ResourceLocation("/", "D:"), mock(SwiftMetaData.class));
         seg.putRowCount(3);
         seg.getRowCount();
         seg.putAllShowIndex(mock(ImmutableBitMap.class));

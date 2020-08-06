@@ -20,7 +20,7 @@ public class StandardAggregateTest extends TestCase {
         RowTraversal bitMap = AllShowBitMap.of(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu", "D:"));
         BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
         DictionaryEncodedColumn dictionaryEncodedColumn = control.createMock(DictionaryEncodedColumn.class);

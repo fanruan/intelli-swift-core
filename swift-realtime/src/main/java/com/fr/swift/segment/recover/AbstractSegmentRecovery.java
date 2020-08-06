@@ -40,7 +40,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
 
     protected Segment getBackupSegment(SegmentKey realtimeSegKey, SwiftMetaData meta) {
         // 恢复用的，只能读不能写
-        return new BackupSegment(new ResourceLocation(new CubePathBuilder(realtimeSegKey).asBackup().build(), Types.StoreType.NIO), meta);
+        return new BackupSegment(new ResourceLocation(new CubePathBuilder(realtimeSegKey).asBackup().build(), Types.StoreType.NIO, realtimeSegKey.getLocation()), meta);
     }
 
     protected Segment newRealtimeSegment(Segment realtimeSeg) {
@@ -49,7 +49,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
 
     private List<SegmentKey> getUnstoredSegmentKeys(SourceKey tableKey) {
         List<SegmentKey> segKeys = localSegmentProvider.getSegmentKeys(tableKey);
-        List<SegmentKey> unstoredSegs = new ArrayList<SegmentKey>();
+        List<SegmentKey> unstoredSegs = new ArrayList<>();
         if (null != segKeys) {
             for (SegmentKey segKey : segKeys) {
                 if (segKey.getStoreType().isTransient()) {

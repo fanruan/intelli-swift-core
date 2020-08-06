@@ -3,6 +3,8 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
+import com.fr.swift.config.entity.SwiftSegmentVisitedEntity;
+import com.fr.swift.config.entity.SwiftSegmentVisitedInfo;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -10,6 +12,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +36,7 @@ public enum SegmentContainer implements SegmentService {
     private final Map<SourceKey, Set<SegmentKey>> tableMap = new ConcurrentHashMap<>();
     private final Map<String, SegmentKey> segmentKeyMap = new ConcurrentHashMap<>();
     private final Map<SourceKey, SwiftSegmentBucket> bucketMap = new ConcurrentHashMap<>();
+    private final Map<String, SegmentVisitedInfo> segmentInfoMap = new ConcurrentHashMap<>();
 
     SegmentContainer() {
         List<SwiftMetaData> allMetas = metaDataService.getAllMetas();
@@ -40,11 +44,23 @@ public enum SegmentContainer implements SegmentService {
             try {
                 List<SegmentKey> segmentKeyList = swiftSegmentService.getOwnSegments(new SourceKey(meta.getTableName()));
                 addSegments(segmentKeyList);
+                addVisited(segmentKeyList);
                 SourceKey tableKey = new SourceKey(meta.getTableName());
                 SwiftSegmentBucket bucket = swiftSegmentService.getBucketByTable(tableKey);
                 bucketMap.put(tableKey, bucket);
             } catch (SwiftMetaDataException e) {
                 SwiftLoggers.getLogger().error(e);
+            }
+        }
+    }
+
+    private void addVisited(List<SegmentKey> segmentKeys) {
+        List<SegmentVisited> visitedByKeys = swiftSegmentService.getVisitedByKeys(segmentKeys);
+        for (SegmentKey seg : segmentKeys) {
+            for (SegmentVisited visited : visitedByKeys) {
+                if (seg.getId().equals(visited.getId())) {
+                    segmentInfoMap.put(seg.getId(), new SwiftSegmentVisitedInfo(seg, visited));
+                }
             }
         }
     }
@@ -84,14 +100,14 @@ public enum SegmentContainer implements SegmentService {
     @Override
     public List<Segment> getSegments(Set<String> segKeys) {
         return segKeys.stream()
-                .filter(s -> segmentKeyMap.containsKey(s))
+                .filter(segmentKeyMap::containsKey)
                 .map(s -> SegmentUtils.newSegment(segmentKeyMap.get(s)))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<SegmentKey> getSegmentKeys(SourceKey tableKey) {
-        return tableMap.computeIfAbsent(tableKey, n -> new HashSet<>()).stream().collect(Collectors.toList());
+        return new ArrayList<>(tableMap.computeIfAbsent(tableKey, n -> new HashSet<>()));
     }
 
     @Override
@@ -111,6 +127,31 @@ public enum SegmentContainer implements SegmentService {
                 .stream()
                 .filter(s -> segmentIds.contains(s.getId()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SegmentVisitedInfo> getSegmentInfos(List<SegmentKey> keys) {
+        return keys.stream().map(SegmentKey::getId)
+                .filter(segmentInfoMap::containsKey)
+                .map(segmentInfoMap::get)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SegmentVisited> getVisitedSegments(List<SegmentKey> keys) {
+        return keys.stream().map(SegmentKey::getId)
+                .filter(segmentInfoMap::containsKey)
+                .map(segmentInfoMap::get)
+                .map(SegmentVisitedInfo::getSegmentVisited)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateVisitedSegments(Collection<SegmentKey> keys) {
+        for (SegmentKey key : keys) {
+            SegmentVisitedInfo segmentVisitedInfo = segmentInfoMap.get(key.getId());
+            segmentInfoMap.put(key.getId(), new SwiftSegmentVisitedInfo(key, new SwiftSegmentVisitedEntity(segmentVisitedInfo.getSegmentVisited())));
+        }
     }
 
     @Override
@@ -148,5 +189,13 @@ public enum SegmentContainer implements SegmentService {
 
     void deleteBucket(SegmentKey segmentKey) {
         bucketMap.computeIfAbsent(segmentKey.getTable(), n -> new SwiftSegmentBucket(segmentKey.getTable())).remove(segmentKey);
+    }
+
+    void saveVisited(SegmentVisitedInfo segmentVisitedInfo) {
+        segmentInfoMap.put(segmentVisitedInfo.getId(), segmentVisitedInfo);
+    }
+
+    void deleteVisited(String id) {
+        segmentInfoMap.remove(id);
     }
 }
