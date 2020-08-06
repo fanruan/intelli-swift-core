@@ -20,6 +20,11 @@ public interface ClusterNode {
     boolean isMaster();
 
     /**
+     * @return 是否是备份节点
+     */
+    boolean isBackupNode();
+
+    /**
      * @param isNodeMaster:是否为主节点
      */
     void setMaster(boolean isNodeMaster);
