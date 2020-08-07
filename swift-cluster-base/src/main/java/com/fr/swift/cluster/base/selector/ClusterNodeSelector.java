@@ -48,11 +48,14 @@ public class ClusterNodeSelector implements Selector<ClusterNodeManager> {
         private String clusterId;
         private String address;
         private Map<String, ClusterNode> self;
+        private boolean isBackupNode;
 
         public DefaultNodeManager() {
-            this.clusterId = SwiftProperty.get().getMachineId();
-            this.address = SwiftProperty.get().getServerAddress();
-            this.self = Collections.singletonMap(clusterId, new SwiftClusterNodeImpl(clusterId, address));
+            SwiftProperty swiftProperty = SwiftProperty.get();
+            this.clusterId = swiftProperty.getMachineId();
+            this.address = swiftProperty.getServerAddress();
+            this.isBackupNode = swiftProperty.isBackupNode();
+            this.self = Collections.singletonMap(clusterId, new SwiftClusterNodeImpl(clusterId, address, isBackupNode));
         }
 
         @Override
@@ -60,12 +63,12 @@ public class ClusterNodeSelector implements Selector<ClusterNodeManager> {
         }
 
         @Override
-        public void putHistoryNode(String historyNodeId, String historyNodeAddress) {
+        public void putHistoryNode(String historyNodeId, String historyNodeAddress, boolean isBackupNode) {
 
         }
 
         @Override
-        public void setCurrentNode(String currentNodeId, String currentNodeAddress) {
+        public void setCurrentNode(String currentNodeId, String currentNodeAddress, boolean isBackupNode) {
         }
 
         @Override
