@@ -2,6 +2,7 @@ package com.fr.swift.service;
 
 import com.fr.swift.segment.SegmentKey;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,5 +19,5 @@ public interface MigrateService extends SwiftService {
      * @param location 待迁移路径
      * @return
      */
-    boolean appointMigrate(Map<SegmentKey, byte[]> segments, String location);
+    List<SegmentKey> appointMigrate(Map<SegmentKey, Map<String, byte[]>> segments, String location);
 }

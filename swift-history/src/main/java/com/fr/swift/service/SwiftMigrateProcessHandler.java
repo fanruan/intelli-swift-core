@@ -14,9 +14,15 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.base.node.ClusterNode;
 import com.fr.swift.local.LocalUrl;
+import com.fr.swift.segment.SegmentKey;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Moira
@@ -34,7 +40,7 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
 
     @Override
     protected URL processUrl(Target[] targets, Object... args) throws Exception {
-        String[] split = args[1].toString().split(":");
+        String[] split = args[1].toString().split(";");
         if (split.length > 1) {
             args[1] = split[1];
             Map<String, ClusterNode> onlineNodes = nodeContainer.getOnlineNodes();
@@ -50,19 +56,29 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
         Class<?> proxyClass = method.getDeclaringClass();
         Class<?>[] parameterTypes = method.getParameterTypes();
         String methodName = method.getName();
-
+        CountDownLatch latch = new CountDownLatch(1);
         final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
         RpcFuture<?> rpcFuture = (RpcFuture<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
+        List<SegmentKey> results = new ArrayList<>();
+
         rpcFuture.addCallback(new AsyncRpcCallback() {
             @Override
             public void success(final Object result) {
+                try {
+                    results.addAll((Collection<? extends SegmentKey>) result);
+                } finally {
+                    latch.countDown();
+                }
             }
 
             @Override
             public void fail(Exception e) {
+                results.addAll(Collections.EMPTY_LIST);
+                latch.countDown();
             }
         });
-        return null;
+        latch.await();
+        return results;
     }
 
 }

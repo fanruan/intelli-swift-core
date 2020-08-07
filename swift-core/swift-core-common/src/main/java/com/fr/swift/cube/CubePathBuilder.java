@@ -22,6 +22,7 @@ public class CubePathBuilder {
     private SourceKey tableKey = null;
     private Integer segOrder = null;
     private String columnId = null;
+    private String basePath = null;
 
     public CubePathBuilder() {
     }
@@ -29,7 +30,8 @@ public class CubePathBuilder {
     public CubePathBuilder(SegmentKey segKey) {
         setSwiftSchema(segKey.getSwiftSchema())
                 .setTableKey(segKey.getTable())
-                .setSegOrder(segKey.getOrder());
+                .setSegOrder(segKey.getOrder())
+                .setBasePath(segKey.getLocation());
     }
 
     public CubePathBuilder asAbsolute() {
@@ -71,13 +73,18 @@ public class CubePathBuilder {
         return this;
     }
 
+    public CubePathBuilder setBasePath(String path) {
+        this.basePath = path;
+        return this;
+    }
+
     public String build() {
         Assert.notNull(schema);
         Assert.isFalse(tempDir != null && backup, "tempDir is not allowed when backup is present, vice versa");
 
         StringBuilder path = new StringBuilder();
         if (absolute) {
-            path.append(PATH_SVC.getSwiftPath()).append('/');
+            path.append(basePath).append('/');
         }
         path.append(backup ? schema.getBackupDir() : schema.getDir());
         if (tempDir != null) {

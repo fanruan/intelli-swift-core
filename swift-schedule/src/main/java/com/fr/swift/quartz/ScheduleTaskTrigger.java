@@ -34,7 +34,7 @@ public class ScheduleTaskTrigger implements SwiftPriorityInitTrigger {
     @Override
     public void destroy() throws SchedulerException {
         QuartzJobService quartzJobService = SwiftContext.get().getBean(QuartzJobService.class);
-        SwiftLoggers.getLogger().info("stoping schedule task...");
+        SwiftLoggers.getLogger().info("stopping schedule task...");
         quartzJobService.stop();
     }
 

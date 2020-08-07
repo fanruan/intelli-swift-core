@@ -89,7 +89,7 @@ public class Lz4Connector extends FileConnector {
             }
             return new File(parent, block.getName());
         } else {
-            return new File(Strings.unifySlash(parentPath + "/" + block.getPath()));
+            return new File(Strings.unifySlash(block.getPath()));
         }
     }
 }

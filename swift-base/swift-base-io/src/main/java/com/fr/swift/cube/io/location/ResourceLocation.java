@@ -29,6 +29,7 @@ public class ResourceLocation implements IResourceLocation {
     private StoreType storeType;
     //默认路径不设置为cubePath，有可能用到其他硬盘位置
     private String basePath;
+    private String path;
 
     public ResourceLocation(String path, String basePath) {
         this(path, DEFAULT_STORE_TYPE, basePath);
@@ -37,8 +38,8 @@ public class ResourceLocation implements IResourceLocation {
     public ResourceLocation(String path, StoreType storeType, String basePath) {
         path = Strings.trimSeparator(path, "\\", SEPARATOR);
 //        path = SEPARATOR + path;
-        path = Strings.trimSeparator(path, SEPARATOR);
-        uri = URI.create(path);
+        this.path = Strings.trimSeparator(path, SEPARATOR);
+        uri = URI.create(basePath + SEPARATOR + this.path);
         this.basePath = basePath;
         this.storeType = storeType;
     }
@@ -55,7 +56,7 @@ public class ResourceLocation implements IResourceLocation {
 
     @Override
     public String getPath() {
-        return uri.getPath();
+        return path;
     }
 
     @Override

@@ -15,15 +15,20 @@ import com.fr.swift.boot.trigger.TaskDispatcherInitTrigger;
 import com.fr.swift.cluster.base.handler.JoinClusterListenerHandler;
 import com.fr.swift.cluster.base.handler.LeftClusterListenerHandler;
 import com.fr.swift.config.SwiftConfigRegistryImpl;
+import com.fr.swift.executor.SwiftCollateJob;
 import com.fr.swift.executor.task.ExecutorTypeContainer;
+import com.fr.swift.executor.task.SwiftMigrateJob;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
+import com.fr.swift.executor.task.impl.MigrateExecutorTask;
 import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
 import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.quartz.ScheduleTaskContainer;
 import com.fr.swift.quartz.ScheduleTaskTrigger;
 
 import java.util.List;
@@ -56,6 +61,7 @@ public class BootRegister {
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.DELETE, DeleteExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.TRUNCATE, TruncateExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.COLLATE, CollateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.MIGRATE, MigrateExecutorTask.class);
     }
 
     public static void registerListener() {
@@ -66,6 +72,13 @@ public class BootRegister {
         JoinClusterListenerHandler.listen();
         LeftClusterListenerHandler.listen();
 //        TransferRealtimeListener.listen();
+    }
+
+    public static void registerScheduleTask() {
+        if (!SwiftProperty.get().isBackupNode()) {
+            ScheduleTaskContainer.getInstance().schedulerTaskJob(new SwiftMigrateJob());
+            ScheduleTaskContainer.getInstance().schedulerTaskJob(new SwiftCollateJob());
+        }
     }
 
     public static void registerProxy() {

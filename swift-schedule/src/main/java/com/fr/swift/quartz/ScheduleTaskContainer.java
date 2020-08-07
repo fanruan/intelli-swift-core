@@ -1,7 +1,6 @@
 package com.fr.swift.quartz;
 
 import com.fr.swift.property.SwiftProperty;
-import com.fr.swift.quartz.config.ScheduleTaskType;
 import com.fr.swift.quartz.entity.TaskDefine;
 import com.fr.swift.quartz.execute.BaseScheduleJob;
 import org.quartz.JobKey;
@@ -30,8 +29,20 @@ public class ScheduleTaskContainer {
     }
 
     public void schedulerTaskJob(BaseScheduleJob job) {
-        if (job.getExecutorType().equals(ScheduleTaskType.ALL) ||
-                SwiftProperty.get().getMachineId().equals(job.getExecutorType().getMachineId())) {
+        boolean execute = false;
+        switch (job.getExecutorType()) {
+            case ALL:
+            case MIGRATE:
+            case COLLATE:
+                execute = true;
+                break;
+            case PART:
+                if (SwiftProperty.get().getMachineId().equals(job.getExecutorType().getMachineId())) {
+                    execute = true;
+                }
+                break;
+        }
+        if (execute) {
             TaskDefine task = TaskDefine.builder()
                     .jobKey(JobKey.jobKey(job.getClass().getName()))
                     .cronExpression(job.getCronExpression())

@@ -7,7 +7,7 @@ package com.fr.swift.quartz.config;
  * @since swift 1.1
  */
 public enum ScheduleTaskType {
-    PART(SchedulerProperty.get().getExecutorMachineId()), ALL;
+    PART(SchedulerProperty.get().getExecutorMachineId()), ALL, MIGRATE, COLLATE;
 
     private String machineId;
 

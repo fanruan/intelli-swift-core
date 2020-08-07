@@ -25,7 +25,7 @@ public abstract class BaseConnector extends AbstractConnector implements Connect
     }
 
     public File getFolderPath(FileBlock block) {
-        String path = Strings.unifySlash(parentPath + "/" + block.getParentUri().getPath());
+        String path = Strings.unifySlash(block.getParentUri().getPath());
         return new File(path);
     }
 

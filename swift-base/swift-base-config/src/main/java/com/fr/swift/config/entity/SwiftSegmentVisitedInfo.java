@@ -58,4 +58,9 @@ public class SwiftSegmentVisitedInfo implements SegmentVisitedInfo {
     public int getVisits() {
         return segmentVisited.getVisits();
     }
+
+    @Override
+    public String getLocation() {
+        return segmentKey.getLocation();
+    }
 }
