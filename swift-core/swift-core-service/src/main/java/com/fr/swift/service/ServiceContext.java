@@ -35,5 +35,5 @@ public interface ServiceContext extends SwiftService {
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
     @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
-    Boolean migrate(Map<SegmentKey, Map<String, byte[]>> segments, String location);
+    boolean migrate(Map<SegmentKey, Map<String, byte[]>> segments, String location);
 }
