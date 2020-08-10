@@ -86,7 +86,7 @@ public class SwiftProperty {
     }
 
     private void initCollateTime() {
-        collateTime = properties.getProperty("swift.collate.time");
+        collateTime = properties.getProperty("swift.collate.time", "0 0 2 * ? *");
     }
 
     public String getCollateTime() {

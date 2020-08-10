@@ -74,31 +74,35 @@ public class MigrateJob extends BaseJob<Boolean, List<String>> {
                     return FileVisitResult.TERMINATE;
                 }
             });
-            if (!files.isEmpty()) {
-                segments.put(segmentKey, files);
+            if (files.isEmpty()) {
+                return false;
             }
+            segments.put(segmentKey, files);
         }
         SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         SwiftSegmentService bean = SwiftContext.get().getBean(SwiftSegmentService.class);
         SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
-        //拿到迁移成功的块信息
-        List<SegmentKey> success = serviceContext.migrate(segments, path);
-        List<SegmentKey> newSegments = success.stream().map(r -> new SwiftSegmentEntity(r).setLocation(path)).collect(Collectors.toList());
-        //更新配置
-        bean.updateSegments(newSegments);
-        //更新缓存
-        segmentService.removeSegments(success);
-        segmentService.addSegments(newSegments);
+        //是否迁移成功
+        boolean success = serviceContext.migrate(segments, path);
+        if (success) {
+            List<SegmentKey> newSegments = segmentKeys.stream().map(r -> new SwiftSegmentEntity(r).setLocation(path)).collect(Collectors.toList());
+            //更新配置
+            bean.updateSegments(newSegments);
+            //更新缓存
+            segmentService.removeSegments(segmentKeys);
+            segmentService.addSegments(newSegments);
 
-        String[] split = path.split(SEMICOLON);
-        //如果是远程服务器
-        if (split.length == 2) {
-            locationService.saveOnNode(split[0], new HashSet<>(success));
-            locationService.deleteOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(success));
+            String[] split = path.split(SEMICOLON);
+            //如果是远程服务器
+            if (split.length == 2) {
+                locationService.saveOnNode(split[0], new HashSet<>(newSegments));
+                locationService.deleteOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(segmentKeys));
+            }
+            //删除块
+            segmentKeys.forEach(r -> FileUtil.delete(new CubePathBuilder(r).setTempDir(CubeUtil.getCurrentDir(r.getTable())).asAbsolute().build()));
+            return true;
         }
-        //删除块
-        success.forEach(r -> FileUtil.delete(new CubePathBuilder(r).setTempDir(CubeUtil.getCurrentDir(r.getTable())).asAbsolute().build()));
-        return true;
+        return false;
     }
 
     @Override

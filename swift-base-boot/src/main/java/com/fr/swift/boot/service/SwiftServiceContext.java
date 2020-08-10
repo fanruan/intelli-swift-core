@@ -102,7 +102,7 @@ public class SwiftServiceContext implements ServiceContext {
     }
 
     @Override
-    public List<SegmentKey> migrate(Map<SegmentKey, Map<String, byte[]>> segments, String location) {
+    public Boolean migrate(Map<SegmentKey, Map<String, byte[]>> segments, String location) {
         MigrateService migrateService = SwiftContext.get().getBean(MigrateService.class);
         return migrateService.appointMigrate(segments, location);
     }

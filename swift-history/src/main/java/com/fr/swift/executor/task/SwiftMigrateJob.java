@@ -12,13 +12,13 @@ import com.fr.swift.quartz.execute.BaseScheduleJob;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.SegmentVisitedInfo;
+import com.google.common.collect.Lists;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 @DisallowConcurrentExecution
 public class SwiftMigrateJob implements BaseScheduleJob {
     private static final MigrateProperty MIGRATE_PROPERTY = MigrateProperty.get();
+    private static final int MAX_MIGRATE_NUM = 50;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -69,8 +70,12 @@ public class SwiftMigrateJob implements BaseScheduleJob {
                 }
             }
         }
+        List<SegmentKey> collect = needMigrate.stream().map(SegmentVisitedInfo::getSegmentKey).collect(Collectors.toList());
         try {
-            TaskProducer.produceTask(new MigrateExecutorTask(needMigrate.stream().map(SegmentVisitedInfo::getSegmentKey).collect(Collectors.toList()), MIGRATE_PROPERTY.getBackupPath()));
+            List<List<SegmentKey>> partition = Lists.partition(collect, MAX_MIGRATE_NUM);
+            for (List<SegmentKey> segmentKey : partition) {
+                TaskProducer.produceTask(new MigrateExecutorTask(segmentKey, MIGRATE_PROPERTY.getBackupPath()));
+            }
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
@@ -91,6 +96,6 @@ public class SwiftMigrateJob implements BaseScheduleJob {
      * @return 块创建时间大于LifeCircle个月的
      */
     private boolean rule(SegmentVisitedInfo segmentVisitedInfo) {
-        return (new Date().getTime() - segmentVisitedInfo.getCreateTime().getTime()) > MigrateProperty.get().getLifeCycle() * TimeUnit.DAYS.toMillis(30);
+        return (System.currentTimeMillis() - segmentVisitedInfo.getCreateTime().getTime()) > MigrateProperty.get().getLifeCycle() * TimeUnit.DAYS.toMillis(30);
     }
 }

@@ -14,13 +14,8 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cluster.base.node.ClusterNode;
 import com.fr.swift.local.LocalUrl;
-import com.fr.swift.segment.SegmentKey;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -59,13 +54,12 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
         CountDownLatch latch = new CountDownLatch(1);
         final Invoker<?> invoker = invokerCreator.createAsyncInvoker(proxyClass, url);
         RpcFuture<?> rpcFuture = (RpcFuture<?>) invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
-        List<SegmentKey> results = new ArrayList<>();
-
+        final boolean[] flag = new boolean[1];
         rpcFuture.addCallback(new AsyncRpcCallback() {
             @Override
             public void success(final Object result) {
                 try {
-                    results.addAll((Collection<? extends SegmentKey>) result);
+                    flag[0] = true;
                 } finally {
                     latch.countDown();
                 }
@@ -73,12 +67,12 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
 
             @Override
             public void fail(Exception e) {
-                results.addAll(Collections.EMPTY_LIST);
+                flag[0] = false;
                 latch.countDown();
             }
         });
         latch.await();
-        return results;
+        return flag[0];
     }
 
 }

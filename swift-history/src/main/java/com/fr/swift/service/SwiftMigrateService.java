@@ -14,9 +14,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,17 +34,15 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
     }
 
     @Override
-    public List<SegmentKey> appointMigrate(Map<SegmentKey, Map<String, byte[]>> segments, String location) {
+    public Boolean appointMigrate(Map<SegmentKey, Map<String, byte[]>> segments, String location) {
         if (!isCubeOrMigrationPath(location)) {
             SwiftLoggers.getLogger().error("Incorrect migration path!");
-            return Collections.emptyList();
+            return false;
         }
         long t = System.currentTimeMillis();
-        List<SegmentKey> success = new ArrayList<>();
         for (Map.Entry<SegmentKey, Map<String, byte[]>> segment : segments.entrySet()) {
             String destPath = location + SEPARATOR + new CubePathBuilder(segment.getKey())
                     .setTempDir(CubeUtil.getCurrentDir(segment.getKey().getTable())).build();
-            success.add(segment.getKey());
             for (Map.Entry<String, byte[]> data : segment.getValue().entrySet()) {
                 String path = data.getKey();
                 File fileDir = new File(destPath + path.substring(0, path.lastIndexOf(SEPARATOR)));
@@ -57,13 +52,12 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
                     bos.write(data.getValue());
                 } catch (IOException e) {
                     SwiftLoggers.getLogger().error(e.getMessage());
-                    success.remove(segment.getKey());
-                    break;
+                    return false;
                 }
             }
         }
         SwiftLoggers.getLogger().info("Migration spends {} ms", System.currentTimeMillis() - t);
-        return success;
+        return true;
     }
 
     @Override
