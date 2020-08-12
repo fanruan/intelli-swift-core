@@ -12,11 +12,11 @@ import java.util.Map;
  */
 public interface MigrateService extends SwiftService {
     /**
-     * 区分本地和远程
+     * 不区分本地和远程
      *
      * @param segments 待迁移块
      * @param location 待迁移路径
      * @return
      */
-    boolean appointMigrate(Map<SegmentKey, byte[]> segments, String location);
+    Boolean appointMigrate(Map<SegmentKey, Map<String, byte[]>> segments, String location);
 }

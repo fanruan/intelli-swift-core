@@ -1,17 +1,24 @@
 package com.fr.swift.service;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.CubePathBuilder;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.property.MigrateProperty;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Moira
@@ -22,26 +29,42 @@ import java.util.Map;
 @SwiftService(name = "migrate")
 @SwiftBean(name = "migrate")
 public class SwiftMigrateService extends AbstractSwiftService implements MigrateService {
+
+    private static final String SEPARATOR = "/";
+
     @Override
     public ServiceType getServiceType() {
         return ServiceType.MIGRATE;
     }
 
     @Override
-    public boolean appointMigrate(Map<SegmentKey, byte[]> segments, String location) {
-        //todo：2020/7/29 还需要检查location是否是本地cube或本地迁移配置文件中的地址，符合则继续
+    public Boolean appointMigrate(Map<SegmentKey, Map<String, byte[]>> segments, String location) {
+        if (!isCubeOrMigrationPath(location)) {
+            SwiftLoggers.getLogger().error("Incorrect migration path!");
+            return false;
+        }
         long t = System.currentTimeMillis();
-        segments.forEach((segment, data) -> {
-            //暂时先这样写，之后改到IoUtil里
-            String destPath = location + new CubePathBuilder(segment).build();
-            File file = new File(destPath);
-            try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
-                bos.write(data);
-            } catch (IOException e) {
-                SwiftLoggers.getLogger().error(e.getMessage());
+        SwiftLoggers.getLogger().info("Start paste segments!");
+        for (Map.Entry<SegmentKey, Map<String, byte[]>> segment : segments.entrySet()) {
+            String destPath = location + SEPARATOR + new CubePathBuilder(segment.getKey())
+                    .setTempDir(CubeUtil.getCurrentDir(segment.getKey().getTable())).build();
+            for (Map.Entry<String, byte[]> data : segment.getValue().entrySet()) {
+                String path = data.getKey();
+                File fileDir = new File(destPath + path.substring(0, path.lastIndexOf(SEPARATOR)));
+                fileDir.mkdirs();
+                File file = new File(destPath + path);
+                try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+                    bos.write(data.getValue());
+                } catch (IOException e) {
+                    SwiftLoggers.getLogger().error(e.getMessage());
+                    return false;
+                }
             }
-        });
-        SwiftLoggers.getLogger().info("Migration spends ", System.currentTimeMillis() - t);
+        }
+        //更新备份节点的缓存
+        SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
+        segmentService.addSegments(segments.keySet().stream().map(r -> new SwiftSegmentEntity(r).setLocation(location)).collect(Collectors.toList()));
+        SwiftLoggers.getLogger().info("Migration spends {} ms", System.currentTimeMillis() - t);
         return true;
     }
 
@@ -53,5 +76,9 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
     @Override
     public boolean shutdown() throws SwiftServiceException {
         return super.shutdown();
+    }
+
+    private static boolean isCubeOrMigrationPath(String path) {
+        return SwiftProperty.get().getCubesPath().equals(path) || MigrateProperty.get().getBackupPath().endsWith(path);
     }
 }

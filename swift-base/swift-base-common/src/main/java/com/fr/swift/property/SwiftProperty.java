@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -43,6 +44,7 @@ public class SwiftProperty {
     private String machineId;
     private String collateTime;
     private boolean isBackupNode;
+    private String[] scheduleJob;
 
     private SwiftProperty() {
         initProperties();
@@ -70,6 +72,7 @@ public class SwiftProperty {
             initCubesPath();
             initMachineId();
             initCollateTime();
+            initScheduleJob();
         } catch (IOException e) {
             Crasher.crash(e);
         }
@@ -86,7 +89,7 @@ public class SwiftProperty {
     }
 
     private void initCollateTime() {
-        collateTime = (String) properties.getOrDefault("swift.collate.time", "2:00:00");
+        collateTime = properties.getProperty("swift.collate.time", "0 0 2 * * ? *");
     }
 
     public String getCollateTime() {
@@ -174,5 +177,13 @@ public class SwiftProperty {
 
     public String getMachineId() {
         return machineId;
+    }
+
+    private void initScheduleJob() {
+        this.scheduleJob = properties.getProperty("swift.schedule.job").split(";");
+    }
+
+    public List<String> getScheduleJob() {
+        return Arrays.asList(scheduleJob);
     }
 }

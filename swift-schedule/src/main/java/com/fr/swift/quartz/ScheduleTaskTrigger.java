@@ -19,22 +19,24 @@ public class ScheduleTaskTrigger implements SwiftPriorityInitTrigger {
 
     @Override
     public void init() {
-        try {
-            QuartzJobService quartzJobService = SwiftContext.get().getBean(QuartzJobService.class);
-            SwiftLoggers.getLogger().info("starting schedule task...");
-            List<TaskDefine> taskDefineList = ScheduleTaskContainer.getInstance().getTaskDefineList();
-            for (TaskDefine task : taskDefineList) {
+
+        QuartzJobService quartzJobService = SwiftContext.get().getBean(QuartzJobService.class);
+        SwiftLoggers.getLogger().info("starting schedule task...");
+        List<TaskDefine> taskDefineList = ScheduleTaskContainer.getInstance().getTaskDefineList();
+        for (TaskDefine task : taskDefineList) {
+            try {
                 quartzJobService.scheduleJob(task);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error("trigger {} task failed : {}", task.getJobKey(), e.getMessage());
             }
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error("trigger calc data size task failed : {}", e.getMessage());
         }
+
     }
 
     @Override
     public void destroy() throws SchedulerException {
         QuartzJobService quartzJobService = SwiftContext.get().getBean(QuartzJobService.class);
-        SwiftLoggers.getLogger().info("stoping schedule task...");
+        SwiftLoggers.getLogger().info("stopping schedule task...");
         quartzJobService.stop();
     }
 

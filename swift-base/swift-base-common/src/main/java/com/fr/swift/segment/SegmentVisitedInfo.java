@@ -20,4 +20,6 @@ public interface SegmentVisitedInfo {
     Date getVisitedTime();
 
     int getVisits();
+
+    String getLocation();
 }

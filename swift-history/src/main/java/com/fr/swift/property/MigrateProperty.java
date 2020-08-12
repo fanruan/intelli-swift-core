@@ -5,9 +5,6 @@ import com.fr.swift.util.Crasher;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Properties;
 
 /**
@@ -18,11 +15,14 @@ import java.util.Properties;
  */
 public class MigrateProperty {
     private Properties properties;
-    private String lifeCycle;
+    private int lifeCycle;
     private String backupPath;
-    private int day;
-    private String startTime;
     private int maxNum;
+    /**
+     * LRU系数，LRU是根据块访问时间从远到近排序，根据系数取前百分之多少
+     */
+    private double lruCoefficient;
+    private String cornExpression;
 
 
     private static final MigrateProperty INSTANCE = new MigrateProperty();
@@ -36,17 +36,17 @@ public class MigrateProperty {
         InputStream swiftIn = ConfigInputUtil.getConfigInputStream("migrate.properties");
         try {
             properties.load(swiftIn);
-            day = Integer.parseInt(properties.getProperty("start.day"));
-            lifeCycle = properties.getProperty("life.cycle");
+            lifeCycle = Integer.parseInt(properties.getProperty("life.cycle"));
             backupPath = properties.getProperty("backup.path");
-            startTime = properties.getProperty("start.time");
             maxNum = Integer.parseInt(properties.getProperty("migrate.num"));
+            lruCoefficient = Double.parseDouble(properties.getProperty("lru.coefficient"));
+            cornExpression = properties.getProperty("migrate.corn.expression");
         } catch (IOException e) {
             Crasher.crash(e);
         }
     }
 
-    public String getLifeCycle() {
+    public int getLifeCycle() {
         return lifeCycle;
     }
 
@@ -54,22 +54,15 @@ public class MigrateProperty {
         return backupPath;
     }
 
-    public int getDay() {
-        return day;
-    }
-
-    public long getStartTime() {
-        String[] split = startTime.split(":");
-        if (split.length == 3) {
-            LocalDate localDate = LocalDate.now();
-            final LocalDateTime localDateTime = localDate.atTime(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-            return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        }
-        return 0;
-    }
-
     public int getMaxNum() {
         return maxNum;
     }
 
+    public double getLruCoefficient() {
+        return lruCoefficient;
+    }
+
+    public String getCornExpression() {
+        return cornExpression;
+    }
 }
