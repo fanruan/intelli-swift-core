@@ -51,8 +51,10 @@ public class MigrateJob extends BaseJob<Boolean, List<String>> {
 
     @Override
     public Boolean call() throws Exception {
+        SwiftLoggers.getLogger().info("Start migrate job!");
         final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
         Map<SegmentKey, Map<String, byte[]>> segments = new HashMap<>();
+        SwiftLoggers.getLogger().info("Start copy segments!");
         for (SegmentKey segmentKey : segmentKeys) {
             //文件夹路径
             Map<String, byte[]> files = new HashMap<>();
@@ -79,24 +81,26 @@ public class MigrateJob extends BaseJob<Boolean, List<String>> {
             }
             segments.put(segmentKey, files);
         }
+        SwiftLoggers.getLogger().info("Copy segments finished!");
         SwiftSegmentLocationService locationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         SwiftSegmentService bean = SwiftContext.get().getBean(SwiftSegmentService.class);
         SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
         //是否迁移成功
         boolean success = serviceContext.migrate(segments, path);
         if (success) {
-            List<SegmentKey> newSegments = segmentKeys.stream().map(r -> new SwiftSegmentEntity(r).setLocation(path)).collect(Collectors.toList());
+            String[] split = path.split(SEMICOLON);
+            List<SegmentKey> newSegments = segmentKeys.stream().map(r -> new SwiftSegmentEntity(r).setLocation(split.length == 2 ? split[1] : path)).collect(Collectors.toList());
             //更新配置
             bean.updateSegments(newSegments);
-            //更新缓存
+            //移除旧的缓存
             segmentService.removeSegments(segmentKeys);
-            segmentService.addSegments(newSegments);
-
-            String[] split = path.split(SEMICOLON);
             //如果是远程服务器
             if (split.length == 2) {
                 locationService.saveOnNode(split[0], new HashSet<>(newSegments));
                 locationService.deleteOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(segmentKeys));
+            } else {
+                //增加新的缓存
+                segmentService.addSegments(newSegments);
             }
             //删除块
             segmentKeys.forEach(r -> FileUtil.delete(new CubePathBuilder(r).setTempDir(CubeUtil.getCurrentDir(r.getTable())).asAbsolute().build()));

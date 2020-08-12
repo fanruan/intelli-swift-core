@@ -16,7 +16,6 @@ import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Moira
@@ -50,8 +49,7 @@ public class MigrateExecutorTask extends AbstractExecutorTask<MigrateJob> {
             String segmentId = (String) o;
             segmentIds.add(segmentId);
         }
-        List<SegmentKey> limit = SwiftContext.get().getBean(SegmentService.class).getSegmentKeys(segmentIds).stream().limit(MigrateProperty.get().getMaxNum())
-                .collect(Collectors.toList());
-        this.job = new MigrateJob(limit, MigrateProperty.get().getBackupPath());
+        List<SegmentKey> segmentKeys = SwiftContext.get().getBean(SegmentService.class).getSegmentKeys(segmentIds);
+        this.job = new MigrateJob(segmentKeys, MigrateProperty.get().getBackupPath());
     }
 }

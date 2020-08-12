@@ -1,7 +1,9 @@
 package com.fr.swift.service;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.CubePathBuilder;
 import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.exception.SwiftServiceException;
@@ -9,12 +11,14 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.MigrateProperty;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Moira
@@ -40,6 +44,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
             return false;
         }
         long t = System.currentTimeMillis();
+        SwiftLoggers.getLogger().info("Start paste segments!");
         for (Map.Entry<SegmentKey, Map<String, byte[]>> segment : segments.entrySet()) {
             String destPath = location + SEPARATOR + new CubePathBuilder(segment.getKey())
                     .setTempDir(CubeUtil.getCurrentDir(segment.getKey().getTable())).build();
@@ -56,6 +61,9 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
                 }
             }
         }
+        //更新备份节点的缓存
+        SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
+        segmentService.addSegments(segments.keySet().stream().map(r -> new SwiftSegmentEntity(r).setLocation(location)).collect(Collectors.toList()));
         SwiftLoggers.getLogger().info("Migration spends {} ms", System.currentTimeMillis() - t);
         return true;
     }
