@@ -1,6 +1,7 @@
 package com.fr.swift.config.dao;
 
 import com.fr.swift.log.SwiftLoggers;
+import com.github.rholder.retry.RetryException;
 import com.github.rholder.retry.Retryer;
 import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
@@ -8,6 +9,7 @@ import com.github.rholder.retry.WaitStrategies;
 import org.hibernate.Transaction;
 import org.hibernate.exception.LockAcquisitionException;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,8 +38,9 @@ public class SwiftDaoUtils {
                 transaction.commit();
                 return true;
             });
-        } catch (Exception e) {
+        } catch (ExecutionException | RetryException e) {
             SwiftLoggers.getLogger().error(e);
+            throw new RuntimeException(String.format("Transaction not successfully started : %s", e.getMessage()));
         }
     }
 }
