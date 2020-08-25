@@ -9,6 +9,7 @@ import com.github.rholder.retry.WaitStrategies;
 import org.hibernate.Transaction;
 import org.hibernate.exception.LockAcquisitionException;
 
+import javax.persistence.OptimisticLockException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +31,7 @@ public class SwiftDaoUtils {
     public static void deadlockFreeCommit(Transaction transaction) {
         Retryer<Boolean> retryer = RetryerBuilder.<Boolean>newBuilder()
                 .retryIfExceptionOfType(LockAcquisitionException.class)
+                .retryIfExceptionOfType(OptimisticLockException.class)
                 .withStopStrategy(StopStrategies.stopAfterAttempt(10))
                 .withWaitStrategy(WaitStrategies.fixedWait(500, TimeUnit.MILLISECONDS))
                 .build();
