@@ -12,6 +12,7 @@ import org.hibernate.exception.LockAcquisitionException;
 import javax.persistence.OptimisticLockException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Heng.J
@@ -36,7 +37,9 @@ public class SwiftDaoUtils {
                 .withWaitStrategy(WaitStrategies.fixedWait(500, TimeUnit.MILLISECONDS))
                 .build();
         try {
+            AtomicInteger i = new AtomicInteger(0);
             retryer.call(() -> {
+                SwiftLoggers.getLogger().warn("current have committed : {} times", i.incrementAndGet());
                 transaction.commit();
                 return true;
             });
