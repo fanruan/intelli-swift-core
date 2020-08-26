@@ -3,7 +3,6 @@ package com.fr.swift.segment.operator.insert;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
-import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
@@ -35,6 +34,9 @@ import java.util.Map.Entry;
  * @date 2018/8/1
  */
 public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>, R extends SwiftResultSet> implements Releasable, Importer<R> {
+
+    protected Integer curCursor;
+
     protected A alloter;
 
     protected DataSource dataSource;
@@ -42,8 +44,6 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected Map<SegmentInfo, Inserting> insertings = new HashMap<>();
 
     protected List<SegmentKey> importSegKeys = new ArrayList<>();
-
-    protected SwiftTableAllotRuleService swiftTableAllotRuleService = SwiftContext.get().getBean(SwiftTableAllotRuleService.class);
 
     protected SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
@@ -54,24 +54,11 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
         this.alloter = alloter;
     }
 
-
     @Override
-    public void importData(R swiftResultSet) throws Exception {
+    public void importResultSet(R swiftResultSet) throws Exception {
         try (R resultSet = swiftResultSet) {
-
             for (int cursor = 0; resultSet.hasNext(); cursor++) {
-                Row row = resultSet.getNextRow();
-                SegmentInfo segInfo = allot(cursor, row);
-
-                if (!insertings.containsKey(segInfo)) {
-                    // 可能有满了的seg
-                    releaseFullIfExists();
-                    indexFullIfExists();
-                    SegmentKey segKey = newSegmentKey(segInfo);
-                    insertings.put(segInfo, getInserting(segKey));
-                    importSegKeys.add(segKey);
-                }
-                insertings.get(segInfo).insert(row);
+                importRow(swiftResultSet.getNextRow(), cursor);
             }
             IoUtil.release(this);
             processAfterSegmentDone(true);
@@ -83,6 +70,24 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
             onFailed();
             throw e;
         }
+    }
+
+    protected void importRow(Row row) throws Exception {
+        importRow(row, curCursor);
+        curCursor++;
+    }
+
+    protected void importRow(Row row, int cursor) throws Exception {
+        SegmentInfo segInfo = allot(cursor, row);
+        if (!insertings.containsKey(segInfo)) {
+            releaseFullIfExists();
+            indexFullIfExists();
+            // 可能有满了的seg
+            SegmentKey segKey = newSegmentKey(segInfo);
+            insertings.put(segInfo, getInserting(segKey));
+            importSegKeys.add(segKey);
+        }
+        insertings.get(segInfo).insert(row);
     }
 
     protected SegmentInfo allot(int cursor, Row row) {
