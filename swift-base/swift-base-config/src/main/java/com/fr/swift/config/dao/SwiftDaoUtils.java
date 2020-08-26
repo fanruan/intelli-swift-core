@@ -9,8 +9,10 @@ import com.github.rholder.retry.WaitStrategies;
 import org.hibernate.Transaction;
 import org.hibernate.exception.LockAcquisitionException;
 
+import javax.persistence.OptimisticLockException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Heng.J
@@ -30,11 +32,14 @@ public class SwiftDaoUtils {
     public static void deadlockFreeCommit(Transaction transaction) {
         Retryer<Boolean> retryer = RetryerBuilder.<Boolean>newBuilder()
                 .retryIfExceptionOfType(LockAcquisitionException.class)
+                .retryIfExceptionOfType(OptimisticLockException.class)
                 .withStopStrategy(StopStrategies.stopAfterAttempt(10))
                 .withWaitStrategy(WaitStrategies.fixedWait(500, TimeUnit.MILLISECONDS))
                 .build();
         try {
+            AtomicInteger i = new AtomicInteger(0);
             retryer.call(() -> {
+                SwiftLoggers.getLogger().warn("current have committed : {} times", i.incrementAndGet());
                 transaction.commit();
                 return true;
             });
