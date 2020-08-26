@@ -43,6 +43,11 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
+    public List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time) {
+        return convertService.getActiveDeleteTasksBeforeTime(time);
+    }
+
+    @Override
     public List<Object[]> getActiveTasksGroupByCluster(long time) {
         return convertService.getActiveTasksGroupByCluster(time);
     }
