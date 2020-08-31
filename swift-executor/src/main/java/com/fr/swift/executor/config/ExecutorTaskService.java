@@ -22,6 +22,8 @@ public interface ExecutorTaskService {
 
     List<ExecutorTask> getActiveTasksBeforeTime(long time);
 
+    List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time);
+
     List<Object[]> getActiveTasksGroupByCluster(long time);
 
     List<Object[]> getMaxtimeByContent(String... likes);
