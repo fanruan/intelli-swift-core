@@ -58,7 +58,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     public void importResultSet(R swiftResultSet) throws Exception {
         try (R resultSet = swiftResultSet) {
             for (int cursor = 0; resultSet.hasNext(); cursor++) {
-                importRow(swiftResultSet.getNextRow(), cursor);
+                importRow(resultSet.getNextRow(), cursor);
             }
             IoUtil.release(this);
             processAfterSegmentDone(true);
