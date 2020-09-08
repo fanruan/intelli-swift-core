@@ -35,7 +35,7 @@ import java.util.Map.Entry;
  */
 public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>, R extends SwiftResultSet> implements Releasable, Importer<R> {
 
-    protected Integer curCursor = 0;
+    protected int curCursor = 0;
 
     protected A alloter;
 
