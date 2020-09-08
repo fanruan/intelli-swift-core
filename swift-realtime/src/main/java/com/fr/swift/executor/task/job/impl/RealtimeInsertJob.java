@@ -50,7 +50,7 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
         SwiftSourceAlloter alloter = new BackupLineSourceAlloter(tableKey, new LineAllotRule(BaseAllotRule.MEM_CAPACITY));
         Table table = SwiftDatabase.getInstance().getTable(tableKey);
         ReusableResultSet reusableResultSet = new ReusableResultSet(resultSet);
-        new BackupBlockImporter<SwiftSourceAlloter<?, RowInfo>>(table, alloter).importData(reusableResultSet);
+        new BackupBlockImporter<SwiftSourceAlloter<?, RowInfo>>(table, alloter).importResultSet(reusableResultSet);
 
         return reusableResultSet;
     }
