@@ -66,7 +66,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     public void insert(final SourceKey tableKey, final SwiftResultSet resultSet) throws Exception {
         SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(BaseAllotRule.MEM_CAPACITY));
         Table table = SwiftDatabase.getInstance().getTable(tableKey);
-        new Incrementer<SwiftSourceAlloter<?, RowInfo>>(table, alloter).importData(resultSet);
+        new Incrementer<SwiftSourceAlloter<?, RowInfo>>(table, alloter).importResultSet(resultSet);
     }
 
     private void recover0() {

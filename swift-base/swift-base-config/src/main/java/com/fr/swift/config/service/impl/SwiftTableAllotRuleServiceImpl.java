@@ -35,4 +35,9 @@ public class SwiftTableAllotRuleServiceImpl implements SwiftTableAllotRuleServic
         dao.insert(swiftTableAllotRule);
     }
 
+    @Override
+    public void update(SwiftTableAllotRule SwiftTableAllotRule) {
+        dao.update(SwiftTableAllotRule);
+    }
+
 }
