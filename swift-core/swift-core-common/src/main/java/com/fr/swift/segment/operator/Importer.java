@@ -19,7 +19,7 @@ public interface Importer<R extends SwiftResultSet> {
      * @param swiftResultSet 承载数据的resultSet
      * @throws Exception
      */
-    void importData(R swiftResultSet) throws Exception;
+    void importResultSet(R swiftResultSet) throws Exception;
 
     /**
      * 获取字段
