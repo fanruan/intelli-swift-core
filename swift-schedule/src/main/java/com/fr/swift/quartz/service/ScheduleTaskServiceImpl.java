@@ -44,6 +44,11 @@ public class ScheduleTaskServiceImpl extends AbstractLifeCycle implements Schedu
     public void startup() throws LifeCycleException {
         super.startup();
         quartzJobService.startup();
+        try {
+            initGroovyScheduleJob();
+        } catch (Exception e) {
+            throw new LifeCycleException(e);
+        }
     }
 
     @Override
