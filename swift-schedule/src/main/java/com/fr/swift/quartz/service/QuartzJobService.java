@@ -12,9 +12,7 @@ import org.quartz.SchedulerException;
  * @description
  * @since swift 1.1
  */
-public interface QuartzJobService {
-
-    void stop() throws SchedulerException;
+public interface QuartzJobService extends LifeCycle {
 
     void scheduleJob(TaskDefine define) throws SchedulerException;
 
