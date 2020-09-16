@@ -16,6 +16,8 @@ public interface MapperFactory {
 
     <T> List<T> getMapperedList(SwiftResultSet swiftResultSet, Class<T> tClass) throws Exception;
 
+    <T> PojoResultSet<T> getMapperedReultSet(SwiftResultSet swiftResultSet, Class<T> tClass) throws Exception;
+
     <T> T getMappered(Row row, SwiftMetaData metaData, Class<T> tClass) throws Exception;
 
     static MapperFactory getMapper() {
