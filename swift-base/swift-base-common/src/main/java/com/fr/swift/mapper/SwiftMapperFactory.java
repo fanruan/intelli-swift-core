@@ -13,7 +13,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,11 +43,6 @@ public class SwiftMapperFactory implements MapperFactory {
             beanList.add(getMappered(swiftResultSet.getNextRow(), swiftResultSet.getMetaData(), tClass));
         }
         return beanList;
-    }
-
-    @Override
-    public <T> PojoResultSet<T> getMapperedReultSet(SwiftResultSet swiftResultSet, Class<T> tClass) throws Exception {
-        return new PojoResultSet<T>(swiftResultSet, tClass);
     }
 
     @Override
