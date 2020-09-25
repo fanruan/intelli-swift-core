@@ -90,7 +90,7 @@ public class BaseBlockImporterTest {
 
         when(inserting0.isFull()).thenReturn(true);
 
-        blockImporter.importData(resultSet);
+        blockImporter.importResultSet(resultSet);
 
         //verify persist meta
         verify(com.fr.swift.db.impl.SwiftDatabase.getInstance()).existsTable(dataSource.getSourceKey());
@@ -115,7 +115,7 @@ public class BaseBlockImporterTest {
         // exception
         when(resultSet.hasNext()).thenThrow(new SQLException());
         try {
-            blockImporter.importData(resultSet);
+            blockImporter.importResultSet(resultSet);
             fail();
         } catch (Exception e) {
             verify(blockImporter).onFailed();
