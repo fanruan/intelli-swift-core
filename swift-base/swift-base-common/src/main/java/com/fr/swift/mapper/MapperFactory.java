@@ -1,5 +1,6 @@
 package com.fr.swift.mapper;
 
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
