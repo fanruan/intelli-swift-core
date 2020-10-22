@@ -1,6 +1,6 @@
 package com.fr.swift.quartz.entity;
 
-import com.fr.swift.quartz.execute.BaseScheduleJob;
+import com.fr.swift.quartz.execute.ScheduleJob;
 import org.quartz.Job;
 import org.quartz.JobKey;
 
@@ -82,7 +82,7 @@ public class TaskDefine {
         return jobClass;
     }
 
-    public void setJobClass(Class<? extends BaseScheduleJob> jobClass) {
+    public void setJobClass(Class<? extends ScheduleJob> jobClass) {
         this.jobClass = jobClass;
     }
 
@@ -103,7 +103,7 @@ public class TaskDefine {
             return this;
         }
 
-        public Builder jobClass(Class<? extends BaseScheduleJob> jobClass) {
+        public Builder jobClass(Class<? extends ScheduleJob> jobClass) {
             task.setJobClass(jobClass);
             return this;
         }

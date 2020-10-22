@@ -72,16 +72,18 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
     @Override
     public void delete(Collection<T> entities) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            try {
-                for (T entity : entities) {
-                    session.delete(entity);
+            SwiftDaoUtils.deadlockFreeCommit(() -> {
+                Transaction tx = session.beginTransaction();
+                try {
+                    for (T entity : entities) {
+                        session.delete(entity);
+                    }
+                    tx.commit();
+                } catch (Throwable e) {
+                    tx.rollback();
+                    throw e;
                 }
-                tx.commit();
-            } catch (Throwable e) {
-                tx.rollback();
-                throw e;
-            }
+            });
         }
     }
 

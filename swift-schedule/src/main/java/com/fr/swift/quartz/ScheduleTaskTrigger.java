@@ -2,12 +2,8 @@ package com.fr.swift.quartz;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.quartz.entity.TaskDefine;
-import com.fr.swift.quartz.service.QuartzJobService;
+import com.fr.swift.quartz.service.ScheduleTaskService;
 import com.fr.swift.trigger.SwiftPriorityInitTrigger;
-import org.quartz.SchedulerException;
-
-import java.util.List;
 
 /**
  * @author Heng.J
@@ -19,25 +15,21 @@ public class ScheduleTaskTrigger implements SwiftPriorityInitTrigger {
 
     @Override
     public void init() {
+        try {
+            ScheduleTaskService scheduleTaskService = SwiftContext.get().getBean(ScheduleTaskService.class);
+            SwiftLoggers.getLogger().info("starting schedule task...");
+            scheduleTaskService.startup();
 
-        QuartzJobService quartzJobService = SwiftContext.get().getBean(QuartzJobService.class);
-        SwiftLoggers.getLogger().info("starting schedule task...");
-        List<TaskDefine> taskDefineList = ScheduleTaskContainer.getInstance().getTaskDefineList();
-        for (TaskDefine task : taskDefineList) {
-            try {
-                quartzJobService.scheduleJob(task);
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error("trigger {} task failed : {}", task.getJobKey(), e.getMessage());
-            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error("trigger calc data size task failed : {}", e.getMessage());
         }
-
     }
 
     @Override
-    public void destroy() throws SchedulerException {
-        QuartzJobService quartzJobService = SwiftContext.get().getBean(QuartzJobService.class);
-        SwiftLoggers.getLogger().info("stopping schedule task...");
-        quartzJobService.stop();
+    public void destroy() {
+        ScheduleTaskService scheduleTaskService = SwiftContext.get().getBean(ScheduleTaskService.class);
+        SwiftLoggers.getLogger().info("stoping schedule task...");
+        scheduleTaskService.shutdown();
     }
 
     @Override
