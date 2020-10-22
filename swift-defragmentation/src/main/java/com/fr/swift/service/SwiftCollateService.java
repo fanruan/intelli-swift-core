@@ -171,9 +171,10 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
     }
 
     private void rollback(List<SegmentKey> newSegmentKeys) {
-        SwiftLoggers.getLogger().error("Collate failed ! Clear new segs!");
+        SwiftLoggers.getLogger().error("Collate failed! Clear new segs : {}", newSegmentKeys);
         swiftSegmentService.delete(newSegmentKeys);
         segmentService.removeSegments(newSegmentKeys);
         newSegmentKeys.forEach(SegmentUtils::clearSegment);
+        SwiftLoggers.getLogger().info("Clear success!");
     }
 }
