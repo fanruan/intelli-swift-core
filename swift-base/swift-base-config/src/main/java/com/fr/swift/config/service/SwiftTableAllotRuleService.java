@@ -15,6 +15,8 @@ public interface SwiftTableAllotRuleService {
 
     SwiftTableAllotRule getByTale(SourceKey sourceKey);
 
-    void save(SwiftTableAllotRule swiftTableAllotRule);
+    void save(SwiftTableAllotRule SwiftTableAllotRule);
+
+    void update(SwiftTableAllotRule SwiftTableAllotRule);
 
 }

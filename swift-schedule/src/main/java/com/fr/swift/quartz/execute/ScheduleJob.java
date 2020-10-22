@@ -11,7 +11,7 @@ import org.quartz.JobExecutionException;
  * @description
  * @since swift 1.1
  */
-public interface BaseScheduleJob extends Job {
+public interface ScheduleJob extends Job {
 
     @Override
     void execute(JobExecutionContext context) throws JobExecutionException;

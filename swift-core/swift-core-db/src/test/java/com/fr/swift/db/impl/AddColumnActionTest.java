@@ -73,7 +73,7 @@ public class AddColumnActionTest {
         SourceKey tableKey = new SourceKey(meta.getTableName());
         com.fr.swift.db.Table table = SwiftDatabase.getInstance().createTable(tableKey, meta);
         Importer inserter = getInserter(table, new HistoryLineSourceAlloter(tableKey, new LineAllotRule(10)));
-        inserter.importData(new LimitedResultSet(new SupplierResultSet(meta, new Supplier<Row>() {
+        inserter.importResultSet(new LimitedResultSet(new SupplierResultSet(meta, new Supplier<Row>() {
             @Override
             public Row get() {
                 A a = new A();
