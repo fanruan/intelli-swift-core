@@ -21,10 +21,10 @@ import java.util.Date;
  * @date 2020/10/22
  */
 @Entity
-@Table(name = "fine_swift_userinfo",uniqueConstraints = {@UniqueConstraint(columnNames="username")})
+@Table(name = "fine_swift_userinfo", uniqueConstraints = {@UniqueConstraint(columnNames = "username")})
 public class SwiftUserInfo implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
@@ -46,7 +46,6 @@ public class SwiftUserInfo implements Serializable {
     private UserPermission authority;
 
     public SwiftUserInfo() {
-
     }
 
     public SwiftUserInfo(String username, String password, UserPermission authority) {
