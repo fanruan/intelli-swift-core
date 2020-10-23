@@ -46,6 +46,7 @@ public class BootRegister {
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentBucketElement");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTableAllotRule");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.message.MessageSendingRecordEntity");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftUserInfo");
     }
 
     public static void registerExecutorTask() {
