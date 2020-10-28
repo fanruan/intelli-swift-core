@@ -6,7 +6,6 @@ import com.github.rholder.retry.Retryer;
 import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
 import com.github.rholder.retry.WaitStrategies;
-import org.hibernate.Transaction;
 import org.hibernate.exception.LockAcquisitionException;
 
 import javax.persistence.OptimisticLockException;
@@ -24,12 +23,12 @@ public class SwiftDaoUtils {
 
     /**
      * 重复提交解决锁死
-     * 针对 OptimisticLockException
+     * 针对 OptimisticLockException 和 LockAcquisitionException
      * 尝试10次 每次间隔500ms
      *
-     * @param transaction
+     * @param runnable 业务逻辑代码
      */
-    public static void deadlockFreeCommit(Transaction transaction) {
+    public static void deadlockFreeCommit(Runnable runnable) {
         Retryer<Boolean> retryer = RetryerBuilder.<Boolean>newBuilder()
                 .retryIfExceptionOfType(LockAcquisitionException.class)
                 .retryIfExceptionOfType(OptimisticLockException.class)
@@ -40,12 +39,11 @@ public class SwiftDaoUtils {
             AtomicInteger i = new AtomicInteger(0);
             retryer.call(() -> {
                 SwiftLoggers.getLogger().warn("current have committed : {} times", i.incrementAndGet());
-                transaction.commit();
+                runnable.run();
                 return true;
             });
         } catch (ExecutionException | RetryException e) {
-            SwiftLoggers.getLogger().error(e);
-            throw new RuntimeException(String.format("Transaction not successfully started : %s", e.getMessage()));
+            throw new RuntimeException(String.format("Retry commit failed caused by : %s", e));
         }
     }
 }
