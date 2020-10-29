@@ -14,6 +14,7 @@ import com.fr.swift.query.filter.detail.impl.number.NumberStartsWithFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringEndsWithFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringKeyWordFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringLikeFilter;
+import com.fr.swift.query.filter.detail.impl.string.StringLikeIgnoreCaseFilter;
 import com.fr.swift.query.filter.detail.impl.string.StringStartsWithFilter;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
@@ -55,6 +56,8 @@ public class DetailFilterFactory {
                 return createStartWithFilter((String) filterInfo.getFilterValue(), column, segment.getMetaData(), columnKey);
             case STRING_ENDS_WITH:
                 return new StringEndsWithFilter((String) filterInfo.getFilterValue(), column);
+            case STRING_LIKE_IGNORE_CASE:
+                return new StringLikeIgnoreCaseFilter((String) filterInfo.getFilterValue(), column);
             case NUMBER_IN_RANGE: {
                 SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) filterInfo.getFilterValue();
                 return new NumberInRangeFilter(value.getMin(), value.getMax(),
