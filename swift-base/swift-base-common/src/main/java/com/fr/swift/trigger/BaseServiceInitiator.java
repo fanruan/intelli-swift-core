@@ -38,16 +38,17 @@ public abstract class BaseServiceInitiator<E extends TriggerEvent> {
     public void triggerByPriority(E event) {
         if (event == TriggerEvent.INIT) {
             if (started.getAndSet(true)) {
-                SwiftLoggers.getLogger().info("{} has been inited", this.getClass().getName());
+                SwiftLoggers.getLogger().warn("{} has been inited", this.getClass().getName());
                 return;
             }
         } else {
             if (!started.getAndSet(false)) {
-                SwiftLoggers.getLogger().info("{} has been destroyed", this.getClass().getName());
+                SwiftLoggers.getLogger().warn("{} has been destroyed", this.getClass().getName());
                 return;
             }
         }
         synchronized (TRIGGERS) {
+            SwiftLoggers.getLogger().info("{} {}", this.getClass().getName(), event);
             List<SwiftPriorityInitTrigger> triggers = new ArrayList<>(TRIGGERS);
             if (event == TriggerEvent.INIT) {
                 triggers.sort((t1, t2) -> Integer.compare(t2.priority(), t1.priority()));
