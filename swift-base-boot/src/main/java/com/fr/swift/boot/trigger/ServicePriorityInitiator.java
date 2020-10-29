@@ -13,12 +13,11 @@ import java.util.List;
  * @since swift 1.1
  */
 public class ServicePriorityInitiator extends BaseServiceInitiator {
-    private static List<SwiftPriorityInitTrigger> triggers = new ArrayList<>();
 
     private static ServicePriorityInitiator INSTANCE = new ServicePriorityInitiator();
 
     private ServicePriorityInitiator() {
-        super(triggers);
+        super(new ArrayList<>());
     }
 
     public static ServicePriorityInitiator getInstance() {
