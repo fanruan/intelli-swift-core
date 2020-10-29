@@ -21,4 +21,9 @@ public interface ParamErrorCode {
      * 参数sql解析错误
      */
     int SQL_PARSE_ERROR = ErrorCodeConfig.SQL_ERROR_CODE_BASE + 1;
+
+    /**
+     * 用户名密码错误
+     */
+    int USER_PASSWORD_ERROR = ErrorCodeConfig.USER_PASSWORD_ERROR_CODE_BASE+1;
 }
