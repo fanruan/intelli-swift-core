@@ -107,7 +107,8 @@ public class ScheduleTaskServiceImpl extends AbstractLifeCycle implements Schedu
         }
     }
 
-    private void addOrUpdateJob(TaskDefine define) throws SchedulerException {
+    @Override
+    public void addOrUpdateJob(TaskDefine define) throws SchedulerException {
         ensureStarted();
         if (define != null) {
             quartzJobService.scheduleJob(define);

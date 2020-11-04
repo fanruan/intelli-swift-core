@@ -48,7 +48,7 @@ public class SwiftMasterProcessHandler extends BaseProcessHandler implements Mas
      */
     @Override
     protected URL processUrl(Target[] targets, Object... args) throws Exception {
-        return UrlSelector.getInstance().getFactory().getURL(nodeContainer.getMasterNode());
+        return UrlSelector.getInstance().getFactory().getURL(nodeContainer.getMasterNode().getId());
     }
 }
 

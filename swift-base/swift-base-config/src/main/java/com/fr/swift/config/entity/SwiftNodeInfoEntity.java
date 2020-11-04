@@ -21,6 +21,8 @@ import java.io.Serializable;
 @Entity(name = "fine_swift_node_info")
 public class SwiftNodeInfoEntity implements Serializable, SwiftNodeInfo {
 
+    private static final long serialVersionUID = -8816997675837995276L;
+
     @Id
     @Column(name = "nodeId")
     private String nodeId;

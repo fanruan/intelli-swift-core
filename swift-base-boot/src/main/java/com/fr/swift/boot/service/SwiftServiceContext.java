@@ -111,8 +111,8 @@ public class SwiftServiceContext implements ServiceContext {
     }
 
     @Override
-    public boolean dispatch(String task, String location) throws Exception {
-        return (boolean) PlanningExecutorTask.of(task).getJob().call();
+    public boolean dispatch(String taskBean, String location) throws Exception {
+        return (boolean) PlanningExecutorTask.of(taskBean).getJob().call();
 //        SwiftContext.get().getBean(TaskService.class).dispatchTask(task, location);
     }
 

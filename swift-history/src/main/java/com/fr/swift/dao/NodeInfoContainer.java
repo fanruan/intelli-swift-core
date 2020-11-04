@@ -29,10 +29,9 @@ public enum NodeInfoContainer implements NodeInfoService {
 
     MASTER;
 
-    private static final DateTimeFormatter YYYY_MM = DateTimeFormatter.ofPattern("yyyyMM");
-
     private SwiftNodeInfoService nodeInfoService = SwiftContext.get().getBean(SwiftNodeInfoService.class);
 
+    private DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("yyyyMM");
     // 节点id(swift.properties) : 节点
     private Map<String, SwiftNodeInfo> nodeIdMap = new HashMap<>();
     // 结点类型 : 节点id
@@ -107,7 +106,7 @@ public enum NodeInfoContainer implements NodeInfoService {
             YearMonth temp = monthInfo.getBegin();
             YearMonth end = monthInfo.getEnd();
             while (temp.compareTo(end) <= 0) {
-                monthNodeMap.computeIfAbsent(temp.format(YYYY_MM), k -> new HashSet<>()).add(nodeId);
+                monthNodeMap.computeIfAbsent(temp.format(yearMonthFormatter), k -> new HashSet<>()).add(nodeId);
                 temp = temp.plus(Period.ofMonths(1));
             }
         }
@@ -120,7 +119,7 @@ public enum NodeInfoContainer implements NodeInfoService {
             YearMonth temp = monthInfo.getEnd().minus(Period.ofMonths(monthInfo.getMonthNum()));
             YearMonth begin = monthInfo.getBegin();
             while (temp.compareTo(begin) >= 0) {
-                result.add(new MigrateInfo(nodeInfo.getMigrateTime(), MigrateBean.of(begin.format(YYYY_MM), nodeInfo.getMigrateTarget())));
+                result.add(new MigrateInfo(nodeInfo.getMigrateTime(), MigrateBean.of(begin.format(yearMonthFormatter), nodeInfo.getMigrateTarget())));
                 begin = begin.plus(Period.ofMonths(1));
             }
         }
@@ -133,8 +132,8 @@ public enum NodeInfoContainer implements NodeInfoService {
         private int monthNum;
 
         public MonthInfo(String beginMonth, String endMonth, int monthNum) {
-            this.begin = YearMonth.parse(beginMonth, YYYY_MM);
-            this.end = YearMonth.parse(endMonth, YYYY_MM);
+            this.begin = YearMonth.parse(beginMonth, yearMonthFormatter);
+            this.end = YearMonth.parse(endMonth, yearMonthFormatter);
             this.monthNum = monthNum;
         }
 

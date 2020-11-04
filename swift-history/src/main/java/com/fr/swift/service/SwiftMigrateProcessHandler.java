@@ -30,10 +30,10 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
 
     @Override
     protected URL processUrl(Target[] targets, Object... args) throws Exception {
-        if (nodeContainer.getOnlineNodes().containsKey(args[0])) {
-            return UrlSelector.getInstance().getFactory().getURL(args[0]);
+        if (nodeContainer.getOnlineNodes().containsKey(args[1])) {
+            return UrlSelector.getInstance().getFactory().getURL(args[1]);
         }
-        SwiftLoggers.getLogger().error("node {} is offline", args[0]);
+        SwiftLoggers.getLogger().error("node {} is offline", args[1]);
         return null;
     }
 

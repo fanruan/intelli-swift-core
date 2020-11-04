@@ -27,7 +27,7 @@ public class SwiftBlockTaskEntity implements Serializable {
     @Column(name = "yearMonth")
     private String yearMonth;
 
-    @Column(name = "taskContent")
+    @Column(name = "taskContent", length = 4000)
     private String taskContent;
 
     @Column(name = "createTime")

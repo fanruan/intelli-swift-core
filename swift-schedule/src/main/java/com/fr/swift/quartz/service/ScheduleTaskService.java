@@ -1,5 +1,6 @@
 package com.fr.swift.quartz.service;
 
+import com.fr.swift.quartz.entity.TaskDefine;
 import org.quartz.SchedulerException;
 
 /**
@@ -43,4 +44,12 @@ public interface ScheduleTaskService extends LifeCycle {
      * @throws Exception
      */
     void initGroovyScheduleJob() throws Exception;
+
+    /**
+     * add or update taskDefine
+     *
+     * @param define
+     * @throws SchedulerException
+     */
+    void addOrUpdateJob(TaskDefine define) throws SchedulerException;
 }

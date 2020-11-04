@@ -42,11 +42,13 @@ public class BootRegister {
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentLocationEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTablePathEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftMetaDataEntity");
-        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentBucketElement");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTableAllotRule");
-        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.message.MessageSendingRecordEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftUserInfo");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftNodeInfoEntity");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.SwiftBlockTaskEntity");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.message.MessageSendingRecordEntity");
     }
 
     public static void registerExecutorTask() {
@@ -56,6 +58,8 @@ public class BootRegister {
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.DELETE, DeleteExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.TRUNCATE, TruncateExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.COLLATE, CollateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.MIGRATE, CollateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.PLANNING, CollateExecutorTask.class);
     }
 
     public static void registerListener() {

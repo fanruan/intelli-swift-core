@@ -1,12 +1,16 @@
 package com.fr.swift.service.event;
 
+import java.io.Serializable;
+
 /**
  * @author Heng.J
  * @date 2020/11/3
  * @description
  * @since swift-1.2.0
  */
-public class NodeMessage {
+public class NodeMessage implements Serializable {
+
+    private static final long serialVersionUID = 6312237404167456647L;
 
     private String clusterId;
 

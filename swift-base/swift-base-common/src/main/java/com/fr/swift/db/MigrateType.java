@@ -48,6 +48,6 @@ public enum MigrateType {
     }
 
     public boolean isAcceptable() {
-        return !MigrateType.WAITING.equals(this);
+        return !MigrateType.RUNNING.equals(this);
     }
 }

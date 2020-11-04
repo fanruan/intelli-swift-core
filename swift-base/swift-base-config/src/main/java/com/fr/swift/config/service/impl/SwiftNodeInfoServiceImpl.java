@@ -32,11 +32,17 @@ public class SwiftNodeInfoServiceImpl implements SwiftNodeInfoService {
 
     @Override
     public SwiftNodeInfoEntity getNodeInfo(String nodeId) {
-        return null;
+        final List<?> select = dao.selectQuery((query, builder, from) ->
+                query.select(from).where(builder.equal(from.get("nodeId"), nodeId)));
+        if (select.isEmpty()) {
+            return null;
+        }
+        SwiftNodeInfoEntity entity = (SwiftNodeInfoEntity) select.get(0);
+        return entity;
     }
 
     @Override
     public List<SwiftNodeInfo> getAllNodeInfo() {
-        return null;
+        return (List<SwiftNodeInfo>) dao.selectAll();
     }
 }

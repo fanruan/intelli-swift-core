@@ -14,7 +14,7 @@ import java.util.Set;
  * @description
  * @since swift-1.2.0
  */
-@SwiftBean(name = "nodeInfoContainerService")
+@SwiftBean(name = "NodeInfoService")
 public class NodeInfoContainerService implements NodeInfoService {
 
     @Override

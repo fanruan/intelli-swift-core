@@ -42,7 +42,7 @@ public interface ServiceContext extends SwiftService {
     boolean migrate(Map<SegmentKey, Map<String, byte[]>> segments, String location);
 
     @InvokeMethod(value = TaskProcessHandler.class, target = Target.ALL)
-    boolean dispatch(String task, String location) throws Exception;
+    boolean dispatch(String taskBean, String location) throws Exception;
 
     @InvokeMethod(value = MasterProcessHandler.class, target = Target.ALL)
     void report(NodeEvent nodeEvent, NodeMessage nodeMessage);

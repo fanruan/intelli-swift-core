@@ -1,18 +1,22 @@
 package com.fr.swift.boot.trigger;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.base.json.JsonBuilder;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.dao.NodeInfoService;
 import com.fr.swift.executor.task.bean.PlanningBean;
 import com.fr.swift.executor.task.bean.info.PlanningInfo;
-import com.fr.swift.executor.task.impl.PlanningExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.trigger.SwiftPriorityInitTrigger;
+import com.fr.swift.util.concurrent.PoolThreadFactory;
+import com.fr.swift.util.concurrent.SwiftExecutors;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Heng.J
@@ -22,7 +26,7 @@ import java.util.Set;
  */
 public class TaskDistributeTrigger implements SwiftPriorityInitTrigger {
 
-    private NodeInfoService nodeInfoService = SwiftContext.get().getBean(NodeInfoService.class);
+    private ScheduledExecutorService executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory("SwiftPlanTaskPool"));
 
     /**
      * 启动或竞争成主节点
@@ -34,35 +38,43 @@ public class TaskDistributeTrigger implements SwiftPriorityInitTrigger {
     @Override
     public void init() {
         SwiftLoggers.getLogger().info("starting task distribute...");
-        ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
-        Set<String> nodeIds = nodeInfoService.getMigrateNodeIds();
-        for (String nodeId : nodeIds) {
-            List<PlanningInfo> migrateInfos = nodeInfoService.getMigrateInfos(nodeId);
-            if (migrateInfos.isEmpty()) {
-                continue;
-            }
-            boolean success = false;
-            try {
-                for (PlanningInfo migrateInfo : migrateInfos) {
-                    success = serviceContext.dispatch(new PlanningExecutorTask(new PlanningBean(migrateInfo, SwiftTaskType.MIGRATE)).toString(), nodeId);
+        executorService.schedule(productTask(), 30, TimeUnit.SECONDS);
+    }
+
+    private Runnable productTask() {
+        return () -> {
+            final NodeInfoService nodeInfoService = SwiftContext.get().getBean(NodeInfoService.class);
+            SwiftLoggers.getLogger().info("starting task distribute...");
+            ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
+            Set<String> nodeIds = nodeInfoService.getMigrateNodeIds();
+            for (String nodeId : nodeIds) {
+                List<PlanningInfo> migrateInfos = nodeInfoService.getMigrateInfos(nodeId);
+                if (migrateInfos.isEmpty()) {
+                    continue;
                 }
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
+                boolean success = false;
+                try {
+                    for (PlanningInfo migrateInfo : migrateInfos) {
+                        success = serviceContext.dispatch(JsonBuilder.writeJsonString(new PlanningBean(migrateInfo, SwiftTaskType.MIGRATE)), nodeId);
+                    }
+                } catch (Exception e) {
+                    SwiftLoggers.getLogger().error(e);
+                }
+                if (!success) {
+                    //H.J TODO : 2020/10/30 发送失败策略
+                }
             }
-            if (!success) {
-                //H.J TODO : 2020/10/30 发送失败策略
-            }
-        }
+        };
     }
 
     @Override
-    public void destroy() throws InterruptedException {
+    public void destroy() {
         SwiftLoggers.getLogger().info("stopping task distribute...");
-        nodeInfoService.clearCache();
+        SwiftContext.get().getBean(NodeInfoService.class).clearCache();
     }
 
     @Override
     public int priority() {
-        return Priority.LOW.priority();
+        return Priority.LOWER.priority();
     }
 }
