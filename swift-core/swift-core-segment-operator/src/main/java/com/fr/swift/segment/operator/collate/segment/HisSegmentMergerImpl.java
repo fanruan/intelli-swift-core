@@ -15,6 +15,7 @@ import com.fr.swift.source.DataSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author lyon
@@ -55,10 +56,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                 }
             }
             if (index != LINE_VIRTUAL_INDEX) {
-                for (SegmentKey segmentKey : segmentKeys) {
-                    SwiftSegmentBucketElement element = new SwiftSegmentBucketElement(dataSource.getSourceKey(), index, segmentKey.getId());
-                    SEG_SVC.saveBucket(element);
-                }
+                SEG_SVC.saveBuckets(segmentKeys.stream().map(r -> new SwiftSegmentBucketElement(dataSource.getSourceKey(), index, r.getId())).collect(Collectors.toList()));
             }
             return segmentKeys;
         } finally {

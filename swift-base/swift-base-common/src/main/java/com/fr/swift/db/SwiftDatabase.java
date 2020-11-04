@@ -8,6 +8,7 @@ public enum SwiftDatabase {
     /**
      * 默认schema
      */
+    //H.J TODO : 2020/10/28 更改已有的表配置从 cube 为 cloud 同时迁移也只针对 cloud
     CUBE(0, "cube", "cubes"),
     DECISION_LOG(1, "decision_log", "logs/cubes"),
     MINOR_CUBE(2, "minor_cube", "minor_cubes");

@@ -42,6 +42,10 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Column(name = COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
 
+    @JsonProperty("segmentUri")
+    @Column(name = "segmentUri")
+    private String segmentUri;
+
     @JsonProperty(COLUMN_STORE_TYPE)
     @Column(name = COLUMN_STORE_TYPE)
     @Enumerated(EnumType.STRING)
@@ -102,12 +106,22 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     @Override
+    public String getSegmentUri() {
+        return segmentUri;
+    }
+
+    @Override
     public StoreType getStoreType() {
         return storeType;
     }
 
     public void setStoreType(StoreType storeType) {
         this.storeType = storeType;
+    }
+
+    public SwiftSegmentEntity setSegmentUri(String segmentUri) {
+        this.segmentUri = segmentUri;
+        return this;
     }
 
     @Override

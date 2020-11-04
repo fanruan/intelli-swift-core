@@ -4,9 +4,11 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
+import com.fr.swift.executor.task.impl.PlanningExecutorTask;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.result.SwiftResultSet;
@@ -15,13 +17,17 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
 import com.fr.swift.service.DeleteService;
+import com.fr.swift.service.MigrateService;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.event.NodeEvent;
+import com.fr.swift.service.event.NodeMessage;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.ServiceBeanFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2019/3/5
@@ -97,5 +103,21 @@ public class SwiftServiceContext implements ServiceContext {
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception {
         throw new UnsupportedOperationException("insert not support");
+    }
+
+    @Override
+    public boolean migrate(Map<SegmentKey, Map<String, byte[]>> segments, String location) {
+        return SwiftContext.get().getBean(MigrateService.class).appointMigrate(segments, location);
+    }
+
+    @Override
+    public boolean dispatch(String task, String location) throws Exception {
+        return (boolean) PlanningExecutorTask.of(task).getJob().call();
+//        SwiftContext.get().getBean(TaskService.class).dispatchTask(task, location);
+    }
+
+    @Override
+    public void report(NodeEvent nodeEvent, NodeMessage nodeMessage) {
+        SwiftEventDispatcher.asyncFire(nodeEvent, nodeMessage);
     }
 }

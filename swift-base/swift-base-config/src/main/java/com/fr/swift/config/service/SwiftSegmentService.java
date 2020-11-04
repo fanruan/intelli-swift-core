@@ -49,5 +49,9 @@ public interface SwiftSegmentService {
 
     void saveBucket(SwiftSegmentBucketElement element);
 
+    void saveBuckets(Collection<SwiftSegmentBucketElement> element);
+
     void deleteBucket(SwiftSegmentBucketElement element);
+
+    void updateSegments(List<SegmentKey> segKeys);
 }

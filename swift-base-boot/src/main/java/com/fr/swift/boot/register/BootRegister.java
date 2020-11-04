@@ -12,6 +12,8 @@ import com.fr.swift.boot.trigger.ClusterInitTrigger;
 import com.fr.swift.boot.trigger.ServicePriorityInitiator;
 import com.fr.swift.boot.trigger.SwiftServiceInitTrigger;
 import com.fr.swift.boot.trigger.TaskDispatcherInitTrigger;
+import com.fr.swift.boot.trigger.TaskDistributeTrigger;
+import com.fr.swift.cluster.base.initiator.MasterServiceInitiator;
 import com.fr.swift.config.SwiftConfigRegistryImpl;
 import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
@@ -61,6 +63,8 @@ public class BootRegister {
         ServicePriorityInitiator.getInstance().register(new TaskDispatcherInitTrigger());
         ServicePriorityInitiator.getInstance().register(new ClusterInitTrigger());
         ServicePriorityInitiator.getInstance().register(new ScheduleTaskTrigger());
+
+        MasterServiceInitiator.getInstance().register(new TaskDistributeTrigger());
 //        JoinClusterListenerHandler.listen();
 //        LeftClusterListenerHandler.listen();
 

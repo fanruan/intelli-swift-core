@@ -13,6 +13,8 @@ public interface SegmentKey {
 
     Integer getOrder();
 
+    String getSegmentUri();
+
     StoreType getStoreType();
 
     SwiftDatabase getSwiftSchema();

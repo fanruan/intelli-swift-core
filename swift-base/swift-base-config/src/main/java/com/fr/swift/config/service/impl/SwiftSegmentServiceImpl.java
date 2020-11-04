@@ -231,11 +231,21 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     }
 
     @Override
+    public void saveBuckets(Collection<SwiftSegmentBucketElement> element) {
+
+    }
+
+    @Override
     public void deleteBucket(SwiftSegmentBucketElement element) {
         bucketDao.deleteQuery((query, builder, from) ->
                 query.select(from)
                         .where(builder.equal(from.get("bucketIndex"), element.getBucketIndex())
                                 , builder.equal(from.get("realSegmentKey"), element.getRealSegmentKey())
                                 , builder.equal(from.get("sourceKey"), element.getRealSegmentKey())));
+    }
+
+    @Override
+    public void updateSegments(List<SegmentKey> segKeys) {
+
     }
 }
