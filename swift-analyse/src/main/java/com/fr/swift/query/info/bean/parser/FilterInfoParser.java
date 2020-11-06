@@ -90,6 +90,7 @@ public class FilterInfoParser {
             case STRING_LIKE:
             case STRING_ENDS_WITH:
             case STRING_STARTS_WITH:
+            case STRING_LIKE_IGNORE_CASE:
             case KEY_WORDS: {
                 Object filterValue = bean.getFilterValue();
                 return createDetailFilterInfo((DetailFilterInfoBean) bean, filterValue == null ? "" : filterValue.toString());
