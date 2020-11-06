@@ -43,7 +43,7 @@ public class SwiftDaoUtils {
                 return true;
             });
         } catch (ExecutionException | RetryException e) {
-            throw new RuntimeException(String.format("Retry commit failed caused by : %s", e));
+            throw new RuntimeException(e);
         }
     }
 }
