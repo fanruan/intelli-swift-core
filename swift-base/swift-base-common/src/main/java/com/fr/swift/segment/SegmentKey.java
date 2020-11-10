@@ -9,9 +9,13 @@ import com.fr.swift.source.SourceKey;
  * @date 2018/5/23
  */
 public interface SegmentKey {
+    int getYearMonth();
+
     SourceKey getTable();
 
     Integer getOrder();
+
+    String getSegmentUri();
 
     StoreType getStoreType();
 

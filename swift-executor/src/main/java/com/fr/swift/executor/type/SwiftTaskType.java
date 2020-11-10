@@ -22,7 +22,8 @@ public enum SwiftTaskType implements ExecutorTaskType {
     UPLOAD,
     DOWNLOAD,
     HISTORY,
-    QUERY;
+    QUERY,
+    MIGRATE;
 
 
     public static List<SwiftTaskType> getAllTypeList() {

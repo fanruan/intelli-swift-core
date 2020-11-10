@@ -6,6 +6,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
+import com.fr.swift.util.SegmentInfoUtils;
 
 /**
  * @author yee
@@ -22,7 +23,7 @@ public class HistoryLineSourceAlloter extends BaseLineSourceAlloter {
         // todo 另外还要处理脏配置
         SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftLoggers.getLogger().debug("importing, append new seg {}", segKey);
-        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
+        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType(), SegmentInfoUtils.getYearMonthFromOrder(logicOrder));
         return new SegmentState(segInfo);
     }
 }

@@ -14,6 +14,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER;
@@ -42,6 +43,10 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Column(name = COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
 
+    @JsonProperty("segmentUri")
+    @Column(name = "segmentUri")
+    private String segmentUri;
+
     @JsonProperty(COLUMN_STORE_TYPE)
     @Column(name = COLUMN_STORE_TYPE)
     @Enumerated(EnumType.STRING)
@@ -51,6 +56,9 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Column(name = "swiftSchema")
     @Enumerated(EnumType.STRING)
     private SwiftDatabase swiftSchema;
+
+    @Transient
+    private int yearMonth;
 
     public SwiftSegmentEntity() {
     }
@@ -65,6 +73,16 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         this.segmentOrder = segmentOrder;
         this.storeType = storeType;
         this.swiftSchema = swiftSchema;
+        this.yearMonth = 0;
+    }
+
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, int yearMonth) {
+        this.id = getId(segmentOwner, segmentOrder, storeType);
+        this.segmentOwner = segmentOwner.getId();
+        this.segmentOrder = segmentOrder;
+        this.storeType = storeType;
+        this.swiftSchema = swiftSchema;
+        this.yearMonth = yearMonth;
     }
 
     public static String getHistoryId(String segmentOwner, int segmentOrder) {
@@ -92,6 +110,11 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     @Override
+    public int getYearMonth() {
+        return yearMonth;
+    }
+
+    @Override
     public SourceKey getTable() {
         return new SourceKey(segmentOwner);
     }
@@ -102,12 +125,22 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     @Override
+    public String getSegmentUri() {
+        return segmentUri;
+    }
+
+    @Override
     public StoreType getStoreType() {
         return storeType;
     }
 
     public void setStoreType(StoreType storeType) {
         this.storeType = storeType;
+    }
+
+    public SwiftSegmentEntity setSegmentUri(String segmentUri) {
+        this.segmentUri = segmentUri;
+        return this;
     }
 
     @Override

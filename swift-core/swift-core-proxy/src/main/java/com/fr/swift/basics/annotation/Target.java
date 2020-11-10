@@ -10,5 +10,6 @@ public enum Target {
     ANALYSE,
     COLLATE,
     DELETE,
-    ALL
+    ALL,
+    MIGRATE;
 }

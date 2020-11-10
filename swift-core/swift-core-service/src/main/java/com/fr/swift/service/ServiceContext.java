@@ -3,6 +3,7 @@ package com.fr.swift.service;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.DeleteProcessHandler;
+import com.fr.swift.basics.handler.MigrateProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.result.SwiftResultSet;
@@ -31,4 +32,8 @@ public interface ServiceContext extends SwiftService {
     void clearQuery(String queryId);
 
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
+
+    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
+    boolean remoteDelete(String targetPath, String clusterId);
+
 }

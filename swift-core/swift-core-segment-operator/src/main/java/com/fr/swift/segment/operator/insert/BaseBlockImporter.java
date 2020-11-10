@@ -111,7 +111,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected abstract void onFailed();
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
-        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
+        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase(), segInfo.getYearMonth());
     }
 
     protected void releaseFullIfExists() {

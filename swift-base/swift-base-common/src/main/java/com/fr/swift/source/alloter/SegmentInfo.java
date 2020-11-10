@@ -8,6 +8,8 @@ import com.fr.swift.cube.io.Types.StoreType;
  */
 public interface SegmentInfo {
 
+    int getYearMonth();
+
     int getOrder();
 
     StoreType getStoreType();

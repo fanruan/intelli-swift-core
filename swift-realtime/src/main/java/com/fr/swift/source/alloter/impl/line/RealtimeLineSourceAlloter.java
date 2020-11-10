@@ -12,6 +12,7 @@ import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
+import com.fr.swift.util.SegmentInfoUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +56,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         }
         // 全是历史块 或 全在inserting 或 全都满了；所以重新new一块
         SegmentKey newSegKey = swiftSegmentService.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
-        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType());
+        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType(), SegmentInfoUtils.getYearMonthFromOrder(logicOrder));
         return new SegmentState(segInfo);
     }
 
