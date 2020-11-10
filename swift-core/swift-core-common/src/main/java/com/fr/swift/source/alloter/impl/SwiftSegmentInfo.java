@@ -13,21 +13,9 @@ public class SwiftSegmentInfo implements SegmentInfo {
 
     private StoreType storeType;
 
-    private int yearMonth;
-
     public SwiftSegmentInfo(int order, StoreType storeType) {
-        new SwiftSegmentInfo(order, storeType, 0);
-    }
-
-    public SwiftSegmentInfo(int order, StoreType storeType, int yearMonth) {
         this.order = order;
         this.storeType = storeType;
-        this.yearMonth = yearMonth;
-    }
-
-    @Override
-    public int getYearMonth() {
-        return yearMonth;
     }
 
     @Override

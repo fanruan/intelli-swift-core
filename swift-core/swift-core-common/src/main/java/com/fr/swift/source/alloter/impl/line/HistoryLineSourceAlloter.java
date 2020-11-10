@@ -1,6 +1,7 @@
 package com.fr.swift.source.alloter.impl.line;
 
 
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
@@ -23,7 +24,8 @@ public class HistoryLineSourceAlloter extends BaseLineSourceAlloter {
         // todo 另外还要处理脏配置
         SegmentKey segKey = swiftSegmentService.tryAppendSegment(tableKey, StoreType.FINE_IO);
         SwiftLoggers.getLogger().debug("importing, append new seg {}", segKey);
-        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType(), SegmentInfoUtils.getYearMonthFromOrder(logicOrder));
+        CubeUtil.put(segKey.getId(), SegmentInfoUtils.getYearMonthFromOrder(logicOrder));
+        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
     }
 }

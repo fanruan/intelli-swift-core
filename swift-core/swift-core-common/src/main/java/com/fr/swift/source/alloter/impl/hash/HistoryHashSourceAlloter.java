@@ -1,6 +1,7 @@
 package com.fr.swift.source.alloter.impl.hash;
 
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
@@ -38,7 +39,8 @@ public class HistoryHashSourceAlloter extends BaseHashSourceAlloter {
         swiftSegmentService.saveBucket(bucketElement);
 
         SwiftLoggers.getLogger().debug("importing, append new seg {} in bucket {}", segKey, virtualOrder);
-        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType(), SegmentInfoUtils.getYearMonthFromOrder(virtualOrder));
+        CubeUtil.put(segKey.getId(), SegmentInfoUtils.getYearMonthFromOrder(virtualOrder));
+        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(segKey.getOrder(), segKey.getStoreType());
         return new SegmentState(segInfo);
     }
 }

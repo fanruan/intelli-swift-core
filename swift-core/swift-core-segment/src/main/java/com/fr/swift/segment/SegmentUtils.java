@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.cube.CubePathBuilder;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -29,9 +30,8 @@ import java.util.List;
  */
 public class SegmentUtils {
 
-    // TODO: 2020/11/3 需要在此获得yearmouth路径
     public static Segment newSegment(SegmentKey segKey) {
-        return newSegment(segKey, segKey.getYearMonth());
+        return newSegment(segKey, CubeUtil.getYearMonth(segKey.getId()));
     }
 
     public static Segment newSegment(SegmentKey segmentKey, int tmpPath) {
@@ -94,7 +94,7 @@ public class SegmentUtils {
     }
 
     private static void clearHistorySegment(SegmentKey segKey) {
-        int currentDir = segKey.getYearMonth();
+        int currentDir = CubeUtil.getYearMonth(segKey.getId());
         FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build());
     }
 

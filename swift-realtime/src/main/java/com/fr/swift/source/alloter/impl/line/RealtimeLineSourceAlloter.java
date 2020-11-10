@@ -3,6 +3,7 @@ package com.fr.swift.source.alloter.impl.line;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.cube.CubePathBuilder;
+import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -56,7 +57,8 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         }
         // 全是历史块 或 全在inserting 或 全都满了；所以重新new一块
         SegmentKey newSegKey = swiftSegmentService.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
-        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType(), SegmentInfoUtils.getYearMonthFromOrder(logicOrder));
+        CubeUtil.put(newSegKey.getId(), SegmentInfoUtils.getYearMonthFromOrder(logicOrder));
+        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType());
         return new SegmentState(segInfo);
     }
 
