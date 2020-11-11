@@ -59,6 +59,6 @@ public class HashAllotRule extends BaseAllotRule {
 
     @Override
     public String getCubePath(int order) {
-        return String.valueOf(hashFunction.getCubePath(order));
+        return hashFunction.getCubePath(order);
     }
 }
