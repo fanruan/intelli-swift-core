@@ -10,6 +10,6 @@ public class SegmentInfoUtils {
     }
 
     public static String getTemDir(String segUrl) {
-        return segUrl.substring(segUrl.lastIndexOf("/"));
+        return segUrl == null ? "0" : segUrl.substring(segUrl.lastIndexOf("/"));
     }
 }
