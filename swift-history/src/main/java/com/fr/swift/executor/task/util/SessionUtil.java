@@ -2,6 +2,7 @@ package com.fr.swift.executor.task.util;
 
 import com.fr.swift.executor.task.netty.protocol.attribute.Attributes;
 import com.fr.swift.executor.task.netty.protocol.session.Session;
+import com.fr.swift.log.SwiftLoggers;
 import io.netty.channel.Channel;
 
 import java.util.Date;
@@ -28,7 +29,7 @@ public class SessionUtil {
 			Session session = getSession(channel);
 			NODE_ID_CHANNEL_MAP.remove(session.getNodeId());
 			channel.attr(Attributes.SESSION).set(null);
-			System.out.println(new Date() + " " + session + "退出集群");
+			SwiftLoggers.getLogger().info(new Date() + " " + session + "exit cluster");
 		}
 	}
 
