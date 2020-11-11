@@ -32,10 +32,10 @@ public class SegmentUtils {
 
     // TODO: 2020/11/3 需要在此获得yearmouth路径
     public static Segment newSegment(SegmentKey segKey) {
-        return newSegment(segKey, Integer.valueOf(SegmentInfoUtils.getTemDir(segKey.getSegmentUri())));
+        return newSegment(segKey, SegmentInfoUtils.getTemDir(segKey.getSegmentUri()));
     }
 
-    public static Segment newSegment(SegmentKey segmentKey, int tmpPath) {
+    public static Segment newSegment(SegmentKey segmentKey, String tmpPath) {
         Assert.notNull(segmentKey);
 
         String cubePath;
@@ -95,7 +95,7 @@ public class SegmentUtils {
     }
 
     private static void clearHistorySegment(SegmentKey segKey) {
-        int currentDir = Integer.valueOf(SegmentInfoUtils.getTemDir(segKey.getSegmentUri()));
+        String currentDir = SegmentInfoUtils.getTemDir(segKey.getSegmentUri());
         FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build());
     }
 

@@ -40,7 +40,7 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     @Override
     protected Inserting getInserting(SegmentKey segKey) {
         // FIXME 2019/3/13 anchore 有临时路径的坑 tempDir应为当前导入的路径
-        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(Integer.valueOf(SegmentInfoUtils.getTemDir(segKey.getSegmentUri()))).build(), segKey.getStoreType());
+        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(SegmentInfoUtils.getTemDir(segKey.getSegmentUri())).build(), segKey.getStoreType());
         Segment seg = new CacheColumnSegment(location, dataSource.getMetadata());
 
         return new Inserting(SwiftInserter.ofOverwriteMode(seg), seg, 0);

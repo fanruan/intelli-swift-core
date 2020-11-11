@@ -3,7 +3,6 @@ package com.fr.swift.db.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
@@ -14,6 +13,7 @@ import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.FileUtil;
+import com.fr.swift.util.SegmentInfoUtils;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class DropColumnAction extends BaseAlterTableAction {
             }
 
             // 删history todo 还要删共享存储
-            int currentDir = CubeUtil.getYearMonth(segKey.getId());
+            String currentDir = SegmentInfoUtils.getTemDir(segKey.getSegmentUri());
             FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).setColumnId(relatedColumnMeta.getColumnId()).build());
         }
 
