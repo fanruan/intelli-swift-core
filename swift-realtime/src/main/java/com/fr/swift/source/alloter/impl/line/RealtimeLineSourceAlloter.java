@@ -55,7 +55,7 @@ public class RealtimeLineSourceAlloter extends BaseLineSourceAlloter {
         }
         // 全是历史块 或 全在inserting 或 全都满了；所以重新new一块
         SegmentKey newSegKey = swiftSegmentService.tryAppendSegment(tableKey, Types.StoreType.MEMORY);
-        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType());
+        SwiftSegmentInfo segInfo = new SwiftSegmentInfo(newSegKey.getOrder(), newSegKey.getStoreType(), rule.getCubePath(logicOrder));
         return new SegmentState(segInfo);
     }
 

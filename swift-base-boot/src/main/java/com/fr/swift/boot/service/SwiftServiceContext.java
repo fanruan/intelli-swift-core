@@ -15,6 +15,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
 import com.fr.swift.service.DeleteService;
+import com.fr.swift.service.MigrateService;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
@@ -98,4 +99,10 @@ public class SwiftServiceContext implements ServiceContext {
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception {
         throw new UnsupportedOperationException("insert not support");
     }
+
+    @Override
+    public boolean remoteDelete(String targetPath, String clusterId) {
+        return SwiftContext.get().getBean(MigrateService.class).deleteMigraFile(targetPath);
+    }
+
 }

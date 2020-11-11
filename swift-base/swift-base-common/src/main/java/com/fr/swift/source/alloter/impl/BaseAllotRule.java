@@ -32,4 +32,9 @@ public abstract class BaseAllotRule implements AllotRule {
     public enum AllotType implements Type {
         LINE, HASH
     }
+
+    @Override
+    public String getCubePath(int order) {
+        return "0";
+    }
 }

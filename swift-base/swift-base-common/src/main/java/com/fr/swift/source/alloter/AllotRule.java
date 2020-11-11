@@ -24,4 +24,6 @@ public interface AllotRule {
     interface Type {
         String name();
     }
+
+    String getCubePath(int order);
 }
