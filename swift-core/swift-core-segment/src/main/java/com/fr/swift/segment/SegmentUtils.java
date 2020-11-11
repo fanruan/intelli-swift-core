@@ -3,7 +3,6 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -16,6 +15,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
+import com.fr.swift.util.SegmentInfoUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,8 +30,9 @@ import java.util.List;
  */
 public class SegmentUtils {
 
+    // TODO: 2020/11/3 需要在此获得yearmouth路径
     public static Segment newSegment(SegmentKey segKey) {
-        return newSegment(segKey, CubeUtil.getYearMonth(segKey.getId()));
+        return newSegment(segKey, Integer.valueOf(SegmentInfoUtils.getTemDir(segKey.getSegmentUri())));
     }
 
     public static Segment newSegment(SegmentKey segmentKey, int tmpPath) {
@@ -94,7 +95,7 @@ public class SegmentUtils {
     }
 
     private static void clearHistorySegment(SegmentKey segKey) {
-        int currentDir = CubeUtil.getYearMonth(segKey.getId());
+        int currentDir = Integer.valueOf(SegmentInfoUtils.getTemDir(segKey.getSegmentUri()));
         FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build());
     }
 

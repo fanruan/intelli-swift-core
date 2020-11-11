@@ -23,6 +23,7 @@ public class SwiftConfigConstants {
         public static final String COLUMN_SEGMENT_ORDER = "segmentOrder";
         public static final String COLUMN_STORE_TYPE = "storeType";
         public static final String COLUMN_SEGMENT_URI = "segmentUri";
+        public static final String COLUMN_SEGMENT_SCHEMA = "swiftSchema";
     }
 
     public static class MetaDataConfig {

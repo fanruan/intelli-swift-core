@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * @description 默认12个月hash, 特殊数据表+二次hash
  * @since
  */
-public class DateAppIdHashFunction implements HashFunction {
+public class DateAppIdHashFunction extends BaseHashFunction {
 
     @JsonProperty("partitions")
     private int partitions;
@@ -50,5 +50,10 @@ public class DateAppIdHashFunction implements HashFunction {
     @Override
     public HashType getType() {
         return HashType.APPID_YEARMONTH;
+    }
+
+    @Override
+    public String getCubePath(int logicorder) {
+        return String.valueOf(logicorder / 100);
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
  * @since swift 1.1
  */
 
-public class TimeHashFunction implements HashFunction {
+public class TimeHashFunction extends BaseHashFunction {
 
     @JsonProperty("partitionstype")
     private TimeType partitionsType;

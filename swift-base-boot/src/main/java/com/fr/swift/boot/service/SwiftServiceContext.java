@@ -102,8 +102,7 @@ public class SwiftServiceContext implements ServiceContext {
 
     @Override
     public boolean remoteDelete(String targetPath, String clusterId) {
-        MigrateService migrateService = SwiftContext.get().getBean(MigrateService.class);
-        return migrateService.deleteMigraFile(targetPath);
+        return SwiftContext.get().getBean(MigrateService.class).deleteMigraFile(targetPath);
     }
 
 }
