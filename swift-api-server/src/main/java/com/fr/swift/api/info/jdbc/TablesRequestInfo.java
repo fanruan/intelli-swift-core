@@ -12,17 +12,17 @@ import com.fr.swift.api.info.RequestType;
 public class TablesRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor> {
     @JsonProperty(value = "database")
     private String database;
-    @JsonProperty(value = "auth")
-    private String authCode;
+    @JsonProperty(value = "swiftUser")
+    private String userName;
 
     public TablesRequestInfo() {
         super(RequestType.TABLES);
     }
 
-    public TablesRequestInfo(String database, String authCode) {
+    public TablesRequestInfo(String database, String userName) {
         super(RequestType.TABLES);
         this.database = database;
-        this.authCode = authCode;
+        this.userName = userName;
     }
 
     public String getDatabase() {
@@ -31,11 +31,11 @@ public class TablesRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor>
 
     @Override
     public String getAuthCode() {
-        return authCode;
+        return userName;
     }
 
-    public void setAuthCode(String authCode) {
-        this.authCode = authCode;
+    public void setAuthCode(String userName) {
+        this.userName = userName;
     }
 
     @Override
