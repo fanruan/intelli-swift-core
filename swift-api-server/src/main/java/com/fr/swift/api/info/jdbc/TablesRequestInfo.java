@@ -13,16 +13,16 @@ public class TablesRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor>
     @JsonProperty(value = "database")
     private String database;
     @JsonProperty(value = "swiftUser")
-    private String userName;
+    private String swiftUser;
 
     public TablesRequestInfo() {
         super(RequestType.TABLES);
     }
 
-    public TablesRequestInfo(String database, String userName) {
+    public TablesRequestInfo(String database, String swiftUser) {
         super(RequestType.TABLES);
         this.database = database;
-        this.userName = userName;
+        this.swiftUser = swiftUser;
     }
 
     public String getDatabase() {
@@ -31,11 +31,11 @@ public class TablesRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor>
 
     @Override
     public String getAuthCode() {
-        return userName;
+        return swiftUser;
     }
 
     public void setAuthCode(String userName) {
-        this.userName = userName;
+        this.swiftUser = userName;
     }
 
     @Override
