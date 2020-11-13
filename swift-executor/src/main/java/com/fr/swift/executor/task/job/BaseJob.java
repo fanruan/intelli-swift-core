@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class BaseJob<T, P> implements Job<T, P> {
     @JsonIgnore
-    private JobListener jobListener;
+    protected JobListener jobListener;
 
     public BaseJob() {
     }

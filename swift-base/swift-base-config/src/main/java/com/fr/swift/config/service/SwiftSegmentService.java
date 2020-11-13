@@ -5,6 +5,7 @@ import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.source.SourceKey;
 
 import java.util.Collection;
@@ -21,11 +22,15 @@ import java.util.Set;
 public interface SwiftSegmentService {
     void save(SegmentKey segKey);
 
+    void save(Collection<SegmentKey> segKeys);
+
     void delete(SegmentKey segKey);
 
     void delete(List<SegmentKey> segKeys);
 
     SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
+
+    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType, SegmentSource segmentSource);
 
     List<SegmentKey> getTableSegKeys(SourceKey tableKey);
 

@@ -2,14 +2,11 @@ package com.fr.swift.segment.recover;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
-import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
-import com.fr.swift.source.alloter.impl.BaseAllotRule;
 
 import java.util.List;
 
@@ -32,11 +29,12 @@ public class FileSegmentRecovery extends AbstractSegmentRecovery {
         SegmentBackupResultSet resultSet;
         Inserter inserter;
         try {
-            realtimeSeg = newRealtimeSegment(localSegmentProvider.getSegment(segKey));
+            realtimeSeg = segmentService.getSegment(segKey);
             inserter = SwiftInserter.ofOverwriteMode(realtimeSeg);
             resultSet = new SegmentBackupResultSet(getBackupSegment(segKey, realtimeSeg.getMetaData()));
             inserter.insertData(resultSet);
             realtimeSeg.putAllShowIndex(resultSet.getAllShowIndex());
+            SwiftLoggers.getLogger().info("{} recover success", segKey);
         } catch (Exception e) {
             SwiftLoggers.getLogger().warn("{} recover failed, caused by {}", segKey, e);
             if (realtimeSeg != null) {

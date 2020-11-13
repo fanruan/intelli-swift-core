@@ -10,7 +10,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.event.SegmentEvent;
-import com.fr.swift.segment.event.TransferRealtimeListener.TransferRealtimeEventData;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 
 /**
@@ -39,7 +38,7 @@ public class ScheduledRealtimeTransfer implements Runnable {
                     }
                     Segment realtimeSeg = segmentService.getSegment(segKey);
                     if (realtimeSeg.isReadable() && realtimeSeg.getAllShowIndex().getCardinality() >= MIN_PUT_THRESHOLD) {
-                        SwiftEventDispatcher.asyncFire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofPassive(segKey));
+//                        SwiftEventDispatcher.asyncFire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofPassive(segKey));
                     }
                 } catch (Exception e) {
                     SwiftLoggers.getLogger().error("Segkey {} persist failed", segKey.getTable().getId(), e);

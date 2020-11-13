@@ -10,9 +10,9 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author yee
@@ -29,7 +29,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     private SwiftDao<SwiftSegmentLocationEntity> dao = new SwiftDaoImpl<>(SwiftSegmentLocationEntity.class);
 
     @Override
-    public void saveOnNode(String nodeId, Set<SegmentKey> segKeys) {
+    public void saveOnNode(String nodeId, Collection<SegmentKey> segKeys) {
         List<SwiftSegmentLocationEntity> segLocations = new ArrayList<>();
         for (SegmentKey segKey : segKeys) {
             segLocations.add(new SwiftSegmentLocationEntity(nodeId, segKey.getId(), segKey.getTable().getId()));
@@ -38,7 +38,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
-    public void deleteOnNode(String nodeId, Set<SegmentKey> segKeys) {
+    public void deleteOnNode(String nodeId, Collection<SegmentKey> segKeys) {
         List<SwiftSegmentLocationEntity> segLocations = new ArrayList<>();
         for (SegmentKey segKey : segKeys) {
             segLocations.add(new SwiftSegmentLocationEntity(nodeId, segKey.getId(), segKey.getTable().getId()));
@@ -96,7 +96,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
-    public List<SwiftSegmentLocationEntity> getTableMatchedSegOnNode(final String nodeId, final SourceKey tableKey, final List<String> inSegIds) {
+    public List<SwiftSegmentLocationEntity> getTableMatchedSegOnNode(final String nodeId, final SourceKey tableKey, final Collection<String> inSegIds) {
         if (inSegIds == null || inSegIds.isEmpty()) {
             return Collections.emptyList();
         }
