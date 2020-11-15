@@ -15,8 +15,8 @@ import com.fr.swift.log.SwiftLoggers;
 import java.lang.reflect.Method;
 
 /**
- * @author Heng.J
- * @date 2020/10/29
+ * @author Hoky
+ * @date 2020/7/21
  * @description
  * @since swift-1.2.0
  */
@@ -30,10 +30,11 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
 
     @Override
     protected URL processUrl(Target[] targets, Object... args) throws Exception {
-        if (nodeContainer.getOnlineNodes().containsKey(args[1])) {
-            return UrlSelector.getInstance().getFactory().getURL(args[1]);
+        String clusterId = (String) args[1];
+        if (nodeContainer.getOnlineNodes().containsKey(clusterId)) {
+            return UrlSelector.getInstance().getFactory().getURL(clusterId);
         }
-        SwiftLoggers.getLogger().error("node {} is offline", args[1]);
+        SwiftLoggers.getLogger().error("backup node is offline");
         return null;
     }
 
@@ -49,4 +50,5 @@ public class SwiftMigrateProcessHandler extends BaseProcessHandler implements Mi
         final Invoker<?> invoker = invokerCreator.createSyncInvoker(proxyClass, url);
         return invoke(invoker, proxyClass, method, methodName, parameterTypes, args);
     }
+
 }

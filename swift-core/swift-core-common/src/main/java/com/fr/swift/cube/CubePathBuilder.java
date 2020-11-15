@@ -17,7 +17,7 @@ public class CubePathBuilder {
     private static final SwiftCubePathService PATH_SVC = SwiftContext.get().getBean(SwiftCubePathService.class);
     private boolean absolute = false;
     private SwiftDatabase schema = null;
-    private Integer tempDir = null;
+    private String tempDir = null;
     private boolean backup = false;
     private SourceKey tableKey = null;
     private Integer segOrder = null;
@@ -43,7 +43,7 @@ public class CubePathBuilder {
         return this;
     }
 
-    public CubePathBuilder setTempDir(int tempDir) {
+    public CubePathBuilder setTempDir(String tempDir) {
         this.tempDir = tempDir;
         return this;
     }

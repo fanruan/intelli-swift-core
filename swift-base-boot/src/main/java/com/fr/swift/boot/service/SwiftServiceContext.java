@@ -120,4 +120,10 @@ public class SwiftServiceContext implements ServiceContext {
     public void report(NodeEvent nodeEvent, NodeMessage nodeMessage) {
         SwiftEventDispatcher.asyncFire(nodeEvent, nodeMessage);
     }
+
+    @Override
+    public boolean remoteDelete(String targetPath, String clusterId) {
+        return SwiftContext.get().getBean(MigrateService.class).deleteMigraFile(targetPath);
+    }
+
 }

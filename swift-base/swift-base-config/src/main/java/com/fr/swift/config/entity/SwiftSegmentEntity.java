@@ -18,6 +18,8 @@ import java.io.Serializable;
 
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_SCHEMA;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE;
 
 /**
@@ -42,8 +44,8 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Column(name = COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
 
-    @JsonProperty("segmentUri")
-    @Column(name = "segmentUri")
+    @JsonProperty(COLUMN_SEGMENT_URI)
+    @Column(name = COLUMN_SEGMENT_URI)
     private String segmentUri;
 
     @JsonProperty(COLUMN_STORE_TYPE)
@@ -51,8 +53,8 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Enumerated(EnumType.STRING)
     private Types.StoreType storeType;
 
-    @JsonProperty("swiftSchema")
-    @Column(name = "swiftSchema")
+    @JsonProperty(COLUMN_SEGMENT_SCHEMA)
+    @Column(name = COLUMN_SEGMENT_SCHEMA)
     @Enumerated(EnumType.STRING)
     private SwiftDatabase swiftSchema;
 
@@ -60,7 +62,7 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     public SwiftSegmentEntity(SegmentKey segKey) {
-        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema());
+        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema(), segKey.getSegmentUri());
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
@@ -69,6 +71,15 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         this.segmentOrder = segmentOrder;
         this.storeType = storeType;
         this.swiftSchema = swiftSchema;
+    }
+
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, String segmentUri) {
+        id = getId(segmentOwner, segmentOrder, storeType);
+        this.segmentOwner = segmentOwner.getId();
+        this.segmentOrder = segmentOrder;
+        this.storeType = storeType;
+        this.swiftSchema = swiftSchema;
+        this.segmentUri = segmentUri;
     }
 
     public static String getHistoryId(String segmentOwner, int segmentOrder) {

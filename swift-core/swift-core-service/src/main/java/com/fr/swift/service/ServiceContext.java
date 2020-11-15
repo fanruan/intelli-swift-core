@@ -16,7 +16,6 @@ import com.fr.swift.service.event.NodeMessage;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class created on 2019/3/4
@@ -38,12 +37,13 @@ public interface ServiceContext extends SwiftService {
 
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
-    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
-    boolean migrate(Map<SegmentKey, Map<String, byte[]>> segments, String location);
-
     @InvokeMethod(value = TaskProcessHandler.class, target = Target.ALL)
     boolean dispatch(String taskBean, String location) throws Exception;
 
     @InvokeMethod(value = MasterProcessHandler.class, target = Target.ALL)
     void report(NodeEvent nodeEvent, NodeMessage nodeMessage);
+
+    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
+    boolean remoteDelete(String targetPath, String clusterId);
+
 }
