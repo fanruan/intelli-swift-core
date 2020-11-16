@@ -2,22 +2,25 @@ package com.fr.swift.segment;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
-import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.SwiftEventDispatcher;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.event.SegmentEvent;
 import com.fr.swift.segment.event.SyncSegmentLocationEvent;
-import com.fr.swift.segment.event.TransferRealtimeListener.TransferRealtimeEventData;
+import com.fr.swift.segment.operator.SegmentTransfer;
 import com.fr.swift.segment.operator.insert.BaseBlockImporter;
 import com.fr.swift.segment.operator.insert.SwiftInserter;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
+import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author anchore
@@ -27,9 +30,13 @@ import java.util.HashSet;
 @SwiftScope("prototype")
 public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseBlockImporter<A, SwiftResultSet> {
 
+    private static final SegmentInfo DEFAULT_SEG = new SwiftSegmentInfo(0, Types.StoreType.MEMORY);
+
     public Incrementer(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
     }
+
+    private boolean transfered = false;
 
     @Override
     protected Inserting getInserting(SegmentKey segKey) {
@@ -41,19 +48,28 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     protected void handleFullSegment(SegmentInfo segInfo) {
         // 增量块已满，transfer掉
         SegmentKey segKey = newSegmentKey(segInfo);
-        SwiftEventDispatcher.asyncFire(SegmentEvent.TRANSFER_REALTIME, TransferRealtimeEventData.ofActive(segKey));
+        SegmentKey transferedSeg = new SegmentTransfer(segKey).transfer();
+        importSegKeys.clear();
+        importSegKeys.add(transferedSeg);
     }
 
     @Override
     protected void onSucceed() {
-        segLocationSvc.saveOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(importSegKeys));
-        segmentService.addSegments(importSegKeys);
-        if (!importSegKeys.isEmpty()) {
-            // 发送-1，告诉查询节点，本节点已有该表增量块
-            SwiftSegmentEntity allMemSegKeyEntities = new SwiftSegmentEntity(importSegKeys.get(0));
-            allMemSegKeyEntities.setSegmentOrder(-1);
-            SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(allMemSegKeyEntities));
+        Set<String> segIds = importSegKeys.stream().map(s -> s.getId()).collect(Collectors.toSet());
+        if (segLocationSvc.getTableMatchedSegOnNode(SwiftProperty.get().getMachineId(), dataSource.getSourceKey(), segIds).isEmpty()) {
+            if (swiftSegmentService.getByIds(segIds).isEmpty()) {
+                swiftSegmentService.save(importSegKeys);
+            }
+            segLocationSvc.saveOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(importSegKeys));
+            segmentService.addSegments(importSegKeys);
+            SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
         }
+        SwiftLoggers.getLogger().debug("incrementer over, save seg location {}", importSegKeys);
+    }
+
+    @Override
+    protected SegmentInfo allot(int cursor, Row row) {
+        return DEFAULT_SEG;
     }
 
     @Override

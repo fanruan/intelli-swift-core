@@ -6,10 +6,10 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Optional;
 import com.fr.swift.util.Util;
-import com.fr.swift.util.function.Consumer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author anchore
@@ -20,8 +20,8 @@ public class MetadataDiffer {
 
     private boolean hasDiff = false;
 
-    private List<SwiftMetaDataColumn> addedColumn = new ArrayList<SwiftMetaDataColumn>(),
-            droppedColumn = new ArrayList<SwiftMetaDataColumn>();
+    private List<SwiftMetaDataColumn> addedColumn = new ArrayList<>(),
+            droppedColumn = new ArrayList<>();
 
     public MetadataDiffer(SwiftMetaData oldMeta, SwiftMetaData newMeta) {
         this.oldMeta = oldMeta;
@@ -31,22 +31,16 @@ public class MetadataDiffer {
 
     private void init() {
         try {
-            diff(oldMeta, newMeta, new Consumer<SwiftMetaDataColumn>() {
-                @Override
-                public void accept(SwiftMetaDataColumn swiftMetaDataColumn) {
-                    addedColumn.add(swiftMetaDataColumn);
-                    if (!hasDiff) {
-                        hasDiff = true;
-                    }
+            diff(oldMeta, newMeta, swiftMetaDataColumn -> {
+                addedColumn.add(swiftMetaDataColumn);
+                if (!hasDiff) {
+                    hasDiff = true;
                 }
             });
-            diff(newMeta, oldMeta, new Consumer<SwiftMetaDataColumn>() {
-                @Override
-                public void accept(SwiftMetaDataColumn swiftMetaDataColumn) {
-                    droppedColumn.add(swiftMetaDataColumn);
-                    if (!hasDiff) {
-                        hasDiff = true;
-                    }
+            diff(newMeta, oldMeta, swiftMetaDataColumn -> {
+                droppedColumn.add(swiftMetaDataColumn);
+                if (!hasDiff) {
+                    hasDiff = true;
                 }
             });
         } catch (SwiftMetaDataException e) {
@@ -54,7 +48,7 @@ public class MetadataDiffer {
         }
     }
 
-    private static void diff(SwiftMetaData oldMeta, SwiftMetaData newMeta, Consumer<SwiftMetaDataColumn> columnMetaHandler) throws SwiftMetaDataException {
+    private void diff(SwiftMetaData oldMeta, SwiftMetaData newMeta, Consumer<SwiftMetaDataColumn> columnMetaHandler) throws SwiftMetaDataException {
         for (int i = 0; i < newMeta.getColumnCount(); i++) {
             SwiftMetaDataColumn newColumnMeta = newMeta.getColumn(i + 1);
 
@@ -70,7 +64,7 @@ public class MetadataDiffer {
         }
     }
 
-    private static Optional<SwiftMetaDataColumn> getColumn(SwiftMetaData meta, String columnName) {
+    private Optional<SwiftMetaDataColumn> getColumn(SwiftMetaData meta, String columnName) {
         try {
             return Optional.of(meta.getColumn(columnName));
         } catch (SwiftMetaDataException e) {
@@ -78,7 +72,7 @@ public class MetadataDiffer {
         }
     }
 
-    private static boolean hasSameType(SwiftMetaDataColumn meta1, SwiftMetaDataColumn meta2) {
+    private boolean hasSameType(SwiftMetaDataColumn meta1, SwiftMetaDataColumn meta2) {
         return meta1.getType() == meta2.getType() &&
                 meta1.getPrecision() == meta2.getPrecision() &&
                 meta1.getScale() == meta2.getScale();

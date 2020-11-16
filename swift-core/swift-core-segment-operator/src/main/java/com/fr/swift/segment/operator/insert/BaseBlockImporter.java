@@ -3,6 +3,7 @@ package com.fr.swift.segment.operator.insert;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
@@ -49,6 +50,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
+    protected SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
+
+
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
         this.alloter = alloter;
@@ -56,13 +60,17 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     @Override
     public void importResultSet(R swiftResultSet) throws Exception {
+        long start = System.currentTimeMillis();
         try (R resultSet = swiftResultSet) {
-            for (int cursor = 0; resultSet.hasNext(); cursor++) {
+            int cursor = 0;
+            for (; resultSet.hasNext(); cursor++) {
                 importRow(resultSet.getNextRow(), cursor);
             }
             IoUtil.release(this);
             processAfterSegmentDone(true);
             onSucceed();
+            SwiftLoggers.getLogger().info("{} rows data has been increased in seg {} cost {}ms!"
+                    , cursor, importSegKeys, System.currentTimeMillis() - start);
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             IoUtil.release(this);
