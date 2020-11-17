@@ -36,8 +36,6 @@ public interface SegmentService {
 
     List<SegmentKey> getSegmentKeys(SourceKey tableKey);
 
-    List<SegmentKey> getSegmentKeys(List<String> segmentIds);
-
     List<SegmentKey> getSegmentKeysByIds(SourceKey tableKey, Collection<String> segmentIds);
 
     boolean exist(SegmentKey segmentKey);

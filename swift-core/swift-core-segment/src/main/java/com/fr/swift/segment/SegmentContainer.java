@@ -99,11 +99,6 @@ public enum SegmentContainer implements SegmentService {
     }
 
     @Override
-    public List<SegmentKey> getSegmentKeys(List<String> segmentIds) {
-        return null;
-    }
-
-    @Override
     public List<SegmentKey> getSegmentKeysByIds(SourceKey tableKey, Collection<String> segmentIds) {
         if (null == segmentIds || segmentIds.isEmpty()) {
             return getSegmentKeys(tableKey);
