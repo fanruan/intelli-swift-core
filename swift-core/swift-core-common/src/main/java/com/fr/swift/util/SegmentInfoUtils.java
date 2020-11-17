@@ -6,6 +6,6 @@ package com.fr.swift.util;
  */
 public class SegmentInfoUtils {
     public static String getTemDir(String segUrl) {
-        return segUrl == null ? "0" : segUrl.substring(segUrl.lastIndexOf("/"));
+        return segUrl == null ? "0" : segUrl.substring(segUrl.lastIndexOf("/") + 1);
     }
 }
