@@ -14,6 +14,7 @@ public class NodeMessage implements Serializable {
 
     private String clusterId;
 
+    // 迁移任务记录 blockIndex
     private String messageInfo;
 
     public NodeMessage(String clusterId, String messageInfo) {

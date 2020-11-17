@@ -3,9 +3,10 @@ package com.fr.swift.dao;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.entity.SwiftNodeInfo;
 import com.fr.swift.db.NodeType;
-import com.fr.swift.executor.task.bean.info.PlanningInfo;
+import com.fr.swift.service.info.TaskInfo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,13 +19,33 @@ import java.util.Set;
 public class NodeInfoContainerService implements NodeInfoService {
 
     @Override
-    public Set<String> getTaskTargets(String yearMonth) {
-        return NodeInfoContainer.MASTER.getTaskTargets(yearMonth);
+    public void clearCache() {
+        NodeInfoContainer.MASTER.clearCache();
     }
 
     @Override
-    public SwiftNodeInfo getNodeInfo(String clusterId) {
-        return NodeInfoContainer.MASTER.getNodeInfo(clusterId);
+    public void flushCache() {
+        NodeInfoContainer.MASTER.flushCache();
+    }
+
+    @Override
+    public Map<String, String> getIdBlockIndexMap() {
+        return NodeInfoContainer.MASTER.getIdBlockIndexMap();
+    }
+
+    @Override
+    public SwiftNodeInfo getNodeInfoById(String clusterId) {
+        return NodeInfoContainer.MASTER.getNodeInfoById(clusterId);
+    }
+
+    @Override
+    public Set<String> getNodeInfosByType(NodeType nodeType) {
+        return NodeInfoContainer.MASTER.getNodeInfosByType(nodeType);
+    }
+
+    @Override
+    public List<TaskInfo> getMigrateInfosById(String clusterId) {
+        return NodeInfoContainer.MASTER.getMigrateInfosById(clusterId);
     }
 
     @Override
@@ -33,22 +54,22 @@ public class NodeInfoContainerService implements NodeInfoService {
     }
 
     @Override
-    public Set<String> getNodeInfos(NodeType nodeType) {
-        return NodeInfoContainer.MASTER.getNodeInfos(nodeType);
+    public Set<String> getTaskTargets(String migIndex) {
+        return NodeInfoContainer.MASTER.getTaskTargets(migIndex);
     }
 
     @Override
-    public List<PlanningInfo> getMigrateInfos(String clusterId) {
-        return NodeInfoContainer.MASTER.getMigrateInfos(clusterId);
+    public void activateNodeMigIndex(String clusterId, String migrateIndex) {
+        NodeInfoContainer.MASTER.activateNodeMigIndex(clusterId, migrateIndex);
     }
 
     @Override
-    public boolean isAcceptable(String clusterId) {
-        return NodeInfoContainer.MASTER.isAcceptable(clusterId);
+    public void blockNodeMigIndex(String clusterId, String migrateIndex) {
+        NodeInfoContainer.MASTER.blockNodeMigIndex(clusterId, migrateIndex);
     }
 
     @Override
-    public void clearCache() {
-        NodeInfoContainer.MASTER.clearCache();
+    public void updateBlockMigIndex(String clusterId) {
+        NodeInfoContainer.MASTER.updateBlockMigIndex(clusterId);
     }
 }

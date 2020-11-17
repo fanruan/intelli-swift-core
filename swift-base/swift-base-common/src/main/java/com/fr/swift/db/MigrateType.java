@@ -12,42 +12,40 @@ import java.util.Map;
  */
 public enum MigrateType {
 
-    WAITING,
-    RUNNING,
+    BACKUP,
     SUCCESS,
-    FAILED,
+    RUNNING,
+    WAITING(0),
     RETRYING1(1),
     RETRYING2(2),
     RETRYING3(3),
-    RETRYING4(4),
-    RETRYING5(5);
+    FAILED;
 
     private static Map<Integer, MigrateType> retryTimesMap = ImmutableMap.<Integer, MigrateType>builder()
+            .put(0, WAITING)
             .put(1, RETRYING1)
             .put(2, RETRYING2)
             .put(3, RETRYING3)
-            .put(4, RETRYING4)
-            .put(5, RETRYING5)
             .build();
 
-    private int time = 0;
+    private int times = 0;
 
     MigrateType() {
     }
 
-    MigrateType(int time) {
-        this.time = time;
+    MigrateType(int times) {
+        this.times = times;
     }
 
     public MigrateType levelUp() {
-        return MigrateType.retryTimesMap.getOrDefault(this.time + 1, MigrateType.FAILED);
+        return MigrateType.retryTimesMap.getOrDefault(this.times + 1, MigrateType.FAILED);
     }
 
     public boolean needMigrated() {
-        return !MigrateType.SUCCESS.equals(this);
+        return retryTimesMap.containsValue(this);
     }
 
-    public boolean isAcceptable() {
-        return !MigrateType.RUNNING.equals(this);
+    public int getTimes() {
+        return times;
     }
 }

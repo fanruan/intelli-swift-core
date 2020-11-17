@@ -11,7 +11,9 @@ import java.util.List;
  */
 public interface BlockTaskService {
 
-    void save(String yearMonth, String taskContent) throws SQLException;
+    void save(String blockIndex, String taskContent) throws SQLException;
 
-    List<String> getBlockTasksByYearMonth(String yearMonth);
+    void deleteByBlockIndex(String blockIndex);
+
+    List<String> getBlockTasksByBlockIndex(String blockIndex);
 }

@@ -35,6 +35,10 @@ public enum SegmentContainer implements SegmentService {
     private final Map<SourceKey, SwiftSegmentBucket> bucketMap = new ConcurrentHashMap<>();
 
     SegmentContainer() {
+        initCache();
+    }
+
+    private void initCache() {
         List<SwiftMetaData> allMetas = metaDataService.getAllMetas();
         for (SwiftMetaData meta : allMetas) {
             try {
@@ -135,6 +139,16 @@ public enum SegmentContainer implements SegmentService {
     @Override
     public SwiftSegmentBucket getBucketByTable(SourceKey sourceKey) {
         return bucketMap.computeIfAbsent(sourceKey, n -> new SwiftSegmentBucket(sourceKey));
+    }
+
+    @Override
+    public void flushCache() {
+        synchronized (this) {
+            tableMap.clear();
+            segmentKeyMap.clear();
+            bucketMap.clear();
+            initCache();
+        }
     }
 
     void saveBucket(SwiftSegmentBucketElement element) {

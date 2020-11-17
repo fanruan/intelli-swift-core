@@ -6,6 +6,7 @@ import com.fr.swift.config.dao.SwiftDaoImpl;
 import com.fr.swift.config.entity.SwiftNodeInfo;
 import com.fr.swift.config.entity.SwiftNodeInfoEntity;
 import com.fr.swift.config.service.SwiftNodeInfoService;
+import com.fr.swift.property.SwiftProperty;
 
 import java.util.List;
 
@@ -21,13 +22,13 @@ public class SwiftNodeInfoServiceImpl implements SwiftNodeInfoService {
     private SwiftDao<SwiftNodeInfoEntity> dao = new SwiftDaoImpl<>(SwiftNodeInfoEntity.class);
 
     @Override
-    public void save(SwiftNodeInfoEntity nodeInfo) {
-        dao.insert(nodeInfo);
+    public void save(SwiftNodeInfo nodeInfo) {
+        dao.insert((SwiftNodeInfoEntity) nodeInfo);
     }
 
     @Override
-    public void update(SwiftNodeInfoEntity newNodeInfo) {
-        dao.update(newNodeInfo);
+    public void update(SwiftNodeInfo newNodeInfo) {
+        dao.update((SwiftNodeInfoEntity) newNodeInfo);
     }
 
     @Override
@@ -39,6 +40,11 @@ public class SwiftNodeInfoServiceImpl implements SwiftNodeInfoService {
         }
         SwiftNodeInfoEntity entity = (SwiftNodeInfoEntity) select.get(0);
         return entity;
+    }
+
+    @Override
+    public SwiftNodeInfo getOwnNodeInfo() {
+        return getNodeInfo(SwiftProperty.get().getMachineId());
     }
 
     @Override

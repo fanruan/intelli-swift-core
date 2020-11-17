@@ -1,7 +1,8 @@
-package com.fr.swift.executor.task.bean.info;
+package com.fr.swift.executor.task.info;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fr.swift.service.info.TaskInfo;
 
 /**
  * @author Heng.J
@@ -13,5 +14,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MigrateInfo.class),
 })
-public interface PlanningInfo {
+public interface PlanningInfo extends TaskInfo {
 }

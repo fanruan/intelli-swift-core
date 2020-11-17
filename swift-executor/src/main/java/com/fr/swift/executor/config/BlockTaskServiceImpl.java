@@ -17,16 +17,23 @@ import java.util.List;
 @SwiftBean(name = "blockTaskService")
 public class BlockTaskServiceImpl implements BlockTaskService {
 
-    private SwiftDao<SwiftBlockTaskEntity> dao = new SwiftDaoImpl<>(SwiftBlockTaskEntity.class);
+    private final SwiftDao<SwiftBlockTaskEntity> dao = new SwiftDaoImpl<>(SwiftBlockTaskEntity.class);
 
     @Override
-    public void save(String yearMonth, String taskContent) throws SQLException {
+    public void save(String blockIndex, String taskContent) throws SQLException {
+        dao.insert(new SwiftBlockTaskEntity(blockIndex, taskContent));
     }
 
     @Override
-    public List<String> getBlockTasksByYearMonth(String yearMonth) {
+    public void deleteByBlockIndex(String blockIndex) {
+        dao.deleteQuery((query, builder, from) ->
+                query.select(from).where(builder.equal(from.get("blockingIndex"), blockIndex)));
+    }
+
+    @Override
+    public List<String> getBlockTasksByBlockIndex(String blockIndex) {
         final List<?> select = dao.selectQuery((query, builder, from) ->
-                query.select(from.get("taskContent")).where(builder.equal(from.get("yearMonth"), yearMonth)));
+                query.select(from.get("taskContent")).where(builder.equal(from.get("blockingIndex"), blockIndex)));
         if (select.isEmpty()) {
             return Collections.emptyList();
         }

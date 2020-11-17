@@ -41,8 +41,8 @@ public final class DBQueue {
         }
     }
 
-    public List<ExecutorTask> getActiveDeleteTasks() {
-        return executorTaskService.getActiveDeleteTasksBeforeTime(maxCreatetime);
+    public List<ExecutorTask> getActiveTasksByType(String type) {
+        return executorTaskService.getActiveTasksBeforeTimeByType(maxCreatetime, type);
     }
 
     public synchronized List<ExecutorTask> pullAll() {

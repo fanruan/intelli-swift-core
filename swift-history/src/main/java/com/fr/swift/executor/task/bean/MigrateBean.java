@@ -8,35 +8,38 @@ package com.fr.swift.executor.task.bean;
  */
 public class MigrateBean {
 
-    private String yearMonth;
+    public static final String KEY = "migrateBean";
 
-    private String target;
+    private String migrateIndex;
+
+    private String migrateTarget;
 
     public MigrateBean() {
     }
 
-    public MigrateBean(String yearMonth, String target) {
-        this.yearMonth = yearMonth;
-        this.target = target;
+    public MigrateBean(String migrateIndex, String migrateTarget) {
+        this.migrateIndex = migrateIndex;
+        this.migrateTarget = migrateTarget;
     }
 
-    public static MigrateBean of(String yearMonth, String target) {
-        return new MigrateBean(yearMonth, target);
+    public static MigrateBean of(String migrateIndex, String migrateTarget) {
+        return new MigrateBean(migrateIndex, migrateTarget);
     }
 
-    public String getYearMonth() {
-        return yearMonth;
+    public String getMigrateIndex() {
+        return migrateIndex;
     }
 
-    public String getTarget() {
-        return target;
+    public String getMigrateTarget() {
+        return migrateTarget;
     }
 
     @Override
     public String toString() {
         return "MigrateBean{" +
-                "yearMonth='" + getYearMonth() + '\'' +
-                ", target='" + getTarget() + '\'' +
+                "migrateIndex='" + getMigrateIndex() + '\'' +
+                ", migrateTarget='" + getMigrateTarget() + '\'' +
+                ", swiftSchema='" + getMigrateTarget() + '\'' +
                 '}';
     }
 }

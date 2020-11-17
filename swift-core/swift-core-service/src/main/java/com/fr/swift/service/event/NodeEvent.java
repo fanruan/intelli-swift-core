@@ -11,6 +11,6 @@ import com.fr.swift.event.SwiftEvent;
 public enum NodeEvent implements SwiftEvent {
 
     BLOCK,
-
-    ACTIVATE
+    ACTIVATE,
+    RETRY_DISTRIBUTE;
 }

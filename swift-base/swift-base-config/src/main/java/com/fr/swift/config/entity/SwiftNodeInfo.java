@@ -2,6 +2,7 @@ package com.fr.swift.config.entity;
 
 import com.fr.swift.db.MigrateType;
 import com.fr.swift.db.NodeType;
+import com.fr.swift.source.alloter.impl.hash.function.HashType;
 
 /**
  * @author Heng.J
@@ -13,11 +14,15 @@ public interface SwiftNodeInfo {
 
     String getNodeId();
 
-    int getMonthNum();
+    int getLimitNum();
 
-    String getBeginMonth();
+    String getBeginIndex();
 
-    String getEndMonth();
+    void setBeginIndex(String beginIndex);
+
+    String getEndIndex();
+
+    void setEndIndex(String endIndex);
 
     String getCubePath();
 
@@ -27,6 +32,15 @@ public interface SwiftNodeInfo {
 
     MigrateType getMigrateType();
 
+    void setMigrateType(MigrateType migrateType);
+
     NodeType getNodeType();
 
+    String getBlockingIndex();
+
+    void setBlockingIndex(String blockingIndex);
+
+    HashType getRelatedHashType();
+
+    String getMigServerAddress();
 }

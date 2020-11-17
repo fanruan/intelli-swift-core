@@ -1,12 +1,16 @@
 package com.fr.swift.service;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.executor.task.utils.MigrationZipUtils;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentService;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author Hoky
@@ -18,14 +22,13 @@ import java.io.File;
 @SwiftBean(name = "migrate")
 public class SwiftMigrateService extends AbstractSwiftService implements MigrateService {
 
-
     @Override
     public ServiceType getServiceType() {
         return ServiceType.MIGRATE;
     }
 
     @Override
-    public Boolean deleteMigraFile(String targetPath) {
+    public Boolean deleteMigratedFile(String targetPath) {
         try {
             String readyUncompressPath = zipFilesPath(targetPath);
             MigrationZipUtils.unCompress(targetPath, readyUncompressPath);
@@ -45,6 +48,13 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
     }
 
     @Override
+    public Boolean updateMigratedSegsConfig(List<SegmentKey> segmentKeys) {
+        final SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
+        segmentService.addSegments(segmentKeys);
+        return true;
+    }
+
+    @Override
     public boolean start() throws SwiftServiceException {
         return super.start();
     }
@@ -54,8 +64,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
         return super.shutdown();
     }
 
-    private static String zipFilesPath(String targetPath) {
+    private String zipFilesPath(String targetPath) {
         return targetPath.substring(0, targetPath.lastIndexOf("/"));
     }
-
 }

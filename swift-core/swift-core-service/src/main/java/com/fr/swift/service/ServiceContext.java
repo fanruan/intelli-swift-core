@@ -40,10 +40,13 @@ public interface ServiceContext extends SwiftService {
     @InvokeMethod(value = TaskProcessHandler.class, target = Target.ALL)
     boolean dispatch(String taskBean, String location) throws Exception;
 
+    // following 3 interfaces is for migrate
     @InvokeMethod(value = MasterProcessHandler.class, target = Target.ALL)
-    void report(NodeEvent nodeEvent, NodeMessage nodeMessage);
+    boolean report(NodeEvent nodeEvent, NodeMessage nodeMessage);
 
     @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
-    boolean remoteDelete(String targetPath, String clusterId);
+    boolean deleteFiles(String targetPath, String clusterId);
 
+    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
+    boolean updateConfigs(List<SegmentKey> segmentKeys, String clusterId);
 }

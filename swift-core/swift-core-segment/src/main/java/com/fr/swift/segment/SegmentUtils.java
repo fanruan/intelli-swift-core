@@ -15,7 +15,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.IoUtil;
-import com.fr.swift.util.SegmentInfoUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +31,7 @@ public class SegmentUtils {
 
     // TODO: 2020/11/3 需要在此获得yearmouth路径
     public static Segment newSegment(SegmentKey segKey) {
-        return newSegment(segKey, SegmentInfoUtils.getTemDir(segKey.getSegmentUri()));
+        return newSegment(segKey, segKey.getSegmentUri());
     }
 
     public static Segment newSegment(SegmentKey segmentKey, String tmpPath) {
@@ -95,8 +94,7 @@ public class SegmentUtils {
     }
 
     private static void clearHistorySegment(SegmentKey segKey) {
-        String currentDir = SegmentInfoUtils.getTemDir(segKey.getSegmentUri());
-        FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build());
+        FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(segKey.getSegmentUri()).build());
     }
 
     public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {

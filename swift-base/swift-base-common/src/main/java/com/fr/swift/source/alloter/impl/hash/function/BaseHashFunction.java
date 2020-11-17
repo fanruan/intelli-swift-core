@@ -6,7 +6,7 @@ package com.fr.swift.source.alloter.impl.hash.function;
  */
 public abstract class BaseHashFunction implements HashFunction {
     @Override
-    public String getCubePath(int logicorder) {
+    public String getCubePath(int logicOrder) {
         return "0";
     }
 }

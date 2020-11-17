@@ -1,6 +1,7 @@
 package com.fr.swift.quartz.service;
 
 import com.fr.swift.quartz.entity.TaskDefine;
+import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 
 /**
@@ -52,4 +53,12 @@ public interface ScheduleTaskService extends LifeCycle {
      * @throws SchedulerException
      */
     void addOrUpdateJob(TaskDefine define) throws SchedulerException;
+
+    /**
+     * delete by jobKey
+     *
+     * @param jobKey
+     * @return
+     */
+    boolean deleteJob(JobKey jobKey) throws SchedulerException;
 }

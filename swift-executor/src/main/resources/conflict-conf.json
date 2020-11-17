@@ -77,10 +77,23 @@
       "executorTaskType": "QUERY",
       "lockKey": null,
       "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "MIGRATE",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "PLANNING",
+      "lockKey": null,
+      "semaphore": 1
     }
   ],
   "stopTheWorldTaskTypes": [
     "COLLATE",
-    "DELETE"
+    "DELETE",
+    "MIGRATE"
   ]
 }

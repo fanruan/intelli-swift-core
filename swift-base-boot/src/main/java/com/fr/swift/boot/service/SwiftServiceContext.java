@@ -27,7 +27,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.ServiceBeanFactory;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class created on 2019/3/5
@@ -106,24 +105,23 @@ public class SwiftServiceContext implements ServiceContext {
     }
 
     @Override
-    public boolean migrate(Map<SegmentKey, Map<String, byte[]>> segments, String location) {
-        return SwiftContext.get().getBean(MigrateService.class).appointMigrate(segments, location);
-    }
-
-    @Override
     public boolean dispatch(String taskBean, String location) throws Exception {
-        return (boolean) PlanningExecutorTask.of(taskBean).getJob().call();
-//        SwiftContext.get().getBean(TaskService.class).dispatchTask(task, location);
+        return TaskProducer.produceTask(PlanningExecutorTask.of(taskBean));
     }
 
     @Override
-    public void report(NodeEvent nodeEvent, NodeMessage nodeMessage) {
-        SwiftEventDispatcher.asyncFire(nodeEvent, nodeMessage);
+    public boolean report(NodeEvent nodeEvent, NodeMessage nodeMessage) {
+        SwiftEventDispatcher.syncFire(nodeEvent, nodeMessage);
+        return true;
     }
 
     @Override
-    public boolean remoteDelete(String targetPath, String clusterId) {
-        return SwiftContext.get().getBean(MigrateService.class).deleteMigraFile(targetPath);
+    public boolean deleteFiles(String targetPath, String clusterId) {
+        return SwiftContext.get().getBean(MigrateService.class).deleteMigratedFile(targetPath);
     }
 
+    @Override
+    public boolean updateConfigs(List<SegmentKey> segmentKeys, String clusterId) {
+        return SwiftContext.get().getBean(MigrateService.class).updateMigratedSegsConfig(segmentKeys);
+    }
 }

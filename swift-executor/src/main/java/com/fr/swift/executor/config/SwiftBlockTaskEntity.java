@@ -24,8 +24,8 @@ public class SwiftBlockTaskEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "yearMonth")
-    private String yearMonth;
+    @Column(name = "blockingIndex")
+    private String blockingIndex;
 
     @Column(name = "taskContent", length = 4000)
     private String taskContent;
@@ -33,8 +33,8 @@ public class SwiftBlockTaskEntity implements Serializable {
     @Column(name = "createTime")
     private long createTime;
 
-    public SwiftBlockTaskEntity(String yearMonth, String taskContent) {
-        this.yearMonth = yearMonth;
+    public SwiftBlockTaskEntity(String blockingIndex, String taskContent) {
+        this.blockingIndex = blockingIndex;
         this.taskContent = taskContent;
         this.createTime = System.currentTimeMillis();
     }

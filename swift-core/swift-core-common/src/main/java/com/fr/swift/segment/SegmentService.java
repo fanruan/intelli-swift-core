@@ -50,4 +50,5 @@ public interface SegmentService {
 
     SwiftSegmentBucket getBucketByTable(SourceKey sourceKey);
 
+    void flushCache();
 }

@@ -130,11 +130,6 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
         this.storeType = storeType;
     }
 
-    public SwiftSegmentEntity setSegmentUri(String segmentUri) {
-        this.segmentUri = segmentUri;
-        return this;
-    }
-
     @Override
     public String getId() {
         return id;

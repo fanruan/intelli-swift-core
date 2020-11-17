@@ -2,7 +2,6 @@ package com.fr.swift.source.alloter.impl.hash;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
-import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types;
@@ -17,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -49,7 +47,7 @@ public class HistoryHashSourceAlloterTest {
         SwiftSegmentService swiftSegmentService = mock(SwiftSegmentService.class);
         when(beanFactory.getBean("segmentServiceProvider", SwiftSegmentService.class)).thenReturn(swiftSegmentService);
 
-        when(swiftSegmentService.tryAppendSegment(ArgumentMatchers.<SourceKey>any(), ArgumentMatchers.<Types.StoreType>any())).thenAnswer(new Answer<SegmentKey>() {
+        when(swiftSegmentService.tryAppendSegment(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenAnswer(new Answer<SegmentKey>() {
             int order = 0;
 
             @Override

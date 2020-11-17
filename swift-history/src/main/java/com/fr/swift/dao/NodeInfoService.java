@@ -3,9 +3,10 @@ package com.fr.swift.dao;
 import com.fr.swift.annotation.service.InnerService;
 import com.fr.swift.config.entity.SwiftNodeInfo;
 import com.fr.swift.db.NodeType;
-import com.fr.swift.executor.task.bean.info.PlanningInfo;
+import com.fr.swift.service.info.TaskInfo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,14 +19,34 @@ import java.util.Set;
 public interface NodeInfoService {
 
     /**
-     * 获取执行某个月份任务的节点
+     * 清除所有缓存
      */
-    Set<String> getTaskTargets(String yearMonth);
+    void clearCache();
+
+    /**
+     * 刷新所有缓存
+     */
+    void flushCache();
+
+    /**
+     * 获取各个节点阻塞blockIndex
+     */
+    Map<String, String> getIdBlockIndexMap();
 
     /**
      * 获取节点明细配置
      */
-    SwiftNodeInfo getNodeInfo(String clusterId);
+    SwiftNodeInfo getNodeInfoById(String clusterId);
+
+    /**
+     * 获取某一类型节点
+     */
+    Set<String> getNodeInfosByType(NodeType nodeType);
+
+    /**
+     * 获取节点迁移计划任务信息
+     */
+    List<TaskInfo> getMigrateInfosById(String clusterId);
 
     /**
      * 获取可迁移节点
@@ -33,19 +54,22 @@ public interface NodeInfoService {
     Set<String> getMigrateNodeIds();
 
     /**
-     * 获取某一类型节点
+     * 获取执行某个migIndex任务的节点
      */
-    Set<String> getNodeInfos(NodeType nodeType);
+    Set<String> getTaskTargets(String migIndex);
 
     /**
-     * 获取节点计划任务信息
+     * 激活blockIndex对应节点
      */
-    List<PlanningInfo> getMigrateInfos(String clusterId);
+    void activateNodeMigIndex(String clusterId, String blockIndex);
 
     /**
-     * 节点是否可以接收任务
+     * 阻塞blockIndex对应节点
      */
-    boolean isAcceptable(String clusterId);
+    void blockNodeMigIndex(String clusterId, String blockIndex);
 
-    void clearCache();
+    /**
+     * 更新主节点记录的迁移锁住月份
+     */
+    void updateBlockMigIndex(String clusterId);
 }

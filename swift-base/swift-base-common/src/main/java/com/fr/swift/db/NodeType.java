@@ -11,7 +11,7 @@ public enum NodeType {
     MONGO,
     DESIGNER;
 
-    public boolean isMigrated() {
+    public boolean isMigratable() {
         return this.equals(NodeType.TASK);
     }
 }

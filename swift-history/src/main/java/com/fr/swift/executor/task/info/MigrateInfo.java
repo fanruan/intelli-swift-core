@@ -1,6 +1,7 @@
-package com.fr.swift.executor.task.bean.info;
+package com.fr.swift.executor.task.info;
 
 import com.fr.swift.executor.task.bean.MigrateBean;
+import com.fr.swift.executor.type.SwiftTaskType;
 
 /**
  * @author Heng.J
@@ -36,5 +37,10 @@ public class MigrateInfo implements PlanningInfo {
                 "migrateTime='" + getMigrateTime() + '\'' +
                 ", migrateBean='" + getMigrateBean() + '\'' +
                 '}';
+    }
+
+    @Override
+    public SwiftTaskType type() {
+        return SwiftTaskType.MIGRATE;
     }
 }

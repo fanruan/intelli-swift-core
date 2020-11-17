@@ -1,15 +1,16 @@
 package com.fr.swift.executor.task.job.impl;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.executor.task.bean.MigrateBean;
 import com.fr.swift.executor.task.bean.PlanningBean;
-import com.fr.swift.executor.task.bean.info.MigrateInfo;
+import com.fr.swift.executor.task.info.MigrateInfo;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.executor.task.job.schedule.MigrateScheduleJob;
 import com.fr.swift.quartz.entity.TaskDefine;
 import com.fr.swift.quartz.service.ScheduleTaskService;
+import org.quartz.JobKey;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Heng.J
@@ -17,7 +18,7 @@ import java.util.List;
  * @description
  * @since swift-1.2.0
  */
-public class PlanningJob extends BaseJob<Boolean, List<String>> {
+public class PlanningJob extends BaseJob<Boolean, PlanningBean> {
 
     private PlanningBean planningBean;
 
@@ -29,20 +30,26 @@ public class PlanningJob extends BaseJob<Boolean, List<String>> {
 
     @Override
     public Boolean call() throws Exception {
-        switch (planningBean.getTaskType()) {
+        switch (planningBean.getTaskInfo().type()) {
             case MIGRATE: {
                 MigrateInfo migrateInfo = ((MigrateInfo) planningBean.getTaskInfo());
                 MigrateScheduleJob job = new MigrateScheduleJob();
+                String migrateTime = migrateInfo.getMigrateTime();
                 TaskDefine task = TaskDefine.builder()
-                        .jobKey(job.getJobKey())
-                        .cronExpression(migrateInfo.getMigrateTime())
+                        .jobKey(JobKey.jobKey(migrateTime, "migrate"))
+                        .cronExpression(migrateTime)
                         .jobClass(job.getClass())
-                        .jobData(Collections.singletonMap("migrateBean", migrateInfo.getMigrateBean()))
+                        .jobData(Collections.singletonMap(MigrateBean.KEY, migrateInfo.getMigrateBean()))
                         .build();
                 scheduleTaskService.addOrUpdateJob(task);
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public PlanningBean serializedTag() {
+        return planningBean;
     }
 }

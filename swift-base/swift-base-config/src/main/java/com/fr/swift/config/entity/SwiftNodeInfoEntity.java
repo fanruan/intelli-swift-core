@@ -2,6 +2,7 @@ package com.fr.swift.config.entity;
 
 import com.fr.swift.db.MigrateType;
 import com.fr.swift.db.NodeType;
+import com.fr.swift.source.alloter.impl.hash.function.HashType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,19 +24,21 @@ public class SwiftNodeInfoEntity implements Serializable, SwiftNodeInfo {
 
     private static final long serialVersionUID = -8816997675837995276L;
 
+    // 和swift.properties相同
     @Id
     @Column(name = "nodeId")
     private String nodeId;
 
-    @Column(name = "monthNum")
-    private int monthNum;
+    @Column(name = "limitNum")
+    private int limitNum;
 
-    @Column(name = "beginMonth")
-    private String beginMonth;
+    @Column(name = "beginIndex")
+    private String beginIndex;
 
-    @Column(name = "endMonth")
-    private String endMonth;
+    @Column(name = "endIndex")
+    private String endIndex;
 
+    // 和swift.properties相同
     @Column(name = "cubePath")
     private String cubePath;
 
@@ -53,24 +56,44 @@ public class SwiftNodeInfoEntity implements Serializable, SwiftNodeInfo {
     @Enumerated(EnumType.STRING)
     private NodeType nodeType;
 
+    @Column(name = "blockingIndex")
+    private String blockingIndex;
+
+    @Column(name = "relatedHashType")
+    @Enumerated(EnumType.STRING)
+    private HashType relatedHashType;
+
+    @Column(name = "migServerAddress")
+    private String migServerAddress;
+
     @Override
     public String getNodeId() {
         return nodeId;
     }
 
     @Override
-    public int getMonthNum() {
-        return monthNum;
+    public int getLimitNum() {
+        return limitNum;
     }
 
     @Override
-    public String getBeginMonth() {
-        return beginMonth;
+    public String getBeginIndex() {
+        return beginIndex;
     }
 
     @Override
-    public String getEndMonth() {
-        return endMonth;
+    public void setBeginIndex(String beginIndex) {
+        this.beginIndex = beginIndex;
+    }
+
+    @Override
+    public String getEndIndex() {
+        return endIndex;
+    }
+
+    @Override
+    public void setEndIndex(String endIndex) {
+        this.endIndex = endIndex;
     }
 
     @Override
@@ -94,7 +117,32 @@ public class SwiftNodeInfoEntity implements Serializable, SwiftNodeInfo {
     }
 
     @Override
+    public void setMigrateType(MigrateType migrateType) {
+        this.migrateType = migrateType;
+    }
+
+    @Override
     public NodeType getNodeType() {
         return nodeType;
+    }
+
+    @Override
+    public String getBlockingIndex() {
+        return blockingIndex;
+    }
+
+    @Override
+    public void setBlockingIndex(String blockingIndex) {
+        this.blockingIndex = blockingIndex;
+    }
+
+    @Override
+    public HashType getRelatedHashType() {
+        return relatedHashType;
+    }
+
+    @Override
+    public String getMigServerAddress() {
+        return migServerAddress;
     }
 }

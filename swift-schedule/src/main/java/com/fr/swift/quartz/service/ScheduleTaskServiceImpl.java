@@ -115,7 +115,8 @@ public class ScheduleTaskServiceImpl extends AbstractLifeCycle implements Schedu
         }
     }
 
-    private boolean deleteJob(JobKey jobKey) throws Exception {
+    @Override
+    public boolean deleteJob(JobKey jobKey) throws SchedulerException {
         ensureStarted();
         return quartzJobService.deleteJob(jobKey);
     }

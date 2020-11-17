@@ -18,11 +18,14 @@ import com.fr.swift.config.SwiftConfigRegistryImpl;
 import com.fr.swift.executor.task.ExecutorTypeContainer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
+import com.fr.swift.executor.task.impl.MigrateExecutorTask;
+import com.fr.swift.executor.task.impl.PlanningExecutorTask;
 import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
 import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
+import com.fr.swift.listener.RefreshMigrateTaskTrigger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.quartz.ScheduleTaskTrigger;
 
@@ -58,17 +61,18 @@ public class BootRegister {
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.DELETE, DeleteExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.TRUNCATE, TruncateExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.COLLATE, CollateExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.MIGRATE, CollateExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.PLANNING, CollateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.MIGRATE, MigrateExecutorTask.class);
+        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.PLANNING, PlanningExecutorTask.class);
     }
 
-    public static void registerListener() {
+    public static void registerServiceTrigger() {
         ServicePriorityInitiator.getInstance().register(new SwiftServiceInitTrigger());
         ServicePriorityInitiator.getInstance().register(new TaskDispatcherInitTrigger());
         ServicePriorityInitiator.getInstance().register(new ClusterInitTrigger());
         ServicePriorityInitiator.getInstance().register(new ScheduleTaskTrigger());
 
         MasterServiceInitiator.getInstance().register(new TaskDistributeTrigger());
+        MasterServiceInitiator.getInstance().register(new RefreshMigrateTaskTrigger());
 //        JoinClusterListenerHandler.listen();
 //        LeftClusterListenerHandler.listen();
 
