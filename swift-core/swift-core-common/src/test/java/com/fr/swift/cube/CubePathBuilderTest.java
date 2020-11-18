@@ -46,7 +46,7 @@ public class CubePathBuilderTest {
 
     @Test(expected = RuntimeException.class)
     public void testWrongBuild1() {
-        new CubePathBuilder().setSwiftSchema(SwiftDatabase.CUBE).setTempDir(1).asBackup().build();
+        new CubePathBuilder().setSwiftSchema(SwiftDatabase.CUBE).setTempDir(0).asBackup().build();
     }
 
     @Test
