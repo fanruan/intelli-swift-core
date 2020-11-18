@@ -103,7 +103,6 @@ public class MigrateScheduleJob implements ScheduleJob {
             try {
                 // 迁移后由节点自身更新数据库配置
                 SwiftNodeInfo nodeInfo = nodeInfoService.getNodeInfo(clusterId);
-                nodeInfo.setBlockingIndex(migrateIndex);
                 if (migrateSuccess) {
                     nodeInfo.setMigrateType(MigrateType.SUCCESS);
                     MigInterval migInterval = MigInterval.getMigrateInterval(nodeInfo);

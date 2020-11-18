@@ -83,7 +83,6 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 }
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
-//                return true;
                 return false;
             } finally {
                 Objects.requireNonNull(fileUploadClient).shutdownGroup();

@@ -39,7 +39,6 @@ public class MigrateBean {
         return "MigrateBean{" +
                 "migrateIndex='" + getMigrateIndex() + '\'' +
                 ", migrateTarget='" + getMigrateTarget() + '\'' +
-                ", swiftSchema='" + getMigrateTarget() + '\'' +
                 '}';
     }
 }
