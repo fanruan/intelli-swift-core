@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: lucifer
@@ -119,6 +120,11 @@ public class ScheduleTaskServiceImpl extends AbstractLifeCycle implements Schedu
     public boolean deleteJob(JobKey jobKey) throws SchedulerException {
         ensureStarted();
         return quartzJobService.deleteJob(jobKey);
+    }
+
+    @Override
+    public Set<JobKey> getExistJobKeys() throws SchedulerException {
+        return quartzJobService.getExistJobKeys();
     }
 
     /**

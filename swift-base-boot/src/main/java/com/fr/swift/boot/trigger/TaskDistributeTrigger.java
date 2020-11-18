@@ -21,16 +21,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class TaskDistributeTrigger implements SwiftPriorityInitTrigger {
 
-    private final ScheduledExecutorService executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory("SwiftPlaningTaskPool"));
+    private ScheduledExecutorService executorService;
 
     /**
      * 启动或竞争成主节点后 1min 分发计划任务
      */
     @Override
     public void init() {
-        SwiftLoggers.getLogger().info("starting task distribute...");
-        SwiftMigrateRetryListener.listen();
-        executorService.schedule(productTask(), 60, TimeUnit.SECONDS);
+        if (executorService == null) {
+            SwiftLoggers.getLogger().info("starting task distribute...");
+            SwiftMigrateRetryListener.listen();
+            executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory("SwiftPlaningTaskPool"));
+            executorService.schedule(productTask(), 60, TimeUnit.SECONDS);
+        }
     }
 
     private Runnable productTask() {
@@ -56,9 +59,12 @@ public class TaskDistributeTrigger implements SwiftPriorityInitTrigger {
 
     @Override
     public void destroy() {
-        SwiftLoggers.getLogger().info("stopping task distribute...");
-        SwiftMigrateRetryListener.remove();
-        executorService.shutdown();
+        if (executorService != null) {
+            SwiftLoggers.getLogger().info("stopping task distribute...");
+            SwiftMigrateRetryListener.remove();
+            executorService.shutdown();
+            executorService = null;
+        }
     }
 
     @Override

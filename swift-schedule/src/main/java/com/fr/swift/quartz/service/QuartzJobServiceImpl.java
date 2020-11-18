@@ -17,6 +17,9 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
+
+import java.util.Set;
 
 /**
  * @author Heng.J
@@ -113,6 +116,11 @@ public class QuartzJobServiceImpl extends AbstractLifeCycle implements QuartzJob
                 .requestRecovery()
                 .storeDurably()
                 .build();
+    }
+
+    @Override
+    public Set<JobKey> getExistJobKeys() throws SchedulerException {
+        return scheduler.getJobKeys(GroupMatcher.anyGroup());
     }
 
     public Trigger getTrigger(JobKey jobKey, String cronExpression) {

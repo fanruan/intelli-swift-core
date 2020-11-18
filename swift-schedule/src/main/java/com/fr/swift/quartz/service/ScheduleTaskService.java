@@ -4,6 +4,8 @@ import com.fr.swift.quartz.entity.TaskDefine;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 
+import java.util.Set;
+
 /**
  * @Author: lucifer
  * @Description:
@@ -61,4 +63,12 @@ public interface ScheduleTaskService extends LifeCycle {
      * @return
      */
     boolean deleteJob(JobKey jobKey) throws SchedulerException;
+
+    /**
+     * get current executing quartz jobs
+     *
+     * @return
+     * @throws SchedulerException
+     */
+    Set<JobKey> getExistJobKeys() throws SchedulerException;
 }
