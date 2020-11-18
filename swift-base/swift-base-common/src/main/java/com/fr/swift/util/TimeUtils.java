@@ -10,9 +10,9 @@ import java.time.format.DateTimeFormatter;
  * @description
  * @since swift-1.2.0
  */
-public class YearMonthUtils {
+public class TimeUtils {
 
-    public static final DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("yyyyMM");
+    private static final DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("yyyyMM");
 
     public static YearMonth strToYearMonth(String yearMonth) {
         return YearMonth.parse(yearMonth, yearMonthFormatter);

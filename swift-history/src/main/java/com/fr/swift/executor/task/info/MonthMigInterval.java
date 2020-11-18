@@ -1,7 +1,7 @@
 package com.fr.swift.executor.task.info;
 
 
-import com.fr.swift.util.YearMonthUtils;
+import com.fr.swift.util.TimeUtils;
 
 import java.time.Period;
 import java.time.YearMonth;
@@ -28,20 +28,20 @@ public class MonthMigInterval implements MigInterval {
     private List<YearMonth> preMigMonths;
 
     public MonthMigInterval(String beginMonth, String endMonth, int monthNum) {
-        this.begin = YearMonthUtils.strToYearMonth(beginMonth);
-        this.end = YearMonthUtils.strToYearMonth(endMonth);
+        this.begin = TimeUtils.strToYearMonth(beginMonth);
+        this.end = TimeUtils.strToYearMonth(endMonth);
         this.monthNum = monthNum;
         this.preMigMonths = updatePreMigMonth();
     }
 
     @Override
     public String getBeginIndex() {
-        return YearMonthUtils.ymToString(begin);
+        return TimeUtils.ymToString(begin);
     }
 
     @Override
     public String getEndIndex() {
-        return YearMonthUtils.ymToString(end);
+        return TimeUtils.ymToString(end);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class MonthMigInterval implements MigInterval {
         List<String> result = new ArrayList<>();
         YearMonth temp = this.begin;
         while (temp.compareTo(this.end) <= 0) {
-            result.add(YearMonthUtils.ymToString(temp));
+            result.add(TimeUtils.ymToString(temp));
             temp = temp.plus(UNIT);
         }
         return result;
@@ -63,12 +63,12 @@ public class MonthMigInterval implements MigInterval {
 
     @Override
     public List<String> getPreMigIndex() {
-        return preMigMonths.stream().map(YearMonthUtils::ymToString).collect(Collectors.toList());
+        return preMigMonths.stream().map(TimeUtils::ymToString).collect(Collectors.toList());
     }
 
 
     public void updateBegin(String newBegin) {
-        YearMonth begin = YearMonthUtils.strToYearMonth(newBegin);
+        YearMonth begin = TimeUtils.strToYearMonth(newBegin);
         if (begin.compareTo(this.begin) < 0) {
             this.begin = begin;
             this.preMigMonths = updatePreMigMonth();
@@ -76,7 +76,7 @@ public class MonthMigInterval implements MigInterval {
     }
 
     public void updateEnd(String newEnd) {
-        YearMonth end = YearMonthUtils.strToYearMonth(newEnd);
+        YearMonth end = TimeUtils.strToYearMonth(newEnd);
         if (end.compareTo(this.end) > 0) {
             this.end = end;
             this.preMigMonths = updatePreMigMonth();
@@ -84,7 +84,7 @@ public class MonthMigInterval implements MigInterval {
     }
 
     public void removePreMigMonth(String yearMonth) {
-        preMigMonths.removeIf(next -> YearMonthUtils.ymToString(next).equals(yearMonth));
+        preMigMonths.removeIf(next -> TimeUtils.ymToString(next).equals(yearMonth));
     }
 
     private List<YearMonth> updatePreMigMonth() {
