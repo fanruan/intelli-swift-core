@@ -23,10 +23,12 @@ import com.fr.swift.service.event.NodeMessage;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.hash.HashIndexRange;
 import com.fr.swift.util.Strings;
+import com.fr.swift.util.exception.LambdaWrapper;
 import com.github.rholder.retry.Retryer;
 import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
 import com.github.rholder.retry.WaitStrategies;
+import com.google.common.collect.Lists;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
@@ -76,10 +78,7 @@ public class MigrateScheduleJob implements ScheduleJob {
                 Map<SourceKey, List<SegmentKey>> ownSegmentsByIndex = swiftSegmentService.getOwnSegmentsByIndex(indexRange);
                 CollateService collateService = SwiftContext.get().getBean(CollateService.class);
                 for (Map.Entry<SourceKey, List<SegmentKey>> entry : ownSegmentsByIndex.entrySet()) {
-                    int batch = entry.getValue().size() / COLLATE_BATCH_SIZE;
-                    for (int count = 0; count < batch; count++) {
-                        collateService.appointCollate(entry.getKey(), entry.getValue().subList(count * COLLATE_BATCH_SIZE, (count + 1) * COLLATE_BATCH_SIZE));
-                    }
+                    Lists.partition(entry.getValue(), COLLATE_BATCH_SIZE).forEach(LambdaWrapper.rethrowConsumer(k -> collateService.appointCollate(entry.getKey(), k)));
                 }
 
                 // 执行迁移
