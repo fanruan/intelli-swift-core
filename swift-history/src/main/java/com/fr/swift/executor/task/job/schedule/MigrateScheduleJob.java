@@ -78,7 +78,7 @@ public class MigrateScheduleJob implements ScheduleJob {
                 Map<SourceKey, List<SegmentKey>> ownSegmentsByIndex = swiftSegmentService.getOwnSegmentsByIndex(indexRange);
                 CollateService collateService = SwiftContext.get().getBean(CollateService.class);
                 for (Map.Entry<SourceKey, List<SegmentKey>> entry : ownSegmentsByIndex.entrySet()) {
-                    Lists.partition(entry.getValue(), COLLATE_BATCH_SIZE).forEach(LambdaWrapper.rethrowConsumer(k -> collateService.appointCollate(entry.getKey(), k)));
+                    Lists.partition(entry.getValue(), COLLATE_BATCH_SIZE).forEach(LambdaWrapper.rethrowConsumer(segKeys -> collateService.appointCollate(entry.getKey(), segKeys)));
                 }
 
                 // 执行迁移
