@@ -43,8 +43,8 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
-    public List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time) {
-        return convertService.getActiveDeleteTasksBeforeTime(time);
+    public List<ExecutorTask> getActiveTasksBeforeTimeByType(long time, String... type) {
+        return convertService.getActiveTasksBeforeTimeByType(time, type);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.fr.swift.quartz.service;
 
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.quartz.config.SchedulerProperty;
 import com.fr.swift.quartz.entity.TaskDefine;
@@ -18,6 +17,9 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
+
+import java.util.Set;
 
 /**
  * @author Heng.J
@@ -25,7 +27,6 @@ import org.quartz.impl.StdSchedulerFactory;
  * @description 定时任务的具体执行逻辑
  * @since swift 1.1
  */
-@SwiftBean(name = "quartzJobService")
 public class QuartzJobServiceImpl extends AbstractLifeCycle implements QuartzJobService {
 
     private Scheduler scheduler;
@@ -115,6 +116,11 @@ public class QuartzJobServiceImpl extends AbstractLifeCycle implements QuartzJob
                 .requestRecovery()
                 .storeDurably()
                 .build();
+    }
+
+    @Override
+    public Set<JobKey> getExistJobKeys() throws SchedulerException {
+        return scheduler.getJobKeys(GroupMatcher.anyGroup());
     }
 
     public Trigger getTrigger(JobKey jobKey, String cronExpression) {

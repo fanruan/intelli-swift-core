@@ -53,11 +53,8 @@ public class TaskProducer {
         return MemoryQueue.getInstance().offer(executorTask);
     }
 
-    public static boolean retriggerDeleteTasks() {
-        List<ExecutorTask> deleteTasks = DBQueue.getInstance().getActiveDeleteTasks();
-        for (ExecutorTask deleteTask : deleteTasks) {
-            MemoryQueue.getInstance().offer(deleteTask);
-        }
-        return true;
+    public static boolean retriggerTasksByType(String type) {
+        List<ExecutorTask> triggerTasks = DBQueue.getInstance().getActiveTasksByType(type);
+        return triggerTasks.stream().map(triggerTask -> MemoryQueue.getInstance().offer(triggerTask)).reduce(true, (a, b) -> a && b);
     }
 }

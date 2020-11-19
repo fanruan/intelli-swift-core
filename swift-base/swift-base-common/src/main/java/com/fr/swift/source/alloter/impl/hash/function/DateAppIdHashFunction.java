@@ -1,6 +1,7 @@
 package com.fr.swift.source.alloter.impl.hash.function;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.swift.source.alloter.impl.hash.HashIndexRange;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -53,7 +54,31 @@ public class DateAppIdHashFunction extends BaseHashFunction {
     }
 
     @Override
-    public String getCubePath(int logicorder) {
-        return String.valueOf(logicorder / 100);
+    public String getCubePath(int logicOrder) {
+        return String.valueOf(logicOrder / 100);
+    }
+
+    public static class DateAppIdHashRange implements HashIndexRange {
+
+        private Integer hashValue;
+
+        public DateAppIdHashRange() {
+        }
+
+        @Override
+        public DateAppIdHashRange ofKey(Object hashValue) {
+            this.hashValue = Integer.parseInt(String.valueOf(hashValue));
+            return this;
+        }
+
+        @Override
+        public Integer getBegin() {
+            return hashValue * 100;
+        }
+
+        @Override
+        public Integer getEnd() {
+            return (hashValue + 1) * 100;
+        }
     }
 }

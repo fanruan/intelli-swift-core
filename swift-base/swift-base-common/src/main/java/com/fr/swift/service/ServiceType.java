@@ -7,7 +7,7 @@ package com.fr.swift.service;
 public enum ServiceType {
     //
     REAL_TIME((byte) 0), ANALYSE((byte) 1), HISTORY((byte) 2), COLLATE((byte) 3),
-    DELETE((byte) 4), CONTEXT((byte) 5), MIGRATE((byte) 6);
+    DELETE((byte) 4), CONTEXT((byte) 5), MIGRATE((byte) 6), DISTRIBUTE((byte) 7);
 
     private byte type;
 

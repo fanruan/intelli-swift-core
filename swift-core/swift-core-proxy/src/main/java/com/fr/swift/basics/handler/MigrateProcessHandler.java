@@ -7,5 +7,4 @@ import com.fr.swift.basics.ProcessHandler;
  * @date 2020/11/4
  */
 public interface MigrateProcessHandler extends ProcessHandler {
-
 }

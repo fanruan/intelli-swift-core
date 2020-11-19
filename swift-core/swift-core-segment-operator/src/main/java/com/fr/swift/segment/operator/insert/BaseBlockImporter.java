@@ -2,9 +2,7 @@ package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
-import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
-import com.fr.swift.config.service.impl.SwiftCubePathServiceImpl;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
@@ -50,10 +48,6 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected SwiftSegmentLocationService segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
 
     protected SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
-
-    private SwiftCubePathService cubePathService = new SwiftCubePathServiceImpl();
-
-    private final static String PATH_CUBES = "cubes/";
 
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
@@ -119,7 +113,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
         return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(),
-                dataSource.getMetadata().getSwiftDatabase(), cubePathService.getSwiftPath() + PATH_CUBES + segInfo.getTempDir());
+                dataSource.getMetadata().getSwiftDatabase(), segInfo.getTempDir());
     }
 
     protected void releaseFullIfExists() {

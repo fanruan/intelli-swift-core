@@ -3,12 +3,16 @@ package com.fr.swift.service;
 import com.fr.swift.basics.annotation.InvokeMethod;
 import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.DeleteProcessHandler;
+import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.basics.handler.MigrateProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
+import com.fr.swift.basics.handler.TaskProcessHandler;
 import com.fr.swift.db.Where;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.service.event.NodeEvent;
+import com.fr.swift.service.event.NodeMessage;
 import com.fr.swift.source.SourceKey;
 
 import java.util.List;
@@ -33,7 +37,16 @@ public interface ServiceContext extends SwiftService {
 
     void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception;
 
-    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
-    boolean remoteDelete(String targetPath, String clusterId);
+    @InvokeMethod(value = TaskProcessHandler.class, target = Target.ALL)
+    boolean dispatch(String taskBean, String location) throws Exception;
 
+    // following 3 interfaces is for migrate
+    @InvokeMethod(value = MasterProcessHandler.class, target = Target.ALL)
+    boolean report(NodeEvent nodeEvent, NodeMessage nodeMessage);
+
+    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
+    boolean deleteFiles(String targetPath, String clusterId);
+
+    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
+    boolean updateConfigs(List<SegmentKey> segmentKeys, String clusterId);
 }

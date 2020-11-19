@@ -4,9 +4,11 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.executor.TaskProducer;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
+import com.fr.swift.executor.task.impl.PlanningExecutorTask;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.result.SwiftResultSet;
@@ -19,6 +21,8 @@ import com.fr.swift.service.MigrateService;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.event.NodeEvent;
+import com.fr.swift.service.event.NodeMessage;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.ServiceBeanFactory;
 
@@ -101,8 +105,23 @@ public class SwiftServiceContext implements ServiceContext {
     }
 
     @Override
-    public boolean remoteDelete(String targetPath, String clusterId) {
-        return SwiftContext.get().getBean(MigrateService.class).deleteMigraFile(targetPath);
+    public boolean dispatch(String taskBean, String location) throws Exception {
+        return TaskProducer.produceTask(PlanningExecutorTask.of(taskBean));
     }
 
+    @Override
+    public boolean report(NodeEvent nodeEvent, NodeMessage nodeMessage) {
+        SwiftEventDispatcher.syncFire(nodeEvent, nodeMessage);
+        return true;
+    }
+
+    @Override
+    public boolean deleteFiles(String targetPath, String clusterId) {
+        return SwiftContext.get().getBean(MigrateService.class).deleteMigratedFile(targetPath);
+    }
+
+    @Override
+    public boolean updateConfigs(List<SegmentKey> segmentKeys, String clusterId) {
+        return SwiftContext.get().getBean(MigrateService.class).updateMigratedSegsConfig(segmentKeys);
+    }
 }

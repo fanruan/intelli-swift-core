@@ -13,7 +13,6 @@ import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.FileUtil;
-import com.fr.swift.util.SegmentInfoUtils;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
@@ -47,8 +46,7 @@ public class DropColumnAction extends BaseAlterTableAction {
             }
 
             // 删history todo 还要删共享存储
-            String currentDir = SegmentInfoUtils.getTemDir(segKey.getSegmentUri());
-            FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).setColumnId(relatedColumnMeta.getColumnId()).build());
+            FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(segKey.getSegmentUri()).setColumnId(relatedColumnMeta.getColumnId()).build());
         }
 
         alterMeta(table);
