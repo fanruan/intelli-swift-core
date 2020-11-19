@@ -13,9 +13,11 @@ import static com.fr.swift.executor.task.netty.protocol.command.Command.FILE_PAC
  */
 public class FilePacket extends Packet {
 
-    File file;
+    private String targetPath;
 
-    int ACK;
+    private File file;
+
+    private int ACK;
 
     @Override
     public Byte getCommand() {
@@ -29,7 +31,7 @@ public class FilePacket extends Packet {
         this.file = file;
     }
 
-    public FilePacket(File file, int ACK) {
+    public FilePacket(File file, int ACK, String targetPath) {
         this.file = file;
         this.ACK = ACK;
     }
@@ -48,5 +50,14 @@ public class FilePacket extends Packet {
 
     public void setACK(int ACK) {
         this.ACK = ACK;
+    }
+
+
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public void setTargetPath(String targetPath) {
+        this.targetPath = targetPath;
     }
 }

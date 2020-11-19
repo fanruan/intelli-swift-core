@@ -14,6 +14,7 @@ import com.fr.swift.service.ServiceContext;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Hoky
@@ -23,8 +24,18 @@ import java.util.Objects;
  */
 public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
-    private static final String PATH_CUBES = "cubes/";
     private static final String SEPARATOR = "/";
+
+    private static final String PATH_CUBES = "cubes" + SEPARATOR;
+
+    private static final String UNDERSCORE = "_";
+
+    private static final String ZIP_NAME = "zip";
+
+    private static final String DOT = ".";
+
+    private static CountDownLatch countDownLatch = new CountDownLatch(1);
+    ;
 
     private SwiftNodeInfoService nodeInfoService = SwiftContext.get().getBean(SwiftNodeInfoService.class);
 
@@ -41,13 +52,14 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
         final String migrateTarget = migrateBean.getMigrateTarget();
 
         String cubePath = nodeInfoService.getOwnNodeInfo().getCubePath();
+        String ownNodeId = nodeInfoService.getOwnNodeInfo().getNodeId();
         final String migratePath = cubePath + PATH_CUBES + migrateIndex;
-        final String zipPath = migratePath + "_zip";
-        final String zipName = migratePath + ".zip";
+        final String zipPath = migratePath + UNDERSCORE + ZIP_NAME;
+        final String zipName = migratePath + DOT + ZIP_NAME;
 
         SwiftNodeInfo targetNodeInfo = nodeInfoService.getNodeInfo(migrateTarget);
         String targetCubePath = targetNodeInfo.getCubePath();
-        final String targetPath = targetCubePath + PATH_CUBES + migrateIndex + ".zip";
+        final String targetPath = targetCubePath + PATH_CUBES + migrateIndex + UNDERSCORE + ownNodeId + DOT + ZIP_NAME;
 
         final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
         File migrateFile = new File(migratePath);
@@ -68,15 +80,19 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 FilePacket filePacket = new FilePacket();
                 File file = new File(zipName);
                 filePacket.setFile(file);
+                filePacket.setTargetPath(targetPath);
                 fileUploadClient = new FileUploadClient();
 
                 String[] addressArray = targetNodeInfo.getMigServerAddress().split(":");
                 String ip = addressArray[0];
                 int port = Integer.parseInt(addressArray[1]);
-                if (fileUploadClient.connect(ip, port, filePacket)) {
-                    fileUploadClient.closeFuture();
-                    SwiftLoggers.getLogger().info("migration finished!");
-                    serviceContext.deleteFiles(targetPath, migrateTarget);
+                if (uploadFile(fileUploadClient, ip, port, filePacket)) {
+                    if (!serviceContext.deleteFiles(targetPath, migrateTarget)) {
+                        SwiftLoggers.getLogger().error("migrate files error!");
+                        return false;
+                    } else {
+                        SwiftLoggers.getLogger().info("migration finished!");
+                    }
                 } else {
                     SwiftLoggers.getLogger().error("deliver file error!");
                     return false;
@@ -98,5 +114,22 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
     @Override
     public MigrateBean serializedTag() {
         return migrateBean;
+    }
+
+    public static void countDown() {
+        countDownLatch.countDown();
+    }
+
+    private static boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
+        if (fileUploadClient.connect(ip, port)) {
+            if (fileUploadClient.writeAndFlush(filePacket)) {
+                countDownLatch.await();
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 }

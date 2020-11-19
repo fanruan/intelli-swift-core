@@ -50,7 +50,7 @@ public class MigrationZipUtils {
 //            if (isDelSrcFile) {
 //                delDir(srcDir);
 //            }
-            SwiftLoggers.getLogger().info("cost:  " + (System.currentTimeMillis() - start));
+            SwiftLoggers.getLogger().info("zip " + sourceFile.getName() + " cost:  " + (System.currentTimeMillis() - start) + " ms");
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("zip error from ZipUtils");
@@ -179,13 +179,4 @@ public class MigrationZipUtils {
             throw new IOException("delete file exception.");
         }
     }
-
-//    public static void main(String[] args) {
-//        try {
-////            toZip("/Users/hoky/Work/fanruan/code/swift-gc-old/target/cubes/0/fine_bi_dashboard", "/Users/hoky/Work/fanruan/code/swift-gc-old/target/cubes/0/fine_bi_dashboar.zip", false);
-////            unCompress("/Users/hoky/Work/treasures/REPORT-41096/treas20200901.zip", "/Users/hoky/Work/treasures/REPORT-41096/");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

@@ -18,11 +18,27 @@ import java.io.IOException;
  */
 public class FileReceiveServerHandler extends ChannelInboundHandlerAdapter {
 
-    static FileOutputStream outputStream;
+    private static FileOutputStream outputStream;
 
-    static long fileLength;
+    private static long fileLength;
 
     private static long readLength;
+
+    public static FileOutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public static void setOutputStream(FileOutputStream outputStream) {
+        FileReceiveServerHandler.outputStream = outputStream;
+    }
+
+    public static long getFileLength() {
+        return fileLength;
+    }
+
+    public static void setFileLength(long fileLength) {
+        FileReceiveServerHandler.fileLength = fileLength;
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -51,4 +67,7 @@ public class FileReceiveServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    public static void clearReadLength() {
+        readLength = 0L;
+    }
 }

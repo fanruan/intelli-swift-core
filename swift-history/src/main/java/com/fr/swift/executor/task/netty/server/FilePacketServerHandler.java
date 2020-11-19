@@ -22,10 +22,9 @@ public class FilePacketServerHandler extends SimpleChannelInboundHandler<FilePac
 	protected void channelRead0(ChannelHandlerContext ctx, FilePacket packet) throws Exception {
 		File file = packet.getFile();
 		SwiftLoggers.getLogger().info("receive file from client: " + file.getName());
-		FileReceiveServerHandler.fileLength = file.length();
-		FileReceiveServerHandler.outputStream = new FileOutputStream(
-				new File("/Users/hoky/Work/fanruan/code/swift-gc-old/target/cubes/" + file.getName())
-		);
+		FileReceiveServerHandler.clearReadLength();
+		FileReceiveServerHandler.setFileLength(file.length());
+		FileReceiveServerHandler.setOutputStream(new FileOutputStream(packet.getTargetPath()));
 		packet.setACK(packet.getACK() + 1);
 		ctx.writeAndFlush(packet);
 	}
