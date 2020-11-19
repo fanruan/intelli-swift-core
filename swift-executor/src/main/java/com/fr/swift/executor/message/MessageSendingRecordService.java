@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface MessageSendingRecordService {
 
-    void save(final MessageSendingRecordEntity messageSendingRecordEntity) throws SQLException;
+    void saveOrUpdate(final MessageSendingRecordEntity messageSendingRecordEntity) throws SQLException;
 
     void update(final MessageSendingRecordEntity messageSendingRecordEntity) throws SQLException;
 

@@ -13,8 +13,8 @@ import com.fr.swift.api.info.RequestType;
 public class SqlRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor> {
     @JsonProperty(value = "sql")
     protected String sql;
-    @JsonProperty(value = "auth")
-    protected String authCode;
+    @JsonProperty(value = "swiftUser")
+    protected String swiftUser;
     @JsonProperty(value = "database")
     protected String database;
     @JsonIgnore
@@ -36,11 +36,11 @@ public class SqlRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor> {
 
     @Override
     public String getAuthCode() {
-        return authCode;
+        return swiftUser;
     }
 
-    public void setAuthCode(String authCode) {
-        this.authCode = authCode;
+    public void setAuthCode(String swiftUser) {
+        this.swiftUser = swiftUser;
     }
 
     public String getDatabase() {
