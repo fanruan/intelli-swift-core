@@ -2,6 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
@@ -17,6 +18,7 @@ import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
+import com.fr.swift.structure.Pair;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,15 +34,21 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
 
     private static final SegmentInfo DEFAULT_SEG = new SwiftSegmentInfo(0, Types.StoreType.MEMORY);
 
+    private Pair<Integer, ImmutableBitMap> snapshot;
+
+    private Segment seg;
+
     public Incrementer(DataSource dataSource, A alloter) {
         super(dataSource, alloter);
     }
 
-    private boolean transfered = false;
 
     @Override
     protected Inserting getInserting(SegmentKey segKey) {
-        Segment seg = SegmentUtils.newSegment(segKey);
+        seg = SegmentUtils.newSegment(segKey);
+        if (seg.isReadable()) {
+            snapshot = snapshot(seg);
+        }
         return new Inserting(SwiftInserter.ofAppendMode(seg), seg, SegmentUtils.safeGetRowCount(seg));
     }
 
@@ -64,6 +72,7 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
             segmentService.addSegments(importSegKeys);
             SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.PUSH_SEG, importSegKeys);
         }
+        swiftSegmentService.update(importSegKeys);
         SwiftLoggers.getLogger().debug("incrementer over, save seg location {}", importSegKeys);
     }
 
@@ -75,5 +84,18 @@ public class Incrementer<A extends SwiftSourceAlloter<?, RowInfo>> extends BaseB
     @Override
     protected void onFailed() {
         // do nothing
+    }
+
+    @Override
+    public Pair<Integer, ImmutableBitMap> snapshot(Segment segment) {
+        return Pair.of(segment.getRowCount(), segment.getAllShowIndex());
+    }
+
+    @Override
+    public void rollback() {
+        if (seg != null) {
+            seg.putRowCount(snapshot.getKey());
+            seg.putAllShowIndex(snapshot.getValue());
+        }
     }
 }

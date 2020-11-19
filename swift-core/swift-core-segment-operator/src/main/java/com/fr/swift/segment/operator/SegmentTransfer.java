@@ -52,6 +52,7 @@ public class SegmentTransfer {
             SegmentBuilder segBuilder = new SegmentBuilder(histSeg, realtSeg.getMetaData().getFieldNames(), Collections.singletonList(realtSeg), Collections.singletonList(realtSeg.getAllShowIndex()));
             segBuilder.build();
             SegmentUtils.releaseHisSeg(Arrays.asList(realtSeg, histSeg));
+            histSegKey.markFinish(histSeg.getRowCount());
             onSucceed(start, histSeg);
             return histSegKey;
         } catch (Exception e) {
@@ -64,6 +65,7 @@ public class SegmentTransfer {
 
     private void onSucceed(long start, Segment histSeg) {
         SEG_LOCATION_SVC.saveOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(histSegKey));
+        SWIFT_SEG_SVC.update(histSegKey);
         SEG_SVC.addSegment(histSegKey);
         SEG_SVC.removeSegment(realtSegKey);
         remove(realtSegKey);

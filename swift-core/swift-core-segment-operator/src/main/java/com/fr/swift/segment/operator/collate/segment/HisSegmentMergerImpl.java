@@ -41,6 +41,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                     builder.build();
                     SegmentUtils.releaseHisSeg(segment);
+                    segKey.markFinish(segment.getRowCount());
                 } catch (Throwable e) {
                     try {
                         SegmentUtils.releaseHisSeg(segment);
