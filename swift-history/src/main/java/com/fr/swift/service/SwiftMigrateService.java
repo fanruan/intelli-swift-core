@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.annotation.SwiftService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.executor.task.constants.PathConstants;
 import com.fr.swift.executor.task.utils.MigrationZipUtils;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.SegmentKey;
@@ -25,9 +26,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
 
     private String targetZipPath;
 
-    private static final String SEPARATOR = "/";
-
-    private static final String UNDERSCORE = "_";
+    private static String CLOUD_NAME = "CLOUD";
 
     @Override
     public ServiceType getServiceType() {
@@ -42,9 +41,9 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
             String readyUncompressPath = zipFilesPath(targetPath);
             //第一次解压到一个带"_zip"的文件目录，该目录下的还是未解压各个表的压缩文件
             MigrationZipUtils.unCompress(targetPath, readyUncompressPath);
-            String zipClusterIdPath = targetZipPath + UNDERSCORE + clusterId;
-            String firstUncompressPath = targetPath.substring(0, targetPath.lastIndexOf(".")) + UNDERSCORE + "zip";
-            File zipFile = new File(firstUncompressPath + SEPARATOR + new File(firstUncompressPath).list()[0]);
+            String zipClusterIdPath = targetZipPath + PathConstants.UNDERSCORE + clusterId;
+            String firstUncompressPath = targetPath.substring(0, targetPath.lastIndexOf(PathConstants.DOT)) + PathConstants.UNDERSCORE + PathConstants.ZIP_NAME;
+            File zipFile = new File(firstUncompressPath + PathConstants.SEPARATOR + new File(firstUncompressPath).list()[0]);
             //第二次解压到一个带 _clusterId 的文件目录，防止两个节点同时传文件造成冲突
             for (File zip : zipFile.listFiles()) {
                 MigrationZipUtils.unCompress(zip.getPath(), zipClusterIdPath);
@@ -58,7 +57,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
                 //存在就将各个块移动过去
                 for (File tableFile : clusterIdFile.listFiles()) {
                     for (File segFile : tableFile.listFiles()) {
-                        FileUtil.move(segFile, new File(targetZipPath + SEPARATOR + tableFile.getName() + SEPARATOR + segFile.getName()), true);
+                        FileUtil.move(segFile, new File(targetZipPath + PathConstants.SEPARATOR + tableFile.getName() + PathConstants.SEPARATOR + segFile.getName()), true);
                     }
                 }
             }
@@ -91,16 +90,16 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
     }
 
     private String zipFilesPath(String targetPath) {
-        return targetPath.substring(0, targetPath.lastIndexOf(".")) + "_zip";
+        return targetPath.substring(0, targetPath.lastIndexOf(".")) + PathConstants.UNDERSCORE + PathConstants.ZIP_NAME;
     }
 
     private String getTargetZipPath(String targetPath) {
-        return targetPath.substring(0, targetPath.lastIndexOf("CLOUD") - 1);
+        return targetPath.substring(0, targetPath.lastIndexOf(CLOUD_NAME) - 1);
     }
 
     private String getClusterId(String targetPath) {
         String zipName = targetPath.substring(targetPath.lastIndexOf("/") + 1);
-        return zipName.substring(zipName.indexOf("_") + 1, zipName.lastIndexOf("."));
+        return zipName.substring(zipName.indexOf(PathConstants.UNDERSCORE) + 1, zipName.lastIndexOf(PathConstants.UNDERSCORE));
     }
 
 }

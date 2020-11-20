@@ -4,6 +4,7 @@ package com.fr.swift.executor.task.netty.client;
 import com.fr.swift.executor.task.netty.codec.DecodeHandler;
 import com.fr.swift.executor.task.netty.codec.EncodeHandler;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
+import com.fr.swift.log.SwiftLoggers;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -52,7 +53,7 @@ public class FileUploadClient {
             }
             return false;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            SwiftLoggers.getLogger().error(e);
             return false;
         }
     }

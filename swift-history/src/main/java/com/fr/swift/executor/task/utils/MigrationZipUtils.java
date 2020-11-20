@@ -50,7 +50,7 @@ public class MigrationZipUtils {
 //            if (isDelSrcFile) {
 //                delDir(srcDir);
 //            }
-            SwiftLoggers.getLogger().info("zip " + sourceFile.getName() + " cost:  " + (System.currentTimeMillis() - start) + " ms");
+            SwiftLoggers.getLogger().info("zip file {} cost: {} ms", sourceFile.getName(), (System.currentTimeMillis() - start));
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("zip error from ZipUtils");

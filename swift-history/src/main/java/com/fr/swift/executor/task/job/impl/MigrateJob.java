@@ -5,6 +5,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.entity.SwiftNodeInfo;
 import com.fr.swift.config.service.SwiftNodeInfoService;
 import com.fr.swift.executor.task.bean.MigrateBean;
+import com.fr.swift.executor.task.constants.PathConstants;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.executor.task.netty.client.FileUploadClient;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
@@ -24,18 +25,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
-    private static final String SEPARATOR = "/";
-
-    private static final String PATH_CUBES = "cubes" + SEPARATOR;
-
-    private static final String UNDERSCORE = "_";
-
-    private static final String ZIP_NAME = "zip";
-
-    private static final String DOT = ".";
-
     private static CountDownLatch countDownLatch = new CountDownLatch(1);
-    ;
 
     private SwiftNodeInfoService nodeInfoService = SwiftContext.get().getBean(SwiftNodeInfoService.class);
 
@@ -53,13 +43,13 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
         String cubePath = nodeInfoService.getOwnNodeInfo().getCubePath();
         String ownNodeId = nodeInfoService.getOwnNodeInfo().getNodeId();
-        final String migratePath = cubePath + PATH_CUBES + migrateIndex;
-        final String zipPath = migratePath + UNDERSCORE + ZIP_NAME;
-        final String zipName = migratePath + DOT + ZIP_NAME;
+        final String migratePath = cubePath + PathConstants.PATH_CUBES + migrateIndex;
+        final String zipPath = migratePath + PathConstants.UNDERSCORE + PathConstants.ZIP_NAME;
+        final String zipName = migratePath + PathConstants.DOT + PathConstants.ZIP_NAME;
 
         SwiftNodeInfo targetNodeInfo = nodeInfoService.getNodeInfo(migrateTarget);
         String targetCubePath = targetNodeInfo.getCubePath();
-        final String targetPath = targetCubePath + PATH_CUBES + migrateIndex + UNDERSCORE + ownNodeId + DOT + ZIP_NAME;
+        final String targetPath = targetCubePath + PathConstants.PATH_CUBES + migrateIndex + PathConstants.UNDERSCORE + ownNodeId + PathConstants.DOT + PathConstants.ZIP_NAME;
 
         final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
         File migrateFile = new File(migratePath);
@@ -72,7 +62,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 File[] filesBeforeZip = migrateFile.listFiles();
                 new File(zipPath).mkdirs();
                 for (File file : Objects.requireNonNull(filesBeforeZip)) {
-                    MigrationZipUtils.toZip(file.getPath(), zipPath + SEPARATOR + file.getName() + ".zip", false);
+                    MigrationZipUtils.toZip(file.getPath(), zipPath + PathConstants.SEPARATOR + file.getName() + ".zip", false);
                 }
                 MigrationZipUtils.toZip(zipPath, zipName, false);
 
@@ -124,12 +114,9 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
         if (fileUploadClient.connect(ip, port)) {
             if (fileUploadClient.writeAndFlush(filePacket)) {
                 countDownLatch.await();
-            } else {
-                return false;
+                return true;
             }
-        } else {
-            return false;
         }
-        return true;
+        return false;
     }
 }
