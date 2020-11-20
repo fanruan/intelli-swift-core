@@ -24,6 +24,10 @@ public interface SwiftSegmentService {
 
     void save(Collection<SegmentKey> segKeys);
 
+    void update(SegmentKey segKey);
+
+    void update(Collection<SegmentKey> segKeys);
+
     void delete(SegmentKey segKey);
 
     void delete(List<SegmentKey> segKeys);

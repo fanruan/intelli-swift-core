@@ -24,7 +24,7 @@ public class SwiftConfigConstants {
         public static final String COLUMN_STORE_TYPE = "storeType";
         public static final String COLUMN_SWIFT_SCHEMA = "swiftSchema";
         public static final String COLUMN_SEGMENT_URI = "segmentUri";
-        public static final String CREATE_TIME = "createTtime";
+        public static final String CREATE_TIME = "createTime";
         public static final String FINISH_TIME = "finishTime";
         public static final String COLUMN_SEGMENT_SOURCE = "segmentSource";
         public static final String COLUMN_ROWS = "rows";

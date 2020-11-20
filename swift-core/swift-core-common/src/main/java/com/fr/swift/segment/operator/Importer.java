@@ -11,7 +11,7 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public interface Importer<R extends SwiftResultSet> {
+public interface Importer<R extends SwiftResultSet, T, S> extends RollBackable<T, S> {
 
     /**
      * 导入数据

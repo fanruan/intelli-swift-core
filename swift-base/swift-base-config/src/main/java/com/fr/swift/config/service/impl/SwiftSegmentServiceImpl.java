@@ -61,6 +61,16 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     }
 
     @Override
+    public void update(SegmentKey segKey) {
+        segmentDao.update(segKey);
+    }
+
+    @Override
+    public void update(Collection<SegmentKey> segKeys) {
+        segmentDao.update(segKeys);
+    }
+
+    @Override
     public void delete(SegmentKey segKey) {
         segmentDao.delete(segKey);
     }

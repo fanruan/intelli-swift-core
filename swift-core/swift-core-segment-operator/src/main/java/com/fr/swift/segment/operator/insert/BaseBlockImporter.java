@@ -18,8 +18,10 @@ import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.BaseAllotRule.AllotType;
+import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 import com.fr.swift.source.alloter.impl.hash.HashRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.IoUtil;
 
@@ -29,12 +31,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author anchore
  * @date 2018/8/1
  */
-public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>, R extends SwiftResultSet> implements Releasable, Importer<R> {
+public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>, R extends SwiftResultSet> implements Releasable, Importer<R, Segment, Pair> {
 
     protected int curCursor = 0;
 
@@ -155,6 +158,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     protected void processAfterSegmentDone(boolean needIndex) throws Exception {
+        Map<SwiftSegmentInfo, SegmentKey> segMap = importSegKeys.stream().collect(Collectors.toMap(s -> new SwiftSegmentInfo(s.getOrder(), s.getStoreType()), s -> s));
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (needIndex) {
@@ -164,6 +168,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                     handleFullSegment(entry.getKey());
                 }
             }
+            segMap.get(entry.getKey()).markFinish(entry.getValue().rowCount);
             itr.remove();
         }
     }
@@ -210,5 +215,15 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     @Override
     public List<SegmentKey> getImportSegments() {
         return importSegKeys;
+    }
+
+    @Override
+    public Pair snapshot(Segment segment) {
+        return null;
+    }
+
+    @Override
+    public void rollback() {
+
     }
 }

@@ -8,6 +8,7 @@ import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.backup.BackupBlockImporter;
 import com.fr.swift.segment.backup.ReusableResultSet;
+import com.fr.swift.segment.operator.Importer;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
@@ -35,6 +36,7 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
     @Override
     public Boolean call() {
         try {
+            //todo rowcount&allshowindex快照
             // 先备份，后insert
             Table table = SwiftDatabase.getInstance().getTable(tableKey);
             ReusableResultSet reusableResultSet = backup(table);
@@ -42,6 +44,7 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
             insert(table, reusableResultSet);
             return true;
         } catch (Exception e) {
+            // TODO: 2020/11/18 backup & mem回滚
             SwiftLoggers.getLogger().error(e);
             return false;
         }
@@ -50,12 +53,14 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
     private ReusableResultSet backup(Table table) throws Exception {
         SwiftSourceAlloter alloter = new BackupLineSourceAlloter(tableKey, new LineAllotRule(BaseAllotRule.MEM_CAPACITY));
         ReusableResultSet reusableResultSet = new ReusableResultSet(resultSet);
-        new BackupBlockImporter<SwiftSourceAlloter<?, RowInfo>>(table, alloter).importResultSet(reusableResultSet);
+        Importer importer = new BackupBlockImporter<SwiftSourceAlloter<?, RowInfo>>(table, alloter);
+        importer.importResultSet(reusableResultSet);
         return reusableResultSet;
     }
 
     private void insert(Table table, ReusableResultSet reusableResultSet) throws Exception {
         SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(BaseAllotRule.MEM_CAPACITY));
-        new Incrementer<SwiftSourceAlloter<?, RowInfo>>(table, alloter).importResultSet(reusableResultSet.reuse());
+        Importer importer = new Incrementer<SwiftSourceAlloter<?, RowInfo>>(table, alloter);
+        importer.importResultSet(reusableResultSet.reuse());
     }
 }

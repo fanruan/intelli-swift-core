@@ -23,6 +23,11 @@ public abstract class BaseJob<T, P> implements Job<T, P> {
     }
 
     @Override
+    public void setJobListener(JobListener listener) {
+        this.jobListener = listener;
+    }
+
+    @Override
     public P serializedTag() {
         return null;
     }
