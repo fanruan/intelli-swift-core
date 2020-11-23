@@ -33,6 +33,9 @@ public class SwiftBlockTaskEntity implements Serializable {
     @Column(name = "createTime")
     private long createTime;
 
+    public SwiftBlockTaskEntity() {
+    }
+
     public SwiftBlockTaskEntity(String blockingIndex, String taskContent) {
         this.blockingIndex = blockingIndex;
         this.taskContent = taskContent;
