@@ -16,13 +16,19 @@
       "sourceKey": "TREASURE_ANALYSIS",
       "executorTaskType": "TREASURE_ANALYSIS",
       "lockKey": null,
-      "semaphore": 2
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "TREASURE_REPORT",
+      "lockKey": null,
+      "semaphore": 1
     },
     {
       "sourceKey": null,
       "executorTaskType": "TREASURE_REALTIME",
       "lockKey": null,
-      "semaphore": 2
+      "semaphore": 1
     },
     {
       "sourceKey": null,
