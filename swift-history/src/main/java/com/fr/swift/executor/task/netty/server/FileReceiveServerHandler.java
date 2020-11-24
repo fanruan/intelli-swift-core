@@ -36,7 +36,6 @@ public class FileReceiveServerHandler extends ChannelInboundHandlerAdapter {
         if (type != Codec.TYPE) {
             readLength += byteBuf.readableBytes();
             writeToFile(byteBuf);
-            System.out.println(String.format("%s:%s:%s", this.hashCode(), fileLength, readLength));
             sendComplete(readLength);
         } else {
             Packet packet = Codec.INSTANCE.decode(byteBuf);
