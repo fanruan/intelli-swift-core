@@ -1,6 +1,7 @@
 package com.fr.swift.executor.task.netty.client;
 
 
+import com.fr.swift.executor.task.job.impl.MigrateJob;
 import com.fr.swift.executor.task.netty.codec.Codec;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
 import com.fr.swift.executor.task.netty.protocol.Packet;
@@ -49,6 +50,7 @@ public class FileSendClientHandler extends ChannelInboundHandlerAdapter {
 		ctx.writeAndFlush(fileRegion).addListener(future -> {
 			if (future.isSuccess()) {
 				SwiftLoggers.getLogger().info("sending file finished!");
+				MigrateJob.countDown();
 			}
 		});
 	}

@@ -5,6 +5,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.entity.SwiftNodeInfo;
 import com.fr.swift.config.service.SwiftNodeInfoService;
 import com.fr.swift.executor.task.bean.MigrateBean;
+import com.fr.swift.executor.task.constants.PathConstants;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.executor.task.netty.client.FileUploadClient;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
@@ -14,6 +15,7 @@ import com.fr.swift.service.ServiceContext;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Hoky
@@ -23,8 +25,7 @@ import java.util.Objects;
  */
 public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
-    private static final String PATH_CUBES = "cubes/";
-    private static final String SEPARATOR = "/";
+    private static CountDownLatch countDownLatch = new CountDownLatch(1);
 
     private SwiftNodeInfoService nodeInfoService = SwiftContext.get().getBean(SwiftNodeInfoService.class);
 
@@ -41,13 +42,14 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
         final String migrateTarget = migrateBean.getMigrateTarget();
 
         String cubePath = nodeInfoService.getOwnNodeInfo().getCubePath();
-        final String migratePath = cubePath + PATH_CUBES + migrateIndex;
-        final String zipPath = migratePath + "_zip";
-        final String zipName = migratePath + ".zip";
+        String ownNodeId = nodeInfoService.getOwnNodeInfo().getNodeId();
+        final String migratePath = cubePath + PathConstants.PATH_CUBES + migrateIndex;
+        final String zipPath = migratePath + PathConstants.UNDERSCORE + PathConstants.ZIP_NAME;
+        final String zipName = migratePath + PathConstants.DOT + PathConstants.ZIP_NAME;
 
         SwiftNodeInfo targetNodeInfo = nodeInfoService.getNodeInfo(migrateTarget);
         String targetCubePath = targetNodeInfo.getCubePath();
-        final String targetPath = targetCubePath + PATH_CUBES + migrateIndex + ".zip";
+        final String targetPath = targetCubePath + PathConstants.PATH_CUBES + migrateIndex + PathConstants.UNDERSCORE + ownNodeId + PathConstants.DOT + PathConstants.ZIP_NAME;
 
         final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
         File migrateFile = new File(migratePath);
@@ -60,7 +62,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 File[] filesBeforeZip = migrateFile.listFiles();
                 new File(zipPath).mkdirs();
                 for (File file : Objects.requireNonNull(filesBeforeZip)) {
-                    MigrationZipUtils.toZip(file.getPath(), zipPath + SEPARATOR + file.getName() + ".zip", false);
+                    MigrationZipUtils.toZip(file.getPath(), zipPath + PathConstants.SEPARATOR + file.getName() + ".zip", false);
                 }
                 MigrationZipUtils.toZip(zipPath, zipName, false);
 
@@ -68,15 +70,19 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 FilePacket filePacket = new FilePacket();
                 File file = new File(zipName);
                 filePacket.setFile(file);
+                filePacket.setTargetPath(targetPath);
                 fileUploadClient = new FileUploadClient();
 
                 String[] addressArray = targetNodeInfo.getMigServerAddress().split(":");
                 String ip = addressArray[0];
                 int port = Integer.parseInt(addressArray[1]);
-                if (fileUploadClient.connect(ip, port, filePacket)) {
-                    fileUploadClient.closeFuture();
-                    SwiftLoggers.getLogger().info("migration finished!");
-                    serviceContext.deleteFiles(targetPath, migrateTarget);
+                if (uploadFile(fileUploadClient, ip, port, filePacket)) {
+                    if (!serviceContext.deleteFiles(targetPath, migrateTarget)) {
+                        SwiftLoggers.getLogger().error("migrate files error!");
+                        return false;
+                    } else {
+                        SwiftLoggers.getLogger().info("migration finished!");
+                    }
                 } else {
                     SwiftLoggers.getLogger().error("deliver file error!");
                     return false;
@@ -98,5 +104,19 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
     @Override
     public MigrateBean serializedTag() {
         return migrateBean;
+    }
+
+    public static void countDown() {
+        countDownLatch.countDown();
+    }
+
+    private static boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
+        if (fileUploadClient.connect(ip, port)) {
+            if (fileUploadClient.writeAndFlush(filePacket)) {
+                countDownLatch.await();
+                return true;
+            }
+        }
+        return false;
     }
 }

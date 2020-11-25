@@ -3,8 +3,6 @@ package com.fr.swift.executor.task.netty.server;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftNodeInfoService;
-import com.fr.swift.executor.task.netty.codec.DecodeHandler;
-import com.fr.swift.executor.task.netty.codec.EncodeHandler;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Strings;
@@ -49,10 +47,10 @@ public class MigrateServer {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
                         channel.pipeline().addLast(new FileReceiveServerHandler());
-                        channel.pipeline().addLast(new DecodeHandler());
-                        channel.pipeline().addLast(new EncodeHandler());
+//                        channel.pipeline().addLast(new DecodeHandler());
+//                        channel.pipeline().addLast(new EncodeHandler());
+//                        channel.pipeline().addLast(new FilePacketServerHandler());
                         channel.pipeline().addLast(new JoinClusterRequestHandler());
-                        channel.pipeline().addLast(new FilePacketServerHandler());
                     }
                 });
 
@@ -69,5 +67,10 @@ public class MigrateServer {
             boosGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    public static void main(String[] args) {
+        MigrateServer migrateServer = new MigrateServer();
+        migrateServer.start();
     }
 }
