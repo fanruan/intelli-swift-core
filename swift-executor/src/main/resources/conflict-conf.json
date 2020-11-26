@@ -19,6 +19,12 @@
       "semaphore": 1
     },
     {
+      "sourceKey": "TREASURE_RE_IMPORT",
+      "executorTaskType": "TREASURE_RE_IMPORT",
+      "lockKey": null,
+      "semaphore": 3
+    },
+    {
       "sourceKey": null,
       "executorTaskType": "REALTIME",
       "lockKey": null,
