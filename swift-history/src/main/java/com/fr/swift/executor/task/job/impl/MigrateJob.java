@@ -70,6 +70,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 FilePacket filePacket = new FilePacket();
                 File file = new File(zipName);
                 filePacket.setFile(file);
+                filePacket.setStartPos(0);     //要传输的文件的初始信息
                 filePacket.setTargetPath(targetPath);
                 fileUploadClient = new FileUploadClient();
 
@@ -111,9 +112,10 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
     }
 
     private static boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
-        if (fileUploadClient.connect(ip, port)) {
+        if (fileUploadClient.connect(ip, port, filePacket)) {
             if (fileUploadClient.writeAndFlush(filePacket)) {
                 countDownLatch.await();
+                fileUploadClient.closeFuture();
                 return true;
             }
         }

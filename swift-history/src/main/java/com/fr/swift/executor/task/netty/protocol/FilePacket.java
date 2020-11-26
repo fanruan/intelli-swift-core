@@ -1,40 +1,40 @@
 package com.fr.swift.executor.task.netty.protocol;
 
-
 import java.io.File;
+import java.io.Serializable;
 
-import static com.fr.swift.executor.task.netty.protocol.command.Command.FILE_PACKET;
+import static com.fr.swift.executor.task.netty.protocol.command.Command.FILE;
 
 /**
  * @author Hoky
- * @date 2020/7/21
- * @description
- * @since swift-1.2.0
+ * @date 2020/11/26
  */
-public class FilePacket extends Packet {
+public class FilePacket extends Packet implements Serializable {
+
+    private File file;
+    private int startPos;
+    private byte[] bytes;
+    private int endPos;
+
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public void setTargetPath(String targetPath) {
+        this.targetPath = targetPath;
+    }
 
     private String targetPath;
 
-    private File file;
-
-    private int ACK;
-
-    @Override
-    public Byte getCommand() {
-        return FILE_PACKET;
+    public boolean isEnd() {
+        return isEnd;
     }
 
-    public FilePacket() {
+    public void setEnd(boolean end) {
+        isEnd = end;
     }
 
-    public FilePacket(File file) {
-        this.file = file;
-    }
-
-    public FilePacket(File file, int ACK, String targetPath) {
-        this.file = file;
-        this.ACK = ACK;
-    }
+    private boolean isEnd;
 
     public File getFile() {
         return file;
@@ -44,20 +44,34 @@ public class FilePacket extends Packet {
         this.file = file;
     }
 
-    public int getACK() {
-        return ACK;
+    public int getStartPos() {
+        return startPos;
     }
 
-    public void setACK(int ACK) {
-        this.ACK = ACK;
+    public void setStartPos(int startPos) {
+        this.startPos = startPos;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
+    public int getEndPos() {
+        return endPos;
+    }
+
+    public void setEndPos(int endPos) {
+        this.endPos = endPos;
+    }
+
+    @Override
+    public Byte getCommand() {
+        return FILE;
     }
 
 
-    public String getTargetPath() {
-        return targetPath;
-    }
-
-    public void setTargetPath(String targetPath) {
-        this.targetPath = targetPath;
-    }
 }

@@ -3,7 +3,6 @@ package com.fr.swift.executor.task.netty.server;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftNodeInfoService;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Strings;
 import io.netty.bootstrap.ServerBootstrap;
@@ -14,6 +13,9 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 
 
 /**
@@ -46,20 +48,14 @@ public class MigrateServer {
                 .childHandler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
-                        channel.pipeline().addLast(new FileReceiveServerHandler());
-//                        channel.pipeline().addLast(new DecodeHandler());
-//                        channel.pipeline().addLast(new EncodeHandler());
-//                        channel.pipeline().addLast(new FilePacketServerHandler());
-                        channel.pipeline().addLast(new JoinClusterRequestHandler());
+                        channel.pipeline().addLast(new ObjectEncoder());
+                        channel.pipeline().addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.weakCachingConcurrentResolver(null)));
+                        channel.pipeline().addLast(new FileUploadServerHandler()); // 自定义Handler
                     }
                 });
 
         try {
             ChannelFuture future = bootstrap.bind(ip, port).sync();
-            SwiftLoggers.getLogger().info("Migrate server started on ip:" + ip + ", port :" + port);
-            if (future.isSuccess()) {
-                SwiftLoggers.getLogger().info("Migrate server start success");
-            }
             future.channel().closeFuture().sync(); //保证了服务一直启动，相当于一个死循环
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -70,7 +66,6 @@ public class MigrateServer {
     }
 
     public static void main(String[] args) {
-        MigrateServer migrateServer = new MigrateServer();
-        migrateServer.start();
+        new MigrateServer().start();
     }
 }
