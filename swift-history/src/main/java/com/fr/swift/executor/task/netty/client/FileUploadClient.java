@@ -2,6 +2,7 @@ package com.fr.swift.executor.task.netty.client;
 
 
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
+import com.fr.swift.log.SwiftLoggers;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -28,7 +29,7 @@ public class FileUploadClient {
     private EventLoopGroup group;
 
     public boolean connect(String host, int port, FilePacket filePacket) {
-        EventLoopGroup group = new NioEventLoopGroup();  //只需要一个线程组，和服务端有所不同
+        group = new NioEventLoopGroup();  //只需要一个线程组，和服务端有所不同
 
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class)
@@ -41,7 +42,6 @@ public class FileUploadClient {
                         channel.pipeline().addLast(new FileUploadClientHandler(filePacket));  //自定义的handler
                     }
                 });
-        ChannelFuture future = null;
         try {
             future = bootstrap.connect(host, port).sync();   //使得链接保持
             if (future.isSuccess()) {
@@ -55,8 +55,9 @@ public class FileUploadClient {
 
     public boolean writeAndFlush(final FilePacket filePacket) {
         try {
-            future.channel().writeAndFlush(filePacket).sync();
+            future.channel().writeAndFlush(filePacket);
         } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
             return false;
         }
         return true;

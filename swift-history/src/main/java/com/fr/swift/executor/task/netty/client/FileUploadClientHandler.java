@@ -1,6 +1,7 @@
 package com.fr.swift.executor.task.netty.client;
 
 
+import com.fr.swift.executor.task.job.impl.MigrateJob;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
 import com.fr.swift.log.SwiftLoggers;
 import io.netty.channel.ChannelHandler;
@@ -43,7 +44,11 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
         if ((byteRead = randomAccessFile.read(bytes)) != -1) {
             filePacket.setEndPos(byteRead);
             filePacket.setBytes(bytes);
-            filePacket.setEnd(false);
+            if (lastLength <= filePacket.getFile().length()) {
+                filePacket.setEnd(true);
+            } else {
+                filePacket.setEnd(false);
+            }
             ctx.writeAndFlush(filePacket);
         } else {
             SwiftLoggers.getLogger().info("file already read!");
@@ -75,6 +80,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 } else {
                     randomAccessFile.close();
                     ctx.close();
+                    MigrateJob.countDown();
                     SwiftLoggers.getLogger().info("file migration finished: " + byteRead);
                 }
 
