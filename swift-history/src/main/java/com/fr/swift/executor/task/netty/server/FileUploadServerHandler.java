@@ -15,6 +15,7 @@ import java.io.RandomAccessFile;
 public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
     private int byteRead;
     private volatile Long start = 0L;
+    private RandomAccessFile randomAccessFile;
 
     @Override   //当前channel从远端读取到数据时执行
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -22,15 +23,12 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
             FilePacket filePacket = (FilePacket) msg;
             byte[] bytes = filePacket.getBytes();
             byteRead = filePacket.getEndPos();
-            File file = new File(filePacket.getTargetPath());
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+            randomAccessFile = new RandomAccessFile(new File(filePacket.getTargetPath()), "rw");
             randomAccessFile.seek(start);
             randomAccessFile.write(bytes);
             start = start + byteRead;
+            ctx.writeAndFlush(start);
             if (!filePacket.isEnd()) {
-                ctx.writeAndFlush(start);
-            } else {
-                ctx.writeAndFlush(start);
                 randomAccessFile.close();
             }
         }

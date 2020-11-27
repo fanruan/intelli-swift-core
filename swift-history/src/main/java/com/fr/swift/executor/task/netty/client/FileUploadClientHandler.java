@@ -39,7 +39,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
         randomAccessFile = new RandomAccessFile(filePacket.getFile(), "r");
         randomAccessFile.seek(filePacket.getStartPos());
         lastLength = Integer.MAX_VALUE / 4 > filePacket.getFile().length() ? (int) filePacket.getFile().length() : Integer.MAX_VALUE / 4; //每次发送的文件块数的长度
-//        lastLength = 1024 * 1024;
+//        lastLength = 1024*1024;
         byte[] bytes = new byte[lastLength];
 
         if ((byteRead = randomAccessFile.read(bytes)) != -1) {
@@ -63,10 +63,9 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
             if (start != -1) {
                 randomAccessFile = new RandomAccessFile(filePacket.getFile(), "r");
                 randomAccessFile.seek(start);  //将服务端返回的数据设置此次读操作，文件的起始偏移量
-                Long a = randomAccessFile.length() - start;
+                Long a = Math.abs(randomAccessFile.length() - start);
                 int lastlength = lastLength;
                 if (a < lastlength) {
-                    filePacket.setEnd(true);
                     lastlength = a.intValue();
                 } else {
                     filePacket.setEnd(false);
@@ -79,12 +78,11 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                     filePacket.setBytes(bytes);
                     ctx.writeAndFlush(filePacket);
                 } else {
-                    randomAccessFile.close();
                     ctx.close();
+                    randomAccessFile.close();
                     MigrateJob.countDown();
                     SwiftLoggers.getLogger().info("file migration finished: " + byteRead);
                 }
-
             }
         }
     }
