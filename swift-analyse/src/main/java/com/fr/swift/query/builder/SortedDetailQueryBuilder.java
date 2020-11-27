@@ -8,6 +8,7 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.info.IndexInfo;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
+import com.fr.swift.query.limit.Limit;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.SortedDetailResultQuery;
 import com.fr.swift.query.segment.detail.SortedDetailSegmentQuery;
@@ -37,7 +38,7 @@ class SortedDetailQueryBuilder extends DetailQueryBuilder {
     }
 
     @Override
-    Query<DetailQueryResultSet> getSegmentQuery(Segment seg, List<Pair<Column, IndexInfo>> columns, List<FilterInfo> filterInfos) {
+    Query<DetailQueryResultSet> getSegmentQuery(Segment seg, List<Pair<Column, IndexInfo>> columns, List<FilterInfo> filterInfos, Limit limit) {
         filterInfos.add(new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW));
         return new SortedDetailSegmentQuery(detailQueryInfo.getFetchSize(), columns,
                 FilterBuilder.buildDetailFilter(seg, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), detailQueryInfo.getSorts());

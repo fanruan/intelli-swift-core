@@ -1,5 +1,6 @@
 package com.fr.swift.result.detail;
 
+import com.fr.swift.query.limit.Limit;
 import com.fr.swift.result.BaseDetailQueryResultSet;
 import com.fr.swift.result.DetailQueryResultSet;
 import com.fr.swift.result.DetailResultSet;
@@ -28,6 +29,13 @@ public class MergeDetailQueryResultSet extends BaseDetailQueryResultSet {
      */
     private Iterator<Row> mergeIterator;
 
+    public MergeDetailQueryResultSet(int fetchSize, List<DetailQueryResultSet> queryResultSets, Limit limit) {
+        this(fetchSize, queryResultSets);
+        if (limit != null) {
+            rowCount = limit.end() > rowCount ? rowCount : limit.end();
+        }
+    }
+
     public MergeDetailQueryResultSet(int fetchSize, List<DetailQueryResultSet> queryResultSets) {
         super(fetchSize);
         resultSets = queryResultSets;
@@ -47,7 +55,7 @@ public class MergeDetailQueryResultSet extends BaseDetailQueryResultSet {
     public List<Row> getPage() {
         List<Row> rows = new ArrayList<Row>();
         int count = fetchSize;
-        while (mergeIterator.hasNext() && count-- > 0) {
+        while (mergeIterator.hasNext() && count-- > 0 && rowCount-- > 0) {
             rows.add(mergeIterator.next());
         }
         return rows;

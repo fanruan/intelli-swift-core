@@ -17,6 +17,9 @@ import com.fr.swift.source.alloter.impl.line.BackupLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * This class created on 2019/2/19
  *
@@ -27,6 +30,8 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
 
     protected SourceKey tableKey;
     protected SwiftResultSet resultSet;
+    private transient static Map<SourceKey, SourceKey> TABLE_LOCK = new ConcurrentHashMap<>();
+
 
     public RealtimeInsertJob(SourceKey tableKey, SwiftResultSet resultSet) {
         this.tableKey = tableKey;
@@ -36,13 +41,16 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
     @Override
     public Boolean call() {
         try {
-            //todo rowcount&allshowindex快照
-            // 先备份，后insert
-            Table table = SwiftDatabase.getInstance().getTable(tableKey);
-            ReusableResultSet reusableResultSet = backup(table);
-            // 暂定备份出问题就直接pass1去
-            insert(table, reusableResultSet);
-            return true;
+            // TODO: 2020/11/25 rowcount&allshowindex快照
+            //先备份，后insert
+            //加表锁，避免同一个表被同时增量写入
+            synchronized (TABLE_LOCK.computeIfAbsent(tableKey, t -> tableKey)) {
+                Table table = SwiftDatabase.getInstance().getTable(tableKey);
+                ReusableResultSet reusableResultSet = backup(table);
+                // 暂定备份出问题就直接pass1去
+                insert(table, reusableResultSet);
+                return true;
+            }
         } catch (Exception e) {
             // TODO: 2020/11/18 backup & mem回滚
             SwiftLoggers.getLogger().error(e);

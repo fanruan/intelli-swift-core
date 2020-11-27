@@ -11,7 +11,6 @@ import com.fr.swift.structure.Pair;
 import java.util.List;
 
 /**
- *
  * @author pony
  * @date 2017/11/24
  * 处理排序的明细表
