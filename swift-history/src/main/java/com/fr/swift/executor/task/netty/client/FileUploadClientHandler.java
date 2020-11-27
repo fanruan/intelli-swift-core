@@ -25,16 +25,17 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
 
     //构造器，FilePacket作为参数
     public FileUploadClientHandler(FilePacket filePacket) {
-        if (filePacket.getFile().exists()) {
-            if (!filePacket.getFile().isFile()) {
-                SwiftLoggers.getLogger().info("Not a file:" + filePacket.getFile());
-            }
-        }
         this.filePacket = filePacket;
     }
 
     @Override    //当前channel激活的时候的时候触发  优先于channelRead方法执行  （我的理解，只执行一次）
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        if (filePacket.getFile().exists()) {
+            if (!filePacket.getFile().isFile()) {
+                SwiftLoggers.getLogger().info("Not a file:" + filePacket.getFile());
+                throw new RuntimeException("FilePacket is not a file!");
+            }
+        }
         randomAccessFile = new RandomAccessFile(filePacket.getFile(), "r");
         randomAccessFile.seek(filePacket.getStartPos());
         lastLength = Integer.MAX_VALUE / 4 > filePacket.getFile().length() ? (int) filePacket.getFile().length() : Integer.MAX_VALUE / 4; //每次发送的文件块数的长度
