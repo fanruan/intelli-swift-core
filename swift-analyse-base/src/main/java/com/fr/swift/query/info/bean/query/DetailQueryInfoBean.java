@@ -1,6 +1,7 @@
 package com.fr.swift.query.info.bean.query;
 
 import com.fr.swift.query.info.bean.element.DimensionBean;
+import com.fr.swift.query.info.bean.element.LimitBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.query.QueryType;
@@ -63,6 +64,11 @@ public class DetailQueryInfoBean extends AbstractSingleTableQueryInfoBean implem
 
         public Builder setSorts(SortBean... sorts) {
             bean.setSorts(Arrays.asList(sorts));
+            return this;
+        }
+
+        public Builder setLimit(LimitBean limit) {
+            bean.setLimit(limit);
             return this;
         }
 

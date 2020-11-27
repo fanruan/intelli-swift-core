@@ -2,6 +2,7 @@ package com.fr.swift.query.info.bean.query;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.query.info.bean.element.DimensionBean;
+import com.fr.swift.query.info.bean.element.LimitBean;
 import com.fr.swift.query.info.bean.element.SortBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/6/7.
  */
-public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfoBean implements SingleInfoBean{
+public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfoBean implements SingleInfoBean {
 
     @JsonProperty
     private String tableName;
@@ -21,6 +22,8 @@ public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfo
     private List<DimensionBean> dimensions = new ArrayList<DimensionBean>(0);
     @JsonProperty
     private List<SortBean> sorts = new ArrayList<SortBean>(0);
+    @JsonProperty
+    private LimitBean limit;
 
     @Override
     public String getTableName() {
@@ -55,5 +58,14 @@ public abstract class AbstractSingleTableQueryInfoBean extends AbstractQueryInfo
     @Override
     public void setSorts(List<SortBean> sorts) {
         this.sorts = sorts;
+    }
+
+
+    public LimitBean getLimit() {
+        return limit;
+    }
+
+    public void setLimit(LimitBean limit) {
+        this.limit = limit;
     }
 }
