@@ -8,10 +8,6 @@ package com.fr.swift.executor.task.netty.protocol.command;
  */
 public interface Command {
 
-    Byte FILE_PACKET = 1;
-
-    Byte LOGIN_PACKET_REQUEST = 2;
-
-    Byte LOGIN_PACKET_RESPONSE = 3;
+    Byte FILE = 1;
 
 }
