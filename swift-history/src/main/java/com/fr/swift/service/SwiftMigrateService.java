@@ -38,6 +38,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
         String firstUncompressPath = "";
         String zipClusterIdPath = "";
         try {
+            long startTime = System.currentTimeMillis();
             targetZipPath = getTargetZipPath(targetPath);
             String clusterId = getClusterId(targetPath);
             String readyUncompressPath = zipFilesPath(targetPath);
@@ -66,6 +67,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
                     }
                 }
             }
+            SwiftLoggers.getLogger().info("uncompressisng cost : " + (System.currentTimeMillis() - startTime) + " ms");
             //删除所有的多余文件
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
