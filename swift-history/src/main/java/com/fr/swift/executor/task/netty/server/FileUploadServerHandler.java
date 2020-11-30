@@ -28,7 +28,7 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
             randomAccessFile.write(bytes);
             start = start + byteRead;
             ctx.writeAndFlush(start);
-            if (!filePacket.isEnd()) {
+            if (filePacket.isEnd()) {
                 randomAccessFile.close();
             }
         }
