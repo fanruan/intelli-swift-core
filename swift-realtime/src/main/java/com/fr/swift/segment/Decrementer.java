@@ -9,6 +9,7 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.lock.SegLocks;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2018/7/4
@@ -39,8 +39,6 @@ public class Decrementer implements WhereDeleter {
 
     private final SwiftSegmentLocationService swiftSegmentLocationService;
 
-    private transient static Map<SegmentKey, SegmentKey> SEG_LOCK = new ConcurrentHashMap<>();
-
     public Decrementer(SourceKey tableKey) {
         this.tableKey = tableKey;
         segmentService = SwiftContext.get().getBean(SegmentService.class);
@@ -55,7 +53,7 @@ public class Decrementer implements WhereDeleter {
         Map<SegmentKey, ImmutableBitMap> indexAfterFilterMap = where.createWhereIndex(table);
         for (Map.Entry<SegmentKey, ImmutableBitMap> entry : indexAfterFilterMap.entrySet()) {
             SegmentKey segKey = entry.getKey();
-            synchronized (SEG_LOCK.computeIfAbsent(segKey, n -> segKey)) {
+            synchronized (SegLocks.SEG_LOCK.computeIfAbsent(segKey, n -> segKey)) {
                 // TODO: 2020/11/10 备份块删除
                 Segment seg = SegmentUtils.newSegment(segKey);
                 ImmutableBitMap indexAfterFilter = entry.getValue();

@@ -19,10 +19,10 @@
       "semaphore": 1
     },
     {
-      "sourceKey": null,
+      "sourceKey": "TREASURE_REPORT",
       "executorTaskType": "TREASURE_REPORT",
       "lockKey": null,
-      "semaphore": 1
+      "semaphore": 4
     },
     {
       "sourceKey": null,

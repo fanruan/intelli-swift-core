@@ -2,9 +2,11 @@ package com.fr.swift.config.entity;
 
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Assert;
+import com.google.common.collect.ImmutableMap;
 
 import java.io.Serializable;
 import java.sql.Types;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -136,7 +138,17 @@ public class MetaDataColumnEntity implements SwiftMetaDataColumn, Serializable {
 
     @Override
     public String toString() {
-        return "{" + type + ", " + name + "}";
+        return "{" + type + "(" + typeMap.get(type) + "), " + name + "}";
+    }
+
+    private final static Map<Integer, String> typeMap;
+
+    static {
+        typeMap = ImmutableMap.<Integer, String>builder().put(Types.INTEGER, "Integer")
+                .put(Types.BIGINT, "Long")
+                .put(Types.DOUBLE, "Double")
+                .put(Types.VARCHAR, "String")
+                .put(Types.DATE, "Date").build();
     }
 
     public static MetaDataColumnEntity ofInt(String name) {
