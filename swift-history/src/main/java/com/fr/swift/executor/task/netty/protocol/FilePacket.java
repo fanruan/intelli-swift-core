@@ -15,14 +15,14 @@ public class FilePacket extends Packet implements Serializable {
     private int startPos;
     private byte[] bytes;
     private int endPos;
-    private boolean isNext;
+    private boolean isFirst;
 
-    public boolean isNext() {
-        return isNext;
+    public boolean isFirst() {
+        return isFirst;
     }
 
-    public void setNext(boolean next) {
-        isNext = next;
+    public void setFirst(boolean first) {
+        isFirst = first;
     }
 
     public String getTargetPath() {

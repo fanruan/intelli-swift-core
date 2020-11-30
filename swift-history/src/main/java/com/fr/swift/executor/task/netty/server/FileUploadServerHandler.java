@@ -24,8 +24,8 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof FilePacket) {
             FilePacket filePacket = (FilePacket) msg;
-            if (filePacket.isNext() == this.isFirst) {
-                if (filePacket.isNext()) {
+            if (filePacket.isFirst() == this.isFirst) {
+                if (filePacket.isFirst()) {
                     isFirst = false;
                 }
                 byte[] bytes = filePacket.getBytes();

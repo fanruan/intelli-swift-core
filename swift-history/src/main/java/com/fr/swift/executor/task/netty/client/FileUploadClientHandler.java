@@ -47,7 +47,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
         if ((byteRead = randomAccessFile.read(bytes)) != -1) {
             filePacket.setEndPos(byteRead);
             filePacket.setBytes(bytes);
-            filePacket.setNext(true);
+            filePacket.setFirst(true);
             isNext = true;
             if (lastLength <= filePacket.getFile().length()) {
                 filePacket.setEnd(false);
@@ -90,7 +90,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                     if ((byteRead = randomAccessFile.read(bytes)) != -1 && (randomAccessFile.length() - start) > 0 && !isFileClose) {
                         filePacket.setEndPos(byteRead);
                         filePacket.setBytes(bytes);
-                        filePacket.setNext(false);
+                        filePacket.setFirst(false);
                         ctx.writeAndFlush(filePacket);
                         if (filePacket.isEnd()) {
                             randomAccessFile.close();
