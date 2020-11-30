@@ -1,8 +1,11 @@
 package com.fr.swift.executor.task.job.impl;
 
+import com.fr.swift.config.entity.SwiftSegmentEntity;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.executor.task.job.BaseJob;
+import com.fr.swift.lock.SegLocks;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Incrementer;
@@ -17,9 +20,6 @@ import com.fr.swift.source.alloter.impl.line.BackupLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * This class created on 2019/2/19
  *
@@ -30,8 +30,6 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
 
     protected SourceKey tableKey;
     protected SwiftResultSet resultSet;
-    private transient static Map<SourceKey, SourceKey> TABLE_LOCK = new ConcurrentHashMap<>();
-
 
     public RealtimeInsertJob(SourceKey tableKey, SwiftResultSet resultSet) {
         this.tableKey = tableKey;
@@ -44,8 +42,9 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
             // TODO: 2020/11/25 rowcount&allshowindex快照
             //先备份，后insert
             //加表锁，避免同一个表被同时增量写入
-            synchronized (TABLE_LOCK.computeIfAbsent(tableKey, t -> tableKey)) {
-                Table table = SwiftDatabase.getInstance().getTable(tableKey);
+            Table table = SwiftDatabase.getInstance().getTable(tableKey);
+            SwiftSegmentEntity segKey = new SwiftSegmentEntity(tableKey, 0, Types.StoreType.MEMORY, table.getMeta().getSwiftDatabase());
+            synchronized (SegLocks.SEG_LOCK.computeIfAbsent(segKey, s -> s)) {
                 ReusableResultSet reusableResultSet = backup(table);
                 // 暂定备份出问题就直接pass1去
                 insert(table, reusableResultSet);
