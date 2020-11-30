@@ -90,10 +90,10 @@ public class MigrateScheduleJob implements ScheduleJob {
                     locationService.updateBelongs(migrateBean.getMigrateTarget(), segmentKeySet);
 
                     List<SegmentKey> segmentKeys = new ArrayList<>(segmentKeySet);
-                    serviceContext.updateConfigs(segmentKeys, migrateBean.getMigrateTarget());
-
                     final SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
                     segmentService.removeSegments(segmentKeys);
+
+                    serviceContext.updateConfigs(segmentKeys, migrateBean.getMigrateTarget());
                 }
             }
         } catch (Exception e) {
