@@ -35,14 +35,16 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
 
     @Override
     public Boolean deleteMigratedFile(String targetPath) {
+        String firstUncompressPath = "";
+        String zipClusterIdPath = "";
         try {
             targetZipPath = getTargetZipPath(targetPath);
             String clusterId = getClusterId(targetPath);
             String readyUncompressPath = zipFilesPath(targetPath);
             //第一次解压到一个带"_zip"的文件目录，该目录下的还是未解压各个表的压缩文件
             MigrationZipUtils.unCompress(targetPath, readyUncompressPath);
-            String zipClusterIdPath = targetZipPath + PathConstants.UNDERSCORE + clusterId;
-            String firstUncompressPath = targetPath.substring(0, targetPath.lastIndexOf(PathConstants.DOT)) + PathConstants.UNDERSCORE + PathConstants.ZIP_NAME;
+            zipClusterIdPath = targetZipPath + PathConstants.UNDERSCORE + clusterId;
+            firstUncompressPath = targetPath.substring(0, targetPath.lastIndexOf(PathConstants.DOT)) + PathConstants.UNDERSCORE + PathConstants.ZIP_NAME;
             File zipFile = new File(firstUncompressPath + PathConstants.SEPARATOR + new File(firstUncompressPath).list()[0]);
             //第二次解压到一个带 _clusterId 的文件目录，防止两个节点同时传文件造成冲突
             for (File zip : zipFile.listFiles()) {
@@ -50,26 +52,35 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
             }
             File clusterIdFile = new File(zipClusterIdPath);
             //判断带年月的（例如202006）的文件夹是否存在
-            if (!new File(targetPath).exists()) {
+            if (!new File(targetZipPath).exists()) {
                 //如果不存在，直接重命名
                 clusterIdFile.renameTo(new File(targetZipPath));
             } else {
                 //存在就将各个块移动过去
                 for (File tableFile : clusterIdFile.listFiles()) {
-                    for (File segFile : tableFile.listFiles()) {
-                        FileUtil.move(segFile, new File(targetZipPath + PathConstants.SEPARATOR + tableFile.getName() + PathConstants.SEPARATOR + segFile.getName()), true);
+                    File[] files = tableFile.listFiles();
+                    if (files != null) {
+                        for (File segFile : files) {
+                            FileUtil.move(segFile, new File(targetZipPath + PathConstants.SEPARATOR + tableFile.getName() + PathConstants.SEPARATOR + segFile.getName()), true);
+                        }
                     }
                 }
             }
             //删除所有的多余文件
-            MigrationZipUtils.delDir(targetPath);
-            MigrationZipUtils.delDir(firstUncompressPath);
-            MigrationZipUtils.delDir(zipClusterIdPath);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return false;
+        } finally {
+            try {
+                MigrationZipUtils.delDir(targetPath);
+                MigrationZipUtils.delDir(firstUncompressPath);
+                MigrationZipUtils.delDir(zipClusterIdPath);
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error(e);
+            }
         }
         return true;
+
     }
 
     @Override
@@ -99,7 +110,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
 
     private String getClusterId(String targetPath) {
         String zipName = targetPath.substring(targetPath.lastIndexOf("/") + 1);
-        return zipName.substring(zipName.indexOf(PathConstants.UNDERSCORE) + 1, zipName.lastIndexOf(PathConstants.UNDERSCORE));
+        return zipName.substring(zipName.indexOf(PathConstants.UNDERSCORE) + 1, zipName.lastIndexOf(PathConstants.DOT));
     }
 
 }
