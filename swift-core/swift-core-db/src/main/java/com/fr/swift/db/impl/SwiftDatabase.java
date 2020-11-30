@@ -11,6 +11,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
 
 import java.io.Serializable;
@@ -33,6 +34,25 @@ public class SwiftDatabase implements Database, Serializable {
 
         Table table = new SwiftTable(tableKey, meta);
         CONF_SVC.saveMeta(meta);
+        return table;
+    }
+
+    @Override
+    public Table differTable(SwiftMetaData meta) throws SQLException {
+        Table table = getTable(new SourceKey(meta.getTableName()));
+        MetadataDiffer differ = new MetadataDiffer(table.getMeta(), meta);
+        if (differ.hasDiff()) {
+            List<SwiftMetaDataColumn> dropped = differ.getDropped();
+            if (!dropped.isEmpty()) {
+                DropColumnAction dropColumnAction = new DropColumnAction(dropped.toArray(new SwiftMetaDataColumn[dropped.size()]));
+                table = dropColumnAction.alter(table);
+            }
+            List<SwiftMetaDataColumn> added = differ.getAdded();
+            if (!added.isEmpty()) {
+                AddColumnAction addColumnAction = new AddColumnAction(added.toArray(new SwiftMetaDataColumn[added.size()]));
+                table = addColumnAction.alter(table);
+            }
+        }
         return table;
     }
 

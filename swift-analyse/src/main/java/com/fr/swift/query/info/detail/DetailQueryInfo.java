@@ -4,6 +4,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.AbstractQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.info.element.target.DetailTarget;
+import com.fr.swift.query.limit.Limit;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.source.SourceKey;
@@ -23,12 +24,14 @@ public class DetailQueryInfo extends AbstractQueryInfo {
     private List<DetailTarget> targets;
     private List<Sort> sorts;
     private List<Pair<Sort, Comparator>> comparators;
+    private Limit limit;
 
     public DetailQueryInfo(String queryId, int fetchSize, SourceKey table, FilterInfo filterInfo, List<Dimension> dimensions,
-                           List<Sort> sorts, List<DetailTarget> targets) {
+                           List<Sort> sorts, List<DetailTarget> targets, Limit limit) {
         super(queryId, fetchSize, table, filterInfo, dimensions);
         this.sorts = sorts;
         this.targets = targets;
+        this.limit = limit;
     }
 
     public List<Pair<Sort, Comparator>> getComparators() {
@@ -50,6 +53,10 @@ public class DetailQueryInfo extends AbstractQueryInfo {
     @Override
     public QueryType getType() {
         return QueryType.DETAIL;
+    }
+
+    public Limit getLimit() {
+        return limit;
     }
 
     public boolean hasSort() {

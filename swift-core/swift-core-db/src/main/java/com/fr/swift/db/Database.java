@@ -22,12 +22,23 @@ public interface Database {
     Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException;
 
     /**
+     * 检测表differ内容并alter
+     *
+     * @param meta
+     * @return
+     * @throws SQLException
+     */
+    Table differTable(SwiftMetaData meta) throws SQLException;
+
+
+    /**
      * 删表
      *
      * @param tableKey 表名
      * @throws SQLException 异常 是否成功
      */
     void dropTable(SourceKey tableKey) throws SQLException;
+
 
     /**
      * 改表
