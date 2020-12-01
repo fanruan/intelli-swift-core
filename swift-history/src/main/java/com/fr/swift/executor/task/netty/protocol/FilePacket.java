@@ -15,6 +15,15 @@ public class FilePacket extends Packet implements Serializable {
     private int startPos;
     private byte[] bytes;
     private int endPos;
+    private boolean isFirst;
+
+    public boolean isFirst() {
+        return isFirst;
+    }
+
+    public void setFirst(boolean first) {
+        isFirst = first;
+    }
 
     public String getTargetPath() {
         return targetPath;
