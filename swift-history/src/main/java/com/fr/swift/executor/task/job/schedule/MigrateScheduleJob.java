@@ -8,8 +8,10 @@ import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.db.MigrateType;
 import com.fr.swift.executor.task.bean.MigrateBean;
+import com.fr.swift.executor.task.constants.PathConstants;
 import com.fr.swift.executor.task.impl.MigrateExecutorTask;
 import com.fr.swift.executor.task.info.MigInterval;
+import com.fr.swift.executor.task.utils.MigrationZipUtils;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.quartz.config.ScheduleTaskType;
@@ -94,6 +96,9 @@ public class MigrateScheduleJob implements ScheduleJob {
                     segmentService.removeSegments(segmentKeys);
 
                     serviceContext.updateConfigs(segmentKeys, migrateBean.getMigrateTarget());
+
+                    // 删除cubes
+                    MigrationZipUtils.delDir(originNodeInfo.getCubePath() + PathConstants.PATH_CUBES + migrateBean.getMigrateIndex());
                 }
             }
         } catch (Exception e) {

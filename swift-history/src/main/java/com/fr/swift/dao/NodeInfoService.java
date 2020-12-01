@@ -6,7 +6,6 @@ import com.fr.swift.db.NodeType;
 import com.fr.swift.service.info.TaskInfo;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,9 +28,14 @@ public interface NodeInfoService {
     void flushCache();
 
     /**
+     * 获取全部阻塞的blockIndex
+     */
+    Set<String> getBlockIndexes();
+
+    /**
      * 获取各个节点阻塞blockIndex
      */
-    Map<String, String> getIdBlockIndexMap();
+    String getBlockIndexById(String clusterId);
 
     /**
      * 获取节点明细配置

@@ -3,7 +3,6 @@ package com.fr.swift.executor.task.netty.server;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftNodeInfoService;
-import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Strings;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -25,14 +24,8 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 @SwiftBean(name = "migrateServer")
 public class MigrateServer {
 
-    private String serviceAddress;
-
-    public MigrateServer() {
-        SwiftNodeInfoService nodeInfoService = SwiftContext.get().getBean(SwiftNodeInfoService.class);
-        this.serviceAddress = nodeInfoService.getNodeInfo(SwiftProperty.get().getMachineId()).getMigServerAddress();
-    }
-
     public void start() {
+        String serviceAddress = SwiftContext.get().getBean(SwiftNodeInfoService.class).getOwnNodeInfo().getMigServerAddress();
         String[] addressArray = Strings.split(serviceAddress, ":");
         String ip = addressArray[0];
         int port = Integer.parseInt(addressArray[1]);
@@ -63,9 +56,5 @@ public class MigrateServer {
             boosGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    public static void main(String[] args) {
-        new MigrateServer().start();
     }
 }

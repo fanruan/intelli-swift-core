@@ -9,6 +9,7 @@ import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.boot.trigger.ClusterInitTrigger;
+import com.fr.swift.boot.trigger.ContainerCacheTrigger;
 import com.fr.swift.boot.trigger.ServicePriorityInitiator;
 import com.fr.swift.boot.trigger.SwiftServiceInitTrigger;
 import com.fr.swift.boot.trigger.TaskDispatcherInitTrigger;
@@ -71,6 +72,7 @@ public class BootRegister {
         ServicePriorityInitiator.getInstance().register(new ClusterInitTrigger());
         ServicePriorityInitiator.getInstance().register(new ScheduleTaskTrigger());
 
+        MasterServiceInitiator.getInstance().register(new ContainerCacheTrigger());
         MasterServiceInitiator.getInstance().register(new TaskDistributeTrigger());
         MasterServiceInitiator.getInstance().register(new RefreshMigrateTaskTrigger());
 //        JoinClusterListenerHandler.listen();

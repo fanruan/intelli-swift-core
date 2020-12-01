@@ -9,6 +9,7 @@ import com.fr.swift.executor.task.bean.MigrateBean;
 import com.fr.swift.executor.task.info.MigInterval;
 import com.fr.swift.executor.task.info.MigrateInfo;
 import com.fr.swift.service.info.TaskInfo;
+import com.fr.swift.util.Strings;
 import com.google.common.collect.Maps;
 
 import java.util.ArrayList;
@@ -51,10 +52,6 @@ public enum NodeInfoContainer implements NodeInfoService {
     // 月份  : 节点id
     private final Map<String, Set<String>> indexReceivedIdMap = Maps.newConcurrentMap();
 
-    NodeInfoContainer() {
-        flushCache();
-    }
-
     private void initCache(List<SwiftNodeInfo> nodeInfoList) {
         nodeInfoList.forEach(nodeInfo -> {
             String nodeId = nodeInfo.getNodeId();
@@ -70,8 +67,13 @@ public enum NodeInfoContainer implements NodeInfoService {
     }
 
     @Override
-    public Map<String, String> getIdBlockIndexMap() {
-        return idBlockIndexMap;
+    public Set<String> getBlockIndexes() {
+        return idBlockIndexMap.values().stream().filter(index -> !Strings.isEmpty(index)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getBlockIndexById(String clusterId) {
+        return idBlockIndexMap.getOrDefault(clusterId, Strings.EMPTY);
     }
 
     @Override
