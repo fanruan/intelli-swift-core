@@ -93,11 +93,11 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                         if (filePacket.isEnd()) {
                             randomAccessFile.close();
                         }
-                    } else {
-                        ctx.close();
-                        MigrateJob.countDown();
-                        SwiftLoggers.getLogger().info("file migration finished: " + byteRead);
                     }
+                } else {
+                    ctx.close();
+                    MigrateJob.countDown();
+                    SwiftLoggers.getLogger().info("file migration finished: " + byteRead);
                 }
             }
         }
