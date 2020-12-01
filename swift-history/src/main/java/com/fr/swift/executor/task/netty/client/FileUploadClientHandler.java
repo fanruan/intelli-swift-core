@@ -21,7 +21,6 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
     private volatile Long start = 0l;   //使用Long 当传输的文件大于2G时，Integer类型会不够表达文件的长度
     private volatile int lastLength = 0;
     private volatile long sendLength = 0L;
-    private volatile boolean isNext = false;
     public RandomAccessFile randomAccessFile;
     private FilePacket filePacket;
 
@@ -48,7 +47,6 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
             filePacket.setEndPos(byteRead);
             filePacket.setBytes(bytes);
             filePacket.setFirst(true);
-            isNext = true;
             if (lastLength <= filePacket.getFile().length()) {
                 filePacket.setEnd(false);
             } else {
