@@ -66,16 +66,16 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
             start = (Long) msg;
             boolean isFileClose = false;
             if (start != -1 && start == sendLength) {
-                Long a = 0L;
+                Long remainLength = 0L;
                 try {
-                    a = Math.abs(randomAccessFile.length() - start);
+                    remainLength = Math.abs(randomAccessFile.length() - start);
                 } catch (Exception e) {
                     isFileClose = true;
                 }
                 if (!isFileClose) {
                     int lastlength = lastLength;
-                    if (a < lastlength) {
-                        lastlength = a.intValue();
+                    if (remainLength < lastlength) {
+                        lastlength = remainLength.intValue();
                         filePacket.setEnd(true);
                     } else {
                         filePacket.setEnd(false);
