@@ -12,6 +12,7 @@ import com.fr.swift.query.query.QueryIndexRunner;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -44,6 +45,10 @@ public class QueryRunnerProvider {
 
     public IndexQuery<ImmutableBitMap> executeIndexQuery(Table table, Where where, SegmentKey segmentKey) throws Exception {
         return getIndexRunner().getBitMap(table, where, segmentKey);
+    }
+
+    public Collection<SegmentKey> executeSegmentsQuery(Table table, Where where) throws Exception {
+        return getIndexRunner().getWhereSegments(table, where);
     }
 
     private QueryIndexRunner getIndexRunner() {

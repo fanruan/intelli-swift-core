@@ -5,6 +5,7 @@ import com.fr.swift.query.query.FilterBean;
 import com.fr.swift.segment.SegmentKey;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -32,4 +33,5 @@ public interface Where extends Serializable {
 
     Map<SegmentKey, ImmutableBitMap> createWhereIndex(Table table) throws Exception;
 
+    Collection<SegmentKey> createWhereSegments(Table table) throws Exception;
 }
