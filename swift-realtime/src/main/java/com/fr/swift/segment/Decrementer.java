@@ -46,6 +46,19 @@ public class Decrementer implements WhereDeleter {
         swiftSegmentLocationService = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
     }
 
+    /**
+     * 删除结构调整
+     * 1、先根据table和where，查出可能所在块
+     * 2、再在循环和锁内，先判断该块是否存在，若不存在直接continue
+     * 3、判断索引andnot之后是否为空，空则说明不需要删除，直接continue
+     * 4、最终才是需要删除和put&release的动作，这样既避免并发下删除覆盖的问题呢，又避免重复删除查询，也能降低put&release的概率
+     * 5、但是还是有个隐患，高并发场景下，新增块的删除，有几率无法覆盖到，这点目前还是单线程，所以影响不大，后续在考虑这个问题
+     * 6、不过由于云端的策略(短时间内不会处理多份同个用户同个月份的数据包)，所以第5点的就目前几乎不会出现
+     *
+     * @param where
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean delete(Where where) throws Exception {
         List<SegmentKey> removeSegList = new ArrayList<>();
