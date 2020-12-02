@@ -48,7 +48,7 @@ public class ResourceDiscovery implements IResourceDiscovery {
      * <p>
      * schema/table/seg -> (column/... -> mem io)
      */
-    private volatile ConcurrentMap<String, ConcurrentMap<String, MemIo>> cubeMemIos = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ConcurrentMap<String, MemIo>> cubeMemIos = new ConcurrentHashMap<>();
 
     private static MemIo getMemIo(ConcurrentMap<String, ConcurrentMap<String, MemIo>> segMemIos, IResourceLocation location, BuildConf conf) {
         String path = location.getPath();
