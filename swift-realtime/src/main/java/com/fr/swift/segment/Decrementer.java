@@ -16,9 +16,9 @@ import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class created on 2018/7/4
@@ -47,42 +47,49 @@ public class Decrementer implements WhereDeleter {
     }
 
     @Override
-    public Map<SegmentKey, ImmutableBitMap> delete(Where where) throws Exception {
+    public boolean delete(Where where) throws Exception {
         List<SegmentKey> removeSegList = new ArrayList<>();
         Table table = SwiftDatabase.getInstance().getTable(tableKey);
-        Map<SegmentKey, ImmutableBitMap> indexAfterFilterMap = where.createWhereIndex(table);
-        for (Map.Entry<SegmentKey, ImmutableBitMap> entry : indexAfterFilterMap.entrySet()) {
-            SegmentKey segKey = entry.getKey();
-            synchronized (SegLocks.SEG_LOCK.computeIfAbsent(segKey, n -> segKey)) {
-                // TODO: 2020/11/10 备份块删除
-                Segment seg = SegmentUtils.newSegment(segKey);
-                ImmutableBitMap indexAfterFilter = entry.getValue();
+        Collection<SegmentKey> whereSegments = where.createWhereSegments(table);
+
+        for (SegmentKey whereSegmentKey : whereSegments) {
+            synchronized (SegLocks.SEG_LOCK.computeIfAbsent(whereSegmentKey, n -> whereSegmentKey)) {
+                if (!segmentService.exist(whereSegmentKey)) {
+                    //segment不存在了，就不删了
+                    continue;
+                }
+                Segment seg = SegmentUtils.newSegment(whereSegmentKey);
+                ImmutableBitMap indexAfterFilter = where.createWhereIndex(table, whereSegmentKey);
                 ImmutableBitMap originAllShowIndex = seg.getAllShowIndex();
                 ImmutableBitMap allShowIndex = originAllShowIndex.getAndNot(indexAfterFilter);
+                //原始allshow量和删除后allshow量保持一致，则认为没有需要删除的内容，直接进行下一块seg.getAllShowIndex().getCardinality()
+                if (originAllShowIndex.getAndNot(allShowIndex).isEmpty()) {
+                    SwiftLoggers.getLogger().info("0 rows data has been deleted in seg {}!", whereSegmentKey);
+                    continue;
+                }
                 seg.putAllShowIndex(allShowIndex);
                 SwiftLoggers.getLogger().info("{} rows data has been deleted in seg {}!"
-                        , originAllShowIndex.getCardinality() - allShowIndex.getCardinality(), segKey);
+                        , originAllShowIndex.getCardinality() - allShowIndex.getCardinality(), whereSegmentKey);
                 if (allShowIndex.getCardinality() == 0) {
-                    removeSegList.add(segKey);
-                    SwiftLoggers.getLogger().info("{} is empty! deleteing...", segKey);
+                    removeSegList.add(whereSegmentKey);
+                    SwiftLoggers.getLogger().info("{} is empty! deleteing...", whereSegmentKey);
                     if (seg.isHistory()) {
-                        swiftSegmentService.delete(segKey);
+                        swiftSegmentService.delete(whereSegmentKey);
                     }
-                    swiftSegmentLocationService.deleteOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(segKey));
-                    segmentService.removeSegment(segKey);
-                    SegmentUtils.clearSegment(segKey);
-                    SwiftLoggers.getLogger().info("{} is empty! delete success!", segKey);
+                    swiftSegmentLocationService.deleteOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(whereSegmentKey));
+                    segmentService.removeSegment(whereSegmentKey);
+                    SegmentUtils.clearSegment(whereSegmentKey);
+                    SwiftLoggers.getLogger().info("{} is empty! delete success!", whereSegmentKey);
                 }
-
                 if (seg.isHistory()) {
                     seg.release();
                 } else {
-                    Segment backSegment = SegmentUtils.newBackupSegment(segKey);
+                    Segment backSegment = SegmentUtils.newBackupSegment(whereSegmentKey);
                     backSegment.putAllShowIndex(allShowIndex);
                     backSegment.release();
                 }
             }
         }
-        return indexAfterFilterMap;
+        return true;
     }
 }
