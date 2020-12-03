@@ -172,7 +172,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
 
     @Override
-    public Map<SourceKey, List<SegmentKey>> getOwnSegmentsByIndex(HashIndexRange range) {
+    public Map<SourceKey, List<SegmentKey>> getOwnSegmentsByRange(HashIndexRange range) {
         List<SegmentKey> segKeysOnNode = getSegKeyOnNode(SwiftProperty.get().getMachineId());
         segKeysOnNode.removeIf(k -> !k.getSwiftSchema().equals(SwiftDatabase.CUBE));
         Set<String> segIdsInIndex = Sets.newHashSet((List<String>) bucketDao.selectQuery((query, builder, from) ->

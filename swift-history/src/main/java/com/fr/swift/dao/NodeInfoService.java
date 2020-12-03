@@ -38,6 +38,18 @@ public interface NodeInfoService {
     String getBlockIndexById(String clusterId);
 
     /**
+     * 获取某个blockIndex下的ids
+     */
+    List<String> getIdsByBlockIndex(String blockIndex);
+
+    /**
+     * 获取某个节点准备状态
+     */
+    int getReadyStatusById(String clusterId);
+
+    void updateReadyStatusById(String clusterId);
+
+    /**
      * 获取节点明细配置
      */
     SwiftNodeInfo getNodeInfoById(String clusterId);

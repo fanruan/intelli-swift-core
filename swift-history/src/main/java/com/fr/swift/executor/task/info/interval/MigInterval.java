@@ -1,4 +1,4 @@
-package com.fr.swift.executor.task.info;
+package com.fr.swift.executor.task.info.interval;
 
 import com.fr.swift.config.entity.SwiftNodeInfo;
 import com.fr.swift.source.alloter.impl.hash.function.HashType;

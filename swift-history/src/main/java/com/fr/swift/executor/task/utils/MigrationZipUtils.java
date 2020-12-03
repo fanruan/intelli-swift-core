@@ -113,17 +113,15 @@ public class MigrationZipUtils {
      */
     public static void unCompress(String zipPath, String descDir) throws IOException {
         long start = System.currentTimeMillis();
-        ZipFile zip = null;
-        try {
-            File zipFile = new File(zipPath);
-            if (!zipFile.exists()) {
-                throw new IOException("zip file not exist.");
-            }
-            File pathFile = new File(descDir);
-            if (!pathFile.exists()) {
-                pathFile.mkdirs();
-            }
-            zip = new ZipFile(zipFile, Charset.forName("GBK"));
+        File zipFile = new File(zipPath);
+        if (!zipFile.exists()) {
+            throw new IOException("zip file not exist.");
+        }
+        File pathFile = new File(descDir);
+        if (!pathFile.exists()) {
+            pathFile.mkdirs();
+        }
+        try (ZipFile zip = new ZipFile(zipFile, Charset.forName("GBK"))) {
             for (Enumeration entries = zip.entries(); entries.hasMoreElements(); ) {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 String zipEntryName = entry.getName();
@@ -152,10 +150,6 @@ public class MigrationZipUtils {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             throw new IOException(e);
-        } finally {
-            if (zip != null) {
-                zip.close();
-            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.fr.swift.executor.task.info;
+package com.fr.swift.executor.task.info.interval;
 
 
 import com.fr.swift.util.TimeUtils;

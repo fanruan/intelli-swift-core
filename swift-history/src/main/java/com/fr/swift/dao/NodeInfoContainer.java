@@ -6,8 +6,8 @@ import com.fr.swift.config.service.SwiftNodeInfoService;
 import com.fr.swift.db.MigrateType;
 import com.fr.swift.db.NodeType;
 import com.fr.swift.executor.task.bean.MigrateBean;
-import com.fr.swift.executor.task.info.MigInterval;
-import com.fr.swift.executor.task.info.MigrateInfo;
+import com.fr.swift.executor.task.info.MigScheduleInfo;
+import com.fr.swift.executor.task.info.interval.MigInterval;
 import com.fr.swift.service.info.TaskInfo;
 import com.fr.swift.util.Strings;
 import com.google.common.collect.Maps;
@@ -47,6 +47,8 @@ public enum NodeInfoContainer implements NodeInfoService {
     private final Map<String, MigInterval> idMigIntervalMap = Maps.newConcurrentMap();
     // 节点id : 阻塞index
     private final Map<String, String> idBlockIndexMap = Maps.newConcurrentMap();
+    // 节点id : readyStatus
+    private final Map<String, Integer> idReadyStatusMap = Maps.newConcurrentMap();
     // 结点类型 : 节点id
     private final Map<NodeType, Set<String>> nodeTypeIdMap = Maps.newConcurrentMap();
     // 月份  : 节点id
@@ -58,6 +60,7 @@ public enum NodeInfoContainer implements NodeInfoService {
             idNodeMap.put(nodeId, nodeInfo);
             idMigIntervalMap.put(nodeId, MigInterval.getMigrateInterval(nodeInfo));
             idBlockIndexMap.put(nodeId, nodeInfo.getBlockingIndex());
+            idReadyStatusMap.put(nodeId, nodeInfo.getReadyStatus());
             nodeTypeIdMap.computeIfAbsent(nodeInfo.getNodeType(), k -> new HashSet<>()).add(nodeInfo.getNodeId());
             if (nodeInfo.getNodeType().isMigratable()) {
                 List<String> indexCoverRange = idMigIntervalMap.get(nodeId).getIndexCoverRange();
@@ -74,6 +77,21 @@ public enum NodeInfoContainer implements NodeInfoService {
     @Override
     public String getBlockIndexById(String clusterId) {
         return idBlockIndexMap.getOrDefault(clusterId, Strings.EMPTY);
+    }
+
+    @Override
+    public List<String> getIdsByBlockIndex(String blockIndex) {
+        return idBlockIndexMap.entrySet().stream().filter(entry -> entry.getValue().equals(blockIndex)).map(Map.Entry::getKey).collect(Collectors.toList());
+    }
+
+    @Override
+    public int getReadyStatusById(String clusterId) {
+        return idReadyStatusMap.get(clusterId);
+    }
+
+    @Override
+    public void updateReadyStatusById(String clusterId) {
+        idReadyStatusMap.put(clusterId, 1);
     }
 
     @Override
@@ -95,12 +113,12 @@ public enum NodeInfoContainer implements NodeInfoService {
             if (nodeInfo.getNodeType().isMigratable() && migrateType.needMigrated()) {
                 if (migrateType.equals(MigrateType.WAITING)) {
                     result = idMigIntervalMap.get(clusterId).getPreMigIndex().stream()
-                            .map(migIndex -> new MigrateInfo(nodeInfo.getMigrateTime(), MigrateBean.of(migIndex, nodeInfo.getMigrateTarget())))
+                            .map(migIndex -> new MigScheduleInfo(nodeInfo.getMigrateTime(), MigrateBean.of(migIndex, nodeInfo.getMigrateTarget())))
                             .collect(Collectors.toList());
                 } else {
                     String migrateTime = addDay(nodeInfo.getMigrateTime(), migrateType.getTimes());
                     result = idMigIntervalMap.get(clusterId).getPreMigIndex().stream()
-                            .map(migIndex -> new MigrateInfo(migrateTime, MigrateBean.of(migIndex, nodeInfo.getMigrateTarget())))
+                            .map(migIndex -> new MigScheduleInfo(migrateTime, MigrateBean.of(migIndex, nodeInfo.getMigrateTarget())))
                             .collect(Collectors.toList());
                 }
             }
@@ -144,30 +162,25 @@ public enum NodeInfoContainer implements NodeInfoService {
 
     @Override
     public void clearCache() {
-        synchronized (this) {
-            clear();
-        }
+        clear();
     }
 
     @Override
     public void flushCache() {
-        synchronized (this) {
-            clear();
-            initCache(nodeInfoService.getAllNodeInfo());
-        }
+        clear();
+        initCache(nodeInfoService.getAllNodeInfo());
     }
 
     private void flushCacheById(String clusterId) {
-        synchronized (this) {
-            clearCacheById(clusterId);
-            initCache(Collections.singletonList(nodeInfoService.getNodeInfo(clusterId)));
-        }
+        clearCacheById(clusterId);
+        initCache(Collections.singletonList(nodeInfoService.getNodeInfo(clusterId)));
     }
 
     private void clearCacheById(String clusterId) {
         idNodeMap.remove(clusterId);
         idMigIntervalMap.remove(clusterId);
         idBlockIndexMap.remove(clusterId);
+        idReadyStatusMap.remove(clusterId);
         nodeTypeIdMap.values().forEach(k -> k.removeIf(v -> v.contains(clusterId)));
         indexReceivedIdMap.values().forEach(k -> k.removeIf(v -> v.contains(clusterId)));
     }
@@ -176,6 +189,7 @@ public enum NodeInfoContainer implements NodeInfoService {
         idNodeMap.clear();
         idMigIntervalMap.clear();
         idBlockIndexMap.clear();
+        idReadyStatusMap.clear();
         indexReceivedIdMap.clear();
         nodeTypeIdMap.clear();
     }

@@ -6,6 +6,7 @@ import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.db.Where;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.task.bean.CollateBean;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
 import com.fr.swift.executor.task.impl.PlanningExecutorTask;
@@ -84,7 +85,7 @@ public class SwiftServiceContext implements ServiceContext {
 
     @Override
     public void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception {
-        TaskProducer.produceTask(new CollateExecutorTask(tableKey, segmentKeyList));
+        TaskProducer.produceTask(new CollateExecutorTask(CollateBean.of(tableKey, segmentKeyList)));
     }
 
     @Override

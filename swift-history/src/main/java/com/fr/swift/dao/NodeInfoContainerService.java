@@ -38,6 +38,21 @@ public class NodeInfoContainerService implements NodeInfoService {
     }
 
     @Override
+    public List<String> getIdsByBlockIndex(String blockIndex) {
+        return NodeInfoContainer.MASTER.getIdsByBlockIndex(blockIndex);
+    }
+
+    @Override
+    public int getReadyStatusById(String clusterId) {
+        return NodeInfoContainer.MASTER.getReadyStatusById(clusterId);
+    }
+
+    @Override
+    public void updateReadyStatusById(String clusterId) {
+        NodeInfoContainer.MASTER.updateReadyStatusById(clusterId);
+    }
+
+    @Override
     public SwiftNodeInfo getNodeInfoById(String clusterId) {
         return NodeInfoContainer.MASTER.getNodeInfoById(clusterId);
     }

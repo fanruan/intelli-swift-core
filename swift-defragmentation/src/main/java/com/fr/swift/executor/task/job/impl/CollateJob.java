@@ -1,6 +1,7 @@
 package com.fr.swift.executor.task.job.impl;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.executor.task.bean.CollateBean;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public class CollateJob extends BaseJob<List<SegmentKey>, List<String>> {
+public class CollateJob extends BaseJob<List<SegmentKey>, CollateBean> {
 
     private SourceKey tableKey;
 
@@ -23,9 +24,12 @@ public class CollateJob extends BaseJob<List<SegmentKey>, List<String>> {
 
     private SegmentService segmentService;
 
-    public CollateJob(SourceKey tableKey, List<String> segmentIds) {
-        this.tableKey = tableKey;
-        this.segmentIds = segmentIds;
+    private CollateBean collateBean;
+
+    public CollateJob(CollateBean collateBean) {
+        this.collateBean = collateBean;
+        this.tableKey = collateBean.getSourceKey();
+        this.segmentIds = collateBean.getSegmentIds();
         this.segmentService = SwiftContext.get().getBean(SegmentService.class);
     }
 
@@ -36,7 +40,7 @@ public class CollateJob extends BaseJob<List<SegmentKey>, List<String>> {
     }
 
     @Override
-    public List<String> serializedTag() {
-        return segmentIds;
+    public CollateBean serializedTag() {
+        return collateBean;
     }
 }

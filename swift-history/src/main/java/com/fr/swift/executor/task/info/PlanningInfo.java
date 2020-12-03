@@ -12,7 +12,8 @@ import com.fr.swift.service.info.TaskInfo;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = MigrateInfo.class),
+        @JsonSubTypes.Type(value = MigScheduleInfo.class),
+        @JsonSubTypes.Type(value = MigTriggerInfo.class),
 })
 public interface PlanningInfo extends TaskInfo {
 }

@@ -42,7 +42,7 @@ public interface SwiftSegmentService {
 
     Map<SourceKey, List<SegmentKey>> getOwnSegments(final String nodeId);
 
-    Map<SourceKey, List<SegmentKey>> getOwnSegmentsByIndex(HashIndexRange range);
+    Map<SourceKey, List<SegmentKey>> getOwnSegmentsByRange(HashIndexRange range);
 
     List<SegmentKey> getOwnSegments(SourceKey tableKey);
 

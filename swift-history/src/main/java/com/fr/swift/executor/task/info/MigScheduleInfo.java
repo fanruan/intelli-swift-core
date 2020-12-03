@@ -9,16 +9,16 @@ import com.fr.swift.executor.type.SwiftTaskType;
  * @description
  * @since swift-1.2.0
  */
-public class MigrateInfo implements PlanningInfo {
+public class MigScheduleInfo implements PlanningInfo {
 
     private String migrateTime;
 
     private MigrateBean migrateBean;
 
-    public MigrateInfo() {
+    public MigScheduleInfo() {
     }
 
-    public MigrateInfo(String migrateTarget, MigrateBean migrateBean) {
+    public MigScheduleInfo(String migrateTarget, MigrateBean migrateBean) {
         this.migrateTime = migrateTarget;
         this.migrateBean = migrateBean;
     }
@@ -41,6 +41,6 @@ public class MigrateInfo implements PlanningInfo {
 
     @Override
     public SwiftTaskType type() {
-        return SwiftTaskType.MIGRATE;
+        return SwiftTaskType.MIGRATE_SCHEDULE;
     }
 }

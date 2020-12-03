@@ -66,6 +66,12 @@ public class SwiftNodeInfoEntity implements Serializable, SwiftNodeInfo {
     @Column(name = "migServerAddress")
     private String migServerAddress;
 
+    @Column(name = "limitStartHour")
+    private int limitStartHour;
+
+    @Column(name = "readyStatus")
+    private int readyStatus;
+
     @Override
     public String getNodeId() {
         return nodeId;
@@ -144,5 +150,20 @@ public class SwiftNodeInfoEntity implements Serializable, SwiftNodeInfo {
     @Override
     public String getMigServerAddress() {
         return migServerAddress;
+    }
+
+    @Override
+    public int getLimitStartHour() {
+        return limitStartHour;
+    }
+
+    @Override
+    public int getReadyStatus() {
+        return readyStatus;
+    }
+
+    @Override
+    public void setReadyStatus(int readyStatus) {
+        this.readyStatus = readyStatus;
     }
 }

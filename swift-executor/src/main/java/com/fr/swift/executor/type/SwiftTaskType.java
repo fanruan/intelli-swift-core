@@ -24,6 +24,8 @@ public enum SwiftTaskType implements ExecutorTaskType {
     HISTORY,
     QUERY,
     MIGRATE,
+    MIGRATE_SCHEDULE,
+    MIGRATE_TRIGGER,
     PLANNING; // 通知各个节点建立定时, 用于合并迁移、抽数
 
     public static List<SwiftTaskType> getAllTypeList() {
