@@ -76,4 +76,9 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     public ExecutorTask get(String taskId) {
         return convertService.get(taskId);
     }
+
+    @Override
+    public List<TaskBalanceEntity> getTaskBalances() {
+        return convertService.getTaskBalances();
+    }
 }
