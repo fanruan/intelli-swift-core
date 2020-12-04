@@ -8,6 +8,7 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.Strings;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -86,30 +87,26 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     public SwiftSegmentEntity(SegmentKey segKey) {
-        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema(), segKey.getSegmentUri());
+        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema(), segKey.segmentSource(), segKey.getSegmentUri());
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
-        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED);
-    }
-
-    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, SegmentSource segmentSource) {
-        this.id = getId(segmentOwner, segmentOrder, storeType);
-        this.segmentOwner = segmentOwner.getId();
-        this.segmentOrder = segmentOrder;
-        this.storeType = storeType;
-        this.swiftSchema = swiftSchema;
-        this.createTime = new Date();
-        this.segmentSource = segmentSource;
+        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED, Strings.EMPTY);
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, String segmentUri) {
+        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED, segmentUri);
+    }
+
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, SegmentSource segmentSource, String segmentUri) {
         id = getId(segmentOwner, segmentOrder, storeType);
         this.segmentOwner = segmentOwner.getId();
         this.segmentOrder = segmentOrder;
         this.storeType = storeType;
         this.swiftSchema = swiftSchema;
         this.segmentUri = segmentUri;
+        this.createTime = new Date();
+        this.segmentSource = segmentSource;
     }
 
     public static String getHistoryId(String segmentOwner, int segmentOrder) {

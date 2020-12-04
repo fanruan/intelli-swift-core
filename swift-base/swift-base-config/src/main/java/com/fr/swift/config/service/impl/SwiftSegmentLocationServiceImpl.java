@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +69,7 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     }
 
     @Override
-    public void updateBelongs(String newNodeId, Set<SegmentKey> segKeys) {
+    public void updateBelongs(String newNodeId, Collection<SegmentKey> segKeys) {
         deleteOnNode(SwiftProperty.get().getMachineId(), segKeys);
         dao.insert(segKeys.stream().map(segKey -> new SwiftSegmentLocationEntity(newNodeId, segKey.getId(),
                 segKey.getTable().getId())).collect(Collectors.toList()));

@@ -28,7 +28,7 @@ public interface SwiftSegmentLocationService {
 
     boolean existsOnNode(String nodeId, SegmentKey segKey);
 
-    void updateBelongs(String newNodeId, Set<SegmentKey> segKeys);
+    void updateBelongs(String newNodeId, Collection<SegmentKey> segKeys);
 
     List<SwiftSegmentLocationEntity> getTableMatchedSegOnNode(String nodeId, SourceKey tableKey, String segIdStartsWith);
 

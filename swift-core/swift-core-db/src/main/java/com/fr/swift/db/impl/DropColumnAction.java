@@ -47,11 +47,8 @@ public class DropColumnAction extends BaseAlterTableAction {
                 }
 
                 // 删history todo 还要删共享存储
-                int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).setColumnId(dropColumn.getColumnId()).build());
+                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(segKey.getSegmentUri()).setColumnId(dropColumn.getColumnId()).build());
             }
-            // 删history todo 还要删共享存储
-            FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(segKey.getSegmentUri()).setColumnId(relatedColumnMeta.getColumnId()).build());
         }
         return alterMeta(table);
     }

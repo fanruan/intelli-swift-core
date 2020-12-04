@@ -33,9 +33,11 @@ public interface SwiftSegmentService {
 
     void delete(List<SegmentKey> segKeys);
 
-    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType, String segmentUri);
+    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType);
 
     SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType, SegmentSource segmentSource);
+
+    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType, SegmentSource segmentSource, String segmentUri);
 
     List<SegmentKey> getTableSegKeys(SourceKey tableKey);
 
