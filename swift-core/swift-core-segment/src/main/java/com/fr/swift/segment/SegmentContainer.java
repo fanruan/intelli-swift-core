@@ -138,12 +138,10 @@ public enum SegmentContainer implements SegmentService {
 
     @Override
     public void flushCache() {
-        synchronized (this) {
-            tableMap.clear();
-            segmentKeyMap.clear();
-            bucketMap.clear();
-            initCache();
-        }
+        tableMap.clear();
+        segmentKeyMap.clear();
+        bucketMap.clear();
+        initCache();
     }
 
     void saveBucket(SwiftSegmentBucketElement element) {

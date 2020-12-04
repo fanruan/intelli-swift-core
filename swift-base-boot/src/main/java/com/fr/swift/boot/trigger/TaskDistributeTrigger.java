@@ -3,6 +3,7 @@ package com.fr.swift.boot.trigger;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.dao.NodeInfoService;
 import com.fr.swift.listener.SwiftMigrateRetryListener;
+import com.fr.swift.listener.SwiftTriggerMigrateListener;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.TaskService;
 import com.fr.swift.trigger.SwiftPriorityInitTrigger;
@@ -31,6 +32,7 @@ public class TaskDistributeTrigger implements SwiftPriorityInitTrigger {
         if (executorService == null) {
             SwiftLoggers.getLogger().info("starting task distribute...");
             SwiftMigrateRetryListener.listen();
+            SwiftTriggerMigrateListener.listen();
             executorService = SwiftExecutors.newScheduledThreadPool(1, new PoolThreadFactory("SwiftPlaningTaskPool"));
             executorService.schedule(productTask(), 60, TimeUnit.SECONDS);
         }
@@ -62,6 +64,7 @@ public class TaskDistributeTrigger implements SwiftPriorityInitTrigger {
         if (executorService != null) {
             SwiftLoggers.getLogger().info("stopping task distribute...");
             SwiftMigrateRetryListener.remove();
+            SwiftTriggerMigrateListener.remove();
             executorService.shutdown();
             executorService = null;
         }

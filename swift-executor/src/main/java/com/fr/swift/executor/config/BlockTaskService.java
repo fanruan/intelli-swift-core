@@ -2,6 +2,7 @@ package com.fr.swift.executor.config;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Heng.J
@@ -15,5 +16,7 @@ public interface BlockTaskService {
 
     void deleteByBlockIndex(String blockIndex);
 
-    List<String> getBlockTasksByBlockIndex(String blockIndex);
+    Set<String> getBlockIndexes();
+
+    List<String> getTasksByBlockIndex(String blockIndex);
 }

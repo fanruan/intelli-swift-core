@@ -1,5 +1,7 @@
 package com.fr.swift.service.event;
 
+import com.fr.swift.util.Strings;
+
 import java.io.Serializable;
 
 /**
@@ -24,6 +26,10 @@ public class NodeMessage implements Serializable {
 
     public static NodeMessage of(String clusterId, String messageInfo) {
         return new NodeMessage(clusterId, messageInfo);
+    }
+
+    public static NodeMessage of(String clusterId) {
+        return of(clusterId, Strings.EMPTY);
     }
 
     public String getClusterId() {

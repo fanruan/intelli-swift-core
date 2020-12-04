@@ -43,4 +43,10 @@ public interface SwiftNodeInfo {
     HashType getRelatedHashType();
 
     String getMigServerAddress();
+
+    int getLimitStartHour();
+
+    int getReadyStatus();
+
+    void setReadyStatus(int isReady);
 }

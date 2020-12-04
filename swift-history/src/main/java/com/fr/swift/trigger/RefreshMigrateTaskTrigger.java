@@ -1,11 +1,10 @@
-package com.fr.swift.listener;
+package com.fr.swift.trigger;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.executor.task.job.schedule.RedistributeMigJob;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.quartz.entity.TaskDefine;
 import com.fr.swift.quartz.service.ScheduleTaskService;
-import com.fr.swift.trigger.SwiftPriorityInitTrigger;
 
 /**
  * @author Heng.J

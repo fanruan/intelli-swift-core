@@ -5,8 +5,9 @@ import com.fr.swift.config.dao.SwiftDao;
 import com.fr.swift.config.dao.SwiftDaoImpl;
 
 import java.sql.SQLException;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Heng.J
@@ -31,12 +32,15 @@ public class BlockTaskServiceImpl implements BlockTaskService {
     }
 
     @Override
-    public List<String> getBlockTasksByBlockIndex(String blockIndex) {
-        final List<?> select = dao.selectQuery((query, builder, from) ->
+    public Set<String> getBlockIndexes() {
+        List<?> select = dao.selectQuery((query, builder, from) -> query.select(from.get("blockingIndex")));
+        return new HashSet<>((List<String>) select);
+    }
+
+    @Override
+    public List<String> getTasksByBlockIndex(String blockIndex) {
+        List<?> select = dao.selectQuery((query, builder, from) ->
                 query.select(from.get("taskContent")).where(builder.equal(from.get("blockingIndex"), blockIndex)));
-        if (select.isEmpty()) {
-            return Collections.emptyList();
-        }
         return (List<String>) select;
     }
 }

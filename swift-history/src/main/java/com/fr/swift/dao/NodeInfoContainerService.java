@@ -6,7 +6,6 @@ import com.fr.swift.db.NodeType;
 import com.fr.swift.service.info.TaskInfo;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,8 +28,28 @@ public class NodeInfoContainerService implements NodeInfoService {
     }
 
     @Override
-    public Map<String, String> getIdBlockIndexMap() {
-        return NodeInfoContainer.MASTER.getIdBlockIndexMap();
+    public Set<String> getBlockIndexes() {
+        return NodeInfoContainer.MASTER.getBlockIndexes();
+    }
+
+    @Override
+    public String getBlockIndexById(String migIndex) {
+        return NodeInfoContainer.MASTER.getBlockIndexById(migIndex);
+    }
+
+    @Override
+    public List<String> getIdsByBlockIndex(String blockIndex) {
+        return NodeInfoContainer.MASTER.getIdsByBlockIndex(blockIndex);
+    }
+
+    @Override
+    public int getReadyStatusById(String clusterId) {
+        return NodeInfoContainer.MASTER.getReadyStatusById(clusterId);
+    }
+
+    @Override
+    public void updateReadyStatusById(String clusterId) {
+        NodeInfoContainer.MASTER.updateReadyStatusById(clusterId);
     }
 
     @Override

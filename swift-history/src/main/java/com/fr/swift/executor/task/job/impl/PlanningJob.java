@@ -3,9 +3,10 @@ package com.fr.swift.executor.task.job.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.executor.task.bean.MigrateBean;
 import com.fr.swift.executor.task.bean.PlanningBean;
-import com.fr.swift.executor.task.info.MigrateInfo;
+import com.fr.swift.executor.task.info.MigScheduleInfo;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.executor.task.job.schedule.MigrateScheduleJob;
+import com.fr.swift.executor.task.job.trigger.MigrateTriggerJob;
 import com.fr.swift.quartz.entity.TaskDefine;
 import com.fr.swift.quartz.service.ScheduleTaskService;
 import org.quartz.JobKey;
@@ -31,19 +32,22 @@ public class PlanningJob extends BaseJob<Boolean, PlanningBean> {
     @Override
     public Boolean call() throws Exception {
         switch (planningBean.getTaskInfo().type()) {
-            case MIGRATE: {
-                MigrateInfo migrateInfo = ((MigrateInfo) planningBean.getTaskInfo());
+            case MIGRATE_SCHEDULE:
+                MigScheduleInfo migScheduleInfo = ((MigScheduleInfo) planningBean.getTaskInfo());
                 MigrateScheduleJob job = new MigrateScheduleJob();
-                String migrateTime = migrateInfo.getMigrateTime();
+                String migrateTime = migScheduleInfo.getMigrateTime();
                 TaskDefine task = TaskDefine.builder()
                         .jobKey(JobKey.jobKey(migrateTime, "migrate"))
                         .cronExpression(migrateTime)
                         .jobClass(job.getClass())
-                        .jobData(Collections.singletonMap(MigrateBean.KEY, migrateInfo.getMigrateBean()))
+                        .jobData(Collections.singletonMap(MigrateBean.KEY, migScheduleInfo.getMigrateBean()))
                         .build();
                 scheduleTaskService.addOrUpdateJob(task);
                 return true;
-            }
+            case MIGRATE_TRIGGER:
+                MigrateTriggerJob.getInstance().triggerMigrate();
+                return true;
+
         }
         return false;
     }

@@ -113,16 +113,15 @@ public class MigrationZipUtils {
      */
     public static void unCompress(String zipPath, String descDir) throws IOException {
         long start = System.currentTimeMillis();
-        try {
-            File zipFile = new File(zipPath);
-            if (!zipFile.exists()) {
-                throw new IOException("zip file not exist.");
-            }
-            File pathFile = new File(descDir);
-            if (!pathFile.exists()) {
-                pathFile.mkdirs();
-            }
-            ZipFile zip = new ZipFile(zipFile, Charset.forName("GBK"));
+        File zipFile = new File(zipPath);
+        if (!zipFile.exists()) {
+            throw new IOException("zip file not exist.");
+        }
+        File pathFile = new File(descDir);
+        if (!pathFile.exists()) {
+            pathFile.mkdirs();
+        }
+        try (ZipFile zip = new ZipFile(zipFile, Charset.forName("GBK"))) {
             for (Enumeration entries = zip.entries(); entries.hasMoreElements(); ) {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 String zipEntryName = entry.getName();

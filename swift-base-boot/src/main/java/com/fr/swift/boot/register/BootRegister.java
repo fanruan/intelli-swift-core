@@ -9,6 +9,7 @@ import com.fr.swift.basics.annotation.RegisteredHandler;
 import com.fr.swift.basics.base.ProxyProcessHandlerRegistry;
 import com.fr.swift.basics.base.ProxyServiceRegistry;
 import com.fr.swift.boot.trigger.ClusterInitTrigger;
+import com.fr.swift.boot.trigger.ContainerCacheTrigger;
 import com.fr.swift.boot.trigger.ServicePriorityInitiator;
 import com.fr.swift.boot.trigger.SwiftServiceInitTrigger;
 import com.fr.swift.boot.trigger.TaskDispatcherInitTrigger;
@@ -25,9 +26,9 @@ import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
-import com.fr.swift.listener.RefreshMigrateTaskTrigger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.quartz.ScheduleTaskTrigger;
+import com.fr.swift.trigger.RefreshMigrateTaskTrigger;
 
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,7 @@ public class BootRegister {
         ServicePriorityInitiator.getInstance().register(new ClusterInitTrigger());
         ServicePriorityInitiator.getInstance().register(new ScheduleTaskTrigger());
 
+        MasterServiceInitiator.getInstance().register(new ContainerCacheTrigger());
         MasterServiceInitiator.getInstance().register(new TaskDistributeTrigger());
         MasterServiceInitiator.getInstance().register(new RefreshMigrateTaskTrigger());
 //        JoinClusterListenerHandler.listen();

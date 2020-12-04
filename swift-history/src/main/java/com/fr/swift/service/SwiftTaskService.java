@@ -39,6 +39,7 @@ public class SwiftTaskService extends AbstractSwiftService implements TaskServic
         ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
         boolean success = false;
         try {
+            SwiftLoggers.getLogger().info("distribute task : {} to {}", taskInfo.toString(), target);
             success = serviceContext.dispatch(JsonBuilder.writeJsonString(new PlanningBean((PlanningInfo) taskInfo)), target);
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
