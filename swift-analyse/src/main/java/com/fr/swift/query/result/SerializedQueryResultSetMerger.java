@@ -1,6 +1,10 @@
 package com.fr.swift.query.result;
 
 import com.fr.swift.query.group.by2.node.GroupPage;
+import com.fr.swift.query.info.bean.element.LimitBean;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
+import com.fr.swift.query.limit.SingleLimit;
+import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.result.serialize.SerializedGroupQueryResultSet;
 import com.fr.swift.query.result.serialize.SerializedSortedDetailQueryResultSet;
@@ -20,7 +24,7 @@ import java.util.List;
  */
 public class SerializedQueryResultSetMerger {
 
-    public static QueryResultSet<?> merge(QueryType queryType, List<QueryResultSet<?>> resultSets) {
+    public static QueryResultSet<?> merge(QueryBean queryBean, List<QueryResultSet<?>> resultSets) {
         if (resultSets == null || resultSets.isEmpty()) {
             return EmptyQueryResultSet.get();
         }
@@ -28,6 +32,7 @@ public class SerializedQueryResultSetMerger {
 //        if (resultSets.size() == 1) {
 //            return resultSets.get(0);
 //        }
+        QueryType queryType = queryBean.getQueryType();
         switch (queryType) {
             case GROUP: {
                 List<QueryResultSet<GroupPage>> serializedResultSets = new ArrayList<QueryResultSet<GroupPage>>(resultSets.size());
@@ -43,7 +48,8 @@ public class SerializedQueryResultSetMerger {
                     serializedResultSets.add((DetailQueryResultSet) resultSet);
                 }
                 DetailQueryResultSet first = serializedResultSets.get(0);
-                return new MergeDetailQueryResultSet(first.getFetchSize(), serializedResultSets);
+                LimitBean limit = ((DetailQueryInfoBean) queryBean).getLimit();
+                return new MergeDetailQueryResultSet(first.getFetchSize(), serializedResultSets, limit != null ? new SingleLimit(limit.end()) : null);
             }
             case DETAIL_SORT: {
                 List<DetailQueryResultSet> serializedResultSets = new ArrayList<DetailQueryResultSet>(resultSets.size());

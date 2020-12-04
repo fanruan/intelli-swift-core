@@ -15,20 +15,20 @@ import com.fr.swift.util.Crasher;
 abstract class BaseAlterTableAction implements AlterTableAction {
     static final SwiftMetaDataService CONF_SVC = SwiftContext.get().getBean(SwiftMetaDataService.class);
 
-    SwiftMetaDataColumn relatedColumnMeta;
+    SwiftMetaDataColumn[] relatedColumnMeta;
 
-    BaseAlterTableAction(SwiftMetaDataColumn relatedColumnMeta) {
+    BaseAlterTableAction(SwiftMetaDataColumn... relatedColumnMeta) {
         this.relatedColumnMeta = relatedColumnMeta;
     }
 
     boolean existsColumn(SwiftMetaData meta) {
         try {
-            for (int i = 0; i < meta.getColumnCount(); i++) {
-                if (meta.getColumnName(i + 1).equals(relatedColumnMeta.getName())) {
-                    return true;
+            for (SwiftMetaDataColumn relatedColumn : relatedColumnMeta) {
+                if (meta.getColumnIndex(relatedColumn.getName()) == -1) {
+                    return false;
                 }
             }
-            return false;
+            return true;
         } catch (SwiftMetaDataException e) {
             return Crasher.crash(e);
         }

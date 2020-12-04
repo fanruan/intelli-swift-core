@@ -142,6 +142,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             }
             locationService.saveOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(newSegmentKeys));
             segmentService.addSegments(newSegmentKeys);
+            swiftSegmentService.update(newSegmentKeys);
             try {
                 clearCollatedSegment(collateSegKeys);
             } catch (Throwable e) {

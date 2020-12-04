@@ -10,7 +10,10 @@ public enum SwiftDatabase {
      */
     CUBE(0, "cube", "cubes"),
     DECISION_LOG(1, "decision_log", "logs/cubes"),
-    MINOR_CUBE(2, "minor_cube", "minor_cubes");
+    MINOR_CUBE(2, "minor_cube", "minor_cubes"),
+    RDS(3, "rds_cube", "rds"),
+    REPORT(4, "report_cube", "report");
+
 
     private final int id;
     private final String name;

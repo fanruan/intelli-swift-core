@@ -18,9 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: Lucifer
@@ -36,23 +34,21 @@ public class SwiftMetaDataEntity implements SwiftMetaData, Serializable {
      * 理论上SourceKey不重复
      */
     @Id
-    private String id;
+    protected String id;
     @Column(name = "swiftSchema")
     @Enumerated(EnumType.STRING)
-    private SwiftDatabase swiftDatabase;
+    protected SwiftDatabase swiftDatabase;
     @Column(name = "schemaName")
-    private String schemaName;
+    protected String schemaName;
     @Column(name = "tableName")
-    private String tableName;
+    protected String tableName;
     @Column(name = "remark")
-    private String remark;
+    protected String remark;
     @Column(name = "fields", length = 65536)
     @Convert(
             converter = MetaDataColumnListConverter.class
     )
-    private List<SwiftMetaDataColumn> fields;
-
-    private transient Map<String, Integer> fieldIndexes = new HashMap<>();
+    protected List<SwiftMetaDataColumn> fields;
 
     /**
      * @deprecated 换Builder
@@ -178,25 +174,13 @@ public class SwiftMetaDataEntity implements SwiftMetaData, Serializable {
         if (Strings.isEmpty(columnName)) {
             throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
         }
-        if (fieldIndexes == null || fieldIndexes.size() != fields.size()) {
-            synchronized (this) {
-                if (fieldIndexes == null) {
-                    fieldIndexes = new HashMap<>();
-                }
-                if (fieldIndexes.size() != fields.size()) {
-                    fieldIndexes.clear();
-                    for (int i = 0; i < fields.size(); i++) {
-                        SwiftMetaDataColumn column = fields.get(i);
-                        fieldIndexes.put(column.getName(), i + 1);
-                    }
-                }
+        for (int i = 1; i <= getColumnCount(); i++) {
+            if (getColumnName(i).equals(columnName)) {
+                return i;
             }
         }
-        if (fieldIndexes.get(columnName) == null) {
-            return -1;
-//            throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
-        }
-        return fieldIndexes.get(columnName);
+        return -1;
+        //throw new SwiftMetaDataColumnAbsentException(tableName, columnName);
     }
 
     @Override

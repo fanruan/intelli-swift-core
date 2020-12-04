@@ -13,5 +13,5 @@ public interface AlterTableAction {
      * @param table 表
      * @throws SQLException 异常
      */
-    void alter(Table table) throws SQLException;
+    Table alter(Table table) throws SQLException;
 }

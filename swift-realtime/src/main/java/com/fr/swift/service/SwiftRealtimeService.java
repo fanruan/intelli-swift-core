@@ -9,18 +9,13 @@ import com.fr.swift.db.Table;
 import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
 import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
-import com.fr.swift.segment.Incrementer;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.column.impl.base.ResourceDiscovery;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.alloter.RowInfo;
-import com.fr.swift.source.alloter.SwiftSourceAlloter;
-import com.fr.swift.source.alloter.impl.BaseAllotRule;
-import com.fr.swift.source.alloter.impl.line.LineAllotRule;
-import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 
 import java.io.Serializable;
 import java.util.List;
@@ -43,7 +38,7 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
     @Override
     public boolean start() throws SwiftServiceException {
         super.start();
-        segSvc = SwiftContext.get().getBean("segmentServiceProvider", SwiftSegmentService.class);
+        segSvc = SwiftContext.get().getBean(SwiftSegmentService.class);
         segLocationSvc = SwiftContext.get().getBean(SwiftSegmentLocationService.class);
         if (recoverable) {
             recover0();
@@ -64,9 +59,8 @@ public class SwiftRealtimeService extends AbstractSwiftService implements Realti
 
     @Override
     public void insert(final SourceKey tableKey, final SwiftResultSet resultSet) throws Exception {
-        SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(BaseAllotRule.MEM_CAPACITY));
-        Table table = SwiftDatabase.getInstance().getTable(tableKey);
-        new Incrementer<SwiftSourceAlloter<?, RowInfo>>(table, alloter).importResultSet(resultSet);
+        RealtimeInsertExecutorTask realtimeInsertExecutorTask = new RealtimeInsertExecutorTask(tableKey, resultSet);
+        TaskProducer.produceTask(realtimeInsertExecutorTask);
     }
 
     private void recover0() {

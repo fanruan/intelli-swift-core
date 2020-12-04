@@ -3,6 +3,7 @@ package com.fr.swift.segment.operator.insert;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
+import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
@@ -17,8 +18,10 @@ import com.fr.swift.source.alloter.RowInfo;
 import com.fr.swift.source.alloter.SegmentInfo;
 import com.fr.swift.source.alloter.SwiftSourceAlloter;
 import com.fr.swift.source.alloter.impl.BaseAllotRule.AllotType;
+import com.fr.swift.source.alloter.impl.SwiftSegmentInfo;
 import com.fr.swift.source.alloter.impl.hash.HashRowInfo;
 import com.fr.swift.source.alloter.impl.line.LineRowInfo;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Assert;
 import com.fr.swift.util.IoUtil;
 
@@ -28,12 +31,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author anchore
  * @date 2018/8/1
  */
-public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>, R extends SwiftResultSet> implements Releasable, Importer<R> {
+public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>, R extends SwiftResultSet> implements Releasable, Importer<R, Segment, Pair> {
 
     protected int curCursor = 0;
 
@@ -49,6 +53,9 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     protected SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
+    protected SwiftSegmentService swiftSegmentService = SwiftContext.get().getBean(SwiftSegmentService.class);
+
+
     public BaseBlockImporter(DataSource dataSource, A alloter) {
         this.dataSource = dataSource;
         this.alloter = alloter;
@@ -56,13 +63,17 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
     @Override
     public void importResultSet(R swiftResultSet) throws Exception {
+        long start = System.currentTimeMillis();
         try (R resultSet = swiftResultSet) {
-            for (int cursor = 0; resultSet.hasNext(); cursor++) {
+            int cursor = 0;
+            for (; resultSet.hasNext(); cursor++) {
                 importRow(resultSet.getNextRow(), cursor);
             }
             IoUtil.release(this);
             processAfterSegmentDone(true);
             onSucceed();
+            SwiftLoggers.getLogger().info("{} rows data has been increased in seg {} cost {}ms!"
+                    , cursor, importSegKeys, System.currentTimeMillis() - start);
         } catch (Throwable e) {
             SwiftLoggers.getLogger().error(e);
             IoUtil.release(this);
@@ -149,6 +160,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     protected void processAfterSegmentDone(boolean needIndex) throws Exception {
+        Map<SwiftSegmentInfo, SegmentKey> segMap = importSegKeys.stream().collect(Collectors.toMap(s -> new SwiftSegmentInfo(s.getOrder(), s.getStoreType()), s -> s));
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (needIndex) {
@@ -158,6 +170,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
                     handleFullSegment(entry.getKey());
                 }
             }
+            segMap.get(entry.getKey()).markFinish(entry.getValue().rowCount);
             itr.remove();
         }
     }
@@ -204,5 +217,15 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     @Override
     public List<SegmentKey> getImportSegments() {
         return importSegKeys;
+    }
+
+    @Override
+    public Pair snapshot(Segment segment) {
+        return null;
+    }
+
+    @Override
+    public void rollback() {
+
     }
 }

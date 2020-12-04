@@ -21,7 +21,6 @@ import com.fr.swift.query.builder.QueryBuilder;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.query.QueryBean;
-import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.result.SerializedQueryResultSetMerger;
 import com.fr.swift.query.result.serialize.BaseSerializedQueryResultSet;
 import com.fr.swift.result.qrs.EmptyQueryResultSet;
@@ -112,14 +111,14 @@ class SwiftQueryableProcessHandler extends BaseProcessHandler implements Queryab
         if (resultSets.isEmpty()) {
             return EmptyQueryResultSet.get();
         }
-        QueryResultSet<?> resultAfterMerge = (QueryResultSet<?>) mergeResult(resultSets, queryBean.getQueryType());
+        QueryResultSet<?> resultAfterMerge = (QueryResultSet<?>) mergeResult(resultSets, queryBean);
         Query<QueryResultSet<?>> postQuery = QueryBuilder.buildPostQuery(resultAfterMerge, queryBean);
         return postQuery.getQueryResult();
     }
 
     @Override
     protected Object mergeResult(List resultList, Object... args) {
-        return SerializedQueryResultSetMerger.merge((QueryType) args[0], resultList);
+        return SerializedQueryResultSetMerger.merge((QueryBean) args[0], resultList);
     }
 
     /**

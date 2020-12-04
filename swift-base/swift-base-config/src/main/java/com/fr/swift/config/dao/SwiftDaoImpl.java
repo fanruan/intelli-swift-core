@@ -112,6 +112,22 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
     }
 
     @Override
+    public void update(Collection<T> entities) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                for (T entity : entities) {
+                    session.update(entity);
+                }
+                tx.commit();
+            } catch (Throwable e) {
+                tx.rollback();
+                throw e;
+            }
+        }
+    }
+
+    @Override
     public List<?> selectQuery(CriteriaQueryProcessor criteriaQueryProcessor) {
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();

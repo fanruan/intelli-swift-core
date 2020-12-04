@@ -24,7 +24,7 @@ import java.util.List;
  * @since Advanced FineBI 5.0
  */
 public abstract class AbstractSegmentRecovery implements SegmentRecovery {
-    protected SegmentService localSegmentProvider = SwiftContext.get().getBean(SegmentService.class);
+    protected SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
 
     @Override
     public void recover(SourceKey tableKey) {
@@ -48,7 +48,7 @@ public abstract class AbstractSegmentRecovery implements SegmentRecovery {
     }
 
     private List<SegmentKey> getUnstoredSegmentKeys(SourceKey tableKey) {
-        List<SegmentKey> segKeys = localSegmentProvider.getSegmentKeys(tableKey);
+        List<SegmentKey> segKeys = segmentService.getSegmentKeys(tableKey);
         List<SegmentKey> unstoredSegs = new ArrayList<SegmentKey>();
         if (null != segKeys) {
             for (SegmentKey segKey : segKeys) {

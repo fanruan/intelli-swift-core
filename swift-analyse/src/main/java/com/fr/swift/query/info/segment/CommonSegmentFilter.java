@@ -25,7 +25,7 @@ public class CommonSegmentFilter extends AbstractSegmentFilter {
             return SEG_SVC.getSegmentKeysByIds(singleTableQueryInfo.getTable(), singleTableQueryInfo.getQuerySegment());
         }
         Map<Integer, List<SegmentKey>> bucketMap = segmentBucket.getBucketMap();
-        List<SegmentKey> segmentKeyList = new ArrayList<SegmentKey>();
+        List<SegmentKey> segmentKeyList = new ArrayList<>();
         for (Integer hashKey : virtualOrders) {
             if (!bucketMap.containsKey(hashKey)) {
                 continue;
