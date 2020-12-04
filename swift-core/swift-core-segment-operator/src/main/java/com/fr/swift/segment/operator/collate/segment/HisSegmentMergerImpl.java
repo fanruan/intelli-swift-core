@@ -10,6 +10,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.CacheColumnSegment;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.DataSource;
 
@@ -32,7 +33,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
         List<String> fields = dataSource.getMetadata().getFieldNames();
         try {
             for (SegmentPartition item : segmentPartitions) {
-                SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO);
+                SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO, SegmentSource.COLLATED);
                 segmentKeys.add(segKey);
                 ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
                 Segment segment = new CacheColumnSegment(location, dataSource.getMetadata());
@@ -40,6 +41,7 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
                     builder.build();
                     SegmentUtils.releaseHisSeg(segment);
+                    segKey.markFinish(segment.getRowCount());
                 } catch (Throwable e) {
                     try {
                         SegmentUtils.releaseHisSeg(segment);

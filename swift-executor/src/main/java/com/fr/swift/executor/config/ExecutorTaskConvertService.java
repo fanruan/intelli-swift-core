@@ -6,6 +6,7 @@ import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.util.Optional;
 
 import javax.persistence.criteria.Predicate;
 import java.sql.SQLException;
@@ -24,6 +25,8 @@ import java.util.Set;
 class ExecutorTaskConvertService implements ExecutorTaskService {
 
     private SwiftDao dao = new SwiftDaoImpl(SwiftExecutorTaskEntity.class);
+    private SwiftDao balanceDao = new SwiftDaoImpl(TaskBalanceEntity.class);
+
 
     @Override
     public void save(ExecutorTask executorTask) throws SQLException {
@@ -159,5 +162,11 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
 
         }
         return tasks.get(0).convert();
+    }
+
+    @Override
+    public List<TaskBalanceEntity> getTaskBalances() {
+        final List<TaskBalanceEntity> taskBalances = balanceDao.selectQuery((query, builder, from) -> query.select(from));
+        return Optional.ofNullable(taskBalances).orElse(Collections.EMPTY_LIST);
     }
 }

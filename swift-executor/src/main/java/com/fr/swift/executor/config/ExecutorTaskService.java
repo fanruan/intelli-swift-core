@@ -24,8 +24,20 @@ public interface ExecutorTaskService {
 
     List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time);
 
+    /**
+     * Object[3]=clusterId,executorTaskType,count(*)
+     *
+     * @param time
+     * @return
+     */
     List<Object[]> getActiveTasksGroupByCluster(long time);
 
+    /**
+     * Object[2] =dbStatusType,max(s.createTime)
+     *
+     * @param likes
+     * @return
+     */
     List<Object[]> getMaxtimeByContent(String... likes);
 
     SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes);
@@ -35,4 +47,6 @@ public interface ExecutorTaskService {
     void delete(final ExecutorTask executorTask);
 
     ExecutorTask get(String taskId);
+
+    List<TaskBalanceEntity> getTaskBalances();
 }
