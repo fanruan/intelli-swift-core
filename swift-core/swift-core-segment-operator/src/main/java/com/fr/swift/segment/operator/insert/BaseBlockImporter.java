@@ -134,6 +134,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     protected void indexFullIfExists() throws Exception {
+        Map<SwiftSegmentInfo, SegmentKey> segMap = importSegKeys.stream().collect(Collectors.toMap(s -> new SwiftSegmentInfo(s.getOrder(), s.getStoreType()), s -> s));
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (entry.getValue().isFull()) {
@@ -141,7 +142,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
 
                 // 处理满了的块，比如上传历史块或者持久化增量块
                 handleFullSegment(entry.getKey());
-
+                segMap.get(entry.getKey()).markFinish(entry.getValue().rowCount);
                 itr.remove();
             }
         }
