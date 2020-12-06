@@ -69,19 +69,11 @@ public class MigrateScheduleJob implements ScheduleJob {
                 // 通知主节点本机准备成功
                 nodeInfo.setReadyStatus(1);
                 nodeInfoService.update(nodeInfo);
-                MigrateTriggerJob.getInstance().setOriginType(originType);
-                MigrateTriggerJob.getInstance().setMigrateBean(migrateBean);
+                MigrateTriggerJob.getInstance().init(migrateBean, originType);
                 Boolean reportSuccess = retryer.call(() -> serviceContext.report(NodeEvent.START_WAITING, NodeMessage.of(clusterId, Strings.EMPTY)));
                 if (reportSuccess) {
-                    Object lock = MigrateTriggerJob.getInstance().getLock();
-                    synchronized (lock) {
-                        try {
-                            lock.wait();
-                            SwiftLoggers.getLogger().info("migrate job finished");
-                        } catch (InterruptedException e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
-                    }
+                    MigrateTriggerJob.getInstance().getLatch().await();
+                    SwiftLoggers.getLogger().info("migrate job finished");
                 } else {
                     nodeInfo.setReadyStatus(0);
                     nodeInfoService.update(nodeInfo);

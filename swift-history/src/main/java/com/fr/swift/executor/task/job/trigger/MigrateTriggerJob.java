@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +43,7 @@ public class MigrateTriggerJob {
 
     private static final int COLLATE_BATCH_SIZE = 100;
 
-    private final Object lock = new Object();
+    private CountDownLatch latch;
 
     private MigrateBean migrateBean;
 
@@ -56,16 +57,14 @@ public class MigrateTriggerJob {
         return INSTANCE;
     }
 
-    public Object getLock() {
-        return lock;
-    }
-
-    public void setMigrateBean(MigrateBean migrateBean) {
+    public void init(MigrateBean migrateBean, MigrateType originType) {
         this.migrateBean = migrateBean;
+        this.originType = originType;
+        this.latch = new CountDownLatch(1);
     }
 
-    public void setOriginType(MigrateType originType) {
-        this.originType = originType;
+    public CountDownLatch getLatch() {
+        return latch;
     }
 
     public void triggerMigrate() {
@@ -101,10 +100,7 @@ public class MigrateTriggerJob {
             updateNodeInfoConfig(migrateSuccess, nodeInfo);
 
             // 通知迁移状态MigrateScheduleJob
-            Object lock = MigrateTriggerJob.getInstance().getLock();
-            synchronized (lock) {
-                lock.notify();
-            }
+            latch.countDown();
         }
     }
 
