@@ -8,7 +8,6 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.util.Strings;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -91,7 +90,7 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
-        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED, Strings.EMPTY);
+        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED, "0");
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, String segmentUri) {

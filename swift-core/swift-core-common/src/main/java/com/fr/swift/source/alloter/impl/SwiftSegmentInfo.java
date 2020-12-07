@@ -16,7 +16,7 @@ public class SwiftSegmentInfo implements SegmentInfo {
     private String tempDir;
 
     public SwiftSegmentInfo(int order, StoreType storeType) {
-        new SwiftSegmentInfo(order, storeType, "0");
+        this(order, storeType, "0");
     }
 
     public SwiftSegmentInfo(int order, StoreType storeType, String tempDir) {
