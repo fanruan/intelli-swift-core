@@ -19,6 +19,18 @@
       "semaphore": 1
     },
     {
+      "sourceKey": "TREASURE_REPORT",
+      "executorTaskType": "TREASURE_REPORT",
+      "lockKey": null,
+      "semaphore": 4
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "TREASURE_REALTIME",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
       "sourceKey": "TREASURE_RE_IMPORT",
       "executorTaskType": "TREASURE_RE_IMPORT",
       "lockKey": null,

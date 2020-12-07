@@ -15,8 +15,10 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.hash.HashIndexRange;
+import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 import com.google.common.collect.Sets;
 import org.hibernate.exception.ConstraintViolationException;
@@ -53,19 +55,34 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
     @Override
     public void save(SegmentKey segKey) {
-        segmentDao.insert(new SwiftSegmentEntity(segKey));
+        segmentDao.insert(segKey);
+    }
+
+    @Override
+    public void save(Collection<SegmentKey> segKeys) {
+        segmentDao.insert(segKeys);
+    }
+
+    @Override
+    public void update(SegmentKey segKey) {
+        segmentDao.update(segKey);
+    }
+
+    @Override
+    public void update(Collection<SegmentKey> segKeys) {
+        segmentDao.update(segKeys);
     }
 
     @Override
     public void delete(SegmentKey segKey) {
-        segmentDao.delete(new SwiftSegmentEntity(segKey));
+        segmentDao.delete(segKey);
     }
 
     @Override
     public void delete(List<SegmentKey> segKeys) {
         List<SegmentKey> entities = new ArrayList<>();
         for (SegmentKey segKey : segKeys) {
-            entities.add(new SwiftSegmentEntity(segKey));
+            entities.add(segKey);
         }
         segmentDao.delete(entities);
     }
@@ -96,7 +113,12 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
     }
 
     @Override
-    public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType, String segmentUri) {
+    public SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType) {
+        return tryAppendSegment(tableKey, storeType, SegmentSource.CREATED);
+    }
+
+    @Override
+    public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType, final SegmentSource segmentSource) {
         final SwiftDatabase swiftDatabase = metaDataService.getMeta(tableKey).getSwiftDatabase();
         for (; ; ) {
             try {
@@ -105,7 +127,29 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
                                 .where(builder.equal(from.get(COLUMN_SEGMENT_OWNER), tableKey.getId())
                                         , builder.equal(from.get(COLUMN_STORE_TYPE), storeType)));
                 int maxOrder = select.get(0) == null ? -1 : (Integer) select.get(0);
-                final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase, segmentUri);
+                final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase, segmentSource, Strings.EMPTY);
+                segmentDao.insert(entity);
+                return entity;
+            } catch (ConstraintViolationException ignore) {
+            } catch (PersistenceException fIgnore) {
+                if (!(fIgnore.getCause() instanceof ConstraintViolationException)) {
+                    throw fIgnore;
+                }
+            }
+        }
+    }
+
+    @Override
+    public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType, SegmentSource segmentSource, String segmentUri) {
+        final SwiftDatabase swiftDatabase = metaDataService.getMeta(tableKey).getSwiftDatabase();
+        for (; ; ) {
+            try {
+                List<?> select = segmentDao.selectQuery((query, builder, from) ->
+                        query.select(builder.max(from.get(COLUMN_SEGMENT_ORDER)))
+                                .where(builder.equal(from.get(COLUMN_SEGMENT_OWNER), tableKey.getId())
+                                        , builder.equal(from.get(COLUMN_STORE_TYPE), storeType)));
+                int maxOrder = select.get(0) == null ? -1 : (Integer) select.get(0);
+                final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase, segmentSource, segmentUri);
                 segmentDao.insert(entity);
                 return entity;
             } catch (ConstraintViolationException ignore) {

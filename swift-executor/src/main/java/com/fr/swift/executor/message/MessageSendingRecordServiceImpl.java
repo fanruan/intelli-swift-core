@@ -19,8 +19,12 @@ public class MessageSendingRecordServiceImpl implements MessageSendingRecordServ
 
 
     @Override
-    public void save(MessageSendingRecordEntity messageSendingRecordEntity) throws SQLException {
-        dao.insert(messageSendingRecordEntity);
+    public void saveOrUpdate(MessageSendingRecordEntity messageSendingRecordEntity) throws SQLException {
+        try {
+            dao.insert(messageSendingRecordEntity);
+        } catch (Exception e) {
+            dao.update(messageSendingRecordEntity);
+        }
     }
 
     @Override

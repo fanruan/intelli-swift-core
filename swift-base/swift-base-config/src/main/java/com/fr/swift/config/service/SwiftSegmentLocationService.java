@@ -5,8 +5,8 @@ import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author yee
@@ -20,19 +20,19 @@ public interface SwiftSegmentLocationService {
      * @param nodeId
      * @param segKeys
      */
-    void saveOnNode(String nodeId, Set<SegmentKey> segKeys);
+    void saveOnNode(String nodeId, Collection<SegmentKey> segKeys);
 
-    void deleteOnNode(String nodeId, Set<SegmentKey> segKeys);
+    void deleteOnNode(String nodeId, Collection<SegmentKey> segKeys);
 
     void deleteOnNode(String nodeId, SourceKey tableKey);
 
     boolean existsOnNode(String nodeId, SegmentKey segKey);
 
-    void updateBelongs(String newNodeId, Set<SegmentKey> segKeys);
+    void updateBelongs(String newNodeId, Collection<SegmentKey> segKeys);
 
     List<SwiftSegmentLocationEntity> getTableMatchedSegOnNode(String nodeId, SourceKey tableKey, String segIdStartsWith);
 
-    List<SwiftSegmentLocationEntity> getTableMatchedSegOnNode(String nodeId, SourceKey tableKey, List<String> inSegIds);
+    List<SwiftSegmentLocationEntity> getTableMatchedSegOnNode(String nodeId, SourceKey tableKey, Collection<String> inSegIds);
 
     List<SwiftSegmentLocationEntity> getTableSegsByClusterId(SourceKey tableKey, String clusterId);
 

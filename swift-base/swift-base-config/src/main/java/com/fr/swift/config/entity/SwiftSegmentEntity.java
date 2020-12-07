@@ -6,7 +6,9 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.util.Strings;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,17 +17,23 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_ROWS;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER;
-import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_SCHEMA;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_SOURCE;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SWIFT_SCHEMA;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.CREATE_TIME;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.FINISH_TIME;
 
 /**
  * @author yee
  * @date 2018/5/24
  */
+@SuppressWarnings("all")
 @JsonIgnoreProperties({"table", "order"})
 @Entity
 @Table(name = "fine_swift_segments")
@@ -53,40 +61,59 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Enumerated(EnumType.STRING)
     private Types.StoreType storeType;
 
-    @JsonProperty(COLUMN_SEGMENT_SCHEMA)
-    @Column(name = COLUMN_SEGMENT_SCHEMA)
+    @JsonProperty(COLUMN_SWIFT_SCHEMA)
+    @Column(name = COLUMN_SWIFT_SCHEMA)
     @Enumerated(EnumType.STRING)
     private SwiftDatabase swiftSchema;
+
+    @JsonProperty(CREATE_TIME)
+    @Column(name = CREATE_TIME)
+    private Date createTime;
+
+    @JsonProperty(FINISH_TIME)
+    @Column(name = FINISH_TIME)
+    private Date finishTime;
+
+    @JsonProperty(COLUMN_SEGMENT_SOURCE)
+    @Column(name = COLUMN_SEGMENT_SOURCE)
+    @Enumerated(EnumType.STRING)
+    private SegmentSource segmentSource;
+
+    @JsonProperty(COLUMN_ROWS)
+    @Column(name = COLUMN_ROWS, columnDefinition = "INT default -1")
+    private int rows;
 
     public SwiftSegmentEntity() {
     }
 
     public SwiftSegmentEntity(SegmentKey segKey) {
-        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema(), segKey.getSegmentUri());
+        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema(), segKey.segmentSource(), segKey.getSegmentUri());
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
-        id = getId(segmentOwner, segmentOrder, storeType);
-        this.segmentOwner = segmentOwner.getId();
-        this.segmentOrder = segmentOrder;
-        this.storeType = storeType;
-        this.swiftSchema = swiftSchema;
+        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED, Strings.EMPTY);
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, String segmentUri) {
+        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED, segmentUri);
+    }
+
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, SegmentSource segmentSource, String segmentUri) {
         id = getId(segmentOwner, segmentOrder, storeType);
         this.segmentOwner = segmentOwner.getId();
         this.segmentOrder = segmentOrder;
         this.storeType = storeType;
         this.swiftSchema = swiftSchema;
         this.segmentUri = segmentUri;
+        this.createTime = new Date();
+        this.segmentSource = segmentSource;
     }
 
     public static String getHistoryId(String segmentOwner, int segmentOrder) {
         return getId(new SourceKey(segmentOwner), segmentOrder, StoreType.FINE_IO);
     }
 
-    private static String getId(SourceKey segmentOwner, int segmentOrder, StoreType storeType) {
+    public static String getId(SourceKey segmentOwner, int segmentOrder, StoreType storeType) {
         return String.format("%s@%s@%d", segmentOwner.getId(), storeType, segmentOrder);
     }
 
@@ -146,6 +173,32 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
 
     public void setSwiftSchema(SwiftDatabase swiftSchema) {
         this.swiftSchema = swiftSchema;
+    }
+
+    @Override
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    @Override
+    public Date getFinishTime() {
+        return finishTime;
+    }
+
+    @Override
+    public void markFinish(int rows) {
+        this.finishTime = new Date();
+        this.rows = rows;
+    }
+
+    @Override
+    public int getRows() {
+        return rows;
+    }
+
+    @Override
+    public SegmentSource segmentSource() {
+        return segmentSource;
     }
 
     @Override

@@ -12,12 +12,15 @@ public interface Job<T, P> extends Callable<T> {
 
     JobListener getJobListener();
 
+    void setJobListener(JobListener listener);
     /**
      * @author anchore
      * @date 2019/2/27
      */
-    interface JobListener {
+    interface JobListener<C> {
         void onDone(boolean success);
+
+        void callback(C callback) throws Exception;
     }
 
     P serializedTag();

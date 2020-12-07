@@ -24,7 +24,7 @@ public class RecoveryExecutorTask extends AbstractExecutorTask<Job<Void, Segment
                 LockType.VIRTUAL_SEG,
                 recoverySegKey.getId(),
                 DBStatusType.ACTIVE,
-                new RecoveryJob(recoverySegKey), 0);
+                new RecoveryJob(recoverySegKey), 12);
         // 优先做恢复任务
         this.createTime = 0;
     }

@@ -48,7 +48,7 @@ public class TaskDispatcher {
 
     private TaskDispatcher() {
         ExecutorManager.getInstance().pullDBTask();
-        EXECUTE_THREAD_NUM = Runtime.getRuntime().availableProcessors();
+        EXECUTE_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 2;
         threads = new Thread[EXECUTE_THREAD_NUM];
         for (int i = 0; i < threads.length; i++) {
             String threadName = "TaskExecuteRunnable [" + i + "]";

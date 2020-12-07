@@ -29,6 +29,12 @@ import java.util.List;
  */
 public class SegmentUtils {
 
+    public static Segment newBackupSegment(SegmentKey segKey) {
+        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).asBackup().build(), Types.StoreType.NIO);
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMeta(segKey.getTable());
+        return SwiftContext.get().getBean("backupSegment", Segment.class, location, metaData);
+    }
+
     // TODO: 2020/11/3 需要在此获得yearmouth路径
     public static Segment newSegment(SegmentKey segKey) {
         return newSegment(segKey, segKey.getSegmentUri());
@@ -185,5 +191,4 @@ public class SegmentUtils {
             releaseHisSeg(seg);
         }
     }
-
 }

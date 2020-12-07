@@ -38,7 +38,7 @@ public class DetailSegmentQueryTest {
         SegmentDetailResultSet segmentDetailResultSet = mock(SegmentDetailResultSet.class);
         whenNew(SegmentDetailResultSet.class).withArguments(fetchSize, colunmnList, filter).thenReturn(segmentDetailResultSet);
 
-        Assert.assertEquals(segmentDetailResultSet, new DetailSegmentQuery(fetchSize, colunmnList, filter).getQueryResult());
+        Assert.assertEquals(segmentDetailResultSet, new DetailSegmentQuery(fetchSize, colunmnList, filter,null).getQueryResult());
         verifyNew(SegmentDetailResultSet.class).withArguments(fetchSize, colunmnList, filter);
 
     }

@@ -18,6 +18,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
 import com.fr.swift.service.DeleteService;
+import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.MigrateService;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.ServiceContext;
@@ -44,6 +45,7 @@ public class SwiftServiceContext implements ServiceContext {
         SwiftContext.get().getBean(AnalyseService.class).start();
         SwiftContext.get().getBean(CollateService.class).start();
         SwiftContext.get().getBean(DeleteService.class).start();
+        SwiftContext.get().getBean(RealtimeService.class).start();
         List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.get().getServerServiceNames());
         for (ServerService serverService : serverServiceList) {
             serverService.startServerService();
@@ -56,6 +58,7 @@ public class SwiftServiceContext implements ServiceContext {
         SwiftContext.get().getBean(AnalyseService.class).shutdown();
         SwiftContext.get().getBean(CollateService.class).shutdown();
         SwiftContext.get().getBean(DeleteService.class).shutdown();
+        SwiftContext.get().getBean(RealtimeService.class).shutdown();
         List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.get().getServerServiceNames());
         for (ServerService serverService : serverServiceList) {
             serverService.stopServerService();

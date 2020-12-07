@@ -10,40 +10,40 @@ import com.fr.swift.api.info.RequestType;
  * @date 2018-12-03
  */
 public class ColumnsRequestInfo extends BaseRequestInfo<JdbcRequestParserVisitor> {
-    @JsonProperty(value = "database")
-    private String database;
+    @JsonProperty(value = "swiftUser")
+    private String swiftUser;
     @JsonProperty(value = "table")
     private String table;
-    @JsonProperty(value = "auth")
-    private String authCode;
+//    @JsonProperty(value = "auth")
+//    private String authCode;
 
     public ColumnsRequestInfo() {
         super(RequestType.COLUMNS);
     }
 
-    public ColumnsRequestInfo(String database, String table, String authCode) {
+    public ColumnsRequestInfo(String swiftUser, String table) {
         super(RequestType.COLUMNS);
-        this.database = database;
+        this.swiftUser = swiftUser;
         this.table = table;
-        this.authCode = authCode;
+//        this.authCode = authCode;
     }
 
     public String getDatabase() {
-        return database;
+        return swiftUser;
     }
 
     public String getTable() {
         return table;
     }
 
-    @Override
-    public String getAuthCode() {
-        return authCode;
-    }
-
-    public void setAuthCode(String authCode) {
-        this.authCode = authCode;
-    }
+//    @Override
+//    public String getAuthCode() {
+//        return authCode;
+//    }
+//
+//    public void setAuthCode(String authCode) {
+//        this.authCode = authCode;
+//    }
 
     @Override
     public ApiInvocation accept(JdbcRequestParserVisitor visitor) {
