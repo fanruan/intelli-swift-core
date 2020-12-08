@@ -32,7 +32,7 @@ public class SwiftMigrateRetryListener implements SwiftEventListener<String> {
 
     @Override
     public void on(String clusterId) {
-        SwiftLoggers.getLogger().info("Start update or retry distribute migrateTask to {} ", clusterId);
+        SwiftLoggers.getLogger().info("Start to update or retry distribute migrateTask to {} ", clusterId);
         nodeInfoService.getMigrateInfosById(clusterId).stream().findFirst().ifPresent(taskInfo -> taskService.distributeTask(taskInfo, clusterId));
     }
 }

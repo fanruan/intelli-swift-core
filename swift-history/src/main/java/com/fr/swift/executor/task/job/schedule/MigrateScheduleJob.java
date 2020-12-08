@@ -53,10 +53,12 @@ public class MigrateScheduleJob implements ScheduleJob {
                 .withStopStrategy(StopStrategies.stopAfterAttempt(3))
                 .withWaitStrategy(WaitStrategies.incrementingWait(1, TimeUnit.MINUTES, 1, TimeUnit.MINUTES))
                 .build();
-        MigrateType originType = nodeInfoService.getOwnNodeInfo().getMigrateType();
+        SwiftNodeInfo originNodeInfo = nodeInfoService.getOwnNodeInfo();
+        MigrateType originType = originNodeInfo.getMigrateType();
+        boolean blockSuccess = false;
         try {
             // 主节点停止分migIndex任务
-            boolean blockSuccess = retryer.call(() -> serviceContext.report(NodeEvent.BLOCK, NodeMessage.of(clusterId, migrateIndex)));
+            blockSuccess = retryer.call(() -> serviceContext.report(NodeEvent.BLOCK, NodeMessage.of(clusterId, migrateIndex)));
             // 重试失败后检查数据库
             SwiftNodeInfo nodeInfo = nodeInfoService.getNodeInfo(clusterId);
             if (!blockSuccess && nodeInfo.getBlockingIndex().equals(migrateIndex)) {
@@ -83,12 +85,16 @@ public class MigrateScheduleJob implements ScheduleJob {
             SwiftLoggers.getLogger().error(e);
         } finally {
             try {
+                if (!blockSuccess) {
+                    originNodeInfo.setMigrateType(originType.levelUp());
+                    nodeInfoService.update(originNodeInfo);
+                }
                 // 开启某个月任务分发, 即使失败主节点也会掉线重连后读取配置
                 retryer.call(() -> serviceContext.report(NodeEvent.ACTIVATE, NodeMessage.of(clusterId, migrateIndex)));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             } finally {
-                SwiftLoggers.getLogger().info("migrate success cost {} ms", System.currentTimeMillis() - start);
+                SwiftLoggers.getLogger().info("migrate process finished cost {} ms", System.currentTimeMillis() - start);
             }
         }
     }

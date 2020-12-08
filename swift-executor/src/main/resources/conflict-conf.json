@@ -31,7 +31,7 @@
       "semaphore": 1
     },
     {
-      "sourceKey": "TREASURE_RE_IMPORT",
+      "sourceKey": "TREASURE_IMPORT",
       "executorTaskType": "TREASURE_RE_IMPORT",
       "lockKey": null,
       "semaphore": 3
