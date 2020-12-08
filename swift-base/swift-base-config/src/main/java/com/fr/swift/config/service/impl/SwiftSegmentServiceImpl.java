@@ -18,7 +18,6 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.alloter.impl.hash.HashIndexRange;
-import com.fr.swift.util.Strings;
 import com.fr.swift.util.Util;
 import com.google.common.collect.Sets;
 import org.hibernate.exception.ConstraintViolationException;
@@ -119,24 +118,7 @@ public class SwiftSegmentServiceImpl implements SwiftSegmentService {
 
     @Override
     public SegmentKey tryAppendSegment(final SourceKey tableKey, final StoreType storeType, final SegmentSource segmentSource) {
-        final SwiftDatabase swiftDatabase = metaDataService.getMeta(tableKey).getSwiftDatabase();
-        for (; ; ) {
-            try {
-                List<?> select = segmentDao.selectQuery((query, builder, from) ->
-                        query.select(builder.max(from.get(COLUMN_SEGMENT_ORDER)))
-                                .where(builder.equal(from.get(COLUMN_SEGMENT_OWNER), tableKey.getId())
-                                        , builder.equal(from.get(COLUMN_STORE_TYPE), storeType)));
-                int maxOrder = select.get(0) == null ? -1 : (Integer) select.get(0);
-                final SwiftSegmentEntity entity = new SwiftSegmentEntity(tableKey, maxOrder + 1, storeType, swiftDatabase, segmentSource, Strings.EMPTY);
-                segmentDao.insert(entity);
-                return entity;
-            } catch (ConstraintViolationException ignore) {
-            } catch (PersistenceException fIgnore) {
-                if (!(fIgnore.getCause() instanceof ConstraintViolationException)) {
-                    throw fIgnore;
-                }
-            }
-        }
+        return tryAppendSegment(tableKey, storeType, segmentSource, "0");
     }
 
     @Override
