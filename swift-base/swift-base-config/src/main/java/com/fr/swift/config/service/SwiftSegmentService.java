@@ -7,6 +7,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.alloter.impl.hash.HashIndexRange;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,6 +37,8 @@ public interface SwiftSegmentService {
 
     SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType, SegmentSource segmentSource);
 
+    SegmentKey tryAppendSegment(SourceKey tableKey, StoreType storeType, SegmentSource segmentSource, String segmentUri);
+
     List<SegmentKey> getTableSegKeys(SourceKey tableKey);
 
     Set<SegmentKey> getByIds(Set<String> segIds);
@@ -49,6 +52,8 @@ public interface SwiftSegmentService {
     Map<SourceKey, List<SegmentKey>> getTransferedSegments();
 
     Map<SourceKey, List<SegmentKey>> getOwnSegments(final String nodeId);
+
+    Map<SourceKey, List<SegmentKey>> getOwnSegmentsByRange(HashIndexRange range);
 
     List<SegmentKey> getOwnSegments(SourceKey tableKey);
 

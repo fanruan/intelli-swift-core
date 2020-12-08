@@ -46,7 +46,7 @@ public class CubePathBuilderTest {
 
     @Test(expected = RuntimeException.class)
     public void testWrongBuild1() {
-        new CubePathBuilder().setSwiftSchema(SwiftDatabase.CUBE).setTempDir(0).asBackup().build();
+        new CubePathBuilder().setSwiftSchema(SwiftDatabase.CUBE).setTempDir(String.valueOf(1)).asBackup().build();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class CubePathBuilderTest {
         int segOrder = 10;
 
         String path = new CubePathBuilder().setSwiftSchema(swiftSchema)
-                .setTempDir(0)
+                .setTempDir(String.valueOf(0))
                 .setTableKey(tableKey)
                 .setSegOrder(segOrder)
                 .setColumnId(columnId).build();

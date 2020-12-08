@@ -4,9 +4,12 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.basics.annotation.ProxyService;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.db.Where;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.task.bean.CollateBean;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
+import com.fr.swift.executor.task.impl.PlanningExecutorTask;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.query.cache.QueryCacheBuilder;
 import com.fr.swift.result.SwiftResultSet;
@@ -15,10 +18,14 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.service.AnalyseService;
 import com.fr.swift.service.CollateService;
 import com.fr.swift.service.DeleteService;
+import com.fr.swift.service.MigrateService;
 import com.fr.swift.service.RealtimeService;
 import com.fr.swift.service.ServerService;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.ServiceType;
+import com.fr.swift.service.TaskService;
+import com.fr.swift.service.event.NodeEvent;
+import com.fr.swift.service.event.NodeMessage;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.ServiceBeanFactory;
 
@@ -39,7 +46,9 @@ public class SwiftServiceContext implements ServiceContext {
         SwiftContext.get().getBean(AnalyseService.class).start();
         SwiftContext.get().getBean(CollateService.class).start();
         SwiftContext.get().getBean(DeleteService.class).start();
+        SwiftContext.get().getBean(MigrateService.class).start();
         SwiftContext.get().getBean(RealtimeService.class).start();
+        SwiftContext.get().getBean(TaskService.class).start();
         List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.get().getServerServiceNames());
         for (ServerService serverService : serverServiceList) {
             serverService.startServerService();
@@ -52,7 +61,9 @@ public class SwiftServiceContext implements ServiceContext {
         SwiftContext.get().getBean(AnalyseService.class).shutdown();
         SwiftContext.get().getBean(CollateService.class).shutdown();
         SwiftContext.get().getBean(DeleteService.class).shutdown();
+        SwiftContext.get().getBean(MigrateService.class).shutdown();
         SwiftContext.get().getBean(RealtimeService.class).shutdown();
+        SwiftContext.get().getBean(TaskService.class).shutdown();
         List<ServerService> serverServiceList = ServiceBeanFactory.getServerServiceByNames(SwiftProperty.get().getServerServiceNames());
         for (ServerService serverService : serverServiceList) {
             serverService.stopServerService();
@@ -82,7 +93,7 @@ public class SwiftServiceContext implements ServiceContext {
 
     @Override
     public void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception {
-        TaskProducer.produceTask(new CollateExecutorTask(tableKey, segmentKeyList));
+        TaskProducer.produceTask(new CollateExecutorTask(CollateBean.of(tableKey, segmentKeyList)));
     }
 
     @Override
@@ -100,5 +111,26 @@ public class SwiftServiceContext implements ServiceContext {
     @Override
     public void insert(SourceKey tableKey, SwiftResultSet resultSet) throws Exception {
         throw new UnsupportedOperationException("insert not support");
+    }
+
+    @Override
+    public boolean dispatch(String taskBean, String location) throws Exception {
+        return TaskProducer.produceTask(PlanningExecutorTask.of(taskBean));
+    }
+
+    @Override
+    public boolean report(NodeEvent nodeEvent, NodeMessage nodeMessage) {
+        SwiftEventDispatcher.syncFire(nodeEvent, nodeMessage);
+        return true;
+    }
+
+    @Override
+    public boolean deleteFiles(String targetPath, String clusterId) {
+        return SwiftContext.get().getBean(MigrateService.class).deleteMigratedFile(targetPath);
+    }
+
+    @Override
+    public boolean updateConfigs(List<SegmentKey> segmentKeys, String clusterId) {
+        return SwiftContext.get().getBean(MigrateService.class).updateMigratedSegsConfig(segmentKeys);
     }
 }

@@ -4,7 +4,6 @@ import com.fr.swift.config.dao.SwiftDao;
 import com.fr.swift.config.dao.SwiftDaoImpl;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
-import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.property.SwiftProperty;
 
 import javax.persistence.criteria.Predicate;
@@ -42,28 +41,17 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
 
     @Override
     public List<ExecutorTask> getActiveTasksBeforeTime(long time) {
-        final List<SwiftExecutorTaskEntity> entities = dao.selectQuery((query, builder, from) ->
-                query.select(from)
-                        .where(builder.equal(from.get("dbStatusType"), DBStatusType.ACTIVE)
-                                , builder.equal(from.get("clusterId"), SwiftProperty.get().getMachineId())
-                                , builder.gt(from.get("createTime"), time)
-                                , from.get("executorTaskType").in(Arrays.asList(SwiftProperty.get().getExecutorTaskType()))));
-
-        List<ExecutorTask> tasks = new ArrayList<>();
-        for (SwiftExecutorTaskEntity entity : entities) {
-            tasks.add(entity.convert());
-        }
-        return tasks;
+        return getActiveTasksBeforeTimeByType(time, SwiftProperty.get().getExecutorTaskType());
     }
 
     @Override
-    public List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time) {
+    public List<ExecutorTask> getActiveTasksBeforeTimeByType(long time, String... type) {
         final List<SwiftExecutorTaskEntity> entities = dao.selectQuery((query, builder, from) ->
                 query.select(from)
                         .where(builder.equal(from.get("dbStatusType"), DBStatusType.ACTIVE)
                                 , builder.equal(from.get("clusterId"), SwiftProperty.get().getMachineId())
                                 , builder.gt(from.get("createTime"), time)
-                                , from.get("executorTaskType").in(SwiftTaskType.DELETE.name())));
+                                , from.get("executorTaskType").in(Arrays.asList(type))));
 
         List<ExecutorTask> tasks = new ArrayList<>();
         for (SwiftExecutorTaskEntity entity : entities) {

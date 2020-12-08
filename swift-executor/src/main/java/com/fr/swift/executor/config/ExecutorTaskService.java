@@ -22,7 +22,7 @@ public interface ExecutorTaskService {
 
     List<ExecutorTask> getActiveTasksBeforeTime(long time);
 
-    List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time);
+    List<ExecutorTask> getActiveTasksBeforeTimeByType(long time, String... type);
 
     List<Object[]> getActiveTasksGroupByCluster(long time);
 

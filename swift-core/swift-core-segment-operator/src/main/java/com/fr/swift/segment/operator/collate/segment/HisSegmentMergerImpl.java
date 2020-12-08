@@ -13,9 +13,12 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author lyon
@@ -33,9 +36,10 @@ public class HisSegmentMergerImpl implements HisSegmentMerger {
         List<String> fields = dataSource.getMetadata().getFieldNames();
         try {
             for (SegmentPartition item : segmentPartitions) {
-                SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO, SegmentSource.COLLATED);
+                Optional<String> first = item.getSegmentKeys().stream().map(SegmentKey::getSegmentUri).collect(Collectors.toSet()).stream().findFirst();
+                SegmentKey segKey = SEG_SVC.tryAppendSegment(dataSource.getSourceKey(), Types.StoreType.FINE_IO, SegmentSource.COLLATED, first.orElse(Strings.EMPTY));
                 segmentKeys.add(segKey);
-                ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(currentDir).build(), segKey.getStoreType());
+                ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(segKey.getSegmentUri()).build(), segKey.getStoreType());
                 Segment segment = new CacheColumnSegment(location, dataSource.getMetadata());
                 try {
                     Builder builder = new SegmentBuilder(segment, fields, item.getSegments(), item.getAllShow());
