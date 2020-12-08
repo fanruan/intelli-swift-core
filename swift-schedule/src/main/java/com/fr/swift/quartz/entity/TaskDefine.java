@@ -108,6 +108,11 @@ public class TaskDefine {
             return this;
         }
 
+        public Builder jobData(Map<?, ?> jobDataMap) {
+            task.setJobDataMap(jobDataMap);
+            return this;
+        }
+
         public Builder description(String description) {
             task.setDescription(description);
             return this;

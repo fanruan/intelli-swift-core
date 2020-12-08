@@ -8,6 +8,9 @@ import com.fr.swift.cluster.base.node.ClusterNode;
  * @author Kuifang.Liu
  */
 public interface ClusterRegistryService {
+
+    void competeAndInit();
+
     boolean competeMaster();
 
     void registerNode(ClusterNode node);

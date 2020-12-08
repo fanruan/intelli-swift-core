@@ -3,7 +3,6 @@ package com.fr.swift.segment;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -36,11 +35,12 @@ public class SegmentUtils {
         return SwiftContext.get().getBean("backupSegment", Segment.class, location, metaData);
     }
 
+    // TODO: 2020/11/3 需要在此获得yearmouth路径
     public static Segment newSegment(SegmentKey segKey) {
-        return newSegment(segKey, CubeUtil.getCurrentDir(segKey.getTable()));
+        return newSegment(segKey, segKey.getSegmentUri());
     }
 
-    public static Segment newSegment(SegmentKey segmentKey, int tmpPath) {
+    public static Segment newSegment(SegmentKey segmentKey, String tmpPath) {
         Assert.notNull(segmentKey);
 
         String cubePath;
@@ -100,8 +100,7 @@ public class SegmentUtils {
     }
 
     private static void clearHistorySegment(SegmentKey segKey) {
-        int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-        FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).build());
+        FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(segKey.getSegmentUri()).build());
     }
 
     public static void indexSegmentIfNeed(List<Segment> segs) throws Exception {

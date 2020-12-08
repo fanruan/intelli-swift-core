@@ -1,6 +1,7 @@
 package com.fr.swift.source.alloter.impl.hash.function;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.swift.source.alloter.impl.hash.HashIndexRange;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
  * @description 默认12个月hash, 特殊数据表+二次hash
  * @since
  */
-public class DateAppIdHashFunction implements HashFunction {
+public class DateAppIdHashFunction extends BaseHashFunction {
 
     @JsonProperty("partitions")
     private int partitions;
@@ -50,5 +51,34 @@ public class DateAppIdHashFunction implements HashFunction {
     @Override
     public HashType getType() {
         return HashType.APPID_YEARMONTH;
+    }
+
+    @Override
+    public String getCubePath(int logicOrder) {
+        return String.valueOf(logicOrder / 100);
+    }
+
+    public static class DateAppIdHashRange implements HashIndexRange {
+
+        private Integer hashValue;
+
+        public DateAppIdHashRange() {
+        }
+
+        @Override
+        public DateAppIdHashRange ofKey(Object hashValue) {
+            this.hashValue = Integer.parseInt(String.valueOf(hashValue));
+            return this;
+        }
+
+        @Override
+        public Integer getBegin() {
+            return hashValue * 100;
+        }
+
+        @Override
+        public Integer getEnd() {
+            return (hashValue + 1) * 100;
+        }
     }
 }

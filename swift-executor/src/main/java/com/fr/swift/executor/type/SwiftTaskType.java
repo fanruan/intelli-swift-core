@@ -22,17 +22,20 @@ public enum SwiftTaskType implements ExecutorTaskType {
     UPLOAD,
     DOWNLOAD,
     HISTORY,
-    QUERY;
-
+    QUERY,
+    MIGRATE,
+    MIGRATE_SCHEDULE,
+    MIGRATE_TRIGGER,
+    PLANNING; // 通知各个节点建立定时, 用于合并迁移、抽数
 
     public static List<SwiftTaskType> getAllTypeList() {
-        List<SwiftTaskType> typeList = new ArrayList<SwiftTaskType>();
+        List<SwiftTaskType> typeList = new ArrayList<>();
         Collections.addAll(typeList, SwiftTaskType.values());
         return typeList;
     }
 
     public static List<SwiftTaskType> getTypeList(SwiftTaskType... types) {
-        List<SwiftTaskType> typeList = new ArrayList<SwiftTaskType>();
+        List<SwiftTaskType> typeList = new ArrayList<>();
         Collections.addAll(typeList, types);
         return typeList;
     }

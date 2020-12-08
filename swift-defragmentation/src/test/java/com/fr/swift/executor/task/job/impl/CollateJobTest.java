@@ -2,6 +2,7 @@ package com.fr.swift.executor.task.job.impl;
 
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.factory.BeanFactory;
+import com.fr.swift.executor.task.bean.CollateBean;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.service.CollateService;
@@ -46,7 +47,7 @@ public class CollateJobTest {
         List segKeys = mock(List.class);
         SourceKey tableKey = mock(SourceKey.class);
         when(segmentService.getSegmentKeysByIds(tableKey, segmentIds)).thenReturn(segKeys);
-        CollateJob job = new CollateJob(tableKey, segmentIds);
+        CollateJob job = new CollateJob(CollateBean.of(tableKey, segmentIds));
         assertTrue(job.call().isEmpty());
         verify(collateService).appointCollate(tableKey, segKeys);
         verify(segmentService).getSegmentKeysByIds(tableKey, segmentIds);

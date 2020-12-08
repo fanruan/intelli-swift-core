@@ -31,6 +31,12 @@
       "semaphore": 1
     },
     {
+      "sourceKey": "TREASURE_RE_IMPORT",
+      "executorTaskType": "TREASURE_RE_IMPORT",
+      "lockKey": null,
+      "semaphore": 3
+    },
+    {
       "sourceKey": null,
       "executorTaskType": "REALTIME",
       "lockKey": null,
@@ -89,10 +95,23 @@
       "executorTaskType": "QUERY",
       "lockKey": null,
       "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "MIGRATE",
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": "PLANNING",
+      "lockKey": null,
+      "semaphore": 1
     }
   ],
   "stopTheWorldTaskTypes": [
     "COLLATE",
-    "DELETE"
+    "DELETE",
+    "MIGRATE"
   ]
 }
