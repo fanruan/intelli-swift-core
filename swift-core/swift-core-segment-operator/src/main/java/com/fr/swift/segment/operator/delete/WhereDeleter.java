@@ -14,5 +14,5 @@ import java.util.Map;
  * 按明细值删
  */
 public interface WhereDeleter extends Deleter {
-    Map<SegmentKey, ImmutableBitMap> delete(Where where) throws Exception;
+    boolean delete(Where where) throws Exception;
 }

@@ -37,6 +37,12 @@ public class QueryIndexBuilder extends BaseQueryBuilder {
         return builder.buildLocalQuery(info, segmentKey);
     }
 
+    public static List<SegmentKey> buildSegments(QueryBean bean) throws Exception {
+        QueryInfoBean infoBean = (QueryInfoBean) bean;
+        DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
+        return filterQuerySegKeys(info);
+    }
+
     public static Map<SegmentKey, IndexQuery<ImmutableBitMap>> buildQuery(QueryBean bean) throws Exception {
         QueryInfoBean infoBean = (QueryInfoBean) bean;
         DetailQueryInfo info = (DetailQueryInfo) QueryInfoParser.parse(infoBean);
