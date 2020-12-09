@@ -21,8 +21,12 @@ public class BlockTaskServiceImpl implements BlockTaskService {
     private final SwiftDao<SwiftBlockTaskEntity> dao = new SwiftDaoImpl<>(SwiftBlockTaskEntity.class);
 
     @Override
-    public void save(String blockIndex, String taskContent) throws SQLException {
-        dao.insert(new SwiftBlockTaskEntity(blockIndex, taskContent));
+    public void save(SwiftBlockTaskEntity blockTaskEntity) throws SQLException {
+        try {
+            dao.insert(blockTaskEntity);
+        } catch (Exception e) {
+            dao.update(blockTaskEntity);
+        }
     }
 
     @Override

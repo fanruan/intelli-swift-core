@@ -2,8 +2,6 @@ package com.fr.swift.executor.config;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -21,8 +19,7 @@ public class SwiftBlockTaskEntity implements Serializable {
     private static final long serialVersionUID = -7999955851694196509L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
 
     @Column(name = "blockingIndex")
     private String blockingIndex;
@@ -36,7 +33,8 @@ public class SwiftBlockTaskEntity implements Serializable {
     public SwiftBlockTaskEntity() {
     }
 
-    public SwiftBlockTaskEntity(String blockingIndex, String taskContent) {
+    public SwiftBlockTaskEntity(String id, String blockingIndex, String taskContent) {
+        this.id = id;
         this.blockingIndex = blockingIndex;
         this.taskContent = taskContent;
         this.createTime = System.currentTimeMillis();
