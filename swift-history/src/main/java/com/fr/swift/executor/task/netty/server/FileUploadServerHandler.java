@@ -35,6 +35,7 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
                     randomAccessFile.seek(start);
                     randomAccessFile.write(bytes);
                     randomAccessFile.close();
+                    SwiftLoggers.getLogger().info("migration server receive file: {} mb", byteRead / 100000);
                 }
                 start = start + byteRead;
                 //                ctx.writeAndFlush(new ACKPacket(start,!this.isNext)); 

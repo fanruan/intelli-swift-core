@@ -70,6 +70,9 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 } catch (Exception e) {
                     isFileClose = true;
                 }
+                if (remainLength == 0L) {
+                    isFileClose = true;
+                }
                 if (!isFileClose) {
                     int lastlength = lastLength;
                     if (remainLength < lastlength) {
@@ -97,7 +100,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 } else {
                     ctx.close();
                     MigrateJob.countDown();
-                    SwiftLoggers.getLogger().info("file migration finished: " + byteRead);
+                    SwiftLoggers.getLogger().info("file migration finished: {} mb", byteRead / 100000);
                 }
             }
         }
