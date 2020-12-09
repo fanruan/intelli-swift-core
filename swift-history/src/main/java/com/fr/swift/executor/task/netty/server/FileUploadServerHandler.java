@@ -13,6 +13,7 @@ import java.io.RandomAccessFile;
  * * @date 2020/11/26
  */
 public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
+    public static final int LENGTH = 100000;
     private int byteRead;
     private volatile Long start = 0L;
     private RandomAccessFile randomAccessFile;
@@ -35,7 +36,7 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
                     randomAccessFile.seek(start);
                     randomAccessFile.write(bytes);
                     randomAccessFile.close();
-                    SwiftLoggers.getLogger().info("migration server receive file: {} mb", byteRead / 100000);
+                    SwiftLoggers.getLogger().info("migration server receive file: {} mb", byteRead / LENGTH);
                 }
                 start = start + byteRead;
                 //                ctx.writeAndFlush(new ACKPacket(start,!this.isNext)); 

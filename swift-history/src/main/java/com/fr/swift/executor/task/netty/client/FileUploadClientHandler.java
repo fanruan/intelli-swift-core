@@ -17,6 +17,7 @@ import java.io.RandomAccessFile;
 @ChannelHandler.Sharable
 public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
 
+    public static final int LENGTH = 100000;
     private int byteRead;
     private volatile Long start = 0l;   //使用Long 当传输的文件大于2G时，Integer类型会不够表达文件的长度
     private volatile int lastLength = 0;
@@ -100,7 +101,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 } else {
                     ctx.close();
                     MigrateJob.countDown();
-                    SwiftLoggers.getLogger().info("file migration finished: {} mb", byteRead / 100000);
+                    SwiftLoggers.getLogger().info("file migration finished: {} mb", byteRead / LENGTH);
                 }
             }
         }
