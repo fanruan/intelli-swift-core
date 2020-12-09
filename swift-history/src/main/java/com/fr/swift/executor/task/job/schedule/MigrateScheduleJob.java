@@ -5,6 +5,7 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.entity.SwiftNodeInfo;
 import com.fr.swift.config.service.SwiftNodeInfoService;
 import com.fr.swift.db.MigrateType;
+import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.TaskRouter;
 import com.fr.swift.executor.task.bean.MigrateBean;
@@ -109,6 +110,7 @@ public class MigrateScheduleJob implements ScheduleJob {
                 .withWaitStrategy(WaitStrategies.fixedWait(5, TimeUnit.MINUTES)) //H.J TODO : 2020/12/3 时间待确定
                 .build();
         retryer.call(() -> {
+            SwiftLoggers.getLogger().info("start to check and move index {} related tasks first", migrateIndex);
             int position = 0;
             boolean hasConflict = false;
             for (ExecutorTask executorTask : TaskRouter.getInstance().getTaskView(true).getValue()) {
@@ -116,6 +118,9 @@ public class MigrateScheduleJob implements ScheduleJob {
                     TaskRouter.getInstance().moveTask(executorTask, position++);
                     hasConflict = true;
                 }
+            }
+            if (!hasConflict) {
+                hasConflict = ConsumeQueue.getInstance().getTaskList().stream().map(ExecutorTask::getTaskContent).anyMatch(k -> k.contains(migrateIndex));
             }
             return hasConflict;
         });
