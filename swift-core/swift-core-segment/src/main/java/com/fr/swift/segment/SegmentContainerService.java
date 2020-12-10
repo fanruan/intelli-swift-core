@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * @author lucifer
@@ -27,6 +28,14 @@ public class SegmentContainerService implements SegmentService {
     public void addSegment(SegmentKey segmentKey) {
         SegmentContainer.LOCAL.addSegment(segmentKey);
         addElementByKeys(segmentKey == null ? Collections.EMPTY_LIST : Collections.singletonList(segmentKey));
+    }
+
+    @Override
+    public SegmentKey transferSegment(SegmentKey oldSeg, SegmentKey newSeg) {
+        SegmentKey transferedSeg = SegmentContainer.LOCAL.transferSegment(oldSeg, newSeg);
+        addElementByKeys(newSeg == null ? Collections.EMPTY_LIST : Collections.singletonList(newSeg));
+        deleteElementByKeys(oldSeg == null ? Collections.EMPTY_LIST : Collections.singletonList(oldSeg));
+        return transferedSeg;
     }
 
     @Override
@@ -92,6 +101,16 @@ public class SegmentContainerService implements SegmentService {
     @Override
     public SwiftSegmentBucket getBucketByTable(SourceKey sourceKey) {
         return SegmentContainer.LOCAL.getBucketByTable(sourceKey);
+    }
+
+    @Override
+    public <S extends SegmentIndex> SegmentIndex computeSegIndexIfAbsent(SourceKey sourceKey, Function<SourceKey, S> function) {
+        return SegmentContainer.LOCAL.computeSegIndexIfAbsent(sourceKey, function);
+    }
+
+    @Override
+    public void addSegmentIndex(SourceKey sourceKey, SegmentIndex segmentIndex) {
+        SegmentContainer.LOCAL.addSegmentIndex(sourceKey, segmentIndex);
     }
 
     private void addElementByKeys(Collection<SegmentKey> keys) {

@@ -9,9 +9,11 @@ import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.db.impl.SwiftDatabase;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.lock.SegLocks;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.delete.WhereDeleter;
 import com.fr.swift.source.SourceKey;
 
@@ -92,6 +94,7 @@ public class Decrementer implements WhereDeleter {
                     swiftSegmentLocationService.deleteOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(whereSegmentKey));
                     segmentService.removeSegment(whereSegmentKey);
                     SegmentUtils.clearSegment(whereSegmentKey);
+                    SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.REMOVE_SEG, whereSegmentKey);
                     SwiftLoggers.getLogger().info("{} is empty! delete success!", whereSegmentKey);
                 }
                 if (seg.isHistory()) {
