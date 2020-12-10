@@ -7,6 +7,7 @@ import com.fr.swift.source.SourceKey;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * @author lucifer
@@ -18,6 +19,15 @@ import java.util.Set;
 public interface SegmentService {
 
     void addSegment(SegmentKey segmentKey);
+
+    /**
+     * 旧块转移至新块，如memio->fineio等
+     *
+     * @param oldSeg
+     * @param newSeg
+     * @return 被转移的块
+     */
+    SegmentKey transferSegment(SegmentKey oldSeg, SegmentKey newSeg);
 
     /**
      * mutableImport、slimImport、collate、historyBLock
@@ -47,6 +57,10 @@ public interface SegmentService {
     List<SegmentKey> removeSegments(List<SegmentKey> segmentKeys);
 
     SwiftSegmentBucket getBucketByTable(SourceKey sourceKey);
+
+    <S extends SegmentIndex> SegmentIndex computeSegIndexIfAbsent(SourceKey sourceKey, Function<SourceKey, S> function);
+
+    void addSegmentIndex(SourceKey sourceKey, SegmentIndex segmentIndex);
 
     void flushCache();
 }

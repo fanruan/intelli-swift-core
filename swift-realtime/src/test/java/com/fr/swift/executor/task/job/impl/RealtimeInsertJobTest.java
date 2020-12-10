@@ -10,8 +10,8 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -37,11 +37,11 @@ public class RealtimeInsertJobTest {
         SwiftResultSet resultSet = mock(SwiftResultSet.class);
         RealtimeInsertJob job = new RealtimeInsertJob(tableKey, resultSet);
 
-        assertTrue(job.call());
+        assertNotNull(job.call());
         verify(realtimeService).insert(tableKey, resultSet);
 
         doThrow(new Exception()).when(realtimeService).insert(tableKey, resultSet);
 
-        assertFalse(job.call());
+        assertNull(job.call());
     }
 }

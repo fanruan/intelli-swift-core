@@ -14,6 +14,11 @@ class SwiftTable implements Table {
 
     private SwiftMetaData meta;
 
+    SwiftTable(String tableName, SwiftMetaData meta) {
+        this.key = new SourceKey(tableName);
+        this.meta = meta;
+    }
+
     SwiftTable(SourceKey key, SwiftMetaData meta) {
         this.key = key;
         this.meta = meta;
