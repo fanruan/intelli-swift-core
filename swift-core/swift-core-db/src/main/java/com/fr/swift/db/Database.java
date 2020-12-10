@@ -74,5 +74,7 @@ public interface Database {
      */
     Table getTable(SourceKey tableKey);
 
+    List<Table> getTablesBySchema(SwiftDatabase schema);
+
     List<Table> getAllTables();
 }

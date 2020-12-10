@@ -4,6 +4,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.Segment;
@@ -11,6 +12,7 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.SegmentSource;
 import com.fr.swift.segment.SegmentUtils;
+import com.fr.swift.segment.event.SyncSegmentLocationEvent;
 import com.fr.swift.segment.operator.collate.segment.SegmentBuilder;
 
 import java.util.Arrays;
@@ -66,13 +68,12 @@ public class SegmentTransfer {
     private void onSucceed(long start, Segment histSeg) {
         SEG_LOCATION_SVC.saveOnNode(SwiftProperty.get().getMachineId(), Collections.singleton(histSegKey));
         SWIFT_SEG_SVC.update(histSegKey);
-        SEG_SVC.addSegment(histSegKey);
-        SEG_SVC.removeSegment(realtSegKey);
+        SEG_SVC.transferSegment(realtSegKey, histSegKey);
         remove(realtSegKey);
         SwiftLoggers.getLogger().info("seg transferred from {} to {} cost {}ms with {} rows data"
                 , realtSegKey, histSegKey, System.currentTimeMillis() - start, histSeg.getRowCount());
-//        SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.REMOVE_SEG, Collections.singletonList(realtSegKey));
-//        SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(histSegKey));
+        SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.REMOVE_SEG, Collections.singletonList(realtSegKey));
+        SwiftEventDispatcher.syncFire(SyncSegmentLocationEvent.PUSH_SEG, Collections.singletonList(histSegKey));
 //        SwiftEventDispatcher.syncFire(SegmentEvent.UPLOAD_HISTORY, histSegKey);
     }
 
