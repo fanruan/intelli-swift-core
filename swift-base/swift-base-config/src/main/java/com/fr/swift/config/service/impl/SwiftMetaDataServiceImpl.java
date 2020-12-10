@@ -5,9 +5,11 @@ import com.fr.swift.config.dao.SwiftDao;
 import com.fr.swift.config.dao.SwiftDaoImpl;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.config.service.SwiftMetaDataService;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,6 +34,16 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     public List<SwiftMetaData> getAllMetas() {
         final List<SwiftMetaData> selectAll = (List<SwiftMetaData>) dao.selectAll();
         return selectAll;
+    }
+
+    @Override
+    public List<SwiftMetaData> getMetasBySchema(SwiftDatabase schema) {
+        final List<?> metas = dao.selectQuery((query, builder, from) ->
+                query.select(from).where(builder.equal(from.get("swiftDatabase"), schema)));
+        if (metas.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        return (List<SwiftMetaData>) metas;
     }
 
     @Override
