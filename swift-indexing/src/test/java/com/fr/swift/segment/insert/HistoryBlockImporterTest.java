@@ -57,14 +57,14 @@ public class HistoryBlockImporterTest {
         SegmentKey segKey = mock(SegmentKey.class, Mockito.RETURNS_DEEP_STUBS);
 
         mockStatic(CubeUtil.class);
-        when(CubeUtil.getCurrentDir(segKey.getTable())).thenReturn(1);
+        when(segKey.getSegmentUri()).thenReturn("1");
 
         CubePathBuilder cubePathBuilder = mock(CubePathBuilder.class, Mockito.RETURNS_DEEP_STUBS);
         whenNew(CubePathBuilder.class).withArguments(segKey).thenReturn(cubePathBuilder);
 
         ResourceLocation location = mock(ResourceLocation.class);
         whenNew(ResourceLocation.class).withArguments(
-                cubePathBuilder.setTempDir(CubeUtil.getCurrentDir(segKey.getTable())).build(),
+                cubePathBuilder.setTempDir(segKey.getSegmentUri()).build(),
                 segKey.getStoreType()).thenReturn(location);
 
         DataSource dataSource = mock(DataSource.class, Mockito.RETURNS_DEEP_STUBS);

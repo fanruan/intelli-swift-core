@@ -1,10 +1,13 @@
 package com.fr.swift.config.service.impl;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.dao.SwiftDao;
 import com.fr.swift.config.dao.SwiftDaoImpl;
 import com.fr.swift.config.entity.SwiftSegmentLocationEntity;
+import com.fr.swift.config.service.SwiftCubePathService;
 import com.fr.swift.config.service.SwiftSegmentLocationService;
+import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author yee
@@ -27,6 +31,8 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
     private static final String TABLE_KEY = "sourceKey";
 
     private SwiftDao<SwiftSegmentLocationEntity> dao = new SwiftDaoImpl<>(SwiftSegmentLocationEntity.class);
+
+    private final String CUBE_PATH = SwiftContext.get().getBean(SwiftCubePathService.class).getSwiftPath();
 
     @Override
     public void saveOnNode(String nodeId, Collection<SegmentKey> segKeys) {
@@ -60,6 +66,13 @@ public class SwiftSegmentLocationServiceImpl implements SwiftSegmentLocationServ
                         .where(builder.equal(from.get(ID).get(CLUSTER_ID), nodeId), builder.equal(from.get(ID).get(SEGMENT_ID), segKey.getId()))
         );
         return !select.isEmpty();
+    }
+
+    @Override
+    public void updateBelongs(String newNodeId, Collection<SegmentKey> segKeys) {
+        deleteOnNode(SwiftProperty.get().getMachineId(), segKeys);
+        dao.insert(segKeys.stream().map(segKey -> new SwiftSegmentLocationEntity(newNodeId, segKey.getId(),
+                segKey.getTable().getId())).collect(Collectors.toList()));
     }
 
     @Override

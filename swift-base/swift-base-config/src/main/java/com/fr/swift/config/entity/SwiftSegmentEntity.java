@@ -22,6 +22,7 @@ import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_ROWS
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_ORDER;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_OWNER;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_SOURCE;
+import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SEGMENT_URI;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_STORE_TYPE;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.COLUMN_SWIFT_SCHEMA;
 import static com.fr.swift.config.SwiftConfigConstants.SegmentConfig.CREATE_TIME;
@@ -49,6 +50,10 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @JsonProperty(COLUMN_SEGMENT_ORDER)
     @Column(name = COLUMN_SEGMENT_ORDER)
     private int segmentOrder;
+
+    @JsonProperty(COLUMN_SEGMENT_URI)
+    @Column(name = COLUMN_SEGMENT_URI)
+    private String segmentUri;
 
     @JsonProperty(COLUMN_STORE_TYPE)
     @Column(name = COLUMN_STORE_TYPE)
@@ -81,19 +86,24 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     }
 
     public SwiftSegmentEntity(SegmentKey segKey) {
-        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema());
+        this(segKey.getTable(), segKey.getOrder(), segKey.getStoreType(), segKey.getSwiftSchema(), segKey.segmentSource(), segKey.getSegmentUri());
     }
 
     public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema) {
-        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED);
+        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED, "0");
     }
 
-    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, SegmentSource segmentSource) {
-        this.id = getId(segmentOwner, segmentOrder, storeType);
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, String segmentUri) {
+        this(segmentOwner, segmentOrder, storeType, swiftSchema, SegmentSource.CREATED, segmentUri);
+    }
+
+    public SwiftSegmentEntity(SourceKey segmentOwner, int segmentOrder, StoreType storeType, SwiftDatabase swiftSchema, SegmentSource segmentSource, String segmentUri) {
+        id = getId(segmentOwner, segmentOrder, storeType);
         this.segmentOwner = segmentOwner.getId();
         this.segmentOrder = segmentOrder;
         this.storeType = storeType;
         this.swiftSchema = swiftSchema;
+        this.segmentUri = segmentUri;
         this.createTime = new Date();
         this.segmentSource = segmentSource;
     }
@@ -130,6 +140,11 @@ public class SwiftSegmentEntity implements Serializable, SegmentKey {
     @Override
     public Integer getOrder() {
         return segmentOrder;
+    }
+
+    @Override
+    public String getSegmentUri() {
+        return segmentUri;
     }
 
     @Override

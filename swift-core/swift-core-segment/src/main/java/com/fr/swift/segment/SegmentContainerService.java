@@ -113,6 +113,11 @@ public class SegmentContainerService implements SegmentService {
         SegmentContainer.LOCAL.addSegmentIndex(sourceKey, segmentIndex);
     }
 
+    @Override
+    public void flushCache() {
+        SegmentContainer.LOCAL.flushCache();
+    }
+
     private void addElementByKeys(Collection<SegmentKey> keys) {
         List<SwiftSegmentBucketElement> elements = swiftSegmentService.getBucketElementsByKeys(keys);
         for (SwiftSegmentBucketElement element : elements) {

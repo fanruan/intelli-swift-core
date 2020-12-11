@@ -13,19 +13,29 @@ public class SwiftClusterNodeImpl implements ClusterNode {
     private String ip;
     private int port;
 
-    public SwiftClusterNodeImpl(String nodeId, String nodeAddress) {
+    SwiftClusterNodeImpl(String nodeId, String nodeAddress, boolean isMaster) {
         this.address = nodeAddress;
         this.nodeId = nodeId;
-        this.isMaster = false;
+        this.isMaster = isMaster;
         String[] addressArr = address.split(":");
         this.ip = addressArr[0];
         this.port = Integer.parseInt(addressArr[1]);
     }
 
+    public static ClusterNode ofMaster(String nodeId, String nodeAddress) {
+        return new SwiftClusterNodeImpl(nodeId, nodeAddress, true);
+    }
+
+    public static ClusterNode ofSlave(String nodeId, String nodeAddress) {
+        return new SwiftClusterNodeImpl(nodeId, nodeAddress, false);
+    }
+
+    @Override
     public String getIp() {
         return ip;
     }
 
+    @Override
     public int getPort() {
         return port;
     }

@@ -77,6 +77,14 @@ public final class Strings {
         return null == string || EMPTY.equals(string.trim());
     }
 
+    public static boolean isAllEmpty(String... strings) {
+        return Arrays.stream(strings).map(Strings::isEmpty).reduce(true, (a, b) -> a && b);
+    }
+
+    public static boolean hasAnyEmpty(String... strings) {
+        return Arrays.stream(strings).map(Strings::isEmpty).reduce(false, (a, b) -> a || b);
+    }
+
     public static boolean isNotEmpty(String string) {
         return !isEmpty(string);
     }

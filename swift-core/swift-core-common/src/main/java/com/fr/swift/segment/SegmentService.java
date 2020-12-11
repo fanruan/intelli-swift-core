@@ -61,4 +61,6 @@ public interface SegmentService {
     <S extends SegmentIndex> SegmentIndex computeSegIndexIfAbsent(SourceKey sourceKey, Function<SourceKey, S> function);
 
     void addSegmentIndex(SourceKey sourceKey, SegmentIndex segmentIndex);
+
+    void flushCache();
 }
