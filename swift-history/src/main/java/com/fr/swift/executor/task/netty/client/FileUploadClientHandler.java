@@ -70,6 +70,9 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 } catch (Exception e) {
                     isFileClose = true;
                 }
+                if (remainLength == 0L) {
+                    isFileClose = true;
+                }
                 if (!isFileClose) {
                     int lastlength = lastLength;
                     if (remainLength < lastlength) {
