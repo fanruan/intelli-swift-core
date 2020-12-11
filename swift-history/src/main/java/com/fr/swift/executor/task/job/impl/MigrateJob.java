@@ -25,7 +25,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
-    private static CountDownLatch countDownLatch = new CountDownLatch(1);
+    private static CountDownLatch countDownLatch;
 
     private SwiftNodeInfoService nodeInfoService = SwiftContext.get().getBean(SwiftNodeInfoService.class);
 
@@ -114,6 +114,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
     private static boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
         if (fileUploadClient.connect(ip, port, filePacket)) {
             if (fileUploadClient.writeAndFlush(filePacket)) {
+                countDownLatch = new CountDownLatch(1);
                 countDownLatch.await();
                 fileUploadClient.closeFuture();
                 return true;
