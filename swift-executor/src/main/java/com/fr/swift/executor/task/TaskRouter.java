@@ -133,7 +133,7 @@ public class TaskRouter {
             List<ExecutorTask> taskList = ConsumeQueue.getInstance().getTaskList();
             return !taskConflict.isConflict(task, taskList);
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e.toString());
+            SwiftLoggers.getLogger().error(e);
         }
         return false;
 
