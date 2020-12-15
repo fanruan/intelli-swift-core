@@ -12,17 +12,17 @@ import org.quartz.SchedulerException;
  * @description
  * @since swift 1.1
  */
-public interface QuartzJobService {
+public interface QuartzJobService extends LifeCycle {
 
-    public void scheduleJob(TaskDefine define) throws SchedulerException;
+    void scheduleJob(TaskDefine define) throws SchedulerException;
 
-    public void pauseJob(JobKey jobKey) throws SchedulerException;
+    void pauseJob(JobKey jobKey) throws SchedulerException;
 
-    public void resumeJob(JobKey jobKey) throws SchedulerException;
+    void resumeJob(JobKey jobKey) throws SchedulerException;
 
-    public boolean deleteJob(JobKey jobKey) throws SchedulerException;
+    boolean deleteJob(JobKey jobKey) throws SchedulerException;
 
-    public boolean modifyJobCron(TaskDefine define);
+    boolean modifyJobCron(TaskDefine define);
 
-    public JobDetail getJobDetail(JobKey jobKey, Class<? extends Job> jobClass);
+    JobDetail getJobDetail(JobKey jobKey, Class<? extends Job> jobClass);
 }

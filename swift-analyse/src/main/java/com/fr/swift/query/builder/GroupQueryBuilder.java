@@ -112,7 +112,7 @@ public class GroupQueryBuilder extends BaseQueryBuilder {
      */
     public Query<QueryResultSet<GroupPage>> buildQuery(GroupQueryInfoBean bean) throws SwiftMetaDataException {
         GroupQueryInfo info = (GroupQueryInfo) QueryInfoParser.parse(bean);
-        List<Query<QueryResultSet<GroupPage>>> queries = new ArrayList<Query<QueryResultSet<GroupPage>>>();
+        List<Query<QueryResultSet<GroupPage>>> queries = new ArrayList<>();
         List<Metric> metrics = info.getMetrics();
         List<Dimension> dimensions = info.getDimensions();
         boolean pagingQuery = isPagingQuery(info);

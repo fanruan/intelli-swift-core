@@ -4,15 +4,15 @@ import com.fr.swift.config.dao.SwiftDao;
 import com.fr.swift.config.dao.SwiftDaoImpl;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.type.DBStatusType;
+import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.property.SwiftProperty;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import com.fr.swift.util.Optional;
 
+import javax.persistence.criteria.Predicate;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +25,8 @@ import java.util.Set;
 class ExecutorTaskConvertService implements ExecutorTaskService {
 
     private SwiftDao dao = new SwiftDaoImpl(SwiftExecutorTaskEntity.class);
+    private SwiftDao balanceDao = new SwiftDaoImpl(TaskBalanceEntity.class);
+
 
     @Override
     public void save(ExecutorTask executorTask) throws SQLException {
@@ -43,10 +45,29 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
 
     @Override
     public List<ExecutorTask> getActiveTasksBeforeTime(long time) {
-        final List<SwiftExecutorTaskEntity> entities = dao.select(criteria -> criteria.add(Restrictions.eq("dbStatusType", DBStatusType.ACTIVE))
-                .add(Restrictions.eq("clusterId", SwiftProperty.get().getMachineId()))
-                .add(Restrictions.gt("createTime", time))
-                .add(Restrictions.in("executorTaskType", Arrays.asList(SwiftProperty.get().getExecutorTaskType()))));
+        final List<SwiftExecutorTaskEntity> entities = dao.selectQuery((query, builder, from) ->
+                query.select(from)
+                        .where(builder.equal(from.get("dbStatusType"), DBStatusType.ACTIVE)
+                                , builder.equal(from.get("clusterId"), SwiftProperty.get().getMachineId())
+                                , builder.gt(from.get("createTime"), time)
+                                , from.get("executorTaskType").in(Arrays.asList(SwiftProperty.get().getExecutorTaskType()))));
+
+        List<ExecutorTask> tasks = new ArrayList<>();
+        for (SwiftExecutorTaskEntity entity : entities) {
+            tasks.add(entity.convert());
+        }
+        return tasks;
+    }
+
+    @Override
+    public List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time) {
+        final List<SwiftExecutorTaskEntity> entities = dao.selectQuery((query, builder, from) ->
+                query.select(from)
+                        .where(builder.equal(from.get("dbStatusType"), DBStatusType.ACTIVE)
+                                , builder.equal(from.get("clusterId"), SwiftProperty.get().getMachineId())
+                                , builder.gt(from.get("createTime"), time)
+                                , from.get("executorTaskType").in(SwiftTaskType.DELETE.name())));
+
         List<ExecutorTask> tasks = new ArrayList<>();
         for (SwiftExecutorTaskEntity entity : entities) {
             tasks.add(entity.convert());
@@ -56,27 +77,73 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
 
     @Override
     public List<Object[]> getActiveTasksGroupByCluster(long time) {
-        ProjectionList projections = Projections.projectionList().add(Projections.groupProperty("clusterId"))
-                .add(Projections.groupProperty("executorTaskType"))
-                .add(Projections.rowCount());
-        List<Object[]> select = dao.select(criteria -> criteria.setProjection(projections)
-                .add(Restrictions.eq("dbStatusType", DBStatusType.ACTIVE))
-                .add(Restrictions.gt("createTime", time))
-                .add(Restrictions.in("executorTaskType", Arrays.asList(SwiftProperty.get().getExecutorTaskType()))));
+        String hql = "select s.clusterId,s.executorTaskType,count(*) from SwiftExecutorTaskEntity s " +
+                "where s.dbStatusType =:dbStatusType and s.createTime >:createTime and s.executorTaskType in (:executorTaskType) group by s.clusterId,s.executorTaskType";
+        List<Object[]> select = dao.select(hql, query -> {
+            query.setParameter("dbStatusType", DBStatusType.ACTIVE);
+            query.setParameter("createTime", time);
+            query.setParameter("executorTaskType", Arrays.asList(SwiftProperty.get().getExecutorTaskType()));
+        });
         return select;
     }
 
     @Override
     public List<Object[]> getMaxtimeByContent(String... likes) {
-        ProjectionList projections = Projections.projectionList().add(Projections.groupProperty("dbStatusType"))
-                .add(Projections.max("createTime"));
-        List<Object[]> select = dao.select(criteria -> {
-            criteria.setProjection(projections);
-            for (String like : likes) {
-                criteria.add(Restrictions.like("taskContent", like, MatchMode.ANYWHERE));
+        StringBuffer hql = new StringBuffer("select s.dbStatusType,max(s.createTime) from SwiftExecutorTaskEntity s ");
+        StringBuffer likeHql = new StringBuffer();
+        if (likes.length > 0) {
+            for (int i = 0; i < likes.length; i++) {
+                if (i == 0) {
+                    likeHql.append(" where ");
+                } else {
+                    likeHql.append(" and ");
+                }
+                likeHql.append(" s.taskContent like :like").append(i);
+            }
+        }
+        hql.append(likeHql).append(" group by s.dbStatusType");
+        final List<Object[]> select = dao.select(hql.toString(), query -> {
+            for (int i = 0; i < likes.length; i++) {
+                query.setParameter("like" + i, "%" + likes[i] + "%");
             }
         });
         return select;
+    }
+
+    @Override
+    public SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes) {
+        final List<SwiftExecutorTaskEntity> tasks = dao.selectQuery((query, builder, from) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            for (String v : likes) {
+                Predicate taskContent = builder.like(from.get("taskContent"), "%" + v + "%");
+                predicateList.add(taskContent);
+            }
+            predicateList.add(builder.equal(from.get("createTime"), createTime));
+            query.select(from).where(predicateList.toArray(new Predicate[]{}));
+        });
+        if (tasks.isEmpty()) {
+            return null;
+        }
+        return tasks.get(0);
+    }
+
+    @Override
+    public List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes) {
+        final List<SwiftExecutorTaskEntity> tasks = dao.selectQuery((query, builder, from) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            for (String v : likes) {
+                Predicate taskContent = builder.like(from.get("taskContent"), "%" + v + "%");
+                predicateList.add(taskContent);
+            }
+            predicateList.add(builder.gt(from.get("createTime"), beginTime));
+            predicateList.add(builder.lt(from.get("createTime"), endTime));
+            predicateList.add(builder.equal(from.get("dbStatusType"), DBStatusType.REPEAT));
+            query.select(from).where(predicateList.toArray(new Predicate[]{}));
+        });
+        if (tasks.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return tasks;
     }
 
     @Override
@@ -86,12 +153,20 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
 
     @Override
     public ExecutorTask get(String taskId) {
-        final List<SwiftExecutorTaskEntity> tasks = dao.select(criteria -> criteria.add(Restrictions.eq("id", taskId))
-                .add(Restrictions.eq("clusterId", SwiftProperty.get().getMachineId())));
+        final List<SwiftExecutorTaskEntity> tasks = dao.selectQuery((query, builder, from) ->
+                query.select(from)
+                        .where(builder.equal(from.get("id"), taskId)
+                                , builder.equal(from.get("clusterId"), SwiftProperty.get().getMachineId())));
         if (tasks.isEmpty()) {
             return null;
 
         }
         return tasks.get(0).convert();
+    }
+
+    @Override
+    public List<TaskBalanceEntity> getTaskBalances() {
+        final List<TaskBalanceEntity> taskBalances = balanceDao.selectQuery((query, builder, from) -> query.select(from));
+        return Optional.ofNullable(taskBalances).orElse(Collections.EMPTY_LIST);
     }
 }

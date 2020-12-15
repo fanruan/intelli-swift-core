@@ -1,6 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.SwiftContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.Types.DataType;
@@ -13,7 +12,6 @@ import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DoubleColumn;
 import com.fr.swift.segment.column.impl.IntColumn;

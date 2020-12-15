@@ -3,6 +3,7 @@ package com.fr.swift.query.info.bean.query;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.swift.query.info.bean.element.AggregationBean;
 import com.fr.swift.query.info.bean.element.DimensionBean;
+import com.fr.swift.query.info.bean.element.LimitBean;
 import com.fr.swift.query.info.bean.element.filter.FilterInfoBean;
 import com.fr.swift.query.info.bean.post.PostQueryInfoBean;
 import com.fr.swift.query.query.QueryType;
@@ -68,6 +69,11 @@ public class GroupQueryInfoBean extends AbstractSingleTableQueryInfoBean impleme
 
         public Builder setFilter(FilterInfoBean filter) {
             bean.setFilter(filter);
+            return this;
+        }
+
+        public Builder setLimit(LimitBean limit) {
+            bean.setLimit(limit);
             return this;
         }
 

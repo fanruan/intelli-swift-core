@@ -26,27 +26,45 @@ import org.quartz.impl.StdSchedulerFactory;
  * @since swift 1.1
  */
 @SwiftBean(name = "quartzJobService")
-public class QuartzJobServiceImpl implements QuartzJobService {
+public class QuartzJobServiceImpl extends AbstractLifeCycle implements QuartzJobService {
 
     private Scheduler scheduler;
 
-    public QuartzJobServiceImpl() {
-        SchedulerFactory schedulerFactory = null;
+
+    @Override
+    public void startup() throws LifeCycleException {
+        super.startup();
         try {
-            schedulerFactory = new StdSchedulerFactory(SchedulerProperty.get().getProperties());
+            SchedulerFactory schedulerFactory = new StdSchedulerFactory(SchedulerProperty.get().getProperties());
             scheduler = schedulerFactory.getScheduler();
             scheduler.start();
         } catch (SchedulerException e) {
-            SwiftLoggers.getLogger().error(e.getMessage());
+            throw new LifeCycleException(e);
         }
     }
 
     @Override
-    public void scheduleJob(TaskDefine define) throws SchedulerException {
+    public void shutdown() throws LifeCycleException {
+        super.shutdown();
+        try {
+            scheduler.shutdown();
+        } catch (SchedulerException e) {
+            throw new LifeCycleException(e);
+        }
+    }
+
+    @Override
+    public synchronized void scheduleJob(TaskDefine define) throws SchedulerException {
         JobKey jobKey = define.getJobKey();
+        if (scheduler.getJobDetail(jobKey) != null) {
+            scheduler.deleteJob(jobKey);
+        }
         Class<? extends Job> jobClass = define.getJobClass();
         String cron = define.getCronExpression();
         JobDetail jobDetail = getJobDetail(jobKey, jobClass);
+        if (define.getJobDataMap() != null) {
+            define.getJobDataMap().forEach((k, v) -> jobDetail.getJobDataMap().put(String.valueOf(k), v));
+        }
         Trigger trigger = getTrigger(jobKey, cron);
         scheduler.scheduleJob(jobDetail, trigger);
     }

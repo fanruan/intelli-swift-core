@@ -30,6 +30,12 @@ import java.util.List;
  */
 public class SegmentUtils {
 
+    public static Segment newBackupSegment(SegmentKey segKey) {
+        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).asBackup().build(), Types.StoreType.NIO);
+        SwiftMetaData metaData = SwiftContext.get().getBean(SwiftMetaDataService.class).getMeta(segKey.getTable());
+        return SwiftContext.get().getBean("backupSegment", Segment.class, location, metaData);
+    }
+
     public static Segment newSegment(SegmentKey segKey) {
         return newSegment(segKey, CubeUtil.getCurrentDir(segKey.getTable()));
     }

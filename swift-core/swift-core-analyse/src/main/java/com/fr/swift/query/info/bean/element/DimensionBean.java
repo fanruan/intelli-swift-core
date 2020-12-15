@@ -5,7 +5,6 @@ import com.fr.swift.query.info.bean.type.DimensionType;
 
 
 /**
- *
  * @author Lyon
  * @date 2018/6/2
  */
@@ -102,5 +101,53 @@ public class DimensionBean {
 
     public void setFormula(FormulaBean formula) {
         this.formula = formula;
+    }
+
+//    public static List<DimensionBean> ofDeatailList(List<Pair<String, String>> pairs) {
+//        return pairs.stream().map(pair -> ofDetail(pair.getKey(), pair.getValue())).collect(Collectors.toList());
+//    }
+
+    public static DimensionBean ofGroup(String column) {
+        return new Builder().setType(DimensionType.GROUP).setColumn(column).build();
+    }
+
+    public static DimensionBean ofGroup(String column, String alias) {
+        return new Builder().setType(DimensionType.GROUP).setColumn(column).setAlias(alias).build();
+    }
+
+    public static DimensionBean ofDetail(String column) {
+        return new Builder().setType(DimensionType.DETAIL).setColumn(column).build();
+    }
+
+    public static DimensionBean ofDetail(String column, String alias) {
+        return new Builder().setType(DimensionType.DETAIL).setColumn(column).setAlias(alias).build();
+    }
+
+    public static class Builder {
+
+        private DimensionBean dimensionBean = new DimensionBean();
+
+        public Builder() {
+        }
+
+        public Builder setType(DimensionType type) {
+            dimensionBean.type = type;
+            return this;
+        }
+
+        public Builder setColumn(String column) {
+            dimensionBean.column = column;
+            return this;
+        }
+
+        public Builder setAlias(String alias) {
+            dimensionBean.alias = alias;
+            return this;
+        }
+
+        public DimensionBean build() {
+            return dimensionBean;
+        }
+
     }
 }

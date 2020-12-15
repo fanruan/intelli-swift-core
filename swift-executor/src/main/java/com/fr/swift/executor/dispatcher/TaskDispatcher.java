@@ -48,7 +48,7 @@ public class TaskDispatcher {
 
     private TaskDispatcher() {
         ExecutorManager.getInstance().pullDBTask();
-        EXECUTE_THREAD_NUM = Runtime.getRuntime().availableProcessors();
+        EXECUTE_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 2;
         threads = new Thread[EXECUTE_THREAD_NUM];
         for (int i = 0; i < threads.length; i++) {
             String threadName = "TaskExecuteRunnable [" + i + "]";
@@ -59,6 +59,16 @@ public class TaskDispatcher {
         }
         dispachTthread = SwiftExecutors.newThread(new DispatchRunnable());
         dispachTthread.start();
+    }
+
+    public void stop() throws InterruptedException {
+        dispachTthread.interrupt();
+        while (!ConsumeQueue.getInstance().getTaskList().isEmpty()) {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(10));
+        }
+        for (Thread thread : threads) {
+            thread.interrupt();
+        }
     }
 
     private class DispatchRunnable implements Runnable {

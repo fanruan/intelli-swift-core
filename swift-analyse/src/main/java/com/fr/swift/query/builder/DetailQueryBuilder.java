@@ -10,6 +10,7 @@ import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
+import com.fr.swift.query.limit.Limit;
 import com.fr.swift.query.query.Query;
 import com.fr.swift.query.result.detail.DetailResultQuery;
 import com.fr.swift.query.segment.detail.DetailSegmentQuery;
@@ -55,7 +56,7 @@ class DetailQueryBuilder extends BaseQueryBuilder {
                 if (detailQueryInfo.getFilterInfo() != null) {
                     filterInfos.add(detailQueryInfo.getFilterInfo());
                 }
-                queries.add(getSegmentQuery(seg, columns, filterInfos));
+                queries.add(getSegmentQuery(seg, columns, filterInfos, detailQueryInfo.getLimit()));
             } catch (Exception ignore) {
                 SwiftLoggers.getLogger().error(ignore);
             }
@@ -72,11 +73,12 @@ class DetailQueryBuilder extends BaseQueryBuilder {
      * @param filterInfos filterInfos
      * @return segment query
      */
-    Query<DetailQueryResultSet> getSegmentQuery(Segment seg, List<Pair<Column, IndexInfo>> columns, List<FilterInfo> filterInfos) {
+    Query<DetailQueryResultSet> getSegmentQuery(Segment seg, List<Pair<Column, IndexInfo>> columns, List<FilterInfo> filterInfos, Limit limit) {
         return new DetailSegmentQuery(
                 detailQueryInfo.getFetchSize(),
                 columns,
-                FilterBuilder.buildDetailFilter(seg, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)));
+                FilterBuilder.buildDetailFilter(seg, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)),
+                limit);
     }
 
     /**

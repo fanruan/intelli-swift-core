@@ -13,6 +13,7 @@ import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryIndexRunner;
 import com.fr.swift.segment.SegmentKey;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -25,7 +26,7 @@ import java.util.Map;
 @SwiftBean(name = "queryIndexRunner")
 public class QueryIndexService implements QueryIndexRunner {
 
-    private static QueryBean createQueryBean(Table table, Where where) {
+    private QueryBean createQueryBean(Table table, Where where) {
         FilterBean filterBean = where.getFilterBean();
         return DetailQueryInfoBean.builder(table.getSourceKey().getId()).setFilter((FilterInfoBean) filterBean).build();
     }
@@ -38,5 +39,10 @@ public class QueryIndexService implements QueryIndexRunner {
     @Override
     public IndexQuery<ImmutableBitMap> getBitMap(Table table, Where where, SegmentKey segmentKey) {
         return QueryIndexBuilder.buildQuery(createQueryBean(table, where), segmentKey);
+    }
+
+    @Override
+    public Collection<SegmentKey> getWhereSegments(Table table, Where where) throws Exception {
+        return QueryIndexBuilder.buildSegments(createQueryBean(table, where));
     }
 }

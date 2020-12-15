@@ -22,8 +22,9 @@ import java.util.Optional;
  * @author Kuifang.Liu
  */
 public class ClusterInitTrigger implements SwiftPriorityInitTrigger {
+
     @Override
-    public void trigger(Object data) throws Exception {
+    public void init() {
         if (SwiftProperty.get().isCluster()) {
             ProxySelector.getInstance().switchFactory(new JdkProxyFactory(new RPCInvokerCreator()));
             UrlSelector.getInstance().switchFactory(new RPCUrlFactory());
@@ -34,6 +35,16 @@ public class ClusterInitTrigger implements SwiftPriorityInitTrigger {
             Optional<Class<?>> maxPriorityService = classesByAnnotations.stream()
                     .max((o1, o2) -> o2.getAnnotation(ClusterRegistry.class).priority() - o1.getAnnotation(ClusterRegistry.class).priority());
             ((ClusterBootService) SwiftContext.get().getBean(maxPriorityService.get())).init();
+        }
+    }
+
+    @Override
+    public void destroy() {
+        if (SwiftProperty.get().isCluster()) {
+            List<Class<?>> classesByAnnotations = SwiftContext.get().getClassesByAnnotations(ClusterRegistry.class);
+            Optional<Class<?>> maxPriorityService = classesByAnnotations.stream()
+                    .max((o1, o2) -> o2.getAnnotation(ClusterRegistry.class).priority() - o1.getAnnotation(ClusterRegistry.class).priority());
+            ((ClusterBootService) SwiftContext.get().getBean(maxPriorityService.get())).destroy();
         }
     }
 

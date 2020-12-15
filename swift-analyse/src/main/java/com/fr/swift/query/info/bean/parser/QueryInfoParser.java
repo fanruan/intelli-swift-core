@@ -12,6 +12,8 @@ import com.fr.swift.query.info.element.metric.Metric;
 import com.fr.swift.query.info.group.GroupQueryInfo;
 import com.fr.swift.query.info.group.GroupQueryInfoImpl;
 import com.fr.swift.query.info.group.post.PostQueryInfo;
+import com.fr.swift.query.limit.Limit;
+import com.fr.swift.query.limit.SingleLimit;
 import com.fr.swift.query.query.QueryInfo;
 import com.fr.swift.query.query.QueryType;
 import com.fr.swift.query.sort.AscSort;
@@ -113,7 +115,11 @@ public class QueryInfoParser {
                 }
             }
         }
-        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, bean.getFetchSize(), table, filterInfo, dimensions, sorts, null);
+        Limit limit = null;
+        if (bean.getLimit() != null) {
+            limit = new SingleLimit(bean.getLimit().end());
+        }
+        DetailQueryInfo detailQueryInfo = new DetailQueryInfo(queryId, bean.getFetchSize(), table, filterInfo, dimensions, sorts, null, limit);
         detailQueryInfo.setQuerySegment(bean.getSegments());
         return detailQueryInfo;
     }

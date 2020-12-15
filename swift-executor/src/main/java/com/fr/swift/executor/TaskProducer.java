@@ -7,6 +7,7 @@ import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -50,5 +51,13 @@ public class TaskProducer {
             }
         }
         return MemoryQueue.getInstance().offer(executorTask);
+    }
+
+    public static boolean retriggerDeleteTasks() {
+        List<ExecutorTask> deleteTasks = DBQueue.getInstance().getActiveDeleteTasks();
+        for (ExecutorTask deleteTask : deleteTasks) {
+            MemoryQueue.getInstance().offer(deleteTask);
+        }
+        return true;
     }
 }

@@ -43,6 +43,11 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
+    public List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time) {
+        return convertService.getActiveDeleteTasksBeforeTime(time);
+    }
+
+    @Override
     public List<Object[]> getActiveTasksGroupByCluster(long time) {
         return convertService.getActiveTasksGroupByCluster(time);
     }
@@ -53,6 +58,16 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
+    public SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes) {
+        return convertService.getRepeatTaskByTime(createTime, likes);
+    }
+
+    @Override
+    public List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes) {
+        return convertService.getRepeatTasksByTime(beginTime, endTime, likes);
+    }
+
+    @Override
     public void delete(ExecutorTask executorTask) {
         convertService.delete(executorTask);
     }
@@ -60,5 +75,10 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     @Override
     public ExecutorTask get(String taskId) {
         return convertService.get(taskId);
+    }
+
+    @Override
+    public List<TaskBalanceEntity> getTaskBalances() {
+        return convertService.getTaskBalances();
     }
 }

@@ -20,11 +20,13 @@ public interface SwiftDao<T> {
 
     void delete(Collection<T> entities);
 
-    void delete(CriteriaProcessor criteriaProcessor);
+    void deleteQuery(CriteriaQueryProcessor criteriaQueryProcessor);
 
     void update(T entity);
 
-    List<?> select(CriteriaProcessor criteriaProcessor);
+    void update(Collection<T> entities);
+
+    List<?> selectQuery(CriteriaQueryProcessor criteriaQueryProcessor);
 
     List<?> selectAll();
 

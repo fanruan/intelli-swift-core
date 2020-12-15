@@ -20,7 +20,6 @@ import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
 import com.fr.swift.executor.task.impl.RealtimeInsertExecutorTask;
 import com.fr.swift.executor.task.impl.RecoveryExecutorTask;
-import com.fr.swift.executor.task.impl.TransferExecutorTask;
 import com.fr.swift.executor.task.impl.TruncateExecutorTask;
 import com.fr.swift.executor.type.SwiftTaskType;
 import com.fr.swift.log.SwiftLoggers;
@@ -45,12 +44,15 @@ public class BootRegister {
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftSegmentBucketElement");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftTableAllotRule");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.message.MessageSendingRecordEntity");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.config.entity.SwiftUserInfo");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.TaskBalanceEntity");
+
     }
 
     public static void registerExecutorTask() {
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.REALTIME, RealtimeInsertExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.RECOVERY, RecoveryExecutorTask.class);
-        ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.TRANSFER, TransferExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.DELETE, DeleteExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.TRUNCATE, TruncateExecutorTask.class);
         ExecutorTypeContainer.getInstance().registerClass(SwiftTaskType.COLLATE, CollateExecutorTask.class);
@@ -63,7 +65,6 @@ public class BootRegister {
         ServicePriorityInitiator.getInstance().register(new ScheduleTaskTrigger());
         JoinClusterListenerHandler.listen();
         LeftClusterListenerHandler.listen();
-//        TransferRealtimeListener.listen();
     }
 
     public static void registerProxy() {
