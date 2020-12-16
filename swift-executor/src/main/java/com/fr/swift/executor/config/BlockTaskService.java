@@ -14,6 +14,8 @@ public interface BlockTaskService {
 
     void saveOrUpdate(SwiftBlockTaskEntity blockTaskEntity) throws SQLException;
 
+    void deleteById(String id);
+
     void deleteByBlockIndex(String blockIndex);
 
     Set<String> getBlockIndexes();
