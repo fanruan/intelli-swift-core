@@ -12,6 +12,7 @@ import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.util.Strings;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,5 +64,10 @@ public class SwiftWhere implements Where {
         Map<SegmentKey, ImmutableBitMap> whereIndexMap = new HashMap<>();
         indexAfterFilter.forEach((segmentKey, indexQuery) -> whereIndexMap.put(segmentKey, indexQuery.getQueryIndex()));
         return whereIndexMap;
+    }
+
+    @Override
+    public Collection<SegmentKey> createWhereSegments(Table table) throws Exception {
+        return QueryRunnerProvider.getInstance().executeSegmentsQuery(table,this);
     }
 }

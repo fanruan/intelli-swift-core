@@ -9,6 +9,7 @@ public enum SwiftDetailFilterType {
     STRING_LIKE,
     STRING_ENDS_WITH,
     STRING_STARTS_WITH,
+    STRING_LIKE_IGNORE_CASE,
 
     NUMBER_IN_RANGE,
     NUMBER_AVERAGE,

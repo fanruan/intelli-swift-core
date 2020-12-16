@@ -41,6 +41,10 @@ public final class DBQueue {
         }
     }
 
+    public List<ExecutorTask> getActiveTasksByType(String type) {
+        return executorTaskService.getActiveTasksBeforeTimeByType(maxCreatetime, type);
+    }
+
     public synchronized List<ExecutorTask> pullAll() {
         List<ExecutorTask> executorTaskList = executorTaskService.getActiveTasksBeforeTime(maxCreatetime);
         return executorTaskList;

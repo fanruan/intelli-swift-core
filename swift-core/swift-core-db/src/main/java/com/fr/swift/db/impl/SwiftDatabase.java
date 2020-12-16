@@ -11,12 +11,16 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.util.exception.LambdaWrapper;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author anchore
@@ -37,12 +41,43 @@ public class SwiftDatabase implements Database, Serializable {
     }
 
     @Override
+    public Table differTable(SwiftMetaData meta) throws SQLException {
+        Table table = getTable(new SourceKey(meta.getTableName()));
+        MetadataDiffer differ = new MetadataDiffer(table.getMeta(), meta);
+        if (differ.hasDiff()) {
+            List<SwiftMetaDataColumn> dropped = differ.getDropped();
+            if (!dropped.isEmpty()) {
+                DropColumnAction dropColumnAction = new DropColumnAction(dropped.toArray(new SwiftMetaDataColumn[dropped.size()]));
+                table = dropColumnAction.alter(table);
+            }
+            List<SwiftMetaDataColumn> added = differ.getAdded();
+            if (!added.isEmpty()) {
+                AddColumnAction addColumnAction = new AddColumnAction(added.toArray(new SwiftMetaDataColumn[added.size()]));
+                table = addColumnAction.alter(table);
+            }
+        }
+        return table;
+    }
+
+    @Override
     public synchronized Table getTable(SourceKey tableKey) {
         if (!existsTable(tableKey)) {
             return Crasher.crash(new NoSuchTableException(tableKey.getId()));
         }
         SwiftMetaData meta = CONF_SVC.getMeta(tableKey);
         return new SwiftTable(tableKey, meta);
+    }
+
+    @Override
+    public List<Table> getTablesBySchema(com.fr.swift.db.SwiftDatabase schema) {
+        try {
+            return CONF_SVC.getMetasBySchema(schema).stream()
+                    .map(LambdaWrapper.rethrowFunction(m -> new SwiftTable(m.getTableName(), m)))
+                    .collect(Collectors.toList());
+        } catch (SwiftMetaDataException e) {
+            SwiftLoggers.getLogger().error(e);
+            return Collections.EMPTY_LIST;
+        }
     }
 
     @Override

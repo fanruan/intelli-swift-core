@@ -22,9 +22,31 @@ public interface ExecutorTaskService {
 
     List<ExecutorTask> getActiveTasksBeforeTime(long time);
 
+    List<ExecutorTask> getActiveTasksBeforeTimeByType(long time, String... type);
+
+    /**
+     * Object[3]=clusterId,executorTaskType,count(*)
+     *
+     * @param time
+     * @return
+     */
     List<Object[]> getActiveTasksGroupByCluster(long time);
+
+    /**
+     * Object[2] =dbStatusType,max(s.createTime)
+     *
+     * @param likes
+     * @return
+     */
+    List<Object[]> getMaxtimeByContent(String... likes);
+
+    SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes);
+
+    List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes);
 
     void delete(final ExecutorTask executorTask);
 
     ExecutorTask get(String taskId);
+
+    List<TaskBalanceEntity> getTaskBalances();
 }

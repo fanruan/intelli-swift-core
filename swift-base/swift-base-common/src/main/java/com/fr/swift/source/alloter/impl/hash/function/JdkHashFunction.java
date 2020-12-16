@@ -10,7 +10,7 @@ import java.util.List;
  * @description
  * @since advanced swift 1.0
  */
-public class JdkHashFunction implements HashFunction {
+public class JdkHashFunction extends BaseHashFunction {
 
     @JsonProperty("partitions")
     private int partitions;

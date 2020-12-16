@@ -4,10 +4,11 @@ import com.fr.swift.beans.exception.NoSuchBeanException;
 import com.fr.swift.beans.exception.SwiftBeanException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.ReflectUtils;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
     }
 
     private void recursionCreateBean(Map<String, SwiftBeanDefinition> beanDefinitionMap) {
+        Exception e = null;
         for (String singletonNotLoadName : singletonNotLoadNames) {
             SwiftBeanDefinition swiftBeanDefinition = beanDefinitionMap.get(singletonNotLoadName);
             try {
@@ -66,10 +68,11 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
                 beanNamesLoaded.add(swiftBeanDefinition.getBeanName());
             } catch (Exception ignore) {
                 SwiftLoggers.getLogger().debug(ignore);
+                e = ignore;
             }
         }
         if (beanNamesLoaded.isEmpty() && !singletonNotLoadNames.isEmpty()) {
-            Crasher.crash("RecursionCreateBean will trap in a dead circle! Please check beans " + singletonNotLoadNames.toString());
+            Crasher.crash("RecursionCreateBean will trap in a dead circle! Please check beans " + singletonNotLoadNames.toString(), e);
         }
         singletonNotLoadNames.removeAll(beanNamesLoaded);
     }
@@ -164,6 +167,19 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
         return resultList;
     }
 
+    @Override
+    public List<Method> getMethodsByAnnotations(Class<? extends Annotation> annotation) {
+        Map<String, SwiftBeanDefinition> swiftBeanDefinitionMap = getBeanDefinitionMap();
+        List<Method> methods = new ArrayList<>();
+        for (Map.Entry<String, SwiftBeanDefinition> entry : swiftBeanDefinitionMap.entrySet()) {
+            for (Method method : entry.getValue().getClazz().getDeclaredMethods()) {
+                if (!method.isBridge() && method.getAnnotation(annotation) != null) {
+                    methods.add(method);
+                }
+            }
+        }
+        return methods;
+    }
 
     private <T> T createBean(Class<T> tClass, Object... params) throws Exception {
         Class<?>[] parameterTypes = new Class[params.length];
@@ -177,7 +193,7 @@ public class SwiftBeanFactory extends AbstractBeanRegistry implements BeanFactor
             if (paramTypes.length == parameterTypes.length) {
                 boolean matched = true;
                 for (int i = 0; i < paramTypes.length; i++) {
-                    if (!ReflectUtils.isAssignable(parameterTypes[i], paramTypes[i])) {
+                    if (!ClassUtils.isAssignable(parameterTypes[i], paramTypes[i])) {
                         matched = false;
                         break;
                     }

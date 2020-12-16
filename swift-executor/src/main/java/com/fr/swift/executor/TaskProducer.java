@@ -7,6 +7,7 @@ import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -50,5 +51,10 @@ public class TaskProducer {
             }
         }
         return MemoryQueue.getInstance().offer(executorTask);
+    }
+
+    public static boolean retriggerTasksByType(String type) {
+        List<ExecutorTask> triggerTasks = DBQueue.getInstance().getActiveTasksByType(type);
+        return triggerTasks.stream().map(triggerTask -> MemoryQueue.getInstance().offer(triggerTask)).reduce(true, (a, b) -> a && b);
     }
 }

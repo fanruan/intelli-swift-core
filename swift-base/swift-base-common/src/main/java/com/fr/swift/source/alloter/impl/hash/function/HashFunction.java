@@ -27,4 +27,5 @@ public interface HashFunction {
 
     HashType getType();
 
+    String getCubePath(int logicOrder);
 }

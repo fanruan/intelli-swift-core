@@ -4,10 +4,7 @@ import com.fr.swift.executor.ExecutorManager;
 import com.fr.swift.executor.queue.ConsumeQueue;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.executor.task.TaskRouter;
-import com.fr.swift.executor.task.rule.TaskRule;
-import com.fr.swift.executor.task.rule.TaskRuleContainer;
 import com.fr.swift.executor.thread.TaskExecuteRunnable;
-import com.fr.swift.executor.type.ExecutorTaskType;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.concurrent.SwiftExecutors;
 
@@ -51,7 +48,7 @@ public class TaskDispatcher {
 
     private TaskDispatcher() {
         ExecutorManager.getInstance().pullDBTask();
-        EXECUTE_THREAD_NUM = Runtime.getRuntime().availableProcessors();
+        EXECUTE_THREAD_NUM = Runtime.getRuntime().availableProcessors() * 2;
         threads = new Thread[EXECUTE_THREAD_NUM];
         for (int i = 0; i < threads.length; i++) {
             String threadName = "TaskExecuteRunnable [" + i + "]";
@@ -62,6 +59,16 @@ public class TaskDispatcher {
         }
         dispachTthread = SwiftExecutors.newThread(new DispatchRunnable());
         dispachTthread.start();
+    }
+
+    public void stop() throws InterruptedException {
+        dispachTthread.interrupt();
+        while (!ConsumeQueue.getInstance().getTaskList().isEmpty()) {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(10));
+        }
+        for (Thread thread : threads) {
+            thread.interrupt();
+        }
     }
 
     private class DispatchRunnable implements Runnable {
@@ -90,15 +97,6 @@ public class TaskDispatcher {
                             }
                         }
                     } else {
-                        try {
-                            ExecutorTaskType executorTaskType = pickedTask.getExecutorTaskType();
-                            TaskRule rule = TaskRuleContainer.getInstance().getRulesByType(executorTaskType);
-                            if (rule != null && rule.isRulesFiltered(pickedTask)) {
-                                continue;
-                            }
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
                         ConsumeQueue.getInstance().offer(pickedTask);
                     }
                 } catch (InterruptedException e) {

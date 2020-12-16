@@ -1,9 +1,11 @@
 package com.fr.swift.service;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftSegmentService;
 import com.fr.swift.executor.TaskProducer;
+import com.fr.swift.executor.task.bean.CollateBean;
 import com.fr.swift.executor.task.impl.CollateExecutorTask;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
@@ -43,6 +45,8 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
     private static final String COLLATE_TASK = "COLLATE";
 
     private static final int LINE_VIRTUAL_INDEX = -1;
+
+    private static final String DEFAULT_URI = "0";
 
     private ScheduledExecutorService executorService;
 
@@ -106,46 +110,55 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
                     Map<SegmentKey, Integer> bucketIndexMap = segmentService.getBucketByTable(tableEntry.getKey()).getBucketIndexMap();
 
-                    Map<Integer, List<SegmentKey>> segKeysByBucketMap = new HashMap<>();
+                    //H.J TODO : 2020/12/15 加了一层路径, 旧cubes都删掉后舍弃
+                    Map<Integer, Map<String, List<SegmentKey>>> segKeysByBucketMap = new HashMap<>();
                     if (!bucketIndexMap.isEmpty()) {
-                        bucketIndexMap.entrySet()
-                                .stream()
-                                .filter((entry) -> segmentKeysSet.contains(entry.getKey()))
-                                .forEach((entry) -> segKeysByBucketMap.computeIfAbsent(entry.getValue(), k -> new ArrayList<>()).add(entry.getKey()));
+                        bucketIndexMap.entrySet().stream()
+                                .filter(entry -> segmentKeysSet.contains(entry.getKey()))
+                                .forEach(entry -> segKeysByBucketMap.computeIfAbsent(entry.getValue(), k -> new HashMap<>())
+                                        .computeIfAbsent(entry.getKey().getSegmentUri(), k -> new ArrayList<>()).add(entry.getKey()));
                     } else {
-                        segKeysByBucketMap.putAll(Collections.singletonMap(LINE_VIRTUAL_INDEX, keys));
+                        segKeysByBucketMap.putAll(Collections.singletonMap(LINE_VIRTUAL_INDEX, Collections.singletonMap(DEFAULT_URI, keys)));
                     }
 
-
-                    Map<Integer, List<SegmentKey>> collateMap = new HashMap<>();
-                    segKeysByBucketMap.entrySet()
+                    Map<Integer, Map<String, List<SegmentKey>>> collateMap = new HashMap<>();
+                    segKeysByBucketMap.forEach((key1, value1) -> value1.entrySet()
                             .stream()
-                            .filter((entry) -> entry.getValue().size() >= SwiftFragmentFilter.FRAGMENT_NUMBER)
-                            .forEach((entry) -> collateMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).addAll(entry.getValue()));
+                            .filter(listEntry -> listEntry.getValue().size() >= SwiftFragmentFilter.FRAGMENT_NUMBER)
+                            .forEach(listEntry -> collateMap.computeIfAbsent(key1, k -> new HashMap<>())
+                                    .computeIfAbsent(listEntry.getKey(), v -> new ArrayList<>())
+                                    .addAll(listEntry.getValue())));
 
-                    for (Map.Entry<Integer, List<SegmentKey>> bucketListEntry : collateMap.entrySet()) {
-                        try {
-                            //分批collate，一批 5 - 100 块
-                            List<SegmentKey> allSegmentKeyList = bucketListEntry.getValue();
-                            if (allSegmentKeyList.size() < SwiftFragmentFilter.MAX_FRAGMENT_NUMBER) {
-                                TaskProducer.produceTask(new CollateExecutorTask(tableKey, allSegmentKeyList));
-                            } else {
-                                int batch = allSegmentKeyList.size() / SwiftFragmentFilter.MAX_FRAGMENT_NUMBER;
-                                int count = 0;
-                                for (; count < batch; count++) {
-                                    TaskProducer.produceTask(new CollateExecutorTask(tableKey, allSegmentKeyList.subList(count * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER, (count + 1) * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER)));
-                                }
-                                TaskProducer.produceTask(new CollateExecutorTask(tableKey, allSegmentKeyList.subList(count * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER, allSegmentKeyList.size())));
-                            }
-                        } catch (Exception e) {
-                            SwiftLoggers.getLogger().error(e);
-                        }
-                    }
+                    collateMap.forEach((key1, value) -> value.forEach((key, value1) -> batchProduceCollate(tableKey, value1)));
                 }
             }
 
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
+    }
+
+    private void batchProduceCollate(SourceKey tableKey, List<SegmentKey> segmentKeys) {
+        ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
+        try {
+            //分批collate，一批 5 - 100 块
+            List<SegmentKey> allSegmentKeyList = segmentKeys;
+            if (allSegmentKeyList.size() < SwiftFragmentFilter.MAX_FRAGMENT_NUMBER) {
+                produce(tableKey, allSegmentKeyList);
+            } else {
+                int batch = allSegmentKeyList.size() / SwiftFragmentFilter.MAX_FRAGMENT_NUMBER;
+                int count = 0;
+                for (; count < batch; count++) {
+                    produce(tableKey, allSegmentKeyList.subList(count * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER, (count + 1) * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER));
+                }
+                produce(tableKey, allSegmentKeyList.subList(count * SwiftFragmentFilter.MAX_FRAGMENT_NUMBER, allSegmentKeyList.size()));
+            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+    }
+
+    private void produce(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception {
+        TaskProducer.produceTask(new CollateExecutorTask(CollateBean.of(tableKey, segmentKeyList)));
     }
 }

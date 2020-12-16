@@ -11,7 +11,7 @@ import com.fr.swift.util.Assert;
 public abstract class BaseAllotRule implements AllotRule {
 
     //轻易不要改
-    public static final int CAPACITY = 10000000, MEM_CAPACITY = 100000;
+    public static final int CAPACITY = 10000000, MEM_CAPACITY = 10000;
 
     @JsonProperty("capacity")
     private int capacity;
@@ -31,5 +31,10 @@ public abstract class BaseAllotRule implements AllotRule {
 
     public enum AllotType implements Type {
         LINE, HASH
+    }
+
+    @Override
+    public String getCubePath(int order) {
+        return "0";
     }
 }

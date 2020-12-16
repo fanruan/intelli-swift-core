@@ -23,4 +23,9 @@ public interface ErrorCodeConfig {
      */
     int SQL_ERROR_CODE_BASE = 300000;
 
+    /**
+     * 用户名密码错误
+     */
+    int USER_PASSWORD_ERROR_CODE_BASE = 400000;
+
 }

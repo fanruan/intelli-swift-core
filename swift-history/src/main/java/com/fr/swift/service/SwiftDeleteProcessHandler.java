@@ -12,6 +12,7 @@ import com.fr.swift.basics.base.selector.UrlSelector;
 import com.fr.swift.basics.handler.DeleteProcessHandler;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
+import com.fr.swift.cluster.base.node.ClusterNode;
 import com.fr.swift.db.Where;
 import com.fr.swift.executor.config.ExecutorTaskService;
 import com.fr.swift.executor.task.impl.DeleteExecutorTask;
@@ -24,7 +25,6 @@ import com.fr.swift.structure.Pair;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -43,13 +43,6 @@ public class SwiftDeleteProcessHandler extends BaseProcessHandler implements Del
 
     public SwiftDeleteProcessHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
-    }
-
-    private static Map<String, String> clusterMap = new HashMap<>();
-
-    static {
-        clusterMap.put("CLOUD_1", "127.0.0.1:7000");
-        clusterMap.put("CLOUD_2", "127.0.0.1:7001");
     }
 
 
@@ -72,6 +65,7 @@ public class SwiftDeleteProcessHandler extends BaseProcessHandler implements Del
                 backupDeletion(tableKey, where, url);
             }
         }
+        nodeContainer.getOfflineNodes().forEach((k, v) -> backupDeletion(tableKey, where, k));
         for (Pair<URL, Future> future : futures) {
             try {
                 future.getValue().get();
@@ -85,8 +79,8 @@ public class SwiftDeleteProcessHandler extends BaseProcessHandler implements Del
 
     @Override
     protected List<URL> processUrl(Target[] targets, Object... args) {
-        // TODO: 2020/4/23
-        List<URL> urls = clusterMap.keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
+        Map<String, ClusterNode> onlineNodes = nodeContainer.getOnlineNodes();
+        List<URL> urls = onlineNodes.keySet().stream().map(id -> UrlSelector.getInstance().getFactory().getURL(id)).collect(Collectors.toList());
         return urls.isEmpty() ? Collections.singletonList(new LocalUrl()) : urls;
     }
 
@@ -106,6 +100,10 @@ public class SwiftDeleteProcessHandler extends BaseProcessHandler implements Del
         } catch (Exception ignore) {
             SwiftLoggers.getLogger().warn(ignore);
         }
+    }
+
+    private void backupDeletion(SourceKey sourceKey, Where where, String clusterId) {
+        backupDeletion(sourceKey, where, UrlSelector.getInstance().getFactory().getURL(clusterId));
     }
 
     private boolean isSelf(URL url) {

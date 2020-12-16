@@ -2,85 +2,145 @@
   "conflicts": [
     {
       "sourceKey": null,
-      "executorTaskType": "COLLATE",
+      "executorTaskType": [
+        "COLLATE"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": "TREASURE_IMPORT",
-      "executorTaskType": "TREASURE_IMPORT",
+      "executorTaskType": [
+        "TREASURE_IMPORT",
+        "TREASURE_RE_IMPORT"
+      ],
       "lockKey": null,
       "semaphore": 3
     },
     {
       "sourceKey": "TREASURE_ANALYSIS",
-      "executorTaskType": "TREASURE_ANALYSIS",
+      "executorTaskType": [
+        "TREASURE_ANALYSIS"
+      ],
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": "TREASURE_REPORT",
+      "executorTaskType": [
+        "TREASURE_REPORT"
+      ],
+      "lockKey": null,
+      "semaphore": 4
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": [
+        "TREASURE_REALTIME"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "REALTIME",
+      "executorTaskType": [
+        "REALTIME"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "RECOVERY",
+      "executorTaskType": [
+        "RECOVERY"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "TRANSFER",
+      "executorTaskType": [
+        "TRANSFER"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "INDEX",
+      "executorTaskType": [
+        "INDEX"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "DELETE",
+      "executorTaskType": [
+        "DELETE"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "TRUNCATE",
+      "executorTaskType": [
+        "TRUNCATE"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "UPLOAD",
+      "executorTaskType": [
+        "UPLOAD"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "DOWNLOAD",
+      "executorTaskType": [
+        "DOWNLOAD"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "HISTORY",
+      "executorTaskType": [
+        "HISTORY"
+      ],
       "lockKey": null,
       "semaphore": 1
     },
     {
       "sourceKey": null,
-      "executorTaskType": "QUERY",
+      "executorTaskType": [
+        "QUERY"
+      ],
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": [
+        "MIGRATE"
+      ],
+      "lockKey": null,
+      "semaphore": 1
+    },
+    {
+      "sourceKey": null,
+      "executorTaskType": [
+        "PLANNING"
+      ],
       "lockKey": null,
       "semaphore": 1
     }
   ],
   "stopTheWorldTaskTypes": [
     "COLLATE",
-    "DELETE"
+    "DELETE",
+    "MIGRATE"
   ]
 }

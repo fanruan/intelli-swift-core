@@ -6,7 +6,6 @@ import com.fr.swift.config.dao.SwiftDaoImpl;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.source.SourceKey;
-import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
@@ -23,7 +22,8 @@ public class SwiftTableAllotRuleServiceImpl implements SwiftTableAllotRuleServic
 
     @Override
     public SwiftTableAllotRule getByTale(SourceKey sourceKey) {
-        final List<SwiftTableAllotRule> allotRules = (List<SwiftTableAllotRule>) dao.select(criteria -> criteria.add(Restrictions.eq("sourceKey", sourceKey.getId())));
+        final List<SwiftTableAllotRule> allotRules = (List<SwiftTableAllotRule>) dao.selectQuery((query, builder, from) ->
+                query.select(from).where(builder.equal(from.get("sourceKey"), sourceKey.getId())));
         if (allotRules.isEmpty()) {
             return null;
         }
@@ -33,6 +33,11 @@ public class SwiftTableAllotRuleServiceImpl implements SwiftTableAllotRuleServic
     @Override
     public void save(SwiftTableAllotRule swiftTableAllotRule) {
         dao.insert(swiftTableAllotRule);
+    }
+
+    @Override
+    public void update(SwiftTableAllotRule SwiftTableAllotRule) {
+        dao.update(SwiftTableAllotRule);
     }
 
 }

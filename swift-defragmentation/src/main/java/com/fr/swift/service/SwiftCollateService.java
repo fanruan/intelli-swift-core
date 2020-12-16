@@ -142,7 +142,13 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             }
             locationService.saveOnNode(SwiftProperty.get().getMachineId(), new HashSet<>(newSegmentKeys));
             segmentService.addSegments(newSegmentKeys);
-            clearCollatedSegment(collateSegKeys);
+            swiftSegmentService.update(newSegmentKeys);
+            try {
+                clearCollatedSegment(collateSegKeys);
+            } catch (Throwable e) {
+                rollback(newSegmentKeys);
+                throw e;
+            }
             resultSegs.addAll(newSegmentKeys);
             SwiftLoggers.getLogger().info("Finish collate ! Table :{},bucket:{},collated segs:{} ,new segs: {}", tableKey.getId(), itemEntry.getKey(), collateSegKeys, newSegmentKeys);
         }
@@ -163,5 +169,13 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             }
         });
         SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.REMOVE_SEG, collateSegKeys);
+    }
+
+    private void rollback(List<SegmentKey> newSegmentKeys) {
+        SwiftLoggers.getLogger().error("Collate failed! Clear new segs : {}", newSegmentKeys);
+        swiftSegmentService.delete(newSegmentKeys);
+        segmentService.removeSegments(newSegmentKeys);
+        newSegmentKeys.forEach(SegmentUtils::clearSegment);
+        SwiftLoggers.getLogger().info("Clear success!");
     }
 }

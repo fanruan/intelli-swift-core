@@ -43,8 +43,28 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
+    public List<ExecutorTask> getActiveTasksBeforeTimeByType(long time, String... type) {
+        return convertService.getActiveTasksBeforeTimeByType(time, type);
+    }
+
+    @Override
     public List<Object[]> getActiveTasksGroupByCluster(long time) {
         return convertService.getActiveTasksGroupByCluster(time);
+    }
+
+    @Override
+    public List<Object[]> getMaxtimeByContent(String... likes) {
+        return convertService.getMaxtimeByContent(likes);
+    }
+
+    @Override
+    public SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes) {
+        return convertService.getRepeatTaskByTime(createTime, likes);
+    }
+
+    @Override
+    public List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes) {
+        return convertService.getRepeatTasksByTime(beginTime, endTime, likes);
     }
 
     @Override
@@ -55,5 +75,10 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     @Override
     public ExecutorTask get(String taskId) {
         return convertService.get(taskId);
+    }
+
+    @Override
+    public List<TaskBalanceEntity> getTaskBalances() {
+        return convertService.getTaskBalances();
     }
 }

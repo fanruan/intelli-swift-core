@@ -1,12 +1,14 @@
 package com.fr.swift.config.dao;
 
 import com.fr.swift.config.HibernateManager;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -70,16 +72,18 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
     @Override
     public void delete(Collection<T> entities) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            try {
-                for (T entity : entities) {
-                    session.delete(entity);
+            SwiftDaoUtils.deadlockFreeCommit(() -> {
+                Transaction tx = session.beginTransaction();
+                try {
+                    for (T entity : entities) {
+                        session.delete(entity);
+                    }
+                    tx.commit();
+                } catch (Throwable e) {
+                    tx.rollback();
+                    throw e;
                 }
-                tx.commit();
-            } catch (Throwable e) {
-                tx.rollback();
-                throw e;
-            }
+            });
         }
     }
 
@@ -89,8 +93,8 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
     }
 
     @Override
-    public void delete(CriteriaProcessor criteriaProcessor) {
-        delete((List<T>) select(criteriaProcessor));
+    public void deleteQuery(CriteriaQueryProcessor criteriaQueryProcessor) {
+        delete((List<T>) selectQuery(criteriaQueryProcessor));
     }
 
     @Override
@@ -108,19 +112,37 @@ public class SwiftDaoImpl<T> implements SwiftDao<T> {
     }
 
     @Override
-    public List<?> select(CriteriaProcessor criteriaProcessor) {
+    public void update(Collection<T> entities) {
         try (Session session = sessionFactory.openSession()) {
-            Criteria criteria = session.createCriteria(entityClass);
-            if (criteriaProcessor != null) {
-                criteriaProcessor.process(criteria);
+            Transaction tx = session.beginTransaction();
+            try {
+                for (T entity : entities) {
+                    session.update(entity);
+                }
+                tx.commit();
+            } catch (Throwable e) {
+                tx.rollback();
+                throw e;
             }
-            return criteria.list();
+        }
+    }
+
+    @Override
+    public List<?> selectQuery(CriteriaQueryProcessor criteriaQueryProcessor) {
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery query = criteriaBuilder.createQuery(entityClass);
+            Root from = query.from(entityClass);
+            if (criteriaQueryProcessor != null) {
+                criteriaQueryProcessor.process(query, criteriaBuilder, from);
+            }
+            return session.createQuery(query).getResultList();
         }
     }
 
     @Override
     public List<?> selectAll() {
-        return select(null);
+        return selectQuery(null);
     }
 
     @Override

@@ -77,6 +77,14 @@ public final class Strings {
         return null == string || EMPTY.equals(string.trim());
     }
 
+    public static boolean isAllEmpty(String... strings) {
+        return Arrays.stream(strings).map(Strings::isEmpty).reduce(true, (a, b) -> a && b);
+    }
+
+    public static boolean hasAnyEmpty(String... strings) {
+        return Arrays.stream(strings).map(Strings::isEmpty).reduce(false, (a, b) -> a || b);
+    }
+
     public static boolean isNotEmpty(String string) {
         return !isEmpty(string);
     }
@@ -132,5 +140,13 @@ public final class Strings {
             result[i] = src.substring(positions[i] + dellen, positions[i + 1]);
         }
         return result;
+    }
+
+    public static String toHumpString(String left, String right) {
+        char[] chars = right.toCharArray();
+        if (chars[0] >= 'a' && chars[0] <= 'z') {
+            chars[0] = (char) (chars[0] - 32);
+        }
+        return left.toLowerCase() + new String(chars);
     }
 }

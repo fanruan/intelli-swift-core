@@ -11,7 +11,7 @@ import java.util.List;
  * @author Lucifer
  * @description
  */
-public interface Importer<R extends SwiftResultSet> {
+public interface Importer<R extends SwiftResultSet, T, S> extends RollBackable<T, S> {
 
     /**
      * 导入数据
@@ -19,7 +19,7 @@ public interface Importer<R extends SwiftResultSet> {
      * @param swiftResultSet 承载数据的resultSet
      * @throws Exception
      */
-    void importData(R swiftResultSet) throws Exception;
+    void importResultSet(R swiftResultSet) throws Exception;
 
     /**
      * 获取字段
