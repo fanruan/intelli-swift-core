@@ -54,6 +54,8 @@ public class BootRegister {
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.SwiftExecutorTaskEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.SwiftBlockTaskEntity");
         SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.message.MessageSendingRecordEntity");
+        SwiftConfigRegistryImpl.INSTANCE.registerEntity("com.fr.swift.executor.config.TaskBalanceEntity");
+
     }
 
     public static void registerExecutorTask() {

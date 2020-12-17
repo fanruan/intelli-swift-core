@@ -35,6 +35,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
 
     @Override
     public Boolean deleteMigratedFile(String targetPath) {
+        SwiftLoggers.getLogger().info("start to delete migrated file at : {}", targetPath);
         String firstUncompressPath = "";
         String zipClusterIdPath = "";
         try {
@@ -87,6 +88,7 @@ public class SwiftMigrateService extends AbstractSwiftService implements Migrate
 
     @Override
     public Boolean updateMigratedSegsConfig(List<SegmentKey> segmentKeys) {
+        SwiftLoggers.getLogger().info("start to add {} segments to container", segmentKeys.size());
         final SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
         segmentService.addSegments(segmentKeys);
         return true;

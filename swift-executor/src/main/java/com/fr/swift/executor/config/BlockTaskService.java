@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public interface BlockTaskService {
 
-    void save(String blockIndex, String taskContent) throws SQLException;
+    void saveOrUpdate(SwiftBlockTaskEntity blockTaskEntity) throws SQLException;
 
     void deleteByBlockIndex(String blockIndex);
 

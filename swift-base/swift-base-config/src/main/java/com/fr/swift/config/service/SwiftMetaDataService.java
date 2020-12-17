@@ -1,6 +1,7 @@
 package com.fr.swift.config.service;
 
 import com.fr.swift.annotation.service.DbService;
+import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -18,6 +19,8 @@ public interface SwiftMetaDataService {
     void updateMeta(SwiftMetaData newMeta);
 
     List<SwiftMetaData> getAllMetas();
+
+    List<SwiftMetaData> getMetasBySchema(SwiftDatabase schema);
 
     SwiftMetaData getMeta(SourceKey tableKey);
 

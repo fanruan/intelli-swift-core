@@ -37,13 +37,14 @@ public class SwiftTriggerMigrateListener implements SwiftEventListener<NodeMessa
     @Override
     public void on(NodeMessage nodeMessage) {
         String clusterId = nodeMessage.getClusterId();
+        SwiftLoggers.getLogger().info("Start to confirm the ready status of node {} related nodes", clusterId);
         nodeInfoService.updateReadyStatusById(clusterId);
         //H.J TODO : 2020/12/3 还是存在小概率风险
         List<String> clusterIds = nodeInfoService.getIdsByBlockIndex(nodeInfoService.getBlockIndexById(clusterId));
         int count = clusterIds.stream().mapToInt(nodeInfoService::getReadyStatusById).sum();
         if (count == clusterIds.size()) {
             for (String id : clusterIds) {
-                SwiftLoggers.getLogger().info("Start trigger {} 's migrate job", id);
+                SwiftLoggers.getLogger().info("Start to trigger {} 's migrate job", id);
                 taskService.distributeTask(new MigTriggerInfo(), id);
             }
         }
