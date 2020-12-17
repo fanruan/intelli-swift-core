@@ -9,6 +9,7 @@ import com.fr.swift.lock.SegLocks;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.Incrementer;
+import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.backup.BackupBlockImporter;
 import com.fr.swift.segment.backup.ReusableResultSet;
 import com.fr.swift.segment.operator.Importer;
@@ -20,13 +21,15 @@ import com.fr.swift.source.alloter.impl.line.BackupLineSourceAlloter;
 import com.fr.swift.source.alloter.impl.line.LineAllotRule;
 import com.fr.swift.source.alloter.impl.line.RealtimeLineSourceAlloter;
 
+import java.util.List;
+
 /**
  * This class created on 2019/2/19
  *
  * @author Lucifer
  * @description
  */
-public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
+public class RealtimeInsertJob extends BaseJob<SegmentKey, SwiftResultSet> {
 
     protected SourceKey tableKey;
     protected SwiftResultSet resultSet;
@@ -37,7 +40,7 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
     }
 
     @Override
-    public Boolean call() {
+    public SegmentKey call() {
         try {
             // TODO: 2020/11/25 rowcount&allshowindex快照
             //先备份，后insert
@@ -47,13 +50,12 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
             synchronized (SegLocks.SEG_LOCK.computeIfAbsent(segKey, s -> s)) {
                 ReusableResultSet reusableResultSet = backup(table);
                 // 暂定备份出问题就直接pass1去
-                insert(table, reusableResultSet);
-                return true;
+                return insert(table, reusableResultSet);
             }
         } catch (Exception e) {
             // TODO: 2020/11/18 backup & mem回滚
             SwiftLoggers.getLogger().error(e);
-            return false;
+            return null;
         }
     }
 
@@ -65,9 +67,20 @@ public class RealtimeInsertJob extends BaseJob<Boolean, SwiftResultSet> {
         return reusableResultSet;
     }
 
-    private void insert(Table table, ReusableResultSet reusableResultSet) throws Exception {
+    /**
+     * 增量块调整、优化后最多只有一块，默认return get(0)
+     * 若为空，则return null;
+     *
+     * @param table
+     * @param reusableResultSet
+     * @return
+     * @throws Exception
+     */
+    private SegmentKey insert(Table table, ReusableResultSet reusableResultSet) throws Exception {
         SwiftSourceAlloter alloter = new RealtimeLineSourceAlloter(tableKey, new LineAllotRule(BaseAllotRule.MEM_CAPACITY));
         Importer importer = new Incrementer<SwiftSourceAlloter<?, RowInfo>>(table, alloter);
         importer.importResultSet(reusableResultSet.reuse());
+        List<SegmentKey> importSegments = importer.getImportSegments();
+        return importSegments.isEmpty() ? null : importSegments.get(0);
     }
 }
