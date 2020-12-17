@@ -7,18 +7,14 @@ import com.fr.swift.db.AlterTableAction;
 import com.fr.swift.db.Database;
 import com.fr.swift.db.NoSuchTableException;
 import com.fr.swift.db.Table;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
-import com.fr.swift.util.exception.LambdaWrapper;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,26 +66,16 @@ public class SwiftDatabase implements Database, Serializable {
 
     @Override
     public List<Table> getTablesBySchema(com.fr.swift.db.SwiftDatabase schema) {
-        try {
-            return CONF_SVC.getMetasBySchema(schema).stream()
-                    .map(LambdaWrapper.rethrowFunction(m -> new SwiftTable(m.getTableName(), m)))
-                    .collect(Collectors.toList());
-        } catch (SwiftMetaDataException e) {
-            SwiftLoggers.getLogger().error(e);
-            return Collections.EMPTY_LIST;
-        }
+        return CONF_SVC.getMetasBySchema(schema).stream()
+                .map((m -> new SwiftTable(m.getTableName(), m)))
+                .collect(Collectors.toList());
     }
 
     @Override
     public synchronized List<Table> getAllTables() {
         List<Table> tables = new ArrayList<Table>();
         for (SwiftMetaData metaData : CONF_SVC.getAllMetas()) {
-            SourceKey tableKey = null;
-            try {
-                tableKey = new SourceKey(metaData.getTableName());
-            } catch (SwiftMetaDataException e) {
-                SwiftLoggers.getLogger().error(e);
-            }
+            SourceKey tableKey = new SourceKey(metaData.getTableName());
             tables.add(new SwiftTable(tableKey, metaData));
         }
         return tables;
