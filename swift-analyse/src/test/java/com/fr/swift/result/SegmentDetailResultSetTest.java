@@ -30,7 +30,7 @@ public class SegmentDetailResultSetTest {
         DetailFilter filter = EasyMock.createMock(DetailFilter.class);
         EasyMock.expect(filter.createFilterIndex()).andReturn(BitMaps.newAllShowBitMap(rowCount)).anyTimes();
         EasyMock.replay(filter);
-        rs = new SegmentDetailResultSet(fetchSize, cubeData.getDimensions(), filter);
+        rs = new SegmentDetailResultSet(fetchSize, cubeData.getDimensions(), filter,null);
     }
 
     @Test

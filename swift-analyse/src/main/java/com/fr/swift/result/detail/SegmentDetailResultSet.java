@@ -3,6 +3,7 @@ package com.fr.swift.result.detail;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.info.IndexInfo;
+import com.fr.swift.query.limit.Limit;
 import com.fr.swift.result.BaseDetailQueryResultSet;
 import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.Column;
@@ -32,11 +33,14 @@ public class SegmentDetailResultSet extends BaseDetailQueryResultSet {
     private List<Column<?>> columnList;
 
 
-    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter) {
+    public SegmentDetailResultSet(int fetchSize, List<Pair<Column, IndexInfo>> columnList, DetailFilter filter, Limit limit) {
         super(fetchSize);
         this.columnList = SortSegmentDetailResultSet.getColumnList(columnList);
         ImmutableBitMap filterIndex = filter.createFilterIndex();
         rowCount = filterIndex.getCardinality();
+        if (limit != null) {
+            rowCount = rowCount > limit.end() ? limit.end() : rowCount;
+        }
         this.rowItr = filterIndex.intIterator();
     }
 

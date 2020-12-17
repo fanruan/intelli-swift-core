@@ -4,6 +4,7 @@ import com.fr.swift.config.entity.SwiftSegmentEntity;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.executor.task.ExecutorTask;
+import com.fr.swift.executor.task.bean.CollateBean;
 import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.executor.type.LockType;
 import com.fr.swift.executor.type.SwiftTaskType;
@@ -36,7 +37,7 @@ public class CollateExecutorTaskTest {
             add(segmentKey1);
             add(segmentKey2);
         }};
-        ExecutorTask executorTask = new CollateExecutorTask(new SourceKey("test"), segmentKeyList);
+        ExecutorTask executorTask = new CollateExecutorTask(CollateBean.of(new SourceKey("test"), segmentKeyList));
         Assert.assertEquals(json, executorTask.getTaskContent());
     }
 

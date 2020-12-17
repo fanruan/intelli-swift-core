@@ -3,7 +3,6 @@ package com.fr.swift.db.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
@@ -24,50 +23,59 @@ import java.util.List;
  * @date 2018/8/20
  */
 public class DropColumnAction extends BaseAlterTableAction {
-    public DropColumnAction(SwiftMetaDataColumn relatedColumnMeta) {
+    public DropColumnAction(SwiftMetaDataColumn... relatedColumnMeta) {
         super(relatedColumnMeta);
     }
 
     @Override
-    public void alter(final Table table) {
+    public Table alter(final Table table) {
         if (!existsColumn(table.getMetadata())) {
             SwiftLoggers.getLogger().warn("column {} is not present in {}, will drop nothing", relatedColumnMeta, table);
-            return;
+            return table;
         }
         SwiftLoggers.getLogger().info("drop column {} of {}", relatedColumnMeta, table);
 
         List<SegmentKey> segKeys = SwiftContext.get().getBean(SegmentService.class).getSegmentKeys(table.getSourceKey());
-        for (final SegmentKey segKey : segKeys) {
-            if (segKey.getStoreType().isTransient()) {
-                // 删内存
-                ResourceDiscovery.getInstance().releaseColumn(segKey.getSwiftSchema(), segKey.getTable(), new ColumnKey(relatedColumnMeta.getName()));
-                // 删备份
-                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().asBackup().setColumnId(relatedColumnMeta.getColumnId()).build());
-                continue;
+        for (SwiftMetaDataColumn dropColumn : relatedColumnMeta) {
+            for (final SegmentKey segKey : segKeys) {
+                if (segKey.getStoreType().isTransient()) {
+                    // 删内存
+                    ResourceDiscovery.getInstance().releaseColumn(segKey.getSwiftSchema(), segKey.getTable(), new ColumnKey(dropColumn.getName()));
+                    // 删备份
+                    FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().asBackup().setColumnId(dropColumn.getColumnId()).build());
+                    continue;
+                }
+
+                // 删history todo 还要删共享存储
+                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(segKey.getSegmentUri()).setColumnId(dropColumn.getColumnId()).build());
             }
-
-            // 删history todo 还要删共享存储
-            int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-            FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).setColumnId(relatedColumnMeta.getColumnId()).build());
         }
-
-        alterMeta(table);
+        return alterMeta(table);
     }
 
-    private void alterMeta(Table table) {
+    private Table alterMeta(Table table) {
         SwiftMetaData oldMeta = table.getMetadata();
         try {
-            List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>(oldMeta.getColumnCount() - 1);
-            for (int i = 0; i < oldMeta.getColumnCount(); i++) {
-                SwiftMetaDataColumn columnMeta = oldMeta.getColumn(i + 1);
-                if (!columnMeta.getName().equals(relatedColumnMeta.getName())) {
-                    columnMetas.add(columnMeta);
+            List<SwiftMetaDataColumn> columnMetas = new ArrayList<>(oldMeta.getColumnCount() - relatedColumnMeta.length);
+
+            for (int i = 1; i <= oldMeta.getColumnCount(); i++) {
+                boolean retain = true;
+                for (SwiftMetaDataColumn dropColumn : relatedColumnMeta) {
+                    if (oldMeta.getColumn(i).getName().equals(dropColumn.getName())) {
+                        retain = false;
+                        break;
+                    }
+                }
+                if (retain) {
+                    columnMetas.add(oldMeta.getColumn(i));
                 }
             }
-            SwiftMetaData newMeta = new SwiftMetaDataEntity(oldMeta.getTableName(), columnMetas);
+            SwiftMetaData newMeta = new SwiftMetaDataEntity.Builder(oldMeta).setFields(columnMetas).build();
             CONF_SVC.updateMeta(newMeta);
+            return new SwiftTable(table.getSourceKey(), newMeta);
         } catch (SwiftMetaDataException e) {
             SwiftLoggers.getLogger().warn("alter meta failed, {}", Util.getRootCauseMessage(e));
         }
+        return table;
     }
 }

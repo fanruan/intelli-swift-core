@@ -26,4 +26,6 @@ public interface HashFunction {
     int indexOf(List<Object> keys);
 
     HashType getType();
+
+    String getCubePath(int logicOrder);
 }
