@@ -1,12 +1,17 @@
 package com.fr.swift.query.cache;
 
+import com.fr.swift.analyse.CalcDetailResultSet;
 import com.fr.swift.basics.base.selector.ProxySelector;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.builder.CalcDetailQueryBuilder;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
+import com.fr.swift.util.exception.LambdaWrapper;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -38,35 +43,39 @@ public class QueryCacheBuilder {
     }
 
     private Runnable createCleanTask() {
-        return new Runnable() {
-            @Override
-            public void run() {
-                final Iterator<Map.Entry<String, QueryCache>> iterator = cacheContainer.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    final QueryCache value = iterator.next().getValue();
-                    if (value.getIdle() > TimeUnit.MINUTES.toMillis(DEFAULT_TIMEOUT)) {
-                        value.clear();
-                        iterator.remove();
-                    }
+        return () -> {
+            final Iterator<Map.Entry<String, QueryCache>> iterator = cacheContainer.entrySet().iterator();
+            while (iterator.hasNext()) {
+                final QueryCache value = iterator.next().getValue();
+                if (value.getIdle() > TimeUnit.MINUTES.toMillis(DEFAULT_TIMEOUT)) {
+                    value.clear();
+                    iterator.remove();
                 }
             }
         };
     }
 
-    public QueryCache getOrBuildCache(QueryBean queryBean) {
+    public CalcResultSetCache getCalcResultSetCache(DetailQueryInfoBean queryBean) throws SwiftMetaDataException {
         SwiftLoggers.getLogger().debug("get queryCache [{}]!", queryBean.getQueryId());
-        final QueryCache value = new QueryCache(queryBean, q -> {
+        QueryCache queryCache = cacheContainer.computeIfAbsent(queryBean.getQueryId()
+                , LambdaWrapper.rethrowFunction(qid -> new CalcResultSetCache(queryBean
+                        , new CalcDetailResultSet(queryBean.getFetchSize(), CalcDetailQueryBuilder.of(queryBean).buildCalcSegment()))));
+        queryCache.update();
+        return (CalcResultSetCache) queryCache;
+    }
+
+    public QueryResultSetCache getQueryResultSetCache(QueryBean queryBean) {
+        SwiftLoggers.getLogger().debug("get queryCache [{}]!", queryBean.getQueryId());
+        QueryCache queryCache = cacheContainer.computeIfAbsent(queryBean.getQueryId(), qid -> new QueryResultSetCache(queryBean, q -> {
             try {
                 final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
                 return serviceContext.getQueryResult(QueryBeanFactory.queryBean2String(q));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        });
-        QueryCache queryCache = cacheContainer.putIfAbsent(queryBean.getQueryId(), value);
-        queryCache = queryCache == null ? value : queryCache;
+        }));
         queryCache.update();
-        return queryCache;
+        return (QueryResultSetCache) queryCache;
     }
 
     public void removeCache(String queryId) {

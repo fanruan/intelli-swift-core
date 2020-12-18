@@ -9,8 +9,10 @@ import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.cache.QueryCacheBuilder;
+import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
@@ -67,6 +69,12 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     public QueryResultSet getQueryResult(String queryJson) throws Exception {
         SwiftLoggers.getLogger().debug(queryJson);
         QueryBean info = QueryBeanFactory.create(queryJson);
-        return QueryCacheBuilder.builder().getOrBuildCache(info).getQueryResultSet();
+        return QueryCacheBuilder.builder().getQueryResultSetCache(info).getQueryResultSet();
+    }
+
+    @Override
+    public SwiftResultSet getResultResult(String queryJson) throws Exception {
+        DetailQueryInfoBean info = (DetailQueryInfoBean) QueryBeanFactory.create(queryJson);
+        return QueryCacheBuilder.builder().getCalcResultSetCache(info).getSwiftResultSet();
     }
 }

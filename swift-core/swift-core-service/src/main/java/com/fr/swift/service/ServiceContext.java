@@ -28,6 +28,8 @@ public interface ServiceContext extends SwiftService {
     @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
+    SwiftResultSet getResultResult(String queryJson) throws Exception;
+
     void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception;
 
     @InvokeMethod(value = DeleteProcessHandler.class, target = Target.ALL)
