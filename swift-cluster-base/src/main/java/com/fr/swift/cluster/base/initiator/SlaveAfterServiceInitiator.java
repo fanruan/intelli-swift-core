@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * @author Heng.J
  * @date 2020/12/18
- * @description 服务online节点信息服务
+ * @description 应用online节点信息服务的启停
  * @since swift-1.2.0
  */
 public class SlaveAfterServiceInitiator extends BaseServiceInitiator {
