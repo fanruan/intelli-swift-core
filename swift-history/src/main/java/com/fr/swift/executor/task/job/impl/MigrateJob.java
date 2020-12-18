@@ -8,6 +8,7 @@ import com.fr.swift.executor.task.bean.MigrateBean;
 import com.fr.swift.executor.task.constants.PathConstants;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.executor.task.netty.client.FileUploadClient;
+import com.fr.swift.executor.task.netty.client.FileUploadClientHandler;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
 import com.fr.swift.executor.task.utils.MigrationZipUtils;
 import com.fr.swift.log.SwiftLoggers;
@@ -117,7 +118,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 countDownLatch = new CountDownLatch(1);
                 countDownLatch.await();
                 fileUploadClient.closeFuture();
-                return true;
+                return FileUploadClientHandler.isTransfer();
             }
         }
         return false;

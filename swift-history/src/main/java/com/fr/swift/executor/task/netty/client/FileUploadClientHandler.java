@@ -2,13 +2,17 @@ package com.fr.swift.executor.task.netty.client;
 
 
 import com.fr.swift.executor.task.job.impl.MigrateJob;
+import com.fr.swift.executor.task.netty.exception.NettyTransferException;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
 import com.fr.swift.log.SwiftLoggers;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.io.RandomAccessFile;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Hoky
@@ -24,12 +28,18 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
     public RandomAccessFile randomAccessFile;
     private FilePacket filePacket;
 
+    private static AtomicBoolean isTransfer = new AtomicBoolean(false);
+
+    public static boolean isTransfer() {
+        return isTransfer.get();
+    }
+
     //构造器，FilePacket作为参数
     public FileUploadClientHandler(FilePacket filePacket) {
         this.filePacket = filePacket;
     }
 
-    @Override    //当前channel激活的时候的时候触发  优先于channelRead方法执行  （我的理解，只执行一次）
+    @Override    //当前channel激活的时候的时候触发  优先于channelRead方法执行
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         if (filePacket.getFile().exists()) {
             if (!filePacket.getFile().isFile()) {
@@ -52,7 +62,13 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
             } else {
                 filePacket.setEnd(true);
             }
-            ctx.writeAndFlush(filePacket);
+            ChannelFuture channelFuture = ctx.writeAndFlush(filePacket);
+            channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
+                if (!channelFuture1.isSuccess()) {
+                    MigrateJob.countDown();
+                    throw new NettyTransferException();
+                }
+            });
         } else {
             SwiftLoggers.getLogger().info("file already read!");
         }
@@ -92,12 +108,19 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                         filePacket.setEndPos(byteRead);
                         filePacket.setBytes(bytes);
                         filePacket.setFirst(false);
-                        ctx.writeAndFlush(filePacket);
+                        ChannelFuture channelFuture = ctx.writeAndFlush(filePacket);
+                        channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
+                            if (!channelFuture1.isSuccess()) {
+                                MigrateJob.countDown();
+                                throw new NettyTransferException();
+                            }
+                        });
                         if (filePacket.isEnd()) {
                             randomAccessFile.close();
                         }
                     }
                 } else {
+                    isTransfer.set(true);
                     ctx.close();
                     MigrateJob.countDown();
                     SwiftLoggers.getLogger().info("file migration finished: " + byteRead);
