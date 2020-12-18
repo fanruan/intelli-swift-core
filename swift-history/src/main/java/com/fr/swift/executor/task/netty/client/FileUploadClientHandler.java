@@ -30,6 +30,10 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
 
     private static AtomicBoolean isTransfer = new AtomicBoolean(false);
 
+    public static void beginTransfer() {
+        isTransfer.set(false);
+    }
+
     public static boolean isTransfer() {
         return isTransfer.get();
     }

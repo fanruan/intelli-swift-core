@@ -114,6 +114,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
     private static boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
         if (fileUploadClient.connect(ip, port, filePacket)) {
+            FileUploadClientHandler.beginTransfer();
             if (fileUploadClient.writeAndFlush(filePacket)) {
                 countDownLatch = new CountDownLatch(1);
                 countDownLatch.await();
