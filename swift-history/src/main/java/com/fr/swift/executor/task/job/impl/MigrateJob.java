@@ -32,6 +32,8 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
     private MigrateBean migrateBean;
 
+    private String uuid;
+
     public MigrateJob(MigrateBean migrateBean) {
         this.migrateBean = migrateBean;
     }
@@ -69,6 +71,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
                 //netty传输
                 FilePacket filePacket = new FilePacket();
+                uuid = filePacket.getUuid();
                 File file = new File(zipName);
                 filePacket.setFile(file);
                 filePacket.setStartPos(0);     //要传输的文件的初始信息
@@ -112,14 +115,13 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
         countDownLatch.countDown();
     }
 
-    private static boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
+    private boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
         if (fileUploadClient.connect(ip, port, filePacket)) {
-            FileUploadClientHandler.beginTransfer();
             if (fileUploadClient.writeAndFlush(filePacket)) {
                 countDownLatch = new CountDownLatch(1);
                 countDownLatch.await();
                 fileUploadClient.closeFuture();
-                return FileUploadClientHandler.isTransfer();
+                return FileUploadClientHandler.isTransfer(uuid);
             }
         }
         return false;
