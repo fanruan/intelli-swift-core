@@ -20,7 +20,8 @@ import java.util.List;
  */
 @ChannelHandler.Sharable
 public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
-    private static FileInfoMap fileInfoMap = new FileInfoMap();
+    //单例
+    private static FileInfoMap fileInfoMap = FileInfoMap.getFileInfoMap();
 
     public FileUploadClientHandler() {
     }

@@ -13,90 +13,99 @@ import java.util.stream.Collectors;
  * @date 2020/12/19
  */
 public class FileInfoMap {
-    private final static ConcurrentHashMap<String, FileInfo> fileInfoMap = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, FileInfo> fileInfoCache = new ConcurrentHashMap<>();
 
     public void put(String uuid, FileInfo fileInfo) {
-        fileInfoMap.put(uuid, fileInfo);
+        fileInfoCache.put(uuid, fileInfo);
     }
 
     public FileInfo get(String uuid) {
-        return fileInfoMap.getOrDefault(uuid, new FileInfo());
+        return fileInfoCache.getOrDefault(uuid, new FileInfo());
     }
 
     public int getByteRead(String uuid) {
-        return fileInfoMap.get(uuid).getByteRead();
+        return fileInfoCache.get(uuid).getByteRead();
     }
 
     public void setByteRead(String uuid, int byteRead) {
-        fileInfoMap.get(uuid).setByteRead(byteRead);
+        fileInfoCache.get(uuid).setByteRead(byteRead);
     }
 
     public Long getStart(String uuid) {
-        return fileInfoMap.get(uuid).getStart();
+        return fileInfoCache.get(uuid).getStart();
     }
 
     public void setStart(String uuid, Long start) {
-        fileInfoMap.get(uuid).setStart(start);
+        fileInfoCache.get(uuid).setStart(start);
     }
 
     public int getLastLength(String uuid) {
-        return fileInfoMap.get(uuid).getLastLength();
+        return fileInfoCache.get(uuid).getLastLength();
     }
 
     public void setLastLength(String uuid, int lastLength) {
-        fileInfoMap.get(uuid).setLastLength(lastLength);
+        fileInfoCache.get(uuid).setLastLength(lastLength);
     }
 
     public long getSendLength(String uuid) {
-        return fileInfoMap.get(uuid).getSendLength();
+        return fileInfoCache.get(uuid).getSendLength();
     }
 
     public void setSendLength(String uuid, long sendLength) {
-        fileInfoMap.get(uuid).setSendLength(sendLength);
+        fileInfoCache.get(uuid).setSendLength(sendLength);
     }
 
     public RandomAccessFile getRandomAccessFile(String uuid) {
-        return fileInfoMap.get(uuid).getRandomAccessFile();
+        return fileInfoCache.get(uuid).getRandomAccessFile();
     }
 
     public void setRandomAccessFile(String uuid, RandomAccessFile randomAccessFile) {
-        fileInfoMap.get(uuid).setRandomAccessFile(randomAccessFile);
+        fileInfoCache.get(uuid).setRandomAccessFile(randomAccessFile);
     }
 
     public FilePacket getFilePacket(String uuid) {
-        return fileInfoMap.get(uuid).getFilePacket();
+        return fileInfoCache.get(uuid).getFilePacket();
     }
 
     public void setFilePacket(String uuid, FilePacket filePacket) {
-        fileInfoMap.get(uuid).setFilePacket(filePacket);
+        fileInfoCache.get(uuid).setFilePacket(filePacket);
     }
 
     public boolean isTransferred(String uuid) {
-        return fileInfoMap.get(uuid).isTransferred();
+        return fileInfoCache.get(uuid).isTransferred();
     }
 
     public synchronized void transferred(String uuid) {
         FileInfo fileInfo = new FileInfo();
         fileInfo.transferred();
-        fileInfoMap.put(uuid, fileInfo);
+        fileInfoCache.put(uuid, fileInfo);
     }
 
     public void start(String uuid) {
-        fileInfoMap.get(uuid).startTransfer();
+        fileInfoCache.get(uuid).startTransfer();
     }
 
     public TransferState getTransferState(String uuid) {
-        return fileInfoMap.get(uuid).getTransferState();
+        return fileInfoCache.get(uuid).getTransferState();
     }
 
     public synchronized List<FileInfo> getUnStarted() {
-        List<FileInfo> unstartList = fileInfoMap.values().stream()
+        List<FileInfo> unstartList = fileInfoCache.values().stream()
                 .filter(fileInfo -> fileInfo.getTransferState() == TransferState.UNSTART)
                 .collect(Collectors.toList());
         for (FileInfo fileInfo : unstartList) {
             fileInfo.activeTransfer();
-            fileInfoMap.put(fileInfo.getFilePacket().getUuid(), fileInfo);
+            fileInfoCache.put(fileInfo.getFilePacket().getUuid(), fileInfo);
         }
         return unstartList;
+    }
+
+    private final static FileInfoMap fileInfoMap = new FileInfoMap();
+
+    FileInfoMap() {
+    }
+
+    public static FileInfoMap getFileInfoMap() {
+        return fileInfoMap;
     }
 }
