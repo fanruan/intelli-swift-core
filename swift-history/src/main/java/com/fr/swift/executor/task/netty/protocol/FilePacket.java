@@ -2,6 +2,7 @@ package com.fr.swift.executor.task.netty.protocol;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.UUID;
 
 import static com.fr.swift.executor.task.netty.protocol.command.Command.FILE;
 
@@ -11,11 +12,16 @@ import static com.fr.swift.executor.task.netty.protocol.command.Command.FILE;
  */
 public class FilePacket extends Packet implements Serializable {
 
+    private String uuid;
     private File file;
     private int startPos;
     private byte[] bytes;
     private int endPos;
     private boolean isFirst;
+
+    public FilePacket() {
+        this.uuid = UUID.randomUUID().toString();
+    }
 
     public boolean isFirst() {
         return isFirst;
@@ -80,6 +86,14 @@ public class FilePacket extends Packet implements Serializable {
     @Override
     public Byte getCommand() {
         return FILE;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
 
