@@ -1,6 +1,8 @@
 package com.fr.swift.executor.task.netty.client;
 
 
+import com.fr.swift.SwiftContext;
+import com.fr.swift.config.service.SwiftNodeInfoService;
 import com.fr.swift.executor.task.job.impl.MigrateJob;
 import com.fr.swift.executor.task.netty.exception.NettyTransferException;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
@@ -12,6 +14,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.io.RandomAccessFile;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,8 +25,10 @@ import java.util.List;
 public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
     //单例
     private static FileInfoMap fileInfoMap = FileInfoMap.getFileInfoMap();
+    private int limitTransferHour;
 
     public FileUploadClientHandler() {
+        limitTransferHour = SwiftContext.get().getBean(SwiftNodeInfoService.class).getOwnNodeInfo().getLimitTransferHour();
     }
 
     public FileUploadClientHandler fileRegister(FilePacket filePacket) {
@@ -92,6 +97,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 FilePacket filePacket = fileInfoMap.getFilePacket(uuid);
                 int byteRead;
                 boolean isFileClose = false;
+                boolean isOverTime = new Date(System.currentTimeMillis()).getHours() > limitTransferHour;
                 if (start != -1 && start == sendLength) {
                     Long remainLength = 0L;
                     try {
@@ -102,7 +108,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                     if (remainLength == 0L) {
                         isFileClose = true;
                     }
-                    if (!isFileClose) {
+                    if ((!isFileClose) && (!isOverTime)) {
                         int lastlength = lastLength;
                         if (remainLength < lastlength) {
                             lastlength = remainLength.intValue();
@@ -136,9 +142,14 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                         }
                     } else {
                         ctx.close();
-                        fileInfoMap.transferred(uuid);
+                        if (isOverTime) {
+                            SwiftLoggers.getLogger().error("file migration overtime");
+                            throw new NettyTransferException();
+                        } else {
+                            fileInfoMap.transferred(uuid);
+                            SwiftLoggers.getLogger().info("file migration finished: " + sendLength + " b");
+                        }
                         MigrateJob.countDown();
-                        SwiftLoggers.getLogger().info("file migration finished: " + sendLength);
                     }
                 }
             }
@@ -153,5 +164,9 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
 
     public static boolean isTransfer(String uuid) {
         return fileInfoMap.isTransferred(uuid);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Date(System.currentTimeMillis()).getHours() < 8);
     }
 }
