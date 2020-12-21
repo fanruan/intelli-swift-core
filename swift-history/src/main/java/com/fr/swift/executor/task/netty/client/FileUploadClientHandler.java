@@ -46,9 +46,9 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
             }
             RandomAccessFile randomAccessFile = new RandomAccessFile(filePacket.getFile(), "r");
             randomAccessFile.seek(filePacket.getStartPos());
-//            int lastLength = Integer.MAX_VALUE / 4 > filePacket.getFile().length() ? (int) filePacket.getFile().length() : Integer.MAX_VALUE / 4;
+            int lastLength = Integer.MAX_VALUE / 4 > filePacket.getFile().length() ? (int) filePacket.getFile().length() : Integer.MAX_VALUE / 4;
             //每次发送的文件块数的长度
-            int lastLength = 3 * 1024;
+//            int lastLength = 3 * 1024;
             byte[] bytes = new byte[lastLength];
             long sendLength = 0;
             sendLength += lastLength;

@@ -1,6 +1,9 @@
 package com.fr.swift.executor.task.netty.server;
 
+import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
+import com.fr.swift.config.service.SwiftNodeInfoService;
+import com.fr.swift.util.Strings;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -22,12 +25,10 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 public class MigrateServer {
 
     public void start() {
-//        String serviceAddress = SwiftContext.get().getBean(SwiftNodeInfoService.class).getOwnNodeInfo().getMigServerAddress();
-//        String[] addressArray = Strings.split(serviceAddress, ":");
-//        String ip = addressArray[0];
-//        int port = Integer.parseInt(addressArray[1]);
-        String ip = "127.0.0.1";
-        int port = 8123;
+        String serviceAddress = SwiftContext.get().getBean(SwiftNodeInfoService.class).getOwnNodeInfo().getMigServerAddress();
+        String[] addressArray = Strings.split(serviceAddress, ":");
+        String ip = addressArray[0];
+        int port = Integer.parseInt(addressArray[1]);
         EventLoopGroup boosGroup = new NioEventLoopGroup(); //服务端的管理线程
         EventLoopGroup workerGroup = new NioEventLoopGroup(); //服务端的工作线程
 
@@ -55,10 +56,5 @@ public class MigrateServer {
             boosGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    public static void main(String[] args) {
-        MigrateServer server = new MigrateServer();
-        server.start();
     }
 }
