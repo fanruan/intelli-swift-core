@@ -72,6 +72,9 @@ public class SwiftNodeInfoEntity implements Serializable, SwiftNodeInfo {
     @Column(name = "readyStatus")
     private int readyStatus;
 
+    @Column(name = "limitTransferHour")
+    private int limitTransferHour;
+
     @Override
     public String getNodeId() {
         return nodeId;
@@ -165,5 +168,15 @@ public class SwiftNodeInfoEntity implements Serializable, SwiftNodeInfo {
     @Override
     public void setReadyStatus(int readyStatus) {
         this.readyStatus = readyStatus;
+    }
+
+    @Override
+    public int getLimitTransferHour() {
+        return limitTransferHour;
+    }
+
+    @Override
+    public void setLimitTransferHour(int limitTransferHour) {
+        this.limitTransferHour = limitTransferHour;
     }
 }
