@@ -1,6 +1,6 @@
 package com.fr.swift.service.info;
 
-import com.fr.swift.executor.type.SwiftTaskType;
+import com.fr.swift.executor.type.ExecutorTaskType;
 
 /**
  * @author Heng.J
@@ -9,5 +9,5 @@ import com.fr.swift.executor.type.SwiftTaskType;
  * @since swift-1.2.0
  */
 public interface TaskInfo {
-    SwiftTaskType type();
+    ExecutorTaskType type();
 }

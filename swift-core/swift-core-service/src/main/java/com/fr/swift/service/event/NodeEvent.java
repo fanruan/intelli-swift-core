@@ -19,4 +19,7 @@ public enum NodeEvent implements SwiftEvent {
 
     // 主节点统筹所有节点准备
     START_WAITING,
+
+    // 主节点对不迁移 但有迁移index节点 冲突任务队列移动执行
+    CLEAR_CONFLICT,
 }

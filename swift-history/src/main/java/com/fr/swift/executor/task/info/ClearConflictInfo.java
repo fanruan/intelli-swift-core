@@ -1,21 +1,22 @@
 package com.fr.swift.executor.task.info;
 
 import com.fr.swift.executor.task.type.MigTaskType;
+import com.fr.swift.executor.type.ExecutorTaskType;
 
 /**
  * @author Heng.J
- * @date 2020/12/3
+ * @date 2020/12/21
  * @description
  * @since swift-1.2.0
  */
-public class MigTriggerInfo implements PlanningInfo {
+public class ClearConflictInfo implements PlanningInfo {
 
     private String migrateIndex;
 
-    public MigTriggerInfo() {
+    public ClearConflictInfo() {
     }
 
-    public MigTriggerInfo(String migrateIndex) {
+    public ClearConflictInfo(String migrateIndex) {
         this.migrateIndex = migrateIndex;
     }
 
@@ -31,7 +32,7 @@ public class MigTriggerInfo implements PlanningInfo {
     }
 
     @Override
-    public MigTaskType type() {
-        return MigTaskType.MIGRATE_TRIGGER;
+    public ExecutorTaskType type() {
+        return MigTaskType.CLEAR_CONFLICT;
     }
 }
