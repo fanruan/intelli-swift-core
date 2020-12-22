@@ -8,6 +8,7 @@ import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.limit.Limit;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.IntIterable;
@@ -35,20 +36,20 @@ public abstract class AbstractDetailSegment implements CalcSegment {
     IntIterable.IntIterator currentRowItr;
     int rowCount;
     SwiftMetaData queriedMetadata;
-    private SegmentContainer segmentContainer;
+    private SegmentComponent segmentComponent;
 
-    public AbstractDetailSegment(SegmentContainer segmentContainer, List<Dimension> dimensions, List<FilterInfo> filters, Limit limit, SwiftMetaData metaData, SwiftMetaData queriedMetadata) {
-        this.segmentContainer = segmentContainer;
+    public AbstractDetailSegment(SegmentComponent segmentComponent, List<Dimension> dimensions, List<FilterInfo> filters, Limit limit, SwiftMetaData metaData, SwiftMetaData queriedMetadata) {
+        this.segmentComponent = segmentComponent;
         this.dimensions = dimensions;
         this.filters = filters;
         this.limit = limit;
         this.metaData = metaData;
         this.queriedMetadata = queriedMetadata;
-        checkDimesions();
-        filter(segmentContainer.getNextBatchSegments());
+        checkDimensions();
+        filter(segmentComponent.getNextBatchSegments());
     }
 
-    private void checkDimesions() {
+    private void checkDimensions() {
         columnKeys = dimensions.stream().map(dimension -> dimension.getColumnKey()).collect(Collectors.toList());
         for (ColumnKey columnKey : columnKeys) {
             assert metaData.getFieldNames().contains(columnKey.getName());
@@ -64,7 +65,7 @@ public abstract class AbstractDetailSegment implements CalcSegment {
             List<Pair<Segment, DetailFilter>> collect = batchSegments.stream()
                     .map(seg -> Pair.of(seg, FilterBuilder.buildDetailFilter(seg, new GeneralFilterInfo(filters, GeneralFilterInfo.AND))))
                     .collect(Collectors.toList());
-
+            SegmentUtils.releaseHisSeg(batchSegments);
             collect.forEach((pair) -> {
                 ImmutableBitMap filteredIndex = pair.getValue().createFilterIndex();
                 if (!filteredIndex.isEmpty()) {
@@ -75,24 +76,29 @@ public abstract class AbstractDetailSegment implements CalcSegment {
             if (!filteredList.isEmpty()) {
                 currentSeg = filteredList.get(segIndex);
                 currentRowItr = currentSeg.getValue().intIterator();
-            } else if (!segmentContainer.isEmpty()) {
-                filter(segmentContainer.getNextBatchSegments());
+            } else if (!segmentComponent.isEmpty()) {
+                // todo::考虑极端情况下的递归风险，方法之一是增大batchsize，这样就可以很大程度降低可能的递归层数
+                filter(segmentComponent.getNextBatchSegments());
             }
         }
     }
 
 
     /**
-     * 这里进行块更新操作并返回判断结果
-     *
+     * 这里进行当前块和所有块的更新操作并返回判断结果
      * @return 是否有更多的数据
      */
     @Override
     public boolean hasNext() {
         if (currentRowItr != null && currentRowItr.hasNext()) {
             return true;
-        } else if (!segmentContainer.isEmpty()) {
-            filter(segmentContainer.getNextBatchSegments());
+        } else if (segIndex < filteredList.size() - 1) {
+            segIndex++;
+            currentSeg = filteredList.get(segIndex);
+            currentRowItr = currentSeg.getValue().intIterator();
+            return hasNext();
+        } else if (!segmentComponent.isEmpty()) {
+            filter(segmentComponent.getNextBatchSegments());
             return hasNext();
         }
         return false;
@@ -110,6 +116,7 @@ public abstract class AbstractDetailSegment implements CalcSegment {
 
     @Override
     public void close() {
-        segmentContainer.releaseSegments();
+        // todo::暂时用不到，先放着
+//        segmentComponent.releaseSegments();
     }
 }
