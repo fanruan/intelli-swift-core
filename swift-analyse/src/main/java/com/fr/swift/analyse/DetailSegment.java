@@ -1,5 +1,6 @@
 package com.fr.swift.analyse;
 
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.limit.Limit;
@@ -21,11 +22,18 @@ import java.util.List;
 public class DetailSegment extends AbstractDetailSegment {
 
     public DetailSegment(List<Segment> totalSegments, List<Dimension> dimensions, List<FilterInfo> filters, Limit limit, SwiftMetaData metaData, SwiftMetaData queriedMetadata) {
-        super(totalSegments, dimensions, filters, limit, metaData, queriedMetadata);
+        super(new DetailQuerySegmentContainer(totalSegments), dimensions, filters, limit, metaData, queriedMetadata);
     }
 
+    /**
+     * 这里只负责拿数据，需要配合hasNext 进行使用
+     * 如果在这里进行更新的话极端情况下比较难处理
+     * 保证一般流程（先判断有没有，再去获取）的正常运行。
+     *
+     * @return 抽取的数据
+     */
     @Override
-    public Row getRow() {
+    public Row getNextRow() {
         try {
             List<Object> values = new ArrayList<>();
             Integer next = currentRowItr.next();
@@ -36,9 +44,10 @@ public class DetailSegment extends AbstractDetailSegment {
             }
             return new ListBasedRow(values);
         } catch (Exception warn) {
+            SwiftLoggers.getLogger().warn("catch Exception during get next , please check in case of things getting worse.message is {} ", warn.getMessage());
             currentSeg = filteredList.get(++segIndex);
             currentRowItr = currentSeg.getValue().intIterator();
-            return getRow();
+            return getNextRow();
         }
     }
 

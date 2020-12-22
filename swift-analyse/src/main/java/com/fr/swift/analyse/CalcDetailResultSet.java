@@ -37,13 +37,13 @@ public class CalcDetailResultSet implements SwiftResultSet {
 
     @Override
     public boolean hasNext() throws SQLException {
-        return calcSegment.rowCount() > curs;
+        return calcSegment.hasNext();
     }
 
     @Override
     public Row getNextRow() throws SQLException {
         try {
-            return calcSegment.getRow();
+            return calcSegment.getNextRow();
         } finally {
             curs++;
         }
