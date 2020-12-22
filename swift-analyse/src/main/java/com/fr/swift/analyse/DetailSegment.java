@@ -22,11 +22,11 @@ import java.util.List;
 public class DetailSegment extends AbstractDetailSegment {
 
     public DetailSegment(List<Segment> totalSegments, List<Dimension> dimensions, List<FilterInfo> filters, Limit limit, SwiftMetaData metaData, SwiftMetaData queriedMetadata) {
-        super(new DetailQuerySegmentContainer(totalSegments), dimensions, filters, limit, metaData, queriedMetadata);
+        super(new DetailQuerySegmentComponent(totalSegments), dimensions, filters, limit, metaData, queriedMetadata);
     }
 
     /**
-     * 这里只负责拿数据，需要配合hasNext 进行使用
+     * 这里只负责拿数据，需要配合hasNext 进行使用。只使用这个函数的话最多拿一个批次的数据
      * 如果在这里进行更新的话极端情况下比较难处理
      * 保证一般流程（先判断有没有，再去获取）的正常运行。
      *

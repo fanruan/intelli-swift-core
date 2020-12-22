@@ -10,7 +10,7 @@ import java.util.List;
  * @description 流式查询时的块容器，在被调用的时候提供下一批次用于查询的块
  * @since swift-1.2.0
  */
-public interface SegmentContainer {
+public interface SegmentComponent {
 
     /**
      * 返回需要的块，不需要参数
@@ -25,10 +25,5 @@ public interface SegmentContainer {
      * @return 是否还有更多的块
      */
     boolean isEmpty();
-
-    /**
-     * 释放所有的块
-     */
-    void releaseSegments();
 
 }
