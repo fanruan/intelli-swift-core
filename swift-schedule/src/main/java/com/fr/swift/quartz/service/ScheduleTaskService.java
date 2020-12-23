@@ -71,4 +71,13 @@ public interface ScheduleTaskService extends LifeCycle {
      * @throws SchedulerException
      */
     Set<JobKey> getExistJobKeys() throws SchedulerException;
+
+
+    /**
+     * get current executing jobs‘ keys
+     *
+     * @return
+     * @throws SchedulerException
+     */
+    Set<JobKey> getExecutingJobKeys() throws SchedulerException;
 }

@@ -9,6 +9,7 @@ import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -19,7 +20,9 @@ import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Heng.J
@@ -121,6 +124,11 @@ public class QuartzJobServiceImpl extends AbstractLifeCycle implements QuartzJob
     @Override
     public Set<JobKey> getExistJobKeys() throws SchedulerException {
         return scheduler.getJobKeys(GroupMatcher.anyGroup());
+    }
+
+    public Set<JobKey> getExecutingJobKeys() throws SchedulerException {
+        List<JobExecutionContext> currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();
+        return currentlyExecutingJobs.stream().map(context -> context.getJobDetail().getKey()).collect(Collectors.toSet());
     }
 
     public Trigger getTrigger(JobKey jobKey, String cronExpression) {
