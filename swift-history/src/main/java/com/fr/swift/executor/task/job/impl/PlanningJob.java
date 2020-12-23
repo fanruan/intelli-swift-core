@@ -51,13 +51,16 @@ public class PlanningJob extends BaseJob<Boolean, PlanningBean> {
             MigScheduleInfo migScheduleInfo = ((MigScheduleInfo) planningBean.getTaskInfo());
             MigrateScheduleJob job = new MigrateScheduleJob();
             String migrateTime = migScheduleInfo.getMigrateTime();
-            TaskDefine task = TaskDefine.builder()
-                    .jobKey(JobKey.jobKey(migrateTime, "migrate"))
-                    .cronExpression(migrateTime)
-                    .jobClass(job.getClass())
-                    .jobData(Collections.singletonMap(MigrateBean.KEY, migScheduleInfo.getMigrateBean()))
-                    .build();
-            scheduleTaskService.addOrUpdateJob(task);
+            JobKey jobKey = JobKey.jobKey(migrateTime, "migrate");
+            if (!scheduleTaskService.getExecutingJobKeys().contains(jobKey)) {
+                TaskDefine task = TaskDefine.builder()
+                        .jobKey(jobKey)
+                        .cronExpression(migrateTime)
+                        .jobClass(job.getClass())
+                        .jobData(Collections.singletonMap(MigrateBean.KEY, migScheduleInfo.getMigrateBean()))
+                        .build();
+                scheduleTaskService.addOrUpdateJob(task);
+            }
             return true;
         } else if (Objects.equals(MigTaskType.MIGRATE_TRIGGER, type)) {
             MigrateTriggerJob.getInstance().triggerMigrate();
