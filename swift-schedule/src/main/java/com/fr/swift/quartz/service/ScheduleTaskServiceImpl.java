@@ -127,6 +127,7 @@ public class ScheduleTaskServiceImpl extends AbstractLifeCycle implements Schedu
         return quartzJobService.getExistJobKeys();
     }
 
+    @Override
     public Set<JobKey> getExecutingJobKeys() throws SchedulerException {
         return quartzJobService.getExecutingJobKeys();
     }

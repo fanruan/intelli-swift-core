@@ -126,6 +126,7 @@ public class QuartzJobServiceImpl extends AbstractLifeCycle implements QuartzJob
         return scheduler.getJobKeys(GroupMatcher.anyGroup());
     }
 
+    @Override
     public Set<JobKey> getExecutingJobKeys() throws SchedulerException {
         List<JobExecutionContext> currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();
         return currentlyExecutingJobs.stream().map(context -> context.getJobDetail().getKey()).collect(Collectors.toSet());
