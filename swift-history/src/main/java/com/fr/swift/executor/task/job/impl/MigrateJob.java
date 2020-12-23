@@ -62,6 +62,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
         }
         if (migrateFile.isDirectory()) {
             try {
+                fileUploadClient = new FileUploadClient();
                 File[] filesBeforeZip = migrateFile.listFiles();
                 new File(zipPath).mkdirs();
                 for (File file : Objects.requireNonNull(filesBeforeZip)) {
@@ -76,7 +77,6 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 filePacket.setFile(file);
                 filePacket.setStartPos(0);     //要传输的文件的初始信息
                 filePacket.setTargetPath(targetPath);
-                fileUploadClient = new FileUploadClient();
 
                 String[] addressArray = targetNodeInfo.getMigServerAddress().split(":");
                 String ip = addressArray[0];
