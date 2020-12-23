@@ -135,7 +135,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                         }
                     } else {
                         ctx.close();
-                        if (isOverTime) {
+                        if (isOverTime || (remainLength < 0L)) {
                             SwiftLoggers.getLogger().error("file migration overtime");
                             throw new NettyTransferException();
                         } else {
