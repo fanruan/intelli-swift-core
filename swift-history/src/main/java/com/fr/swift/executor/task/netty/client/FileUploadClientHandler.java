@@ -96,7 +96,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 if (start != -1 && start == sendLength) {
                     Long remainLength = 0L;
                     try {
-                        remainLength = Math.abs(randomAccessFile.length() - start);
+                        remainLength = randomAccessFile.length() - start;
                     } catch (Exception e) {
                         isFileClose = true;
                     }
