@@ -23,6 +23,7 @@ import java.util.List;
  */
 @ChannelHandler.Sharable
 public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
+    private static final int BLOCK_LENGTH = Integer.MAX_VALUE / 200;
     //单例
     private static FileInfoMap fileInfoMap = FileInfoMap.getFileInfoMap();
     private int limitTransferHour;
@@ -43,15 +44,13 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
         List<FileInfo> unStartedList = fileInfoMap.getUnStarted();
         for (FileInfo fileInfo : unStartedList) {
             FilePacket filePacket = fileInfo.getFilePacket();
-            if (filePacket.getFile().exists()) {
-                if (!filePacket.getFile().isFile()) {
-                    SwiftLoggers.getLogger().info("Not a file:" + filePacket.getFile());
-                    throw new RuntimeException("FilePacket is not a file!");
-                }
+            if (filePacket.getFile().exists() && !filePacket.getFile().isFile()) {
+                SwiftLoggers.getLogger().info("Not a file:" + filePacket.getFile());
+                throw new RuntimeException("FilePacket is not a file!");
             }
             RandomAccessFile randomAccessFile = new RandomAccessFile(filePacket.getFile(), "r");
             randomAccessFile.seek(filePacket.getStartPos());
-            int lastLength = Integer.MAX_VALUE / 4 > filePacket.getFile().length() ? (int) filePacket.getFile().length() : Integer.MAX_VALUE / 4;
+            int lastLength = BLOCK_LENGTH > filePacket.getFile().length() ? (int) filePacket.getFile().length() : BLOCK_LENGTH;
             //每次发送的文件块数的长度
 //            int lastLength = 3 * 1024;
             byte[] bytes = new byte[lastLength];
@@ -59,14 +58,10 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
             sendLength += lastLength;
             int byteRead;
             if ((byteRead = randomAccessFile.read(bytes)) != -1) {
-                filePacket.setEndPos(byteRead);
-                filePacket.setBytes(bytes);
-                filePacket.setFirst(true);
-                if (lastLength <= filePacket.getFile().length()) {
-                    filePacket.setEnd(false);
-                } else {
-                    filePacket.setEnd(true);
-                }
+                filePacket.setEndPos(byteRead)
+                        .setBytes(bytes)
+                        .setFirst(true)
+                        .setEnd(lastLength >= filePacket.getFile().length());
                 fileInfo.memoryInfo(sendLength, byteRead, randomAccessFile, lastLength, filePacket);
                 fileInfoMap.put(filePacket.getUuid(), fileInfo);
                 fileInfoMap.get(filePacket.getUuid()).startTransfer();
@@ -101,11 +96,11 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 if (start != -1 && start == sendLength) {
                     Long remainLength = 0L;
                     try {
-                        remainLength = Math.abs(randomAccessFile.length() - start);
+                        remainLength = randomAccessFile.length() - start;
                     } catch (Exception e) {
                         isFileClose = true;
                     }
-                    if (remainLength == 0L) {
+                    if (remainLength <= 0L) {
                         isFileClose = true;
                     }
                     if ((!isFileClose) && (!isOverTime)) {
@@ -117,18 +112,16 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                             filePacket.setEnd(false);
                         }
                         byte[] bytes = new byte[lastlength];
-                        if ((randomAccessFile.length() - start) > 0) {
+                        if (remainLength > 0) {
                             sendLength += lastlength;
-                            randomAccessFile = new RandomAccessFile(filePacket.getFile(), "r");
                             randomAccessFile.seek(start);  //将服务端返回的数据设置此次读操作，文件的起始偏移量
                         }
-                        if ((byteRead = randomAccessFile.read(bytes)) != -1 && (randomAccessFile.length() - start) > 0 && !isFileClose) {
-                            filePacket.setEndPos(byteRead);
-                            filePacket.setBytes(bytes);
-                            filePacket.setFirst(false);
+                        if ((byteRead = randomAccessFile.read(bytes)) != -1 && !isFileClose) {
+                            filePacket.setEndPos(byteRead)
+                                    .setBytes(bytes)
+                                    .setFirst(false);
                             FileInfo fileInfo = fileInfoMap.get(uuid);
                             fileInfo.memoryInfo(sendLength, byteRead, randomAccessFile, lastLength, filePacket);
-                            fileInfoMap.put(uuid, fileInfo);
                             ChannelFuture channelFuture = ctx.writeAndFlush(filePacket);
                             channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
                                 if (!channelFuture1.isSuccess()) {
@@ -142,7 +135,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                         }
                     } else {
                         ctx.close();
-                        if (isOverTime) {
+                        if (isOverTime || (remainLength < 0L)) {
                             SwiftLoggers.getLogger().error("file migration overtime");
                             throw new NettyTransferException();
                         } else {
