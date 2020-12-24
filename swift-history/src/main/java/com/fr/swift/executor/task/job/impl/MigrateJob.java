@@ -119,7 +119,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
     private boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
         int limitTransferHour = SwiftContext.get().getBean(SwiftNodeInfoService.class).getOwnNodeInfo().getLimitTransferHour();
         if (new Date(System.currentTimeMillis()).getHours() >= limitTransferHour) {
-            SwiftLoggers.getLogger().error("Netty transfer overtime!");
+            SwiftLoggers.getLogger().error("Transfer start overtime!");
             return false;
         }
         countDownLatch = new CountDownLatch(1);
