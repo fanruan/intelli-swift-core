@@ -43,8 +43,8 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
-    public List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time) {
-        return convertService.getActiveDeleteTasksBeforeTime(time);
+    public List<ExecutorTask> getActiveTasksBeforeTimeByType(long time, String... type) {
+        return convertService.getActiveTasksBeforeTimeByType(time, type);
     }
 
     @Override
@@ -65,6 +65,11 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     @Override
     public List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes) {
         return convertService.getRepeatTasksByTime(beginTime, endTime, likes);
+    }
+
+    @Override
+    public List<SwiftExecutorTaskEntity> getMigRelatedTasks(long beginTime, long endTime, String type, String... likes) {
+        return convertService.getMigRelatedTasks(beginTime, endTime, type, likes);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.fr.swift.db.impl;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
@@ -48,8 +47,7 @@ public class DropColumnAction extends BaseAlterTableAction {
                 }
 
                 // 删history todo 还要删共享存储
-                int currentDir = CubeUtil.getCurrentDir(segKey.getTable());
-                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(currentDir).setColumnId(dropColumn.getColumnId()).build());
+                FileUtil.delete(new CubePathBuilder(segKey).asAbsolute().setTempDir(segKey.getSegmentUri()).setColumnId(dropColumn.getColumnId()).build());
             }
         }
         return alterMeta(table);

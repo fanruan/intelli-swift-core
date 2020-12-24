@@ -41,6 +41,7 @@ public class ScheduleGroovyJobWrapper implements ScheduleJob {
         return (ScheduleTaskType) object.invokeMethod("getExecutorType", null);
     }
 
+    @Override
     public JobKey getJobKey() {
         return (JobKey) object.invokeMethod("jobKey", null);
     }

@@ -52,7 +52,7 @@ public class ClusterNodeSelector implements Selector<ClusterNodeManager> {
         public DefaultNodeManager() {
             this.clusterId = SwiftProperty.get().getMachineId();
             this.address = SwiftProperty.get().getServerAddress();
-            this.self = Collections.singletonMap(clusterId, new SwiftClusterNodeImpl(clusterId, address));
+            this.self = Collections.singletonMap(clusterId, SwiftClusterNodeImpl.ofSlave(clusterId, address));
         }
 
         @Override

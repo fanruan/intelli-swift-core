@@ -1,6 +1,10 @@
 package com.fr.swift.quartz.service;
 
+import com.fr.swift.quartz.entity.TaskDefine;
+import org.quartz.JobKey;
 import org.quartz.SchedulerException;
+
+import java.util.Set;
 
 /**
  * @Author: lucifer
@@ -43,4 +47,37 @@ public interface ScheduleTaskService extends LifeCycle {
      * @throws Exception
      */
     void initGroovyScheduleJob() throws Exception;
+
+    /**
+     * add or update taskDefine
+     *
+     * @param define
+     * @throws SchedulerException
+     */
+    void addOrUpdateJob(TaskDefine define) throws SchedulerException;
+
+    /**
+     * delete by jobKey
+     *
+     * @param jobKey
+     * @return
+     */
+    boolean deleteJob(JobKey jobKey) throws SchedulerException;
+
+    /**
+     * get current executing quartz jobs
+     *
+     * @return
+     * @throws SchedulerException
+     */
+    Set<JobKey> getExistJobKeys() throws SchedulerException;
+
+
+    /**
+     * get current executing jobs‘ keys
+     *
+     * @return
+     * @throws SchedulerException
+     */
+    Set<JobKey> getExecutingJobKeys() throws SchedulerException;
 }

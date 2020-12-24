@@ -22,7 +22,7 @@ public interface ExecutorTaskService {
 
     List<ExecutorTask> getActiveTasksBeforeTime(long time);
 
-    List<ExecutorTask> getActiveDeleteTasksBeforeTime(long time);
+    List<ExecutorTask> getActiveTasksBeforeTimeByType(long time, String... type);
 
     /**
      * Object[3]=clusterId,executorTaskType,count(*)
@@ -43,6 +43,8 @@ public interface ExecutorTaskService {
     SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes);
 
     List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes);
+
+    List<SwiftExecutorTaskEntity> getMigRelatedTasks(long beginTime, long endTime, String type, String... likes);
 
     void delete(final ExecutorTask executorTask);
 

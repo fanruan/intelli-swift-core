@@ -1,6 +1,5 @@
 package com.fr.swift.quartz.service;
 
-import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.quartz.config.SchedulerProperty;
 import com.fr.swift.quartz.entity.TaskDefine;
@@ -10,6 +9,7 @@ import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -18,6 +18,11 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Heng.J
@@ -25,7 +30,6 @@ import org.quartz.impl.StdSchedulerFactory;
  * @description 定时任务的具体执行逻辑
  * @since swift 1.1
  */
-@SwiftBean(name = "quartzJobService")
 public class QuartzJobServiceImpl extends AbstractLifeCycle implements QuartzJobService {
 
     private Scheduler scheduler;
@@ -115,6 +119,17 @@ public class QuartzJobServiceImpl extends AbstractLifeCycle implements QuartzJob
                 .requestRecovery()
                 .storeDurably()
                 .build();
+    }
+
+    @Override
+    public Set<JobKey> getExistJobKeys() throws SchedulerException {
+        return scheduler.getJobKeys(GroupMatcher.anyGroup());
+    }
+
+    @Override
+    public Set<JobKey> getExecutingJobKeys() throws SchedulerException {
+        List<JobExecutionContext> currentlyExecutingJobs = scheduler.getCurrentlyExecutingJobs();
+        return currentlyExecutingJobs.stream().map(context -> context.getJobDetail().getKey()).collect(Collectors.toSet());
     }
 
     public Trigger getTrigger(JobKey jobKey, String cronExpression) {

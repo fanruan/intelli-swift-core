@@ -89,6 +89,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     protected void importRow(Row row, int cursor) throws Exception {
+        // TODO: 2020/11/10 需在segmentinfo获取临时路径
         SegmentInfo segInfo = allot(cursor, row);
         if (!insertings.containsKey(segInfo)) {
             releaseFullIfExists();
@@ -122,7 +123,8 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     protected abstract void onFailed();
 
     protected SegmentKey newSegmentKey(SegmentInfo segInfo) {
-        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(), dataSource.getMetadata().getSwiftDatabase());
+        return new SwiftSegmentEntity(dataSource.getSourceKey(), segInfo.getOrder(), segInfo.getStoreType(),
+                dataSource.getMetadata().getSwiftDatabase(), segInfo.getTempDir());
     }
 
     protected void releaseFullIfExists() {
@@ -159,7 +161,7 @@ public abstract class BaseBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>
     }
 
     protected void processAfterSegmentDone(boolean needIndex) throws Exception {
-        Map<SwiftSegmentInfo, SegmentKey> segMap = importSegKeys.stream().collect(Collectors.toMap(s -> new SwiftSegmentInfo(s.getOrder(), s.getStoreType()), s -> s));
+        Map<SwiftSegmentInfo, SegmentKey> segMap = importSegKeys.stream().collect(Collectors.toMap(s -> new SwiftSegmentInfo(s.getOrder(), s.getStoreType(), s.getSegmentUri()), s -> s));
         for (Iterator<Entry<SegmentInfo, Inserting>> itr = insertings.entrySet().iterator(); itr.hasNext(); ) {
             Entry<SegmentInfo, Inserting> entry = itr.next();
             if (needIndex) {

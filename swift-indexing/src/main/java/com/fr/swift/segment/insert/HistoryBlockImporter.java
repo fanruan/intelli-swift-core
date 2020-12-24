@@ -3,7 +3,6 @@ package com.fr.swift.segment.insert;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.beans.annotation.SwiftScope;
 import com.fr.swift.cube.CubePathBuilder;
-import com.fr.swift.cube.CubeUtil;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.event.SwiftEventDispatcher;
 import com.fr.swift.log.SwiftLoggers;
@@ -40,7 +39,7 @@ public class HistoryBlockImporter<A extends SwiftSourceAlloter<?, RowInfo>> exte
     @Override
     protected Inserting getInserting(SegmentKey segKey) {
         // FIXME 2019/3/13 anchore 有临时路径的坑 tempDir应为当前导入的路径
-        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(CubeUtil.getCurrentDir(segKey.getTable())).build(), segKey.getStoreType());
+        ResourceLocation location = new ResourceLocation(new CubePathBuilder(segKey).setTempDir(segKey.getSegmentUri()).build(), segKey.getStoreType());
         Segment seg = new CacheColumnSegment(location, dataSource.getMetadata());
 
         return new Inserting(SwiftInserter.ofOverwriteMode(seg), seg, 0);

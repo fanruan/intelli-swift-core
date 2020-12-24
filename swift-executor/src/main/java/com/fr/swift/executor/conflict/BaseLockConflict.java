@@ -3,6 +3,7 @@ package com.fr.swift.executor.conflict;
 import com.fr.swift.executor.task.ExecutorTask;
 import com.fr.swift.source.SourceKey;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +15,7 @@ public class BaseLockConflict implements LockConflict {
     // 任务表名
     private SourceKey sourceKey = null;
     // 任务类型名
-    private String executorTaskType = null;
+    private List<String> executorTaskType = null;
     // 任务相关块名
     private String lockKey = null;
     // 当前指定任务最多在 【queue + 将加入的 1个 task】 中存在的条数
@@ -54,7 +55,7 @@ public class BaseLockConflict implements LockConflict {
         if (sourceKey != null && !sourceKey.equals(other.getSourceKey())) {
             return false;
         }
-        if (executorTaskType != null && !executorTaskType.equals(other.getExecutorTaskType().name())) {
+        if (!executorTaskType.isEmpty() && !executorTaskType.contains(other.getExecutorTaskType().name())) {
             return false;
         }
         if (lockKey != null && !lockKey.equals(other.getLockKey())) {
@@ -74,7 +75,7 @@ public class BaseLockConflict implements LockConflict {
         if (task.getSourceKey() != null && task.getSourceKey().equals(sourceKey)) {
             return true;
         }
-        if (task.getExecutorTaskType() != null && task.getExecutorTaskType().name().equals(executorTaskType)) {
+        if (task.getExecutorTaskType() != null && executorTaskType.contains(task.getExecutorTaskType().name())) {
             return true;
         }
         if (task.getLockKey() != null && task.getLockKey().equals(lockKey)) {
@@ -102,7 +103,7 @@ public class BaseLockConflict implements LockConflict {
                 conflict.sourceKey = new SourceKey((String) parseMapObj.get("sourceKey"));
             }
             if (parseMapObj.get("executorTaskType") != null) {
-                conflict.executorTaskType = (String) parseMapObj.get("executorTaskType");
+                conflict.executorTaskType = (List<String>) parseMapObj.get("executorTaskType");
             }
             if (parseMapObj.get("lockKey") != null) {
                 conflict.lockKey = (String) parseMapObj.get("lockKey");
@@ -117,7 +118,7 @@ public class BaseLockConflict implements LockConflict {
             return this;
         }
 
-        public Builder setExecutorTaskType(String executorTaskType) {
+        public Builder setExecutorTaskType(List<String> executorTaskType) {
             conflict.executorTaskType = executorTaskType;
             return this;
         }

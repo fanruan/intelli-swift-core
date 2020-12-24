@@ -6,6 +6,8 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 
+import java.util.Set;
+
 /**
  * @author Heng.J
  * @date 2020/5/14
@@ -25,4 +27,8 @@ public interface QuartzJobService extends LifeCycle {
     boolean modifyJobCron(TaskDefine define);
 
     JobDetail getJobDetail(JobKey jobKey, Class<? extends Job> jobClass);
+
+    Set<JobKey> getExistJobKeys() throws SchedulerException;
+
+    Set<JobKey> getExecutingJobKeys() throws SchedulerException;
 }

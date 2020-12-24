@@ -4,6 +4,7 @@ import com.fr.swift.quartz.config.ScheduleTaskType;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
 
 /**
  * @author Heng.J
@@ -19,5 +20,7 @@ public interface ScheduleJob extends Job {
     String getCronExpression();
 
     ScheduleTaskType getExecutorType();
+
+    JobKey getJobKey();
 }
 
