@@ -65,11 +65,15 @@ public class FileUploadClient {
     }
 
     public void closeFuture() {
-        future.channel().closeFuture();
+        if (future != null) {
+            future.channel().closeFuture();
+        }
     }
 
     public void shutdownGroup() {
-        group.shutdownGracefully();
+        if (group != null) {
+            group.shutdownGracefully();
+        }
     }
 
     public static void main(String[] args) {
