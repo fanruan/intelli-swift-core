@@ -5,6 +5,7 @@ import com.fr.swift.SwiftContext;
 import com.fr.swift.config.service.SwiftNodeInfoService;
 import com.fr.swift.executor.task.job.impl.MigrateJob;
 import com.fr.swift.executor.task.netty.exception.NettyTransferException;
+import com.fr.swift.executor.task.netty.exception.NettyTransferOvertimeException;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
 import com.fr.swift.log.SwiftLoggers;
 import io.netty.channel.ChannelFuture;
@@ -137,12 +138,13 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                         ctx.close();
                         if (isOverTime || (remainLength < 0L)) {
                             SwiftLoggers.getLogger().error("file migration overtime");
-                            throw new NettyTransferException();
+                            MigrateJob.countDown();
+                            throw new NettyTransferOvertimeException();
                         } else {
                             fileInfoMap.transferred(uuid);
                             SwiftLoggers.getLogger().info("file migration finished: " + sendLength + " b");
+                            MigrateJob.countDown();
                         }
-                        MigrateJob.countDown();
                     }
                 }
             }
