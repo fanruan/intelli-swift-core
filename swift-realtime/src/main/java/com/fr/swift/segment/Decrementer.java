@@ -85,6 +85,14 @@ public class Decrementer implements WhereDeleter {
                 seg.putAllShowIndex(allShowIndex);
                 SwiftLoggers.getLogger().info("{} rows data has been deleted in seg {}!"
                         , originAllShowIndex.getCardinality() - allShowIndex.getCardinality(), whereSegmentKey);
+
+                if (seg.isHistory()) {
+                    seg.release();
+                } else {
+                    Segment backSegment = SegmentUtils.newBackupSegment(whereSegmentKey);
+                    backSegment.putAllShowIndex(allShowIndex);
+                    backSegment.release();
+                }
                 if (allShowIndex.getCardinality() == 0) {
                     removeSegList.add(whereSegmentKey);
                     SwiftLoggers.getLogger().info("{} is empty! deleteing...", whereSegmentKey);
@@ -96,13 +104,6 @@ public class Decrementer implements WhereDeleter {
                     SegmentUtils.clearSegment(whereSegmentKey);
                     SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.REMOVE_SEG, whereSegmentKey);
                     SwiftLoggers.getLogger().info("{} is empty! delete success!", whereSegmentKey);
-                }
-                if (seg.isHistory()) {
-                    seg.release();
-                } else {
-                    Segment backSegment = SegmentUtils.newBackupSegment(whereSegmentKey);
-                    backSegment.putAllShowIndex(allShowIndex);
-                    backSegment.release();
                 }
             }
         }
