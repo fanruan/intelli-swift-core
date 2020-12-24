@@ -107,7 +107,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 FilePacket filePacket = fileInfoMap.getFilePacket(uuid);
                 int byteRead;
                 boolean isFileClose = false;
-                boolean isOverTime = new Date(System.currentTimeMillis()).getHours() > limitTransferHour;
+                boolean isOverTime = new Date(System.currentTimeMillis()).getHours() >= limitTransferHour;
                 if (start != -1 && start == sendLength) {
                     Long remainLength = 0L;
                     //如果randomAccessFile关闭了或者剩余传输的长度为0，则将文件关闭读操作
