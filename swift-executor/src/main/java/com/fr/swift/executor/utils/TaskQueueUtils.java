@@ -44,7 +44,7 @@ public class TaskQueueUtils {
         boolean hasConflict = false;
         int position = 0;
         for (ExecutorTask executorTask : TaskRouter.getInstance().getTaskView(true).getValue()) {
-            if (executorTask.getTaskContent().contains(key) && executorTask.getExecutorTaskType().equals(SwiftTaskType.PLANNING)) {
+            if (executorTask.getTaskContent().contains(key) && !executorTask.getExecutorTaskType().equals(SwiftTaskType.PLANNING)) {
                 TaskRouter.getInstance().moveTask(executorTask, position++);
                 hasConflict = true;
             }
@@ -56,5 +56,14 @@ public class TaskQueueUtils {
                     .map(ExecutorTask::getTaskContent).anyMatch(k -> k.contains(key));
         }
         return hasConflict;
+    }
+
+    /**
+     * 节点trigger的时候掉线 trigger会再次读取数据库放入consumeQueue
+     */
+    public static boolean hasRepeatRunningTask(String lockKey, String key) {
+        return ((int) ConsumeQueue.getInstance().getTaskList().stream()
+                .filter(task -> task.getLockKey().equals(lockKey) && task.getTaskContent().contains(key))
+                .count()) > 1;
     }
 }

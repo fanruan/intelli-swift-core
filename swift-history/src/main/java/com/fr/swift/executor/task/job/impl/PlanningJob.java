@@ -6,6 +6,7 @@ import com.fr.swift.executor.task.bean.MigrateBean;
 import com.fr.swift.executor.task.bean.PlanningBean;
 import com.fr.swift.executor.task.info.ClearConflictInfo;
 import com.fr.swift.executor.task.info.MigScheduleInfo;
+import com.fr.swift.executor.task.info.MigTriggerInfo;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.executor.task.job.schedule.MigrateScheduleJob;
 import com.fr.swift.executor.task.job.trigger.MigrateTriggerJob;
@@ -63,8 +64,10 @@ public class PlanningJob extends BaseJob<Boolean, PlanningBean> {
             }
             return true;
         } else if (Objects.equals(MigTaskType.MIGRATE_TRIGGER, type)) {
-            MigrateTriggerJob.getInstance().triggerMigrate();
-            return true;
+            if (!TaskQueueUtils.hasRepeatRunningTask(MigTaskType.MIGRATE_TRIGGER.name(), ((MigTriggerInfo) planningBean.getTaskInfo()).getMigrateIndex())) {
+                MigrateTriggerJob.getInstance().triggerMigrate();
+                return true;
+            }
         } else if (Objects.equals(MigTaskType.CLEAR_CONFLICT, type)) {
             String migrateIndex = ((ClearConflictInfo) planningBean.getTaskInfo()).getMigrateIndex();
             TaskQueueUtils.clearConflictTasks(((ClearConflictInfo) planningBean.getTaskInfo()).getMigrateIndex());
