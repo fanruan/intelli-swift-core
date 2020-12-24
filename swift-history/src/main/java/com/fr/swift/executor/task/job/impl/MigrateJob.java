@@ -15,6 +15,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceContext;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
@@ -96,9 +97,9 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 SwiftLoggers.getLogger().error(e);
                 return false;
             } finally {
-                Objects.requireNonNull(fileUploadClient).shutdownGroup();
                 MigrationZipUtils.delDir(zipPath);
                 MigrationZipUtils.delDir(zipName);
+                fileUploadClient.shutdownGroup();
             }
         } else {
             throw new Exception(String.format("migrate path %s error!", migratePath));
@@ -116,9 +117,14 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
     }
 
     private boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
+        int limitTransferHour = SwiftContext.get().getBean(SwiftNodeInfoService.class).getOwnNodeInfo().getLimitTransferHour();
+        if (new Date(System.currentTimeMillis()).getHours() > limitTransferHour) {
+            SwiftLoggers.getLogger().error("Netty transfer overtime!");
+            return false;
+        }
+        countDownLatch = new CountDownLatch(1);
         if (fileUploadClient.connect(ip, port, filePacket)) {
             if (fileUploadClient.writeAndFlush(filePacket)) {
-                countDownLatch = new CountDownLatch(1);
                 countDownLatch.await();
                 fileUploadClient.closeFuture();
                 return FileUploadClientHandler.isTransfer(uuid);

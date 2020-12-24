@@ -25,7 +25,7 @@ import java.util.List;
 @ChannelHandler.Sharable
 public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
     private static final int BLOCK_LENGTH = Integer.MAX_VALUE / 200;
-    //单例
+    //文件信息的缓存，缓存不同的传输，是一个单例。
     private static FileInfoMap fileInfoMap = FileInfoMap.getFileInfoMap();
     private int limitTransferHour;
 
@@ -40,12 +40,14 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
         return this;
     }
 
-    @Override    //当前channel激活的时候的时候触发  优先于channelRead方法执行
+    /**
+     * @description: 1.当前channel激活的时候的时候触发  优先于channelRead方法执行；
+     * 2.将文件分成BLOCK_LENGTH大小；
+     * 3.存储文件信息，然后发送；
+     * 4.添加一个监听器，当发送失败的时候抛出异常。
+     */
+    @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        if (new Date(System.currentTimeMillis()).getHours() > limitTransferHour) {
-            MigrateJob.countDown();
-            throw new NettyTransferOvertimeException();
-        }
         List<FileInfo> unStartedList = fileInfoMap.getUnStarted();
         for (FileInfo fileInfo : unStartedList) {
             FilePacket filePacket = fileInfo.getFilePacket();
@@ -55,9 +57,8 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
             }
             RandomAccessFile randomAccessFile = new RandomAccessFile(filePacket.getFile(), "r");
             randomAccessFile.seek(filePacket.getStartPos());
-            int lastLength = BLOCK_LENGTH > filePacket.getFile().length() ? (int) filePacket.getFile().length() : BLOCK_LENGTH;
             //每次发送的文件块数的长度
-//            int lastLength = 3 * 1024;
+            int lastLength = BLOCK_LENGTH > filePacket.getFile().length() ? (int) filePacket.getFile().length() : BLOCK_LENGTH;
             byte[] bytes = new byte[lastLength];
             long sendLength = 0;
             sendLength += lastLength;
@@ -83,7 +84,16 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    @Override  //当前channel从远端读取到数据时触发
+    //，将文件分割出BLOCK_LENGTH的大小
+
+    /**
+     * @description: 1.当前channel从远端读取到数据时触发；
+     * 2.将远端读的消息解析成start位置和uuid；
+     * 3.根据uuid获得之前缓存的文件信息；
+     * 4.根据判断start判断文件是否传输完成或者是否超时，如果传输完成或超时则结束传输；
+     * 4.若正常流程，则将文件分成BLOCK_LENGTH大小发送，逻辑与上相似。
+     */
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof String) {    //客户端发送FilePacket 到服务端，服务端处理完文件当前部分的数据，返回下次文件段的起始位置
             String message = (String) msg;
@@ -100,6 +110,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                 boolean isOverTime = new Date(System.currentTimeMillis()).getHours() > limitTransferHour;
                 if (start != -1 && start == sendLength) {
                     Long remainLength = 0L;
+                    //如果randomAccessFile关闭了或者剩余传输的长度为0，则将文件关闭读操作
                     try {
                         remainLength = randomAccessFile.length() - start;
                     } catch (Exception e) {
@@ -108,6 +119,7 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                     if (remainLength <= 0L) {
                         isFileClose = true;
                     }
+                    //如果超时了或者文件锁了就不执行
                     if ((!isFileClose) && (!isOverTime)) {
                         int lastlength = lastLength;
                         if (remainLength < lastlength) {
@@ -125,8 +137,8 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
                             filePacket.setEndPos(byteRead)
                                     .setBytes(bytes)
                                     .setFirst(false);
-                            FileInfo fileInfo = fileInfoMap.get(uuid);
-                            fileInfo.memoryInfo(sendLength, byteRead, randomAccessFile, lastLength, filePacket);
+                            //存储该次分割的信息
+                            fileInfoMap.get(uuid).memoryInfo(sendLength, byteRead, randomAccessFile, lastLength, filePacket);
                             ChannelFuture channelFuture = ctx.writeAndFlush(filePacket);
                             channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
                                 if (!channelFuture1.isSuccess()) {
@@ -165,7 +177,4 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
         return fileInfoMap.isTransferred(uuid);
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Date(System.currentTimeMillis()).getHours() < 8);
-    }
 }
