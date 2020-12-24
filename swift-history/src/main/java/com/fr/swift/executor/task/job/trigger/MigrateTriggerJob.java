@@ -73,7 +73,7 @@ public class MigrateTriggerJob {
         try {
             // 等待时间过长, 本次失败
             int curHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-            if (curHour > nodeInfo.getLimitStartHour()) {
+            if (curHour >= nodeInfo.getLimitStartHour()) {
                 SwiftLoggers.getLogger().warn("The end hour {} of preparing for migration exceeded the expected time", curHour);
                 return;
             }
