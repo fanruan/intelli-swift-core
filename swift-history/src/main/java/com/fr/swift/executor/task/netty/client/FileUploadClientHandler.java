@@ -42,6 +42,10 @@ public class FileUploadClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override    //当前channel激活的时候的时候触发  优先于channelRead方法执行
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        if (new Date(System.currentTimeMillis()).getHours() > limitTransferHour) {
+            MigrateJob.countDown();
+            throw new NettyTransferOvertimeException();
+        }
         List<FileInfo> unStartedList = fileInfoMap.getUnStarted();
         for (FileInfo fileInfo : unStartedList) {
             FilePacket filePacket = fileInfo.getFilePacket();
