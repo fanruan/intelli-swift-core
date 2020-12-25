@@ -39,7 +39,6 @@ public class TaskQueueUtils {
         getTaskRetryer().call(() -> TaskQueueUtils.increaseTaskPriority(migrateIndex));
     }
 
-    //H.J TODO : 2020/12/22 为啥执行两边啊啊
     private static boolean increaseTaskPriority(String key) {
         SwiftLoggers.getLogger().info("start to check and move index {} related tasks first", key);
         boolean hasConflict = false;
