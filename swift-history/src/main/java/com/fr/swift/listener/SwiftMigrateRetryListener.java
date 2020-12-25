@@ -3,10 +3,10 @@ package com.fr.swift.listener;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.dao.NodeInfoService;
 import com.fr.swift.event.SwiftEventDispatcher;
-import com.fr.swift.event.SwiftEventListener;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.TaskService;
 import com.fr.swift.service.event.NodeEvent;
+import com.fr.swift.service.event.NodeMessage;
 
 /**
  * @author Heng.J
@@ -14,7 +14,7 @@ import com.fr.swift.service.event.NodeEvent;
  * @description
  * @since swift-1.2.0
  */
-public class SwiftMigrateRetryListener implements SwiftEventListener<String> {
+public class SwiftMigrateRetryListener implements MigStrategyListener {
 
     private static final SwiftMigrateRetryListener LISTENER = new SwiftMigrateRetryListener();
 
@@ -31,7 +31,8 @@ public class SwiftMigrateRetryListener implements SwiftEventListener<String> {
     }
 
     @Override
-    public void on(String clusterId) {
+    public void on(NodeMessage nodeMessage) {
+        String clusterId = nodeMessage.getClusterId();
         SwiftLoggers.getLogger().info("Start to update or retry distribute migrateTask to {} ", clusterId);
         nodeInfoService.getMigrateInfosById(clusterId).stream().findFirst().ifPresent(taskInfo -> taskService.distributeTask(taskInfo, clusterId));
     }

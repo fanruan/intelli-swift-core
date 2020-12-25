@@ -44,6 +44,8 @@ public interface ExecutorTaskService {
 
     List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes);
 
+    List<SwiftExecutorTaskEntity> getMigRelatedTasks(long beginTime, long endTime, String type, String... likes);
+
     void delete(final ExecutorTask executorTask);
 
     ExecutorTask get(String taskId);

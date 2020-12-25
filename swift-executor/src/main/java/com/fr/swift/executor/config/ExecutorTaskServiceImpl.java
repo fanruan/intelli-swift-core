@@ -68,6 +68,11 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
+    public List<SwiftExecutorTaskEntity> getMigRelatedTasks(long beginTime, long endTime, String type, String... likes) {
+        return convertService.getMigRelatedTasks(beginTime, endTime, type, likes);
+    }
+
+    @Override
     public void delete(ExecutorTask executorTask) {
         convertService.delete(executorTask);
     }

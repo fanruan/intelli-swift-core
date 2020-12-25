@@ -47,7 +47,15 @@ public interface NodeInfoService {
      */
     int getReadyStatusById(String clusterId);
 
-    void updateReadyStatusById(String clusterId);
+    /**
+     * 更新某个节点迁移准备状态
+     */
+    void updateReadyStatusById(String clusterId, int status);
+
+    /**
+     * 获取某个节点计划的迁移indexes
+     */
+    List<String> getPreMigIndexById(String clusterId);
 
     /**
      * 获取节点明细配置
@@ -85,7 +93,7 @@ public interface NodeInfoService {
     void blockNodeMigIndex(String clusterId, String blockIndex);
 
     /**
-     * 更新主节点记录的迁移锁住月份
+     * 对blockIndex的所有节点非RUNNING则更新为空
      */
-    void updateBlockMigIndex(String clusterId);
+    void updateBlockMigIndex(String blockIndex);
 }
