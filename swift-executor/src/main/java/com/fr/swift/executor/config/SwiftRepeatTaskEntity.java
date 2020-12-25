@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * @author Heng.J
@@ -31,7 +32,7 @@ public class SwiftRepeatTaskEntity implements Serializable {
     }
 
     public SwiftRepeatTaskEntity(String repeatKey, String taskContent) {
-        this.id = String.valueOf(System.nanoTime());
+        this.id = UUID.randomUUID().toString();
         this.repeatKey = repeatKey;
         this.taskContent = taskContent;
     }
