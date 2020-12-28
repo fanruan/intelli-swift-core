@@ -78,7 +78,7 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
     }
 
     @Override
-    public List<Object[]> getMaxtimeByContent(String... likes) {
+    public List<Object[]> getMaxtimeByContent(List<String> executorTaskType, String... likes) {
         StringBuffer hql = new StringBuffer("select s.dbStatusType,max(s.createTime) from SwiftExecutorTaskEntity s ");
         StringBuffer likeHql = new StringBuffer();
         if (likes.length > 0) {
@@ -91,11 +91,13 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
                 likeHql.append(" s.taskContent like :like").append(i);
             }
         }
+        likeHql.append(" and s.executorTaskType in (:executorTaskType)");
         hql.append(likeHql).append(" group by s.dbStatusType");
         final List<Object[]> select = dao.select(hql.toString(), query -> {
             for (int i = 0; i < likes.length; i++) {
                 query.setParameter("like" + i, "%" + likes[i] + "%");
             }
+            query.setParameter("executorTaskType", executorTaskType);
         });
         return select;
     }

@@ -91,7 +91,7 @@ public class SwiftDeleteProcessHandler extends BaseProcessHandler implements Del
      * @param where
      * @param url
      */
-    private void backupDeletion(SourceKey sourceKey, Where where, URL url) {
+    protected void backupDeletion(SourceKey sourceKey, Where where, URL url) {
         ExecutorTaskService executorTaskService = SwiftContext.get().getBean(ExecutorTaskService.class);
         try {
             if (!isSelf(url)) {
@@ -102,7 +102,7 @@ public class SwiftDeleteProcessHandler extends BaseProcessHandler implements Del
         }
     }
 
-    private void backupDeletion(SourceKey sourceKey, Where where, String clusterId) {
+    protected void backupDeletion(SourceKey sourceKey, Where where, String clusterId) {
         backupDeletion(sourceKey, where, UrlSelector.getInstance().getFactory().getURL(clusterId));
     }
 
