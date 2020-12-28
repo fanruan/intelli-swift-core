@@ -38,7 +38,7 @@ public interface ExecutorTaskService {
      * @param likes
      * @return
      */
-    List<Object[]> getMaxtimeByContent(String... likes);
+    List<Object[]> getMaxtimeByContent(List<String> executorTaskType, String... likes);
 
     SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes);
 
