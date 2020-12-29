@@ -51,6 +51,12 @@ public class MonthMigInterval implements MigInterval {
     }
 
     @Override
+    public boolean containsIndex(String index) {
+        YearMonth temp = TimeUtils.strToYearMonth(index);
+        return this.begin.compareTo(temp) <= 0 && this.end.compareTo(temp) >= 0;
+    }
+
+    @Override
     public List<String> getIndexCoverRange() {
         List<String> result = new ArrayList<>();
         YearMonth temp = this.begin;
