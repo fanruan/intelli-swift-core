@@ -124,6 +124,10 @@ class BaseQueryBuilder {
                 ColumnKey columnKey = detailFilterInfo.getColumnKey();
                 Column column = segment.getColumn(columnKey);
                 DictionaryEncodedColumn dictionaryEncodedColumn = column.getDictionaryEncodedColumn();
+                // 考虑整个块只有null值的情况
+                if (dictionaryEncodedColumn.size() <= 1) {
+                    return false;
+                }
                 SwiftMetaDataColumn metaDataColumn = segment.getMetaData().getColumn(columnKey.getName());
                 Comparator asc = getComparator(ColumnTypeUtils.getClassType(metaDataColumn));
                 Set setValues = (Set) detailFilterInfo.getFilterValue();
