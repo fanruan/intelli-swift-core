@@ -31,14 +31,16 @@ import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.exception.LambdaWrapper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,11 +81,16 @@ class BaseQueryBuilder {
             List<FilterInfo> childrenFilterInfoList = generalFilterInfo.getChildren();
             if (generalFilterInfo.getType() == GeneralFilterInfo.OR) {
                 // 或判断必须遍历完成
-                Set<String> set = new HashSet<>();
+                Set<String> set = null;
                 for (FilterInfo filter : childrenFilterInfoList) {
-                    set.addAll(dfsSearch(filter, idSegments));
+                    Set<String> subIndexSet = dfsSearch(filter, idSegments);
+                    if (set == null) {
+                        set = subIndexSet;
+                    } else {
+                        set.addAll(dfsSearch(filter, idSegments));
+                    }
                 }
-
+                return set;
             } else {
                 Set<String> set = null;
                 for (FilterInfo filter : childrenFilterInfoList) {
@@ -115,12 +122,14 @@ class BaseQueryBuilder {
         switch (detailFilterInfo.getType()) {
             // 利用字典值有序的条件，在in这种情况下，过滤的值一定大于或等于字典第一个值，小于或等于最后一个值，任意一个满足条件即可，时间复杂度O(n),n为filter取值的个数
             case IN: {
-                Column column = segment.getColumn(detailFilterInfo.getColumnKey());
+                ColumnKey columnKey = detailFilterInfo.getColumnKey();
+                Column column = segment.getColumn(columnKey);
                 DictionaryEncodedColumn dictionaryEncodedColumn = column.getDictionaryEncodedColumn();
+                SwiftMetaDataColumn metaDataColumn = segment.getMetaData().getColumn(columnKey.getName());
+                Comparator asc = getComparator(ColumnTypeUtils.getClassType(metaDataColumn));
+                Set setValues = (Set) detailFilterInfo.getFilterValue();
                 Object start = dictionaryEncodedColumn.getValue(1);
                 Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
-                Comparator asc = Comparators.asc();
-                Set<Object> setValues = (Set<Object>) detailFilterInfo.getFilterValue();
                 for (Object tempValue : setValues) {
                     if (asc.compare(tempValue, start) >= 0 && asc.compare(tempValue, end) <= 0) {
                         return true;
@@ -146,6 +155,19 @@ class BaseQueryBuilder {
         }
     }
 
+    private static Comparator<?> getComparator(ColumnTypeConstants.ClassType classType) {
+        switch (classType) {
+            case INTEGER:
+            case LONG:
+            case DATE:
+            case DOUBLE:
+                return Comparators.asc();
+            case STRING:
+                return Comparators.STRING_ASC;
+            default:
+                throw new IllegalStateException(String.format("unsupported type %s", classType));
+        }
+    }
 
     static List<SegmentKey> filterQuerySegKeys(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         SourceKey table = queryInfo.getTable();
