@@ -79,20 +79,19 @@ class BaseQueryBuilder {
         if (filterInfo instanceof GeneralFilterInfo) {
             GeneralFilterInfo generalFilterInfo = (GeneralFilterInfo) filterInfo;
             List<FilterInfo> childrenFilterInfoList = generalFilterInfo.getChildren();
+            Set<String> set = null;
             if (generalFilterInfo.getType() == GeneralFilterInfo.OR) {
                 // 或判断必须遍历完成
-                Set<String> set = null;
                 for (FilterInfo filter : childrenFilterInfoList) {
                     Set<String> subIndexSet = dfsSearch(filter, idSegments);
                     if (set == null) {
                         set = subIndexSet;
                     } else {
-                        set.addAll(dfsSearch(filter, idSegments));
+                        set.addAll(subIndexSet);
                     }
                 }
                 return set;
             } else {
-                Set<String> set = null;
                 for (FilterInfo filter : childrenFilterInfoList) {
                     Set<String> subIndexSet = dfsSearch(filter, idSegments);
                     if (set == null) {
