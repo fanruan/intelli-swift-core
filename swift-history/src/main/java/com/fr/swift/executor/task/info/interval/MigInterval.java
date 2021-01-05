@@ -28,6 +28,8 @@ public interface MigInterval {
 
     void addOnePeriod();
 
+    boolean containsIndex(String index);
+
     List<String> getIndexCoverRange();
 
     List<String> getPreMigIndex();

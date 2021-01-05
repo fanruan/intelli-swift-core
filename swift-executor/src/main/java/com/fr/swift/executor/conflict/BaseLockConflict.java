@@ -55,7 +55,7 @@ public class BaseLockConflict implements LockConflict {
         if (sourceKey != null && !sourceKey.equals(other.getSourceKey())) {
             return false;
         }
-        if (executorTaskType != null && !executorTaskType.contains(other.getExecutorTaskType().name())) {
+        if (!executorTaskType.isEmpty() && !executorTaskType.contains(other.getExecutorTaskType().name())) {
             return false;
         }
         if (lockKey != null && !lockKey.equals(other.getLockKey())) {

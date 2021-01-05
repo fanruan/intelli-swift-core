@@ -22,14 +22,17 @@ public class ApiCrasher {
     }
 
     public static <T> T crash(int errorCode, Throwable t) {
-        return crash(errorCode, t.getMessage(), t);
+        return crash(errorCode, t.getMessage());
     }
 
+    // FIXME: 2020/12/15 server&client jar冲突导致无法序列化，暂时弃用
+    @Deprecated
     public static <T> T crash(int errorCode, String msg, Throwable t) {
         solveThrowable(errorCode, t);
         throw new ApiRequestRuntimeException(errorCode, msg, t);
     }
 
+    @Deprecated
     private static void solveThrowable(int errorCode, Throwable t) {
         if (t instanceof InvocationTargetException) {
             Throwable target = ((InvocationTargetException) t).getTargetException();

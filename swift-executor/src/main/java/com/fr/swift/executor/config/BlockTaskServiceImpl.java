@@ -30,6 +30,11 @@ public class BlockTaskServiceImpl implements BlockTaskService {
     }
 
     @Override
+    public void deleteById(String id) {
+        dao.deleteQuery((query, builder, from) -> query.select(from).where(builder.equal(from.get("id"), id)));
+    }
+
+    @Override
     public void deleteByBlockIndex(String blockIndex) {
         dao.deleteQuery((query, builder, from) ->
                 query.select(from).where(builder.equal(from.get("blockingIndex"), blockIndex)));

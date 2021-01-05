@@ -3,6 +3,8 @@ package com.fr.swift.util;
 import java.time.Period;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author Heng.J
@@ -11,6 +13,8 @@ import java.time.format.DateTimeFormatter;
  * @since swift-1.2.0
  */
 public class TimeUtils {
+
+    //TODO : 2020/12/22 把这个和cloud的整合一下
 
     private static final DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("yyyyMM");
 
@@ -24,5 +28,19 @@ public class TimeUtils {
 
     public static String addOneMonth(String yearMonth) {
         return ymToString(strToYearMonth(yearMonth).plus(Period.ofMonths(1)));
+    }
+
+    public static Date firstTimeOfDay(Date currentTime) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(currentTime);
+        //将小时至0
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        //将分钟至0
+        c.set(Calendar.MINUTE, 0);
+        //将秒至0
+        c.set(Calendar.SECOND, 0);
+        //将毫秒至0
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTime();
     }
 }

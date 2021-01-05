@@ -73,7 +73,7 @@ public class MigrateTriggerJob {
         try {
             // 等待时间过长, 本次失败
             int curHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-            if (curHour > nodeInfo.getLimitStartHour()) {
+            if (curHour >= nodeInfo.getLimitStartHour()) {
                 SwiftLoggers.getLogger().warn("The end hour {} of preparing for migration exceeded the expected time", curHour);
                 return;
             }
@@ -82,6 +82,9 @@ public class MigrateTriggerJob {
 
             // 执行块合并
             collateMigSegments(migSegments);
+
+            // 更新合并后相关seg
+            migSegments = getMigSegmentsByHashType(nodeInfo.getRelatedHashType());
 
             // 执行迁移
             migrateSuccess = MigrateExecutorTask.of(migrateBean).getJob().call();
@@ -123,7 +126,8 @@ public class MigrateTriggerJob {
                 Lists.partition(entry.getValue(), COLLATE_BATCH_SIZE)
                         .forEach(LambdaWrapper.rethrowConsumer(segKeys -> collateService.appointCollate(entry.getKey(), segKeys)));
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 
@@ -146,7 +150,8 @@ public class MigrateTriggerJob {
             // 远程换存新增
             ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
             serviceContext.updateConfigs(segmentKeys, migrateBean.getMigrateTarget());
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
         }
     }
 
