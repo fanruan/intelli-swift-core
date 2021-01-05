@@ -8,12 +8,14 @@ import com.fr.swift.executor.task.bean.MigrateBean;
 import com.fr.swift.executor.task.constants.PathConstants;
 import com.fr.swift.executor.task.job.BaseJob;
 import com.fr.swift.executor.task.netty.client.FileUploadClient;
+import com.fr.swift.executor.task.netty.client.FileUploadClientHandler;
 import com.fr.swift.executor.task.netty.protocol.FilePacket;
 import com.fr.swift.executor.task.utils.MigrationZipUtils;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.service.ServiceContext;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
@@ -30,6 +32,8 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
     private SwiftNodeInfoService nodeInfoService = SwiftContext.get().getBean(SwiftNodeInfoService.class);
 
     private MigrateBean migrateBean;
+
+    private String uuid;
 
     public MigrateJob(MigrateBean migrateBean) {
         this.migrateBean = migrateBean;
@@ -59,6 +63,7 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
         }
         if (migrateFile.isDirectory()) {
             try {
+                fileUploadClient = new FileUploadClient();
                 File[] filesBeforeZip = migrateFile.listFiles();
                 new File(zipPath).mkdirs();
                 for (File file : Objects.requireNonNull(filesBeforeZip)) {
@@ -68,11 +73,11 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
 
                 //netty传输
                 FilePacket filePacket = new FilePacket();
+                uuid = filePacket.getUuid();
                 File file = new File(zipName);
                 filePacket.setFile(file);
                 filePacket.setStartPos(0);     //要传输的文件的初始信息
                 filePacket.setTargetPath(targetPath);
-                fileUploadClient = new FileUploadClient();
 
                 String[] addressArray = targetNodeInfo.getMigServerAddress().split(":");
                 String ip = addressArray[0];
@@ -92,9 +97,9 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
                 SwiftLoggers.getLogger().error(e);
                 return false;
             } finally {
-                Objects.requireNonNull(fileUploadClient).shutdownGroup();
                 MigrationZipUtils.delDir(zipPath);
                 MigrationZipUtils.delDir(zipName);
+                fileUploadClient.shutdownGroup();
             }
         } else {
             throw new Exception(String.format("migrate path %s error!", migratePath));
@@ -111,13 +116,18 @@ public class MigrateJob extends BaseJob<Boolean, MigrateBean> {
         countDownLatch.countDown();
     }
 
-    private static boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
+    private boolean uploadFile(FileUploadClient fileUploadClient, String ip, int port, FilePacket filePacket) throws InterruptedException {
+        int limitTransferHour = SwiftContext.get().getBean(SwiftNodeInfoService.class).getOwnNodeInfo().getLimitTransferHour();
+        if (new Date(System.currentTimeMillis()).getHours() >= limitTransferHour) {
+            SwiftLoggers.getLogger().error("Transfer start overtime!");
+            return false;
+        }
+        countDownLatch = new CountDownLatch(1);
         if (fileUploadClient.connect(ip, port, filePacket)) {
             if (fileUploadClient.writeAndFlush(filePacket)) {
-                countDownLatch = new CountDownLatch(1);
                 countDownLatch.await();
                 fileUploadClient.closeFuture();
-                return true;
+                return FileUploadClientHandler.isTransfer(uuid);
             }
         }
         return false;

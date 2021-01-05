@@ -7,7 +7,9 @@ import com.fr.swift.executor.type.DBStatusType;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.util.Optional;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +78,7 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
     }
 
     @Override
-    public List<Object[]> getMaxtimeByContent(String... likes) {
+    public List<Object[]> getMaxtimeByContent(List<String> executorTaskType, String... likes) {
         StringBuffer hql = new StringBuffer("select s.dbStatusType,max(s.createTime) from SwiftExecutorTaskEntity s ");
         StringBuffer likeHql = new StringBuffer();
         if (likes.length > 0) {
@@ -89,11 +91,13 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
                 likeHql.append(" s.taskContent like :like").append(i);
             }
         }
+        likeHql.append(" and s.executorTaskType in (:executorTaskType)");
         hql.append(likeHql).append(" group by s.dbStatusType");
         final List<Object[]> select = dao.select(hql.toString(), query -> {
             for (int i = 0; i < likes.length; i++) {
                 query.setParameter("like" + i, "%" + likes[i] + "%");
             }
+            query.setParameter("executorTaskType", executorTaskType);
         });
         return select;
     }
@@ -118,13 +122,7 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
     @Override
     public List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes) {
         final List<SwiftExecutorTaskEntity> tasks = dao.selectQuery((query, builder, from) -> {
-            List<Predicate> predicateList = new ArrayList<>();
-            for (String v : likes) {
-                Predicate taskContent = builder.like(from.get("taskContent"), "%" + v + "%");
-                predicateList.add(taskContent);
-            }
-            predicateList.add(builder.gt(from.get("createTime"), beginTime));
-            predicateList.add(builder.lt(from.get("createTime"), endTime));
+            List<Predicate> predicateList = getTimeAndContentPredicate(beginTime, endTime, builder, from, likes);
             predicateList.add(builder.equal(from.get("dbStatusType"), DBStatusType.REPEAT));
             query.select(from).where(predicateList.toArray(new Predicate[]{}));
         });
@@ -132,6 +130,30 @@ class ExecutorTaskConvertService implements ExecutorTaskService {
             return Collections.emptyList();
         }
         return tasks;
+    }
+
+    @Override
+    public List<SwiftExecutorTaskEntity> getMigRelatedTasks(long beginTime, long endTime, String type, String... likes) {
+        final List<SwiftExecutorTaskEntity> tasks = dao.selectQuery((query, builder, from) -> {
+            List<Predicate> predicateList = getTimeAndContentPredicate(beginTime, endTime, builder, from, likes);
+            predicateList.add(builder.equal(from.get("lockKey"), type));
+            query.select(from).where(predicateList.toArray(new Predicate[]{}));
+        });
+        if (tasks.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return tasks;
+    }
+
+    private List<Predicate> getTimeAndContentPredicate(long beginTime, long endTime, CriteriaBuilder builder, Root from, String[] likes) {
+        List<Predicate> predicateList = new ArrayList<>();
+        for (String v : likes) {
+            Predicate taskContent = builder.like(from.get("taskContent"), "%" + v + "%");
+            predicateList.add(taskContent);
+        }
+        predicateList.add(builder.gt(from.get("createTime"), beginTime));
+        predicateList.add(builder.lt(from.get("createTime"), endTime));
+        return predicateList;
     }
 
     @Override

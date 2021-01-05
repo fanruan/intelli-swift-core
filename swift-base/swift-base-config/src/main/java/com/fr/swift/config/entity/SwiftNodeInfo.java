@@ -49,4 +49,8 @@ public interface SwiftNodeInfo {
     int getReadyStatus();
 
     void setReadyStatus(int isReady);
+
+    int getLimitTransferHour();
+
+    void setLimitTransferHour(int limitTransferHour);
 }

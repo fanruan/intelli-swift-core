@@ -38,7 +38,7 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
                 }
                 start = start + byteRead;
                 //                ctx.writeAndFlush(new ACKPacket(start,!this.isNext)); 
-                ctx.writeAndFlush(start);
+                ctx.writeAndFlush(replyMessage(start, filePacket.getUuid()));
                 if (filePacket.isEnd()) {
                     fileWriteLock = true;
                     SwiftLoggers.getLogger().info("finished transfer to " + filePacket.getTargetPath());
@@ -51,5 +51,9 @@ public class FileUploadServerHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
         ctx.close();
+    }
+
+    private String replyMessage(long start, String uuid) {
+        return start + "/" + uuid;
     }
 }

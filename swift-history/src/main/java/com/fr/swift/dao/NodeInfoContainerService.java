@@ -48,8 +48,13 @@ public class NodeInfoContainerService implements NodeInfoService {
     }
 
     @Override
-    public void updateReadyStatusById(String clusterId) {
-        NodeInfoContainer.MASTER.updateReadyStatusById(clusterId);
+    public void updateReadyStatusById(String clusterId, int status) {
+        NodeInfoContainer.MASTER.updateReadyStatusById(clusterId, status);
+    }
+
+    @Override
+    public List<String> getPreMigIndexById(String clusterId) {
+        return NodeInfoContainer.MASTER.getPreMigIndexById(clusterId);
     }
 
     @Override
@@ -88,7 +93,7 @@ public class NodeInfoContainerService implements NodeInfoService {
     }
 
     @Override
-    public void updateBlockMigIndex(String clusterId) {
-        NodeInfoContainer.MASTER.updateBlockMigIndex(clusterId);
+    public void updateBlockMigIndex(String blockIndex) {
+        NodeInfoContainer.MASTER.updateBlockMigIndex(blockIndex);
     }
 }

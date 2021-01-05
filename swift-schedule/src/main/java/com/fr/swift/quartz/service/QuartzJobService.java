@@ -29,4 +29,6 @@ public interface QuartzJobService extends LifeCycle {
     JobDetail getJobDetail(JobKey jobKey, Class<? extends Job> jobClass);
 
     Set<JobKey> getExistJobKeys() throws SchedulerException;
+
+    Set<JobKey> getExecutingJobKeys() throws SchedulerException;
 }

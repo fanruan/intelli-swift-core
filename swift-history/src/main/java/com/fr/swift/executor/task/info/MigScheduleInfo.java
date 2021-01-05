@@ -1,7 +1,7 @@
 package com.fr.swift.executor.task.info;
 
 import com.fr.swift.executor.task.bean.MigrateBean;
-import com.fr.swift.executor.type.SwiftTaskType;
+import com.fr.swift.executor.task.type.MigTaskType;
 
 /**
  * @author Heng.J
@@ -40,7 +40,7 @@ public class MigScheduleInfo implements PlanningInfo {
     }
 
     @Override
-    public SwiftTaskType type() {
-        return SwiftTaskType.MIGRATE_SCHEDULE;
+    public MigTaskType type() {
+        return MigTaskType.MIGRATE_SCHEDULE;
     }
 }
