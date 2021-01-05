@@ -1,16 +1,12 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.compare.Comparators;
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftTableAllotRule;
 import com.fr.swift.config.service.SwiftTableAllotRuleService;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.funnel.FunnelComplexColumn;
-import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.filter.info.GeneralFilterInfo;
-import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.info.IndexInfo;
@@ -30,21 +26,13 @@ import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.ColumnTypeConstants;
-import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.util.exception.LambdaWrapper;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author anchore
@@ -57,119 +45,7 @@ class BaseQueryBuilder {
     static List<Segment> filterQuerySegs(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(queryInfo);
 //        return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
-        return getDetailSegment(queryInfo.getFilterInfo(), segmentKeyList);
-    }
-
-    /**
-     * 查询前优化，根据查询的信息来进行块的过滤
-     *
-     * @param filterInfo     过滤信息
-     * @param segmentKeyList 块列表
-     * @return 过滤好的块
-     * @throws SwiftMetaDataException
-     */
-    static List<Segment> getDetailSegment(FilterInfo filterInfo, List<SegmentKey> segmentKeyList) throws SwiftMetaDataException {
-        Map<String, Segment> idSegments = new HashMap<>();
-        segmentKeyList.forEach(segmentKey -> idSegments.put(segmentKey.getId(), SEG_SVC.getSegment(segmentKey)));
-        Set<String> strings = dfsSearch(filterInfo, idSegments);
-        return strings.stream().map(idSegments::get).collect(Collectors.toList());
-    }
-
-    static Set<String> dfsSearch(FilterInfo filterInfo, Map<String, Segment> idSegments) throws SwiftMetaDataException {
-        if (filterInfo instanceof GeneralFilterInfo) {
-            GeneralFilterInfo generalFilterInfo = (GeneralFilterInfo) filterInfo;
-            List<FilterInfo> childrenFilterInfoList = generalFilterInfo.getChildren();
-            Set<String> set = null;
-            if (generalFilterInfo.getType() == GeneralFilterInfo.OR) {
-                // 或判断必须遍历完成
-                for (FilterInfo filter : childrenFilterInfoList) {
-                    Set<String> subIndexSet = dfsSearch(filter, idSegments);
-                    if (set == null) {
-                        set = subIndexSet;
-                    } else {
-                        set.addAll(subIndexSet);
-                    }
-                }
-                return set;
-            } else {
-                for (FilterInfo filter : childrenFilterInfoList) {
-                    Set<String> subIndexSet = dfsSearch(filter, idSegments);
-                    if (set == null) {
-                        set = subIndexSet;
-                    } else {
-                        set.retainAll(subIndexSet);
-                    }
-                    // 与判断的提前终止
-                    if (set.isEmpty()) {
-                        return set;
-                    }
-                }
-                return set;
-            }
-        } else if (filterInfo instanceof SwiftDetailFilterInfo) {
-            SwiftDetailFilterInfo detailFilterInfo = (SwiftDetailFilterInfo) filterInfo;
-            return idSegments.entrySet().stream()
-                    .filter(LambdaWrapper.rethrowPredicate(stringSegmentEntry -> canAdd(detailFilterInfo, stringSegmentEntry.getValue())))
-                    .map(Map.Entry::getKey).collect(Collectors.toSet());
-        }
-        return idSegments.keySet();
-    }
-
-
-    static boolean canAdd(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
-        // todo::简易版，后续补充和优化
-        switch (detailFilterInfo.getType()) {
-            // 利用字典值有序的条件，在in这种情况下，过滤的值一定大于或等于字典第一个值，小于或等于最后一个值，任意一个满足条件即可，时间复杂度O(n),n为filter取值的个数
-            case IN: {
-                ColumnKey columnKey = detailFilterInfo.getColumnKey();
-                Column column = segment.getColumn(columnKey);
-                DictionaryEncodedColumn dictionaryEncodedColumn = column.getDictionaryEncodedColumn();
-                // 考虑整个块只有null值的情况
-                if (dictionaryEncodedColumn.size() <= 1) {
-                    return false;
-                }
-                SwiftMetaDataColumn metaDataColumn = segment.getMetaData().getColumn(columnKey.getName());
-                Comparator asc = getComparator(ColumnTypeUtils.getClassType(metaDataColumn));
-                Set setValues = (Set) detailFilterInfo.getFilterValue();
-                Object start = dictionaryEncodedColumn.getValue(1);
-                Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
-                for (Object tempValue : setValues) {
-                    if (asc.compare(tempValue, start) >= 0 && asc.compare(tempValue, end) <= 0) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            case STRING_LIKE:
-            case STRING_STARTS_WITH:
-            case STRING_ENDS_WITH:
-            case STRING_LIKE_IGNORE_CASE:
-            case NUMBER_IN_RANGE:
-            case NUMBER_AVERAGE:
-            case TOP_N:
-            case BOTTOM_N:
-            case NULL:
-            case FORMULA:
-            case KEY_WORDS:
-            case EMPTY:
-            case WORK_DAY:
-            default:
-                return true;
-        }
-    }
-
-    private static Comparator<?> getComparator(ColumnTypeConstants.ClassType classType) {
-        switch (classType) {
-            case INTEGER:
-            case LONG:
-            case DATE:
-            case DOUBLE:
-                return Comparators.asc();
-            case STRING:
-                return Comparators.STRING_ASC;
-            default:
-                throw new IllegalStateException(String.format("unsupported type %s", classType));
-        }
+        return QuerySegmentFilter.QUERY_SEGMENT_FILTER.getDetailSegment(queryInfo.getFilterInfo(), segmentKeyList);
     }
 
     static List<SegmentKey> filterQuerySegKeys(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
