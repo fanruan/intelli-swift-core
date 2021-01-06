@@ -20,6 +20,7 @@ import com.fr.swift.util.exception.LambdaWrapper;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,7 +90,7 @@ public enum QuerySegmentFilter {
         } else if (filterInfo instanceof NotFilterInfo) {
             NotFilterInfo notFilterInfo = (NotFilterInfo) filterInfo;
             FilterInfo children = notFilterInfo.getFilterInfo();
-            Set<String> result = idSegments.keySet();
+            Set<String> result = new HashSet<>(idSegments.keySet());
             result.removeAll(dfsSearch(children, idSegments));
             return result;
 
@@ -100,7 +101,7 @@ public enum QuerySegmentFilter {
                     .map(Map.Entry::getKey).collect(Collectors.toSet());
         }
         // 为其他情况准备的，一般是不会走到这里的
-        return idSegments.keySet();
+        return new HashSet<>(idSegments.keySet());
     }
 
     private boolean canAdd(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
