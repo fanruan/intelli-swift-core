@@ -100,7 +100,7 @@ public enum QuerySegmentFilter {
             case STRING_LIKE:
                 return true;
             case STRING_STARTS_WITH:
-                return true;
+                return judgeForStartWith(detailFilterInfo, segment);
             case STRING_ENDS_WITH:
                 return true;
             case STRING_LIKE_IGNORE_CASE:
@@ -130,7 +130,6 @@ public enum QuerySegmentFilter {
 
     private boolean judgeForIn(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
         // 利用字典值有序的条件，在in这种情况下，过滤的值一定大于或等于字典第一个值，小于或等于最后一个值，任意一个满足条件即可，时间复杂度O(n),n为filter取值的个数
-        // 考虑整个块只有null值的情况
         DictionaryEncodedColumn dictionaryEncodedColumn = segment.getColumn(detailFilterInfo.getColumnKey()).getDictionaryEncodedColumn();
         if (dictionaryEncodedColumn.size() <= 1) {
             return false;
@@ -147,6 +146,23 @@ public enum QuerySegmentFilter {
         return false;
     }
 
+
+    private boolean judgeForStartWith(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
+        DictionaryEncodedColumn dictionaryEncodedColumn = segment.getColumn(detailFilterInfo.getColumnKey()).getDictionaryEncodedColumn();
+        if (dictionaryEncodedColumn.size() <= 1) {
+            return false;
+        }
+        Comparator asc = getComparator(ColumnTypeUtils.getClassType(segment.getMetaData().getColumn(detailFilterInfo.getColumnKey().getName())));
+        Object likeValue = detailFilterInfo.getFilterValue();
+        Object start = dictionaryEncodedColumn.getValue(1);
+        Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
+        // start like 和  in filter 类似，原理差不多
+        if (asc.compare(likeValue, start) >= 0 && asc.compare(likeValue, end) <= 0) {
+            return true;
+        }
+        return false;
+    }
+
     private boolean judgeForNumberInRange(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
         DictionaryEncodedColumn dictionaryEncodedColumn = segment.getColumn(detailFilterInfo.getColumnKey()).getDictionaryEncodedColumn();
         if (dictionaryEncodedColumn.size() <= 1) {
@@ -156,7 +172,7 @@ public enum QuerySegmentFilter {
         SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) detailFilterInfo.getFilterValue();
         Object start = dictionaryEncodedColumn.getValue(1);
         Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
-        // 最大值比最小值大，或者最大值比最小值小，都是没有，分开写避免麻烦的类型转换问题，而且便于理解
+        // 最大值比最小值大，或者最大值比最小值小，都是没有，分开写避免麻烦的类型转换问题，而且便于理解，等号才能避免开闭区间的问题
         if (value.getMin().equals(Double.NEGATIVE_INFINITY)) {
             return asc.compare(start, value.getMax()) <= 0;
         } else if (value.getMax().equals(Double.POSITIVE_INFINITY)) {
