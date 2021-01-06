@@ -1,15 +1,18 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.SwiftContext;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.NotFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -83,12 +86,20 @@ public enum QuerySegmentFilter {
                 }
                 return set;
             }
+        } else if (filterInfo instanceof NotFilterInfo) {
+            NotFilterInfo notFilterInfo = (NotFilterInfo) filterInfo;
+            FilterInfo children = notFilterInfo.getFilterInfo();
+            Set<String> result = idSegments.keySet();
+            result.removeAll(dfsSearch(children, idSegments));
+            return result;
+
         } else if (filterInfo instanceof SwiftDetailFilterInfo) {
             SwiftDetailFilterInfo detailFilterInfo = (SwiftDetailFilterInfo) filterInfo;
             return idSegments.entrySet().stream()
                     .filter(LambdaWrapper.rethrowPredicate(stringSegmentEntry -> canAdd(detailFilterInfo, stringSegmentEntry.getValue())))
                     .map(Map.Entry::getKey).collect(Collectors.toSet());
         }
+        // 为其他情况准备的，一般是不会走到这里的
         return idSegments.keySet();
     }
 
@@ -114,7 +125,7 @@ public enum QuerySegmentFilter {
             case BOTTOM_N:
                 return true;
             case NULL:
-                return true;
+                return judgeForNull(detailFilterInfo, segment);
             case FORMULA:
                 return true;
             case KEY_WORDS:
@@ -180,6 +191,12 @@ public enum QuerySegmentFilter {
         } else {
             return asc.compare(end, value.getMin()) >= 0 && asc.compare(start, value.getMax()) <= 0;
         }
+    }
+
+    private boolean judgeForNull(SwiftDetailFilterInfo detailFilterInfo, Segment segment) {
+        Column column = segment.getColumn(detailFilterInfo.getColumnKey());
+        ImmutableBitMap nullIndex = column.getBitmapIndex().getNullIndex();
+        return nullIndex.getCardinality() > 0;
     }
 
 
