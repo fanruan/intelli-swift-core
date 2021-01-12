@@ -6,7 +6,6 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
-import com.fr.swift.query.filter.info.NotFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
@@ -87,14 +86,16 @@ public enum QuerySegmentFilter {
                 }
                 return set;
             }
-        } else if (filterInfo instanceof NotFilterInfo) {
-            NotFilterInfo notFilterInfo = (NotFilterInfo) filterInfo;
-            FilterInfo children = notFilterInfo.getFilterInfo();
-            Set<String> result = new HashSet<>(idSegments.keySet());
-            result.removeAll(dfsSearch(children, idSegments));
-            return result;
-
-        } else if (filterInfo instanceof SwiftDetailFilterInfo) {
+        }
+//        else if (filterInfo instanceof NotFilterInfo) {
+//            NotFilterInfo notFilterInfo = (NotFilterInfo) filterInfo;
+//            FilterInfo children = notFilterInfo.getFilterInfo();
+//            Set<String> result = new HashSet<>(idSegments.keySet());
+//            result.removeAll(dfsSearch(children, idSegments));
+//            return result;
+//
+//        }
+        else if (filterInfo instanceof SwiftDetailFilterInfo) {
             SwiftDetailFilterInfo detailFilterInfo = (SwiftDetailFilterInfo) filterInfo;
             return idSegments.entrySet().stream()
                     .filter(LambdaWrapper.rethrowPredicate(stringSegmentEntry -> canAdd(detailFilterInfo, stringSegmentEntry.getValue())))
