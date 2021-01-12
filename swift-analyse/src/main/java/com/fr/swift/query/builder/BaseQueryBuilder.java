@@ -45,7 +45,7 @@ class BaseQueryBuilder {
     static List<Segment> filterQuerySegs(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(queryInfo);
 //        return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
-        return QuerySegmentFilter.QUERY_SEGMENT_FILTER.getDetailSegment(queryInfo.getFilterInfo(), segmentKeyList);
+        return new QuerySegmentFilter().getDetailSegment(queryInfo.getFilterInfo(), segmentKeyList);
     }
 
     static List<SegmentKey> filterQuerySegKeys(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {

@@ -15,6 +15,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.exception.LambdaWrapper;
 
 import java.util.Comparator;
@@ -32,13 +33,13 @@ import java.util.stream.Collectors;
  * @description
  * @since swift-1.2.0
  */
-public enum QuerySegmentFilter {
-    /**
-     * 枚举单例真实块过滤器
-     */
-    QUERY_SEGMENT_FILTER;
+public class QuerySegmentFilter {
 
-    private final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
+
+    private static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
+    private Map<String, Segment> idSegments = new HashMap<>();
+    //    每个列都有缓存Comparators，省的重复拿比较器
+    private Map<String, Comparator> comparatorsCache = new HashMap<>();
 
     /**
      * 查询前优化，根据查询的信息来进行块的过滤
@@ -49,13 +50,12 @@ public enum QuerySegmentFilter {
      * @throws SwiftMetaDataException
      */
     public List<Segment> getDetailSegment(FilterInfo filterInfo, List<SegmentKey> segmentKeyList) throws SwiftMetaDataException {
-        Map<String, Segment> idSegments = new HashMap<>();
         segmentKeyList.forEach(segmentKey -> idSegments.put(segmentKey.getId(), SEG_SVC.getSegment(segmentKey)));
-        Set<String> strings = dfsSearch(filterInfo, idSegments);
+        Set<String> strings = dfsSearch(filterInfo);
         return strings.stream().map(idSegments::get).collect(Collectors.toList());
     }
 
-    private Set<String> dfsSearch(FilterInfo filterInfo, Map<String, Segment> idSegments) throws SwiftMetaDataException {
+    private Set<String> dfsSearch(FilterInfo filterInfo) throws SwiftMetaDataException {
         if (filterInfo instanceof GeneralFilterInfo) {
             GeneralFilterInfo generalFilterInfo = (GeneralFilterInfo) filterInfo;
             List<FilterInfo> childrenFilterInfoList = generalFilterInfo.getChildren();
@@ -63,7 +63,7 @@ public enum QuerySegmentFilter {
             if (generalFilterInfo.getType() == GeneralFilterInfo.OR) {
                 // 或判断必须遍历完成
                 for (FilterInfo filter : childrenFilterInfoList) {
-                    Set<String> subIndexSet = dfsSearch(filter, idSegments);
+                    Set<String> subIndexSet = dfsSearch(filter);
                     if (set == null) {
                         set = subIndexSet;
                     } else {
@@ -73,7 +73,7 @@ public enum QuerySegmentFilter {
                 return set;
             } else {
                 for (FilterInfo filter : childrenFilterInfoList) {
-                    Set<String> subIndexSet = dfsSearch(filter, idSegments);
+                    Set<String> subIndexSet = dfsSearch(filter);
                     if (set == null) {
                         set = subIndexSet;
                     } else {
@@ -87,6 +87,7 @@ public enum QuerySegmentFilter {
                 return set;
             }
         }
+        // todo::非绝对正确的判断，所以不能用非逻辑，否则会出错
 //        else if (filterInfo instanceof NotFilterInfo) {
 //            NotFilterInfo notFilterInfo = (NotFilterInfo) filterInfo;
 //            FilterInfo children = notFilterInfo.getFilterInfo();
@@ -101,7 +102,7 @@ public enum QuerySegmentFilter {
                     .filter(LambdaWrapper.rethrowPredicate(stringSegmentEntry -> canAdd(detailFilterInfo, stringSegmentEntry.getValue())))
                     .map(Map.Entry::getKey).collect(Collectors.toSet());
         }
-        // 为其他情况准备的，一般是不会走到这里的
+        // 为其他情况准备的
         return new HashSet<>(idSegments.keySet());
     }
 
@@ -147,7 +148,7 @@ public enum QuerySegmentFilter {
         if (dictionaryEncodedColumn.size() <= 1) {
             return false;
         }
-        Comparator asc = getComparator(ColumnTypeUtils.getClassType(segment.getMetaData().getColumn(detailFilterInfo.getColumnKey().getName())));
+        Comparator asc = getComparator(detailFilterInfo, segment);
         Set setValues = (Set) detailFilterInfo.getFilterValue();
         Object start = dictionaryEncodedColumn.getValue(1);
         Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
@@ -165,7 +166,7 @@ public enum QuerySegmentFilter {
         if (dictionaryEncodedColumn.size() <= 1) {
             return false;
         }
-        Comparator asc = getComparator(ColumnTypeUtils.getClassType(segment.getMetaData().getColumn(detailFilterInfo.getColumnKey().getName())));
+        Comparator asc = getComparator(detailFilterInfo, segment);
         Object likeValue = detailFilterInfo.getFilterValue();
         Object start = dictionaryEncodedColumn.getValue(1);
         Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
@@ -181,7 +182,7 @@ public enum QuerySegmentFilter {
         if (dictionaryEncodedColumn.size() <= 1) {
             return false;
         }
-        Comparator asc = getComparator(ColumnTypeUtils.getClassType(segment.getMetaData().getColumn(detailFilterInfo.getColumnKey().getName())));
+        Comparator asc = getComparator(detailFilterInfo, segment);
         SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) detailFilterInfo.getFilterValue();
         Object start = dictionaryEncodedColumn.getValue(1);
         Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
@@ -201,6 +202,11 @@ public enum QuerySegmentFilter {
         return nullIndex.getCardinality() > 0;
     }
 
+    private Comparator<?> getComparator(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
+        String columnName = detailFilterInfo.getColumnKey().getName();
+        SwiftMetaDataColumn column = segment.getMetaData().getColumn(columnName);
+        return comparatorsCache.computeIfAbsent(columnName, k -> getComparator(ColumnTypeUtils.getClassType(column)));
+    }
 
     private Comparator<?> getComparator(ColumnTypeConstants.ClassType classType) {
         switch (classType) {
