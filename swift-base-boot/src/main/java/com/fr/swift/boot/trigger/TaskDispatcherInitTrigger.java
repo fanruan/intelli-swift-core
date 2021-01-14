@@ -32,6 +32,6 @@ public class TaskDispatcherInitTrigger implements SwiftPriorityInitTrigger {
 
     @Override
     public int priority() {
-        return Priority.LOW.priority();
+        return Priority.HIGH.priority();
     }
 }
