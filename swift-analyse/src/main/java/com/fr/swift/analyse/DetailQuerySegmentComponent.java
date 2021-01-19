@@ -13,7 +13,10 @@ import java.util.Stack;
  * @since swift-1.2.0
  */
 public class DetailQuerySegmentComponent implements SegmentComponent {
-    private static final int BATCH_SIZE = 2;
+    /**
+     * 别问，问就是拍脑袋定的
+     */
+    private static final int BATCH_SIZE = 5;
     private Stack<Segment> segments = new Stack<>();
 
     public DetailQuerySegmentComponent(List<Segment> segments) {
@@ -23,6 +26,7 @@ public class DetailQuerySegmentComponent implements SegmentComponent {
     /**
      * 不排序明细查询的块获取函数，暂定只返回一块，可以考虑一次返回多块
      * 获取方需要注意释放资源
+     *
      * @return 返回下一个批次的块
      */
     @Override

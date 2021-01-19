@@ -5,6 +5,7 @@ import com.fr.swift.basics.annotation.Target;
 import com.fr.swift.basics.handler.DeleteProcessHandler;
 import com.fr.swift.basics.handler.MasterProcessHandler;
 import com.fr.swift.basics.handler.MigrateProcessHandler;
+import com.fr.swift.basics.handler.DetailQueryableProcessHandler;
 import com.fr.swift.basics.handler.QueryableProcessHandler;
 import com.fr.swift.basics.handler.TaskProcessHandler;
 import com.fr.swift.db.Where;
@@ -28,6 +29,7 @@ public interface ServiceContext extends SwiftService {
     @InvokeMethod(value = QueryableProcessHandler.class, target = Target.ANALYSE)
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
+    @InvokeMethod(value = DetailQueryableProcessHandler.class, target = Target.ANALYSE)
     SwiftResultSet getResultResult(String queryJson) throws Exception;
 
     void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception;

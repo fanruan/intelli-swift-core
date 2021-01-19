@@ -1,14 +1,17 @@
 package com.fr.swift.analyse;
 
+import com.fr.swift.result.Pagination;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+
+import java.util.List;
 
 /**
  * @Author: lucifer
  * @Description:
  * @Date: Created in 2020/12/15
  */
-public interface CalcSegment extends AutoCloseable {
+public interface CalcSegment extends AutoCloseable, Pagination<List<Row>> {
 
     /**
      * 流式查询下的rowcount 只是一个批次的rowcount
@@ -25,8 +28,11 @@ public interface CalcSegment extends AutoCloseable {
      */
     Row getNextRow();
 
-    Row getRow(int curs);
-
+    /**
+     * 获取元数据，描述本次查询结果
+     *
+     * @return SwiftMetaData
+     */
     SwiftMetaData getMetaData();
 
     /**
@@ -35,4 +41,6 @@ public interface CalcSegment extends AutoCloseable {
      * @return 是否有更多的数据
      */
     boolean hasNext();
+
+    int getFetchSize();
 }
