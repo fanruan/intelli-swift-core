@@ -11,6 +11,7 @@ import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
+import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
@@ -18,6 +19,7 @@ import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.exception.LambdaWrapper;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +54,15 @@ public class QuerySegmentFilter {
     public List<Segment> getDetailSegment(FilterInfo filterInfo, List<SegmentKey> segmentKeyList) throws SwiftMetaDataException {
         segmentKeyList.forEach(segmentKey -> idSegments.put(segmentKey.getId(), SEG_SVC.getSegment(segmentKey)));
         Set<String> strings = dfsSearch(filterInfo);
-        return strings.stream().map(idSegments::get).collect(Collectors.toList());
+        List<Segment> result = new ArrayList<>();
+        idSegments.forEach((key, value) -> {
+            if (strings.contains(key)) {
+                result.add(value);
+            } else {
+                SegmentUtils.releaseHisSeg(value);
+            }
+        });
+        return result;
     }
 
     private Set<String> dfsSearch(FilterInfo filterInfo) throws SwiftMetaDataException {
