@@ -123,41 +123,57 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
      * filter 递归逻辑拆解
      */
     public Set<Integer> getIndexSet(FilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
-        Set<Integer> set = new HashSet<>();
         if (filterInfo instanceof GeneralFilterInfo) {
             GeneralFilterInfo generalFilterInfo = (GeneralFilterInfo) filterInfo;
             List<FilterInfo> childrenFilterInfoList = generalFilterInfo.getChildren();
+            Set<Integer> set = null;
             if (generalFilterInfo.getType() == GeneralFilterInfo.OR) {
+                // 或操作需要全部完成
                 for (FilterInfo filter : childrenFilterInfoList) {
-                    set.addAll(getIndexSet(filter, table));
+                    Set<Integer> subIndexSet = getIndexSet(filter, table);
+                    if (set == null) {
+                        set = subIndexSet;
+                    } else {
+                        set.addAll(subIndexSet);
+                    }
                 }
+                //这里不会产生npe问题，因为由底层返回加子节点扩展保证的，除非没有子节点，但这是不可能的
                 if (set.contains(ALL_SEGMENT)) {
-                    Set<Integer> orSet = new HashSet<>();
-                    orSet.add(ALL_SEGMENT);
-                    set = orSet;
+                    return new HashSet<Integer>() {{
+                        add(ALL_SEGMENT);
+                    }};
+                } else {
+                    return set;
                 }
             } else {
                 for (FilterInfo filter : childrenFilterInfoList) {
                     Set<Integer> subIndexSet = getIndexSet(filter, table);
-                    if (subIndexSet.contains(ALL_SEGMENT) && subIndexSet.size() == 1) {
-                        continue;
-                    }
-                    if (set.isEmpty()) {
+                    if (set == null) {
+                        set = subIndexSet;
+                    } else if (set.contains(ALL_SEGMENT) || subIndexSet.contains(ALL_SEGMENT)) {
+                        // 与判断的双方任意一个包含全部，则全部加进来，且去掉ALL_SEGMENT
                         set.addAll(subIndexSet);
+                        if (set.size() > 1) {
+                            set.remove(ALL_SEGMENT);
+                        }
                     } else {
                         set.retainAll(subIndexSet);
                     }
+                    // 与操作可以提前终止
+                    if (set.isEmpty()) {
+                        return set;
+                    }
                 }
-                set.add(ALL_SEGMENT);
-                if (set.contains(ALL_SEGMENT) && set.size() != 1) {
-                    set.remove(ALL_SEGMENT);
-                }
+                return set;
             }
         } else if (filterInfo instanceof SwiftDetailFilterInfo) {
+            // 基础情形1和2不返回null即可保证逻辑正确性
             if (((SwiftDetailFilterInfo) filterInfo).getType() == SwiftDetailFilterType.IN) {
-                set.addAll(segmentFuzzyBucket.getIncludedKey(getSingleKeyVirtualOrder((SwiftDetailFilterInfo) filterInfo, table)));
+                return segmentFuzzyBucket.getIncludedKey(getSingleKeyVirtualOrder((SwiftDetailFilterInfo) filterInfo, table));
             } else {
-                set.add(ALL_SEGMENT);
+                return new HashSet<Integer>() {{
+                    add(ALL_SEGMENT);
+                }};
             }
         }
         // TODO: 2020/6/1  not 有逻辑 bug
@@ -165,9 +181,11 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
 //            set.addAll(segmentFuzzyBucket.getNotIncludedKey(getIndexSet(((NotFilterInfo) filterInfo).getFilterInfo(), table)));
 //        }
         else {
-            set.add(ALL_SEGMENT);
+            // 基础情形3也不能返回null
+            return new HashSet<Integer>() {{
+                add(ALL_SEGMENT);
+            }};
         }
-        return set;
     }
 
     private Set<Integer> getSingleKeyVirtualOrder(SwiftDetailFilterInfo filterInfo, SourceKey table) throws SwiftMetaDataException {
