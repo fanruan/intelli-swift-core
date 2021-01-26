@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class DetailSegment extends AbstractDetailSegment {
 
-    public DetailSegment(List<Segment> totalSegments, List<Dimension> dimensions, List<FilterInfo> filters, Limit limit, SwiftMetaData metaData, SwiftMetaData queriedMetadata) {
-        super(new DetailQuerySegmentComponent(totalSegments), dimensions, filters, limit, metaData, queriedMetadata);
+    public DetailSegment(int fetchSize, List<Segment> totalSegments, List<Dimension> dimensions, List<FilterInfo> filters, Limit limit, SwiftMetaData metaData, SwiftMetaData queriedMetadata) {
+        super(fetchSize, new DetailQuerySegmentComponent(totalSegments), dimensions, filters, limit, metaData, queriedMetadata);
     }
 
     /**
@@ -37,7 +37,7 @@ public class DetailSegment extends AbstractDetailSegment {
         try {
             List<Object> values = new ArrayList<>();
             Integer next = currentRowItr.next();
-            Segment curSeg = currentSeg.getKey();
+            Segment curSeg = currentSegments.getKey();
             for (ColumnKey columnKey : columnKeys) {
                 Column<Object> column = curSeg.getColumn(columnKey);
                 values.add(column.getDetailColumn().get(next));
@@ -45,15 +45,22 @@ public class DetailSegment extends AbstractDetailSegment {
             return new ListBasedRow(values);
         } catch (Exception warn) {
             SwiftLoggers.getLogger().warn("catch Exception during get next , please check in case of things getting worse.message is {} ", warn.getMessage());
-            currentSeg = filteredList.get(++segIndex);
-            currentRowItr = currentSeg.getValue().intIterator();
+            currentSegments = filteredList.get(++segIndex);
+            currentRowItr = currentSegments.getValue().intIterator();
             return getNextRow();
         }
     }
 
     @Override
-    public Row getRow(int curs) {
-        // TODO: 2020/12/16
-        return null;
+    public List<Row> getPage() {
+        if (!hasNextPage()) {
+            return new ArrayList<Row>(0);
+        }
+        int count = fetchSize;
+        List<Row> result = new ArrayList<>();
+        while (hasNext() && count-- > 0) {
+            result.add(getNextRow());
+        }
+        return result;
     }
 }

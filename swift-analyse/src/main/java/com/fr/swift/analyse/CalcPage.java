@@ -1,27 +1,85 @@
 package com.fr.swift.analyse;
 
+import com.fr.swift.result.Pagination;
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * @Author: lucifer
- * @Description:
+ * @Description: 实现SwiftResultSet是为了 process handler那里的兼容，方便点，方法都是不支持的
  * @Date: Created in 2020/12/16
  */
-public class CalcPage {
-    List<Row> rows;
+public class CalcPage implements Pagination<List<Row>>, SwiftResultSet, Serializable {
+    private static final long serialVersionUID = 6776482829440515793L;
 
-    public CalcPage(int fetchSize) {
-        this.rows = new ArrayList<>(fetchSize);
+    private int fetchSize;
+    private List<Row> page;
+    private boolean hasNextPage;
+    private transient SyncInvoker invoker;
+
+
+    public CalcPage(int fetchSize, List<Row> page, boolean hasNextPage) {
+        this.fetchSize = fetchSize;
+        this.page = page;
+        this.hasNextPage = hasNextPage;
     }
 
-    public List<Row> getRows() {
-        return rows;
+    @Override
+    public int getFetchSize() {
+        return fetchSize;
     }
 
-    public void addRow(Row row) {
-        rows.add(row);
+    @Override
+    public SwiftMetaData getMetaData() throws SQLException {
+        throw new UnsupportedOperationException("un support operate:getMetaData");
+    }
+
+    @Override
+    public boolean hasNext() throws SQLException {
+        throw new UnsupportedOperationException("un support operate:hasNext");
+    }
+
+    @Override
+    public Row getNextRow() throws SQLException {
+        throw new UnsupportedOperationException("un support operate:getNextRow");
+    }
+
+    public void setInvoker(SyncInvoker invoker) {
+        this.invoker = invoker;
+    }
+
+    @Override
+    public List<Row> getPage() {
+        List<Row> result = page;
+        page = null;
+        if (hasNextPage() && invoker != null) {
+            CalcPage invoke = invoker.invoke();
+            page = invoke.page;
+            hasNextPage = invoke.hasNextPage;
+        } else {
+            hasNextPage = false;
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean hasNextPage() {
+        return page != null || hasNextPage;
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    public interface SyncInvoker {
+
+        CalcPage invoke();
     }
 }

@@ -75,6 +75,6 @@ public class SwiftAnalyseService extends AbstractSwiftService implements Analyse
     @Override
     public SwiftResultSet getResultResult(String queryJson) throws Exception {
         DetailQueryInfoBean info = (DetailQueryInfoBean) QueryBeanFactory.create(queryJson);
-        return QueryCacheBuilder.builder().getCalcResultSetCache(info).getSwiftResultSet();
+        return QueryCacheBuilder.builder().getCalcResultSetCache(info).getQueryCalcPage();
     }
 }

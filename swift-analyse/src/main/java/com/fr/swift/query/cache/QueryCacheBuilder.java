@@ -1,17 +1,13 @@
 package com.fr.swift.query.cache;
 
-import com.fr.swift.analyse.CalcDetailResultSet;
 import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.query.builder.CalcDetailQueryBuilder;
-import com.fr.swift.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.service.ServiceContext;
 import com.fr.swift.util.concurrent.PoolThreadFactory;
 import com.fr.swift.util.concurrent.SwiftExecutors;
-import com.fr.swift.util.exception.LambdaWrapper;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -55,11 +51,16 @@ public class QueryCacheBuilder {
         };
     }
 
-    public CalcResultSetCache getCalcResultSetCache(DetailQueryInfoBean queryBean) throws SwiftMetaDataException {
-        SwiftLoggers.getLogger().debug("get queryCache [{}]!", queryBean.getQueryId());
-        QueryCache queryCache = cacheContainer.computeIfAbsent(queryBean.getQueryId()
-                , LambdaWrapper.rethrowFunction(qid -> new CalcResultSetCache(queryBean
-                        , new CalcDetailResultSet(queryBean.getFetchSize(), CalcDetailQueryBuilder.of(queryBean).buildCalcSegment()))));
+    public CalcResultSetCache getCalcResultSetCache(QueryBean queryBean) {
+        SwiftLoggers.getLogger().debug("get detail queryCache [{}]!", queryBean.getQueryId());
+        QueryCache queryCache = cacheContainer.computeIfAbsent(queryBean.getQueryId(), qid -> new CalcResultSetCache(queryBean, q -> {
+            try {
+                final ServiceContext serviceContext = ProxySelector.getProxy(ServiceContext.class);
+                return serviceContext.getResultResult(QueryBeanFactory.queryBean2String(q));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }));
         queryCache.update();
         return (CalcResultSetCache) queryCache;
     }

@@ -50,6 +50,6 @@ public class CalcDetailQueryBuilder extends BaseQueryBuilder {
         }
         Limit limit = detailQueryInfo.getLimit();
         SwiftMetaData meta = SwiftContext.get().getBean(SwiftMetaDataService.class).getMeta(detailQueryInfo.getTable());
-        return new DetailSegment(segments, dimensions, filterInfos, limit, meta, queriedMetadata);
+        return new DetailSegment(detailQueryInfo.getFetchSize(), segments, dimensions, filterInfos, limit, meta, queriedMetadata);
     }
 }
