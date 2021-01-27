@@ -6,7 +6,7 @@ import com.fr.swift.segment.Segment;
 /**
  * @author xiqiu
  * @date 2021/1/27
- * @description
+ * @description 查询加速特征，父类定义结构，子类做具体值的实现
  * @since swift-1.2.0
  */
 public abstract class BaseFeature<T> {

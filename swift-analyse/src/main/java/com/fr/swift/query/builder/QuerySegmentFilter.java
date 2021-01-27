@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * @author xiqiu
  * @date 2021/1/5
- * @description
+ * @description 真实块过滤器，对各种特定查询结构进行优化
  * @since swift-1.2.0
  */
 public class QuerySegmentFilter {
@@ -52,7 +52,6 @@ public class QuerySegmentFilter {
      * @throws SwiftMetaDataException
      */
     public List<Segment> getDetailSegment(FilterInfo filterInfo, List<SegmentKey> segmentKeyList) throws SwiftMetaDataException {
-        long l = System.currentTimeMillis();
         segmentKeyList.forEach(segmentKey -> idSegments.put(segmentKey.getId(), SEG_SVC.getSegment(segmentKey)));
         Set<String> strings = dfsSearch(filterInfo);
         List<Segment> result = new ArrayList<>();
@@ -63,7 +62,6 @@ public class QuerySegmentFilter {
                 SegmentUtils.releaseHisSeg(value);
             }
         });
-        System.out.println(System.currentTimeMillis() - l);
         return result;
     }
 
