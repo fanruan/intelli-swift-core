@@ -1,9 +1,9 @@
 package com.fr.swift.query.builder;
 
 import com.fr.swift.SwiftContext;
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.query.builder.feture.SegmentColumnFeature;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
@@ -12,8 +12,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
 import com.fr.swift.segment.SegmentUtils;
-import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -37,11 +35,13 @@ import java.util.stream.Collectors;
  */
 public class QuerySegmentFilter {
 
-
+    private static final int MAX_LIKE_COUNT = 300;
     private static final SegmentService SEG_SVC = SwiftContext.get().getBean(SegmentService.class);
     private Map<String, Segment> idSegments = new HashMap<>();
-    //    每个列都有缓存Comparators，省的重复拿比较器
-    private Map<String, Comparator> comparatorsCache = new HashMap<>();
+    //  每个列都有缓存Comparators，省的重复拿比较器
+    private Map<String, Comparator> comparatorsCache = new HashMap<>(2);
+    //  优化块信息抽取方式，封装起来并保证速度，某些极端场景可以加速
+    private Map<String, SegmentColumnFeature> columnFeatureMap = new HashMap<>(10);
 
     /**
      * 查询前优化，根据查询的信息来进行块的过滤
@@ -52,6 +52,7 @@ public class QuerySegmentFilter {
      * @throws SwiftMetaDataException
      */
     public List<Segment> getDetailSegment(FilterInfo filterInfo, List<SegmentKey> segmentKeyList) throws SwiftMetaDataException {
+        long l = System.currentTimeMillis();
         segmentKeyList.forEach(segmentKey -> idSegments.put(segmentKey.getId(), SEG_SVC.getSegment(segmentKey)));
         Set<String> strings = dfsSearch(filterInfo);
         List<Segment> result = new ArrayList<>();
@@ -62,6 +63,7 @@ public class QuerySegmentFilter {
                 SegmentUtils.releaseHisSeg(value);
             }
         });
+        System.out.println(System.currentTimeMillis() - l);
         return result;
     }
 
@@ -109,28 +111,28 @@ public class QuerySegmentFilter {
         else if (filterInfo instanceof SwiftDetailFilterInfo) {
             SwiftDetailFilterInfo detailFilterInfo = (SwiftDetailFilterInfo) filterInfo;
             return idSegments.entrySet().stream()
-                    .filter(LambdaWrapper.rethrowPredicate(stringSegmentEntry -> canAdd(detailFilterInfo, stringSegmentEntry.getValue())))
+                    .filter(LambdaWrapper.rethrowPredicate(stringSegmentEntry -> canAdd(detailFilterInfo, stringSegmentEntry)))
                     .map(Map.Entry::getKey).collect(Collectors.toSet());
         }
         // 为其他情况准备的
         return new HashSet<>(idSegments.keySet());
     }
 
-    private boolean canAdd(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
+    private boolean canAdd(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) throws SwiftMetaDataException {
         // todo::简易版，后续补充和优化
         switch (detailFilterInfo.getType()) {
             case IN:
-                return judgeForIn(detailFilterInfo, segment);
+                return judgeForIn(detailFilterInfo, stringSegmentEntry);
             case STRING_LIKE:
-                return true;
+                return judgeForLike(detailFilterInfo, stringSegmentEntry);
             case STRING_STARTS_WITH:
-                return judgeForStartWith(detailFilterInfo, segment);
+                return judgeForStartWith(detailFilterInfo, stringSegmentEntry);
             case STRING_ENDS_WITH:
-                return true;
+                return judgeForLike(detailFilterInfo, stringSegmentEntry);
             case STRING_LIKE_IGNORE_CASE:
                 return true;
             case NUMBER_IN_RANGE:
-                return judgeForNumberInRange(detailFilterInfo, segment);
+                return judgeForNumberInRange(detailFilterInfo, stringSegmentEntry);
             case NUMBER_AVERAGE:
                 return true;
             case TOP_N:
@@ -138,7 +140,7 @@ public class QuerySegmentFilter {
             case BOTTOM_N:
                 return true;
             case NULL:
-                return judgeForNull(detailFilterInfo, segment);
+                return judgeForNull(detailFilterInfo, stringSegmentEntry);
             case FORMULA:
                 return true;
             case KEY_WORDS:
@@ -152,16 +154,17 @@ public class QuerySegmentFilter {
         }
     }
 
-    private boolean judgeForIn(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
+    private boolean judgeForIn(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) throws SwiftMetaDataException {
         // 利用字典值有序的条件，在in这种情况下，过滤的值一定大于或等于字典第一个值，小于或等于最后一个值，任意一个满足条件即可，时间复杂度O(n),n为filter取值的个数
-        DictionaryEncodedColumn dictionaryEncodedColumn = segment.getColumn(detailFilterInfo.getColumnKey()).getDictionaryEncodedColumn();
-        if (dictionaryEncodedColumn.size() <= 1) {
+        detailFilterInfo.getColumnKey().getName();
+        SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        if (columnFeature.getDictSize() <= 1) {
             return false;
         }
-        Comparator asc = getComparator(detailFilterInfo, segment);
+        Comparator asc = getComparator(detailFilterInfo, stringSegmentEntry.getValue());
         Set setValues = (Set) detailFilterInfo.getFilterValue();
-        Object start = dictionaryEncodedColumn.getValue(1);
-        Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
+        Object start = columnFeature.getStart();
+        Object end = columnFeature.getEnd();
         for (Object tempValue : setValues) {
             if (asc.compare(tempValue, start) >= 0 && asc.compare(tempValue, end) <= 0) {
                 return true;
@@ -171,15 +174,15 @@ public class QuerySegmentFilter {
     }
 
 
-    private boolean judgeForStartWith(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
-        DictionaryEncodedColumn dictionaryEncodedColumn = segment.getColumn(detailFilterInfo.getColumnKey()).getDictionaryEncodedColumn();
-        if (dictionaryEncodedColumn.size() <= 1) {
+    private boolean judgeForStartWith(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) throws SwiftMetaDataException {
+        SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        if (columnFeature.getDictSize() <= 1) {
             return false;
         }
-        Comparator asc = getComparator(detailFilterInfo, segment);
+        Comparator asc = getComparator(detailFilterInfo, stringSegmentEntry.getValue());
         Object likeValue = detailFilterInfo.getFilterValue();
-        Object start = dictionaryEncodedColumn.getValue(1);
-        Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
+        Object start = columnFeature.getStart();
+        Object end = columnFeature.getEnd();
         // start like 和  in filter 类似，原理差不多
         if (asc.compare(likeValue, start) >= 0 && asc.compare(likeValue, end) <= 0) {
             return true;
@@ -187,15 +190,15 @@ public class QuerySegmentFilter {
         return false;
     }
 
-    private boolean judgeForNumberInRange(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
-        DictionaryEncodedColumn dictionaryEncodedColumn = segment.getColumn(detailFilterInfo.getColumnKey()).getDictionaryEncodedColumn();
-        if (dictionaryEncodedColumn.size() <= 1) {
+    private boolean judgeForNumberInRange(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) throws SwiftMetaDataException {
+        SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        if (columnFeature.getDictSize() <= 1) {
             return false;
         }
-        Comparator asc = getComparator(detailFilterInfo, segment);
+        Comparator asc = getComparator(detailFilterInfo, stringSegmentEntry.getValue());
         SwiftNumberInRangeFilterValue value = (SwiftNumberInRangeFilterValue) detailFilterInfo.getFilterValue();
-        Object start = dictionaryEncodedColumn.getValue(1);
-        Object end = dictionaryEncodedColumn.getValue(dictionaryEncodedColumn.size() - 1);
+        Object start = columnFeature.getStart();
+        Object end = columnFeature.getEnd();
         // 最大值比最小值大，或者最大值比最小值小，都是没有，分开写避免麻烦的类型转换问题，而且便于理解，等号才能避免开闭区间的问题
         if (value.getMin().equals(Double.NEGATIVE_INFINITY)) {
             return asc.compare(start, value.getMax()) <= 0;
@@ -206,16 +209,40 @@ public class QuerySegmentFilter {
         }
     }
 
-    private boolean judgeForNull(SwiftDetailFilterInfo detailFilterInfo, Segment segment) {
-        Column column = segment.getColumn(detailFilterInfo.getColumnKey());
-        ImmutableBitMap nullIndex = column.getBitmapIndex().getNullIndex();
-        return nullIndex.getCardinality() > 0;
+    private boolean judgeForNull(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) {
+        SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        return columnFeature.getNullCount() > 0;
+    }
+
+    private boolean judgeForLike(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) {
+        SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        if (columnFeature.getDictSize() <= 1) {
+            return false;
+        }
+        if (columnFeature.getDictSize() > MAX_LIKE_COUNT) {
+            return true;
+        }
+        List<String> likeValue = columnFeature.getLikeValue();
+        String filterValue = (String) detailFilterInfo.getFilterValue();
+        for (String tempValue :
+                likeValue) {
+            if (tempValue.contains(filterValue)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Comparator<?> getComparator(SwiftDetailFilterInfo detailFilterInfo, Segment segment) throws SwiftMetaDataException {
         String columnName = detailFilterInfo.getColumnKey().getName();
         SwiftMetaDataColumn column = segment.getMetaData().getColumn(columnName);
         return comparatorsCache.computeIfAbsent(columnName, k -> getComparator(ColumnTypeUtils.getClassType(column)));
+    }
+
+    private SegmentColumnFeature getSegmentColumnFeature(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) {
+        String columnName = detailFilterInfo.getColumnKey().getName();
+        return columnFeatureMap.computeIfAbsent(stringSegmentEntry.getKey() + columnName,
+                k -> new SegmentColumnFeature(stringSegmentEntry.getValue(), detailFilterInfo));
     }
 
     private Comparator<?> getComparator(ColumnTypeConstants.ClassType classType) {
