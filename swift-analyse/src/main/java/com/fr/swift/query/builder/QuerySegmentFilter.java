@@ -3,6 +3,7 @@ package com.fr.swift.query.builder;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.builder.feture.SegmentColumnFeature;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
@@ -11,7 +12,6 @@ import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
 import com.fr.swift.segment.SegmentService;
-import com.fr.swift.segment.SegmentUtils;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -52,16 +52,17 @@ public class QuerySegmentFilter {
      * @throws SwiftMetaDataException
      */
     public List<Segment> getDetailSegment(FilterInfo filterInfo, List<SegmentKey> segmentKeyList) throws SwiftMetaDataException {
+        long start = System.currentTimeMillis();
         segmentKeyList.forEach(segmentKey -> idSegments.put(segmentKey.getId(), SEG_SVC.getSegment(segmentKey)));
         Set<String> strings = dfsSearch(filterInfo);
         List<Segment> result = new ArrayList<>();
+        // 这里不需要释放块资源，块资源相关句柄都是null，没有意义
         idSegments.forEach((key, value) -> {
             if (strings.contains(key)) {
                 result.add(value);
-            } else {
-                SegmentUtils.releaseHisSeg(value);
             }
         });
+        SwiftLoggers.getLogger().info("pre real segment filter speed up consume {} ms", System.currentTimeMillis() - start);
         return result;
     }
 
