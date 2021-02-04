@@ -2,6 +2,7 @@ package com.fr.swift.query.info.segment;
 
 import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.segment.SegmentKey;
+import com.google.common.collect.Sets;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,20 +39,11 @@ public class SegmentFuzzyBucket {
 
     public Set<Integer> getIncludedKey(Set<Integer> hashValueSet) {
         if (hashValueSet.contains(ALL_SEGMENT)) {
-            return bucketMap.keySet();
+            return Sets.newHashSet(bucketMap.keySet());
         }
-        Set<Integer> resultSet = new HashSet();
+        Set<Integer> resultSet = new HashSet<>();
         hashValueSet.stream().filter(hashValue -> fuzzyBucketKeys.containsKey(hashValue))
                 .map(hashValue -> fuzzyBucketKeys.get(hashValue)).forEach(resultSet::addAll);
-        return resultSet;
-    }
-
-    public Set<Integer> getNotIncludedKey(Set<Integer> hashValueSet) {
-        if (hashValueSet.contains(ALL_SEGMENT)) {
-            return bucketMap.keySet();
-        }
-        Set<Integer> resultSet = new HashSet<>(bucketMap.keySet());
-        resultSet.removeAll(hashValueSet);
         return resultSet;
     }
 }
