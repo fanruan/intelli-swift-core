@@ -39,8 +39,7 @@ public class DetailSegment extends AbstractDetailSegment {
             return readRow(next);
         } catch (Exception warn) {
             SwiftLoggers.getLogger().warn("catch Exception during get next , please check in case of things getting worse.message is {} ", warn.getMessage());
-            currentSegment = filteredList.get(++segIndex);
-            currentRowItr = currentSegment.getValue().intIterator();
+            setProperties(this.segIndex++);
             return getNextRow();
         }
     }

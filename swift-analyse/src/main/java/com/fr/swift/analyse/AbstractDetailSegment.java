@@ -86,7 +86,7 @@ public abstract class AbstractDetailSegment implements CalcSegment {
             });
             rowCount = filteredList.stream().mapToInt(bitMapPair -> bitMapPair.getValue().getCardinality()).sum();
             if (!filteredList.isEmpty()) {
-                propertiesSet();
+                setProperties(this.segIndex);
             } else if (!segmentComponent.isEmpty()) {
                 // todo::考虑极端情况下的递归风险，方法之一是增大batchsize，这样就可以很大程度降低可能的递归层数
                 filter(segmentComponent.getNextBatchSegments());
@@ -105,8 +105,7 @@ public abstract class AbstractDetailSegment implements CalcSegment {
         if (currentRowItr != null && currentRowItr.hasNext()) {
             return true;
         } else if (segIndex < filteredList.size() - 1) {
-            segIndex++;
-            propertiesSet();
+            setProperties(this.segIndex++);
             return hasNext();
         } else if (!segmentComponent.isEmpty()) {
             filter(segmentComponent.getNextBatchSegments());
@@ -142,8 +141,8 @@ public abstract class AbstractDetailSegment implements CalcSegment {
         filteredList.clear();
     }
 
-    private void propertiesSet() {
-        currentSegment = filteredList.get(segIndex);
+    protected void setProperties(int index) {
+        currentSegment = filteredList.get(index);
         currentRowItr = currentSegment.getValue().intIterator();
         currentColumns = dimensions.stream().map(dimension -> dimension.getColumn(currentSegment.getKey())).collect(Collectors.toList());
     }
