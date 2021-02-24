@@ -6,7 +6,7 @@ import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.limit.Limit;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -35,20 +35,25 @@ public class DetailSegment extends AbstractDetailSegment {
     @Override
     public Row getNextRow() {
         try {
-            List<Object> values = new ArrayList<>();
             Integer next = currentRowItr.next();
-            Segment curSeg = currentSegments.getKey();
-            for (ColumnKey columnKey : columnKeys) {
-                Column<Object> column = curSeg.getColumn(columnKey);
-                values.add(column.getDetailColumn().get(next));
-            }
-            return new ListBasedRow(values);
+            Row row = readRow(next);
+            return row;
         } catch (Exception warn) {
             SwiftLoggers.getLogger().warn("catch Exception during get next , please check in case of things getting worse.message is {} ", warn.getMessage());
-            currentSegments = filteredList.get(++segIndex);
-            currentRowItr = currentSegments.getValue().intIterator();
+            currentSegment = filteredList.get(++segIndex);
+            currentRowItr = currentSegment.getValue().intIterator();
             return getNextRow();
         }
+    }
+
+    private Row readRow(int row) {
+        List<Object> values = new ArrayList<>();
+        for (Column<?> column : currentColumns) {
+            DetailColumn<?> detailColumn = column.getDetailColumn();
+            Object val = detailColumn.get(row);
+            values.add(val);
+        }
+        return new ListBasedRow(values);
     }
 
     @Override
