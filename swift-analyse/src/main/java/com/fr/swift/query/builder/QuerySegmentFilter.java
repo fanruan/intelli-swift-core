@@ -62,7 +62,7 @@ public class QuerySegmentFilter {
                 result.add(value);
             }
         });
-        SwiftLoggers.getLogger().info("pre real segment filter speed up consume {} ms", System.currentTimeMillis() - start);
+        SwiftLoggers.getLogger().info("pre real segment filter speed up consume {} ms , total segments count is {}", System.currentTimeMillis() - start, result.size());
         return result;
     }
 
