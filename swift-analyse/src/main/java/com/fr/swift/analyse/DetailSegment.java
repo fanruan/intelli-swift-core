@@ -1,6 +1,5 @@
 package com.fr.swift.analyse;
 
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.info.element.dimension.Dimension;
 import com.fr.swift.query.limit.Limit;
@@ -34,25 +33,16 @@ public class DetailSegment extends AbstractDetailSegment {
      */
     @Override
     public Row getNextRow() {
-        try {
-            Integer next = currentRowItr.next();
-            return readRow(next);
-        } catch (Exception warn) {
-            SwiftLoggers.getLogger().warn("catch Exception during get next , please check in case of things getting worse.message is {} ", warn.getMessage());
-            setProperties(this.segIndex++);
-            return getNextRow();
-        }
-    }
-
-    private Row readRow(int row) {
         List<Object> values = new ArrayList<>();
+        Integer next = currentRowItr.next();
         for (Column<?> column : currentColumns) {
             DetailColumn<?> detailColumn = column.getDetailColumn();
-            Object val = detailColumn.get(row);
+            Object val = detailColumn.get(next);
             values.add(val);
         }
         return new ListBasedRow(values);
     }
+
 
     @Override
     public List<Row> getPage() {
