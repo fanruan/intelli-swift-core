@@ -105,7 +105,8 @@ public abstract class AbstractDetailSegment implements CalcSegment {
         if (currentRowItr != null && currentRowItr.hasNext()) {
             return true;
         } else if (segIndex < filteredList.size() - 1) {
-            setProperties(this.segIndex++);
+            this.segIndex++;
+            setProperties(this.segIndex);
             return hasNext();
         } else if (!segmentComponent.isEmpty()) {
             filter(segmentComponent.getNextBatchSegments());
