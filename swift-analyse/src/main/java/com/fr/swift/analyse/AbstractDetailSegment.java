@@ -71,6 +71,7 @@ public abstract class AbstractDetailSegment implements CalcSegment {
         segIndex = 0;
         currentSegment = null;
         currentRowItr = null;
+        currentColumns = null;
         if (!batchSegments.isEmpty()) {
             List<Pair<Segment, DetailFilter>> collect = batchSegments.stream()
                     .map(seg -> Pair.of(seg, FilterBuilder.buildDetailFilter(seg, new GeneralFilterInfo(filters, GeneralFilterInfo.AND))))
