@@ -69,6 +69,10 @@ public class SegmentUtils {
         return SwiftContext.get().getBean("historySegment", Segment.class, location, meta);
     }
 
+    public static boolean existSegment(SegmentKey segKey) {
+        return FileUtil.exists(new CubePathBuilder(segKey).setTempDir(segKey.getSegmentUri()).asAbsolute().build());
+    }
+
     /**
      * 只清数据，不清配置
      *

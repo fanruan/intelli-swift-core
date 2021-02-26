@@ -3,6 +3,7 @@ package com.fr.swift.executor.task.netty.server;
 import com.fr.swift.SwiftContext;
 import com.fr.swift.beans.annotation.SwiftBean;
 import com.fr.swift.config.service.SwiftNodeInfoService;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Strings;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -51,7 +52,7 @@ public class MigrateServer {
             ChannelFuture future = bootstrap.bind(ip, port).sync();
             future.channel().closeFuture().sync(); //保证了服务一直启动，相当于一个死循环
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            SwiftLoggers.getLogger().error(e);
         } finally {
             boosGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

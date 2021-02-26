@@ -5,11 +5,9 @@ import com.fr.swift.basics.base.selector.ProxySelector;
 import com.fr.swift.config.entity.SwiftNodeInfo;
 import com.fr.swift.config.service.SwiftNodeInfoService;
 import com.fr.swift.db.MigrateType;
-import com.fr.swift.executor.queue.ConsumeQueue;
-import com.fr.swift.executor.task.ExecutorTask;
-import com.fr.swift.executor.task.TaskRouter;
 import com.fr.swift.executor.task.bean.MigrateBean;
 import com.fr.swift.executor.task.job.trigger.MigrateTriggerJob;
+import com.fr.swift.executor.utils.TaskQueueUtils;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.property.SwiftProperty;
 import com.fr.swift.quartz.config.ScheduleTaskType;
@@ -18,7 +16,6 @@ import com.fr.swift.service.ServiceContext;
 import com.fr.swift.service.event.NodeEvent;
 import com.fr.swift.service.event.NodeMessage;
 import com.fr.swift.util.Strings;
-import com.github.rholder.retry.RetryException;
 import com.github.rholder.retry.Retryer;
 import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
@@ -27,7 +24,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -61,25 +57,24 @@ public class MigrateScheduleJob implements ScheduleJob {
             // 主节点停止分migIndex任务
             blockSuccess = retryer.call(() -> serviceContext.report(NodeEvent.BLOCK, NodeMessage.of(clusterId, migrateIndex)));
             // 重试失败后检查数据库
-            SwiftNodeInfo nodeInfo = nodeInfoService.getNodeInfo(clusterId);
-            if (!blockSuccess && nodeInfo.getBlockingIndex().equals(migrateIndex)) {
+            if (!blockSuccess && nodeInfoService.getNodeInfo(clusterId).getBlockingIndex().equals(migrateIndex)) {
                 blockSuccess = true;
             }
             if (blockSuccess) {
                 // 等本机相关任务执行
-                clearConflictTasks(migrateIndex);
+                TaskQueueUtils.clearConflictTasks(migrateIndex);
 
                 // 通知主节点本机准备成功
-                nodeInfo.setReadyStatus(1);
-                nodeInfoService.update(nodeInfo);
                 MigrateTriggerJob.getInstance().init(migrateBean, originType);
-                Boolean reportSuccess = retryer.call(() -> serviceContext.report(NodeEvent.START_WAITING, NodeMessage.of(clusterId, Strings.EMPTY)));
+                Boolean reportSuccess = retryer.call(() -> serviceContext.report(NodeEvent.START_WAITING, NodeMessage.of(clusterId, migrateIndex)));
+                // 重试失败后检查数据库
+                if (!reportSuccess && nodeInfoService.getNodeInfo(clusterId).getReadyStatus() == 1) {
+                    reportSuccess = true;
+                }
                 if (reportSuccess) {
+                    SwiftLoggers.getLogger().info("migrate job await");
                     MigrateTriggerJob.getInstance().getLatch().await();
                     SwiftLoggers.getLogger().info("migrate job finished");
-                } else {
-                    nodeInfo.setReadyStatus(0);
-                    nodeInfoService.update(nodeInfo);
                 }
             }
         } catch (Exception e) {
@@ -98,32 +93,6 @@ public class MigrateScheduleJob implements ScheduleJob {
                 SwiftLoggers.getLogger().info("migrate process finished cost {} ms", System.currentTimeMillis() - start);
             }
         }
-    }
-
-    /**
-     * 检查TaskRouter中是否有migIndex相关任务, 依次移动位置
-     */
-    private void clearConflictTasks(String migrateIndex) throws ExecutionException, RetryException {
-        Retryer<Boolean> retryer = RetryerBuilder.<Boolean>newBuilder()
-                .retryIfResult(result -> Objects.equals(result, true))
-                .withStopStrategy(StopStrategies.neverStop())
-                .withWaitStrategy(WaitStrategies.fixedWait(5, TimeUnit.MINUTES)) //H.J TODO : 2020/12/3 时间待确定
-                .build();
-        retryer.call(() -> {
-            SwiftLoggers.getLogger().info("start to check and move index {} related tasks first", migrateIndex);
-            int position = 0;
-            boolean hasConflict = false;
-            for (ExecutorTask executorTask : TaskRouter.getInstance().getTaskView(true).getValue()) {
-                if (executorTask.getTaskContent().contains(migrateIndex)) {
-                    TaskRouter.getInstance().moveTask(executorTask, position++);
-                    hasConflict = true;
-                }
-            }
-            if (!hasConflict) {
-                hasConflict = ConsumeQueue.getInstance().getTaskList().stream().map(ExecutorTask::getTaskContent).anyMatch(k -> k.contains(migrateIndex));
-            }
-            return hasConflict;
-        });
     }
 
     @Override

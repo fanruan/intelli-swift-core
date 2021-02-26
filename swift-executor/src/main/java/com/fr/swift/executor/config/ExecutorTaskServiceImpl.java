@@ -53,8 +53,8 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     }
 
     @Override
-    public List<Object[]> getMaxtimeByContent(String... likes) {
-        return convertService.getMaxtimeByContent(likes);
+    public List<Object[]> getMaxtimeByContent(List<String> executorTaskType, String... likes) {
+        return convertService.getMaxtimeByContent(executorTaskType, likes);
     }
 
     @Override
@@ -65,6 +65,11 @@ public class ExecutorTaskServiceImpl implements ExecutorTaskService {
     @Override
     public List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes) {
         return convertService.getRepeatTasksByTime(beginTime, endTime, likes);
+    }
+
+    @Override
+    public List<SwiftExecutorTaskEntity> getMigRelatedTasks(long beginTime, long endTime, String type, String... likes) {
+        return convertService.getMigRelatedTasks(beginTime, endTime, type, likes);
     }
 
     @Override

@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -54,6 +55,7 @@ import java.util.stream.Collectors;
 public class SwiftCollateService extends AbstractSwiftService implements CollateService {
 
     private static final long serialVersionUID = 7259915342007294244L;
+
 
     private transient SegmentService segmentService;
 
@@ -146,7 +148,7 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
             try {
                 clearCollatedSegment(collateSegKeys);
             } catch (Throwable e) {
-                rollback(newSegmentKeys);
+                checkAndRollback(collateSegKeys, newSegmentKeys);
                 throw e;
             }
             resultSegs.addAll(newSegmentKeys);
@@ -171,7 +173,30 @@ public class SwiftCollateService extends AbstractSwiftService implements Collate
         SwiftEventDispatcher.asyncFire(SyncSegmentLocationEvent.REMOVE_SEG, collateSegKeys);
     }
 
+    private void checkAndRollback(List<SegmentKey> originalSegKeys, List<SegmentKey> newSegmentKeys) {
+        SwiftLoggers.getLogger().error("Collate failed! Check original segs : {}", originalSegKeys);
+
+        // 文件是否都存在
+        boolean fileExists = originalSegKeys.stream().allMatch(SegmentUtils::existSegment);
+
+        // 配置是否都存在
+        Set<SegmentKey> existIds = swiftSegmentService.getByIds(originalSegKeys.stream().map(SegmentKey::getId).collect(Collectors.toSet()));
+        boolean configExists = existIds.size() == originalSegKeys.size();
+        if (fileExists && configExists) {
+            // 文件和配置都在, 删除新块
+            rollback(newSegmentKeys);
+        } else if (fileExists) {
+            // 文件存在 + 配置不存在, 配置大概率无法删除, 对已经删除的新增回去, 后删除新块, 仅对segments表
+            // 暂时设置 innodb_rollback_on_timeout =ON 保证3张表删除的原子性, 应该也不会出现
+            originalSegKeys.removeIf(existIds::contains);
+            SwiftLoggers.getLogger().info("Segs config lost : {}", originalSegKeys);
+            swiftSegmentService.save(originalSegKeys);
+            rollback(newSegmentKeys);
+        }
+    }
+
     private void rollback(List<SegmentKey> newSegmentKeys) {
+        //如果是因为锁或等待进入rollback, 新块操作不会有这方面问题
         SwiftLoggers.getLogger().error("Collate failed! Clear new segs : {}", newSegmentKeys);
         swiftSegmentService.delete(newSegmentKeys);
         segmentService.removeSegments(newSegmentKeys);
