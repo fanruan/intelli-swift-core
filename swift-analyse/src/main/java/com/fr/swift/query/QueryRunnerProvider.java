@@ -5,15 +5,21 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.query.cache.QueryCacheBuilder;
+import com.fr.swift.query.info.bean.parser.QueryInfoParser;
 import com.fr.swift.query.info.bean.query.QueryBeanFactory;
+import com.fr.swift.query.info.bean.query.QueryInfoBean;
+import com.fr.swift.query.info.detail.DetailQueryInfo;
 import com.fr.swift.query.query.IndexQuery;
 import com.fr.swift.query.query.QueryBean;
 import com.fr.swift.query.query.QueryIndexRunner;
+import com.fr.swift.query.query.QueryType;
 import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.segment.SegmentKey;
 
 import java.util.Collection;
 import java.util.Map;
+
+import static com.fr.swift.query.query.QueryType.DETAIL;
 
 /**
  * @author pony
@@ -31,7 +37,15 @@ public class QueryRunnerProvider {
     }
 
     public SwiftResultSet query(QueryBean queryBean) {
-        return QueryCacheBuilder.builder().getOrBuildCache(queryBean).getSwiftResultSet();
+        QueryType queryType = queryBean.getQueryType();
+        // todo::分组和排序暂未优化，先把不排序明细优化打通，单独走这条路
+        if (queryType == DETAIL) {
+            DetailQueryInfo queryInfo = (DetailQueryInfo) QueryInfoParser.parse((QueryInfoBean) queryBean);
+            if (!queryInfo.hasSort()) {
+                return QueryCacheBuilder.builder().getCalcResultSetCache(queryBean).getSwiftResultSet();
+            }
+        }
+        return QueryCacheBuilder.builder().getQueryResultSetCache(queryBean).getSwiftResultSet();
     }
 
     public SwiftResultSet query(String queryJson) throws Exception {

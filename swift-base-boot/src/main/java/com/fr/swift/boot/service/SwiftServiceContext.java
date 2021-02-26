@@ -92,6 +92,11 @@ public class SwiftServiceContext implements ServiceContext {
     }
 
     @Override
+    public SwiftResultSet getResultResult(String queryJson) throws Exception {
+        return SwiftContext.get().getBean(AnalyseService.class).getResultResult(queryJson);
+    }
+
+    @Override
     public void appointCollate(SourceKey tableKey, List<SegmentKey> segmentKeyList) throws Exception {
         TaskProducer.produceTask(new CollateExecutorTask(CollateBean.of(tableKey, segmentKeyList)));
     }
