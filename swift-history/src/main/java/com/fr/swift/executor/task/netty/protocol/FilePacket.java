@@ -2,6 +2,7 @@ package com.fr.swift.executor.task.netty.protocol;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.UUID;
 
 import static com.fr.swift.executor.task.netty.protocol.command.Command.FILE;
 
@@ -11,26 +12,33 @@ import static com.fr.swift.executor.task.netty.protocol.command.Command.FILE;
  */
 public class FilePacket extends Packet implements Serializable {
 
+    private String uuid;
     private File file;
     private int startPos;
     private byte[] bytes;
     private int endPos;
     private boolean isFirst;
 
+    public FilePacket() {
+        this.uuid = UUID.randomUUID().toString();
+    }
+
     public boolean isFirst() {
         return isFirst;
     }
 
-    public void setFirst(boolean first) {
+    public FilePacket setFirst(boolean first) {
         isFirst = first;
+        return this;
     }
 
     public String getTargetPath() {
         return targetPath;
     }
 
-    public void setTargetPath(String targetPath) {
+    public FilePacket setTargetPath(String targetPath) {
         this.targetPath = targetPath;
+        return this;
     }
 
     private String targetPath;
@@ -39,8 +47,9 @@ public class FilePacket extends Packet implements Serializable {
         return isEnd;
     }
 
-    public void setEnd(boolean end) {
+    public FilePacket setEnd(boolean end) {
         isEnd = end;
+        return this;
     }
 
     private boolean isEnd;
@@ -49,37 +58,49 @@ public class FilePacket extends Packet implements Serializable {
         return file;
     }
 
-    public void setFile(File file) {
+    public FilePacket setFile(File file) {
         this.file = file;
+        return this;
     }
 
     public int getStartPos() {
         return startPos;
     }
 
-    public void setStartPos(int startPos) {
+    public FilePacket setStartPos(int startPos) {
         this.startPos = startPos;
+        return this;
     }
 
     public byte[] getBytes() {
         return bytes;
     }
 
-    public void setBytes(byte[] bytes) {
+    public FilePacket setBytes(byte[] bytes) {
         this.bytes = bytes;
+        return this;
     }
 
     public int getEndPos() {
         return endPos;
     }
 
-    public void setEndPos(int endPos) {
+    public FilePacket setEndPos(int endPos) {
         this.endPos = endPos;
+        return this;
     }
 
     @Override
     public Byte getCommand() {
         return FILE;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
 

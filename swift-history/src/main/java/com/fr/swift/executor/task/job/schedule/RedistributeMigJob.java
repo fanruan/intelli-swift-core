@@ -10,6 +10,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.quartz.config.ScheduleTaskType;
 import com.fr.swift.quartz.execute.ScheduleJob;
 import com.fr.swift.service.event.NodeEvent;
+import com.fr.swift.service.event.NodeMessage;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobKey;
@@ -42,7 +43,7 @@ public class RedistributeMigJob implements ScheduleJob {
             }
         }
         SwiftContext.get().getBean(NodeInfoService.class).flushCache();
-        refreshNodeId.forEach(clusterId -> SwiftEventDispatcher.asyncFire(NodeEvent.RETRY_DISTRIBUTE, clusterId));
+        refreshNodeId.forEach(clusterId -> SwiftEventDispatcher.asyncFire(NodeEvent.RETRY_DISTRIBUTE, NodeMessage.of(clusterId)));
         SwiftLoggers.getLogger().info("finish execute job {}", RedistributeMigJob.class);
     }
 

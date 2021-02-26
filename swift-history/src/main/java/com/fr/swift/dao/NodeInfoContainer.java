@@ -90,8 +90,16 @@ public enum NodeInfoContainer implements NodeInfoService {
     }
 
     @Override
-    public void updateReadyStatusById(String clusterId) {
-        idReadyStatusMap.put(clusterId, 1);
+    public void updateReadyStatusById(String clusterId, int status) {
+        SwiftNodeInfo nodeInfo = idNodeMap.get(clusterId);
+        nodeInfo.setReadyStatus(status);
+        nodeInfoService.update(nodeInfo);
+        idReadyStatusMap.put(clusterId, status);
+    }
+
+    @Override
+    public List<String> getPreMigIndexById(String clusterId) {
+        return idMigIntervalMap.get(clusterId).getPreMigIndex();
     }
 
     @Override
@@ -138,26 +146,43 @@ public enum NodeInfoContainer implements NodeInfoService {
 
     @Override
     public void activateNodeMigIndex(String clusterId, String blockIndex) {
+        // 刷新触发节点缓存
         flushCacheById(clusterId);
         flushCacheById(idNodeMap.get(clusterId).getMigrateTarget());
+        // 检查其他,都完成则更新非迁移 blockIndex
+        updateBlockMigIndex(blockIndex);
     }
 
     @Override
     public void blockNodeMigIndex(String clusterId, String blockIndex) {
-        SwiftNodeInfo nodeInfo = nodeInfoService.getNodeInfo(clusterId);
+        // block触发节点
+        SwiftNodeInfo nodeInfo = idNodeMap.get(clusterId);
         nodeInfo.setMigrateType(MigrateType.RUNNING);
-        nodeInfo.setBlockingIndex(blockIndex);
-        nodeInfoService.update(nodeInfo);
-        flushCacheById(clusterId);
+        updateBlockMigIndex(clusterId, blockIndex);
+        // block其他同index节点
+        indexReceivedIdMap.get(blockIndex).stream()
+                .filter(cluster -> idBlockIndexMap.get(cluster).isEmpty())
+                .forEach(cluster -> updateBlockMigIndex(cluster, blockIndex));
     }
 
     @Override
-    public void updateBlockMigIndex(String clusterId) {
-        SwiftNodeInfo nodeInfo = nodeInfoService.getNodeInfo(clusterId);
-        if (!MigrateType.RUNNING.equals(nodeInfo.getMigrateType())) {
-            nodeInfo.setBlockingIndex(idBlockIndexMap.get(clusterId));
-            nodeInfoService.update(nodeInfo);
+    public void updateBlockMigIndex(String blockIndex) {
+        boolean isAllFinished = indexReceivedIdMap.get(blockIndex).stream()
+                .map(cluster -> !idNodeMap.get(cluster).getMigrateType().equals(MigrateType.RUNNING))
+                .reduce(true, (a, b) -> a && b);
+        if (isAllFinished) {
+            for (String cluster : indexReceivedIdMap.get(blockIndex)) {
+                updateBlockMigIndex(cluster, Strings.EMPTY);
+                updateReadyStatusById(cluster, 0);
+            }
         }
+    }
+
+    private void updateBlockMigIndex(String clusterId, String blockIndex) {
+        SwiftNodeInfo nodeInfo = idNodeMap.get(clusterId);
+        nodeInfo.setBlockingIndex(blockIndex);
+        nodeInfoService.update(nodeInfo);
+        idBlockIndexMap.put(clusterId, blockIndex);
     }
 
     @Override

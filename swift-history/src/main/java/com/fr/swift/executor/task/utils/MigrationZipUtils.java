@@ -37,11 +37,8 @@ public class MigrationZipUtils {
      */
     public static void toZip(String srcDir, String outPathFile, boolean isDelSrcFile) throws Exception {
         long start = System.currentTimeMillis();
-        FileOutputStream out = null;
-        ZipOutputStream zos = null;
-        try {
-            out = new FileOutputStream(outPathFile);
-            zos = new ZipOutputStream(out);
+        try (FileOutputStream out = new FileOutputStream(outPathFile);
+             ZipOutputStream zos = new ZipOutputStream(out)) {
             File sourceFile = new File(srcDir);
             if (!sourceFile.exists()) {
                 throw new Exception("zip file not exist!");
@@ -52,18 +49,7 @@ public class MigrationZipUtils {
 //            }
             SwiftLoggers.getLogger().info("zip file {} cost: {} ms", sourceFile.getName(), (System.currentTimeMillis() - start));
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("zip error from ZipUtils");
-        } finally {
-            try {
-                if (zos != null) {
-                    zos.close();
-                }
-                if (out != null) {
-                    out.close();
-                }
-            } catch (Exception e) {
-            }
+            throw new Exception("zip error from ZipUtils", e);
         }
     }
 

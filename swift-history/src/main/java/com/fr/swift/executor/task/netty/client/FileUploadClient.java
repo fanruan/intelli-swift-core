@@ -37,9 +37,10 @@ public class FileUploadClient {
                 .handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
+
                         channel.pipeline().addLast(new ObjectEncoder());
                         channel.pipeline().addLast(new ObjectDecoder(ClassResolvers.weakCachingConcurrentResolver(null)));
-                        channel.pipeline().addLast(new FileUploadClientHandler(filePacket));  //自定义的handler
+                        channel.pipeline().addLast(new FileUploadClientHandler().fileRegister(filePacket));  //自定义的handler
                     }
                 });
         try {
@@ -64,20 +65,24 @@ public class FileUploadClient {
     }
 
     public void closeFuture() {
-        future.channel().closeFuture();
+        if (future != null) {
+            future.channel().closeFuture();
+        }
     }
 
     public void shutdownGroup() {
-        group.shutdownGracefully();
+        if (group != null) {
+            group.shutdownGracefully();
+        }
     }
 
     public static void main(String[] args) {
-        int port = 8121;
+        int port = 8123;
         FilePacket filePacket = new FilePacket();
         File file = new File("/Users/hoky/Work/fanruan/code/swift-gc/target/cubes/202010.zip");
         filePacket.setFile(file);
         filePacket.setStartPos(0);     //要传输的文件的初始信息
-        filePacket.setTargetPath("/Users/hoky/Work/fanruan/code/swift-gc-old/target/cubes/202010.zip");
+        filePacket.setTargetPath("/Users/hoky/Work/fanruan/code/swift-gc-old/target/cubes/202013.zip");
         FileUploadClient fileUploadClient = new FileUploadClient();
         fileUploadClient.connect("127.0.0.1", port, filePacket);
         fileUploadClient.writeAndFlush(filePacket);

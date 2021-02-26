@@ -46,6 +46,8 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
 
     private static final int LINE_VIRTUAL_INDEX = -1;
 
+    private static final String DEFAULT_URI = "0";
+
     private ScheduledExecutorService executorService;
 
     private SwiftSegmentService swiftSegmentService;
@@ -108,24 +110,26 @@ public final class SwiftCollateExecutor implements Runnable, CollateExecutor {
                     SegmentService segmentService = SwiftContext.get().getBean(SegmentService.class);
                     Map<SegmentKey, Integer> bucketIndexMap = segmentService.getBucketByTable(tableEntry.getKey()).getBucketIndexMap();
 
-                    Map<Integer, List<SegmentKey>> segKeysByBucketMap = new HashMap<>();
+                    //H.J TODO : 2020/12/15 加了一层路径, 旧cubes都删掉后舍弃
+                    Map<Integer, Map<String, List<SegmentKey>>> segKeysByBucketMap = new HashMap<>();
                     if (!bucketIndexMap.isEmpty()) {
-                        bucketIndexMap.entrySet()
-                                .stream()
-                                .filter((entry) -> segmentKeysSet.contains(entry.getKey()))
-                                .forEach((entry) -> segKeysByBucketMap.computeIfAbsent(entry.getValue(), k -> new ArrayList<>()).add(entry.getKey()));
+                        bucketIndexMap.entrySet().stream()
+                                .filter(entry -> segmentKeysSet.contains(entry.getKey()))
+                                .forEach(entry -> segKeysByBucketMap.computeIfAbsent(entry.getValue(), k -> new HashMap<>())
+                                        .computeIfAbsent(entry.getKey().getSegmentUri(), k -> new ArrayList<>()).add(entry.getKey()));
                     } else {
-                        segKeysByBucketMap.putAll(Collections.singletonMap(LINE_VIRTUAL_INDEX, keys));
+                        segKeysByBucketMap.putAll(Collections.singletonMap(LINE_VIRTUAL_INDEX, Collections.singletonMap(DEFAULT_URI, keys)));
                     }
 
-
-                    Map<Integer, List<SegmentKey>> collateMap = new HashMap<>();
-                    segKeysByBucketMap.entrySet()
+                    Map<Integer, Map<String, List<SegmentKey>>> collateMap = new HashMap<>();
+                    segKeysByBucketMap.forEach((key1, value1) -> value1.entrySet()
                             .stream()
-                            .filter((entry) -> entry.getValue().size() >= SwiftFragmentFilter.FRAGMENT_NUMBER)
-                            .forEach((entry) -> collateMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).addAll(entry.getValue()));
+                            .filter(listEntry -> listEntry.getValue().size() >= SwiftFragmentFilter.FRAGMENT_NUMBER)
+                            .forEach(listEntry -> collateMap.computeIfAbsent(key1, k -> new HashMap<>())
+                                    .computeIfAbsent(listEntry.getKey(), v -> new ArrayList<>())
+                                    .addAll(listEntry.getValue())));
 
-                    collateMap.forEach((key, value) -> batchProduceCollate(tableKey, value));
+                    collateMap.forEach((key1, value) -> value.forEach((key, value1) -> batchProduceCollate(tableKey, value1)));
                 }
             }
 

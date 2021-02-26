@@ -38,11 +38,13 @@ public interface ExecutorTaskService {
      * @param likes
      * @return
      */
-    List<Object[]> getMaxtimeByContent(String... likes);
+    List<Object[]> getMaxtimeByContent(List<String> executorTaskType, String... likes);
 
     SwiftExecutorTaskEntity getRepeatTaskByTime(long createTime, String... likes);
 
     List<SwiftExecutorTaskEntity> getRepeatTasksByTime(long beginTime, long endTime, String... likes);
+
+    List<SwiftExecutorTaskEntity> getMigRelatedTasks(long beginTime, long endTime, String type, String... likes);
 
     void delete(final ExecutorTask executorTask);
 
