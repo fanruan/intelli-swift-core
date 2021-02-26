@@ -2,6 +2,7 @@ package com.fr.swift.util.exception;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -25,6 +26,11 @@ public class LambdaWrapper {
     @FunctionalInterface
     public interface Supplier_WithExceptions<T, E extends Exception> {
         T get() throws E;
+    }
+
+    @FunctionalInterface
+    public interface Predicate_WithExceptions<T, E extends Exception> {
+        boolean test(T t) throws E;
     }
 
     @FunctionalInterface
@@ -63,6 +69,17 @@ public class LambdaWrapper {
     /**
      * rethrowSupplier(() -> new StringJoiner(new String(new byte[]{77, 97, 114, 107}, "UTF-8"))),
      */
+    public static <T, E extends Exception> Predicate<T> rethrowPredicate(Predicate_WithExceptions<T, E> predicate) throws E {
+        return t -> {
+            try {
+                return predicate.test(t);
+            } catch (Exception exception) {
+                throwAsUnchecked(exception);
+                return false;
+            }
+        };
+    }
+
     public static <T, E extends Exception> Supplier<T> rethrowSupplier(Supplier_WithExceptions<T, E> supplier) throws E {
         return () -> {
             try {

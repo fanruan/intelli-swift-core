@@ -18,9 +18,9 @@ import java.util.List;
 public interface SwiftMetaData {
     SwiftDatabase getSwiftDatabase();
 
-    String getSchemaName() throws SwiftMetaDataException;
+    String getSchemaName();
 
-    String getTableName() throws SwiftMetaDataException;
+    String getTableName();
 
     String getRemark() throws SwiftMetaDataException;
 
