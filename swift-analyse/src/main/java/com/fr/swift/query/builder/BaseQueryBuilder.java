@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author anchore
@@ -45,7 +44,8 @@ class BaseQueryBuilder {
 
     static List<Segment> filterQuerySegs(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {
         List<SegmentKey> segmentKeyList = filterQuerySegKeys(queryInfo);
-        return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
+//        return segmentKeyList.stream().map(SEG_SVC::getSegment).collect(Collectors.toList());
+        return new QuerySegmentFilter().getDetailSegment(queryInfo.getFilterInfo(), segmentKeyList);
     }
 
     static List<SegmentKey> filterQuerySegKeys(SingleTableQueryInfo queryInfo) throws SwiftMetaDataException {

@@ -1,7 +1,5 @@
 package com.fr.swift.query.info.element.metric;
 
-import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
@@ -53,13 +51,8 @@ public class FunnelPathsMetric extends AbstractMetric {
         List<DetailFilter> result = new ArrayList<DetailFilter>();
         for (FunnelVirtualStep event : bean.getSteps()) {
             if (null != event.getFilter()) {
-                try {
-                    result.add(FilterBuilder.buildDetailFilter(segment,
-                            FilterInfoParser.parse(new SourceKey(segment.getMetaData().getTableName()), event.getFilter())));
-                } catch (SwiftMetaDataException e) {
-                    SwiftLoggers.getLogger().warn("Funnel get event filter error. using all show", e);
-                    result.add(new AllShowDetailFilter(segment));
-                }
+                result.add(FilterBuilder.buildDetailFilter(segment,
+                        FilterInfoParser.parse(new SourceKey(segment.getMetaData().getTableName()), event.getFilter())));
             } else {
                 result.add(new AllShowDetailFilter(segment));
             }
