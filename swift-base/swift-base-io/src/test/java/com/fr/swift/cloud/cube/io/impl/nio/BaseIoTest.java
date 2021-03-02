@@ -1,0 +1,17 @@
+package com.fr.swift.cloud.cube.io.impl.nio;
+
+import com.fr.swift.cloud.test.TestResource;
+import org.junit.Ignore;
+
+/**
+ * @author anchore
+ * @date 2018/7/21
+ */
+@Ignore
+public class BaseIoTest {
+    final byte[] data = new byte[]{-1, 3, 4, 2, 6, 8, 7, 9, 0, 5};
+
+    final String path = TestResource.getRunPath(getClass());
+
+    int pageSize;
+}
