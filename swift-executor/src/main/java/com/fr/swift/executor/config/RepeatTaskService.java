@@ -15,4 +15,6 @@ public interface RepeatTaskService {
     void delete(SwiftRepeatTaskEntity repeatTaskEntity);
 
     List<SwiftRepeatTaskEntity> getAllTasks();
+
+    List<SwiftRepeatTaskEntity> getTasksByKey(String repeatKey);
 }

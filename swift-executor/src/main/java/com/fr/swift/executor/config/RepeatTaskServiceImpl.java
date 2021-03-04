@@ -31,4 +31,10 @@ public class RepeatTaskServiceImpl implements RepeatTaskService {
     public List<SwiftRepeatTaskEntity> getAllTasks() {
         return (List<SwiftRepeatTaskEntity>) dao.selectAll();
     }
+
+    @Override
+    public List<SwiftRepeatTaskEntity> getTasksByKey(String repeatKey) {
+        return (List<SwiftRepeatTaskEntity>) dao.selectQuery((query, builder, from) ->
+                query.select(from).where(builder.equal(from.get("repeatKey"), repeatKey)));
+    }
 }

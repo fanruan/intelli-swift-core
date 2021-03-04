@@ -5,8 +5,6 @@ import com.fr.swift.config.entity.SwiftSegmentBucket;
 import com.fr.swift.config.entity.SwiftSegmentBucketElement;
 import com.fr.swift.config.service.SwiftMetaDataService;
 import com.fr.swift.config.service.SwiftSegmentService;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Optional;
@@ -46,15 +44,11 @@ public enum SegmentContainer implements SegmentService {
     private void initCache() {
         List<SwiftMetaData> allMetas = metaDataService.getAllMetas();
         for (SwiftMetaData meta : allMetas) {
-            try {
-                List<SegmentKey> segmentKeyList = swiftSegmentService.getOwnSegments(new SourceKey(meta.getTableName()));
-                addSegments(segmentKeyList);
-                SourceKey tableKey = new SourceKey(meta.getTableName());
-                SwiftSegmentBucket bucket = swiftSegmentService.getBucketByTable(tableKey);
-                bucketMap.put(tableKey, bucket);
-            } catch (SwiftMetaDataException e) {
-                SwiftLoggers.getLogger().error(e);
-            }
+            List<SegmentKey> segmentKeyList = swiftSegmentService.getOwnSegments(new SourceKey(meta.getTableName()));
+            addSegments(segmentKeyList);
+            SourceKey tableKey = new SourceKey(meta.getTableName());
+            SwiftSegmentBucket bucket = swiftSegmentService.getBucketByTable(tableKey);
+            bucketMap.put(tableKey, bucket);
         }
     }
 

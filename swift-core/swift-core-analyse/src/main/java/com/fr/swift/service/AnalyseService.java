@@ -1,5 +1,6 @@
 package com.fr.swift.service;
 
+import com.fr.swift.result.SwiftResultSet;
 import com.fr.swift.result.qrs.QueryResultSet;
 
 /**
@@ -18,4 +19,5 @@ public interface AnalyseService extends SwiftService {
      */
     QueryResultSet getQueryResult(String queryJson) throws Exception;
 
+    SwiftResultSet getResultResult(String queryJson) throws Exception;
 }

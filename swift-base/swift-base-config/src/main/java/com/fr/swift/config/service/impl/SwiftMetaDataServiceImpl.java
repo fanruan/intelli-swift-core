@@ -9,8 +9,10 @@ import com.fr.swift.db.SwiftDatabase;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author yee
@@ -20,46 +22,40 @@ import java.util.List;
 public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
     private SwiftDao<SwiftMetaDataEntity> dao = new SwiftDaoImpl<>(SwiftMetaDataEntity.class);
 
+    public SwiftMetaDataServiceImpl() {
+        MetadataContainer.DEFAULT.initMetas((List<SwiftMetaData>) dao.selectAll());
+    }
+
     @Override
     public void saveMeta(SwiftMetaData meta) {
         dao.insert((SwiftMetaDataEntity) meta);
+        MetadataContainer.DEFAULT.saveMeta(meta);
     }
 
     @Override
     public void updateMeta(SwiftMetaData newMeta) {
         dao.update((SwiftMetaDataEntity) newMeta);
+        MetadataContainer.DEFAULT.updateMeta(newMeta);
     }
 
     @Override
     public List<SwiftMetaData> getAllMetas() {
-        final List<SwiftMetaData> selectAll = (List<SwiftMetaData>) dao.selectAll();
-        return selectAll;
+        return MetadataContainer.DEFAULT.getAllMetas();
     }
 
     @Override
     public List<SwiftMetaData> getMetasBySchema(SwiftDatabase schema) {
-        final List<?> metas = dao.selectQuery((query, builder, from) ->
-                query.select(from).where(builder.equal(from.get("swiftDatabase"), schema)));
-        if (metas.isEmpty()) {
-            return Collections.EMPTY_LIST;
-        }
-        return (List<SwiftMetaData>) metas;
+        return MetadataContainer.DEFAULT.getMetasBySchema(schema);
     }
 
     @Override
     public SwiftMetaData getMeta(final SourceKey tableKey) {
-        final List<?> metas = dao.selectQuery((query, builder, from) ->
-                query.select(from).where(builder.equal(from.get("id"), tableKey.getId())));
-        if (metas.isEmpty()) {
-            return null;
-        }
-        SwiftMetaDataEntity entity = (SwiftMetaDataEntity) metas.get(0);
-        return entity;
+        return MetadataContainer.DEFAULT.getMeta(tableKey);
     }
 
     @Override
     public boolean existsMeta(SourceKey tableKey) {
-        return getMeta(tableKey) != null;
+        return MetadataContainer.DEFAULT.existsMeta(tableKey);
     }
 
     @Override
@@ -67,12 +63,66 @@ public class SwiftMetaDataServiceImpl implements SwiftMetaDataService {
         dao.deleteQuery((query, builder, from) ->
                 query.select(from)
                         .where(builder.equal(from.get("id"), tableKey.getId())));
+        MetadataContainer.DEFAULT.deleteMeta(tableKey);
     }
 
     @Override
     public List<SwiftMetaData> getFuzzyMetaData(SourceKey tableKey) {
-        List<?> metas = dao.selectQuery((query, builder, from) ->
-                query.select(from).where(builder.like(from.get("id"), "%" + tableKey.getId() + "%")));
-        return (List<SwiftMetaData>) metas;
+        return MetadataContainer.DEFAULT.getFuzzyMetaData(tableKey);
+    }
+
+    enum MetadataContainer implements SwiftMetaDataService {
+        DEFAULT;
+
+        Map<String, SwiftMetaData> metaDataMap;
+
+        void initMetas(List<SwiftMetaData> metaDatas) {
+            metaDataMap = metaDatas.stream().collect(Collectors.toConcurrentMap(meta -> meta.getTableName(), meta -> meta));
+        }
+
+        @Override
+        public void saveMeta(SwiftMetaData meta) {
+            metaDataMap.put(meta.getTableName(), meta);
+        }
+
+        @Override
+        public void updateMeta(SwiftMetaData newMeta) {
+            metaDataMap.put(newMeta.getTableName(), newMeta);
+
+        }
+
+        @Override
+        public List<SwiftMetaData> getAllMetas() {
+            return new ArrayList<>(metaDataMap.values());
+        }
+
+        @Override
+        public List<SwiftMetaData> getMetasBySchema(SwiftDatabase schema) {
+            return metaDataMap.values().stream()
+                    .filter(metaData -> metaData.getSwiftDatabase() == schema)
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public SwiftMetaData getMeta(SourceKey tableKey) {
+            return metaDataMap.get(tableKey.getId());
+        }
+
+        @Override
+        public boolean existsMeta(SourceKey tableKey) {
+            return metaDataMap.containsKey(tableKey.getId());
+        }
+
+        @Override
+        public void deleteMeta(SourceKey tableKey) {
+            metaDataMap.remove(tableKey.getId());
+        }
+
+        @Override
+        public List<SwiftMetaData> getFuzzyMetaData(SourceKey tableKey) {
+            return metaDataMap.values().stream()
+                    .filter(metaData -> metaData.getTableName().contains(tableKey.getId()))
+                    .collect(Collectors.toList());
+        }
     }
 }
