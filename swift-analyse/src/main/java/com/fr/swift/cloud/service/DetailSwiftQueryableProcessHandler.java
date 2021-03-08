@@ -105,7 +105,7 @@ public class DetailSwiftQueryableProcessHandler extends BaseProcessHandler imple
         }
         latch.await();
         if (resultSets.isEmpty()) {
-            return EmptySwiftResultSet.get();
+            return EmptySwiftResultSet.create();
         }
 
         return (CalcDetailResultSet) mergeResult(resultSets);
