@@ -1,6 +1,5 @@
 package com.fr.swift.cloud.analyse.merged;
 
-import com.fr.swift.cloud.config.entity.SwiftMetaDataEntity;
 import com.fr.swift.cloud.source.Row;
 import com.fr.swift.cloud.source.SwiftMetaData;
 
@@ -17,11 +16,22 @@ import java.sql.SQLException;
 public class EmptySwiftResultSet extends BaseDetailResultSet implements Serializable {
     private static final long serialVersionUID = 4423119475976180073L;
 
-    private static final EmptySwiftResultSet INSTANCE = new EmptySwiftResultSet();
 
-
+    /**
+     * @return EmptySwiftResultSet
+     * @deprecated using {@link #create()} instead
+     */
+    @Deprecated
     public static EmptySwiftResultSet get() {
-        return INSTANCE;
+        return create();
+    }
+
+    public static EmptySwiftResultSet create() {
+        return new EmptySwiftResultSet();
+    }
+
+    public EmptySwiftResultSet() {
+        this.swiftMetaData = null;
     }
 
     @Override
@@ -31,12 +41,7 @@ public class EmptySwiftResultSet extends BaseDetailResultSet implements Serializ
 
     @Override
     public void setMetaData(SwiftMetaData swiftMetaData) {
-        this.swiftMetaData = new SwiftMetaDataEntity();
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return swiftMetaData;
+        this.swiftMetaData = swiftMetaData;
     }
 
     @Override
@@ -51,7 +56,7 @@ public class EmptySwiftResultSet extends BaseDetailResultSet implements Serializ
 
     @Override
     public void close() throws SQLException {
-
+        // ignore
     }
 
 }
