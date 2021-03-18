@@ -5,7 +5,8 @@ import com.fr.swift.cloud.basics.annotation.Target;
 import com.fr.swift.cloud.basics.handler.DeleteProcessHandler;
 import com.fr.swift.cloud.basics.handler.DetailQueryableProcessHandler;
 import com.fr.swift.cloud.basics.handler.MasterProcessHandler;
-import com.fr.swift.cloud.basics.handler.MigrateProcessHandler;
+import com.fr.swift.cloud.basics.handler.MigrateAsyncHandler;
+import com.fr.swift.cloud.basics.handler.MigrateSyncHandler;
 import com.fr.swift.cloud.basics.handler.QueryableProcessHandler;
 import com.fr.swift.cloud.basics.handler.TaskProcessHandler;
 import com.fr.swift.cloud.db.Where;
@@ -48,9 +49,9 @@ public interface ServiceContext extends SwiftService {
     @InvokeMethod(value = MasterProcessHandler.class, target = Target.ALL)
     boolean report(NodeEvent nodeEvent, NodeMessage nodeMessage);
 
-    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
+    @InvokeMethod(value = MigrateAsyncHandler.class, target = Target.MIGRATE)
     boolean deleteFiles(String targetPath, String clusterId);
 
-    @InvokeMethod(value = MigrateProcessHandler.class, target = Target.MIGRATE)
+    @InvokeMethod(value = MigrateSyncHandler.class, target = Target.MIGRATE)
     boolean updateConfigs(List<SegmentKey> segmentKeys, String clusterId);
 }
