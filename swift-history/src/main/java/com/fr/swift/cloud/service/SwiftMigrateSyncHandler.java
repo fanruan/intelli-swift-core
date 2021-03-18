@@ -8,7 +8,7 @@ import com.fr.swift.cloud.basics.annotation.Target;
 import com.fr.swift.cloud.basics.base.handler.BaseProcessHandler;
 import com.fr.swift.cloud.basics.base.selector.UrlSelector;
 import com.fr.swift.cloud.basics.exception.TargetNodeOfflineException;
-import com.fr.swift.cloud.basics.handler.MigrateProcessHandler;
+import com.fr.swift.cloud.basics.handler.MigrateSyncHandler;
 import com.fr.swift.cloud.beans.annotation.SwiftBean;
 import com.fr.swift.cloud.beans.annotation.SwiftScope;
 
@@ -22,9 +22,9 @@ import java.lang.reflect.Method;
  */
 @SwiftBean
 @SwiftScope("prototype")
-@RegisteredHandler(MigrateProcessHandler.class)
-public class SwiftMigrateProcessHandler extends BaseProcessHandler implements MigrateProcessHandler {
-    public SwiftMigrateProcessHandler(InvokerCreator invokerCreator) {
+@RegisteredHandler(MigrateSyncHandler.class)
+public class SwiftMigrateSyncHandler extends BaseProcessHandler implements MigrateSyncHandler {
+    public SwiftMigrateSyncHandler(InvokerCreator invokerCreator) {
         super(invokerCreator);
     }
 
