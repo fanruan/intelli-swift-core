@@ -6,18 +6,19 @@
         <groupId>com.fr.intelligence</groupId>
         <artifactId>swift</artifactId>
         <version>2020.3</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-base</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>swift-base-common</module>
         <module>swift-base-io</module>
         <module>swift-base-config</module>
         <module>swift-base-structure</module>
         <module>swift-base-bitmap</module>
         <module>swift-base-beans</module>
-        <module>swift-base-common</module>
     </modules>
 
     <dependencyManagement>

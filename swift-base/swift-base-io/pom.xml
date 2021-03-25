@@ -6,6 +6,7 @@
         <artifactId>swift-base</artifactId>
         <groupId>com.fr.intelligence</groupId>
         <version>2020.3</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,6 +16,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+            <version>1.7.1</version>
+        </dependency>
         <dependency>
             <groupId>com.fr.intelligence</groupId>
             <artifactId>swift-base-bitmap</artifactId>
