@@ -10,4 +10,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>swift-base-common</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
+    </dependencies>
 </project>
