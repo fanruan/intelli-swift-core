@@ -12,12 +12,12 @@
     <artifactId>swift-base</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>swift-base-common</module>
         <module>swift-base-io</module>
         <module>swift-base-config</module>
         <module>swift-base-structure</module>
         <module>swift-base-bitmap</module>
         <module>swift-base-beans</module>
-        <module>swift-base-common</module>
     </modules>
 
     <dependencyManagement>
