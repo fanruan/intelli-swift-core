@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
  * @author anchore
  * @date 2019/12/26
  */
-public class SwiftDaoImpl<T> extends AbstractSwiftDao<T> implements SwiftDao<T> {
+public class SwiftDaoImpl<T> extends AbstractSwiftDao<T> {
 
     public SwiftDaoImpl(Class<?> entityClass) {
         this(HibernateManager.INSTANCE.getFactory(), entityClass);
