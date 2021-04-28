@@ -32,7 +32,7 @@ public class Demo {
     @ResponseBody
     public boolean load() throws Exception {
         String path = "/Users/lyon/Downloads/commodity-stock.csv";
-        Table table = com.fr.swift.db.impl.SwiftDatabase.getInstance().getTable(new SourceKey("commodity_stock"));
+        Table table = SwiftDatabase.getInstance().getTable(new SourceKey("commodity_stock"));
         SwiftImportResultSet resultSet = new SingleStreamImportResultSet(table.getMetadata(), path, new CommaLineParser(true));
         HistoryLineSourceAlloter alloter = new HistoryLineSourceAlloter(new SourceKey("commodity_stock"), new LineAllotRule(10000));
         HistoryBlockImporter importer = new HistoryBlockImporter(table, alloter);
