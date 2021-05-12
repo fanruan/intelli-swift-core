@@ -106,7 +106,10 @@ public abstract class AbstractDetailSegment implements CalcSegment {
      */
     @Override
     public boolean hasNext() {
-        if (currentRowItr != null && currentRowItr.hasNext() && rowCount > 0) {
+        if (rowCount <= 0) {
+            return false;
+        }
+        if (currentRowItr != null && currentRowItr.hasNext()) {
             return true;
         } else if (segIndex < filteredList.size() - 1) {
             this.segIndex++;
