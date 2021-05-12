@@ -5,6 +5,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * @author Heng.J
@@ -15,15 +16,26 @@ import java.util.Date;
 public class TimeUtils {
 
     //TODO : 2020/12/22 把这个和cloud的整合一下
+    private static final Pattern YEAR_MONTH_PATTERN = Pattern.compile("^20[0-9]{2}(0[1-9]|1[012])$");
 
-    private static final DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("yyyyMM");
+    private static final Pattern YEAR_MONTH_DATE_PATTERN = Pattern.compile("^20[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$");
+
+    private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+    public static boolean isYearMonth(String value) {
+        return YEAR_MONTH_PATTERN.matcher(value).matches();
+    }
+
+    public static boolean isYearMonthDate(String value) {
+        return YEAR_MONTH_DATE_PATTERN.matcher(value).matches();
+    }
 
     public static YearMonth strToYearMonth(String yearMonth) {
-        return YearMonth.parse(yearMonth, yearMonthFormatter);
+        return YearMonth.parse(yearMonth, YEAR_MONTH_FORMATTER);
     }
 
     public static String ymToString(YearMonth yearMonth) {
-        return yearMonth.format(yearMonthFormatter);
+        return yearMonth.format(YEAR_MONTH_FORMATTER);
     }
 
     public static String addOneMonth(String yearMonth) {
