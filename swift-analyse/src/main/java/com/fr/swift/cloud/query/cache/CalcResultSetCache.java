@@ -70,6 +70,6 @@ public class CalcResultSetCache implements QueryCache, Clearable {
                 SwiftLoggers.getLogger().error("build real result set failed", e);
             }
         }
-        return new CalcPage(calcSegment.getFetchSize(), calcSegment.getPage(), calcSegment.hasNextPage());
+        return new CalcPage(calcSegment.getFetchSize(), calcSegment.rowCount(), calcSegment.getPage(), calcSegment.hasNextPage());
     }
 }
