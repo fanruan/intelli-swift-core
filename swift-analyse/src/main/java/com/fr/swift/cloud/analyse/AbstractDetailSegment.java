@@ -86,6 +86,9 @@ public abstract class AbstractDetailSegment implements CalcSegment {
                 }
             });
             rowCount = filteredList.stream().mapToInt(bitMapPair -> bitMapPair.getValue().getCardinality()).sum();
+            if (limit != null) {
+                rowCount = Math.min(rowCount, limit.end());
+            }
             if (!filteredList.isEmpty()) {
                 setProperties(this.segIndex);
             } else if (!segmentComponent.isEmpty()) {
@@ -103,7 +106,7 @@ public abstract class AbstractDetailSegment implements CalcSegment {
      */
     @Override
     public boolean hasNext() {
-        if (currentRowItr != null && currentRowItr.hasNext()) {
+        if (currentRowItr != null && currentRowItr.hasNext() && rowCount > 0) {
             return true;
         } else if (segIndex < filteredList.size() - 1) {
             this.segIndex++;
