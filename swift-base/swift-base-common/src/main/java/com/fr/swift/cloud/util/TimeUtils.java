@@ -20,7 +20,7 @@ public class TimeUtils {
 
     private static final Pattern YEAR_MONTH_DATE_PATTERN = Pattern.compile("^20[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$");
 
-    private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM");
 
     public static boolean isYearMonth(String value) {
         return YEAR_MONTH_PATTERN.matcher(value).matches();
