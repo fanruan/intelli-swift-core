@@ -9,6 +9,7 @@ import com.github.rholder.retry.WaitStrategies;
 import org.hibernate.exception.LockAcquisitionException;
 
 import javax.persistence.OptimisticLockException;
+import javax.persistence.PessimisticLockException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,7 +39,37 @@ public class SwiftDaoUtils {
         try {
             AtomicInteger i = new AtomicInteger(0);
             retryer.call(() -> {
-                SwiftLoggers.getLogger().warn("current have committed : {} times", i.incrementAndGet());
+                int count = i.getAndIncrement();
+                if (count > 0) {
+                    SwiftLoggers.getLogger().warn("current have committed : {} times", count);
+                }
+                runnable.run();
+                return true;
+            });
+        } catch (ExecutionException | RetryException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 重复提交解决悲观锁
+     * 针对 PessimisticLockException
+     * 本身SHOW VARIABLES LIKE 'innodb_lock_wait_timeout' = 50s
+     * 尝试3次 每次间隔1s, 最坏耗时152S
+     */
+    public static void pessimisticLockFreeCommit(Runnable runnable) {
+        Retryer<Boolean> retryer = RetryerBuilder.<Boolean>newBuilder()
+                .retryIfExceptionOfType(PessimisticLockException.class)
+                .withStopStrategy(StopStrategies.stopAfterAttempt(3))
+                .withWaitStrategy(WaitStrategies.fixedWait(1, TimeUnit.SECONDS))
+                .build();
+        try {
+            AtomicInteger i = new AtomicInteger(0);
+            retryer.call(() -> {
+                int count = i.getAndIncrement();
+                if (count > 0) {
+                    SwiftLoggers.getLogger().warn("pessimistic have committed: {} times", count);
+                }
                 runnable.run();
                 return true;
             });
