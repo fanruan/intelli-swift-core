@@ -20,13 +20,11 @@ public class CalcPage implements Pagination<List<Row>>, SwiftResultSet, Serializ
     private int fetchSize;
     private List<Row> page;
     private boolean hasNextPage;
-    private int rowCount;
     private transient SyncInvoker invoker;
 
 
-    public CalcPage(int fetchSize, int rowCount, List<Row> page, boolean hasNextPage) {
+    public CalcPage(int fetchSize, List<Row> page, boolean hasNextPage) {
         this.fetchSize = fetchSize;
-        this.rowCount = rowCount;
         this.page = page;
         this.hasNextPage = hasNextPage;
     }
@@ -78,10 +76,6 @@ public class CalcPage implements Pagination<List<Row>>, SwiftResultSet, Serializ
     @Override
     public void close() {
 
-    }
-
-    public int getRowCount() {
-        return rowCount;
     }
 
     public interface SyncInvoker {
