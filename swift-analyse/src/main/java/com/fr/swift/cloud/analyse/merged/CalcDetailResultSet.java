@@ -23,20 +23,14 @@ public class CalcDetailResultSet extends BaseDetailResultSet {
     private int index = 0;
     private Iterator<Row> iterator = new ArrayList<Row>().iterator();
     private List<CalcPage> calcPageList;
-    private int rowCount;
+    private Limit limit;
+    private int limitCount;
 
     public CalcDetailResultSet(int fetchSize, List<CalcPage> calcPageList, Limit limit) {
         this.fetchSize = fetchSize;
         this.calcPageList = calcPageList;
-        this.rowCount = getRowCount(calcPageList, limit);
-    }
-
-    private int getRowCount(List<CalcPage> calcPageList, Limit limit) {
-        int rowCount = calcPageList.stream().mapToInt(CalcPage::getRowCount).sum();
-        if (limit != null) {
-            rowCount = Math.min(limit.end(), rowCount);
-        }
-        return rowCount;
+        this.limit = limit;
+        this.limitCount = limit == null ? -1 : limit.end();
     }
 
     @Override
@@ -51,7 +45,7 @@ public class CalcDetailResultSet extends BaseDetailResultSet {
 
     @Override
     public boolean hasNext() throws SQLException {
-        if (rowCount <= 0) {
+        if (limit != null && limitCount <= 0) {
             return false;
         }
         if (iterator.hasNext()) {
@@ -73,7 +67,7 @@ public class CalcDetailResultSet extends BaseDetailResultSet {
 
     @Override
     public Row getNextRow() throws SQLException {
-        rowCount--;
+        limitCount--;
         return iterator.next();
     }
 

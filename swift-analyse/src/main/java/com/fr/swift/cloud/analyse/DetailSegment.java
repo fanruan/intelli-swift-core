@@ -40,7 +40,7 @@ public class DetailSegment extends AbstractDetailSegment {
             Object val = detailColumn.get(next);
             values.add(val);
         }
-        rowCount--;
+        limitCount--;
         return new ListBasedRow(values);
     }
 
