@@ -29,6 +29,7 @@ public abstract class AbstractDetailSegment implements CalcSegment {
     protected List<Dimension> dimensions;
     protected List<FilterInfo> filters;
     protected Limit limit;
+    protected int limitCount;
     protected SwiftMetaData metaData;
     protected int fetchSize;
 
@@ -49,6 +50,7 @@ public abstract class AbstractDetailSegment implements CalcSegment {
         this.dimensions = dimensions;
         this.filters = filters;
         this.limit = limit;
+        this.limitCount = limit == null ? -1 : limit.end();
         this.metaData = metaData;
         this.queriedMetadata = queriedMetadata;
         checkDimensions();
@@ -103,6 +105,9 @@ public abstract class AbstractDetailSegment implements CalcSegment {
      */
     @Override
     public boolean hasNext() {
+        if (limit != null && limitCount <= 0) {
+            return false;
+        }
         if (currentRowItr != null && currentRowItr.hasNext()) {
             return true;
         } else if (segIndex < filteredList.size() - 1) {
