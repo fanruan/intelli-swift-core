@@ -2,6 +2,7 @@ package com.fr.swift.cloud.analyse.merged;
 
 import com.fr.swift.cloud.analyse.CalcPage;
 import com.fr.swift.cloud.log.SwiftLoggers;
+import com.fr.swift.cloud.query.limit.Limit;
 import com.fr.swift.cloud.source.Row;
 import com.fr.swift.cloud.source.SwiftMetaData;
 import com.fr.swift.cloud.util.exception.LambdaWrapper;
@@ -22,11 +23,14 @@ public class CalcDetailResultSet extends BaseDetailResultSet {
     private int index = 0;
     private Iterator<Row> iterator = new ArrayList<Row>().iterator();
     private List<CalcPage> calcPageList;
+    private Limit limit;
+    private int limitCount;
 
-
-    public CalcDetailResultSet(int fetchSize, List<CalcPage> calcPageList) {
+    public CalcDetailResultSet(int fetchSize, List<CalcPage> calcPageList, Limit limit) {
         this.fetchSize = fetchSize;
         this.calcPageList = calcPageList;
+        this.limit = limit;
+        this.limitCount = limit == null ? -1 : limit.end();
     }
 
     @Override
@@ -41,6 +45,9 @@ public class CalcDetailResultSet extends BaseDetailResultSet {
 
     @Override
     public boolean hasNext() throws SQLException {
+        if (limit != null && limitCount <= 0) {
+            return false;
+        }
         if (iterator.hasNext()) {
             return true;
         }
@@ -60,6 +67,7 @@ public class CalcDetailResultSet extends BaseDetailResultSet {
 
     @Override
     public Row getNextRow() throws SQLException {
+        limitCount--;
         return iterator.next();
     }
 
