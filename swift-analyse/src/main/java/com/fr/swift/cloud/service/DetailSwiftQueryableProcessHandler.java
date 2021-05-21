@@ -21,7 +21,10 @@ import com.fr.swift.cloud.beans.annotation.SwiftBean;
 import com.fr.swift.cloud.beans.annotation.SwiftScope;
 import com.fr.swift.cloud.local.LocalUrl;
 import com.fr.swift.cloud.log.SwiftLoggers;
+import com.fr.swift.cloud.query.info.bean.element.LimitBean;
+import com.fr.swift.cloud.query.info.bean.query.DetailQueryInfoBean;
 import com.fr.swift.cloud.query.info.bean.query.QueryBeanFactory;
+import com.fr.swift.cloud.query.limit.SingleLimit;
 import com.fr.swift.cloud.query.query.QueryBean;
 import com.fr.swift.cloud.segment.SegmentService;
 
@@ -108,7 +111,7 @@ public class DetailSwiftQueryableProcessHandler extends BaseProcessHandler imple
             return EmptySwiftResultSet.create();
         }
 
-        return (CalcDetailResultSet) mergeResult(resultSets);
+        return (CalcDetailResultSet) mergeResult(resultSets, queryBean);
     }
 
 
@@ -131,6 +134,7 @@ public class DetailSwiftQueryableProcessHandler extends BaseProcessHandler imple
     @Override
     protected Object mergeResult(List resultList, Object... args) {
         List<CalcPage> calList = resultList;
-        return new CalcDetailResultSet(calList.get(0).getFetchSize(), calList);
+        LimitBean limit = ((DetailQueryInfoBean) args[0]).getLimit();
+        return new CalcDetailResultSet(calList.get(0).getFetchSize(), calList, limit != null ? new SingleLimit(limit.end()) : null);
     }
 }
