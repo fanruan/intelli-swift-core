@@ -18,6 +18,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = JdkHashFunction.class),
         @JsonSubTypes.Type(value = TimeHashFunction.class),
         @JsonSubTypes.Type(value = DateAppIdHashFunction.class),
+        @JsonSubTypes.Type(value = DesignerHashFunction.class),
 })
 public interface HashFunction {
 
@@ -28,4 +29,10 @@ public interface HashFunction {
     HashType getType();
 
     String getCubePath(int logicOrder);
+
+    /**
+     * @param index {@link HashFunction#indexOf(List)}
+     * @return Components of index
+     */
+    List<Integer> divideOf(int index);
 }
