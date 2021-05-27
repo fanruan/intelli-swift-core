@@ -45,7 +45,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         this.tableAllotRule = tableAllotRule;
         this.segmentBucket = segmentBucket;
         this.bucketMap = segmentBucket.getBucketMap();
-        this.segmentFuzzyBucket = new SegmentFuzzyBucket(segmentBucket);
+        this.segmentFuzzyBucket = new SegmentFuzzyBucket(tableAllotRule.getAllotRule(), bucketMap.keySet());
     }
 
     @Override
