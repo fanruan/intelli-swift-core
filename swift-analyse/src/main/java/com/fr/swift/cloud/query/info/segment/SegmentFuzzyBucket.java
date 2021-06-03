@@ -1,7 +1,8 @@
 package com.fr.swift.cloud.query.info.segment;
 
-import com.fr.swift.cloud.config.entity.SwiftSegmentBucket;
-import com.fr.swift.cloud.segment.SegmentKey;
+import com.fr.swift.cloud.source.alloter.AllotRule;
+import com.fr.swift.cloud.source.alloter.impl.BaseAllotRule;
+import com.fr.swift.cloud.source.alloter.impl.hash.HashAllotRule;
 import com.google.common.collect.Sets;
 
 import java.util.HashMap;
@@ -20,30 +21,31 @@ public class SegmentFuzzyBucket {
 
     protected final static int ALL_SEGMENT = -1;
 
-    private Map<Integer, List<SegmentKey>> bucketMap;
+    private final Set<Integer> bucketIndexes;
 
-    private Map<Integer, HashSet<Integer>> fuzzyBucketKeys = new HashMap<>();
+    private final Map<Integer, HashSet<Integer>> fuzzyBucketKeys = new HashMap<>();
 
-    public SegmentFuzzyBucket(SwiftSegmentBucket segmentBucket) {
-        this.bucketMap = segmentBucket.getBucketMap();
-        init();
+    public SegmentFuzzyBucket(AllotRule allotRule, Set<Integer> bucketIndexes) {
+        this.bucketIndexes = bucketIndexes;
+        initByAllotRule(allotRule);
     }
 
-    private void init() {
-        Set<Integer> bucketKeys = bucketMap.keySet();
-        for (Integer bucketKey : bucketKeys) {
-            fuzzyBucketKeys.computeIfAbsent(bucketKey / 100, k -> new HashSet<>()).add(bucketKey);
-            fuzzyBucketKeys.computeIfAbsent(bucketKey % 100, k -> new HashSet<>()).add(bucketKey);
+    private void initByAllotRule(AllotRule allotRule) {
+        if (allotRule.getType() == BaseAllotRule.AllotType.HASH) {
+            HashAllotRule hashAllotRule = (HashAllotRule) allotRule;
+            for (Integer bucketKey : bucketIndexes) {
+                List<Integer> fuzzyKeys = hashAllotRule.getHashFunction().divideOf(bucketKey);
+                fuzzyKeys.forEach(key -> fuzzyBucketKeys.computeIfAbsent(key, k -> new HashSet<>()).add(bucketKey));
+            }
         }
     }
 
     public Set<Integer> getIncludedKey(Set<Integer> hashValueSet) {
         if (hashValueSet.contains(ALL_SEGMENT)) {
-            return Sets.newHashSet(bucketMap.keySet());
+            return Sets.newHashSet(bucketIndexes);
         }
         Set<Integer> resultSet = new HashSet<>();
-        hashValueSet.stream().filter(hashValue -> fuzzyBucketKeys.containsKey(hashValue))
-                .map(hashValue -> fuzzyBucketKeys.get(hashValue)).forEach(resultSet::addAll);
+        hashValueSet.stream().filter(fuzzyBucketKeys::containsKey).map(fuzzyBucketKeys::get).forEach(resultSet::addAll);
         return resultSet;
     }
 }

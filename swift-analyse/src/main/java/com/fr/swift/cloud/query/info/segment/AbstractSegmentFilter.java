@@ -45,7 +45,7 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
         this.tableAllotRule = tableAllotRule;
         this.segmentBucket = segmentBucket;
         this.bucketMap = segmentBucket.getBucketMap();
-        this.segmentFuzzyBucket = new SegmentFuzzyBucket(segmentBucket);
+        initSegmentFuzzyBucket(tableAllotRule);
     }
 
     @Override
@@ -69,6 +69,12 @@ public abstract class AbstractSegmentFilter implements SegmentFilter {
                 filteredSegKeys = filter(singleTableQueryInfo);
             }
             return filteredSegKeys;
+        }
+    }
+
+    private void initSegmentFuzzyBucket(SwiftTableAllotRule tableAllotRule) {
+        if (tableAllotRule != null) {
+            this.segmentFuzzyBucket = new SegmentFuzzyBucket(tableAllotRule.getAllotRule(), bucketMap.keySet());
         }
     }
 
