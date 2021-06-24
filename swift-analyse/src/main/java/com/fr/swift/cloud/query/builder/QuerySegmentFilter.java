@@ -15,6 +15,7 @@ import com.fr.swift.cloud.segment.SegmentService;
 import com.fr.swift.cloud.source.ColumnTypeConstants;
 import com.fr.swift.cloud.source.ColumnTypeUtils;
 import com.fr.swift.cloud.source.SwiftMetaDataColumn;
+import com.fr.swift.cloud.util.Strings;
 import com.fr.swift.cloud.util.exception.LambdaWrapper;
 
 import java.util.ArrayList;
@@ -155,7 +156,9 @@ public class QuerySegmentFilter {
 
     private boolean judgeForIn(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) throws SwiftMetaDataException {
         // 利用字典值有序的条件，在in这种情况下，过滤的值一定大于或等于字典第一个值，小于或等于最后一个值，任意一个满足条件即可，时间复杂度O(n),n为filter取值的个数
-        detailFilterInfo.getColumnKey().getName();
+        if (hasBlackFilterValue(detailFilterInfo)) {
+            return true;
+        }
         SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
         if (columnFeature.getDictSize() <= 1) {
             return false;
@@ -175,6 +178,9 @@ public class QuerySegmentFilter {
 
     private boolean judgeForStartWith(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) throws SwiftMetaDataException {
         SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        if (hasBlackFilterValue(detailFilterInfo)) {
+            return true;
+        }
         if (columnFeature.getDictSize() <= 1) {
             return false;
         }
@@ -215,6 +221,9 @@ public class QuerySegmentFilter {
 
     private boolean judgeForLike(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) {
         SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        if (hasBlackFilterValue(detailFilterInfo)) {
+            return true;
+        }
         if (columnFeature.getDictSize() <= 1) {
             return false;
         }
@@ -256,6 +265,14 @@ public class QuerySegmentFilter {
             default:
                 throw new IllegalStateException(String.format("unsupported type %s", classType));
         }
+    }
+
+    /**
+     * 如果 string 相关查询的过滤值 有 ‘’相关的任何一种, 都直接返回true
+     */
+    private boolean hasBlackFilterValue(SwiftDetailFilterInfo detailFilterInfo) {
+        Set setValues = (Set) detailFilterInfo.getFilterValue();
+        return setValues.stream().anyMatch(v -> Strings.isBlank(v.toString()));
     }
 
 }
