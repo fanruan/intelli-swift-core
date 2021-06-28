@@ -15,6 +15,7 @@ import com.fr.swift.cloud.segment.SegmentService;
 import com.fr.swift.cloud.source.ColumnTypeConstants;
 import com.fr.swift.cloud.source.ColumnTypeUtils;
 import com.fr.swift.cloud.source.SwiftMetaDataColumn;
+import com.fr.swift.cloud.util.Strings;
 import com.fr.swift.cloud.util.exception.LambdaWrapper;
 
 import java.util.ArrayList;
@@ -155,13 +156,15 @@ public class QuerySegmentFilter {
 
     private boolean judgeForIn(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) throws SwiftMetaDataException {
         // 利用字典值有序的条件，在in这种情况下，过滤的值一定大于或等于字典第一个值，小于或等于最后一个值，任意一个满足条件即可，时间复杂度O(n),n为filter取值的个数
-        detailFilterInfo.getColumnKey().getName();
+        Set setValues = (Set) detailFilterInfo.getFilterValue();
+        if (setValues.stream().anyMatch(v -> Strings.isBlank(v.toString()))) {
+            return true;
+        }
         SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
         if (columnFeature.getDictSize() <= 1) {
             return false;
         }
         Comparator asc = getComparator(detailFilterInfo, stringSegmentEntry.getValue());
-        Set setValues = (Set) detailFilterInfo.getFilterValue();
         Object start = columnFeature.getStart();
         Object end = columnFeature.getEnd();
         for (Object tempValue : setValues) {
@@ -175,11 +178,14 @@ public class QuerySegmentFilter {
 
     private boolean judgeForStartWith(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) throws SwiftMetaDataException {
         SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        Object likeValue = detailFilterInfo.getFilterValue();
+        if (Strings.isBlank((String) likeValue)) {
+            return true;
+        }
         if (columnFeature.getDictSize() <= 1) {
             return false;
         }
         Comparator asc = getComparator(detailFilterInfo, stringSegmentEntry.getValue());
-        Object likeValue = detailFilterInfo.getFilterValue();
         Object start = columnFeature.getStart();
         Object end = columnFeature.getEnd();
         // start like 和  in filter 类似，原理差不多
@@ -215,13 +221,16 @@ public class QuerySegmentFilter {
 
     private boolean judgeForLike(SwiftDetailFilterInfo detailFilterInfo, Map.Entry<String, Segment> stringSegmentEntry) {
         SegmentColumnFeature columnFeature = getSegmentColumnFeature(detailFilterInfo, stringSegmentEntry);
+        List<String> likeValue = columnFeature.getLikeValue();
+        if (likeValue.stream().anyMatch(Strings::isBlank)) {
+            return true;
+        }
         if (columnFeature.getDictSize() <= 1) {
             return false;
         }
         if (columnFeature.getDictSize() > MAX_LIKE_COUNT) {
             return true;
         }
-        List<String> likeValue = columnFeature.getLikeValue();
         String filterValue = (String) detailFilterInfo.getFilterValue();
         for (String tempValue :
                 likeValue) {
