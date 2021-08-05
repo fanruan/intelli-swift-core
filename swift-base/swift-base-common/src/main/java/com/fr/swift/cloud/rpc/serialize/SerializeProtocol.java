@@ -10,10 +10,7 @@ import java.util.Arrays;
  */
 public enum SerializeProtocol {
 
-    JDK_SERIALIZE("jdk"),
-    KRYO_SERIALIZE("kryo"),
-    HESSIAN_SERIALIZE("hessian"),       // jdbc不提供使用
-    ;
+    JDK_SERIALIZE("jdk"), KRYO_SERIALIZE("kryo"), HESSIAN_SERIALIZE("hessian");
 
     private final String protocol;
 
