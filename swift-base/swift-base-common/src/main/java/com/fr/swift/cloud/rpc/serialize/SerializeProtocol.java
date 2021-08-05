@@ -13,7 +13,6 @@ public enum SerializeProtocol {
     JDK_SERIALIZE("jdk"),
     KRYO_SERIALIZE("kryo"),
     HESSIAN_SERIALIZE("hessian"),       // jdbc不提供使用
-    PROTOSTUFF_SERIALIZE("protostuff"), // 暂不提供使用
     ;
 
     private final String protocol;
