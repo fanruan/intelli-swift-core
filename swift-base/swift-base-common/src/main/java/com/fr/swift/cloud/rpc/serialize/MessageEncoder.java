@@ -32,8 +32,8 @@ public class MessageEncoder extends MessageToByteEncoder<Object> {
         int dataLength = messageBody.length;
 
         if (compressMode.isCompressNeeded() && dataLength > compressMode.getMaxObjectSize()) {
-            SwiftLoggers.getLogger().info("It maybe buffer overflow, try compress data:");
-            messageBody = encoder.encode(compressMode.compress(messageBody));
+            SwiftLoggers.getLogger().info("It maybe buffer overflow, try compress data.");
+            messageBody = compressMode.compress(messageBody);
             isCompressed = true;
         }
 
