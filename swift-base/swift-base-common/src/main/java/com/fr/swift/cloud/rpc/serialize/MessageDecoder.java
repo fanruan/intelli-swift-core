@@ -1,5 +1,6 @@
 package com.fr.swift.cloud.rpc.serialize;
 
+import com.fr.swift.cloud.log.SwiftLoggers;
 import com.fr.swift.cloud.rpc.compress.CompressMode;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -49,6 +50,7 @@ public class MessageDecoder extends ByteToMessageDecoder {
             in.readBytes(messageBody);
 
             if (isCompressed) {
+                SwiftLoggers.getLogger().info("Try to decode {} length data.", messageLength);
                 messageBody = compressMode.decompress(messageBody);
             }
             Object obj = decoder.decode(messageBody);

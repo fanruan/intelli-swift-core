@@ -14,8 +14,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
  */
 public class MessageEncoder extends MessageToByteEncoder<Object> {
 
-//    private static long count = 0L;
-
     private final SerializationEncoder encoder;
 
     private final CompressMode compressMode;
@@ -32,7 +30,7 @@ public class MessageEncoder extends MessageToByteEncoder<Object> {
         int dataLength = messageBody.length;
 
         if (compressMode.isCompressNeeded() && dataLength > compressMode.getMaxObjectSize()) {
-            SwiftLoggers.getLogger().info("It maybe buffer overflow, try compress data.");
+            SwiftLoggers.getLogger().info("It maybe buffer overflow, try compress {} length data.", dataLength);
             messageBody = compressMode.compress(messageBody);
             isCompressed = true;
         }
@@ -41,8 +39,6 @@ public class MessageEncoder extends MessageToByteEncoder<Object> {
         out.writeInt(dataLength);
         out.writeBoolean(isCompressed);
         out.writeBytes(messageBody);
-//        count += out.readableBytes();
-//        SwiftLoggers.getLogger().info("---------------resultSet size : {}", count);
     }
 }
 
