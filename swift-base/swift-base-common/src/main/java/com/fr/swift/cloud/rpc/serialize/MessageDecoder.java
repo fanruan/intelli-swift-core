@@ -40,7 +40,7 @@ public class MessageDecoder extends ByteToMessageDecoder {
             ctx.close();
         }
 
-        if (in.readableBytes() < messageLength) {
+        if (in.readableBytes() < messageLength + 1) {
             in.resetReaderIndex();
             return;
         } else {
